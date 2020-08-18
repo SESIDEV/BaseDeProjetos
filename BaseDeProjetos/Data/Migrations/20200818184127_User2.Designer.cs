@@ -4,70 +4,22 @@ using BaseDeProjetos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BaseDeProjetos.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200818184127_User2")]
+    partial class User2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("BaseDeProjetos.Models.Empresa", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CNPJ")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Estado")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Nome")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Segmento")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Empresa");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.Pessoa", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Nome")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Telefone")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("empresaId")
-                        .HasColumnType("int");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("empresaId");
-
-                    b.ToTable("Pessoa");
-                });
 
             modelBuilder.Entity("BaseDeProjetos.Models.Projeto", b =>
                 {
@@ -87,28 +39,13 @@ namespace BaseDeProjetos.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("Contatoid")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("Data")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("EmpresaId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LinhaPequisa")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TipoContratacao")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UsuarioId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("Empresa")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Contatoid");
-
-                    b.HasIndex("EmpresaId");
-
-                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Prospeccao");
                 });
@@ -314,28 +251,6 @@ namespace BaseDeProjetos.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.Pessoa", b =>
-                {
-                    b.HasOne("BaseDeProjetos.Models.Empresa", "empresa")
-                        .WithMany()
-                        .HasForeignKey("empresaId");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.Prospeccao", b =>
-                {
-                    b.HasOne("BaseDeProjetos.Models.Pessoa", "Contato")
-                        .WithMany()
-                        .HasForeignKey("Contatoid");
-
-                    b.HasOne("BaseDeProjetos.Models.Empresa", "Empresa")
-                        .WithMany()
-                        .HasForeignKey("EmpresaId");
-
-                    b.HasOne("BaseDeProjetos.Models.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("UsuarioId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
