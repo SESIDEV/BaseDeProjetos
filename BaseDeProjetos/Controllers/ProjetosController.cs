@@ -149,5 +149,14 @@ namespace BaseDeProjetos.Controllers
         {
             return _context.Projeto.Any(e => e.Id == id);
         }
+
+        private void DetachLocal(Func<Usuario, bool> predicate)
+        {
+            var local = _context.Set<Usuario>().Local.Where(predicate).FirstOrDefault();
+            if (!(local is null))
+            {
+                _context.Entry(local).State = EntityState.Detached;
+            }
+        }
     }
 }
