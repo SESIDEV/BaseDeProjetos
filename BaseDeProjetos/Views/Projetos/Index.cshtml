@@ -2,34 +2,84 @@
 
 @{
     ViewData["Title"] = "Index";
+    ViewData["Area"] = "CIS-HO";
 }
 
-<h1>Index</h1>
+<div class="row card">
+    <div class=" col-12 card-body">
+    <h1 class="card-title">Projetos - @ViewData["Area"]</h1>
+        <div class="col-12 card-img">
+            <img style="width:100%" src="https://www.codewall.co.uk/wp-content/uploads/2018/10/hr-dashboard-example.jpg" />
+        </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Empresa)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Empresa)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+        <hr />
+        <p>
+            <a asp-action="Create">
+                <button class="btn btn-primary"> Create New</button>
+            </a>
+        </p>
+        <hr />
+
+            <table class="table card-text">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.NomeProjeto)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AreaPesquisa)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DataInicio)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Estado)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FonteFomento)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Inovacao)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.status)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NomeProjeto)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AreaPesquisa)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DataInicio)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Estado)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FonteFomento)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Inovacao)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.status)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Remover</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

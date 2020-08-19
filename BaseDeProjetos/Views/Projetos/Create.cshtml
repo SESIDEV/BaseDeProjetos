@@ -1,15 +1,15 @@
 ﻿@model BaseDeProjetos.Models.Projeto
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Criar Projeto";
 }
 
-<h1>Create</h1>
+<h1>Criar</h1>
 
 <h4>Projeto</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-8">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -18,19 +18,75 @@
                 <span asp-validation-for="Id" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Empresa" class="control-label"></label>
-                <input asp-for="Empresa" class="form-control" />
-                <span asp-validation-for="Empresa" class="text-danger"></span>
+                <label asp-for="NomeProjeto" class="control-label"></label>
+                <input asp-for="NomeProjeto" class="form-control" />
+                <span asp-validation-for="NomeProjeto" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AreaPesquisa" class="control-label"></label>
+                <select asp-for="AreaPesquisa" class="form-control" asp-items="Html.GetEnumSelectList<LinhaPesquisa>()"></select>
+                <span asp-validation-for="AreaPesquisa" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataInicio" class="control-label"></label>
+                <input asp-for="DataInicio" class="form-control" />
+                <span asp-validation-for="DataInicio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataEncerramento" class="control-label"></label>
+                <input asp-for="DataEncerramento" class="form-control" />
+                <span asp-validation-for="DataEncerramento" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Estado" class="control-label"></label>
+                <input asp-for="Estado" class="form-control" />
+                <span asp-validation-for="Estado" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FonteFomento" class="control-label"></label>
+                <select asp-for="FonteFomento" class="form-control" asp-items="Html.GetEnumSelectList<TipoContratacao>()"></select>
+                <span asp-validation-for="FonteFomento" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Inovacao" class="control-label"></label>
+                <select asp-for="Inovacao" class="form-control" asp-items="Html.GetEnumSelectList<TipoInovacao>()"></select>
+                <span asp-validation-for="Inovacao" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="status" class="control-label"></label>
+                <select asp-for="status" class="form-control" asp-items="Html.GetEnumSelectList<StatusProjeto>()"></select>
+                <span asp-validation-for="status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DuracaoProjetoEmMeses" class="control-label"></label>
+                <input asp-for="DuracaoProjetoEmMeses" class="form-control" />
+                <span asp-validation-for="DuracaoProjetoEmMeses" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ValorTotalProjeto" class="control-label"></label>
+                <input asp-for="ValorTotalProjeto" class="form-control" />
+                <span asp-validation-for="ValorTotalProjeto" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ValorAporteRecursos" class="control-label"></label>
+                <input asp-for="ValorAporteRecursos" class="form-control" />
+                <span asp-validation-for="ValorAporteRecursos" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
+
+    <div class="col-md-4">
+        <h3> Cadastro de projetos</h3>
+        <img style="width:100%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/A_Business_Man_Pointing_To_A_Blank_Road_Sign.svg/831px-A_Business_Man_Pointing_To_A_Blank_Road_Sign.svg.png" alt="orientações" />
+        <p> Lorem Ipsum dolore sit amet. </p>
+    </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Voltar</a>
 </div>
 
 @section Scripts {
