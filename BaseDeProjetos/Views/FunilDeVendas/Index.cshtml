@@ -18,7 +18,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.LinhaPequisa)
             </th>
-            <th></th>
+            <th>
+                @Html.DisplayNameFor(model=> model.Empresa.Nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model=> model.Status.Last().Status)
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -30,6 +35,13 @@
             <td>
                 @Html.DisplayFor(modelItem => item.LinhaPequisa)
             </td>
+            <td>
+                @Html.DisplayFor(modelItem=> item.Empresa.Nome)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem=> item.Status.Last().Status)
+            </td>
+
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

@@ -14,8 +14,11 @@ namespace BaseDeProjetos.Models
         public Empresa Empresa { get; set; }
         public Pessoa Contato { get; set; }
         public Usuario Usuario { get; set; }
+        [Display(Name ="Tipo de Contratação")]
         public TipoContratacao TipoContratacao { get; set; }
+        [Display(Name ="Linha de Pesquisa")]
         public LinhaPesquisa LinhaPequisa { get; set; }
+        public List<FollowUp> Status { get; set; } = new List<FollowUp>();
     }
 
     public class FollowUp
@@ -28,6 +31,7 @@ namespace BaseDeProjetos.Models
         public string OrigemID { get; set; }
         public string Anotacoes { get; set; }
         public DateTime Data { get; set; }
+        [Display(Name ="Ano da prospecção")]
         public int AnoFiscal
         {
             get
