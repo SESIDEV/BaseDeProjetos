@@ -129,4 +129,14 @@ namespace BaseDeProjetos.Models
         Alagoas
     }
 
+    public enum Casa
+    {
+        [Display(Name ="ISI - Química Verde")]
+        ISIQV,
+        [Display(Name ="ISI - Inspeção & Integridade")]
+        ISIII,
+        [Display(Name ="CIS - Higiene Ocupacional")]
+        CISHO
+    }
+
 }

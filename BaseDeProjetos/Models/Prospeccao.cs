@@ -19,6 +19,7 @@ namespace BaseDeProjetos.Models
         [Display(Name ="Linha de Pesquisa")]
         public LinhaPesquisa LinhaPequisa { get; set; }
         public List<FollowUp> Status { get; set; } = new List<FollowUp>();
+        public Casa Casa { get; set; }
     }
 
     public class FollowUp

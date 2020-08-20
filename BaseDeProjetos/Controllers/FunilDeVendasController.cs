@@ -51,6 +51,7 @@ namespace BaseDeProjetos.Controllers
 
         public IActionResult Atualizar()
         {
+            ViewData["Empresas"] = new SelectList(_context.Prospeccao.ToList(), "Id", "Id");
             return View("CriarFollowUp");
         }
 
