@@ -25,14 +25,13 @@ namespace BaseDeProjetos.Models
         {
             get
             {
-                if (Equipe.Count >= 1)
+                if (Equipe.Count > 0)
                 {
                     return this.Equipe.First();
                 }
                 else
                 {
-                    return new Usuario { Id = "Teste"};
-                    //throw new InvalidOperationException("A equipe não foi definida");
+                    throw new InvalidOperationException("A equipe não foi definida");
                 }
             }
             private set { }
@@ -49,5 +48,6 @@ namespace BaseDeProjetos.Models
         public int DuracaoProjetoEmMeses { get; set; }
         public double ValorTotalProjeto { get; set; }
         public double ValorAporteRecursos { get; set; }
+        public Casa Casa { get; set; }
     }
 }

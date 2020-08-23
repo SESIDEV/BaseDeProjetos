@@ -4,53 +4,66 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="row card">
+    <div class=" col-12 card-body">
+        <h1 class="card-title">Prospecções - @ViewData["Area"]</h1>
+        <div class="col-12 card-img">
+            <img style="width:100%" src="https://www.codewall.co.uk/wp-content/uploads/2018/10/hr-dashboard-example.jpg" />
+        </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.TipoContratacao)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LinhaPequisa)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model=> model.Empresa.Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model=> model.Status.Last().Status)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TipoContratacao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LinhaPequisa)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem=> item.Empresa.Nome)
-            </td>
-            <td>
-                <!--
-                Html.DisplayFor(modelItem=> item.Status.Last().Status)
-                -->
-                Contato Inicial
-            </td>
+        <hr />
+        <p>
+            <a asp-action="Create">
+                <button class="btn btn-primary"> Criar Novo</button>
+            </a>
+        </p>
 
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+        <table class="table card-text">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.TipoContratacao)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.LinhaPequisa)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Empresa.Nome)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Status.Last().Status)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TipoContratacao)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LinhaPequisa)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Empresa.Nome)
+                        </td>
+                        <td>
+                            <!--
+                            Html.DisplayFor(modelItem=> item.Status.Last().Status)
+                            -->
+                            Contato Inicial
+                        </td>
+
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

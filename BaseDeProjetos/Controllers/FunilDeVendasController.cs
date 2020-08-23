@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -20,10 +21,29 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: FunilDeVendas
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string casa)
         {
-            return View(await _context.Prospeccao.ToListAsync());
+            if (casa is null)
+            {
+                if (!string.IsNullOrEmpty(HttpContext.Session.GetString("_Casa")))
+                {
+                    casa = HttpContext.Session.GetString("_Casa");
+                }
+                else { return View(await _context.Prospeccao.ToListAsync());}
+            }
+            else if (Enum.IsDefined(typeof(Casa), casa))
+            {
+                HttpContext.Session.SetString("_Casa", casa);
+            }
+            else
+            {
+                return NotFound();
+            }
+
+            ViewData["Area"] = casa;
+            return View(await _context.Prospeccao.Where(p => p.Casa.Equals(Enum.Parse(typeof(Casa),casa))).ToListAsync());
         }
+
 
         // GET: FunilDeVendas/Details/5
         public async Task<IActionResult> Details(string id)

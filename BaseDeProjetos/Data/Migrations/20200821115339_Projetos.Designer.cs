@@ -4,14 +4,16 @@ using BaseDeProjetos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BaseDeProjetos.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200821115339_Projetos")]
+    partial class Projetos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -104,9 +106,6 @@ namespace BaseDeProjetos.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AreaPesquisa")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Casa")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DataEncerramento")
