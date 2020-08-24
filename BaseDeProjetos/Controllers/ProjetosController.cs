@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -18,6 +19,18 @@ namespace BaseDeProjetos.Controllers
         public ProjetosController(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public IActionResult PopularBase()
+        {
+            string[] _base;
+            using(var file = new StreamReader("~/Base.csv"))
+            {
+                _base = file.ReadToEnd().Split("\n");
+            }
+
+
+            return View(nameof(Index));
         }
 
         // GET: Projetos
@@ -41,7 +54,9 @@ namespace BaseDeProjetos.Controllers
             }
 
             ViewData["Area"] = casa;
-            return View(await _context.Projeto.Where(p => p.Casa.Equals(Enum.Parse(typeof(Casa),casa))).ToListAsync());
+            var enum_casa = (Casa)Enum.Parse(typeof(Casa), casa);
+            var lista = await _context.Projeto.Where(p => p.Casa.Equals(enum_casa)).ToListAsync();
+            return View(lista);
         }
 
         // GET: Projetos/Details/5
