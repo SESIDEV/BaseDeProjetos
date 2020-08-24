@@ -1,7 +1,6 @@
 ﻿@model BaseDeProjetos.Models.Prospeccao
 @{
     ViewData["Title"] = "Adicionar Prospecção";
-    var nova_prospeccao = false;
 }
 
 <h1>Criar</h1>
@@ -9,13 +8,25 @@
 <h4>Prospecção</h4>
 <hr />
 <div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <button class="col-12 btn btn-primary" data-toggle="collapse" data-target="#existente" aria-expanded="true" aria-controls="existente">
+                A empresa já foi cadastrada
+            </button>
+            <button class="col-12 btn btn-primary" data-toggle="collapse" data-target="#inexistente" aria-expanded="true" aria-controls="inexistente">
+                É o primeiro registro da empresa
+            </button>
+        </div>
+    </div>
     <div class="col-md-8">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <fieldset>
+            <legend> Dados da prospecção </legend>
             <div class="form-group">
                 <label asp-for="Id" class="control-label"></label>
                 @{ var unique_id = $"prosp_{DateTime.Now.Ticks}";}
-                <input asp-for="Id" class="form-control" value="@unique_id" readonly/>
+                <input asp-for="Id" class="form-control" value="@unique_id" readonly />
                 <span asp-validation-for="Id" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -33,34 +44,55 @@
                 <label asp-for="LinhaPequisa" class="control-label"></label>
                 <select asp-for="LinhaPequisa" class="form-control" asp-items="Html.GetEnumSelectList<LinhaPesquisa>()"></select>
                 <span asp-validation-for="LinhaPequisa" class="text-danger"></span>
-            </div>
+            </div></fieldset>
+
 
             <!-- Empresa existente -->
+            <fieldset>
+                <legend> Informações da Empresa</legend>
 
-
-
+            <div class="form-group collapse" id="existente">
+                <label asp-for="Empresa" class="control-label"></label>
+                <select asp-for="Empresa.Id" class="form-control" asp-items="Html.GetEnumSelectList<LinhaPesquisa>()"></select>
+                <span asp-validation-for="Empresa.Id" class="text-danger"></span>
+            </div>
 
             <!-- Empresa nova -->
-            <div class="form-group">
-                <label asp-for="Empresa.Nome" class="control-label"></label>
-                <input asp-for="Empresa.Nome" class="form-control" />
-                <span asp-validation-for="Empresa.Nome" class="text-danger"></span>
+            <div class="collapse" id="inexistente">
+                <div class="form-group">
+                    <label asp-for="Empresa.Nome" class="control-label"></label>
+                    <input asp-for="Empresa.Nome" class="form-control" />
+                    <span asp-validation-for="Empresa.Nome" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Empresa.CNPJ" class="control-label"></label>
+                    <input asp-for="Empresa.CNPJ" class="form-control" />
+                    <span asp-validation-for="Empresa.CNPJ" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Empresa.Segmento" class="control-label"></label>
+                    <input asp-for="Empresa.Segmento" class="form-control" />
+                    <span asp-validation-for="Empresa.Segmento" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Empresa.Estado" class="control-label"></label>
+                    <select asp-for="LinhaPequisa" class="form-control" asp-items="Html.GetEnumSelectList<Estado>()"></select>
+                    <span asp-validation-for="Empresa.Segmento" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Empresa.CNPJ" class="control-label"></label>
-                <input asp-for="Empresa.CNPJ" class="form-control" />
-                <span asp-validation-for="Empresa.CNPJ" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Empresa.Segmento" class="control-label"></label>
-                <input asp-for="Empresa.Segmento" class="form-control" />
-                <span asp-validation-for="Empresa.Segmento" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Empresa.Estado" class="control-label"></label>
-                <select asp-for="LinhaPequisa" class="form-control" asp-items="Html.GetEnumSelectList<Estado>()"></select>
-                <span asp-validation-for="Empresa.Segmento" class="text-danger"></span>
-            </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Informações do contato</legend>
+                <div class="form-group">
+                    <label asp-for="Status[0].Data" class="control-label"></label>
+                    <select asp-for="LinhaPequisa" class="form-control" asp-items="Html.GetEnumSelectList<Estado>()"></select>
+                    <span asp-validation-for="Empresa.Segmento" class="text-danger"></span>
+                </div>
+
+
+
+            </fieldset>
 
 
             <div class="form-group">
