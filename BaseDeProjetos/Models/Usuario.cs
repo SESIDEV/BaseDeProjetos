@@ -8,6 +8,6 @@ namespace BaseDeProjetos.Models
 {
     public class Usuario:IdentityUser
     {
-        public string Casa { get; set; }
+        public Casa Casa { get; set; }
     }
 }

@@ -1,0 +1,56 @@
+﻿@{
+}
+
+<figure class="highcharts-figure">
+    <div id="projetos"></div>
+</figure>
+
+
+<script type="text/javascript">
+    Highcharts.chart('projetos', {
+        chart: {
+            type: 'bar'
+        },
+        title: {
+            text: 'Projetos dos institutos'
+        },
+        xAxis: {
+            categories: [
+                'Contratação Direta',
+                'Editais de inovação',
+                'Embrapii',
+                'Agências de Fomento',
+                'ANP',
+                'Parceiro',
+                'Outros editais',
+            ],
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'projetos'
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        series: [{
+            name: 'CIS-HO',
+            data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6]
+
+        }, {
+            name: 'ISI-II',
+            data: [83.6, 78.8, 98.5, 93.4, 106.0, 84.5, 105.0]
+
+        }, {
+            name: 'ISI-QV',
+            data: [48.9, 38.8, 39.3, 41.4, 47.0, 48.3, 59.0]
+
+        }]
+    });
+</script>

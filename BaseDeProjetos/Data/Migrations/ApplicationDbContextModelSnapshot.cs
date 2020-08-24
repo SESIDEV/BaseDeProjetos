@@ -201,8 +201,8 @@ namespace BaseDeProjetos.Data.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Casa")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Casa")
+                        .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()

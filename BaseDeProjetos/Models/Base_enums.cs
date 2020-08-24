@@ -61,8 +61,9 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Contratação Direta")]
         ContratacaoDireta, 
         Embrapii, 
-        [Display(Name = "Edital de Inovação")]
+        [Display(Name = "Edital de Inovação SESI/SENAI")]
         EditalInovacao, 
+        OutrosEditais, 
         [Display(Name = "Agência de Fomento")]
         AgenciaFomento, 
         ANP,
