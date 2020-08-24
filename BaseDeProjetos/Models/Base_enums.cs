@@ -72,6 +72,7 @@ namespace BaseDeProjetos.Models
         OutrosEditais, 
         [Display(Name = "Agência de Fomento")]
         AgenciaFomento, 
+        [Display(Name = "ANP/ANEEL")]
         ANP,
         Parceiro
     }
