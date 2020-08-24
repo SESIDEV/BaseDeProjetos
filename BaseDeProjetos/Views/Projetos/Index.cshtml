@@ -8,9 +8,8 @@
     <div class=" col-12 card-body">
     <h1 class="card-title">Projetos - @ViewData["Area"]</h1>
         <div class="col-12 card-img">
-            <partial name="graph_projetos" />
+            <partial name="graph_projetos" view-data="@ViewData" />
         </div>
-
         <hr />
         <p>
             <a asp-action="Create">
