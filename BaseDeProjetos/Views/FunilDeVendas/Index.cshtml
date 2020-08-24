@@ -8,7 +8,7 @@
     <div class=" col-12 card-body">
         <h1 class="card-title">Prospecções - @ViewData["Area"]</h1>
         <div class="col-12 card-img">
-            <partial name="graph_funil" />
+            @Html.Partial("graph_funil", Model)
         </div>
 
         <hr />
@@ -50,16 +50,14 @@
                             @Html.DisplayFor(modelItem => item.Empresa.Nome)
                         </td>
                         <td>
-                            <!--
-                            Html.DisplayFor(modelItem=> item.Status.Last().Status)
-                            -->
-                            Contato Inicial
+                            @Html.DisplayFor(modelItem=> item.Status.Last().Status)
                         </td>
 
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
+                            <a asp-action="Atualizar" asp-route-id="@item.Id">Atualizar</a> |
+                            <a asp-action="Delete" class="text-danger" asp-route-id="@item.Id">Remover</a>
                         </td>
                     </tr>
                 }

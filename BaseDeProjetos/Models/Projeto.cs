@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,17 +11,18 @@ namespace BaseDeProjetos.Models
     {
         [Key]
         [Display(AutoGenerateFilter =true)]
-        public string Id { get; set; }
+        public virtual string Id { get; set; }
         [Display(AutoGenerateFilter =true, Name ="Nome do Projeto")]
-        public string NomeProjeto { get; set; }
-        public Empresa Empresa { get; set; }
-        public Empresa Proponente { get; set; }
+        public virtual string NomeProjeto { get; set; }
+        public virtual Empresa Empresa { get; set; }
+        public virtual Empresa Proponente { get; set; }
         [Display(AutoGenerateFilter =true, Name ="Linha de Pesquisa")]
-        public LinhaPesquisa AreaPesquisa { get; set; }
+        public virtual LinhaPesquisa AreaPesquisa { get; set; }
         [Display(AutoGenerateFilter =true, Name ="Data de Início")]
-        public DateTime DataInicio { get; set; }
-        public DateTime DataEncerramento { get; set; }
-        public List<Usuario> Equipe { get; set; } = new List<Usuario>();
+        public virtual DateTime DataInicio { get; set; }
+        public virtual DateTime DataEncerramento { get; set; }
+        public virtual List<Usuario> Equipe { get; set; } = new List<Usuario>();
+        [NotMapped]
         public Usuario Lider
         {
             get
@@ -37,17 +39,17 @@ namespace BaseDeProjetos.Models
             private set { }
         }
 
-        public string Estado { get; set; }
+        public virtual Estado Estado { get; set; }
         [Display(AutoGenerateFilter =true, Name ="Fonte de Fomento")]
-        public TipoContratacao FonteFomento { get; set; }
+        public virtual TipoContratacao FonteFomento { get; set; }
         [Display(AutoGenerateFilter =true, Name ="Inovação")]
-        public TipoInovacao Inovacao { get; set; }
+        public virtual TipoInovacao Inovacao { get; set; }
         [Display(AutoGenerateFilter =true, Name ="Status do Projeto")]
-        public StatusProjeto status { get; set; }
+        public virtual StatusProjeto status { get; set; }
         [Display(AutoGenerateFilter =true, Name ="Duração do Projeto")]
-        public int DuracaoProjetoEmMeses { get; set; }
-        public double ValorTotalProjeto { get; set; }
-        public double ValorAporteRecursos { get; set; }
-        public Casa Casa { get; set; }
+        public virtual int DuracaoProjetoEmMeses { get; set; }
+        public virtual double ValorTotalProjeto { get; set; }
+        public virtual double ValorAporteRecursos { get; set; }
+        public virtual Casa Casa { get; set; }
     }
 }

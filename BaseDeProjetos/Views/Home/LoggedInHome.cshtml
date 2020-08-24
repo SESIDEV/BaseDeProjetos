@@ -5,6 +5,7 @@
     decimal investimento = 3631437.00M;
     decimal despesas = 2558188M;
     decimal sustentatiblidade = receita / despesas;
+
 }
 <style>
     #sustentabilidade {
@@ -157,14 +158,32 @@
                     </ul>
                     <div class="col card">
                         <div class="card-body">
-                            <div class="card-title">Projetos</div>
-                            <div class="card-text"> </div>
+                            <center>
+                                <span class="text-uppercase">PROJETOS</span>
+                                <hr />
+                                <div class="card-text">
+
+                                    <h2>@ViewBag.n_proj </h2>
+                                    projetos ativos
+
+
+                                </div>
+                            </center>
+
                         </div>
                     </div>
                     <div class="col card">
                         <div class="card-body">
-                            <div class="card-title">Funil de Vendas</div>
-                            <div class="card-text"> </div>
+                            <center>
+                                <span class="text-uppercase">funil de vendas</span>
+                                <hr />
+                                <div class="card-text">
+
+                                    <h2>@ViewBag.n_prosp </h2>
+                                    prospecões ativas
+
+                                </div>
+                            </center>
                         </div>
                     </div>
 

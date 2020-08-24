@@ -7,7 +7,7 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <partial name="LoggedInHome" />
+    @Html.Partial("LoggedInHome", ViewData)
 }
 else
 {

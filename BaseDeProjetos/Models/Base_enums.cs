@@ -23,7 +23,13 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Indústria 4.0")]
         Industria40,
         [Display(Name = "Novos Materiais")]
-        Materiais
+        Materiais,
+        [Display(Name="Otimização de parâmetros de Inspeção não destrutiva em materiais")]
+        OtPam,
+        [Display(Name="Sistemas computacionais de Inspeção não destrutiva")]
+        SisCompNaoDestrutivas,
+        [Display(Name="Pesquisa na área de corrosão")]
+        Corrosao
     }
 
     public enum StatusProspeccao

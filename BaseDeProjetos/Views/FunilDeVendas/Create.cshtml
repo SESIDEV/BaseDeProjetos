@@ -22,75 +22,108 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <fieldset>
-            <legend> Dados da prospecção </legend>
-            <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                @{ var unique_id = $"prosp_{DateTime.Now.Ticks}";}
-                <input asp-for="Id" class="form-control" value="@unique_id" readonly />
-                <span asp-validation-for="Id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Casa" class="control-label"></label>
-                <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Casa>()"></select>
-                <span asp-validation-for="Casa" class="text-danger"></span>
-            </div>
+                <legend> Dados da prospecção </legend>
+                <div class="form-group">
+                    <label asp-for="Id" class="control-label"></label>
+                    @{ var unique_id = $"prosp_{DateTime.Now.Ticks}";}
+                    <input asp-for="Id" class="form-control" value="@unique_id" readonly />
+                    <span asp-validation-for="Id" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Casa" class="control-label"></label>
+                    <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Casa>()"></select>
+                    <span asp-validation-for="Casa" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <label asp-for="TipoContratacao" class="control-label"></label>
-                <select asp-for="TipoContratacao" class="form-control" asp-items="Html.GetEnumSelectList<TipoContratacao>()"></select>
-                <span asp-validation-for="TipoContratacao" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LinhaPequisa" class="control-label"></label>
-                <select asp-for="LinhaPequisa" class="form-control" asp-items="Html.GetEnumSelectList<LinhaPesquisa>()"></select>
-                <span asp-validation-for="LinhaPequisa" class="text-danger"></span>
-            </div></fieldset>
+                <div class="form-group">
+                    <label asp-for="TipoContratacao" class="control-label"></label>
+                    <select asp-for="TipoContratacao" class="form-control" asp-items="Html.GetEnumSelectList<TipoContratacao>()"></select>
+                    <span asp-validation-for="TipoContratacao" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LinhaPequisa" class="control-label"></label>
+                    <select asp-for="LinhaPequisa" class="form-control" asp-items="Html.GetEnumSelectList<LinhaPesquisa>()"></select>
+                    <span asp-validation-for="LinhaPequisa" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Contato.Nome" class="control-label"></label>
+                    <input asp-for="Contato.Nome" class="form-control" />
+                    <span asp-validation-for="Contato.Nome" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Contato.Telefone" class="control-label"></label>
+                    <input asp-for="Contato.Telefone" class="form-control" />
+                    <span asp-validation-for="Contato.Telefone" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Contato.Email" class="control-label"></label>
+                    <input asp-for="Contato.Email" class="form-control" />
+                    <span asp-validation-for="Contato.Email" class="text-danger"></span>
+                </div>
+            </fieldset>
 
 
             <!-- Empresa existente -->
             <fieldset>
                 <legend> Informações da Empresa</legend>
 
-            <div class="form-group collapse" id="existente">
-                <label asp-for="Empresa" class="control-label"></label>
-                <select asp-for="Empresa.Id" class="form-control" asp-items="Html.GetEnumSelectList<LinhaPesquisa>()"></select>
-                <span asp-validation-for="Empresa.Id" class="text-danger"></span>
-            </div>
+                <div class="form-group collapse show" id="existente">
+                    <label asp-for="Empresa" class="control-label"></label>
+                    <select asp-for="Empresa.Id" class="form-control" asp-items="@ViewData["Empresas"] as SelectList">
+                        <option value="-1" selected>Selecione a empresa</option>
+                    </select>
+                    <span asp-validation-for="Empresa.Id" class="text-danger"></span>
+                </div>
 
-            <!-- Empresa nova -->
-            <div class="collapse" id="inexistente">
-                <div class="form-group">
-                    <label asp-for="Empresa.Nome" class="control-label"></label>
-                    <input asp-for="Empresa.Nome" class="form-control" />
-                    <span asp-validation-for="Empresa.Nome" class="text-danger"></span>
+                <!-- Empresa nova -->
+                <div class="collapse" id="inexistente">
+                    <div class="form-group">
+                        <label asp-for="Empresa.Nome" class="control-label"></label>
+                        <input asp-for="Empresa.Nome" class="form-control" />
+                        <span asp-validation-for="Empresa.Nome" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Empresa.CNPJ" class="control-label"></label>
+                        <input asp-for="Empresa.CNPJ" class="form-control" />
+                        <span asp-validation-for="Empresa.CNPJ" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Empresa.Segmento" class="control-label"></label>
+                        <input asp-for="Empresa.Segmento" class="form-control" />
+                        <span asp-validation-for="Empresa.Segmento" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Empresa.Estado" class="control-label"></label>
+                        <select asp-for="Empresa.Estado" class="form-control" asp-items="Html.GetEnumSelectList<Estado>()"></select>
+                        <span asp-validation-for="Empresa.Estado" class="text-danger"></span>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Empresa.CNPJ" class="control-label"></label>
-                    <input asp-for="Empresa.CNPJ" class="form-control" />
-                    <span asp-validation-for="Empresa.CNPJ" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Empresa.Segmento" class="control-label"></label>
-                    <input asp-for="Empresa.Segmento" class="form-control" />
-                    <span asp-validation-for="Empresa.Segmento" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Empresa.Estado" class="control-label"></label>
-                    <select asp-for="LinhaPequisa" class="form-control" asp-items="Html.GetEnumSelectList<Estado>()"></select>
-                    <span asp-validation-for="Empresa.Segmento" class="text-danger"></span>
-                </div>
-            </div>
             </fieldset>
 
             <fieldset>
-                <legend>Informações do contato</legend>
+                <legend>Informações do Contato Inicial</legend>
                 <div class="form-group">
                     <label asp-for="Status[0].Data" class="control-label"></label>
-                    <select asp-for="LinhaPequisa" class="form-control" asp-items="Html.GetEnumSelectList<Estado>()"></select>
-                    <span asp-validation-for="Empresa.Segmento" class="text-danger"></span>
+                    <input class="form-control"asp-for="Status[0].Data" value="@DateTime.Now" />
+                    <span asp-validation-for="Status[0].Data" class="text-danger"></span>
                 </div>
-
-
+                <div class="form-group">
+                    <label asp-for="Status[0].OrigemID" class="control-label"></label>
+                    <input class="form-control"asp-for="Status[0].OrigemID" value="@unique_id" disabled/>
+                    <span asp-validation-for="Status[0].OrigemID" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Status[0].Anotacoes" class="control-label"></label>
+                    <textarea class="form-control" asp-for=" Status[0].Anotacoes" rows="3"></textarea>
+                    <span asp-validation-for="Status[0].Anotacoes" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Status[0].Status" class="control-label"></label>
+                    <select asp-for="Status[0].Status" class="form-control" disabled>
+                        <option value="@StatusProspeccao.ContatoInicial"> @Enum.GetName(typeof(StatusProspeccao),StatusProspeccao.ContatoInicial)</option>
+                    </select>
+                    <span asp-validation-for="Status[0].Status" class="text-danger"></span>
+                </div>
 
             </fieldset>
 
@@ -102,13 +135,9 @@
 
         </form>
     </div>
-    <div class="col-md-4">
-
     </div>
-</div>
-
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Voltar</a>
 </div>
 
 @section Scripts {

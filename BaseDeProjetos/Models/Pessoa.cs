@@ -5,10 +5,13 @@ namespace BaseDeProjetos.Models
     public class Pessoa
     {
         [Key]
-        public int id { get; set; }
-        public string Nome { get; set; }
-        public string Email { get; set; }
-        public string Telefone { get; set; }
-        public Empresa empresa { get; set; }
+        public virtual int id { get; set; }
+        [Display(Name ="Nome da pessoa")]
+        public virtual string Nome { get; set; }
+        [Display(Name ="Email da pessoa")]
+        public virtual string Email { get; set; }
+        [Display(Name ="Telefone da pessoa")]
+        public virtual string Telefone { get; set; }
+        public virtual Empresa empresa { get; set; }
     }
 }

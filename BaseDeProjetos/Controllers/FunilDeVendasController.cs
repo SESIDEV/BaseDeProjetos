@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using System.Data.Common;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -29,7 +32,7 @@ namespace BaseDeProjetos.Controllers
                 {
                     casa = HttpContext.Session.GetString("_Casa");
                 }
-                else { return View(await _context.Prospeccao.ToListAsync());}
+                else { return View(await _context.Prospeccao.ToListAsync()); }
             }
             else if (Enum.IsDefined(typeof(Casa), casa))
             {
@@ -41,7 +44,9 @@ namespace BaseDeProjetos.Controllers
             }
 
             ViewData["Area"] = casa;
-            return View(await _context.Prospeccao.Where(p => p.Casa.Equals(Enum.Parse(typeof(Casa),casa))).ToListAsync());
+            var enum_casa = (Casa)Enum.Parse(typeof(Casa), casa);
+            var lista = await _context.Prospeccao.Where(p => p.Casa.Equals(enum_casa)).ToListAsync();
+            return View(lista);
         }
 
 
@@ -66,13 +71,28 @@ namespace BaseDeProjetos.Controllers
         // GET: FunilDeVendas/Create
         public IActionResult Create()
         {
+            ViewData["Empresas"] = new SelectList(_context.Empresa.ToList(), "Id", "Nome");
             return View();
         }
 
-        public IActionResult Atualizar()
+        [HttpGet]
+        public IActionResult Atualizar(string id)
         {
-            ViewData["Empresas"] = new SelectList(_context.Prospeccao.ToList(), "Id", "Id");
+            ViewData["origem"] = id;
+            ViewData["prosp"] = _context.Prospeccao.FirstOrDefault(p => p.Id == id);
             return View("CriarFollowUp");
+        }
+        [HttpPost]
+        public async Task<IActionResult> Atualizar([Bind("OrigemID, Data, Status, Anotacoes")] FollowUp followup)
+        {
+            if (ModelState.IsValid)
+            {
+                followup.Origem = _context.Prospeccao.FirstOrDefault(p => p.Id == followup.OrigemID);
+                _context.Add(followup);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
         }
 
         // POST: FunilDeVendas/Create
@@ -80,10 +100,23 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TipoContratacao,LinhaPequisa")] Prospeccao prospeccao)
+        public async Task<IActionResult> Create([Bind("Id,TipoContratacao,LinhaPequisa, Status, Empresa, Contato, Casa")] Prospeccao prospeccao)
         {
             if (ModelState.IsValid)
             {
+                if (_context.Empresa.Where(e => e.Id == prospeccao.Empresa.Id).Count() > 0)
+                {
+                    prospeccao.Empresa = _context.Empresa.First(e => e.Id == prospeccao.Empresa.Id);
+                }
+                else
+                {
+                    prospeccao.Empresa = new Empresa { Estado = prospeccao.Empresa.Estado, CNPJ = prospeccao.Empresa.CNPJ, Nome = prospeccao.Empresa.Nome, Segmento = prospeccao.Empresa.Segmento };
+                }
+                prospeccao.Contato.empresa = prospeccao.Empresa;
+                var userId = HttpContext.User.Identity.Name;
+                var user = await _context.Users.FirstAsync(u => u.UserName == userId);
+                prospeccao.Usuario = user;
+
                 _context.Add(prospeccao);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
