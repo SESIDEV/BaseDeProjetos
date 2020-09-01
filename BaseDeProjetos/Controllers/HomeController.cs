@@ -25,6 +25,7 @@ namespace BaseDeProjetos.Controllers
         {
             ViewData["n_prosp"] = _context.Prospeccao.Where(p => p.Status.Count > 0).ToList<Prospeccao>().Count;
             ViewData["n_proj"] = _context.Projeto.Where(p => p.status != StatusProjeto.Concluido && p.DataEncerramento > DateTime.Now).ToList().Count;
+            ViewData["n_empresas"] = _context.Empresa.ToList().Count;
             return View();
         }
 
