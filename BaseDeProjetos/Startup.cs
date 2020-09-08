@@ -31,7 +31,7 @@ namespace BaseDeProjetos
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseLazyLoadingProxies().UseMySql(
-                    Configuration.GetEnvironmentVariable("MYSQLCONNSTR_localdb")));
+                    Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb")));
                     //Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<Usuario>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
