@@ -2,6 +2,7 @@
 @model BaseDeProjetos.Views.Home.LoggedInHomeModel
 @{
     decimal receita = 4722542.00M;
+    //decimal receita = (decimal)ViewBag.receita_isiqv + (decimal)ViewBag.receita_isiii + (decimal)ViewBag.receita_cisho;
     decimal investimento = 3631437.00M;
     decimal despesas = 2558188M;
     decimal sustentatiblidade = receita / despesas;
@@ -25,8 +26,8 @@
     }
 </style>
 <div class="row">
-    
-    <partial name="Menu" view-data="@ViewData"/>
+
+    <partial name="Menu" view-data="@ViewData" />
     <div class="col-md-10">
         <div class="card">
             <div class="card-header text-center"> <h5>Bem vindo ao sistema de Gestão de Inovação - SGI</h5></div>
@@ -56,86 +57,101 @@
 
                                         <h2>
                                             @ViewBag.n_proj </!h2>
-                                        projetos ativos
+                                            projetos ativos
 
 
-                                </div>
-                            </center>
+                                    </div>
+                                </center>
 
+                            </div>
                         </div>
-                    </div>
-                 <div class="col-md-4 card">
-                        <div class="card-body">
-                            <center>
-                                <span class="text-uppercase">Empresas</span>
-                                <hr />
-                                <div class="card-text">
+                        <div class="col-md-4 card">
+                            <div class="card-body">
+                                <center>
+                                    <span class="text-uppercase">Empresas</span>
+                                    <hr />
+                                    <div class="card-text">
 
-                                    <h2>@ViewBag.n_empresas </h2>
-                                    empresas com relacionamento conosco
+                                        <h2>@ViewBag.n_empresas </h2>
+                                        empresas com relacionamento conosco
 
-                                </div>
-                            </center>
+                                    </div>
+                                </center>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-4 card">
-                        <div class="card-body">
-                            <center>
-                                <span class="text-uppercase">funil de vendas</span>
-                                <hr />
-                                <div class="card-text">
+                        <div class="col-md-4 card">
+                            <div class="card-body">
+                                <center>
+                                    <span class="text-uppercase">funil de vendas</span>
+                                    <hr />
+                                    <div class="card-text">
 
-                                    <!--h2>@ViewBag.n_prosp </!h2-->
-                                    <h2> 43 </h2>prospecções ativas
+                                        <!--h2>@ViewBag.n_prosp </!h2-->
+                                        <h2> 43 </h2>prospecções ativas
 
-                                </div>
-                            </center>
+                                    </div>
+                                </center>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4 card">
-                        <div class="card-body">
-                            <center>
-                                <span class="text-uppercase">Equipe</span>
-                                <hr />
-                                <div class="card-text">
+                        <div class="col-md-4 card">
+                            <div class="card-body">
+                                <center>
+                                    <span class="text-uppercase">Equipe</span>
+                                    <hr />
+                                    <div class="card-text">
 
-                                    <!--h2>@ViewBag.n_prosp </!h2-->
-                                    <h2> 51 </h2> colaboradores
+                                        <!--h2>@ViewBag.n_prosp </!h2-->
+                                        <h2> 51 </h2> colaboradores
 
-                                </div>
-                            </center>
+                                    </div>
+                                </center>
+                            </div>
                         </div>
+                        <div class="col-md-4 card">
+                            <div class="card-body">
+                                <center>
+                                    <span class="text-uppercase">Satisfação do cliente</span>
+                                    <hr />
+                                    <div class="card-text">
+
+                                        <h2>@ViewBag.satisfacao.ToString("P1") </h2>
+
+
+                                    </div>
+                                </center>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
-            </div>
-            <div class="col-4 row">
-                <div id="sustentabilidade" class="jumbotron col-12">
-                    <center>
-                        <span class="text-uppercase">Sustentabilidade</span>
-                        <hr />
-                        <h3 class="font-weight-bolder">
-                            @sustentatiblidade.ToString("P2")
-                        </h3>
+                <div class="col-4 row">
+                    <div id="sustentabilidade" class="jumbotron col-12">
+                        <center>
+                            <span class="text-uppercase">Sustentabilidade</span>
+                            <hr />
+                            <h3 class="font-weight-bolder">
+                                @sustentatiblidade.ToString("P2")
+                            </h3>
 
-                        <span class="font-weight-lighter">das despesas são cobertas por receita</span>
-                    </center>
-                </div>
-                <div id="seguranca" class="jumbotron col-12">
-                    <center>
-                        <span class="text-uppercase">Indice de Segurança e Qualidade</span>
-                        <hr />
-                        <h3 class="font-weight-bolder">
-                            @{string iss = ((sustentatiblidade - 1) * 100).ToString("F0");
-                            }
-                            @iss
-                        </h3>
+                            <span class="font-weight-lighter">das despesas são cobertas por receita</span>
+                        </center>
+                    </div>
+                    <div id="seguranca" class="jumbotron col-12">
+                        <center>
+                            <span class="text-uppercase">Indice de Segurança e Qualidade</span>
+                            <hr />
+                            <h3 class="font-weight-bolder">
+                                @{string iss = ((sustentatiblidade - 1) * 100).ToString("F0");
+                                }
+                                @iss
+                            </h3>
 
-                        <span class="font-weight-lighter">de um total de 100 pontos</span>
-                    </center>
+                            <span class="font-weight-lighter">de um total de 100 pontos</span>
+                        </center>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </div>

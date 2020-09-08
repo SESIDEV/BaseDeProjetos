@@ -8,8 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
+
+using SmartTesting.Controllers;
+using System.Runtime.InteropServices;
 using System.Data.Common;
 
 namespace BaseDeProjetos.Controllers
@@ -17,10 +18,12 @@ namespace BaseDeProjetos.Controllers
     public class FunilDeVendasController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly Mailer _mailer;
 
-        public FunilDeVendasController(ApplicationDbContext context)
+        public FunilDeVendasController(ApplicationDbContext context, Mailer mailer)
         {
             _context = context;
+            _mailer = mailer;
         }
 
         // GET: FunilDeVendas
@@ -82,6 +85,7 @@ namespace BaseDeProjetos.Controllers
             ViewData["prosp"] = _context.Prospeccao.FirstOrDefault(p => p.Id == id);
             return View("CriarFollowUp");
         }
+
         [HttpPost]
         public async Task<IActionResult> Atualizar([Bind("OrigemID, Data, Status, Anotacoes")] FollowUp followup)
         {
@@ -89,10 +93,96 @@ namespace BaseDeProjetos.Controllers
             {
                 followup.Origem = _context.Prospeccao.FirstOrDefault(p => p.Id == followup.OrigemID);
                 _context.Add(followup);
+
+                NotificarProspecção(followup);
+
+                if(followup.Status == StatusProspeccao.Convertida)
+                {
+                    CriarProjetoConvertido(followup);
+                }
+
                 await _context.SaveChangesAsync();
             }
 
             return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
+        }
+
+        private void CriarProjetoConvertido(FollowUp followup)
+        {
+            var novo_projeto = new Projeto
+            {
+                Casa = followup.Origem.Casa,
+                AreaPesquisa = followup.Origem.LinhaPequisa,
+                Empresa = followup.Origem.Empresa,
+                status = StatusProjeto.EmExecucao,
+                Id = $"proj_{followup.Id}",
+            };
+
+            _context.Add(novo_projeto);
+        }
+
+        private void NotificarProspecção(FollowUp followup)
+        {
+            Notificacao notificacao;
+
+            switch (followup.Status)
+            {
+                case StatusProspeccao.ComProposta:
+
+                    notificacao = new Notificacao
+                    {
+                        Titulo = "SGI - Uma proposta comercial foi enviada",
+                        TextoBase = $"Olá, A prospecção com {followup.Origem.Empresa} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Casa} teve uma proposta enviada. " +
+                         $"\n\n\n------------------------" +
+                         $"Mais detalhes: {followup.Anotacoes}"
+                    };
+
+                    _mailer.EnviarNotificacao(_context.Destinatarios, notificacao);
+
+                    break;
+
+                case StatusProspeccao.Convertida:
+                    notificacao = new Notificacao
+                    {
+                        Titulo = "SGI - Uma proposta comercial foi convertida",
+                        TextoBase = $"Olá, A proposta com {followup.Origem.Empresa} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Casa} foi convertida." +
+                         $"\n\n\n------------------------" +
+                         $"Mais detalhes: {followup.Anotacoes}"
+                    };
+
+                    _mailer.EnviarNotificacao(_context.Destinatarios, notificacao);
+
+                    break;
+
+                case StatusProspeccao.NaoConvertida:
+                    notificacao = new Notificacao
+                    {
+                        Titulo = "SGI - Uma proposta comercial não foi convertida",
+                        TextoBase = $"Olá, A proposta com {followup.Origem.Empresa} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Casa} não foi convertida." +
+                         $"\n\n\n------------------------" +
+                         $"Mais detalhes: {followup.Anotacoes}"
+                    };
+
+                    _mailer.EnviarNotificacao(_context.Destinatarios, notificacao);
+
+                    break;
+
+                case StatusProspeccao.ContatoInicial:
+                    notificacao = new Notificacao
+                    {
+                        Titulo = "SGI - Uma nova prospecção foi inicializada",
+                        TextoBase = $"Olá, A prospecção com {followup.Origem.Empresa} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Casa} foi iniciada." +
+                         $"\n\n\n------------------------" +
+                         $"Mais detalhes: {followup.Anotacoes}"
+                    };
+
+                    _mailer.EnviarNotificacao(_context.Destinatarios, notificacao);
+
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         // POST: FunilDeVendas/Create
@@ -116,6 +206,8 @@ namespace BaseDeProjetos.Controllers
                 var userId = HttpContext.User.Identity.Name;
                 var user = await _context.Users.FirstAsync(u => u.UserName == userId);
                 prospeccao.Usuario = user;
+                prospeccao.Status[0].Origem = prospeccao;
+                NotificarProspecção(prospeccao.Status[0]);
 
                 _context.Add(prospeccao);
                 await _context.SaveChangesAsync();
