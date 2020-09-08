@@ -14,9 +14,9 @@ namespace BaseDeProjetos.Models
         public virtual Empresa Empresa { get; set; }
         public virtual Pessoa Contato { get; set; }
         public virtual Usuario Usuario { get; set; }
-        [Display(Name ="Tipo de Contratação")]
+        [Display(Name = "Tipo de Contratação")]
         public virtual TipoContratacao TipoContratacao { get; set; }
-        [Display(Name ="Linha de Pesquisa")]
+        [Display(Name = "Linha de Pesquisa")]
         public virtual LinhaPesquisa LinhaPequisa { get; set; }
         public virtual List<FollowUp> Status { get; set; } = new List<FollowUp>();
         public virtual Casa Casa { get; set; }
@@ -33,13 +33,15 @@ namespace BaseDeProjetos.Models
         public virtual string OrigemID { get; set; }
         public virtual string Anotacoes { get; set; }
         public virtual DateTime Data { get; set; }
-        [Display(Name ="Ano da prospecção")]
+        [Display(Name = "Ano da prospecção")]
         public virtual int AnoFiscal
         {
             get
             { return this.Data.Year; }
             set { }
         }
-       public virtual StatusProspeccao Status { get; set; }
+        public virtual StatusProspeccao Status { get; set; }
+        public DateTime Vencimento { get; set; } = DateTime.Now.AddDays(14);
+        public bool isTratado { get; set; } = false;
     }
 }

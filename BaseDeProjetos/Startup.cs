@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using BaseDeProjetos.Models;
+using SmartTesting.Controllers;
 
 namespace BaseDeProjetos
 {
@@ -29,11 +30,13 @@ namespace BaseDeProjetos
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseLazyLoadingProxies().UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                options.UseLazyLoadingProxies().UseMySql(
+                    Configuration.GetConnectionString("MYSQLCONNSTR_localdb")));
+                    //Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<Usuario>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddDistributedMemoryCache();
+            services.AddSingleton<Mailer>();
 
         services.AddSession(options =>
         {

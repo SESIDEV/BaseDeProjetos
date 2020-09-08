@@ -96,7 +96,9 @@ namespace BaseDeProjetos.Controllers
 
                 NotificarProspecção(followup);
 
-                if(followup.Status == StatusProspeccao.Convertida)
+                AtualizarStatus(followup);
+
+                if (followup.Status == StatusProspeccao.Convertida)
                 {
                     CriarProjetoConvertido(followup);
                 }
@@ -105,6 +107,14 @@ namespace BaseDeProjetos.Controllers
             }
 
             return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
+        }
+
+        private static void AtualizarStatus(FollowUp followup)
+        {
+            foreach (var status in followup.Origem.Status)
+            {
+                status.isTratado = true;
+            }
         }
 
         private void CriarProjetoConvertido(FollowUp followup)
