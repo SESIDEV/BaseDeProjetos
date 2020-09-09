@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using BaseDeProjetos.Data;
-using BaseDeProjetos.Models;
-using Microsoft.AspNetCore.Http;
-
 using SmartTesting.Controllers;
-using System.Runtime.InteropServices;
-using System.Data.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -47,8 +44,8 @@ namespace BaseDeProjetos.Controllers
             }
 
             ViewData["Area"] = casa;
-            var enum_casa = (Casa)Enum.Parse(typeof(Casa), casa);
-            var lista = await _context.Prospeccao.Where(p => p.Casa.Equals(enum_casa)).ToListAsync();
+            Casa enum_casa = (Casa)Enum.Parse(typeof(Casa), casa);
+            List<Prospeccao> lista = await _context.Prospeccao.Where(p => p.Casa.Equals(enum_casa)).ToListAsync();
             return View(lista);
         }
 
@@ -61,7 +58,7 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
-            var prospeccao = await _context.Prospeccao
+            Prospeccao prospeccao = await _context.Prospeccao
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (prospeccao == null)
             {
@@ -111,7 +108,7 @@ namespace BaseDeProjetos.Controllers
 
         private static void AtualizarStatus(FollowUp followup)
         {
-            foreach (var status in followup.Origem.Status)
+            foreach (FollowUp status in followup.Origem.Status)
             {
                 status.isTratado = true;
             }
@@ -119,7 +116,7 @@ namespace BaseDeProjetos.Controllers
 
         private void CriarProjetoConvertido(FollowUp followup)
         {
-            var novo_projeto = new Projeto
+            Projeto novo_projeto = new Projeto
             {
                 Casa = followup.Origem.Casa,
                 AreaPesquisa = followup.Origem.LinhaPequisa,
@@ -142,8 +139,8 @@ namespace BaseDeProjetos.Controllers
                     notificacao = new Notificacao
                     {
                         Titulo = "SGI - Uma proposta comercial foi enviada",
-                        TextoBase = $"Olá, A prospecção com {followup.Origem.Empresa} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Casa} teve uma proposta enviada. " +
-                         $"\n\n\n------------------------" +
+                        TextoBase = $"Olá, A prospecção com {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Casa} teve uma proposta enviada. " +
+                         $"\n\n\n\r ------------------------" +
                          $"Mais detalhes: {followup.Anotacoes}"
                     };
 
@@ -155,8 +152,8 @@ namespace BaseDeProjetos.Controllers
                     notificacao = new Notificacao
                     {
                         Titulo = "SGI - Uma proposta comercial foi convertida",
-                        TextoBase = $"Olá, A proposta com {followup.Origem.Empresa} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Casa} foi convertida." +
-                         $"\n\n\n------------------------" +
+                        TextoBase = $"Olá, A proposta com {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Casa} foi convertida." +
+                         $"\n\n\n\r ------------------------" +
                          $"Mais detalhes: {followup.Anotacoes}"
                     };
 
@@ -168,8 +165,8 @@ namespace BaseDeProjetos.Controllers
                     notificacao = new Notificacao
                     {
                         Titulo = "SGI - Uma proposta comercial não foi convertida",
-                        TextoBase = $"Olá, A proposta com {followup.Origem.Empresa} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Casa} não foi convertida." +
-                         $"\n\n\n------------------------" +
+                        TextoBase = $"Olá, A proposta com {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Casa} não foi convertida." +
+                         $"\n\n\n\r ------------------------" +
                          $"Mais detalhes: {followup.Anotacoes}"
                     };
 
@@ -181,8 +178,8 @@ namespace BaseDeProjetos.Controllers
                     notificacao = new Notificacao
                     {
                         Titulo = "SGI - Uma nova prospecção foi inicializada",
-                        TextoBase = $"Olá, A prospecção com {followup.Origem.Empresa} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Casa} foi iniciada." +
-                         $"\n\n\n------------------------" +
+                        TextoBase = $"Olá, A prospecção com {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Casa} foi iniciada." +
+                         $"\n\n\n\r ------------------------" +
                          $"Mais detalhes: {followup.Anotacoes}"
                     };
 
@@ -213,8 +210,8 @@ namespace BaseDeProjetos.Controllers
                     prospeccao.Empresa = new Empresa { Estado = prospeccao.Empresa.Estado, CNPJ = prospeccao.Empresa.CNPJ, Nome = prospeccao.Empresa.Nome, Segmento = prospeccao.Empresa.Segmento };
                 }
                 prospeccao.Contato.empresa = prospeccao.Empresa;
-                var userId = HttpContext.User.Identity.Name;
-                var user = await _context.Users.FirstAsync(u => u.UserName == userId);
+                string userId = HttpContext.User.Identity.Name;
+                Usuario user = await _context.Users.FirstAsync(u => u.UserName == userId);
                 prospeccao.Usuario = user;
                 prospeccao.Status[0].Origem = prospeccao;
                 NotificarProspecção(prospeccao.Status[0]);
@@ -234,7 +231,7 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
-            var prospeccao = await _context.Prospeccao.FindAsync(id);
+            Prospeccao prospeccao = await _context.Prospeccao.FindAsync(id);
             if (prospeccao == null)
             {
                 return NotFound();
@@ -285,7 +282,7 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
-            var prospeccao = await _context.Prospeccao
+            Prospeccao prospeccao = await _context.Prospeccao
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (prospeccao == null)
             {
@@ -300,7 +297,7 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var prospeccao = await _context.Prospeccao.FindAsync(id);
+            Prospeccao prospeccao = await _context.Prospeccao.FindAsync(id);
             _context.Prospeccao.Remove(prospeccao);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

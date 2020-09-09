@@ -81,3 +81,17 @@
         </table>
     </div>
 </div>
+<div class="card card-body">
+    <h5 class="card-title">Carregar lista de Projetos </h5>
+    <form class="card-text" enctype="multipart/form-data" action="Projetos/CarregarProjetos" method="POST">
+        <div>
+            <span>
+                <label>Upload de arquivo</label>
+            </span>
+            <div>
+                <input type="file" name="files">
+            </div>
+        </div>
+        <input class="btn btn-dark" type="submit" value="Upload" />
+    </form>
+</div>

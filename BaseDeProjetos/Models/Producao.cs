@@ -9,27 +9,27 @@ namespace BaseDeProjetos.Models
         public string RealizadoEm { get; set; }
         public DateTime DataDaRealizacao { get; set; }
     }
-    public class Artigo:IProducao
+    public class Artigo : IProducao
     {
         public string RealizadoEm { get; set; }
         public DateTime DataDaRealizacao { get; set; }
     }
 
-    public class Noticia:IProducao
-    {
-        public string RealizadoEm { get; set; }
-        public DateTime DataDaRealizacao { get; set; }
-
-    }
-
-    public class Evento:IProducao
+    public class Noticia : IProducao
     {
         public string RealizadoEm { get; set; }
         public DateTime DataDaRealizacao { get; set; }
 
     }
 
-    public class Palestra:IProducao
+    public class Evento : IProducao
+    {
+        public string RealizadoEm { get; set; }
+        public DateTime DataDaRealizacao { get; set; }
+
+    }
+
+    public class Palestra : IProducao
     {
         public string RealizadoEm { get; set; }
         public DateTime DataDaRealizacao { get; set; }

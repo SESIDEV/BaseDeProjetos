@@ -1,5 +1,3 @@
-using System;
-
 namespace BaseDeProjetos.Models
 {
     public class ErrorViewModel

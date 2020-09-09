@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaseDeProjetos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200908133456_MySQLBaseline")]
-    partial class MySQLBaseline
+    [Migration("20200909193622_MySQL")]
+    partial class MySQL
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

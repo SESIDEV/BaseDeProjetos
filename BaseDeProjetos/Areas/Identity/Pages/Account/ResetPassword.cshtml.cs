@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Authorization;
-using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Areas.Identity.Pages.Account
 {
@@ -68,20 +65,20 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account
                 return Page();
             }
 
-            var user = await _userManager.FindByEmailAsync(Input.Email);
+            Usuario user = await _userManager.FindByEmailAsync(Input.Email);
             if (user == null)
             {
                 // Don't reveal that the user does not exist
                 return RedirectToPage("./ResetPasswordConfirmation");
             }
 
-            var result = await _userManager.ResetPasswordAsync(user, Input.Code, Input.Password);
+            IdentityResult result = await _userManager.ResetPasswordAsync(user, Input.Code, Input.Password);
             if (result.Succeeded)
             {
                 return RedirectToPage("./ResetPasswordConfirmation");
             }
 
-            foreach (var error in result.Errors)
+            foreach (IdentityError error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }

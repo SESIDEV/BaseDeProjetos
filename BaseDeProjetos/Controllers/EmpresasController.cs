@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using BaseDeProjetos.Data;
-using BaseDeProjetos.Models;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -33,7 +30,7 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
-            var empresa = await _context.Empresa
+            Empresa empresa = await _context.Empresa
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (empresa == null)
             {
@@ -73,7 +70,7 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
-            var empresa = await _context.Empresa.FindAsync(id);
+            Empresa empresa = await _context.Empresa.FindAsync(id);
             if (empresa == null)
             {
                 return NotFound();
@@ -124,7 +121,7 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
-            var empresa = await _context.Empresa
+            Empresa empresa = await _context.Empresa
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (empresa == null)
             {
@@ -139,7 +136,7 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var empresa = await _context.Empresa.FindAsync(id);
+            Empresa empresa = await _context.Empresa.FindAsync(id);
             _context.Empresa.Remove(empresa);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

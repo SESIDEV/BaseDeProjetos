@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Models
 {
@@ -36,8 +34,7 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Ano da prospecção")]
         public virtual int AnoFiscal
         {
-            get
-            { return this.Data.Year; }
+            get => Data.Year;
             set { }
         }
         public virtual StatusProspeccao Status { get; set; }

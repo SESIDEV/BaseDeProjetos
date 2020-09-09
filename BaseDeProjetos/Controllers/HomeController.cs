@@ -1,10 +1,10 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
+﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using BaseDeProjetos.Models;
-using BaseDeProjetos.Data;
+using System;
+using System.Diagnostics;
+using System.Linq;
 
 namespace BaseDeProjetos.Controllers
 {

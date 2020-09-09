@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BaseDeProjetos.Migrations
 {
-    public partial class MySQLBaseline : Migration
+    public partial class MySQL : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
