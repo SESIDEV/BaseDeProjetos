@@ -2,16 +2,7 @@
 @using Microsoft.AspNetCore.Http
 @{
 
-    Casa value;
     ViewData["Title"] = "Adicionar Prospecção";
-    try
-    {
-        value = Enum.Parse<Casa>((String)ViewData["Area"]);
-    }
-    catch (Exception e)
-    {
-        value = Casa.Super;
-    }
 }
 
 <h1>Criar</h1>
@@ -54,7 +45,7 @@
                 <div class="form-group">
                     <label asp-for="LinhaPequisa" class="control-label"></label>
                     <select asp-for="LinhaPequisa" class="form-control" asp-items="Html.GetEnumSelectList<LinhaPesquisa>()"></select>
-                    <span asp-val /Sessidation-for ="LinhaPequisa" class="text-danger"></span>
+                    <span asp-validation-for ="LinhaPequisa" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Contato.Nome" class="control-label"></label>

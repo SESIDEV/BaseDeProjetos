@@ -13,7 +13,7 @@
     "IsDone": false,
     "IsExpanded": false,
     "SubTasks": [],
-    "Status": 0
+    "Status": 2
   },
   {
     "$type": "VSToDoList.Models.Task, VSToDoList",
@@ -21,7 +21,7 @@
     "IsDone": false,
     "IsExpanded": false,
     "SubTasks": [],
-    "Status": 0
+    "Status": 2
   },
   {
     "$type": "VSToDoList.Models.Task, VSToDoList",
@@ -90,6 +90,14 @@
   {
     "$type": "VSToDoList.Models.Task, VSToDoList",
     "Name": "Implementar lógica de não-conversão",
+    "IsDone": false,
+    "IsExpanded": false,
+    "SubTasks": [],
+    "Status": 2
+  },
+  {
+    "$type": "VSToDoList.Models.Task, VSToDoList",
+    "Name": "Accordion da seleção de empresa",
     "IsDone": false,
     "IsExpanded": false,
     "SubTasks": [],

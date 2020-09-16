@@ -220,7 +220,7 @@ namespace BaseDeProjetos.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa")});
+            return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
         }
 
         // GET: FunilDeVendas/Edit/5
@@ -256,6 +256,15 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {
+                    if (_context.Empresa.Where(e => e.Id == prospeccao.Empresa.Id).Count() > 0)
+                    {
+                        prospeccao.Empresa = _context.Empresa.First(e => e.Id == prospeccao.Empresa.Id);
+                    }
+                    else
+                    {
+                        prospeccao.Empresa = new Empresa { Estado = prospeccao.Empresa.Estado, CNPJ = prospeccao.Empresa.CNPJ, Nome = prospeccao.Empresa.Nome, Segmento = prospeccao.Empresa.Segmento };
+                    }
+
                     _context.Update(prospeccao);
                     await _context.SaveChangesAsync();
                 }
@@ -270,7 +279,7 @@ namespace BaseDeProjetos.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa")});
+                return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
             }
             return View(prospeccao);
         }

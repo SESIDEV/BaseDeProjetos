@@ -1,4 +1,5 @@
 ﻿@model BaseDeProjetos.Models.Prospeccao
+@using Microsoft.AspNetCore.Http
 
 @{
     ViewData["Title"] = "Edit";
@@ -8,29 +9,30 @@
 <h4>Prospecção</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <div class="form-group">
-            <button class="col-12 btn btn-primary" data-toggle="collapse" data-target="#existente" aria-expanded="true" aria-controls="existente">
-                A empresa já foi cadastrada
-            </button>
-            <button class="col-12 btn btn-primary" data-toggle="collapse" data-target="#inexistente" aria-expanded="true" aria-controls="inexistente">
-                É o primeiro registro da empresa
-            </button>
-        </div>
-    </div>
-    <div class="col-md-8">
-        <form asp-action="Create">
+    <div class="col-md-12">
+        <form asp-action="Edit" method="post" class="row">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <fieldset>
+            <fieldset class="col-4">
                 <legend> Dados da prospecção </legend>
                 <div class="form-group">
                     <label asp-for="Id" class="control-label"></label>
-                    <input asp-for="Id" class="form-control"  readonly />
+                    <input asp-for="Id" class="form-control" readonly />
                     <span asp-validation-for="Id" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Casa" class="control-label"></label>
-                    <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Casa>()"></select>
+                    @if (!(Context.Session.GetString("_Casa") is null))
+                    {
+                        <select asp-for="Casa" class="form-control" disabled>
+                            @{ var enum_v = (int)Enum.Parse(typeof(Casa), Context.Session.GetString("_Casa"), true);}
+                            <option value="@enum_v">@Context.Session.GetString("_Casa")</option>
+                        </select>
+                    }
+                    else
+                    {
+                        <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Casa>()"></select>
+                    }
+
                     <span asp-validation-for="Casa" class="text-danger"></span>
                 </div>
 
@@ -42,7 +44,7 @@
                 <div class="form-group">
                     <label asp-for="LinhaPequisa" class="control-label"></label>
                     <select asp-for="LinhaPequisa" class="form-control" asp-items="Html.GetEnumSelectList<LinhaPesquisa>()"></select>
-                    <span asp-validation-for="LinhaPequisa" class="text-danger"></span>
+                    <span asp-valdation-for ="LinhaPequisa" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Contato.Nome" class="control-label"></label>
@@ -51,7 +53,7 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Contato.Telefone" class="control-label"></label>
-                    <input asp-for="Contato.Telefone" class="form-control" onkeypress="$(this).mask('(00) 0000-00009')"/>
+                    <input asp-for="Contato.Telefone" class="form-control" onkeypress="$(this).mask('(00) 0000-00009')" />
                     <span asp-validation-for="Contato.Telefone" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -63,7 +65,18 @@
 
 
             <!-- Empresa existente -->
-            <fieldset>
+            <fieldset class="col-4">
+                <div class="col-md-12">
+                    <div class="form-group row">
+                        <button class="col-12 btn btn-primary" data-toggle="collapse" data-target="#existente" aria-expanded="true" aria-controls="existente">
+                            A empresa já foi cadastrada
+                        </button>
+                        <button class="col-12 btn btn-primary" data-toggle="collapse" data-target="#inexistente" aria-expanded="true" aria-controls="inexistente">
+                            É o primeiro registro da empresa
+                        </button>
+                    </div>
+                </div>
+
                 <legend> Informações da Empresa</legend>
 
                 <div class="form-group collapse show" id="existente">
@@ -83,7 +96,7 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="Empresa.CNPJ" class="control-label"></label>
-                        <input asp-for="Empresa.CNPJ" class="form-control"  onkeypress="$(this).mask('00.000.000/0000-00', {reverse: true})"/>
+                        <input asp-for="Empresa.CNPJ" class="form-control" onkeypress="$(this).mask('00.000.000/0000-00', {reverse: true})" />
                         <span asp-validation-for="Empresa.CNPJ" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -99,14 +112,42 @@
                 </div>
             </fieldset>
 
+            <fieldset class="col-4">
+                <legend>Informações do Contato Inicial</legend>
+                <div class="form-group">
+                    <label asp-for="Status[0].Data" class="control-label"></label>
+                    <input class="form-control" type="date" asp-for="Status[0].Data" readonly/>
+                    <span asp-validation-for="Status[0].Data" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Status[0].OrigemID" class="control-label"></label>
+                    <input class="form-control" asp-for="Status[0].OrigemID"  disabled />
+                    <span asp-validation-for="Status[0].OrigemID" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Status[0].Anotacoes" class="control-label"></label>
+                    <textarea class="form-control" asp-for=" Status[0].Anotacoes" rows="3" readonly></textarea>
+                    <span asp-validation-for="Status[0].Anotacoes" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Status[0].Status" class="control-label"></label>
+                    <select asp-for="Status[0].Status" class="form-control" disabled>
+                        <option value="@StatusProspeccao.ContatoInicial"> @StatusProspeccao.ContatoInicial</option>
+                    </select>
+                    <span asp-validation-for="Status[0].Status" class="text-danger"></span>
+                </div>
+
+            </fieldset>
+
+
             <div class="form-group">
-                <input type="submit" value="Incluir" class="btn btn-primary" />
+                <input type="submit" value="Salvar" class="btn btn-primary" />
             </div>
 
 
         </form>
     </div>
-    </div>
+</div>
 <div>
     <a asp-action="Index">Voltar</a>
 </div>
