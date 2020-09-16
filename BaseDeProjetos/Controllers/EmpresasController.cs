@@ -2,6 +2,7 @@
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -145,6 +146,28 @@ namespace BaseDeProjetos.Controllers
         private bool EmpresaExists(int id)
         {
             return _context.Empresa.Any(e => e.Id == id);
+        }
+
+
+        public async Task<IActionResult> RetornarKPIsEmbrapii()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IActionResult> RetornarKPIsFraunhofer()
+        {
+            throw new NotImplementedException();
+        }
+
+        
+        public async Task<IActionResult> IncluirCronograma()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IActionResult> AtualizarCronograma()
+        {
+            throw new NotImplementedException();
         }
     }
 }

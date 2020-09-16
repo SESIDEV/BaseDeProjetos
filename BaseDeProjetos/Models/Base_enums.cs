@@ -72,7 +72,11 @@ namespace BaseDeProjetos.Models
         AgenciaFomento,
         [Display(Name = "ANP/ANEEL")]
         ANP,
-        Parceiro
+        Parceiro,
+        [Display(Name ="Projeto Push")]
+        Push,
+        [Display(Name = "A definir")]
+        Indefinida
     }
 
     public enum TipoInovacao
@@ -144,7 +148,9 @@ namespace BaseDeProjetos.Models
         [Display(Name = "ISI - Inspeção & Integridade")]
         ISIII,
         [Display(Name = "CIS - Higiene Ocupacional")]
-        CISHO
+        CISHO,
+        [Display(Name ="Supervisão")]
+        Super
     }
 
 }

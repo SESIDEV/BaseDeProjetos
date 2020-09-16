@@ -220,12 +220,13 @@ namespace BaseDeProjetos.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(prospeccao);
+            return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa")});
         }
 
         // GET: FunilDeVendas/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
+            ViewData["Empresas"] = new SelectList(_context.Empresa.ToList(), "Id", "Nome");
             if (id == null)
             {
                 return NotFound();
@@ -244,7 +245,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,TipoContratacao,LinhaPequisa")] Prospeccao prospeccao)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,TipoContratacao,LinhaPequisa, Status, Empresa, Contato, Casa")] Prospeccao prospeccao)
         {
             if (id != prospeccao.Id)
             {
@@ -269,7 +270,7 @@ namespace BaseDeProjetos.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa")});
             }
             return View(prospeccao);
         }
