@@ -265,6 +265,9 @@ namespace BaseDeProjetos.Controllers
                         prospeccao.Empresa = new Empresa { Estado = prospeccao.Empresa.Estado, CNPJ = prospeccao.Empresa.CNPJ, Nome = prospeccao.Empresa.Nome, Segmento = prospeccao.Empresa.Segmento };
                     }
 
+                    //Status é somente leitura
+                    prospeccao.Status[0] = null;
+
                     _context.Update(prospeccao);
                     await _context.SaveChangesAsync();
                 }
