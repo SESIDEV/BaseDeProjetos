@@ -38,6 +38,7 @@ namespace BaseDeProjetos.Models
             set { }
         }
         public virtual StatusProspeccao Status { get; set; }
+        public virtual MotivosNaoConversao MotivoNaoConversao { get; set; }
         public DateTime Vencimento { get; set; } = DateTime.Now.AddDays(14);
         public bool isTratado { get; set; } = false;
     }
