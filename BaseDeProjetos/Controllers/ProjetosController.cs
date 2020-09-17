@@ -97,7 +97,7 @@ namespace BaseDeProjetos.Controllers
             {
                 _context.Add(projeto);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
             }
             return View(projeto);
         }
@@ -148,7 +148,7 @@ namespace BaseDeProjetos.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
             }
             return View(projeto);
         }
