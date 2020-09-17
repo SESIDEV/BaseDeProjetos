@@ -65,7 +65,14 @@
             break;
     }
 
-    ticket_medio = (Decimal)(ViewBag.n_revenue / ViewBag.n_projs);
+    try
+    {
+        ticket_medio = (Decimal)(ViewBag.n_revenue / ViewBag.n_projs);
+    }
+    catch(Exception e)
+    {
+
+    }
 
     decimal sti_cost_cover = sti_revenue / (sti_cost + 0.001M);
 
