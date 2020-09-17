@@ -25,8 +25,8 @@ namespace BaseDeProjetos
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(
-              //      Configuration.GetConnectionString("Database")));
-            Configuration.GetConnectionString("DefaultConnection")).UseLazyLoadingProxies());
+                    Configuration.GetConnectionString("Database")).UseLazyLoadingProxies());
+            //Configuration.GetConnectionString("DefaultConnection")).UseLazyLoadingProxies());
             services.AddDefaultIdentity<Usuario>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddDistributedMemoryCache();
