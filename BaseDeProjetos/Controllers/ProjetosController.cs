@@ -46,6 +46,7 @@ namespace BaseDeProjetos.Controllers
                     casa = HttpContext.Session.GetString("_Casa");
                 }
                 else { return View(await _context.Projeto.ToListAsync()); }
+
             }
             else if (Enum.IsDefined(typeof(Casa), casa))
             {
@@ -56,6 +57,8 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
+            ViewBag.n_projs = _context.Projeto.Where(p => p.Casa == Enum.Parse<Casa>(casa)).Count();
+            ViewBag.n_revenue = _context.Projeto.Where(p => p.Casa == Enum.Parse<Casa>(casa)).Select(p=>p.ValorAporteRecursos).Sum();
             ViewData["Area"] = casa;
             Casa enum_casa = (Casa)Enum.Parse(typeof(Casa), casa);
             List<Projeto> lista = await _context.Projeto.Where(p => p.Casa.Equals(enum_casa)).ToListAsync();
