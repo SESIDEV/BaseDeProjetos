@@ -29,7 +29,7 @@
     "IsDone": false,
     "IsExpanded": false,
     "SubTasks": [],
-    "Status": 0
+    "Status": 2
   },
   {
     "$type": "VSToDoList.Models.Task, VSToDoList",
@@ -37,7 +37,7 @@
     "IsDone": false,
     "IsExpanded": false,
     "SubTasks": [],
-    "Status": 0
+    "Status": 2
   },
   {
     "$type": "VSToDoList.Models.Task, VSToDoList",
@@ -57,11 +57,11 @@
   },
   {
     "$type": "VSToDoList.Models.Task, VSToDoList",
-    "Name": "Horizontalização da inclusão de empresas",
+    "Name": "Horizontalização da inclusão de projetos",
     "IsDone": false,
     "IsExpanded": false,
     "SubTasks": [],
-    "Status": 0
+    "Status": 2
   },
   {
     "$type": "VSToDoList.Models.Task, VSToDoList",

@@ -45,7 +45,7 @@ namespace BaseDeProjetos.Models
         public virtual TipoInovacao Inovacao { get; set; }
         [Display(AutoGenerateFilter = true, Name = "Status do Projeto")]
         public virtual StatusProjeto status { get; set; }
-        [Display(AutoGenerateFilter = true, Name = "Duração do Projeto")]
+        [Display(AutoGenerateFilter = true, Name = "Duração do Projeto em meses")]
         public virtual int DuracaoProjetoEmMeses { get; set; }
         public virtual double ValorTotalProjeto { get; set; }
         public virtual double ValorAporteRecursos { get; set; }

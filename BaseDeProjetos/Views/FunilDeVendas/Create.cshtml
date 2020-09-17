@@ -24,9 +24,9 @@
                     <label asp-for="Casa" class="control-label"></label>
                     @if (!(Context.Session.GetString("_Casa") is null))
                     {
-                        <select asp-for="Casa" class="form-control" disabled>
+                        <select asp-for="Casa" class="form-control">
                             @{ var enum_v = (int)Enum.Parse(typeof(Casa), Context.Session.GetString("_Casa"), true);}
-                            <option value="@enum_v">@Context.Session.GetString("_Casa")</option>
+                            <option value="@enum_v" selected="selected">@Context.Session.GetString("_Casa")</option>
                         </select>
                     }
                     else
