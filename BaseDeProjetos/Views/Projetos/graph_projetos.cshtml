@@ -65,6 +65,8 @@
             break;
     }
 
+    ticket_medio = (Decimal)(ViewBag.n_revenue / ViewBag.n_projs);
+
     decimal sti_cost_cover = sti_revenue / (sti_cost + 0.001M);
 
 
@@ -110,7 +112,7 @@
                     <div class="card-header"> Indicadores do @ViewBag.Area </div>
                     <div class="card-body">
                         Total de empresas com projetos
-                        <h4> @n_empresas </h4>
+                        <h4> @ViewBag.n_empresas </h4>
                     </div>
                 </div>
             </div>
@@ -119,7 +121,7 @@
                     <div class="card-header"> Indicadores do @ViewBag.Area </div>
                     <div class="card-body">
                         Número de projetos em andamento
-                        <h4> @n_projetos </h4>
+                        <h4> @ViewBag.n_projs </h4>
                     </div>
                 </div>
             </div>
@@ -128,7 +130,7 @@
                     <div class="card-header"> Indicadores do @ViewBag.Area </div>
                     <div class="card-body">
                         Carteira de projetos do @ViewBag.Area no período
-                        <h4>@carteira</h4>
+                        <h4>@ViewBag.n_empresas</h4>
 
                     </div>
                 </div>

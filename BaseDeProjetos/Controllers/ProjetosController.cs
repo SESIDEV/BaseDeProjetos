@@ -57,7 +57,8 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
-            ViewBag.n_projs = _context.Projeto.Where(p => p.Casa == Enum.Parse<Casa>(casa)).Count();
+            ViewBag.n_projs = _context.Projeto.Where(p => p.Casa == Enum.Parse<Casa>(casa) && p.status == StatusProjeto.EmExecucao).Count();
+            ViewBag.n_empresas = _context.Projeto.Where(p => p.Casa == Enum.Parse<Casa>(casa) && (p.status == StatusProjeto.EmExecucao || p.status==StatusProjeto.Contratado)).Count();
             ViewBag.n_revenue = _context.Projeto.Where(p => p.Casa == Enum.Parse<Casa>(casa)).Select(p=>p.ValorAporteRecursos).Sum();
             ViewData["Area"] = casa;
             Casa enum_casa = (Casa)Enum.Parse(typeof(Casa), casa);
@@ -126,7 +127,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Casa,NomeProjeto,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos")] Projeto projeto)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Casa,Empresa,NomeProjeto,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos")] Projeto projeto)
         {
             if (id != projeto.Id)
             {
