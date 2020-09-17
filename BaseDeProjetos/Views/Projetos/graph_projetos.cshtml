@@ -1,8 +1,5 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Projeto>
 @{
-    int n_empresas = 0;
-    int n_projetos = 0;
-    decimal carteira = 0;
     decimal receita = 0;
     decimal ticket_medio = 0M;
     decimal receita_pesquisador = 0M;
@@ -18,9 +15,6 @@
     switch (ViewBag.Area)
     {
         case "ISIQV":
-            n_empresas = 12;
-            n_projetos = 19;
-            carteira = 12M;
             receita = 3M;
             ticket_medio = 219721.95M;
             receita_pesquisador = 417471.70M;
@@ -33,9 +27,6 @@
             empresas_fora = 5;
             break;
         case "ISIII":
-            n_empresas = 5;
-            n_projetos = 6;
-            carteira = 5M;
             receita = 290523M;
             ticket_medio = 47420.5M;
             receita_pesquisador = 72630.75M;
@@ -49,9 +40,6 @@
 
             break;
         case "CISHO":
-            n_empresas = 4;
-            n_projetos = 4;
-            carteira = 4M;
             receita = 257302M;
             ticket_medio = 64325M;
             receita_pesquisador = 128651M;
@@ -67,7 +55,7 @@
 
     try
     {
-        ticket_medio = (Decimal)(ViewBag.n_revenue / ViewBag.n_projs);
+        ticket_medio = (Decimal)(ViewBag.n_revenue / ViewBag.n_empresas);
     }
     catch(Exception e)
     {
@@ -106,7 +94,7 @@
     int par_HO = Model.Where(p => p.Casa == Casa.CISHO && p.FonteFomento == TipoContratacao.Parceiro).ToList().Count;
 
 }
-
+@ViewBag.n_revenue
 <div class="row">
     <figure class="col-12 highcharts-figure">
         <div id="projetos"></div>
