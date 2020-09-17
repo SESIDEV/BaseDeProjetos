@@ -41,11 +41,19 @@
   },
   {
     "$type": "VSToDoList.Models.Task, VSToDoList",
-    "Name": "Fazer formulários de cronogramas",
+    "Name": "Horizontalização da inclusão de projetos",
     "IsDone": false,
     "IsExpanded": false,
     "SubTasks": [],
-    "Status": 0
+    "Status": 2
+  },
+  {
+    "$type": "VSToDoList.Models.Task, VSToDoList",
+    "Name": "Implementar lógica de não-conversão",
+    "IsDone": false,
+    "IsExpanded": false,
+    "SubTasks": [],
+    "Status": 2
   },
   {
     "$type": "VSToDoList.Models.Task, VSToDoList",
@@ -57,18 +65,35 @@
   },
   {
     "$type": "VSToDoList.Models.Task, VSToDoList",
-    "Name": "Horizontalização da inclusão de projetos",
-    "IsDone": false,
-    "IsExpanded": false,
-    "SubTasks": [],
-    "Status": 2
-  },
-  {
-    "$type": "VSToDoList.Models.Task, VSToDoList",
     "Name": "Implementar funções KPI fraunhofer",
     "IsDone": false,
-    "IsExpanded": false,
-    "SubTasks": [],
+    "IsExpanded": true,
+    "SubTasks": [
+      {
+        "$type": "VSToDoList.Models.Task, VSToDoList",
+        "Name": "Importar dados de empresas para o KPI",
+        "IsDone": false,
+        "IsExpanded": true,
+        "SubTasks": [],
+        "Status": 0
+      },
+      {
+        "$type": "VSToDoList.Models.Task, VSToDoList",
+        "Name": "Importar número de projetos ativos",
+        "IsDone": false,
+        "IsExpanded": true,
+        "SubTasks": [],
+        "Status": 0
+      },
+      {
+        "$type": "VSToDoList.Models.Task, VSToDoList",
+        "Name": "Importar valores de projeto para cálculo",
+        "IsDone": false,
+        "IsExpanded": false,
+        "SubTasks": [],
+        "Status": 0
+      }
+    ],
     "Status": 0
   },
   {
@@ -81,7 +106,7 @@
   },
   {
     "$type": "VSToDoList.Models.Task, VSToDoList",
-    "Name": "Alimentar KPIs automaticamente",
+    "Name": "Fazer formulários de cronogramas",
     "IsDone": false,
     "IsExpanded": false,
     "SubTasks": [],
@@ -89,11 +114,11 @@
   },
   {
     "$type": "VSToDoList.Models.Task, VSToDoList",
-    "Name": "Implementar lógica de não-conversão",
+    "Name": "Alimentar KPIs automaticamente",
     "IsDone": false,
     "IsExpanded": false,
     "SubTasks": [],
-    "Status": 2
+    "Status": 0
   },
   {
     "$type": "VSToDoList.Models.Task, VSToDoList",

@@ -23,10 +23,18 @@ namespace BaseDeProjetos
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseMySql(
-                  //  Configuration.GetConnectionString("Database")).UseLazyLoadingProxies());
-            Configuration.GetConnectionString("DefaultConnection")).UseLazyLoadingProxies());
+            if (System.Environment.GetEnvironmentVariable("Ambiente") == "Web")
+            {
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseMySql(
+                  Configuration.GetConnectionString("Database")).UseLazyLoadingProxies());
+            }
+            else
+            {
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseMySql(
+                Configuration.GetConnectionString("DefaultConnection")).UseLazyLoadingProxies());
+            }
             services.AddDefaultIdentity<Usuario>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddDistributedMemoryCache();
