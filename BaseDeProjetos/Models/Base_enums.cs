@@ -52,12 +52,13 @@ namespace BaseDeProjetos.Models
 
     public enum StatusProjeto
     {
+        [Display(Name ="Contratrado/Em planejamento")]
         Contratado,
         [Display(Name = "Em execução")]
         EmExecucao,
         Concluido,
+        [Display(Name ="Cancelado/Suspenso")]
         Cancelado,
-        Suspenso
     }
 
     public enum TipoContratacao

@@ -21,8 +21,7 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Casa" class="control-label"></label>
-                                      else
-                        <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Casa>()"></select>
+                    <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Casa>()"></select>
                     <span asp-validation-for="Casa" class="text-danger"></span>
                 </div>
 
@@ -69,28 +68,30 @@
                 <legend>Dados contábeis do projeto</legend>
                 <div class="form-group">
                     <label asp-for="Estado" class="control-label"></label>
-                    <select asp-for="FonteFomento" class="form-control"  asp-items="Html.GetEnumSelectList<Estado>()"></select>
+                    <select asp-for="Estado" class="form-control" asp-items="Html.GetEnumSelectList<Estado>()"></select>
                     <span asp-validation-for="Estado" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="FonteFomento" class="control-label"></label>
-                    <select asp-for="FonteFomento" class="form-control"  asp-items="Html.GetEnumSelectList<TipoContratacao>()"></select>
+                    <select asp-for="FonteFomento" class="form-control" asp-items="Html.GetEnumSelectList<TipoContratacao>()">
+                        <option selected="selected" value="">Selecione uma opção</option>
+                    </select>
                     <span asp-validation-for="FonteFomento" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="ValorTotalProjeto" class="control-label"></label> (R$)
-                    <input asp-for="ValorTotalProjeto" class="form-control" placeholder="3,00"/>
+                    <input asp-for="ValorTotalProjeto" class="form-control" placeholder="3,00" />
                     <span asp-validation-for="ValorTotalProjeto" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="ValorAporteRecursos" class="control-label"></label> (R$)
-                    <input asp-for="ValorAporteRecursos" class="form-control" placeholder="3,00"/>
+                    <input asp-for="ValorAporteRecursos" class="form-control" placeholder="3,00" />
                     <span asp-validation-for="ValorAporteRecursos" class="text-danger"></span>
                 </div>
-                           </fieldset>
-         <div class="form-group col-12">
-                    <input type="submit" value="Editar" class="btn btn-primary" />
-                </div>
+            </fieldset>
+            <div class="form-group col-12">
+                <input type="submit" value="Editar" class="btn btn-primary" />
+            </div>
 
         </form>
     </div>
