@@ -56,6 +56,8 @@
     try
     {
         ticket_medio = (Decimal)(ViewBag.n_revenue / ViewBag.n_empresas);
+        sti_revenue = (Decimal)ViewBag.n_revenue;
+        receita_pesquisador = (Decimal)(ViewBag.n_revenue / ViewBag.n_pesquisadores);
     }
     catch(Exception e)
     {
