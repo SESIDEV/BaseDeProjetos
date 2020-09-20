@@ -1,8 +1,5 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Projeto>
 @{
-    int n_empresas = 0;
-    int n_projetos = 0;
-    decimal carteira = 0;
     decimal receita = 0;
     decimal ticket_medio = 0M;
     decimal receita_pesquisador = 0M;
@@ -18,9 +15,6 @@
     switch (ViewBag.Area)
     {
         case "ISIQV":
-            n_empresas = 12;
-            n_projetos = 19;
-            carteira = 12M;
             receita = 3M;
             ticket_medio = 219721.95M;
             receita_pesquisador = 417471.70M;
@@ -33,9 +27,6 @@
             empresas_fora = 5;
             break;
         case "ISIII":
-            n_empresas = 5;
-            n_projetos = 6;
-            carteira = 5M;
             receita = 290523M;
             ticket_medio = 47420.5M;
             receita_pesquisador = 72630.75M;
@@ -49,9 +40,6 @@
 
             break;
         case "CISHO":
-            n_empresas = 4;
-            n_projetos = 4;
-            carteira = 4M;
             receita = 257302M;
             ticket_medio = 64325M;
             receita_pesquisador = 128651M;
@@ -63,6 +51,17 @@
             share_sis = 1;
             empresas_fora = 3;
             break;
+    }
+
+    try
+    {
+        ticket_medio = (Decimal)(ViewBag.n_revenue / ViewBag.n_empresas);
+        sti_revenue = (Decimal)ViewBag.n_revenue;
+        receita_pesquisador = (Decimal)(ViewBag.n_revenue / ViewBag.n_pesquisadores);
+    }
+    catch(Exception e)
+    {
+
     }
 
     decimal sti_cost_cover = sti_revenue / (sti_cost + 0.001M);
@@ -97,7 +96,6 @@
     int par_HO = Model.Where(p => p.Casa == Casa.CISHO && p.FonteFomento == TipoContratacao.Parceiro).ToList().Count;
 
 }
-
 <div class="row">
     <figure class="col-12 highcharts-figure">
         <div id="projetos"></div>
@@ -110,7 +108,7 @@
                     <div class="card-header"> Indicadores do @ViewBag.Area </div>
                     <div class="card-body">
                         Total de empresas com projetos
-                        <h4> @n_empresas </h4>
+                        <h4> @ViewBag.n_empresas </h4>
                     </div>
                 </div>
             </div>
@@ -119,7 +117,7 @@
                     <div class="card-header"> Indicadores do @ViewBag.Area </div>
                     <div class="card-body">
                         Número de projetos em andamento
-                        <h4> @n_projetos </h4>
+                        <h4> @ViewBag.n_projs </h4>
                     </div>
                 </div>
             </div>
@@ -128,7 +126,7 @@
                     <div class="card-header"> Indicadores do @ViewBag.Area </div>
                     <div class="card-body">
                         Carteira de projetos do @ViewBag.Area no período
-                        <h4>@carteira.ToString("C2")</h4>
+                        <h4>@ViewBag.n_empresas</h4>
 
                     </div>
                 </div>

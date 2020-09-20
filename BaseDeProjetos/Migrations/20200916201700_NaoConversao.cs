@@ -1,14 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace BaseDeProjetos.Data.Migrations
+namespace BaseDeProjetos.Migrations
 {
-    public partial class Projetos2 : Migration
+    public partial class NaoConversao : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "Casa",
-                table: "Projeto",
+                name: "MotivoNaoConversao",
+                table: "FollowUp",
                 nullable: false,
                 defaultValue: 0);
         }
@@ -16,8 +16,8 @@ namespace BaseDeProjetos.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Casa",
-                table: "Projeto");
+                name: "MotivoNaoConversao",
+                table: "FollowUp");
         }
     }
 }

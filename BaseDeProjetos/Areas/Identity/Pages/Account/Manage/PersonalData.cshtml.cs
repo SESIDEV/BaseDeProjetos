@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
-using BaseDeProjetos.Models;
+﻿using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Areas.Identity.Pages.Account.Manage
 {
@@ -22,7 +22,7 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnGet()
         {
-            var user = await _userManager.GetUserAsync(User);
+            Usuario user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");

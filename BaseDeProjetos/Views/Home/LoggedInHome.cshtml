@@ -2,6 +2,7 @@
 @model BaseDeProjetos.Views.Home.LoggedInHomeModel
 @{
     decimal receita = 4722542.00M;
+    //decimal receita = (decimal)ViewBag.receita_isiqv + (decimal)ViewBag.receita_isiii + (decimal)ViewBag.receita_cisho;
     decimal investimento = 3631437.00M;
     decimal despesas = 2558188M;
     decimal sustentatiblidade = receita / despesas;
@@ -25,136 +26,8 @@
     }
 </style>
 <div class="row">
-    <div class="col-md-2">
-        <div class="row">
-            <button class="col-12 card" data-toggle="collapse" data-target="#collapse_ISIQV" aria-expanded="true" aria-controls="collapse_ISIQV">
-                <!--
-                <img src="https://jornal.usp.br/wp-content/uploads/20170704_00_quimica_verde.jpg" alt="qv" class="card-img-top" />
-                    -->
-                <div class="card-body">
-                    <h5 class="text-center card-text text-info">ISI-QV</h5>
-                </div>
-            </button>
-            <div class="col-12 collapse" id="collapse_ISIQV">
-                <ul class="list-group-flush">
-                    <li class="list-group-item">
-                        <a asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="ISIQV">
-                            Funil de Vendas
-                        </a>
-                    </li>
-                    <li class="list-group-item">
-                        <a asp-action="Index" asp-controller="Projetos" asp-route-casa="ISIQV">
-                            Base de Projetos
-                        </a>
-                    </li>
-                    <li class="list-group-item">
-                        <a href="http://gestao-isi-qv.herokuapp.com/add_atividade#app-secondary">
-                            Capacidade Produtiva
-                        </a>
-                    </li>
 
-                    <li class="list-group-item disabled">
-                        Gestão do conhecimento
-                        <span class="badge badge-warning badge-pill">!</span>
-                    </li>
-                    <li class="list-group-item disabled">
-                        Satisfação do Cliente
-                        <span class="badge badge-warning badge-pill">!</span>
-                    </li>
-                    <li class="list-group-item disabled">
-                        Segurança e Qualidade
-                        <span class="badge badge-warning badge-pill">!</span>
-                    </li>
-                </ul>
-            </div>
-
-        </div>
-        <div class="row">
-            <button class="col-12 card" data-toggle="collapse" data-target="#collapse_ISIII" aria-expanded="true" aria-controls="collapse_ISIII">
-                <!--
-                                <img src="https://www.klium.com/blog/wp-content/uploads/2020/01/shutterstock_538992253.jpg" alt="qv" class="card-img-top" />
-                -->
-                <div class="card-body">
-                    <h5 class="text-center card-title text-info">ISI-II</h5>
-                </div>
-            </button>
-            <div class="col-12 collapse" id="collapse_ISIII">
-                <ul class="list-group-flush">
-                    <li class="list-group-item">
-                        <a asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="ISIII">
-                            Funil de Vendas
-                        </a>
-                    </li>
-                    <li class="list-group-item">
-                        <a asp-action="Index" asp-controller="Projetos" asp-route-casa="ISIII">
-                            Base de Projetos
-                        </a>
-                    </li>
-                    <li class="list-group-item">
-                        <a href="http://gestao-isi-qv.herokuapp.com/add_atividade#app-secondary">
-                            Capacidade Produtiva
-                        </a>
-                    </li>
-
-                    <li class="list-group-item disabled">
-                        Gestão do conhecimento
-                        <span class="badge badge-warning badge-pill">!</span>
-                    </li>
-                    <li class="list-group-item disabled">
-                        Satisfação do Cliente
-                        <span class="badge badge-warning badge-pill">!</span>
-                    </li>
-                    <li class="list-group-item disabled">
-                        Segurança e Qualidade
-                        <span class="badge badge-warning badge-pill">!</span>
-                    </li>
-                </ul>
-            </div>
-
-        </div>
-        <div class="row">
-            <button class="col-12 card" data-toggle="collapse" data-target="#collapse_CISHO" aria-expanded="true" aria-controls="collapse_CISHO">
-                <!--
-                                <img src="data:image/jpeg;base64,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" alt="qv" class="card-img-top" />
-                -->
-                <div class=" card-body">
-                    <h5 class="text-center text-info">CIS-HO</h5>
-                </div>
-            </button>
-            <div class="col-12 collapse" id="collapse_CISHO">
-                <ul class="list-group-flush">
-                    <li class="list-group-item">
-                        <a asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="CISHO">
-                            Funil de Vendas
-                        </a>
-                    </li>
-                    <li class="list-group-item">
-                        <a asp-action="Index" asp-controller="Projetos" asp-route-casa="CISHO">
-                            Base de Projetos
-                        </a>
-                    </li>
-                    <li class="list-group-item">
-                        <a href="http://gestao-isi-qv.herokuapp.com/add_atividade#app-secondary">
-                            Capacidade Produtiva
-                        </a>
-                    </li>
-
-                    <li class="list-group-item disabled">
-                        Gestão do conhecimento
-                        <span class="badge badge-warning badge-pill">!</span>
-                    </li>
-                    <li class="list-group-item disabled">
-                        Satisfação do Cliente
-                        <span class="badge badge-warning badge-pill">!</span>
-                    </li>
-                    <li class="list-group-item disabled">
-                        Segurança e Qualidade
-                        <span class="badge badge-warning badge-pill">!</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
+    <partial name="Menu" view-data="@ViewData" />
     <div class="col-md-10">
         <div class="card">
             <div class="card-header text-center"> <h5>Bem vindo ao sistema de Gestão de Inovação - SGI</h5></div>
@@ -174,37 +47,83 @@
                             <a href="#" class="badge badge-danger">@despesas.ToString("C2")</a>
                         </li>
                     </ul>
-                    <div class="col card">
-                        <div class="card-body">
-                            <center>
-                                <span class="text-uppercase">PROJETOS</span>
-                                <hr />
-                                <div class="card-text">
+                    <div class="col row">
+                        <div class="col-md-4 card">
+                            <div class="card-body">
+                                <center>
+                                    <span class="text-uppercase">PROJETOS</span>
+                                    <hr />
+                                    <div class="card-text">
 
-                                    <h2>@ViewBag.n_proj </!h2>
-                                    projetos ativos
+                                        <h2>
+                                            @ViewBag.n_proj </!h2>
+                                            projetos ativos
 
 
-                                </div>
-                            </center>
+                                    </div>
+                                </center>
 
+                            </div>
                         </div>
-                    </div>
-                    <div class="col card">
-                        <div class="card-body">
-                            <center>
-                                <span class="text-uppercase">funil de vendas</span>
-                                <hr />
-                                <div class="card-text">
+                        <div class="col-md-4 card">
+                            <div class="card-body">
+                                <center>
+                                    <span class="text-uppercase">Empresas</span>
+                                    <hr />
+                                    <div class="card-text">
 
-                                    <!--h2>@ViewBag.n_prosp </!h2-->
-                                    <h2>43 </h2>prospeccões ativas
+                                        <h2>@ViewBag.n_empresas </h2>
+                                        empresas com relacionamento conosco
 
-                                </div>
-                            </center>
+                                    </div>
+                                </center>
+                            </div>
                         </div>
-                    </div>
 
+                        <div class="col-md-4 card">
+                            <div class="card-body">
+                                <center>
+                                    <span class="text-uppercase">funil de vendas</span>
+                                    <hr />
+                                    <div class="card-text">
+
+                                        <h2>@ViewBag.n_prosp </h2>
+                                        prospecções ativas
+
+                                    </div>
+                                </center>
+                            </div>
+                        </div>
+                        <div class="col-md-4 card">
+                            <div class="card-body">
+                                <center>
+                                    <span class="text-uppercase">Equipe</span>
+                                    <hr />
+                                    <div class="card-text">
+
+                                        <h2>@ViewBag.n_prosp </h2>
+                                        colaboradores
+
+                                    </div>
+                                </center>
+                            </div>
+                        </div>
+                        <div class="col-md-4 card">
+                            <div class="card-body">
+                                <center>
+                                    <span class="text-uppercase">Satisfação do cliente</span>
+                                    <hr />
+                                    <div class="card-text">
+
+                                        <h2>@ViewBag.satisfacao.ToString("P1") </h2>
+
+
+                                    </div>
+                                </center>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
                 <div class="col-4 row">
                     <div id="sustentabilidade" class="jumbotron col-12">

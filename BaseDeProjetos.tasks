@@ -1,0 +1,131 @@
+[
+  {
+    "$type": "VSToDoList.Models.Task, VSToDoList",
+    "Name": "Seleção automática de casa",
+    "IsDone": false,
+    "IsExpanded": true,
+    "SubTasks": [],
+    "Status": 2
+  },
+  {
+    "$type": "VSToDoList.Models.Task, VSToDoList",
+    "Name": "Horizontalização do funil de vendas",
+    "IsDone": false,
+    "IsExpanded": false,
+    "SubTasks": [],
+    "Status": 2
+  },
+  {
+    "$type": "VSToDoList.Models.Task, VSToDoList",
+    "Name": "Repetir formulário (preenchido) para edit",
+    "IsDone": false,
+    "IsExpanded": false,
+    "SubTasks": [],
+    "Status": 2
+  },
+  {
+    "$type": "VSToDoList.Models.Task, VSToDoList",
+    "Name": "Repetir formulário (preenchido) para details",
+    "IsDone": false,
+    "IsExpanded": false,
+    "SubTasks": [],
+    "Status": 2
+  },
+  {
+    "$type": "VSToDoList.Models.Task, VSToDoList",
+    "Name": "Puxar lista de followups no details",
+    "IsDone": false,
+    "IsExpanded": false,
+    "SubTasks": [],
+    "Status": 2
+  },
+  {
+    "$type": "VSToDoList.Models.Task, VSToDoList",
+    "Name": "Horizontalização da inclusão de projetos",
+    "IsDone": false,
+    "IsExpanded": false,
+    "SubTasks": [],
+    "Status": 2
+  },
+  {
+    "$type": "VSToDoList.Models.Task, VSToDoList",
+    "Name": "Implementar lógica de não-conversão",
+    "IsDone": false,
+    "IsExpanded": false,
+    "SubTasks": [],
+    "Status": 2
+  },
+  {
+    "$type": "VSToDoList.Models.Task, VSToDoList",
+    "Name": "Fazer formulários de acompanhamento",
+    "IsDone": false,
+    "IsExpanded": false,
+    "SubTasks": [],
+    "Status": 0
+  },
+  {
+    "$type": "VSToDoList.Models.Task, VSToDoList",
+    "Name": "Implementar funções KPI fraunhofer",
+    "IsDone": false,
+    "IsExpanded": true,
+    "SubTasks": [
+      {
+        "$type": "VSToDoList.Models.Task, VSToDoList",
+        "Name": "Importar dados de empresas para o KPI",
+        "IsDone": false,
+        "IsExpanded": true,
+        "SubTasks": [],
+        "Status": 0
+      },
+      {
+        "$type": "VSToDoList.Models.Task, VSToDoList",
+        "Name": "Importar número de projetos ativos",
+        "IsDone": false,
+        "IsExpanded": true,
+        "SubTasks": [],
+        "Status": 0
+      },
+      {
+        "$type": "VSToDoList.Models.Task, VSToDoList",
+        "Name": "Importar valores de projeto para cálculo",
+        "IsDone": false,
+        "IsExpanded": false,
+        "SubTasks": [],
+        "Status": 0
+      }
+    ],
+    "Status": 0
+  },
+  {
+    "$type": "VSToDoList.Models.Task, VSToDoList",
+    "Name": "Implementar funções KPI Embrapii",
+    "IsDone": false,
+    "IsExpanded": false,
+    "SubTasks": [],
+    "Status": 0
+  },
+  {
+    "$type": "VSToDoList.Models.Task, VSToDoList",
+    "Name": "Fazer formulários de cronogramas",
+    "IsDone": false,
+    "IsExpanded": false,
+    "SubTasks": [],
+    "Status": 0
+  },
+  {
+    "$type": "VSToDoList.Models.Task, VSToDoList",
+    "Name": "Alimentar KPIs automaticamente",
+    "IsDone": false,
+    "IsExpanded": false,
+    "SubTasks": [],
+    "Status": 0
+  },
+  {
+    "$type": "VSToDoList.Models.Task, VSToDoList",
+    "Name": "Accordion da seleção de empresa",
+    "IsDone": false,
+    "IsExpanded": false,
+    "SubTasks": [],
+    "Status": 0
+  }
+]

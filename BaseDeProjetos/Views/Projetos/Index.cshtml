@@ -6,9 +6,9 @@
 
 <div class="row card">
     <div class=" col-12 card-body">
-    <h1 class="card-title">Projetos - @ViewData["Area"]</h1>
+        <h1 class="card-title">Projetos - @ViewData["Area"]</h1>
         <div class="col-12 card-img">
-            <partial name="graph_projetos" view-data="@ViewData"  model="@Model"/>
+            <partial name="graph_projetos" view-data="@ViewData" model="@Model" />
         </div>
         <hr />
         <p>
@@ -18,9 +18,13 @@
         </p>
         <hr />
 
-            <table class="table card-text">
+        <table class="table card-text">
             <thead>
                 <tr>
+<th>
+                        @Html.DisplayNameFor(model => model.Empresa.Nome)
+                    </th>
+
                     <th>
                         @Html.DisplayNameFor(model => model.NomeProjeto)
                     </th>
@@ -42,13 +46,15 @@
                     <th>
                         @Html.DisplayNameFor(model => model.status)
                     </th>
-                    <th></th>
-                </tr>
+                                    </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
                     <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Empresa.Nome)
+                        </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.NomeProjeto)
                         </td>
@@ -80,4 +86,18 @@
             </tbody>
         </table>
     </div>
+</div>
+<div class="card card-body">
+    <h5 class="card-title">Carregar lista de Projetos </h5>
+    <form class="card-text" enctype="multipart/form-data" action="Projetos/CarregarProjetos" method="POST">
+        <div>
+            <span>
+                <label>Upload de arquivo</label>
+            </span>
+            <div>
+                <input type="file" name="files">
+            </div>
+        </div>
+        <input class="btn btn-dark" type="submit" value="Upload" />
+    </form>
 </div>
