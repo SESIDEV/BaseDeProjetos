@@ -18,7 +18,7 @@
     <div class=" col-12 card-body">
         <div>
             <hr />
-            Dados de  <input type="checkbox" onchange="periodizar(this.value)" data-toggle="toggle" data-on="@DateTime.Now.Year" data-off="Why tho os períodos" data-style="ios" />
+            Dados de  <input type="checkbox" onchange="periodizar(this.checked)" data-toggle="toggle" data-on="@DateTime.Now.Year" data-off="Todos períodos" data-style="ios" />
             <hr />
         </div>
         <h1 class="card-title">Projetos - @ViewData["Area"]</h1>
