@@ -3,13 +3,28 @@
 @{
     ViewData["Title"] = "Projetos";
 }
+<script>
+    function periodizar(valor) {
+        if (valor) {
+            alert("true")
+        }
+        else {
+            alert("false");
+        }
+    }
+</script>
 
 <div class="row card">
     <div class=" col-12 card-body">
+        <div>
+            <hr />
+            Dados de  <input type="checkbox" onchange="periodizar(this.value)" data-toggle="toggle" data-on="@DateTime.Now.Year" data-off="Why tho os períodos" data-style="ios" />
+            <hr />
+        </div>
         <h1 class="card-title">Projetos - @ViewData["Area"]</h1>
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
-                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Gráficos</a>
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Gráfico</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="fraun-tab" data-toggle="tab" href="#fraun" role="tab" aria-controls="profile" aria-selected="false">KPIs Fraunhofer</a>
