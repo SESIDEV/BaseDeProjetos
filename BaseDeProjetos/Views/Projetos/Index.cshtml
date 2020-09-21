@@ -7,97 +7,136 @@
 <div class="row card">
     <div class=" col-12 card-body">
         <h1 class="card-title">Projetos - @ViewData["Area"]</h1>
-        <div class="col-12 card-img">
-            <partial name="graph_projetos" view-data="@ViewData" model="@Model" />
-        </div>
-        <hr />
-        <p>
-            <a asp-action="Create">
-                <button class="btn btn-primary"> Criar Novo</button>
-            </a>
-        </p>
-        <hr />
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Gráficos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="fraun-tab" data-toggle="tab" href="#fraun" role="tab" aria-controls="profile" aria-selected="false">KPIs Fraunhofer</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="embrapii-tab" data-toggle="tab" href="#embrapii" role="tab" aria-controls="profile" aria-selected="false">KPIs Embrapii</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Lista de Projetos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Importar</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div>
+                    <partial name="graph_projetos" view-data="@ViewData" model="@Model" />
+                </div>
+            </div>
+            <div class="tab-pane fade" id="fraun" role="tabpanel" aria-labelledby="fraun-tab">
+                <div>
+                    <partial name="Fraunhofer" view-data="@ViewData" model="@Model" />
+                </div>
+            </div>
+            <div class="tab-pane fade" id="embrapii" role="tabpanel" aria-labelledby="embrapii-tab">
+                <div>
+                    <partial name="Embrapii" view-data="@ViewData" model="@Model" />
+                </div>
+            </div>
 
-        <table class="table card-text">
-            <thead>
-                <tr>
-<th>
-                        @Html.DisplayNameFor(model => model.Empresa.Nome)
-                    </th>
 
-                    <th>
-                        @Html.DisplayNameFor(model => model.NomeProjeto)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.AreaPesquisa)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.DataInicio)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Estado)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.FonteFomento)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Inovacao)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.status)
-                    </th>
-                                    </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Empresa.Nome)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.NomeProjeto)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.AreaPesquisa)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.DataInicio)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Estado)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.FonteFomento)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Inovacao)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.status)
-                        </td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                            <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
-                            <a asp-action="Delete" asp-route-id="@item.Id">Remover</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
-<div class="card card-body">
-    <h5 class="card-title">Carregar lista de Projetos </h5>
-    <form class="card-text" enctype="multipart/form-data" action="Projetos/CarregarProjetos" method="POST">
-        <div>
-            <span>
-                <label>Upload de arquivo</label>
-            </span>
-            <div>
-                <input type="file" name="files">
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <table class="table card-text">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Empresa.Nome)
+                            </th>
+
+                            <th>
+                                @Html.DisplayNameFor(model => model.NomeProjeto)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.AreaPesquisa)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.DataInicio)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Estado)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.FonteFomento)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Inovacao)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.status)
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Empresa.Nome)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.NomeProjeto)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AreaPesquisa)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.DataInicio)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Estado)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FonteFomento)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Inovacao)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.status)
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                                    <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
+                                    <a asp-action="Delete" asp-route-id="@item.Id">Remover</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="card card-body">
+                    <h5 class="card-title">Carregar lista de Projetos </h5>
+                    <form class="card-text" enctype="multipart/form-data" action="Projetos/CarregarProjetos" method="POST">
+                        <div>
+                            <span>
+                                <label>Upload de arquivo</label>
+                            </span>
+                            <div>
+                                <input type="file" name="files">
+                            </div>
+                        </div>
+                        <input class="btn btn-dark" type="submit" value="Upload" />
+                    </form>
+                </div>
             </div>
         </div>
-        <input class="btn btn-dark" type="submit" value="Upload" />
-    </form>
+        <hr />
+        <div>
+            <a asp-action="Create">
+                <button class="btn btn-primary col-12"> Adicionar Novo Projeto</button>
+            </a>
+        </div>
+        <hr />
+
+    </div>
 </div>
+
