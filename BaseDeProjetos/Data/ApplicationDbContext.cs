@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using SmartTesting.Models;
 
 namespace BaseDeProjetos.Data
 {
@@ -23,5 +24,7 @@ namespace BaseDeProjetos.Data
         public DbSet<BaseDeProjetos.Models.Pessoa> Pessoa { get; set; }
 
         public List<Usuario> Destinatarios { get; set; } = new List<Usuario>();
+
+        public DbSet<SmartTesting.Models.Entrega> Entrega { get; set; }
     }
 }

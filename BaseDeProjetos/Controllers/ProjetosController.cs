@@ -201,6 +201,13 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+
+        public IActionResult IncluirEntregas(string projetoId)
+        {
+            ViewBag.ProjetoId = projetoId;
+            return View();
+        }
+
         [HttpPost]
         public IActionResult CarregarProjetos(List<IFormFile> files)
         {

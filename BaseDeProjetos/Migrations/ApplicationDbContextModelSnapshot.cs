@@ -14,7 +14,7 @@ namespace BaseDeProjetos.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.7")
+                .HasAnnotation("ProductVersion", "3.1.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("BaseDeProjetos.Models.Empresa", b =>
@@ -396,6 +396,37 @@ namespace BaseDeProjetos.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("SmartTesting.Models.Entrega", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Concluida")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("DataFim")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DataInicio")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("DescricaoEntrega")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("NomeEntrega")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("projetoId")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("projetoId");
+
+                    b.ToTable("Entrega");
+                });
+
             modelBuilder.Entity("BaseDeProjetos.Models.FollowUp", b =>
                 {
                     b.HasOne("BaseDeProjetos.Models.Prospeccao", "Origem")
@@ -492,6 +523,13 @@ namespace BaseDeProjetos.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SmartTesting.Models.Entrega", b =>
+                {
+                    b.HasOne("BaseDeProjetos.Models.Projeto", "projeto")
+                        .WithMany()
+                        .HasForeignKey("projetoId");
                 });
 #pragma warning restore 612, 618
         }
