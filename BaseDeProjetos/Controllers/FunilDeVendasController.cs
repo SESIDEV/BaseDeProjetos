@@ -245,7 +245,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,TipoContratacao,LinhaPequisa, Status, Empresa, Contato, Casa")] Prospeccao prospeccao)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,TipoContratacao,LinhaPequisa, Empresa, Contato, Casa")] Prospeccao prospeccao)
         {
             if (id != prospeccao.Id)
             {
@@ -264,9 +264,6 @@ namespace BaseDeProjetos.Controllers
                     {
                         prospeccao.Empresa = new Empresa { Estado = prospeccao.Empresa.Estado, CNPJ = prospeccao.Empresa.CNPJ, Nome = prospeccao.Empresa.Nome, Segmento = prospeccao.Empresa.Segmento };
                     }
-
-                    //Status é somente leitura
-                    prospeccao.Status[0] = null;
 
                     _context.Update(prospeccao);
                     await _context.SaveChangesAsync();
