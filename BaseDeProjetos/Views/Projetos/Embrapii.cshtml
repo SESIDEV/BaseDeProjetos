@@ -2,11 +2,29 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    var n_empresas_prosp = 0;
-    var n_propostas = 0;
-    var n_projetos = 0;
-    var n_empresas_projs = 0;
-    var n_empresas_eventos = 0;
+    List<Projeto> embrapii_projs = new List<Projeto>();
+    List<Prospeccao> embrapii_prosps = new List<Prospeccao>();
+    int n_empresas_prosp = 0;
+    int n_propostas = 0;
+    int n_projetos = 0;
+    int n_empresas_projs = 0;
+    double taxa_sucesso = 0;
+    int n_empresas_eventos = 0;
+    try
+    {
+        embrapii_projs = ViewBag.Embrapii_projs as List<Projeto>;
+        embrapii_prosps = ViewBag.Embrapii_prosps as List<Prospeccao>;
+        n_empresas_prosp = embrapii_prosps.GroupBy(p => p.Empresa).Count();
+        n_propostas = embrapii_prosps.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.ComProposta)).Count();
+        n_projetos = embrapii_projs.Count();
+        n_empresas_projs = embrapii_projs.GroupBy(p => p.Empresa).Count();
+        taxa_sucesso = embrapii_prosps.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.ComProposta)).Count() / n_propostas;
+        n_empresas_eventos = 0;
+    }
+    catch
+    {
+        //TODO
+    }
 }
 <div class="row mt-2">
     <div class="col-12 small" id="KPI">
@@ -70,7 +88,7 @@
                     <div class="card-header"> Indicadores do @ViewBag.Area </div>
                     <div class="card-body">
                         Taxa de sucesso de projetos
-                        <h4> @n_empresas_eventos.ToString("C2") </h4>
+                        <h4> @n_empresas_eventos.ToString("P2") </h4>
                     </div>
                 </div>
             </div>
@@ -80,7 +98,7 @@
                     <div class="card-header"> Indicadores do @ViewBag.Area </div>
                     <div class="card-body">
                         Participação financeira das empresas no portfólio
-                        <h4> @n_empresas_eventos.ToString("C2") </h4>
+                        <h4> @n_empresas_eventos.ToString("P2") </h4>
                     </div>
                 </div>
             </div>
@@ -90,7 +108,7 @@
                     <div class="card-header"> Indicadores do @ViewBag.Area </div>
                     <div class="card-body">
                         Taxa de sucesso de propostas técnicas
-                        <h4> @n_empresas_eventos.ToString("C2") </h4>
+                        <h4> @taxa_sucesso.ToString("P2") </h4>
                     </div>
                 </div>
             </div>
