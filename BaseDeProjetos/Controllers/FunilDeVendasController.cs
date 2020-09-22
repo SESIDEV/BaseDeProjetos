@@ -308,6 +308,13 @@ namespace BaseDeProjetos.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             Prospeccao prospeccao = await _context.Prospeccao.FindAsync(id);
+
+            //Remover os filhos
+            var follow_ups = _context.FollowUp.Where(p => p.OrigemID == id).ToList();
+            foreach(var followup in follow_ups)
+            {
+                _context.Remove(followup);
+            }
             _context.Prospeccao.Remove(prospeccao);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
