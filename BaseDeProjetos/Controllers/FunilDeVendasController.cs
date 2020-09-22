@@ -122,7 +122,7 @@ namespace BaseDeProjetos.Controllers
                 AreaPesquisa = followup.Origem.LinhaPequisa,
                 Empresa = followup.Origem.Empresa,
                 status = StatusProjeto.EmExecucao,
-                Id = $"proj_{followup.Id}",
+                Id = $"proj_{DateTime.Now.Ticks}",
             };
 
             _context.Add(novo_projeto);
