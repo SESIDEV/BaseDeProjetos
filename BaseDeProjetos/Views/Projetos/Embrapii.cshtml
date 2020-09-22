@@ -2,7 +2,99 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    var n_empresas_prosp = 0;
+    var n_propostas = 0;
+    var n_projetos = 0;
+    var n_empresas_projs = 0;
+    var n_empresas_eventos = 0;
 }
-<div class="alert alert-warning">
-    Em construção
+<div class="row mt-2">
+    <div class="col-12 small" id="KPI">
+        <div class="row justify-content-center">
+            <div class="col-3">
+                <div class="card">
+                    <div class="card-header"> Indicadores do @ViewBag.Area </div>
+                    <div class="card-body">
+                        Prospecção de empresas
+                        <h4> @n_empresas_prosp</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="card">
+                    <div class="card-header"> Indicadores do @ViewBag.Area </div>
+                    <div class="card-body">
+                        Número de Propostas Técnicas
+                        <h4> @n_propostas </h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="card">
+                    <div class="card-header"> Indicadores do @ViewBag.Area </div>
+                    <div class="card-body">
+                        Contratação de Projetos
+                        <h4> @n_projetos </h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="card">
+                    <div class="card-header"> Indicadores do @ViewBag.Area </div>
+                    <div class="card-body">
+                        Contratação de Empresas
+                        <h4> @n_empresas_projs </h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="card">
+                    <div class="card-header"> Indicadores do @ViewBag.Area </div>
+                    <div class="card-body">
+                        Participação de empresas em eventos
+                        <h4> @n_empresas_eventos </h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="card">
+                    <div class="card-header"> Indicadores do @ViewBag.Area </div>
+                    <div class="card-body">
+                        Pedidos de propriedade intelectual
+                        <h4> @n_empresas_eventos </h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="card">
+                    <div class="card-header"> Indicadores do @ViewBag.Area </div>
+                    <div class="card-body">
+                        Taxa de sucesso de projetos
+                        <h4> @n_empresas_eventos.ToString("C2") </h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-3">
+                <div class="card">
+                    <div class="card-header"> Indicadores do @ViewBag.Area </div>
+                    <div class="card-body">
+                        Participação financeira das empresas no portfólio
+                        <h4> @n_empresas_eventos.ToString("C2") </h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-3">
+                <div class="card">
+                    <div class="card-header"> Indicadores do @ViewBag.Area </div>
+                    <div class="card-body">
+                        Taxa de sucesso de propostas técnicas
+                        <h4> @n_empresas_eventos.ToString("C2") </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
