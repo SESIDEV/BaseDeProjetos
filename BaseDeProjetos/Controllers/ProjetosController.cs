@@ -61,6 +61,8 @@ namespace BaseDeProjetos.Controllers
             ViewBag.n_empresas = _context.Projeto.Where(p => p.Casa == Enum.Parse<Casa>(casa) ).Count();
             ViewBag.n_revenue = _context.Projeto.Where(p => p.Casa == Enum.Parse<Casa>(casa)).Select(p=>p.ValorAporteRecursos).Sum();
             ViewBag.n_pesquisadores = _context.Users.Where(p => p.Casa == Enum.Parse<Casa>(casa)).Count();
+            ViewBag.Embrapii_projs = _context.Projeto.Where(p => p.FonteFomento == TipoContratacao.Embrapii).ToList<Projeto>();
+            ViewBag.Embrapii_prosps = _context.Projeto.Where(p => p.FonteFomento == TipoContratacao.Embrapii).ToList<Projeto>();
             ViewData["Area"] = casa;
             Casa enum_casa = (Casa)Enum.Parse(typeof(Casa), casa);
             List<Projeto> lista = await _context.Projeto.Where(p => p.Casa.Equals(enum_casa)).ToListAsync();
