@@ -26,6 +26,8 @@ namespace BaseDeProjetos.Models
         SisCompNaoDestrutivas,
         [Display(Name = "Pesquisa na área de corrosão")]
         Corrosao,
+        [Display(Name = "Biotecnologia e Biologia Molecular")]
+        Biotec,
         [Display(Name = "A definir")]
         Indefinida
     }
@@ -47,7 +49,9 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Convertida")]
         Convertida,
         [Display(Name = "Não Convertida")]
-        NaoConvertida
+        NaoConvertida,
+        [Display(Name ="Cancelado/Suspenso")]
+        Suspensa
     }
 
     public enum StatusProjeto
@@ -68,7 +72,7 @@ namespace BaseDeProjetos.Models
         Embrapii,
         [Display(Name = "Edital de Inovação SESI/SENAI")]
         EditalInovacao,
-        OutrosEditais,
+        //OutrosEditais,
         [Display(Name = "Agência de Fomento")]
         AgenciaFomento,
         [Display(Name = "ANP/ANEEL")]

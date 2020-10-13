@@ -18,9 +18,9 @@
     int af_II = Model.Where(p => p.Casa == Casa.ISIII && p.FonteFomento == TipoContratacao.AgenciaFomento).ToList().Count;
     int af_HO = Model.Where(p => p.Casa == Casa.CISHO && p.FonteFomento == TipoContratacao.AgenciaFomento).ToList().Count;
 
-    int ou_QV = Model.Where(p => p.Casa == Casa.ISIQV && p.FonteFomento == TipoContratacao.OutrosEditais).ToList().Count;
-    int ou_II = Model.Where(p => p.Casa == Casa.ISIII && p.FonteFomento == TipoContratacao.OutrosEditais).ToList().Count;
-    int ou_HO = Model.Where(p => p.Casa == Casa.CISHO && p.FonteFomento == TipoContratacao.OutrosEditais).ToList().Count;
+    int ou_QV = Model.Where(p => p.Casa == Casa.ISIQV && p.FonteFomento == TipoContratacao.Indefinida).ToList().Count;
+    int ou_II = Model.Where(p => p.Casa == Casa.ISIII && p.FonteFomento == TipoContratacao.Indefinida).ToList().Count;
+    int ou_HO = Model.Where(p => p.Casa == Casa.CISHO && p.FonteFomento == TipoContratacao.Indefinida).ToList().Count;
 
     int anp_QV = Model.Where(p => p.Casa == Casa.ISIQV && p.FonteFomento == TipoContratacao.ANP).ToList().Count;
     int anp_II = Model.Where(p => p.Casa == Casa.ISIII && p.FonteFomento == TipoContratacao.ANP).ToList().Count;
@@ -54,7 +54,7 @@
                 'Agências de Fomento',
                 'ANP',
                 'Parceiro',
-                'Outros editais',
+                'A definir',
             ],
         },
         yAxis: {
