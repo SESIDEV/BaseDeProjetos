@@ -1,0 +1,107 @@
+﻿@model BaseDeProjetos.Models.FollowUp
+@{
+    ViewData["Title"] = "Atualizar Prospecção";
+}
+
+@{ var prosp = ViewData["prosp"] as Prospeccao; }
+<h1>Atualizar</h1>
+<h4>Prospecção</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+
+        <fieldset>
+            <legend> Dados da prospecção </legend>
+            <div class="form-group">
+                <label asp-for="Id" class="control-label"></label>
+                <input type="text" class="form-control" value="@prosp.Id" readonly />
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label> Empresa </label>
+                <input type="text" class="form-control" value="@prosp.Empresa.Nome" readonly />
+            </div>
+            <div class="form-group">
+                <label> Casa </label>
+                <input type="text" class="form-control" value="@prosp.Casa" readonly />
+            </div>
+            <div class="form-group">
+                <label> Tipo de Contratação </label>
+                <input type="text" class="form-control" value="@prosp.TipoContratacao" readonly />
+            </div>
+            <div class="form-group">
+                <label> Status </label>
+                <input type="text" class="form-control" value="@prosp.Status.Last().Status" readonly />
+            </div>
+
+            <div class="form-group">
+                <label> Contato da prospecção</label>
+                <input type="text" class="form-control" value="@prosp.Contato.Nome" readonly />
+            </div>
+
+            <div class="form-group">
+                <label>Informações da prospecção (primeiro contato)</label>
+                <input type="text" class="form-control" value="@prosp.Status.First().Anotacoes" readonly />
+            </div>
+        </fieldset>
+
+    </div>
+
+    <hr />
+    <div class="col-md-8">
+        <form asp-controller="FunilDeVendas" asp-action="EditarFollowUp" asp-route-id="@Model.Id" method="POST">
+
+            <input asp-for="OrigemID" type="hidden" value="@Model.OrigemID" />
+            <input asp-for="Id" type="hidden" value="@Model.Id" />
+
+            <div class="form-group">
+                <label asp-for="Data" class="control-label"></label>
+                <input asp-for="Data" class="form-control" />
+                <span asp-validation-for="Data" class="text-danger" value="@Model.Data"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <select asp-for="Status" onchange="avaliarStatus(this)" class="form-control" asp-items="Html.GetEnumSelectList<StatusProspeccao>()"></select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Anotacoes" class="control-label"></label>
+                <textarea class="form-control" asp-for=" Anotacoes" rows="3"> @Model.Anotacoes</textarea>
+                <span asp-validation-for="Anotacoes" class="text-danger"></span>
+            </div>
+
+            <div id="naoconversao" style="display:none">
+                <div class="form-group">
+                    <label class="control-label"> Motivo de não conversão:</label>
+                    <select asp-for="MotivoNaoConversao" class="form-control" asp-items="Html.GetEnumSelectList<MotivosNaoConversao>()"></select>
+                    <span asp-validation-for="MotivoNaoConversao" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Incluir" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+
+
+    <script>
+        function avaliarStatus(valor) {
+            var NaoConvertida = 7;
+            if (valor.value == NaoConvertida) {
+                document.querySelector("#naoconversao").style.display = "block";
+            }
+            else {
+                document.querySelector("#naoconversao").style.display = "none";
+            }
+        }
+    </script>
+
+    <div>
+        <a asp-action="Index">Voltar</a>
+    </div>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }

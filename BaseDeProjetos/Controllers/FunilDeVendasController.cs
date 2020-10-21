@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Operations;
 using Microsoft.EntityFrameworkCore;
 using SmartTesting.Controllers;
 using System;
@@ -142,7 +143,7 @@ namespace BaseDeProjetos.Controllers
                     {
                         Titulo = "SGI - Uma proposta comercial foi enviada",
                         TextoBase = $"Olá, A prospecção com {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Casa} teve uma proposta enviada. " +
-                         $"\n\n\n\r ------------------------" +
+                         $"<hr>\n\n\n\r ------------------------" +
                          $"Mais detalhes: {followup.Anotacoes}"
                     };
                     break;
@@ -150,9 +151,9 @@ namespace BaseDeProjetos.Controllers
                 case StatusProspeccao.Convertida:
                     notificacao = new Notificacao
                     {
-                        Titulo = "SGI - Uma proposta comercial foi convertida",
+                        Titulo = "SGI - Uma proposta comercial foi convertida\n",
                         TextoBase = $"Olá, A proposta com {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Casa} foi convertida." +
-                         $"\n\n\n\r ------------------------" +
+                         $"<hr>\n\n\n\r ------------------------" +
                          $"Mais detalhes: {followup.Anotacoes}"
                     };
                     break;
@@ -162,7 +163,7 @@ namespace BaseDeProjetos.Controllers
                     {
                         Titulo = "SGI - Uma proposta comercial não foi convertida",
                         TextoBase = $"Olá, A proposta com {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Casa} não foi convertida." +
-                         $"\n\n\n\r ------------------------" +
+                         $"<hr>\n\n\n\r ------------------------" +
                          $"Mais detalhes: {followup.Anotacoes}"
                     };
                     break;
@@ -172,7 +173,7 @@ namespace BaseDeProjetos.Controllers
                     {
                         Titulo = "SGI - Uma nova prospecção foi inicializada",
                         TextoBase = $"Olá, A prospecção com {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Casa} foi iniciada." +
-                         $"\n\n\n\r ------------------------" +
+                         $"<hr>\n\n\n\r ------------------------" +
                          $"Mais detalhes: {followup.Anotacoes}"
                     };
                     break;
@@ -209,7 +210,7 @@ namespace BaseDeProjetos.Controllers
 
                 _context.Add(prospeccao);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
             }
             return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
         }
@@ -275,6 +276,43 @@ namespace BaseDeProjetos.Controllers
             return View(prospeccao);
         }
 
+        public async Task<IActionResult> EditarFollowUp(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            FollowUp followup = await _context.FollowUp.FindAsync(id);
+            ViewData["origem"] = followup.OrigemID;
+            ViewData["prosp"] = followup.Origem;
+
+            if (followup == null)
+            {
+                return NotFound();
+            }
+            return View(followup);
+
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditarFollowUp(int id, [Bind("Id","OrigemID","Status","Anotacoes","Data")] FollowUp followup)
+        {
+            if (id != followup.Id)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                _context.Update(followup);
+                await _context.SaveChangesAsync();
+            }
+            
+            return RedirectToAction("Index", new { casa = HttpContext.Session.GetString("_Casa") });
+        }
+
         // GET: FunilDeVendas/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
@@ -293,6 +331,33 @@ namespace BaseDeProjetos.Controllers
             return View(prospeccao);
         }
 
+        public async Task<IActionResult> RemoverFollowUp(int? id)
+        {
+            if (id is null)
+            {
+                return NotFound();
+            }
+            FollowUp followup = await _context.FollowUp
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (followup == null)
+            {
+                return NotFound();
+            }
+
+            var prospeccao = _context.Prospeccao.FirstOrDefault(p => p.Id == followup.OrigemID);
+            if (prospeccao.Status.Count() > 1)
+            {
+                _context.FollowUp.Remove(followup);
+                return RedirectToAction("Index", new { casa = HttpContext.Session.GetString("_Casa") });
+            }
+            else
+            {
+                throw new InvalidOperationException("Não é possível remover todas os followups de uma prospecção");
+            }
+
+        }
+
         // POST: FunilDeVendas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -308,7 +373,7 @@ namespace BaseDeProjetos.Controllers
             }
             _context.Prospeccao.Remove(prospeccao);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
         }
 
         private bool ProspeccaoExists(string id)

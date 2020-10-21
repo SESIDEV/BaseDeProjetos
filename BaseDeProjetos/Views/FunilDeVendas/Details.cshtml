@@ -51,7 +51,7 @@
     <hr />
     @foreach(var followup in Model.Status)
     {
-        <div class="card">
+        <div class="card m-1">
             <div class="card-body">
            <h6 class="card-title">@followup.Data - @followup.Status</h6> 
                 <div class="card-text">
@@ -60,6 +60,9 @@
             </div>
             <div class="card-footer">
                 Vence em: @followup.Vencimento
+                <hr />
+                <a href="../RemoverFollowUp/@followup.Id">Remover</a> | 
+                <a href="../EditarFollowUp/@followup.Id">Editar</a>
             </div>
         </div>
     }
