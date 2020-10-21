@@ -46,44 +46,44 @@
             </div>
         </fieldset>
 
+    </div>
 
-        <hr />
-        <div class="col-md-8">
-            <form asp-controller="FunilDeVendas" asp-action="Atualizar" method="POST">
+    <hr />
+    <div class="col-md-8">
+        <form asp-controller="FunilDeVendas" asp-action="Atualizar" method="POST">
 
-                <input asp-for="OrigemID" type="hidden" value="@ViewData["origem"]" />
+            <input asp-for="OrigemID" type="hidden" value="@ViewData["origem"]" />
 
+            <div class="form-group">
+                <label asp-for="Data" class="control-label"></label>
+                <input asp-for="Data" class="form-control" />
+                <span asp-validation-for="Data" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <select asp-for="Status" onchange="avaliarStatus(this)" class="form-control" asp-items="Html.GetEnumSelectList<StatusProspeccao>()"></select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Anotacoes" class="control-label"></label>
+                <textarea class="form-control" asp-for=" Anotacoes" rows="3"></textarea>
+                <span asp-validation-for="Anotacoes" class="text-danger"></span>
+            </div>
+
+            <div id="naoconversao" style="display:none">
                 <div class="form-group">
-                    <label asp-for="Data" class="control-label"></label>
-                    <input asp-for="Data" class="form-control" />
-                    <span asp-validation-for="Data" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Status" class="control-label"></label>
-                    <select asp-for="Status" onchange="avaliarStatus(this)" class="form-control" asp-items="Html.GetEnumSelectList<StatusProspeccao>()"></select>
+                    <label  class="control-label"> Motivo de não conversão:</label>
+                    <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<MotivosNaoConversao>()"></select>
                     <span asp-validation-for="Status" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Anotacoes" class="control-label"></label>
-                    <textarea class="form-control" asp-for=" Anotacoes" rows="3"></textarea>
-                    <span asp-validation-for="Anotacoes" class="text-danger"></span>
-                </div>
+            </div>
 
-                <div id="naoconversao" style="display:none">
-                    <div class="form-group">
-                        <label asp-for="Status" class="control-label"></label>
-                        <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<MotivosNaoConversao>()"></select>
-                        <span asp-validation-for="Status" class="text-danger"></span>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <input type="submit" value="Incluir" class="btn btn-primary" />
-                </div>
-            </form>
-        </div>
-
+            <div class="form-group">
+                <input type="submit" value="Incluir" class="btn btn-primary" />
+            </div>
+        </form>
     </div>
+
 
     <script>
         function avaliarStatus(valor) {
@@ -95,7 +95,6 @@
                 document.querySelector("#naoconversao").style.display = "none";
             }
         }
-            </div >
     </script>
 
     <div>
