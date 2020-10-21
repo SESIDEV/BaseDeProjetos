@@ -31,7 +31,7 @@ namespace BaseDeProjetos.Controllers
         {
 
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewData["DateSortParm"] = sortOrder == "Date" ? "tipo_desc" : "TipoContratacao";
+            ViewData["DateSortParm"] = sortOrder == "TipoContratacao" ? "tipo_desc" : "TipoContratacao";
             ViewData["CurrentFilter"] = searchString;
 
 
@@ -60,13 +60,8 @@ namespace BaseDeProjetos.Controllers
 
             ViewData["Area"] = casa;
             Casa enum_casa = (Casa)Enum.Parse(typeof(Casa), casa);
-            var lista = _context.Prospeccao.Where(p => p.Casa.Equals(enum_casa));
 
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                lista = lista.Where(s => s.Empresa.Nome.Contains(searchString)
-                                       || s.Usuario.UserName.Contains(searchString));
-            }
+            var lista = _context.Prospeccao.Where(p => p.Casa.Equals(enum_casa));
 
             switch (sortOrder)
             {
@@ -82,6 +77,14 @@ namespace BaseDeProjetos.Controllers
                 default:
                     lista = lista.OrderBy(s => s.Empresa.Nome);
                     break;
+            }
+
+
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                lista = lista.Where(s => s.Empresa.Nome.Contains(searchString)
+                                       || s.Usuario.UserName.Contains(searchString));
             }
 
             return View(lista.ToList<Prospeccao>());
