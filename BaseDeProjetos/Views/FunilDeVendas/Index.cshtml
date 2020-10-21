@@ -18,21 +18,30 @@
             </a>
         </p>
 
+        <form asp-action="Index" method="get">
+            <div class="form-actions no-color">
+                <p>
+                    Achar por empresa ou líder: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+                    <input type="submit" value="Procurar" class="btn btn-default" /> |
+                    <a asp-action="Index">Exibir Lista Completa</a>>
+                </p>
+            </div>
+        </form>
 
         <table class="table card-text">
             <thead>
                 <tr>
                     <th>
-                        Líder    
+                        Líder
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.TipoContratacao)
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">@Html.DisplayNameFor(model => model.TipoContratacao)</a>
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.LinhaPequisa)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Empresa.Nome)
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.Empresa.Nome)</a>
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.Status.Last().Status)
@@ -56,7 +65,7 @@
                             @Html.DisplayFor(modelItem => item.Empresa.Nome)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem=> item.Status.Last().Status)
+                            @Html.DisplayFor(modelItem => item.Status.Last().Status)
                         </td>
 
                         <td>

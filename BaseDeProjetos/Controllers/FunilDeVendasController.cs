@@ -27,29 +27,64 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: FunilDeVendas
-        public async Task<IActionResult> Index(string casa)
+        public async Task<IActionResult> Index(string casa, string sortOrder, string searchString)
         {
-            if (casa is null)
+
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "tipo_desc" : "TipoContratacao";
+            ViewData["CurrentFilter"] = searchString;
+
+
+            switch (casa)
             {
-                if (!string.IsNullOrEmpty(HttpContext.Session.GetString("_Casa")))
-                {
-                    casa = HttpContext.Session.GetString("_Casa");
-                }
-                else { return View(await _context.Prospeccao.ToListAsync()); }
-            }
-            else if (Enum.IsDefined(typeof(Casa), casa))
-            {
-                HttpContext.Session.SetString("_Casa", casa);
-            }
-            else
-            {
-                return NotFound();
+                case null:
+                    if (!string.IsNullOrEmpty(HttpContext.Session.GetString("_Casa")))
+                    {
+                        casa = HttpContext.Session.GetString("_Casa");
+                    }
+                    else { return View(await _context.Prospeccao.ToListAsync()); }
+
+                    break;
+                default:
+                    if (Enum.IsDefined(typeof(Casa), casa))
+                    {
+                        HttpContext.Session.SetString("_Casa", casa);
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+
+                    break;
             }
 
             ViewData["Area"] = casa;
             Casa enum_casa = (Casa)Enum.Parse(typeof(Casa), casa);
-            List<Prospeccao> lista = await _context.Prospeccao.Where(p => p.Casa.Equals(enum_casa)).ToListAsync();
-            return View(lista);
+            var lista = _context.Prospeccao.Where(p => p.Casa.Equals(enum_casa));
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                lista = lista.Where(s => s.Empresa.Nome.Contains(searchString)
+                                       || s.Usuario.UserName.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    lista = lista.OrderByDescending(s => s.Empresa.Nome);
+                    break;
+                case "TipoContratacao":
+                    lista = lista.OrderBy(s => s.TipoContratacao);
+                    break;
+                case "tipo_desc":
+                    lista = lista.OrderByDescending(s => s.TipoContratacao);
+                    break;
+                default:
+                    lista = lista.OrderBy(s => s.Empresa.Nome);
+                    break;
+            }
+
+            return View(lista.ToList<Prospeccao>());
         }
 
 
@@ -298,7 +333,7 @@ namespace BaseDeProjetos.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditarFollowUp(int id, [Bind("Id","OrigemID","Status","Anotacoes","Data")] FollowUp followup)
+        public async Task<IActionResult> EditarFollowUp(int id, [Bind("Id", "OrigemID", "Status", "Anotacoes", "Data", "Vencimento")] FollowUp followup)
         {
             if (id != followup.Id)
             {
@@ -309,7 +344,7 @@ namespace BaseDeProjetos.Controllers
                 _context.Update(followup);
                 await _context.SaveChangesAsync();
             }
-            
+
             return RedirectToAction("Index", new { casa = HttpContext.Session.GetString("_Casa") });
         }
 
@@ -367,7 +402,7 @@ namespace BaseDeProjetos.Controllers
 
             //Remover os filhos
             var follow_ups = _context.FollowUp.Where(p => p.OrigemID == id).ToList();
-            foreach(var followup in follow_ups)
+            foreach (var followup in follow_ups)
             {
                 _context.Remove(followup);
             }
