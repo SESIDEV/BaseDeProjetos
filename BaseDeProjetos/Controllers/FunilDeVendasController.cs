@@ -1,5 +1,6 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
+using MailSenderApp.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,9 +16,9 @@ namespace BaseDeProjetos.Controllers
     public class FunilDeVendasController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly Mailer _mailer;
+        private readonly EmailSender _mailer;
 
-        public FunilDeVendasController(ApplicationDbContext context, Mailer mailer)
+        public FunilDeVendasController(ApplicationDbContext context, EmailSender mailer)
         {
             _context = context;
             _mailer = mailer;
@@ -144,7 +145,7 @@ namespace BaseDeProjetos.Controllers
                          $"Mais detalhes: {followup.Anotacoes}"
                     };
 
-                    _mailer.EnviarNotificacao(_context.Destinatarios, notificacao);
+                    _mailer.SendEmailAsync(notificacao);
 
                     break;
 
@@ -157,7 +158,7 @@ namespace BaseDeProjetos.Controllers
                          $"Mais detalhes: {followup.Anotacoes}"
                     };
 
-                    _mailer.EnviarNotificacao(_context.Destinatarios, notificacao);
+                    _mailer.SendEmailAsync(notificacao);
 
                     break;
 
@@ -170,7 +171,7 @@ namespace BaseDeProjetos.Controllers
                          $"Mais detalhes: {followup.Anotacoes}"
                     };
 
-                    _mailer.EnviarNotificacao(_context.Destinatarios, notificacao);
+                    _mailer.SendEmailAsync(notificacao);
 
                     break;
 
@@ -183,7 +184,7 @@ namespace BaseDeProjetos.Controllers
                          $"Mais detalhes: {followup.Anotacoes}"
                     };
 
-                    _mailer.EnviarNotificacao(_context.Destinatarios, notificacao);
+                    _mailer.SendEmailAsync(notificacao);
 
                     break;
 

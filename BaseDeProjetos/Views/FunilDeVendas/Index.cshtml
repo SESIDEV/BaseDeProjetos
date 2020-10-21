@@ -23,6 +23,9 @@
             <thead>
                 <tr>
                     <th>
+                        Líder    
+                    </th>
+                    <th>
                         @Html.DisplayNameFor(model => model.TipoContratacao)
                     </th>
                     <th>
@@ -40,6 +43,9 @@
                 @foreach (var item in Model)
                 {
                     <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Usuario.UserName)
+                        </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.TipoContratacao)
                         </td>

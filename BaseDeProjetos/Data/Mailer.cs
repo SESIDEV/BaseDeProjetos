@@ -9,12 +9,14 @@ namespace SmartTesting.Controllers
     public class Mailer
     {
         private EmailAddress From { get; set; }
-        public Mailer()
+        private List<Usuario> destinatarios;
+        public Mailer(List<Usuario> destinatarios)
         {
             From = new EmailAddress("l.nasc@live.com", "Leon Nascimento");
+            this.destinatarios = destinatarios;
         }
 
-        private async Task<Response> Enviar(EmailAddress destinatario, string titulo, string texto_plain, string texto_html)
+        public async Task<Response> Enviar(EmailAddress destinatario, string titulo, string texto_plain, string texto_html)
         {
             string apiKey = System.Environment.GetEnvironmentVariable("SENDGRID_APIKEY");
             SendGridClient client = new SendGridClient(apiKey);
@@ -31,11 +33,11 @@ namespace SmartTesting.Controllers
             return response;
         }
 
-        public bool EnviarNotificacao(List<Usuario> pessoas, Notificacao notificacao)
+        public bool EnviarNotificacao(Notificacao notificacao)
         {
             bool enviado = false;
 
-            foreach (Usuario pessoa in pessoas)
+            foreach (Usuario pessoa in this.destinatarios)
             {
 
                 EmailAddress email = new EmailAddress(pessoa.Email, pessoa.UserName);

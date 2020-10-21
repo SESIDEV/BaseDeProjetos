@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SmartTesting.Controllers;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using MailSenderApp.Services;
 using System;
 
 namespace BaseDeProjetos
@@ -38,7 +40,7 @@ namespace BaseDeProjetos
             services.AddDefaultIdentity<Usuario>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddDistributedMemoryCache();
-            services.AddSingleton<Mailer>();
+            services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddSession(options =>
             {
@@ -66,6 +68,7 @@ namespace BaseDeProjetos
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
 
             app.UseRouting();
             app.UseSession();
