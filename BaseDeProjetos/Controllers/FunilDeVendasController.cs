@@ -2,6 +2,7 @@
 using BaseDeProjetos.Models;
 using MailSenderApp.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +19,7 @@ namespace BaseDeProjetos.Controllers
         private readonly ApplicationDbContext _context;
         private readonly EmailSender _mailer;
 
-        public FunilDeVendasController(ApplicationDbContext context, EmailSender mailer)
+        public FunilDeVendasController(ApplicationDbContext context, IEmailSender mailer)
         {
             _context = context;
             _mailer = mailer;
