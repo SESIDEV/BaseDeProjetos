@@ -145,9 +145,6 @@ namespace BaseDeProjetos.Controllers
                          $"\n\n\n\r ------------------------" +
                          $"Mais detalhes: {followup.Anotacoes}"
                     };
-
-                    _mailer.SendEmailAsync(notificacao);
-
                     break;
 
                 case StatusProspeccao.Convertida:
@@ -158,9 +155,6 @@ namespace BaseDeProjetos.Controllers
                          $"\n\n\n\r ------------------------" +
                          $"Mais detalhes: {followup.Anotacoes}"
                     };
-
-                    _mailer.SendEmailAsync(notificacao);
-
                     break;
 
                 case StatusProspeccao.NaoConvertida:
@@ -171,9 +165,6 @@ namespace BaseDeProjetos.Controllers
                          $"\n\n\n\r ------------------------" +
                          $"Mais detalhes: {followup.Anotacoes}"
                     };
-
-                    _mailer.SendEmailAsync(notificacao);
-
                     break;
 
                 case StatusProspeccao.ContatoInicial:
@@ -184,14 +175,12 @@ namespace BaseDeProjetos.Controllers
                          $"\n\n\n\r ------------------------" +
                          $"Mais detalhes: {followup.Anotacoes}"
                     };
-
-                    _mailer.SendEmailAsync(notificacao);
-
                     break;
 
                 default:
-                    break;
+                    return;
             }
+                    ((EmailSender)_mailer).SendEmailAsync(notificacao);
         }
 
         // POST: FunilDeVendas/Create
