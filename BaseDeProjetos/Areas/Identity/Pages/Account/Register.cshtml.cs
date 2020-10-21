@@ -51,14 +51,14 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "O {0} precisa ter no mínimo {2} e no máximo {1} caracteres", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Confirmar password")]
+            [Compare("Password", ErrorMessage = "As senhas não conferem")]
             public string ConfirmPassword { get; set; }
             public Casa Casa { get; set; }
         }
@@ -76,7 +76,12 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 Usuario user = new Usuario { UserName = Input.Email, Email = Input.Email, Casa = Input.Casa };
-                IdentityResult result = await _userManager.CreateAsync(user, Input.Password);
+                IdentityResult result = new IdentityResult();
+
+                //Só aceitar e-mails da firjan
+                if (Input.Email.ToLower().Contains("firjan.com.br")){
+                    result = await _userManager.CreateAsync(user, Input.Password);
+                }
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");

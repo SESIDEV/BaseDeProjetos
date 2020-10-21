@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace BaseDeProjetos.Models
 {
@@ -50,18 +52,18 @@ namespace BaseDeProjetos.Models
         Convertida,
         [Display(Name = "Não Convertida")]
         NaoConvertida,
-        [Display(Name ="Cancelado/Suspenso")]
+        [Display(Name = "Cancelado/Suspenso")]
         Suspensa
     }
 
     public enum StatusProjeto
     {
-        [Display(Name ="Contratrado/Em planejamento")]
+        [Display(Name = "Contratrado/Em planejamento")]
         Contratado,
         [Display(Name = "Em execução")]
         EmExecucao,
         Concluido,
-        [Display(Name ="Cancelado/Suspenso")]
+        [Display(Name = "Cancelado/Suspenso")]
         Cancelado,
     }
 
@@ -78,7 +80,7 @@ namespace BaseDeProjetos.Models
         [Display(Name = "ANP/ANEEL")]
         ANP,
         Parceiro,
-        [Display(Name ="Projeto Push")]
+        [Display(Name = "Projeto Push")]
         Push,
         [Display(Name = "A definir")]
         Indefinida
@@ -154,20 +156,47 @@ namespace BaseDeProjetos.Models
         ISIII,
         [Display(Name = "CIS - Higiene Ocupacional")]
         CISHO,
-        [Display(Name ="Supervisão")]
+        [Display(Name = "Supervisão")]
         Super
     }
 
     public enum MotivosNaoConversao
     {
-        [Display(Name="O cliente não aceitou o preço")]
+        [Display(Name = "O cliente não aceitou o preço")]
         Preco,
-        [Display(Name="O cliente não aceitou o prazo")]
+        [Display(Name = "O cliente não aceitou o prazo")]
         Prazo,
-        [Display(Name="O cliente não pode aceitar por motivos contextuais")]
+        [Display(Name = "O cliente não pode aceitar por motivos contextuais")]
         Contexto,
-        [Display(Name="O cliente não quis informar o motivo")]
+        [Display(Name = "O cliente não quis informar o motivo")]
         NaoInformada
     }
 
+    public static class EnumExtensions
+    {
+        public static string GetDisplayName(this Enum enu)
+        {
+            var attr = GetDisplayAttribute(enu);
+            return attr != null ? attr.Name : enu.ToString();
+        }
+
+        public static string GetDescription(this Enum enu)
+        {
+            var attr = GetDisplayAttribute(enu);
+            return attr != null ? attr.Description : enu.ToString();
+        }
+
+        private static DisplayAttribute GetDisplayAttribute(object value)
+        {
+            Type type = value.GetType();
+            if (!type.IsEnum)
+            {
+                throw new ArgumentException(string.Format("Type {0} is not an enum", type));
+            }
+
+            // Get the enum field.
+            var field = type.GetField(value.ToString());
+            return field == null ? null : field.GetCustomAttribute<DisplayAttribute>();
+        }
+    }
 }
