@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using SmartTesting.Controllers;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,11 +31,31 @@ namespace BaseDeProjetos.Controllers
         public async Task<IActionResult> Index(string casa, string sortOrder, string searchString)
         {
 
+            //Filtros e ordenadores
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["DateSortParm"] = sortOrder == "TipoContratacao" ? "tipo_desc" : "TipoContratacao";
             ViewData["CurrentFilter"] = searchString;
 
+            Casa enum_casa;
+            enum_casa = await DefinirCasa(casa);
 
+            var lista = enum_casa == Casa.Super ?
+                _context.Prospeccao:
+                _context.Prospeccao.Where(p => p.Casa.Equals(enum_casa));
+
+            lista = OrdenarProspecções(sortOrder, lista);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                lista = lista.Where(s => s.Empresa.Nome.Contains(searchString)
+                                       || s.Usuario.UserName.Contains(searchString));
+            }
+
+            return View(lista.ToList<Prospeccao>());
+        }
+
+        private async Task<Casa> DefinirCasa(string casa)
+        {
             switch (casa)
             {
                 case null:
@@ -42,7 +63,7 @@ namespace BaseDeProjetos.Controllers
                     {
                         casa = HttpContext.Session.GetString("_Casa");
                     }
-                    else { return View(await _context.Prospeccao.ToListAsync()); }
+                    else { return Casa.Super; }
 
                     break;
                 default:
@@ -52,17 +73,17 @@ namespace BaseDeProjetos.Controllers
                     }
                     else
                     {
-                        return NotFound();
+                        return Casa.Super;
                     }
-
                     break;
             }
 
             ViewData["Area"] = casa;
-            Casa enum_casa = (Casa)Enum.Parse(typeof(Casa), casa);
+            return (Casa)Enum.Parse(typeof(Casa), casa);
+        }
 
-            var lista = _context.Prospeccao.Where(p => p.Casa.Equals(enum_casa));
-
+        private static IQueryable<Prospeccao> OrdenarProspecções(string sortOrder, IQueryable<Prospeccao> lista)
+        {
             switch (sortOrder)
             {
                 case "name_desc":
@@ -79,15 +100,7 @@ namespace BaseDeProjetos.Controllers
                     break;
             }
 
-
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                lista = lista.Where(s => s.Empresa.Nome.Contains(searchString)
-                                       || s.Usuario.UserName.Contains(searchString));
-            }
-
-            return View(lista.ToList<Prospeccao>());
+            return lista;
         }
 
 
@@ -157,6 +170,8 @@ namespace BaseDeProjetos.Controllers
 
         private void CriarProjetoConvertido(FollowUp followup)
         {
+
+            Usuario user = _context.Prospeccao.Find(followup.OrigemID).Usuario;
             Projeto novo_projeto = new Projeto
             {
                 Casa = followup.Origem.Casa,
@@ -164,6 +179,7 @@ namespace BaseDeProjetos.Controllers
                 Empresa = followup.Origem.Empresa,
                 status = StatusProjeto.EmExecucao,
                 Id = $"proj_{DateTime.Now.Ticks}",
+                Equipe = {user}
             };
 
             _context.Add(novo_projeto);
@@ -179,9 +195,9 @@ namespace BaseDeProjetos.Controllers
 
                     notificacao = new Notificacao
                     {
-                        Titulo = "SGI - Uma proposta comercial foi enviada",
-                        TextoBase = $"Olá, A prospecção com {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Casa} teve uma proposta enviada. " +
-                         $"<hr>\n\n\n\r ------------------------" +
+                        Titulo = "SGI - Uma proposta comercial foi enviada!",
+                        TextoBase = $"Olá, A prospecção com {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Usuario} teve uma proposta enviada. " +
+                         $"<hr><br><br><hr>" +
                          $"Mais detalhes: {followup.Anotacoes}"
                     };
                     break;
@@ -189,9 +205,9 @@ namespace BaseDeProjetos.Controllers
                 case StatusProspeccao.Convertida:
                     notificacao = new Notificacao
                     {
-                        Titulo = "SGI - Uma proposta comercial foi convertida\n",
-                        TextoBase = $"Olá, A proposta com {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Casa} foi convertida." +
-                         $"<hr>\n\n\n\r ------------------------" +
+                        Titulo = "SGI - Uma proposta comercial foi convertida!",
+                        TextoBase = $"Olá, A proposta com {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Usuario} foi convertida." +
+                         $"<hr><br><br><hr>" +
                          $"Mais detalhes: {followup.Anotacoes}"
                     };
                     break;
@@ -200,8 +216,8 @@ namespace BaseDeProjetos.Controllers
                     notificacao = new Notificacao
                     {
                         Titulo = "SGI - Uma proposta comercial não foi convertida",
-                        TextoBase = $"Olá, A proposta com {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Casa} não foi convertida." +
-                         $"<hr>\n\n\n\r ------------------------" +
+                        TextoBase = $"Olá, A proposta com {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Usuario} não foi convertida." +
+                         $"<hr><br><br><hr>" +
                          $"Mais detalhes: {followup.Anotacoes}"
                     };
                     break;
@@ -209,9 +225,9 @@ namespace BaseDeProjetos.Controllers
                 case StatusProspeccao.ContatoInicial:
                     notificacao = new Notificacao
                     {
-                        Titulo = "SGI - Uma nova prospecção foi inicializada",
-                        TextoBase = $"Olá, A prospecção com {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Casa} foi iniciada." +
-                         $"<hr>\n\n\n\r ------------------------" +
+                        Titulo = "SGI - Uma nova prospecção foi inicializada!",
+                        TextoBase = $"Olá, A prospecção com {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Usuario} foi iniciada." +
+                         $"<hr><br><br><hr>" +
                          $"Mais detalhes: {followup.Anotacoes}"
                     };
                     break;
