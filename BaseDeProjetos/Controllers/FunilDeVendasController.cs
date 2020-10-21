@@ -17,7 +17,7 @@ namespace BaseDeProjetos.Controllers
     public class FunilDeVendasController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly EmailSender _mailer;
+        private readonly IEmailSender _mailer;
 
         public FunilDeVendasController(ApplicationDbContext context, IEmailSender mailer)
         {
