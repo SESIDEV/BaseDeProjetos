@@ -1,11 +1,12 @@
 ﻿@model BaseDeProjetos.Models.Projeto
-
 @using Microsoft.AspNetCore.Http
+
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar";
+    Model.Equipe = new List<Usuario>() { new Usuario(), new Usuario() };
 }
 
-<h1>Edit</h1>
+<h1>Editar</h1>
 <h4>Projeto</h4>
 <hr />
 <div>
@@ -69,31 +70,46 @@
                 </div>
 
             </fieldset>
-            <fieldset class="col-6">
-                <legend>Dados contábeis do projeto</legend>
-                <div class="form-group">
-                    <label asp-for="Estado" class="control-label"></label>
-                    <select asp-for="Estado" class="form-control" asp-items="Html.GetEnumSelectList<Estado>()"></select>
-                    <span asp-validation-for="Estado" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="FonteFomento" class="control-label"></label>
-                    <select asp-for="FonteFomento" class="form-control" asp-items="Html.GetEnumSelectList<TipoContratacao>()">
-                        <option selected="selected" value="">Selecione uma opção</option>
-                    </select>
-                    <span asp-validation-for="FonteFomento" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="ValorTotalProjeto" class="control-label"></label> (R$)
-                    <input asp-for="ValorTotalProjeto" class="form-control" placeholder="3,00" />
-                    <span asp-validation-for="ValorTotalProjeto" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="ValorAporteRecursos" class="control-label"></label> (R$)
-                    <input asp-for="ValorAporteRecursos" class="form-control" placeholder="3,00" />
-                    <span asp-validation-for="ValorAporteRecursos" class="text-danger"></span>
-                </div>
-            </fieldset>
+            <div class="col-6">
+                <fieldset>
+                    <legend>Dados contábeis do projeto</legend>
+                    <div class="form-group">
+                        <label asp-for="Estado" class="control-label"></label>
+                        <select asp-for="Estado" class="form-control" asp-items="Html.GetEnumSelectList<Estado>()"></select>
+                        <span asp-validation-for="Estado" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="FonteFomento" class="control-label"></label>
+                        <select asp-for="FonteFomento" class="form-control" asp-items="Html.GetEnumSelectList<TipoContratacao>()">
+                            <option selected="selected" value="">Selecione uma opção</option>
+                        </select>
+                        <span asp-validation-for="FonteFomento" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ValorTotalProjeto" class="control-label"></label> (R$)
+                        <input asp-for="ValorTotalProjeto" class="form-control" placeholder="3,00" />
+                        <span asp-validation-for="ValorTotalProjeto" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ValorAporteRecursos" class="control-label"></label> (R$)
+                        <input asp-for="ValorAporteRecursos" class="form-control" placeholder="3,00" />
+                        <span asp-validation-for="ValorAporteRecursos" class="text-danger"></span>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend >Equipe</legend>
+                    <div class="form-group">
+                        <label class="control-label"> Líder do Projeto</label>
+                        <select asp-for="Equipe[0].Id" class="form-control" asp-items="@ViewData["Equipe"] as SelectList">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label"> Vice-Líder do Projeto</label>
+                        <select asp-for="Equipe[1].Id" class="form-control" asp-items="@ViewData["Equipe"] as SelectList">
+                        </select>
+                    </div>
+                </fieldset>
+            </div>
             <div class="form-group col-12">
                 <input type="submit" value="Editar" class="btn btn-primary" />
             </div>

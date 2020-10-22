@@ -2,6 +2,7 @@
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
@@ -112,6 +113,7 @@ namespace BaseDeProjetos.Controllers
         // GET: Projetos/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
+            ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
             if (id == null)
             {
                 return NotFound();
