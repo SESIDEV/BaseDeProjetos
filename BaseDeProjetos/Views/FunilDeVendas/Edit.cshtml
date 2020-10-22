@@ -3,6 +3,10 @@
 
 @{
     ViewData["Title"] = "Edit";
+    if (!(Context.Session.GetString("_Casa") is null))
+    {
+        ViewData["Area"] = Context.Session.GetString("_Casa");
+    }
 }
 <h1>Editar</h1>
 
@@ -21,7 +25,7 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Casa" class="control-label"></label>
-                        <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Casa>()"></select>
+                    <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Casa>()"></select>
                     <span asp-validation-for="Casa" class="text-danger"></span>
                 </div>
 
@@ -33,8 +37,17 @@
                 <div class="form-group">
                     <label asp-for="LinhaPequisa" class="control-label"></label>
                     <select asp-for="LinhaPequisa" class="form-control" asp-items="Html.GetEnumSelectList<LinhaPesquisa>()"></select>
-                    <span asp-valdation-for ="LinhaPequisa" class="text-danger"></span>
+                    <span asp-valdation-for="LinhaPequisa" class="text-danger"></span>
                 </div>
+   
+                    <label class="control-label"> Líder da Prospecção</label>
+                    <select asp-for="Usuario.Id" class="form-control" asp-items="@ViewData["Equipe"] as SelectList">
+                        <option value="@Model.Usuario" selected>@Model.Usuario.UserName</option>
+                    </select>
+                    <span asp-validation-for="Empresa.Id" class="text-danger"></span>
+
+                <fieldset>
+                <legend>Dados do contato</legend>
                 <div class="form-group">
                     <label asp-for="Contato.Nome" class="control-label"></label>
                     <input asp-for="Contato.Nome" class="form-control" />
@@ -49,7 +62,7 @@
                     <label asp-for="Contato.Email" class="control-label"></label>
                     <input type="email" asp-for="Contato.Email" class="form-control" />
                     <span asp-validation-for="Contato.Email" class="text-danger"></span>
-                </div>
+                </div></fieldset>
             </fieldset>
 
 
@@ -105,12 +118,12 @@
                 <legend>Informações do Contato Inicial</legend>
                 <div class="form-group">
                     <label asp-for="Status[0].Data" class="control-label"></label>
-                    <input class="form-control" type="date" asp-for="Status[0].Data" readonly/>
+                    <input class="form-control" type="date" asp-for="Status[0].Data" readonly />
                     <span asp-validation-for="Status[0].Data" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Status[0].OrigemID" class="control-label"></label>
-                    <input class="form-control" asp-for="Status[0].OrigemID"  disabled />
+                    <input class="form-control" asp-for="Status[0].OrigemID" disabled />
                     <span asp-validation-for="Status[0].OrigemID" class="text-danger"></span>
                 </div>
                 <div class="form-group">

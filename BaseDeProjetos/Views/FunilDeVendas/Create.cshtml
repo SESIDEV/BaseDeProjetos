@@ -3,6 +3,10 @@
 @{
 
     ViewData["Title"] = "Adicionar Prospecção";
+    if (!(Context.Session.GetString("_Casa") is null))
+    {
+        ViewData["Area"] = Context.Session.GetString("_Casa");
+    }
 }
 
 <h1>Criar</h1>
@@ -45,7 +49,7 @@
                 <div class="form-group">
                     <label asp-for="LinhaPequisa" class="control-label"></label>
                     <select asp-for="LinhaPequisa" class="form-control" asp-items="Html.GetEnumSelectList<LinhaPesquisa>().OrderBy(p=>p.Text)"></select>
-                    <span asp-validation-for ="LinhaPequisa" class="text-danger"></span>
+                    <span asp-validation-for="LinhaPequisa" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Contato.Nome" class="control-label"></label>
@@ -65,14 +69,13 @@
             </fieldset>
 
 
-            <!-- Empresa existente -->
-            <fieldset class="col-4">
+            <fieldset id="group" class="col-4">
                 <div class="col-md-12">
                     <div class="form-group row">
-                        <button class="col-12 btn btn-primary" data-toggle="collapse" data-target="#existente" aria-expanded="true" aria-controls="existente">
+                        <button class="col-12 btn btn-primary" data-parent="#group" data-toggle="collapse" data-target="#existente" aria-expanded="true" aria-controls="existente">
                             A empresa já foi cadastrada
                         </button>
-                        <button class="col-12 btn btn-primary" data-toggle="collapse" data-target="#inexistente" aria-expanded="true" aria-controls="inexistente">
+                        <button class="col-12 btn btn-primary" data-parent="#group" data-toggle="collapse" data-target="#inexistente" aria-expanded="true" aria-controls="inexistente">
                             É o primeiro registro da empresa
                         </button>
                     </div>
@@ -80,35 +83,39 @@
 
                 <legend> Informações da Empresa</legend>
 
-                <div class="form-group collapse show" id="existente">
-                    <label asp-for="Empresa" class="control-label"></label>
-                    <select asp-for="Empresa.Id" class="form-control" asp-items="@(ViewData["Empresas"] as SelectList).OrderBy(p=>p.Text)">
-                        <option value="-1" selected>Selecione a empresa</option>
-                    </select>
-                    <span asp-validation-for="Empresa.Id" class="text-danger"></span>
-                </div>
+                <div class="accordion-group">
 
-                <!-- Empresa nova -->
-                <div class="collapse" id="inexistente">
-                    <div class="form-group">
-                        <label asp-for="Empresa.Nome" class="control-label"></label>
-                        <input asp-for="Empresa.Nome" class="form-control" />
-                        <span asp-validation-for="Empresa.Nome" class="text-danger"></span>
+                    <!-- Empresa existente -->
+                    <div class="form-group collapse" data-parent="#group" id="existente">
+                        <label asp-for="Empresa" class="control-label"></label>
+                        <select asp-for="Empresa.Id" class="form-control" asp-items="@(ViewData["Empresas"] as SelectList).OrderBy(p=>p.Text)">
+                            <option value="-1" selected>Selecione a empresa</option>
+                        </select>
+                        <span asp-validation-for="Empresa.Id" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="Empresa.CNPJ" class="control-label"></label>
-                        <input asp-for="Empresa.CNPJ" class="form-control" onkeypress="$(this).mask('00.000.000/0000-00', {reverse: true})" />
-                        <span asp-validation-for="Empresa.CNPJ" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Empresa.Segmento" class="control-label"></label>
-                        <input asp-for="Empresa.Segmento" class="form-control" />
-                        <span asp-validation-for="Empresa.Segmento" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Empresa.Estado" class="control-label"></label>
-                        <select asp-for="Empresa.Estado" class="form-control" asp-items="Html.GetEnumSelectList<Estado>().OrderBy(p=>p.Text)"></select>
-                        <span asp-validation-for="Empresa.Estado" class="text-danger"></span>
+
+                    <!-- Empresa nova -->
+                    <div class="collapse" data-parent="#group" id="inexistente">
+                        <div class="form-group">
+                            <label asp-for="Empresa.Nome" class="control-label"></label>
+                            <input asp-for="Empresa.Nome" class="form-control" />
+                            <span asp-validation-for="Empresa.Nome" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Empresa.CNPJ" class="control-label"></label>
+                            <input asp-for="Empresa.CNPJ" class="form-control" onkeypress="$(this).mask('00.000.000/0000-00', {reverse: true})" />
+                            <span asp-validation-for="Empresa.CNPJ" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Empresa.Segmento" class="control-label"></label>
+                            <input asp-for="Empresa.Segmento" class="form-control" />
+                            <span asp-validation-for="Empresa.Segmento" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Empresa.Estado" class="control-label"></label>
+                            <select asp-for="Empresa.Estado" class="form-control" asp-items="Html.GetEnumSelectList<Estado>().OrderBy(p=>p.Text)"></select>
+                            <span asp-validation-for="Empresa.Estado" class="text-danger"></span>
+                        </div>
                     </div>
                 </div>
             </fieldset>
@@ -117,7 +124,7 @@
                 <legend>Informações do Contato Inicial</legend>
                 <div class="form-group">
                     <label asp-for="Status[0].Data" class="control-label"></label>
-                    <input class="form-control" asp-for="Status[0].Data" value="@DateTime.Now" />
+                    <input type="date" class="form-control" asp-for="Status[0].Data" value="@DateTime.Now" />
                     <span asp-validation-for="Status[0].Data" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -134,7 +141,7 @@
                     <label asp-for="Status[0].Status" class="control-label"></label>
                     <select asp-for="Status[0].Status" class="form-control" disabled>
                         <!-->option value="@StatusProspeccao.ContatoInicial"> @Enum.GetName(typeof(StatusProspeccao),StatusProspeccao.ContatoInicial)</!-option-->
-                        <option value="@StatusProspeccao.ContatoInicial"> @StatusProspeccao.ContatoInicial</option>
+                        <option value="@StatusProspeccao.ContatoInicial"></option>
                     </select>
                     <span asp-validation-for="Status[0].Status" class="text-danger"></span>
                 </div>

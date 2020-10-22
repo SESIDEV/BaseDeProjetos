@@ -273,6 +273,8 @@ namespace BaseDeProjetos.Controllers
         public async Task<IActionResult> Edit(string id)
         {
             ViewData["Empresas"] = new SelectList(_context.Empresa.ToList(), "Id", "Nome");
+            ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
+
             if (id == null)
             {
                 return NotFound();
@@ -291,7 +293,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,TipoContratacao,LinhaPequisa, Empresa, Contato, Casa")] Prospeccao prospeccao)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,TipoContratacao,LinhaPequisa, Empresa, Contato, Casa, Usuario")] Prospeccao prospeccao)
         {
             if (id != prospeccao.Id)
             {
@@ -364,7 +366,7 @@ namespace BaseDeProjetos.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction("Index", new { casa = HttpContext.Session.GetString("_Casa") });
+            return RedirectToAction("Details", new { id = followup.OrigemID }); ;
         }
 
         // GET: FunilDeVendas/Delete/5
@@ -403,7 +405,8 @@ namespace BaseDeProjetos.Controllers
             if (prospeccao.Status.Count() > 1)
             {
                 _context.FollowUp.Remove(followup);
-                return RedirectToAction("Index", new { casa = HttpContext.Session.GetString("_Casa") });
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Details", new { id = followup.OrigemID }); ;
             }
             else
             {

@@ -1,6 +1,12 @@
 ﻿@model BaseDeProjetos.Models.FollowUp
+@using Microsoft.AspNetCore.Http
 @{
     ViewData["Title"] = "Atualizar Prospecção";
+    if (!(Context.Session.GetString("_Casa") is null))
+    {
+        ViewData["Area"] = Context.Session.GetString("_Casa");
+    }
+
 }
 
 @{ var prosp = ViewData["prosp"] as Prospeccao; }
@@ -56,7 +62,7 @@
 
             <div class="form-group">
                 <label asp-for="Data" class="control-label"></label>
-                <input asp-for="Data" class="form-control" />
+                <input type="date" asp-for="Data" class="form-control" />
                 <span asp-validation-for="Data" class="text-danger"></span>
             </div>
             <div class="form-group">
