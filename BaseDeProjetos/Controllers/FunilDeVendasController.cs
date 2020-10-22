@@ -310,9 +310,16 @@ namespace BaseDeProjetos.Controllers
                     }
                     else
                     {
-                        prospeccao.Empresa = new Empresa { Estado = prospeccao.Empresa.Estado, CNPJ = prospeccao.Empresa.CNPJ, Nome = prospeccao.Empresa.Nome, Segmento = prospeccao.Empresa.Segmento };
+                        prospeccao.Empresa = new Empresa { 
+                            Estado = prospeccao.Empresa.Estado, 
+                            CNPJ = prospeccao.Empresa.CNPJ, 
+                            Nome = prospeccao.Empresa.Nome, 
+                            Segmento = prospeccao.Empresa.Segmento 
+                        };
                     }
 
+                    Usuario lider = _context.Users.First(p => p.Id == prospeccao.Usuario.Id);
+                    prospeccao.Usuario = lider;
                     _context.Update(prospeccao);
                     await _context.SaveChangesAsync();
                 }
@@ -401,6 +408,7 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
+            //TODO: Somente líder ou Super pode remover
             var prospeccao = _context.Prospeccao.FirstOrDefault(p => p.Id == followup.OrigemID);
             if (prospeccao.Status.Count() > 1)
             {
