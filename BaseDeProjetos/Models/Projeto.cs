@@ -20,7 +20,7 @@ namespace BaseDeProjetos.Models
         [Display(AutoGenerateFilter = true, Name = "Data de Início")]
         public virtual DateTime DataInicio { get; set; }
         public virtual DateTime DataEncerramento { get; set; }
-        public virtual List<Usuario> Equipe { get; set; } = new List<Usuario>();
+        public virtual List<Usuario> Equipe { get; set; } 
         [NotMapped]
         public Usuario Lider
         {

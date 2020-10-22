@@ -132,7 +132,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Casa,Empresa,NomeProjeto,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos")] Projeto projeto)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Casa,Empresa,NomeProjeto,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos, Equipe")] Projeto projeto)
         {
             if (id != projeto.Id)
             {
@@ -143,6 +143,12 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {
+                    List<Usuario> usuarios_reais = new List<Usuario>();
+                    foreach(var usuario in projeto.Equipe)
+                    {
+                        usuarios_reais.Add(_context.Users.First(p => p.Id == usuario.Id));
+                    }
+                    projeto.Equipe = usuarios_reais;
                     _context.Update(projeto);
                     await _context.SaveChangesAsync();
                 }
