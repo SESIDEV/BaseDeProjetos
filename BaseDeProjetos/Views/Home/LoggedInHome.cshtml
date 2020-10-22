@@ -1,8 +1,8 @@
 ﻿@page
 @model BaseDeProjetos.Views.Home.LoggedInHomeModel
 @{
-    decimal receita = 4722542.00M;
-    //decimal receita = (decimal)ViewBag.receita_isiqv + (decimal)ViewBag.receita_isiii + (decimal)ViewBag.receita_cisho;
+    //decimal receita = 4722542.00M;
+    decimal receita = (decimal)ViewBag.receita_isiqv + (decimal)ViewBag.receita_isiii + (decimal)ViewBag.receita_cisho;
     decimal investimento = 3631437.00M;
     decimal despesas = 2558188M;
     decimal sustentatiblidade = receita / despesas;
