@@ -192,14 +192,14 @@ namespace BaseDeProjetos.Controllers
         {
 
             Usuario user = _context.Prospeccao.Find(followup.OrigemID).Usuario;
-            Projeto novo_projeto = new Projeto
+            Projeto novo_projeto = new Projeto()
             {
                 Casa = followup.Origem.Casa,
                 AreaPesquisa = followup.Origem.LinhaPequisa,
                 Empresa = followup.Origem.Empresa,
                 status = StatusProjeto.EmExecucao,
                 Id = $"proj_{DateTime.Now.Ticks}",
-                Equipe = { user }
+                Equipe =  new List<Usuario>(){ user }
             };
 
             _context.Add(novo_projeto);
