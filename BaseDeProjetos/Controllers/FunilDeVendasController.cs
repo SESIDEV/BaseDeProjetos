@@ -59,8 +59,7 @@ namespace BaseDeProjetos.Controllers
             if (!String.IsNullOrEmpty(searchString))
             {
                 lista = lista.Where(s => s.Empresa.Nome.Contains(searchString)
-                                       || s.Usuario.UserName.Contains(searchString)
-                                       || s.Status.Last().Status.GetDisplayName().Contains(searchString));
+                                       || s.Usuario.UserName.Contains(searchString));
             }
 
             return lista;
