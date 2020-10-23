@@ -166,7 +166,8 @@ namespace BaseDeProjetos.Controllers
 
                 NotificarProspecção(followup);
 
-                await AtualizarStatusAsync(followup);
+                //TODO: Acertar a atualização dos dados
+                //await AtualizarStatusAsync(followup);
 
                 if (followup.Status == StatusProspeccao.Convertida)
                 {
