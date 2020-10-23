@@ -185,7 +185,7 @@ namespace BaseDeProjetos.Controllers
                 status.isTratado = true;
 
             }
-            _ = _context.Update(followup);
+            _context.Update(followup);
             await _context.SaveChangesAsync();
         }
 
