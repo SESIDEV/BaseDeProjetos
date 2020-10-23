@@ -191,18 +191,23 @@ namespace BaseDeProjetos.Controllers
         private void CriarProjetoConvertido(FollowUp followup)
         {
 
-            Usuario user = _context.Prospeccao.Find(followup.OrigemID).Usuario;
-            Projeto novo_projeto = new Projeto()
+            //Evitar que duplique projetos. TODO: Consertar isso antes da virada do ano
+            if (followup.Data.Year != 2020)
             {
-                Casa = followup.Origem.Casa,
-                AreaPesquisa = followup.Origem.LinhaPequisa,
-                Empresa = followup.Origem.Empresa,
-                status = StatusProjeto.EmExecucao,
-                Id = $"proj_{DateTime.Now.Ticks}",
-                Equipe =  new List<Usuario>(){ user }
-            };
+                Usuario user = _context.Prospeccao.Find(followup.OrigemID).Usuario;
+                Projeto novo_projeto = new Projeto()
+                {
+                    Casa = followup.Origem.Casa,
+                    AreaPesquisa = followup.Origem.LinhaPequisa,
+                    Empresa = followup.Origem.Empresa,
+                    status = StatusProjeto.EmExecucao,
+                    Id = $"proj_{DateTime.Now.Ticks}",
+                    Equipe = new List<Usuario>() { user }
+                };
+                _context.Add(novo_projeto);
+                _context.SaveChangesAsync();
+            }
 
-            _context.Add(novo_projeto);
         }
 
         private void NotificarProspecção(FollowUp followup)
