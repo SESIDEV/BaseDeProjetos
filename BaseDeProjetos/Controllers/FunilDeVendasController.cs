@@ -166,7 +166,7 @@ namespace BaseDeProjetos.Controllers
 
                 NotificarProspecção(followup);
 
-                AtualizarStatusAsync(followup);
+                await AtualizarStatusAsync(followup);
 
                 if (followup.Status == StatusProspeccao.Convertida)
                 {
@@ -206,7 +206,7 @@ namespace BaseDeProjetos.Controllers
                     Equipe = new List<Usuario>() { user }
                 };
                 _context.Add(novo_projeto);
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
 
         }
