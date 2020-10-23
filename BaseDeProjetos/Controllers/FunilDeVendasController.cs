@@ -75,7 +75,7 @@ namespace BaseDeProjetos.Controllers
             {
                 if (!string.IsNullOrEmpty(HttpContext.Session.GetString("_Casa")))
                 {
-                    casa = HttpContext.Session.GetString("_Casa");
+                    enum_casa = (Casa)Enum.Parse(typeof(Casa), HttpContext.Session.GetString("_Casa"));
                 }
                 else { enum_casa = Casa.Super; }
             }
@@ -84,21 +84,15 @@ namespace BaseDeProjetos.Controllers
                 if (Enum.IsDefined(typeof(Casa), casa))
                 {
                     HttpContext.Session.SetString("_Casa", casa);
+                    enum_casa = (Casa)Enum.Parse(typeof(Casa), HttpContext.Session.GetString("_Casa"));
                 }
                 else
                 {
                     enum_casa = Casa.Super;
                 }
             }
-            try
-            {
-                enum_casa = (Casa)Enum.Parse(typeof(Casa), casa);
-            }
-            catch (Exception e)
-            {
-                enum_casa = (Casa)Enum.Parse(typeof(Casa), HttpContext.Session.GetString("_Casa"));
-            }
-
+           
+            
             ViewData["Area"] = casa;
 
             var lista = enum_casa == Casa.Super ?
