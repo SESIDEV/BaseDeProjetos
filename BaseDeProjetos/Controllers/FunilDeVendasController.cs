@@ -166,25 +166,27 @@ namespace BaseDeProjetos.Controllers
 
                 NotificarProspecção(followup);
 
-                AtualizarStatus(followup);
+                AtualizarStatusAsync(followup);
 
                 if (followup.Status == StatusProspeccao.Convertida)
                 {
                     CriarProjetoConvertido(followup);
                 }
 
-                await _context.SaveChangesAsync();
             }
 
             return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
         }
 
-        private static void AtualizarStatus(FollowUp followup)
+        private async Task AtualizarStatusAsync(FollowUp followup)
         {
             foreach (FollowUp status in followup.Origem.Status)
             {
                 status.isTratado = true;
+
             }
+            _ = _context.Update(followup);
+            await _context.SaveChangesAsync();
         }
 
         private void CriarProjetoConvertido(FollowUp followup)
