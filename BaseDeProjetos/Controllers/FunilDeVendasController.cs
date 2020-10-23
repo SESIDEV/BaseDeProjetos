@@ -28,34 +28,48 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: FunilDeVendas
-        public async Task<IActionResult> Index(string casa, string sortOrder, string searchString)
+        public IActionResult Index(string casa, string sortOrder, string searchString, string ano)
         {
 
             //Filtros e ordenadores
+            ViewData["CurrentFilter"] = searchString;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["DateSortParm"] = sortOrder == "TipoContratacao" ? "tipo_desc" : "TipoContratacao";
-            ViewData["CurrentFilter"] = searchString;
 
-            Casa enum_casa;
-            enum_casa = await DefinirCasa(casa);
-
-            var lista = enum_casa == Casa.Super ?
-                _context.Prospeccao:
-                _context.Prospeccao.Where(p => p.Casa.Equals(enum_casa));
-
+            var lista = DefinirCasa(casa);
+            lista = PeriodizarProspecções(ano, lista);
             lista = OrdenarProspecções(sortOrder, lista);
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                lista = lista.Where(s => s.Empresa.Nome.Contains(searchString)
-                                       || s.Usuario.UserName.Contains(searchString));
-            }
+            lista = FiltrarProspecções(searchString, lista);
 
             return View(lista.ToList<Prospeccao>());
         }
 
-        private async Task<Casa> DefinirCasa(string casa)
+        private IQueryable<Prospeccao> PeriodizarProspecções(string ano, IQueryable<Prospeccao> lista)
         {
+            if (!String.IsNullOrEmpty(ano))
+            {
+                return lista.Where(s => s.Status.Any(k => k.Data.Year == Convert.ToInt32(ano)));
+            }
+
+            return lista;
+        }
+
+        private static IQueryable<Prospeccao> FiltrarProspecções(string searchString, IQueryable<Prospeccao> lista)
+        {
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                lista = lista.Where(s => s.Empresa.Nome.Contains(searchString)
+                                       || s.Usuario.UserName.Contains(searchString)
+                                       || s.Status.Last().Status.GetDisplayName().Contains(searchString));
+            }
+
+            return lista;
+        }
+
+        private IQueryable<Prospeccao> DefinirCasa(string casa)
+        {
+
+            Casa enum_casa;
             switch (casa)
             {
                 case null:
@@ -63,7 +77,7 @@ namespace BaseDeProjetos.Controllers
                     {
                         casa = HttpContext.Session.GetString("_Casa");
                     }
-                    else { return Casa.Super; }
+                    else { enum_casa = Casa.Super; }
 
                     break;
                 default:
@@ -73,13 +87,18 @@ namespace BaseDeProjetos.Controllers
                     }
                     else
                     {
-                        return Casa.Super;
+                        enum_casa = Casa.Super;
                     }
                     break;
             }
+            enum_casa = (Casa)Enum.Parse(typeof(Casa), casa);
 
             ViewData["Area"] = casa;
-            return (Casa)Enum.Parse(typeof(Casa), casa);
+            var lista = enum_casa == Casa.Super ?
+                _context.Prospeccao :
+                _context.Prospeccao.Where(p => p.Casa.Equals(enum_casa));
+
+            return lista;
         }
 
         private static IQueryable<Prospeccao> OrdenarProspecções(string sortOrder, IQueryable<Prospeccao> lista)
@@ -138,7 +157,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Atualizar([Bind("OrigemID, Data, Status, Anotacoes")] FollowUp followup)
+        public async Task<IActionResult> Atualizar(string id, [Bind("OrigemID, Data, Status, Anotacoes, MotivoNaoConversao")] FollowUp followup)
         {
             if (ModelState.IsValid)
             {
@@ -179,7 +198,7 @@ namespace BaseDeProjetos.Controllers
                 Empresa = followup.Origem.Empresa,
                 status = StatusProjeto.EmExecucao,
                 Id = $"proj_{DateTime.Now.Ticks}",
-                Equipe = {user}
+                Equipe = { user }
             };
 
             _context.Add(novo_projeto);
@@ -310,11 +329,12 @@ namespace BaseDeProjetos.Controllers
                     }
                     else
                     {
-                        prospeccao.Empresa = new Empresa { 
-                            Estado = prospeccao.Empresa.Estado, 
-                            CNPJ = prospeccao.Empresa.CNPJ, 
-                            Nome = prospeccao.Empresa.Nome, 
-                            Segmento = prospeccao.Empresa.Segmento 
+                        prospeccao.Empresa = new Empresa
+                        {
+                            Estado = prospeccao.Empresa.Estado,
+                            CNPJ = prospeccao.Empresa.CNPJ,
+                            Nome = prospeccao.Empresa.Nome,
+                            Segmento = prospeccao.Empresa.Segmento
                         };
                     }
 

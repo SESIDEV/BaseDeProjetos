@@ -6,7 +6,16 @@
 
 <div class="row card">
     <div class=" col-12 card-body">
+
         <h1 class="card-title">Prospecções - @ViewData["Area"]</h1>
+        <div>
+            <hr />
+            Período avaliado:
+            <a asp-action="Index" asp-route-ano="2020">2020</a> |
+            <a asp-action="Index" asp-route-ano="2019">2019</a> 
+            <hr />
+        </div>
+
         <div class="col-12 card-img">
             @Html.Partial("graph_funil", Model)
         </div>
