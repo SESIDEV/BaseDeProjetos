@@ -66,34 +66,41 @@ namespace BaseDeProjetos.Controllers
             return lista;
         }
 
-        private IQueryable<Prospeccao> DefinirCasa(string casa)
+        private IQueryable<Prospeccao> DefinirCasa(string? casa)
         {
 
             Casa enum_casa;
-            switch (casa)
-            {
-                case null:
-                    if (!string.IsNullOrEmpty(HttpContext.Session.GetString("_Casa")))
-                    {
-                        casa = HttpContext.Session.GetString("_Casa");
-                    }
-                    else { enum_casa = Casa.Super; }
 
-                    break;
-                default:
-                    if (Enum.IsDefined(typeof(Casa), casa))
-                    {
-                        HttpContext.Session.SetString("_Casa", casa);
-                    }
-                    else
-                    {
-                        enum_casa = Casa.Super;
-                    }
-                    break;
+            if (String.IsNullOrEmpty(casa))
+            {
+                if (!string.IsNullOrEmpty(HttpContext.Session.GetString("_Casa")))
+                {
+                    casa = HttpContext.Session.GetString("_Casa");
+                }
+                else { enum_casa = Casa.Super; }
             }
-            enum_casa = (Casa)Enum.Parse(typeof(Casa), casa);
+            else
+            {
+                if (Enum.IsDefined(typeof(Casa), casa))
+                {
+                    HttpContext.Session.SetString("_Casa", casa);
+                }
+                else
+                {
+                    enum_casa = Casa.Super;
+                }
+            }
+            try
+            {
+                enum_casa = (Casa)Enum.Parse(typeof(Casa), casa);
+            }
+            catch (Exception e)
+            {
+                enum_casa = (Casa)Enum.Parse(typeof(Casa), HttpContext.Session.GetString("_Casa"));
+            }
 
             ViewData["Area"] = casa;
+
             var lista = enum_casa == Casa.Super ?
                 _context.Prospeccao :
                 _context.Prospeccao.Where(p => p.Casa.Equals(enum_casa));
