@@ -174,6 +174,7 @@ namespace BaseDeProjetos.Controllers
                     CriarProjetoConvertido(followup);
                 }
 
+            await _context.SaveChangesAsync();
             }
 
             return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
