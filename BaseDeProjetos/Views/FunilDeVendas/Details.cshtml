@@ -1,9 +1,6 @@
 ﻿@model BaseDeProjetos.Models.Prospeccao
-@using System.Reflection;
 @using Microsoft.AspNetCore.Http
-@using System.ComponentModel.DataAnnotations;
  
-
 @{
     ViewData["Title"] = "Detalhes";
     if (!(Context.Session.GetString("_Casa") is null))

@@ -31,12 +31,69 @@ namespace BaseDeProjetos.Controllers
             return View();
         }
 
-        private double ReceitaCasa(Casa casa)
+        private decimal ReceitaCasa(Casa casa)
         {
-            return _context.Projeto.
+            var valores = _context.Projeto.
                 Where(p => p.Casa == casa && p.status == StatusProjeto.EmExecucao).
-                Select(p => p.ValorAporteRecursos).
-                Sum();
+                Select(p => CalcularReceita(p));
+
+            decimal sum = 0;
+            foreach(var valor in valores)
+            {
+                sum += valor;
+            }
+
+            return sum;
+        }
+
+        private static decimal CalcularReceita(Projeto p)
+        {
+            var valor_aportado = 0M;
+            if(p.DataEncerramento < DateTime.Today)
+            {
+                //O projeto está em execução, mas não recebe mais dinheiro
+                return valor_aportado;
+            }
+
+            if(p.DataEncerramento.Year == DateTime.Today.Year)
+            {
+
+                if (p.DuracaoProjetoEmMeses >= 12)
+                {
+                    //Caso relativamente simples, o projeto é longo e acaba neste ano, recebendo até o seu término (Jan/19 a Mar/21)
+                    return (Decimal)((p.ValorAporteRecursos / p.DuracaoProjetoEmMeses) * p.DataEncerramento.Month);
+                }
+                else
+                {
+                    //É um projeto curto, que provavelmente começou e vai acabar neste ano (Abril a Outubro)
+                    if(p.DataInicio.Year == DateTime.Today.Year)
+                    {
+                        return (Decimal)p.ValorAporteRecursos;
+                    }
+                    else
+                    {
+                        //É um projeto curto que já vinha em andamento e que vai terminar neste ano (Ex.: De setembro a março) 
+                        return (Decimal)((p.ValorAporteRecursos/p.DuracaoProjetoEmMeses) * p.DataEncerramento.Month);
+                    }
+
+                }
+            }
+            else
+            {
+                //Caso mais simples, o projeto tem mais de 12 meses e não começou nem termina este ano (jan/20 a Dez/24)
+                if(p.DuracaoProjetoEmMeses >= 12 && p.DataInicio.Year != DateTime.Today.Year)
+                {
+                    return  (Decimal)((p.ValorAporteRecursos / p.DuracaoProjetoEmMeses) * 12);
+                }
+
+                //O projeto tem menos de 12 meses, mas só acaba no ano seguinte (Set/20 a Mar/21)
+                if(p.DataEncerramento.Year == (DateTime.Today.Year + 1))
+                {
+                    return (Decimal)((p.ValorAporteRecursos/p.DuracaoProjetoEmMeses) * (12 - p.DataInicio.Month));
+                }
+            }
+
+            return valor_aportado;
         }
 
         public IActionResult Privacy()
