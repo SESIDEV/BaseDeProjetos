@@ -87,7 +87,12 @@
                                     @Html.DisplayFor(modelItem => item.AreaPesquisa)
                                 </td>
                                 <td>
+                                    @try{
+                                        @Html.DisplayFor(modelItem => item.Lider.NormalizedEmail)
+                                    }
+                                    catch {
                                     <span class="text-secondary">A preencher</span>
+                                    }
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Estado)

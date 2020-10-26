@@ -10,6 +10,7 @@ using SmartTesting.Controllers;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using MailSenderApp.Services;
 using System;
+using System.Threading;
 
 namespace BaseDeProjetos
 {
@@ -71,7 +72,7 @@ namespace BaseDeProjetos
 
 
             app.UseRouting();
-            app.UseSession();
+            app.UseSession(new SessionOptions {IOTimeout=Timeout.InfiniteTimeSpan, IdleTimeout = Timeout.InfiniteTimeSpan});
 
             app.UseAuthentication();
             app.UseAuthorization();
