@@ -60,7 +60,10 @@ namespace BaseDeProjetos.Controllers
 
             ViewBag.n_projs = _context.Projeto.Where(p => p.Casa == Enum.Parse<Casa>(casa) && p.status == StatusProjeto.EmExecucao).Count();
             ViewBag.n_empresas = _context.Projeto.Where(p => p.Casa == Enum.Parse<Casa>(casa) ).Count();
-            ViewBag.n_revenue = _context.Projeto.Where(p => p.Casa == Enum.Parse<Casa>(casa)).Select(p=>p.ValorAporteRecursos).Sum();
+            ViewBag.n_revenue = _context.Projeto.
+                Where(p => p.Casa == Enum.Parse<Casa>(casa) && p.status == StatusProjeto.EmExecucao).
+                Select(p=>p.ValorAporteRecursos).
+                Sum();
             ViewBag.n_pesquisadores = _context.Users.Where(p => p.Casa == Enum.Parse<Casa>(casa)).Count();
             ViewBag.Embrapii_projs = _context.Projeto.Where(p => p.FonteFomento == TipoContratacao.Embrapii).ToList<Projeto>();
             ViewBag.Embrapii_prosps = _context.Projeto.Where(p => p.FonteFomento == TipoContratacao.Embrapii).ToList<Projeto>();

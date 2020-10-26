@@ -33,7 +33,10 @@ namespace BaseDeProjetos.Controllers
 
         private double ReceitaCasa(Casa casa)
         {
-            return _context.Projeto.Where(p => p.Casa == casa && p.status == StatusProjeto.EmExecucao).Select(p => p.ValorAporteRecursos).Sum();
+            return _context.Projeto.
+                Where(p => p.Casa == casa && p.status == StatusProjeto.EmExecucao).
+                Select(p => p.ValorAporteRecursos).
+                Sum();
         }
 
         public IActionResult Privacy()
