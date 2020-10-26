@@ -21,7 +21,7 @@ namespace BaseDeProjetos.Controllers
         // GET: Empresas
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Empresa.ToListAsync());
+            return View(await _context.Empresa.OrderBy(p=>p.Nome).ToListAsync());
         }
 
         // GET: Empresas/Details/5
