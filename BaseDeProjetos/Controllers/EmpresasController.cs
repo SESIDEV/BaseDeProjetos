@@ -139,6 +139,8 @@ namespace BaseDeProjetos.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             Empresa empresa = await _context.Empresa.FindAsync(id);
+            var pessoas_a_remover = _context.Pessoa.Where(p => p.empresa.Id == empresa.Id);
+            _context.Pessoa.RemoveRange(pessoas_a_remover);
             _context.Empresa.Remove(empresa);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
