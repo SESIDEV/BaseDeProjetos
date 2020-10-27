@@ -332,9 +332,9 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {
-                    if (_context.Empresa.Where(e => e.Id == prospeccao.Empresa.Id).Count() > 0)
+                    if (_context.Empresa.Where(e => e.Nome == prospeccao.Empresa.Nome).Count() > 0)
                     {
-                        prospeccao.Empresa = _context.Empresa.First(e => e.Id == prospeccao.Empresa.Id);
+                        prospeccao.Empresa = _context.Empresa.First(e => e.Nome == prospeccao.Empresa.Nome);
                     }
                     else
                     {

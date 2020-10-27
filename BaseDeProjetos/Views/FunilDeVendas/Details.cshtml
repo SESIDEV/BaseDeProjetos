@@ -74,7 +74,11 @@
         </div>
     }
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Editar Prospecção</a> |
-    <a asp-action="Index" asp-route-casa="@ViewData["Area"]">Voltar</a>
+<hr />
+<div class="row">
+    <h5 class="col-12">Ações</h5>
+    <hr />
+    <a class="col btn btn-primary" asp-action="Atualizar" asp-route-id="@Model.Id">Atualizar Prospecção</a> 
+    <a class="col btn btn-primary" asp-action="Edit" asp-route-id="@Model.Id">Editar Prospecção</a> 
+    <a class="col btn btn-primary" asp-action="Index" asp-route-casa="@ViewData["Area"]">Voltar</a>
 </div>

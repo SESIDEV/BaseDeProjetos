@@ -1,8 +1,13 @@
-﻿using BaseDeProjetos.Models;
+﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Models;
+using Castle.DynamicProxy.Generators;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Areas.Identity.Pages.Account.Manage
@@ -11,13 +16,18 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<Usuario> _userManager;
         private readonly SignInManager<Usuario> _signInManager;
+        private readonly ApplicationDbContext _context;
 
         public IndexModel(
             UserManager<Usuario> userManager,
-            SignInManager<Usuario> signInManager)
+            SignInManager<Usuario> signInManager,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context;
+
+            Bag = new Dictionary<string, double>();
         }
 
         public string Username { get; set; }
@@ -27,6 +37,9 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account.Manage
 
         [BindProperty]
         public InputModel Input { get; set; }
+
+        [BindProperty]
+        public Dictionary<string,double> Bag { get; set; }
 
         public class InputModel
         {
@@ -57,7 +70,28 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account.Manage
             }
 
             await LoadAsync(user);
+
+            Bag["n_projs"] = _context.Projeto.ToList().Where(p => AvaliarLider(p, user)).Count();
+            Bag["n_prosps"] = _context.Prospeccao.ToList().Where(p => p.Usuario.Id == user.Id).Count();
+            Bag["n_propostas"] = _context.Prospeccao.ToList().
+                Where(
+                p => p.Usuario.Id == user.Id && 
+                p.Status.Any(j=>j.Status == StatusProspeccao.ComProposta)).
+                Count();
+
             return Page();
+        }
+
+        private static bool AvaliarLider(Projeto p, Usuario user)
+        {
+            try
+            {
+                return p.Lider.Id == user.Id;
+            }
+            catch(Exception e)
+            {
+                return false;
+            }
         }
 
         public async Task<IActionResult> OnPostAsync()
