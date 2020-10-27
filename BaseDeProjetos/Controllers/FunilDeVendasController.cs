@@ -5,12 +5,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.Operations;
 using Microsoft.EntityFrameworkCore;
 using SmartTesting.Controllers;
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -33,10 +31,10 @@ namespace BaseDeProjetos.Controllers
 
             //Filtros e ordenadores
             ViewData["CurrentFilter"] = searchString;
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["DateSortParm"] = sortOrder == "TipoContratacao" ? "tipo_desc" : "TipoContratacao";
 
-            var lista = DefinirCasa(casa);
+            IQueryable<Prospeccao> lista = DefinirCasa(casa);
             lista = PeriodizarProspecções(ano, lista);
             lista = OrdenarProspecções(sortOrder, lista);
             lista = FiltrarProspecções(searchString, lista);
@@ -46,7 +44,7 @@ namespace BaseDeProjetos.Controllers
 
         private IQueryable<Prospeccao> PeriodizarProspecções(string ano, IQueryable<Prospeccao> lista)
         {
-            if (!String.IsNullOrEmpty(ano))
+            if (!string.IsNullOrEmpty(ano))
             {
                 return lista.Where(s => s.Status.Any(k => k.Data.Year == Convert.ToInt32(ano)));
             }
@@ -56,7 +54,7 @@ namespace BaseDeProjetos.Controllers
 
         private static IQueryable<Prospeccao> FiltrarProspecções(string searchString, IQueryable<Prospeccao> lista)
         {
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
                 lista = lista.Where(s => s.Empresa.Nome.Contains(searchString)
                                        || s.Usuario.UserName.Contains(searchString));
@@ -70,7 +68,7 @@ namespace BaseDeProjetos.Controllers
 
             Casa enum_casa;
 
-            if (String.IsNullOrEmpty(casa))
+            if (string.IsNullOrEmpty(casa))
             {
                 if (!string.IsNullOrEmpty(HttpContext.Session.GetString("_Casa")))
                 {
@@ -90,11 +88,11 @@ namespace BaseDeProjetos.Controllers
                     enum_casa = Casa.Super;
                 }
             }
-           
-            
+
+
             ViewData["Area"] = casa;
 
-            var lista = enum_casa == Casa.Super ?
+            IQueryable<Prospeccao> lista = enum_casa == Casa.Super ?
                 _context.Prospeccao :
                 _context.Prospeccao.Where(p => p.Casa.Equals(enum_casa));
 
@@ -174,7 +172,7 @@ namespace BaseDeProjetos.Controllers
                     CriarProjetoConvertido(followup);
                 }
 
-            await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
 
             return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
@@ -438,7 +436,7 @@ namespace BaseDeProjetos.Controllers
             }
 
             //TODO: Somente líder ou Super pode remover
-            var prospeccao = _context.Prospeccao.FirstOrDefault(p => p.Id == followup.OrigemID);
+            Prospeccao prospeccao = _context.Prospeccao.FirstOrDefault(p => p.Id == followup.OrigemID);
             if (prospeccao.Status.Count() > 1)
             {
                 _context.FollowUp.Remove(followup);
@@ -460,8 +458,8 @@ namespace BaseDeProjetos.Controllers
             Prospeccao prospeccao = await _context.Prospeccao.FindAsync(id);
 
             //Remover os filhos
-            var follow_ups = _context.FollowUp.Where(p => p.OrigemID == id).ToList();
-            foreach (var followup in follow_ups)
+            List<FollowUp> follow_ups = _context.FollowUp.Where(p => p.OrigemID == id).ToList();
+            foreach (FollowUp followup in follow_ups)
             {
                 _context.Remove(followup);
             }
