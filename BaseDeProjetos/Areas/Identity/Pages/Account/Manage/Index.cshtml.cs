@@ -71,6 +71,13 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account.Manage
 
             await LoadAsync(user);
 
+            GerarIndicadoresPessoais(user);
+
+            return Page();
+        }
+
+        private void GerarIndicadoresPessoais(Usuario user)
+        {
             Bag["n_projs"] = _context.Projeto.ToList().Where(p => AvaliarLider(p, user)).Count();
             Bag["n_prosps"] = _context.Prospeccao.ToList().Where(p => p.Usuario.Id == user.Id).Count();
             Bag["n_propostas"] = _context.Prospeccao.ToList().
@@ -83,8 +90,6 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account.Manage
                 Select(p => p.ValorAporteRecursos).Sum() * 0.5 + _context.Projeto.
                 ToList().Where(p => AvaliarColiderança(p, user)).
                 Select(p => p.ValorAporteRecursos).Sum() * 0.3;
-
-            return Page();
         }
 
         private static bool AvaliarColiderança(Projeto p, Usuario user)
