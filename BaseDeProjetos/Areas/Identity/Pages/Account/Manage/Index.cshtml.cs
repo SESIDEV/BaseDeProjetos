@@ -74,12 +74,28 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account.Manage
             Bag["n_projs"] = _context.Projeto.ToList().Where(p => AvaliarLider(p, user)).Count();
             Bag["n_prosps"] = _context.Prospeccao.ToList().Where(p => p.Usuario.Id == user.Id).Count();
             Bag["n_propostas"] = _context.Prospeccao.ToList().
-                Where(
-                p => p.Usuario.Id == user.Id && 
-                p.Status.Any(j=>j.Status == StatusProspeccao.ComProposta)).
+                Where(p => p.Usuario.Id == user.Id &&
+                p.Status.Any(j => j.Status == StatusProspeccao.ComProposta)).
                 Count();
+            Bag["valor_projetos"] = _context.Projeto.
+                ToList().Where(p => AvaliarLider(p, user)).
+                Select(p => p.ValorAporteRecursos).Sum() * 0.5 + _context.Projeto.
+                ToList().Where(p => AvaliarColiderança(p, user)).
+                Select(p => p.ValorAporteRecursos).Sum() * 0.3;
 
             return Page();
+        }
+
+        private static bool AvaliarColiderança(Projeto p, Usuario user)
+        {
+            for(int i = 1; i< p.Equipe.Count; i++)
+            {
+                if(p.Equipe[i].Id == user.Id)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private static bool AvaliarLider(Projeto p, Usuario user)
