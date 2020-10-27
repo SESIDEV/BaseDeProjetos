@@ -47,10 +47,10 @@
                     @Model.Bag["n_propostas"]
                 </dt>
                 <dd>
-                    Valor das propostas
+                    Valores incorporados (este ano)
                 </dd>
                 <dt>
-                    @Model.Bag["valor_projetos"].ToString("C2");
+                    @Model.Bag["valor_projetos"].ToString("C2", new System.Globalization.CultureInfo("pt-BR"));
                 </dt>
             </dl>
         </div>

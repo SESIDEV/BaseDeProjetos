@@ -78,7 +78,8 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account.Manage
                 p.Status.Any(j => j.Status == StatusProspeccao.ComProposta)).
                 Count();
             Bag["valor_projetos"] = _context.Projeto.
-                ToList().Where(p => AvaliarLider(p, user)).
+                ToList()
+                .Where(p => AvaliarLider(p, user)).
                 Select(p => p.ValorAporteRecursos).Sum() * 0.5 + _context.Projeto.
                 ToList().Where(p => AvaliarColiderança(p, user)).
                 Select(p => p.ValorAporteRecursos).Sum() * 0.3;
