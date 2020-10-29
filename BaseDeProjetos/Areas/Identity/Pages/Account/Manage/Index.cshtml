@@ -56,8 +56,19 @@
                     Tíquete médio dos projetos
                 </dd>
                 <dt>
-                    @{var valor_medio = Model.Bag["valor_projetos"]/Model.Bag["n_projs"]}
-                    @valor_medio.ToString("C2", new System.Globalization.CultureInfo("pt-BR"));
+                    @{
+                        decimal valor_medio;
+                        try
+                        {
+
+                            valor_medio = (Decimal)(Model.Bag["valor_projetos"] / Model.Bag["n_projs"]);
+                        }
+                        catch (Exception e)
+                        {
+                            valor_medio = 0M;
+                        }
+                    }
+                        @valor_medio.ToString("C2", new System.Globalization.CultureInfo("pt-BR"));
                 </dt>
 
             </dl>
