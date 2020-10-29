@@ -84,6 +84,11 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account.Manage
                 Where(p => p.Usuario.Id == user.Id &&
                 p.Status.Any(j => j.Status == StatusProspeccao.ComProposta)).
                 Count();
+            Bag["n_convertidos"] = _context.Prospeccao.ToList().
+                Where(p => p.Usuario.Id == user.Id &&
+                p.Status.Any(j => j.Status == StatusProspeccao.Convertida)).
+                Count();
+
             Bag["valor_projetos"] = _context.Projeto.
                 ToList()
                 .Where(p => AvaliarLider(p, user)).
