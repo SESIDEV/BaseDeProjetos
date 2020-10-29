@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using MailSenderApp.Services;
 using System;
 using System.Threading;
+using Microsoft.AspNetCore.Http;
 
 namespace BaseDeProjetos
 {
@@ -43,14 +44,16 @@ namespace BaseDeProjetos
             services.AddDistributedMemoryCache();
             services.AddTransient<IEmailSender, EmailSender>();
 
-            services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromSeconds(10);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-            });
+            services.AddSession();
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,9 +73,9 @@ namespace BaseDeProjetos
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-
             app.UseRouting();
-            app.UseSession(new SessionOptions {IOTimeout=Timeout.InfiniteTimeSpan, IdleTimeout = Timeout.InfiniteTimeSpan});
+            //app.UseSession(new SessionOptions {IOTimeout=Timeout.InfiniteTimeSpan, IdleTimeout = Timeout.InfiniteTimeSpan});
+            app.UseSession();
 
             app.UseAuthentication();
             app.UseAuthorization();

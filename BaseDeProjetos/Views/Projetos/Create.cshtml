@@ -4,6 +4,16 @@
 @{
     ViewData["Title"] = "Criar Projeto";
 }
+@using Microsoft.AspNetCore.Http
+@{
+
+    ViewData["Title"] = "Adicionar Prospecção";
+    if (!(Context.Session.GetString("_Casa") is null))
+    {
+        ViewData["Area"] = Context.Session.GetString("_Casa");
+    }
+}
+
 
 <h1>Criar</h1>
 

@@ -3,6 +3,15 @@
 @{
     ViewData["Title"] = "Details";
 }
+@using Microsoft.AspNetCore.Http
+@{
+
+    ViewData["Title"] = "Adicionar Prospecção";
+    if (!(Context.Session.GetString("_Casa") is null))
+    {
+        ViewData["Area"] = Context.Session.GetString("_Casa");
+    }
+}
 
 <h1>Details</h1>
 
@@ -80,5 +89,8 @@
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div>
+    <a asp-action="Index" asp-route-casa="@ViewData["Area"]">Voltar</a>
+</div>
+
 </div>

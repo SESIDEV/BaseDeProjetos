@@ -38,40 +38,63 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: Projetos
-        public async Task<IActionResult> Index(string casa)
+        public IActionResult Index(string casa)
         {
-            if (casa is null)
+
+            var projetos = DefinirCasa(casa);
+            GerarIndicadores(casa,_context);
+            return View(projetos.ToList());
+        }
+
+        private void GerarIndicadores(string casa, ApplicationDbContext _context)
+        {
+            ViewBag.n_projs = _context.Projeto.Where(p => p.status == StatusProjeto.EmExecucao).Count();
+            ViewBag.n_empresas = _context.Projeto.Count();
+            ViewBag.n_revenue = _context.Projeto.
+                Where(p => p.status == StatusProjeto.EmExecucao).
+                Select(p => p.ValorAporteRecursos).
+                Sum();
+            ViewBag.n_pesquisadores = _context.Users.Count();
+            ViewBag.Embrapii_projs = _context.Projeto.ToList<Projeto>();
+            ViewBag.Embrapii_prosps = _context.Projeto.ToList<Projeto>();
+        }
+
+        private IQueryable<Projeto> DefinirCasa(string? casa)
+        {
+
+            Casa enum_casa;
+
+            if (string.IsNullOrEmpty(casa))
             {
                 if (!string.IsNullOrEmpty(HttpContext.Session.GetString("_Casa")))
                 {
-                    casa = HttpContext.Session.GetString("_Casa");
+                    enum_casa = (Casa)Enum.Parse(typeof(Casa), HttpContext.Session.GetString("_Casa"));
                 }
-                else { return View(await _context.Projeto.ToListAsync()); }
-
-            }
-            else if (Enum.IsDefined(typeof(Casa), casa))
-            {
-                HttpContext.Session.SetString("_Casa", casa);
+                else { enum_casa = Casa.Super; }
             }
             else
             {
-                return NotFound();
+                if (Enum.IsDefined(typeof(Casa), casa))
+                {
+                    HttpContext.Session.SetString("_Casa", casa);
+                    enum_casa = (Casa)Enum.Parse(typeof(Casa), HttpContext.Session.GetString("_Casa"));
+                }
+                else
+                {
+                    enum_casa = Casa.Super;
+                }
             }
 
-            ViewBag.n_projs = _context.Projeto.Where(p => p.Casa == Enum.Parse<Casa>(casa) && p.status == StatusProjeto.EmExecucao).Count();
-            ViewBag.n_empresas = _context.Projeto.Where(p => p.Casa == Enum.Parse<Casa>(casa) ).Count();
-            ViewBag.n_revenue = _context.Projeto.
-                Where(p => p.Casa == Enum.Parse<Casa>(casa) && p.status == StatusProjeto.EmExecucao).
-                Select(p=>p.ValorAporteRecursos).
-                Sum();
-            ViewBag.n_pesquisadores = _context.Users.Where(p => p.Casa == Enum.Parse<Casa>(casa)).Count();
-            ViewBag.Embrapii_projs = _context.Projeto.Where(p => p.FonteFomento == TipoContratacao.Embrapii).ToList<Projeto>();
-            ViewBag.Embrapii_prosps = _context.Projeto.Where(p => p.FonteFomento == TipoContratacao.Embrapii).ToList<Projeto>();
+
             ViewData["Area"] = casa;
-            Casa enum_casa = (Casa)Enum.Parse(typeof(Casa), casa);
-            List<Projeto> lista = await _context.Projeto.Where(p => p.Casa.Equals(enum_casa)).ToListAsync();
-            return View(lista);
+
+            IQueryable<Projeto> lista = enum_casa == Casa.Super ?
+                _context.Projeto :
+                _context.Projeto.Where(p => p.Casa.Equals(enum_casa));
+
+            return lista;
         }
+
 
         // GET: Projetos/Details/5
         public async Task<IActionResult> Details(string id)

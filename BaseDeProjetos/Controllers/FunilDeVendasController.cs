@@ -214,7 +214,7 @@ namespace BaseDeProjetos.Controllers
         private void NotificarProspecção(FollowUp followup)
         {
             Notificacao notificacao;
-
+                      
             switch (followup.Status)
             {
                 case StatusProspeccao.ComProposta:
@@ -222,9 +222,9 @@ namespace BaseDeProjetos.Controllers
                     notificacao = new Notificacao
                     {
                         Titulo = "SGI - Uma proposta comercial foi enviada!",
-                        TextoBase = $"Olá, A prospecção com {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Usuario} teve uma proposta enviada. " +
-                         $"<hr><br><br><hr>" +
-                         $"Mais detalhes: {followup.Anotacoes}"
+                        TextoBase = EmailTemplate.MontarTemplate($"<h1>Olá,</h1> <br> A prospecção com  a empresa {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo usuário {followup.Origem.Usuario} teve uma proposta enviada. " +
+                         $"<hr>" +
+                         $"Mais detalhes do contato: {followup.Anotacoes} <hr>")
                     };
                     break;
 
@@ -232,9 +232,9 @@ namespace BaseDeProjetos.Controllers
                     notificacao = new Notificacao
                     {
                         Titulo = "SGI - Uma proposta comercial foi convertida!",
-                        TextoBase = $"Olá, A proposta com {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Usuario} foi convertida." +
-                         $"<hr><br><br><hr>" +
-                         $"Mais detalhes: {followup.Anotacoes}"
+                        TextoBase = EmailTemplate.MontarTemplate($"<h1>Olá,</h1>, <br>A proposta com  a empresa {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo usuário {followup.Origem.Usuario} foi convertida." +
+                         $"<hr>" +
+                         $"Mais detalhes da conversão: {followup.Anotacoes}<hr>")
                     };
                     break;
 
@@ -242,9 +242,9 @@ namespace BaseDeProjetos.Controllers
                     notificacao = new Notificacao
                     {
                         Titulo = "SGI - Uma proposta comercial não foi convertida",
-                        TextoBase = $"Olá, A proposta com {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Usuario} não foi convertida." +
-                         $"<hr><br><br><hr>" +
-                         $"Mais detalhes: {followup.Anotacoes}"
+                        TextoBase = EmailTemplate.MontarTemplate($"<h1>Olá,</h1><br> A proposta com  a empresa {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo usuário {followup.Origem.Usuario} não foi convertida." +
+                         $"<hr>" +
+                         $"Mais detalhes: {followup.Anotacoes}<hr>")
                     };
                     break;
 
@@ -252,9 +252,9 @@ namespace BaseDeProjetos.Controllers
                     notificacao = new Notificacao
                     {
                         Titulo = "SGI - Uma nova prospecção foi inicializada!",
-                        TextoBase = $"Olá, A prospecção com {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo {followup.Origem.Usuario} foi iniciada." +
-                         $"<hr><br><br><hr>" +
-                         $"Mais detalhes: {followup.Anotacoes}"
+                        TextoBase = EmailTemplate.MontarTemplate($"<h1>Olá,</h1><br> A prospecção com a empresa {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo usuário {followup.Origem.Usuario} foi iniciada." +
+                         $"<hr>" +
+                         $"Mais detalhes: {followup.Anotacoes}<hr>")
                     };
                     break;
 
@@ -474,3 +474,5 @@ namespace BaseDeProjetos.Controllers
         }
     }
 }
+
+

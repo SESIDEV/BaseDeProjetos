@@ -52,6 +52,14 @@
                 <dt>
                     @Model.Bag["valor_projetos"].ToString("C2", new System.Globalization.CultureInfo("pt-BR"));
                 </dt>
+                <dd>
+                    Tíquete médio dos projetos
+                </dd>
+                <dt>
+                    @{var valor_medio = Model.Bag["valor_projetos"]/Model.Bag["n_projs"]}
+                    @valor_medio.ToString("C2", new System.Globalization.CultureInfo("pt-BR"));
+                </dt>
+
             </dl>
         </div>
     </div>
