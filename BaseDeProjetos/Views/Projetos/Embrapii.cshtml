@@ -10,10 +10,13 @@
     double taxa_sucesso = 0;
     int n_empresas_eventos = 0;
 
-        List<Projeto> embrapii_projs;
-        List<Prospeccao> embrapii_prosps;
-        embrapii_projs = ViewBag.Embrapii_projs as List<Projeto>;
-        embrapii_prosps = ViewBag.Embrapii_prosps as List<Prospeccao>;
+    IEnumerable<Projeto> embrapii_projs;
+    IEnumerable<Prospeccao> embrapii_prosps;
+    embrapii_projs = (ViewBag.Embrapii_projs as List<Projeto>);
+    embrapii_prosps = ViewBag.Embrapii_prosps as List<Prospeccao>;
+
+    embrapii_projs = embrapii_projs.Where(p => p.FonteFomento == TipoContratacao.Embrapii);
+    embrapii_prosps = embrapii_prosps.Where(p => p.TipoContratacao == TipoContratacao.Embrapii);
 
 
     try
