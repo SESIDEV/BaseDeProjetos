@@ -56,7 +56,7 @@ namespace BaseDeProjetos.Controllers
                 Sum();
             ViewBag.n_pesquisadores = _context.Users.Count();
             ViewBag.Embrapii_projs = _context.Projeto.ToList<Projeto>();
-            ViewBag.Embrapii_prosps = _context.Projeto.ToList<Projeto>();
+            ViewBag.Embrapii_prosps = _context.Prospeccao.ToList<Prospeccao>();
         }
 
         private IQueryable<Projeto> DefinirCasa(string? casa)
