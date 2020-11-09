@@ -1,7 +1,13 @@
-﻿@*
+﻿@using Microsoft.AspNetCore.Http
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    if (!(Context.Session.GetString("_Casa") is null))
+    {
+        ViewData["Area"] = Context.Session.GetString("_Casa");
+    }
+
 
     int n_empresas_prosp = 0;
     int n_propostas = 0;
@@ -34,6 +40,8 @@
         //TODO
     }
 }
+@if (ViewData["Area"].Equals("ISIQV"))
+{
 <div class="row mt-2">
     <div class="col-12 small" id="KPI">
         <div class="row justify-content-center">
@@ -123,4 +131,10 @@
         </div>
     </div>
 </div>
-
+}
+else
+{
+    <div class="card-body mt-2 justify-content-center">
+        <h5>A unidade não é credenciada pela Embrapii. </h5>
+    </div>
+}
