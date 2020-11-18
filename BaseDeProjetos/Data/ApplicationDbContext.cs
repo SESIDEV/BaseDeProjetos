@@ -18,5 +18,6 @@ namespace BaseDeProjetos.Data
         public DbSet<BaseDeProjetos.Models.Empresa> Empresa { get; set; }
         public DbSet<BaseDeProjetos.Models.Pessoa> Pessoa { get; set; }
         public DbSet<SmartTesting.Models.Entrega> Entrega { get; set; }
+        public DbSet<BaseDeProjetos.Models.AtividadesProdutivas> AtividadesProdutivas { get; set; }
     }
 }

@@ -160,6 +160,36 @@ namespace BaseDeProjetos.Models
         Super
     }
 
+    public enum Atividades
+    {
+        //Apoio
+        ApoioInstitucional,
+        //Atividades Básicas
+        TreinamentoEAutodesenvolvimento, 
+        AtividadeMeio,
+        ReuniaoDeGrupo,
+        //Atividades de execução
+        FollowUp,
+        Experimentais,
+        Administrativas,
+        //Atividades de prospecção
+        AtividadePush,
+        RelacionamentoComEmpresa,
+        ElaboracaoProposta,
+        ParticipacaoEmEventos,
+        //Outros
+        Outros
+    }
+
+    public enum AreasAtividades
+    {
+        Apoio,
+        Basicas,
+        Execucao,
+        Prospeccao,
+        Outros
+    }
+
     public enum MotivosNaoConversao
     {
         [Display(Name = "O cliente não aceitou o preço")]
