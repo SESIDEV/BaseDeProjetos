@@ -9,6 +9,8 @@ namespace BaseDeProjetos.Models
     {
         [Key]
         public virtual string Id { get; set; }
+        public virtual string NomeProspeccao { get; set; }
+        public virtual string PotenciaisParceiros { get; set; } //Por ora é uma string separada por vírgulas
         public virtual Empresa Empresa { get; set; }
         public virtual Pessoa Contato { get; set; }
         public virtual Usuario Usuario { get; set; }

@@ -214,7 +214,7 @@ namespace BaseDeProjetos.Controllers
         private void NotificarProspecção(FollowUp followup)
         {
             Notificacao notificacao;
-                      
+
             switch (followup.Status)
             {
                 case StatusProspeccao.ComProposta:
@@ -269,7 +269,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TipoContratacao,LinhaPequisa, Status, Empresa, Contato, Casa")] Prospeccao prospeccao)
+        public async Task<IActionResult> Create([Bind("Id,TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, Empresa, Contato, Casa")] Prospeccao prospeccao)
         {
             if (ModelState.IsValid)
             {
@@ -319,7 +319,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,TipoContratacao,LinhaPequisa, Empresa, Contato, Casa, Usuario")] Prospeccao prospeccao)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Empresa, Contato, Casa, Usuario")] Prospeccao prospeccao)
         {
             if (id != prospeccao.Id)
             {
@@ -330,19 +330,25 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {
-                    if (_context.Empresa.Where(e => e.Nome == prospeccao.Empresa.Nome).Count() > 0)
+                    var Empresa_antigo = _context.Prospeccao.Include("Empresa").AsNoTracking().First(p => String.Equals(p.Id , id)).Empresa;
+                    if (prospeccao.Empresa.Id != Empresa_antigo.Id) // Nova empresa existente
                     {
-                        prospeccao.Empresa = _context.Empresa.First(e => e.Nome == prospeccao.Empresa.Nome);
+                        var empresa = _context.Empresa.First(e => e.Id == prospeccao.Empresa.Id);
+                        prospeccao.Empresa = empresa;
                     }
                     else
                     {
-                        prospeccao.Empresa = new Empresa
+                        if(prospeccao.Empresa.Nome != Empresa_antigo.Nome
+                            || prospeccao.Empresa.CNPJ != Empresa_antigo.CNPJ) //Nova empresa inexistente
                         {
-                            Estado = prospeccao.Empresa.Estado,
-                            CNPJ = prospeccao.Empresa.CNPJ,
-                            Nome = prospeccao.Empresa.Nome,
-                            Segmento = prospeccao.Empresa.Segmento
-                        };
+                            prospeccao.Empresa = new Empresa
+                            {
+                                Estado = prospeccao.Empresa.Estado,
+                                CNPJ = prospeccao.Empresa.CNPJ,
+                                Nome = prospeccao.Empresa.Nome,
+                                Segmento = prospeccao.Empresa.Segmento
+                            };
+                        }
                     }
 
                     Usuario lider = _context.Users.First(p => p.Id == prospeccao.Usuario.Id);

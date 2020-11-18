@@ -28,6 +28,12 @@
                     <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Casa>()"></select>
                     <span asp-validation-for="Casa" class="text-danger"></span>
                 </div>
+                <div class="form-group">
+                    <label asp-for="NomeProspeccao" class="control-label"></label>
+                    <input asp-for="NomeProspeccao" class="form-control" placeholder="Um nome amigável para a prospecção. Ex.: Proposta dos biossurfactantes" />
+                    <span asp-validation-for="NomeProspeccao" class="text-danger"></span>
+                </div>
+
 
                 <div class="form-group">
                     <label asp-for="TipoContratacao" class="control-label"></label>
@@ -39,6 +45,13 @@
                     <select asp-for="LinhaPequisa" class="form-control" asp-items="Html.GetEnumSelectList<LinhaPesquisa>()"></select>
                     <span asp-valdation-for="LinhaPequisa" class="text-danger"></span>
                 </div>
+
+                <div class="form-group">
+                    <label asp-for="PotenciaisParceiros" class="control-label"></label>
+                    <input asp-for="PotenciaisParceiros" class="form-control" placeholder="Uma lista de potenciais parceiros, separados por PONTO E VIRGULA. Ex.: Pepsico; Coca-cola" />
+                    <span asp-validation-for="PotenciaisParceiros" class="text-danger"></span>
+                </div>
+
 
                 <label class="control-label"> Líder da Prospecção</label>
                 <select asp-for="Usuario.Id" class="form-control" asp-items="@ViewData["Equipe"] as SelectList">
