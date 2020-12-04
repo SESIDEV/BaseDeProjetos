@@ -5,7 +5,14 @@
     ViewData["Title"] = "Editar";
     if (Model.Equipe.Count() < 2)
     {
-        Model.Equipe = new List<Usuario>() { new Usuario(), new Usuario() };
+        if(Model.Equipe.Count() == 0)
+        {
+            Model.Equipe = new List<Usuario>() { new Usuario(), new Usuario() };
+        }
+        else
+        {
+            Model.Equipe.Add(new Usuario());
+        }
     }
     if (!(Context.Session.GetString("_Casa") is null))
     {
@@ -15,7 +22,6 @@
 }
 
 <h1>Editar</h1>
-<h1>OM RAM: @ViewData["Area"]</h1>
 <h4>Projeto</h4>
 <hr />
 <div>

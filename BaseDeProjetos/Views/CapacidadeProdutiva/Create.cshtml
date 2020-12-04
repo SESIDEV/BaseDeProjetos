@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Create";
+    SelectList Projetos = new SelectList(ViewData["Projetos"] as List<Projeto>, "Id", "NomeProjeto");
 }
 
 <h1>Create</h1>
@@ -29,7 +30,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="ProjetoId" class="control-label"></label>
-                <input asp-for="ProjetoId" class="form-control" />
+                <select asp-for="ProjetoId" class="form-control" asp-items="Projetos"></select>
                 <span asp-validation-for="ProjetoId" class="text-danger"></span>
             </div>
             <div class="form-group">

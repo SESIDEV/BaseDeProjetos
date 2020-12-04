@@ -46,6 +46,8 @@ namespace BaseDeProjetos.Controllers
         // GET: CapacidadeProdutiva/Create
         public IActionResult Create()
         {
+
+            ViewData["Projetos"] = _context.Projeto.Where(p=>!String.IsNullOrEmpty(p.NomeProjeto)).ToList();
             return View();
         }
 
