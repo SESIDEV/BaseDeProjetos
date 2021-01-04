@@ -24,11 +24,29 @@ namespace BaseDeProjetos.Controllers
             ViewData["receita_isiqv"] = ReceitaCasa(Casa.ISIQV);
             ViewData["receita_isiii"] = ReceitaCasa(Casa.ISIII);
             ViewData["receita_cisho"] = ReceitaCasa(Casa.CISHO);
-            ViewData["n_prosp"] = _context.Prospeccao.Where(p => p.Status.Count > 0).ToList<Prospeccao>().Count;
+            ViewData["n_prosp"] = _context.Prospeccao.ToList().Where(p => prospeccaoAtiva(p) == true).ToList().Count;
             ViewData["n_proj"] = _context.Projeto.Where(p => p.status != StatusProjeto.Concluido && p.DataEncerramento > DateTime.Now).ToList().Count;
             ViewData["n_empresas"] = _context.Empresa.ToList().Count;
             ViewData["satisfacao"] = 0.8872;
             return View();
+        }
+
+        private bool prospeccaoAtiva(Prospeccao p)
+        {
+            if(p.Status.Count < 0)
+            {
+                return false;
+            }
+
+            var hoje = DateTime.Today;
+
+            //Prospecções sem movimentação a mais de 30 dias
+            if( p.Status.OrderBy(k=>k.Data).First().Data > hoje.AddDays(-30))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private decimal ReceitaCasa(Casa casa)
