@@ -44,12 +44,18 @@ namespace BaseDeProjetos.Controllers
 
         private IQueryable<Prospeccao> PeriodizarProspecções(string ano, IQueryable<Prospeccao> lista)
         {
-            if (!string.IsNullOrEmpty(ano))
+
+            if (string.IsNullOrEmpty(ano))
             {
-                return lista.Where(s => s.Status.Any(k => k.Data.Year == Convert.ToInt32(ano)));
+                ano = DateTime.Now.Year.ToString();
             }
 
-            return lista;
+            if (ano.Equals("Todos"))
+            {
+                return lista;
+            }
+
+            return lista.Where(s => s.Status.Any(k => k.Data.Year == Convert.ToInt32(ano)));
         }
 
         private static IQueryable<Prospeccao> FiltrarProspecções(string searchString, IQueryable<Prospeccao> lista)
