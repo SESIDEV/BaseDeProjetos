@@ -35,9 +35,9 @@ namespace BaseDeProjetos.Controllers
             ViewData["DateSortParm"] = sortOrder == "TipoContratacao" ? "tipo_desc" : "TipoContratacao";
 
             IQueryable<Prospeccao> lista = DefinirCasa(casa);
-            lista = PeriodizarProspecções(ano, lista);
             lista = OrdenarProspecções(sortOrder, lista);
             lista = FiltrarProspecções(searchString, lista);
+            lista = PeriodizarProspecções(ano, lista);
 
             return View(lista.ToList<Prospeccao>());
         }
