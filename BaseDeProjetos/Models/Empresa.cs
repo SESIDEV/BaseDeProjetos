@@ -13,5 +13,12 @@ namespace BaseDeProjetos.Models
         public virtual string Segmento { get; set; }
         [Display(Name = "Estado da Empresa")]
         public virtual string Estado { get; set; }
+
+        public string EmpresaUnique
+        {
+            get { return Nome + " - [" + CNPJ +"]";}
+            private set { }
+        }
+
     }
 }

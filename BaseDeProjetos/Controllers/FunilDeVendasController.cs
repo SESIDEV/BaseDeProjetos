@@ -148,7 +148,8 @@ namespace BaseDeProjetos.Controllers
         // GET: FunilDeVendas/Create
         public IActionResult Create()
         {
-            ViewData["Empresas"] = new SelectList(_context.Empresa.ToList(), "Id", "Nome");
+            var empresas = _context.Empresa.ToList();
+            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
             return View();
         }
 
@@ -169,9 +170,6 @@ namespace BaseDeProjetos.Controllers
                 _context.Add(followup);
 
                 NotificarProspecção(followup);
-
-                //TODO: Acertar a atualização dos dados
-                //await AtualizarStatusAsync(followup);
 
                 if (followup.Status == StatusProspeccao.Convertida)
                 {
@@ -219,8 +217,21 @@ namespace BaseDeProjetos.Controllers
 
         private void NotificarProspecção(FollowUp followup)
         {
-            Notificacao notificacao;
+            try
+            {
+                Notificacao notificacao = GerarNotificacao(followup);
+                ((EmailSender)_mailer).SendEmailAsync(notificacao);
+            }
+            catch (ArgumentException)
+            {
+                //É um status não notificável
+                return;
+            }
+        }
 
+        private static Notificacao GerarNotificacao(FollowUp followup)
+        {
+            Notificacao notificacao;
             switch (followup.Status)
             {
                 case StatusProspeccao.ComProposta:
@@ -263,11 +274,10 @@ namespace BaseDeProjetos.Controllers
                          $"Mais detalhes: {followup.Anotacoes}<hr>")
                     };
                     break;
-
                 default:
-                    return;
+                    throw new ArgumentException("Status não notificável");
             }
-                    ((EmailSender)_mailer).SendEmailAsync(notificacao);
+            return notificacao;
         }
 
         // POST: FunilDeVendas/Create
@@ -279,19 +289,11 @@ namespace BaseDeProjetos.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_context.Empresa.Where(e => e.Id == prospeccao.Empresa.Id).Count() > 0)
-                {
-                    prospeccao.Empresa = _context.Empresa.First(e => e.Id == prospeccao.Empresa.Id);
-                }
-                else
-                {
-                    prospeccao.Empresa = new Empresa { Estado = prospeccao.Empresa.Estado, CNPJ = prospeccao.Empresa.CNPJ, Nome = prospeccao.Empresa.Nome, Segmento = prospeccao.Empresa.Segmento };
-                }
-                prospeccao.Contato.empresa = prospeccao.Empresa;
-                string userId = HttpContext.User.Identity.Name;
-                Usuario user = await _context.Users.FirstAsync(u => u.UserName == userId);
-                prospeccao.Usuario = user;
+                ValidarEmpresa(prospeccao);
+                await VincularUSuario(prospeccao);
+
                 prospeccao.Status[0].Origem = prospeccao;
+
                 NotificarProspecção(prospeccao.Status[0]);
 
                 _context.Add(prospeccao);
@@ -301,10 +303,31 @@ namespace BaseDeProjetos.Controllers
             return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
         }
 
+        private async Task VincularUSuario(Prospeccao prospeccao)
+        {
+            string userId = HttpContext.User.Identity.Name;
+            Usuario user = await _context.Users.FirstAsync(u => u.UserName == userId);
+            prospeccao.Usuario = user;
+        }
+
+        private void ValidarEmpresa(Prospeccao prospeccao)
+        {
+            if (_context.Empresa.Where(e => e.EmpresaUnique == prospeccao.Empresa.EmpresaUnique).Count() > 0)
+            {
+                prospeccao.Empresa = _context.Empresa.First(e => e.EmpresaUnique == prospeccao.Empresa.EmpresaUnique);
+            }
+            else
+            {
+                prospeccao.Empresa = new Empresa { Estado = prospeccao.Empresa.Estado, CNPJ = prospeccao.Empresa.CNPJ, Nome = prospeccao.Empresa.Nome, Segmento = prospeccao.Empresa.Segmento };
+            }
+
+            prospeccao.Contato.empresa = prospeccao.Empresa;
+        }
+
         // GET: FunilDeVendas/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-            ViewData["Empresas"] = new SelectList(_context.Empresa.ToList(), "Id", "Nome");
+            ViewData["Empresas"] = new SelectList(_context.Empresa.ToList(), "Id", "EmpresaUnique");
             ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
 
             if (id == null)

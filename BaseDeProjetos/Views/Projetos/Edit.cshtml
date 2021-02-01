@@ -5,7 +5,7 @@
     ViewData["Title"] = "Editar";
     if (Model.Equipe.Count() < 2)
     {
-        if(Model.Equipe.Count() == 0)
+        if (Model.Equipe.Count() == 0)
         {
             Model.Equipe = new List<Usuario>() { new Usuario(), new Usuario() };
         }
@@ -18,7 +18,6 @@
     {
         ViewData["Area"] = Context.Session.GetString("_Casa");
     }
-
 }
 
 <h1>Editar</h1>
@@ -112,7 +111,7 @@
                     </div>
                 </fieldset>
                 <fieldset>
-                    <legend >Equipe</legend>
+                    <legend>Equipe</legend>
                     <div class="form-group">
                         <label class="control-label"> Líder do Projeto</label>
                         <select asp-for="Equipe[0].Id" class="form-control" asp-items="@ViewData["Equipe"] as SelectList">
