@@ -26,9 +26,9 @@ namespace BaseDeProjetos.Models
         {
             get
             {
-                if (Equipe.Count > 0)
+                if (Equipe.Count() > 0)
                 {
-                    return Equipe.First();
+                    return Equipe[0];
                 }
                 else
                 {

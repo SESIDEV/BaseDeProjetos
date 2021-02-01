@@ -6,7 +6,8 @@
 
 <div class="row card">
     <div class=" col-12 card-body">
-             <h1 class="card-title">Projetos - @ViewData["Area"]</h1>
+        <h1 class="card-title">Projetos - @ViewData["Area"]</h1>
+
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Gráfico</a>
@@ -24,6 +25,7 @@
                 <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Importar</a>
             </li>
         </ul>
+
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                 <div>
@@ -42,7 +44,7 @@
             </div>
 
 
-            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <div class="tab-pane fade container-fluid" style="overflow-x:scroll" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                 <table class="table card-text">
                     <thead>
                         <tr>
@@ -87,11 +89,13 @@
                                     @Html.DisplayFor(modelItem => item.AreaPesquisa)
                                 </td>
                                 <td>
-                                    @try{
+                                    @try
+                                    {
                                         @Html.DisplayFor(modelItem => item.Lider.NormalizedEmail)
                                     }
-                                    catch {
-                                    <span class="text-secondary">A preencher</span>
+                                    catch
+                                    {
+                                        <span class="text-secondary">A preencher</span>
                                     }
                                 </td>
                                 <td>

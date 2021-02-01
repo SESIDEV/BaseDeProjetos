@@ -42,7 +42,7 @@ namespace BaseDeProjetos.Controllers
         {
 
             var projetos = DefinirCasa(casa);
-            GerarIndicadores(casa,_context);
+            GerarIndicadores(casa, _context);
             return View(projetos.ToList());
         }
 
@@ -140,17 +140,37 @@ namespace BaseDeProjetos.Controllers
         public async Task<IActionResult> Edit(string id)
         {
             ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
+
             if (id == null)
             {
                 return NotFound();
             }
 
             Projeto projeto = await _context.Projeto.FindAsync(id);
+
             if (projeto == null)
             {
                 return NotFound();
             }
+
+            ConfigurarEquipe(projeto);
+
             return View(projeto);
+        }
+
+        private static void ConfigurarEquipe(Projeto projeto)
+        {
+            if (projeto.Equipe.Count() < 2)
+            {
+                if (projeto.Equipe.Count() == 0)
+                {
+                    projeto.Equipe = new List<Usuario>() { new Usuario(), new Usuario() };
+                }
+                else
+                {
+                    projeto.Equipe.Add(new Usuario());
+                }
+            }
         }
 
         // POST: Projetos/Edit/5
@@ -169,13 +189,8 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {
-                    List<Usuario> usuarios_reais = new List<Usuario>();
-                    foreach(var usuario in projeto.Equipe)
-                    {
-                        usuarios_reais.Add(_context.Users.First(p => p.Id == usuario.Id));
-                    }
-                    projeto.Equipe = usuarios_reais;
-                    _context.Update(projeto);
+                    projeto.Equipe = ObterUsuarios(projeto);
+                    _context.Projeto.Update(projeto);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -192,6 +207,18 @@ namespace BaseDeProjetos.Controllers
                 return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
             }
             return View(projeto);
+        }
+
+        private List<Usuario> ObterUsuarios(Projeto projeto)
+        {
+            List<Usuario> usuarios_reais = new List<Usuario>();
+
+            for(var i = 0;i< projeto.Equipe.Count();i++)
+            {
+                usuarios_reais.Add(_context.Users.First(p => p.Id == projeto.Equipe[i].Id));
+            }
+
+            return usuarios_reais;
         }
 
         // GET: Projetos/Delete/5
@@ -258,13 +285,14 @@ namespace BaseDeProjetos.Controllers
             {
                 if (formFile.Length > 0)
                 {
-                    using (StreamReader file = new StreamReader(formFile.OpenReadStream())){
+                    using (StreamReader file = new StreamReader(formFile.OpenReadStream()))
+                    {
                         CriarProjetos(file);
                     }
                 }
             }
 
-            return View("Index","Home");
+            return View("Index", "Home");
         }
 
         private void CriarProjetos(StreamReader file)

@@ -3,17 +3,6 @@
 
 @{
     ViewData["Title"] = "Editar";
-    if (Model.Equipe.Count() < 2)
-    {
-        if (Model.Equipe.Count() == 0)
-        {
-            Model.Equipe = new List<Usuario>() { new Usuario(), new Usuario() };
-        }
-        else
-        {
-            Model.Equipe.Add(new Usuario());
-        }
-    }
     if (!(Context.Session.GetString("_Casa") is null))
     {
         ViewData["Area"] = Context.Session.GetString("_Casa");
