@@ -38,6 +38,15 @@ namespace BaseDeProjetos.Models
             private set { }
         }
 
+        [NotMapped]
+        public String NomeLider
+        {
+            get
+            {
+                return Lider.NormalizedEmail.Split("@")[0];
+            }
+        }
+
         public virtual Estado Estado { get; set; }
         [Display(AutoGenerateFilter = true, Name = "Fonte de Fomento")]
         public virtual TipoContratacao FonteFomento { get; set; }
