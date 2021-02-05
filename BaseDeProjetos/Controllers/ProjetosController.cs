@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using SmartTesting.Models;
 using SQLitePCL;
 using System;
 using System.Collections.Generic;
@@ -93,6 +94,64 @@ namespace BaseDeProjetos.Controllers
                 _context.Projeto.Where(p => p.Casa.Equals(enum_casa));
 
             return lista;
+        }
+
+         [HttpGet]
+        public async Task<IActionResult> IncluirEntrega(string id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            Projeto projeto = await _context.Projeto
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (projeto == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["Projeto"] = projeto; 
+            return View("IncluirEntrega");
+        }
+
+        [HttpPost]
+        public IActionResult IncluirEntrega(string id, [Bind()] Entrega entrega)
+        {
+            if (ModelState.IsValid)
+            {
+
+            }
+            return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
+        }
+
+        public async Task<IActionResult> EditarEntrega(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditarFollowUp(int id, [Bind()] Entrega entrega)
+        {
+            if (id != entrega.Id)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                _context.Update(entrega);
+                await _context.SaveChangesAsync();
+            }
+
+            // return RedirectToAction("Details", new { id = entrega.OrigemID }); ;
+            return View();
         }
 
 
