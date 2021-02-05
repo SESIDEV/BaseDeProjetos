@@ -4,10 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
-using SmartTesting.Models;
-using SQLitePCL;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -96,37 +93,58 @@ namespace BaseDeProjetos.Controllers
             return lista;
         }
 
-         [HttpGet]
-        public async Task<IActionResult> IncluirEntrega(string id)
+        [HttpGet]
+        public IActionResult IncluirEntrega(string id)
         {
-            if(id == null)
+            if (!ValidarProjetoId(id))
             {
                 return NotFound();
             }
 
-            Projeto projeto = await _context.Projeto
-                .FirstOrDefaultAsync(m => m.Id == id);
+            Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == id);
+            ViewData["Projeto"] = projeto;
 
-            if (projeto == null)
-            {
-                return NotFound();
-            }
-
-            ViewData["Projeto"] = projeto; 
             return View("IncluirEntrega");
         }
 
         [HttpPost]
-        public IActionResult IncluirEntrega(string id, [Bind()] Entrega entrega)
+        public IActionResult IncluirEntrega(string id, [Bind("Id,NomeEntrega,DescricaoEntrega,DataFim,DataEntrega,ProjetoId")] Entrega entrega)
         {
+            if (!ValidarProjetoId(entrega.ProjetoId))
+            {
+                return NotFound();
+            }
+
+            Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == entrega.ProjetoId);
+
             if (ModelState.IsValid)
             {
+                _context.Entrega.Add(entrega);
+                _context.SaveChanges();
 
             }
-            return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
+
+            return RedirectToAction(nameof(Index), new { casa = projeto.Casa });
         }
 
-        public async Task<IActionResult> EditarEntrega(int? id)
+        private bool ValidarProjetoId(string id)
+        {
+            if (id == null)
+            {
+                return false;
+            }
+
+            Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == id);
+
+            if (projeto == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<IActionResult> EditarEntrega(string? id)
         {
             if (id == null)
             {
@@ -138,7 +156,7 @@ namespace BaseDeProjetos.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditarFollowUp(int id, [Bind()] Entrega entrega)
+        public async Task<IActionResult> EditarFollowUp(string id, [Bind()] Entrega entrega)
         {
             if (id != entrega.Id)
             {
@@ -272,7 +290,7 @@ namespace BaseDeProjetos.Controllers
         {
             List<Usuario> usuarios_reais = new List<Usuario>();
 
-            for(var i = 0;i< projeto.Equipe.Count();i++)
+            for (var i = 0; i < projeto.Equipe.Count(); i++)
             {
                 usuarios_reais.Add(_context.Users.First(p => p.Id == projeto.Equipe[i].Id));
             }

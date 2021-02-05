@@ -3,11 +3,11 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SmartTesting.Models
+namespace BaseDeProjetos.Models
 {
     public class Entrega
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public virtual Projeto Projeto { get; set; }
         public string ProjetoId { get; set; }
         [Display(Name = "Nome da entrega")]

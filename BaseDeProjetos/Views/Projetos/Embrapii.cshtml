@@ -7,6 +7,10 @@
     {
         ViewData["Area"] = Context.Session.GetString("_Casa");
     }
+    else
+    {
+        ViewData["Area"] = "Casa";
+    }
 
 
     int n_empresas_prosp = 0;

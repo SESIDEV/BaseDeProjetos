@@ -1,10 +1,12 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -17,6 +19,7 @@ namespace BaseDeProjetos.Controllers
         {
             _context = context;
             _logger = logger;
+
         }
 
         public IActionResult Index()
@@ -33,7 +36,7 @@ namespace BaseDeProjetos.Controllers
 
         private bool prospeccaoAtiva(Prospeccao p)
         {
-            if(p.Status.Count < 0)
+            if (p.Status.Count < 0)
             {
                 return false;
             }
@@ -41,7 +44,7 @@ namespace BaseDeProjetos.Controllers
             var hoje = DateTime.Today;
 
             //Prospecções sem movimentação a mais de 30 dias
-            if( p.Status.OrderBy(k=>k.Data).First().Data > hoje.AddDays(-30))
+            if (p.Status.OrderBy(k => k.Data).First().Data > hoje.AddDays(-30))
             {
                 return false;
             }
@@ -56,7 +59,7 @@ namespace BaseDeProjetos.Controllers
                 Select(p => CalcularReceita(p));
 
             decimal sum = 0;
-            foreach(var valor in valores)
+            foreach (var valor in valores)
             {
                 sum += valor;
             }
@@ -67,13 +70,13 @@ namespace BaseDeProjetos.Controllers
         private static decimal CalcularReceita(Projeto p)
         {
             var valor_aportado = 0M;
-            if(p.DataEncerramento < DateTime.Today)
+            if (p.DataEncerramento < DateTime.Today)
             {
                 //O projeto está em execução, mas não recebe mais dinheiro
                 return valor_aportado;
             }
 
-            if(p.DataEncerramento.Year == DateTime.Today.Year)
+            if (p.DataEncerramento.Year == DateTime.Today.Year)
             {
 
                 if (p.DuracaoProjetoEmMeses >= 12)
@@ -84,14 +87,14 @@ namespace BaseDeProjetos.Controllers
                 else
                 {
                     //É um projeto curto, que provavelmente começou e vai acabar neste ano (Abril a Outubro)
-                    if(p.DataInicio.Year == DateTime.Today.Year)
+                    if (p.DataInicio.Year == DateTime.Today.Year)
                     {
                         return (Decimal)p.ValorAporteRecursos;
                     }
                     else
                     {
                         //É um projeto curto que já vinha em andamento e que vai terminar neste ano (Ex.: De setembro a março) 
-                        return (Decimal)((p.ValorAporteRecursos/p.DuracaoProjetoEmMeses) * p.DataEncerramento.Month);
+                        return (Decimal)((p.ValorAporteRecursos / p.DuracaoProjetoEmMeses) * p.DataEncerramento.Month);
                     }
 
                 }
@@ -99,15 +102,15 @@ namespace BaseDeProjetos.Controllers
             else
             {
                 //Caso mais simples, o projeto tem mais de 12 meses e não começou nem termina este ano (jan/20 a Dez/24)
-                if(p.DuracaoProjetoEmMeses >= 12 && p.DataInicio.Year != DateTime.Today.Year)
+                if (p.DuracaoProjetoEmMeses >= 12 && p.DataInicio.Year != DateTime.Today.Year)
                 {
-                    return  (Decimal)((p.ValorAporteRecursos / p.DuracaoProjetoEmMeses) * 12);
+                    return (Decimal)((p.ValorAporteRecursos / p.DuracaoProjetoEmMeses) * 12);
                 }
 
                 //O projeto tem menos de 12 meses, mas só acaba no ano seguinte (Set/20 a Mar/21)
-                if(p.DataEncerramento.Year == (DateTime.Today.Year + 1))
+                if (p.DataEncerramento.Year == (DateTime.Today.Year + 1))
                 {
-                    return (Decimal)((p.ValorAporteRecursos/p.DuracaoProjetoEmMeses) * (12 - p.DataInicio.Month));
+                    return (Decimal)((p.ValorAporteRecursos / p.DuracaoProjetoEmMeses) * (12 - p.DataInicio.Month));
                 }
             }
 
