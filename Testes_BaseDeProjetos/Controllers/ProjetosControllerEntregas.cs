@@ -130,7 +130,7 @@ namespace BaseDeProjetos.Controllers.Tests
                 {
                     Id = "Entrega_teste_" + i,
                     NomeEntrega = "Teste_" + i,
-                    DataEntrega = DateTime.Today.AddDays(i),
+                    DataInicioEntrega = DateTime.Today.AddDays(i),
                     DataFim = DateTime.Today.AddDays(i+1),
                     ProjetoId = proj_id,
                 });
@@ -144,7 +144,7 @@ namespace BaseDeProjetos.Controllers.Tests
             for (var i = 0; i < qtd_entrega; i++)
             {
                 //Atrasando as entegas geradas
-                entregas[i].DataEntrega.AddDays(-2 * (i + 1));
+                entregas[i].DataInicioEntrega.AddDays(-2 * (i + 1));
             }
 
             return entregas;
