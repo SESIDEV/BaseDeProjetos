@@ -190,6 +190,7 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
+            ViewData["Entregas"] = _context.Entrega.Where(e => e.ProjetoId == id).ToList();
             return View(projeto);
         }
 

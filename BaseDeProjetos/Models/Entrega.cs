@@ -23,7 +23,7 @@ namespace BaseDeProjetos.Models
         [NotMapped]
         public bool Atrasada { get
             {
-                return Concluida ? false : DateTime.Today < DataFim;
+                return Concluida ? false : DateTime.Today > DataFim;
             }
         }
     }

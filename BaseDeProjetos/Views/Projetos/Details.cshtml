@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    List<Entrega> entregas =ViewData["Entregas"] as List<Entrega>;
 }
 @using Microsoft.AspNetCore.Http
 @{
@@ -15,10 +16,10 @@
 
 <h1>Details</h1>
 
-<div>
+<div class="row">
     <h4>Projeto</h4>
     <hr />
-    <dl class="row">
+    <dl class="row col-6">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.NomeProjeto)
         </dt>
@@ -86,7 +87,16 @@
             @Html.DisplayFor(model => model.ValorAporteRecursos)
         </dd>
     </dl>
+    <div class="col-6">
+        @foreach(var entrega in entregas)
+    {
+            <h6>@entrega.NomeEntrega</h6>
+            <span>Data de entrega </span><small> @entrega.DataFim</small>
+            <span>Está atrasado? </span><small> @entrega.Atrasada</small>
+    }
+    </div>
 </div>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
 <div>
