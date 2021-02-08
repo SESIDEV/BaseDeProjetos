@@ -111,21 +111,20 @@ namespace BaseDeProjetos.Controllers.Tests
         }
 
 
+        [Fact]
+        public async void EditarEntrega_GET_Deve_Retornar_OK_Se_IdValido()
+        {
+            var response = await _client.GetAsync("/Projetos/EditarEntrega/proj_637477823195206322");
+            Assert.True(response.IsSuccessStatusCode);
+        }
+
+
         /*
          * 
          *  Funções auxiliares de teste
          * 
          * 
          */
-
-        private string obterCookie(string endpoint)
-        {
-            var value = "";
-           
-            return value;
-
-        }
-
 
         private ProjetosController SetupController(ApplicationDbContext context)
         {
