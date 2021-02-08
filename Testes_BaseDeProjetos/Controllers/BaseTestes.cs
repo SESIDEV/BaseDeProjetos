@@ -5,6 +5,7 @@ using System.Net.Http;
 using Xunit;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
+    using System.Collections.Generic;
 
 namespace Testes_BaseDeProjetos.Controllers
 {
@@ -25,14 +26,17 @@ namespace Testes_BaseDeProjetos.Controllers
             // Do "global" teardown here; Called after every test method.
         }
 
-        public static string ToKeyValueURL(object obj)
+        public static FormUrlEncodedContent ToKeyValueURL(object obj)
         {
+
             var keyvalues = obj.GetType().GetProperties()
                 .ToList()
-                .Select(p => $"{p.Name} = {p.GetValue(obj)}")
-                .ToArray();
+                    .Select(p => new KeyValuePair<string, string>(p.Name, p.GetValue(obj)?.ToString()))
+                            .ToArray();
 
-            return string.Join('&', keyvalues);
+            var content = new FormUrlEncodedContent(keyvalues);
+
+            return content; 
         }
     }
 }

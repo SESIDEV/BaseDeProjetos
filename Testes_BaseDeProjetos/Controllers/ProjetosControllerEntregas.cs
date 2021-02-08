@@ -1,4 +1,4 @@
-﻿using Xunit;
+﻿    using Xunit;
 using Testes_BaseDeProjetos.Controllers;
 using System.Threading.Tasks;
 using BaseDeProjetos.Data;
@@ -76,13 +76,18 @@ namespace BaseDeProjetos.Controllers.Tests
         [Fact]
         public async Task IncluirEntrega_POST_Deve_RetornarOK_Se_Id_valido()
         {
-            Entrega entrega = ComEntregas(1, _IdValido)[0];
-            string content = ToKeyValueURL(entrega);
-            var entrega_url = new StringContent(content, Encoding.UTF8, "application/x-www-form-urlencoded");
-            var response = await _client.PostAsync("/Projetos/IncluirEntrega/" + entrega.Id + "?"+content,
-                                                   entrega_url);
 
+            //Setup
+            Entrega entrega = ComEntregas(1, _IdValido)[0];
+            var content = ToKeyValueURL(entrega);
+            //Teste
+            var response = await _client.PostAsync("/Projetos/IncluirEntrega/" + entrega.Id,
+                                                   content);
             Assert.True(response.IsSuccessStatusCode);
+
+
+            //Teardown
+            _context.Entrega.Remove(entrega);
         }
 
         [Fact]
@@ -112,6 +117,14 @@ namespace BaseDeProjetos.Controllers.Tests
          * 
          */
 
+        private string obterCookie(string endpoint)
+        {
+            var value = "";
+           
+            return value;
+
+        }
+
 
         private ProjetosController SetupController(ApplicationDbContext context)
         {
@@ -131,7 +144,7 @@ namespace BaseDeProjetos.Controllers.Tests
                     Id = "Entrega_teste_" + i,
                     NomeEntrega = "Teste_" + i,
                     DataInicioEntrega = DateTime.Today.AddDays(i),
-                    DataFim = DateTime.Today.AddDays(i+1),
+                    DataFim = DateTime.Today.AddDays(i + 1),
                     ProjetoId = proj_id,
                 });
             }
