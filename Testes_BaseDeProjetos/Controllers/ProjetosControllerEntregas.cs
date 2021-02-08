@@ -88,6 +88,7 @@ namespace BaseDeProjetos.Controllers.Tests
 
             //Teardown
             _context.Entrega.Remove(entrega);
+            _context.SaveChanges();
         }
 
         [Fact]
