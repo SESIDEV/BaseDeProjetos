@@ -41,7 +41,7 @@ namespace BaseDeProjetos.Controllers.Tests
 
 
         [Fact]
-        public async void IncluirEntrega_Deve_Retornar_View_Correta()
+        public void IncluirEntrega_Deve_Retornar_View_Correta()
         {
             ProjetosController _controller = SetupController(base._context);
             var response = _controller.IncluirEntrega(_IdValido) as ViewResult;
@@ -77,10 +77,10 @@ namespace BaseDeProjetos.Controllers.Tests
         public async Task IncluirEntrega_POST_Deve_RetornarOK_Se_Id_valido()
         {
             Entrega entrega = ComEntregas(1, _IdValido)[0];
-            string content = JsonConvert.SerializeObject(entrega);
-            var entrega_json = new StringContent(content, Encoding.ASCII, "application/json");
-            var response = await _client.PostAsync("/Projetos/IncluirEntrega/" + entrega.Id,
-                                                   entrega_json);
+            string content = ToKeyValueURL(entrega);
+            var entrega_url = new StringContent(content, Encoding.UTF8, "application/x-www-form-urlencoded");
+            var response = await _client.PostAsync("/Projetos/IncluirEntrega/" + entrega.Id + "?"+content,
+                                                   entrega_url);
 
             Assert.True(response.IsSuccessStatusCode);
         }

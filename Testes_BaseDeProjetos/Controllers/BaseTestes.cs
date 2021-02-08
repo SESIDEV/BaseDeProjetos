@@ -4,7 +4,7 @@ using System;
 using System.Net.Http;
 using Xunit;
 using Microsoft.Extensions.DependencyInjection;
-
+using System.Linq;
 
 namespace Testes_BaseDeProjetos.Controllers
 {
@@ -23,6 +23,16 @@ namespace Testes_BaseDeProjetos.Controllers
         public void Dispose()
         {
             // Do "global" teardown here; Called after every test method.
+        }
+
+        public static string ToKeyValueURL(object obj)
+        {
+            var keyvalues = obj.GetType().GetProperties()
+                .ToList()
+                .Select(p => $"{p.Name} = {p.GetValue(obj)}")
+                .ToArray();
+
+            return string.Join('&', keyvalues);
         }
     }
 }
