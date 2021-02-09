@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
-    List<Entrega> entregas =ViewData["Entregas"] as List<Entrega>;
+    List<Entrega> entregas = ViewData["Entregas"] as List<Entrega>;
 }
 @using Microsoft.AspNetCore.Http
 @{
@@ -17,90 +17,98 @@
 <h1>Details</h1>
 
 <div class="row">
-    <h4>Projeto</h4>
     <hr />
-    <dl class="row col-6">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NomeProjeto)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NomeProjeto)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AreaPesquisa)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AreaPesquisa)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DataInicio)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DataInicio)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DataEncerramento)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DataEncerramento)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FonteFomento)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FonteFomento)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Inovacao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Inovacao)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.status)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.status)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DuracaoProjetoEmMeses)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DuracaoProjetoEmMeses)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ValorTotalProjeto)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ValorTotalProjeto)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ValorAporteRecursos)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ValorAporteRecursos)
-        </dd>
-    </dl>
-    <div class="col-6">
-        @foreach(var entrega in entregas)
-    {
-            <h6>@entrega.NomeEntrega</h6>
-            <span>Data de entrega </span><small> @entrega.DataFim</small>
-            <span>Está atrasado? </span><small> @entrega.Atrasada</small>
-    }
+    <div class="card col-12">
+        <dl class="row card-body">
+            <h4 class="col-12 card-title">Projeto</h4>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.NomeProjeto)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.NomeProjeto)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.AreaPesquisa)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.AreaPesquisa)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.DataInicio)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.DataInicio)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.DataEncerramento)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.DataEncerramento)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Estado)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Estado)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.FonteFomento)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.FonteFomento)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Inovacao)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Inovacao)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.status)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.status)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.DuracaoProjetoEmMeses)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.DuracaoProjetoEmMeses)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.ValorTotalProjeto)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.ValorTotalProjeto)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.ValorAporteRecursos)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.ValorAporteRecursos)
+            </dd>
+        </dl>
+    </div>
+    <div class="col-12">
+        <h5> Entregas do Projeto</h5>
+        @foreach (var entrega in entregas)
+        {
+            <div class="card card-body">
+                <h6>@entrega.NomeEntrega</h6>
+                <hr />
+                <strong>Descrição: </strong><span> @entrega.DescricaoEntrega</span>
+                <hr />
+                <strong>Data de entrega </strong><span> @entrega.DataFim</span>
+                <strong>Está atrasado? </strong><span> @entrega.Atrasada</span>
+            </div>
+        }
     </div>
 </div>
 
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-<div>
-    <a asp-action="Index" asp-route-casa="@ViewData["Area"]">Voltar</a>
-</div>
+    <div>
+        <a asp-action="Index" asp-route-casa="@ViewData["Area"]">Voltar</a>
+    </div>
 
 </div>
