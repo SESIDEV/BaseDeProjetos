@@ -14,6 +14,12 @@
     }
 }
 
+<style>
+    small{
+        font-weight:bold;
+    }
+</style>
+
 <h1>Details</h1>
 
 <div class="row">
@@ -90,18 +96,52 @@
         </dl>
     </div>
     <div class="col-12">
-        <h5> Entregas do Projeto</h5>
-        @foreach (var entrega in entregas)
-        {
-            <div class="card card-body">
-                <h6>@entrega.NomeEntrega</h6>
-                <hr />
-                <strong>Descrição: </strong><span> @entrega.DescricaoEntrega</span>
-                <hr />
-                <strong>Data de entrega </strong><span> @entrega.DataFim</span>
-                <strong>Está atrasado? </strong><span> @entrega.Atrasada</span>
+    <hr />
+    <h5> Entregas do Projeto</h5>
+    <hr />
+    @foreach (var entrega in entregas)
+    {
+        <div class="card m-1">
+            <div class="card-body">
+                <h6 class="card-title">
+                    @(entrega.NomeEntrega)
+                </h6>
+                <div class="card-text row">
+                    <div class="col-5">
+                    @entrega.DescricaoEntrega
+                    </div>
+                    <div class="col-3">
+                        <small>Data de Início (previsto)<br /></small>
+                        @entrega.DataInicioEntrega.ToString("D")
+                    </div>
+                    <div class="col-3">
+                        <small>Data de Término (previsto)<br /></small>
+                        @entrega.DataFim.ToString("D")
+                    </div>
+                    <div class="col-1">
+                        <small>Status<br /></small>
+                        @if (entrega.Atrasada)
+                        {
+                            <span style='font-size:small;color:red'>Atrasada</span>
+                        }
+                        else {
+                            if(entrega.Concluida)
+                            {
+
+                                <span style='font-size:small;color:green'>Concluída</span>
+                            }
+                                <span style='font-size:small;color:green'>No Prazo</span>
+                        }
+                    </div>
+                </div>
             </div>
-        }
+            <div class="card-footer">
+                <a href="../RemoverEntrega/@entrega.Id">Remover</a> |
+                <a href="../EditarEntrega/@entrega.Id">Editar</a> |
+                <a href="../FinalizarEntrega/@entrega.Id">Marcar como Concluída</a>
+            </div>
+        </div>
+    }
     </div>
 </div>
 
