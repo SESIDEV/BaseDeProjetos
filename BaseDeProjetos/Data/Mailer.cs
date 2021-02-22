@@ -1,4 +1,5 @@
 ﻿using BaseDeProjetos.Models;
+using MailSenderApp.Services;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SmartTesting.Controllers
 {
-    public class Mailer
+    public class Mailer:EmailSender
     {
         private EmailAddress From { get; set; }
         private List<Usuario> destinatarios;

@@ -110,7 +110,7 @@ namespace BaseDeProjetos.Controllers
 
 
         [HttpPost]
-        public IActionResult IncluirEntrega(string id, [Bind("Id,NomeEntrega,DescricaoEntrega,DataFim,DataEntrega,ProjetoId")] Entrega entrega)
+        public IActionResult IncluirEntrega(string id, [Bind("Id,NomeEntrega,DescricaoEntrega,DataFim,DataInicioEntrega,ProjetoId")] Entrega entrega)
         {
             if (!ValidarProjetoId(entrega.ProjetoId))
             {
