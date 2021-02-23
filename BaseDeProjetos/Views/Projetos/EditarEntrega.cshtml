@@ -1,63 +1,6 @@
-﻿@model BaseDeProjetos.Models.Entrega
-@*
+﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    Projeto projeto = ViewData["Projeto"] as Projeto;
 }
-<div class="container-fluid">
-    <div class="row">
-        <div class="card col-4">
-            <div class="card-text card-body">
-                <h3 class="card-title"> Dados do Projeto</h3>
-                <div><strong>Nome do Projeto</strong>: @projeto.NomeProjeto</div>
-                <div><strong>Data de Início</strong>: @projeto.DataInicio</div>
-                <div><strong>Data de Encerramento</strong>: @projeto.DataEncerramento</div>
-                <div><strong>Duração do projeto</strong>: @projeto.DuracaoProjetoEmMeses meses</div>
-            </div>
-        </div>
-        <div class="col-8">
-            <div>
-                <form asp-action="EditarEntrega" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" asp-for="ProjetoId" value="@projeto.Id" />
-
-                    <label asp-for="Id"></label>
-                    <input asp-for="Id" class="form-control" readonly />
-                    <span asp-validation-for="Id" class="text-danger"></span>
-
-                    <label asp-for="Projeto.NomeProjeto"></label>
-                    <input asp-for="Projeto.NomeProjeto" class="form-control" value="@projeto.NomeProjeto" readonly />
-                    <span asp-validation-for="Projeto.NomeProjeto" class="text-danger"></span>
-
-
-                    <label asp-for="NomeEntrega"></label>
-                    <input asp-for="NomeEntrega" class="form-control" value="@Model.NomeEntrega"/>
-                    <span asp-validation-for="NomeEntrega" class="text-danger"></span>
-
-                    <div class="form-group">
-                        <label asp-for="DescricaoEntrega" class="control-label"></label>
-                        <textarea class="form-control" asp-for=" DescricaoEntrega" rows="3">
-                         @Model.DescricaoEntrega
-                        </textarea>
-                        <span asp-validation-for="DescricaoEntrega" class="text-danger"></span>
-                    </div>
-
-                    <label asp-for="DataInicioEntrega"></label>
-                    <input asp-for="DataInicioEntrega" type="date" class="form-control" value="@Model.DataInicioEntrega.ToString("yyyy-MM-dd")" />
-                    <span asp-validation-for="DataInicioEntrega" class="text-danger"></span>
-
-                    <label asp-for="DataFim"></label>
-                    <input asp-for="DataFim" type="date" class="form-control" value='@Model.DataFim.ToString("yyyy-MM-dd")'/>
-                    <span asp-validation-for="DataFim" class="text-danger"></span>
-
-
-                    <div>
-                        <input class="btn btn-dark" type="submit" value="Editar Entrega">
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
+<h1>AE CARAI</h1>

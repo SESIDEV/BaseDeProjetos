@@ -153,20 +153,12 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
-            Entrega entrega = _context.Entrega.FirstOrDefault(e => e.Id == id);
-
-            if(entrega == null)
-            {
-                return NotFound();
-            }
-
-            Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == entrega.ProjetoId);
-            ViewData["Projeto"] = projeto;
-            return View(entrega);
+            return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditarEntrega(string id, [Bind("Id,ProjetoId,NomeEntrega,DescricaoEntrega,DataFim,DataInicioEntrega")] Entrega entrega)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditarFollowUp(string id, [Bind()] Entrega entrega)
         {
             if (id != entrega.Id)
             {
@@ -175,34 +167,13 @@ namespace BaseDeProjetos.Controllers
             if (ModelState.IsValid)
             {
                 _context.Update(entrega);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction("Details", new { id = entrega.ProjetoId }); ;
+            // return RedirectToAction("Details", new { id = entrega.OrigemID }); ;
+            return View();
         }
-        
-        [HttpGet]
-        //Preocupação com segurança: Revisar código depois
-        public async Task<IActionResult> RemoverEntrega(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            Entrega entrega = await _context.Entrega
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (entrega == null)
-            {
-                return NotFound();
-            }
-
-            _context.Entrega.Remove(entrega);
-            _context.SaveChanges();
-
-            return RedirectToAction("Details", new { id = entrega.ProjetoId }); ;
-        }
 
         // GET: Projetos/Details/5
         public async Task<IActionResult> Details(string id)
