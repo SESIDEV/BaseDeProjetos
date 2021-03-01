@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SmartTesting.Controllers
 {
-    public class Mailer:EmailSender
+    public class Mailer
     {
         private EmailAddress From { get; set; }
         private List<Usuario> destinatarios;
