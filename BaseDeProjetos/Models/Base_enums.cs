@@ -217,6 +217,18 @@ namespace BaseDeProjetos.Models
         NaoInformada
     }
 
+    public enum Nivel
+    {
+        [Display(Name ="Desenvolvedor")]
+        Dev,
+        [Display(Name ="Supervisor")]
+        Supervisor,
+        [Display(Name ="PMO")]
+        PMO,
+        [Display(Name ="PMO")]
+        Usuario
+    }
+
     public static class EnumExtensions
     {
         public static string GetDisplayName(this Enum enu)

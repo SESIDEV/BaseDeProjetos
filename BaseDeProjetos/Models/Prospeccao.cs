@@ -9,7 +9,9 @@ namespace BaseDeProjetos.Models
     {
         [Key]
         public virtual string Id { get; set; }
+        [Display(Name = "Nome da prospecção ou potencial projeto")]
         public virtual string NomeProspeccao { get; set; }
+        [Display(Name = "Potenciais Parceiros da Prospeccção")]
         public virtual string PotenciaisParceiros { get; set; } //Por ora é uma string separada por vírgulas
         public virtual Empresa Empresa { get; set; }
         public virtual Pessoa Contato { get; set; }
@@ -20,6 +22,7 @@ namespace BaseDeProjetos.Models
         public virtual LinhaPesquisa LinhaPequisa { get; set; }
         public virtual List<FollowUp> Status { get; set; } = new List<FollowUp>();
         public virtual Casa Casa { get; set; }
+        public virtual decimal ValorProposta { get; set; } 
     }
 
     public class FollowUp

@@ -41,7 +41,7 @@ namespace BaseDeProjetos.Controllers.Tests
 
         private FunilDeVendasController SetupController(ApplicationDbContext context)
         {
-            var _controller = new FunilDeVendasController(context, new Mailer(new List<Usuario>()));
+            var _controller = new FunilDeVendasController(context, (IEmailSender)new Mailer());
             CriarSeedDB();
             return _controller;
         }
