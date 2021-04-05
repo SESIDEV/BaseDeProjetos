@@ -18,17 +18,16 @@ namespace MailSenderApp.Services
 
         public EmailSender()
         {
-
-            /* TODO: Configurar uma lista de destinatarios para passar como dependência */
+            if (System.Environment.GetEnvironmentVariable("Ambiente") == "Web")
+            {
+                Destinatarios.Add(new Usuario { UserName = "Sergio Kuriyama", Email = "skuriyama@firjan.com.br" });
+                Destinatarios.Add(new Usuario { UserName = "Antonio Fidalgo", Email = "aaneto@firjan.com.br" });
+                Destinatarios.Add(new Usuario { UserName = "Daniella Serrazine", Email = "dserrazine@firjan.com.br" });
+                Destinatarios.Add(new Usuario { UserName = "PMO Integrado", Email = "pmointegrado@firjan.com.br" });
+            }
             Usuario leon = new Usuario { UserName = "Leon Nascimento", Email = "lednascimento@firjan.com.br" };
-            Usuario chefe = new Usuario { UserName = "Antonio Fidalgo", Email = "aaneto@firjan.com.br" };
-            Usuario dani = new Usuario { UserName = "Daniella Serrazine", Email = "dserrazine@firjan.com.br" };
-
             Destinatarios.Add(leon);
-            Destinatarios.Add(chefe);
-            Destinatarios.Add(dani);
-
-            this.mailer = new Mailer(Destinatarios);
+            this.mailer = new Mailer();
 
         }
         public Task SendEmailAsync(string email, string subject, string htmlMessage)

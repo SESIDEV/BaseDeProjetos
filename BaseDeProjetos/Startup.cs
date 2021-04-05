@@ -12,6 +12,7 @@ using MailSenderApp.Services;
 using System;
 using System.Threading;
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 
 namespace BaseDeProjetos
 {
@@ -42,6 +43,7 @@ namespace BaseDeProjetos
             services.AddDefaultIdentity<Usuario>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddDistributedMemoryCache();
+
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddSession();

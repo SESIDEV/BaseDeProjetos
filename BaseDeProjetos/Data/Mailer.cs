@@ -10,11 +10,9 @@ namespace SmartTesting.Controllers
     public class Mailer:EmailSender
     {
         private EmailAddress From { get; set; }
-        private List<Usuario> destinatarios;
-        public Mailer(List<Usuario> destinatarios)
+        public Mailer()
         {
             From = new EmailAddress("l.nasc@live.com", "Leon Nascimento");
-            this.destinatarios = destinatarios;
         }
 
         public async Task<Response> Enviar(EmailAddress destinatario, string titulo, string texto_plain, string texto_html)
@@ -38,7 +36,7 @@ namespace SmartTesting.Controllers
         {
             bool enviado = false;
 
-            foreach (Usuario pessoa in this.destinatarios)
+            foreach (Usuario pessoa in this.Destinatarios)
             {
 
                 EmailAddress email = new EmailAddress(pessoa.Email, pessoa.UserName);

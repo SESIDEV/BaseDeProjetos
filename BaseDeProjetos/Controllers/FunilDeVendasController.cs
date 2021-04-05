@@ -29,11 +29,7 @@ namespace BaseDeProjetos.Controllers
         // GET: FunilDeVendas
         public IActionResult Index(string casa, string sortOrder, string searchString, string ano)
         {
-
-            //Filtros e ordenadores
-            ViewData["CurrentFilter"] = searchString;
-            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewData["DateSortParm"] = sortOrder == "TipoContratacao" ? "tipo_desc" : "TipoContratacao";
+            SetarFiltros(sortOrder, searchString);
 
             IQueryable<Prospeccao> lista = DefinirCasa(casa);
             lista = OrdenarProspecções(sortOrder, lista);
@@ -43,6 +39,30 @@ namespace BaseDeProjetos.Controllers
             return View(lista.ToList<Prospeccao>());
         }
 
+        private void SetarFiltros(string sortOrder, string searchString)
+        {
+            //Filtros e ordenadores
+            if (string.IsNullOrEmpty(searchString) && HttpContext.Session.Keys.Contains("_CurrentFilter"))
+            {
+                ViewData["CurrentFilter"] = HttpContext.Session.GetString("_CurrentFilter");
+            }
+            else
+            {
+                ViewData["CurrentFilter"] = searchString;
+                HttpContext.Session.SetString("_CurrentFilter",searchString);
+            }
+
+            if (string.IsNullOrEmpty(sortOrder) && HttpContext.Session.Keys.Contains("_asdas"))
+            {
+                ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder)  ?  "name_desc" : "";
+                ViewData["DateSortParm"] = sortOrder == "TipoContratacao" ? "tipo_desc" : "TipoContratacao";
+            }else
+            {
+                ViewData["CurrentFilter"] = sortOrder;
+                HttpContext.Session.SetString("____",sortOrder);
+            }
+        }
+
         private IQueryable<Prospeccao> PeriodizarProspecções(string ano, IQueryable<Prospeccao> lista)
         {
 
@@ -50,7 +70,6 @@ namespace BaseDeProjetos.Controllers
             {
                 ano = DateTime.Now.Year.ToString();
             }
-
             if (ano.Equals("Todos"))
             {
                 return lista;
