@@ -146,7 +146,6 @@ namespace BaseDeProjetos.Controllers
             return lista;
         }
 
-
         // GET: FunilDeVendas/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -182,24 +181,52 @@ namespace BaseDeProjetos.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Atualizar(string id, [Bind("OrigemID, Data, Status, Anotacoes, MotivoNaoConversao")] FollowUp followup)
+        public async Task<IActionResult> Atualizar(string id, [Bind("OrigemID, Data, Status, Anotacoes, MotivoNaoConversao")] FollowUp followup, string valorProposta = null)
         {
             if (ModelState.IsValid)
             {
-                followup.Origem = _context.Prospeccao.FirstOrDefault(p => p.Id == followup.OrigemID);
-                _context.Add(followup);
+                var prospeccao_origem = _context.Prospeccao.FirstOrDefault(p => p.Id == followup.OrigemID);
+                followup.Origem = prospeccao_origem;
+
+                CriarFollowUp(followup);
+                AcertarCasosEspeciais(followup);
 
                 NotificarProspecção(followup);
-
-                if (followup.Status == StatusProspeccao.Convertida)
-                {
-                    CriarProjetoConvertido(followup);
-                }
-
                 await _context.SaveChangesAsync();
             }
 
             return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
+        }
+
+        private void AcertarCasosEspeciais(FollowUp followup)
+        {
+            if (followup.Status == StatusProspeccao.ComProposta)
+            {
+                followup.Origem.ValorProposta = 0;
+
+            }
+
+            if (followup.Status == StatusProspeccao.Convertida)
+            {
+                CriarProjetoConvertido(followup);
+            }
+        }
+
+        private void CriarFollowUp(FollowUp followup)
+        {
+            List<FollowUp> followups = _context.FollowUp.Where(f => f.OrigemID == followup.OrigemID).ToList();
+            
+            if(followups.Any(f=>f.Status == followup.Status))
+            {
+                var fp = followups.First(f => f.Status == followup.Status);
+                string texto = $"Em {followup.Data} : {followup.Anotacoes} ";
+                fp.Anotacoes += texto;
+                _context.Update(fp);
+            }
+            else
+            {
+                _context.Add(followup);
+            }
         }
 
         private async Task AtualizarStatusAsync(FollowUp followup)
@@ -294,9 +321,22 @@ namespace BaseDeProjetos.Controllers
                          $"Mais detalhes: {followup.Anotacoes}<hr>")
                     };
                     break;
+
+                case StatusProspeccao.Discussao_EsbocoProjeto:
+                    notificacao = new Notificacao
+                    {
+                        Titulo = "SGI - Uma prospecção está avançando!",
+                        TextoBase = EmailTemplate.MontarTemplate($"<h1>Olá,</h1><br> A prospecção com a empresa {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo usuário {followup.Origem.Usuario} foi chegou à etapa do esboço de projeto. A proposta deverá ser enviada até o dia {DateTime.Today.AddDays(14)}." +
+                         $"<hr>" +
+                         $"Mais detalhes: {followup.Anotacoes}<hr>")
+                    };
+
+                    break;
                 default:
                     throw new ArgumentException("Status não notificável");
             }
+
+            notificacao.Status = followup.Status;
             return notificacao;
         }
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SmartTesting.Controllers
 {
-    public class Mailer:EmailSender
+    public class Mailer
     {
         private EmailAddress From { get; set; }
         public Mailer()
@@ -32,11 +32,11 @@ namespace SmartTesting.Controllers
             return response;
         }
 
-        public bool EnviarNotificacao(Notificacao notificacao)
+        public bool EnviarNotificacao(Notificacao notificacao, List<Usuario> lista)
         {
             bool enviado = false;
 
-            foreach (Usuario pessoa in this.Destinatarios)
+            foreach (Usuario pessoa in lista)
             {
 
                 EmailAddress email = new EmailAddress(pessoa.Email, pessoa.UserName);
@@ -54,6 +54,7 @@ namespace SmartTesting.Controllers
         public string Titulo { get; internal set; }
         public string TextoBase { get; internal set; }
         public string HTML { get; internal set; }
+        public StatusProspeccao Status { get; set; }
     }
 
     public class EmailTemplate
