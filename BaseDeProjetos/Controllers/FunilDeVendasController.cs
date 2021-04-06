@@ -27,7 +27,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: FunilDeVendas
-        public IActionResult Index(string casa, string sortOrder, string searchString, string ano)
+        public IActionResult Index(string casa, string sortOrder="", string searchString="", string ano="")
         {
             SetarFiltros(sortOrder, searchString);
 
@@ -39,7 +39,7 @@ namespace BaseDeProjetos.Controllers
             return View(lista.ToList<Prospeccao>());
         }
 
-        private void SetarFiltros(string sortOrder, string searchString)
+        private void SetarFiltros(string sortOrder="", string searchString="")
         {
             //Filtros e ordenadores
             if (string.IsNullOrEmpty(searchString) && HttpContext.Session.Keys.Contains("_CurrentFilter"))
