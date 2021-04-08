@@ -83,7 +83,7 @@
 
     double taxa_conversao;
     try {
-        taxa_conversao = (n_convertidas / (n_convertidas + n_nao_convertidas))* 100;
+        taxa_conversao = (n_convertidas / (n_convertidas + n_nao_convertidas));
     }
     catch (Exception)
     {
@@ -222,7 +222,7 @@ Highcharts.chart('pizza_conversao', {
             cursor: 'pointer',
             dataLabels: {
                 enabled: true,
-                format: '<b>{point.name}</b>: {point.value} prospecções'
+                format: '<b>{point.name}</b>: {point.total} prospecções'
             }
         }
     },
