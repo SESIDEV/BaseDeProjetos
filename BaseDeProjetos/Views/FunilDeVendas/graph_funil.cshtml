@@ -1,4 +1,13 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
+<style>
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  border: 3px solid;
+}
+</style>
 @{
     var cd_CI = Model.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Count > 0 && p.Status.Where(s=> s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
     var cd_EDBL = Model.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Count > 0 && p.Status.Where(s=> s.Status == StatusProspeccao.Discussao_BuscaLiteratura).Count() > 0).ToList().Count();
@@ -49,11 +58,63 @@
     var anp_EDEP = Model.Where(p => p.TipoContratacao == TipoContratacao.ANP && p.Status.Count > 0 && p.Status.Where(s=> s.Status == StatusProspeccao.Discussao_EsbocoProjeto).Count() > 0).ToList().Count();
     var anp_CP = Model.Where(p => p.TipoContratacao == TipoContratacao.ANP && p.Status.Count > 0 &&  p.Status.Where(s=> s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
 
-}
-<figure class="highcharts-figure">
-    <div id="funil"></div>
-</figure>
+    int n_propostas = Model.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.ComProposta)).Count();
+    int n_convertidas = Model.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.Convertida)).Count();
+    int n_nao_convertidas = Model.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.NaoConvertida)).Count();
+    int n_canceladas = Model.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.Suspensa)).Count();
+    int n_prospeccoes_andamento = Model.Count() - n_convertidas - n_nao_convertidas - n_canceladas;
 
+
+
+    var diff = Model.Where(p=> p.Status.Any(s=> s.Status == StatusProspeccao.ComProposta ||
+                                                s.Status == StatusProspeccao.Suspensa )).
+    Aggregate(new TimeSpan(0),
+        (inicial,prospeccao) => prospeccao.Status.First().Data - prospeccao.Status.Last().Data,
+        diff => diff.ToString("%d"));
+
+    decimal taxa_conversao;
+    try {
+        taxa_conversao = n_convertidas / (n_convertidas + n_nao_convertidas) * 100;
+    }
+    catch (DivideByZeroException)
+    {
+        taxa_conversao = 0;
+    }
+}
+
+<div class="row">
+    <figure class="highcharts-figure col-12">
+        <div id="funil"></div>
+    </figure>
+
+    <figure class="highcharts-figure col-6">
+        <div id="pizza_conversao"></div>
+    </figure>
+
+    
+    <div class="col-6">
+        <div id="taxa_conversao" class="jumbotron text-center h-100">
+            <h1 class="display-4"> @taxa_conversao %</h1>
+            <small>
+                 Taxa de conversão de prospecções
+            </small>
+        </div>
+    </div>
+<div class="col-6">
+        <div id="tempo_SLA" class="jumbotron text-center h-100">
+            <h1 class="display-4"> @diff dias</h1>
+            <small>
+                Tempo médio das prospecções
+            </small>
+        </div>
+    </div>
+
+    <figure class="highcharts-figure col-6">
+        <div id="pizza_desistencia"></div>
+    </figure>
+</div>
+
+<!-- Gráfico de Fomentos por status-->
 <script type="text/javascript">
     Highcharts.chart('funil', {
         chart: {
@@ -126,3 +187,96 @@
         }]
     });
 </script>
+<!-- Pizzas -->
+<script>
+Highcharts.chart('pizza_conversao', {
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    title: {
+        text: 'Status de Prospecções com propostas'
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    accessibility: {
+        point: {
+            valueSuffix: '%'
+        }
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+            }
+        }
+    },
+    series: [{
+        size: '60%',
+        name: 'Propostas',
+        colorByPoint: true,
+        data: [{
+            name: 'Em andamento',
+            y: @(n_propostas - n_convertidas - n_nao_convertidas),
+        }, {
+            name: 'Convertidas',
+            y: @n_convertidas
+        }, {
+            name: 'Não convertidas',
+            y: @n_nao_convertidas
+        }]
+    }]
+});
+
+
+    Highcharts.chart('pizza_desistencia', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: 'Status geral das prospecções'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        accessibility: {
+            point: {
+                valueSuffix: '%'
+            }
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                }
+            }
+        },
+        series: [{
+            size: '60%',
+            name: 'Propostas',
+            colorByPoint: true,
+            data: [{
+                name: 'Em andamento',
+                y: @n_prospeccoes_andamento,
+            }, {
+                name: 'Encerradas',
+                y: @(Model.Count() - n_prospeccoes_andamento),
+            } 
+        ]
+    }]
+});
+</script>
+
+
