@@ -31,12 +31,12 @@
 
         <form asp-action="Index" method="get">
             <div class="form-actions">
-                <p>
+                <small>
                     Achar por empresa ou líder: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
                     <input type="hidden" name="ano" value="Todos" />
                     <input type="submit" value="Procurar" class="btn btn-default" /> |
                     <a asp-action="Index">Exibir Lista Completa</a>>
-                </p>
+                </small>
             </div>
         </form>
 
