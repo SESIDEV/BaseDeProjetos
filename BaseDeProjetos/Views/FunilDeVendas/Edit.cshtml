@@ -128,6 +128,18 @@
                     </div>
                 </div>
             </fieldset>
+            
+            @if(Model.Status.Any(p=> p.Status == StatusProspeccao.ComProposta))
+            {
+                <fieldset>
+                    <legend> Dados da proposta</legend>
+                    <div class="form-group">
+                        <label asp-for="ValorProposta" class="control-label"></label>
+                        <input asp-for="ValorProposta" class="form-control" />
+                        <span asp-validation-for="ValorProposta" class="text-danger" placeholder="Insira o valor da proposta"></span>
+                    </div>
+                </fieldset>
+            }
 
 
             <fieldset class="col-4">
