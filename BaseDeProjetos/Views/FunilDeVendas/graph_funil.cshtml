@@ -65,12 +65,14 @@
     int n_prospeccoes_andamento = Model.Count() - n_convertidas - n_nao_convertidas - n_canceladas;
 
 
+    var avancadas = Model.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.ComProposta ||
+                                                 s.Status == StatusProspeccao.Suspensa));
 
-    var diff = Model.Where(p=> p.Status.Any(s=> s.Status == StatusProspeccao.ComProposta ||
-                                                s.Status == StatusProspeccao.Suspensa )).
-    Aggregate(new TimeSpan(0),
+    TimeSpan diff = avancadas.Aggregate(new TimeSpan(0),
         (inicial,prospeccao) => prospeccao.Status.First().Data - prospeccao.Status.Last().Data,
-        diff => diff.ToString("%d"));
+        diff => diff);
+
+    diff = new TimeSpan(diff.Ticks / avancadas.Count());
 
     decimal taxa_conversao;
     try {
@@ -102,7 +104,7 @@
     </div>
 <div class="col-6">
         <div id="tempo_SLA" class="jumbotron text-center h-100">
-            <h1 class="display-4"> @diff dias</h1>
+            <h1 class="display-4"> @diff.ToString("%d") dias</h1>
             <small>
                 Tempo médio das prospecções
             </small>
