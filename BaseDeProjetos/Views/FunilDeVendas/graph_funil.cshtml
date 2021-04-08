@@ -94,7 +94,7 @@
         taxa_conversao = 1;
     }
 
-    decimal infrutiferas = n_canceladas / (Model.Count() - avancadas.Count() - n_convertidas - n_nao_convertidas);
+    decimal infrutiferas = n_canceladas / (Model.Count() - (avancadas.Count() - n_convertidas - n_nao_convertidas));
 }
 
 <div class="row">
