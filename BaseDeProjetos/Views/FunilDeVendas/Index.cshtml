@@ -14,7 +14,7 @@
             <a asp-action="Index" asp-route-ano="Todos">Todos</a> |
             <a asp-action="Index" asp-route-ano="2021">2021</a> |
             <a asp-action="Index" asp-route-ano="2020">2020</a> |
-            <a asp-action="Index" asp-route-ano="2019">2019</a> 
+            <a asp-action="Index" asp-route-ano="2019">2019</a>
             <hr />
         </div>
 
@@ -40,23 +40,29 @@
             </div>
         </form>
 
-        <table class="table card-text">
+        <table class="table card-text" style="overflow-y:scroll; max-height:150vh">
             <thead>
                 <tr>
                     <th>
-                        Líder
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.Empresa.Nome)</a>
                     </th>
                     <th>
-                        <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">@Html.DisplayNameFor(model => model.TipoContratacao)</a>
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.NomeProspeccao)</a>
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.LinhaPequisa)
                     </th>
                     <th>
-                        <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.Empresa.Nome)</a>
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">@Html.DisplayNameFor(model => model.TipoContratacao)</a>
+                    </th>
+                    <th>
+                        Líder
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.Status.Last().Status)
+                    </th>
+                    <th>
+                        Ações
                     </th>
                 </tr>
             </thead>
@@ -65,16 +71,21 @@
                 {
                     <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Usuario.UserName)
+                            @Html.DisplayFor(modelItem => item.Empresa.Nome)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.TipoContratacao)
+                            @Html.DisplayFor(modelItem => item.NomeProspeccao)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.LinhaPequisa)
                         </td>
+
                         <td>
-                            @Html.DisplayFor(modelItem => item.Empresa.Nome)
+                            @Html.DisplayFor(modelItem => item.TipoContratacao)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Usuario.UserName)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Status.Last().Status)
@@ -84,7 +95,7 @@
                             <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
                             <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
                             <a asp-action="Atualizar" asp-route-id="@item.Id">Atualizar</a> |
-                            <a asp-action="Delete" class="text-danger" asp-route-id="@item.Id">Remover</a>
+                            <a asp-action="Delete" class="badge badge-danger" asp-route-id="@item.Id">Remover</a>
                         </td>
                     </tr>
                 }
