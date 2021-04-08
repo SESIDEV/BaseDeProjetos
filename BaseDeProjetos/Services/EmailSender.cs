@@ -46,8 +46,6 @@ namespace MailSenderApp.Services
                     break;
                 case StatusProspeccao.Convertida:
                     break;
-                case StatusProspeccao.NaoConvertida:
-                    break;
                 default:
                     lista = lista.Where(u => u.Nivel != Nivel.PMO).ToList();
                     break;
