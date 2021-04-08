@@ -65,8 +65,8 @@
     int n_prospeccoes_andamento = Model.Count() - n_convertidas - n_nao_convertidas - n_canceladas;
 
 
-    var avancadas = Model.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.ComProposta ||
-                                                 s.Status == StatusProspeccao.Suspensa));
+    var avancadas = Model.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.ComProposta));
+
     TimeSpan diff;
     if (avancadas.Count() > 0)
     {
