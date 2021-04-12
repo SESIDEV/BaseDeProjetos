@@ -10,11 +10,11 @@ using BaseDeProjetos.Models;
 
 namespace BaseDeProjetos.Controllers
 {
-    public class ProducaosController : Controller
+    public class ProducaoController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public ProducaosController(ApplicationDbContext context)
+        public ProducaoController(ApplicationDbContext context)
         {
             _context = context;
         }

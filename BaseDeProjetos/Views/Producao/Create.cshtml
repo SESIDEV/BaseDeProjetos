@@ -1,22 +1,38 @@
 ﻿@model BaseDeProjetos.Models.Producao
+@using Microsoft.AspNetCore.Http
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Create";
 }
 
-<h1>Edit</h1>
+<h1>Create</h1>
 
 <h4>Producao</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Tipo" class="control-label"></label>
-                <select asp-for="Tipo" class="form-control"></select>
+                <select asp-for="Tipo" class="form-control" asp-items="Html.GetEnumSelectList<TipoProducao>().OrderBy(p=>p.Text)"></select>
                 <span asp-validation-for="Tipo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Casa" class="control-label"></label>
+                @if (!(Context.Session.GetString("_Casa") is null))
+                {
+                    <select asp-for="Casa" class="form-control">
+                        @{ var enum_v = (int)Enum.Parse(typeof(Casa), Context.Session.GetString("_Casa"), true);}
+                        <option value="@enum_v" selected="selected">@Context.Session.GetString("_Casa")</option>
+                    </select>
+                }
+                else
+                {
+                    <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Casa>().OrderBy(p=>p.Text)"></select>
+                }
+
+                <span asp-validation-for="Casa" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="DataDaRealizacao" class="control-label"></label>
@@ -44,7 +60,7 @@
                 <span asp-validation-for="publico" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
