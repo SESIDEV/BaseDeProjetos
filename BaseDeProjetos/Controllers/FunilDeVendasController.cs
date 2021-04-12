@@ -589,7 +589,7 @@ namespace BaseDeProjetos.Controllers
             string cabecalho = "Casa, Id, NomeProsppeccao, Usuario, Empresa, TipoContratacao, Status";
 
             string csv = cabecalho + "\n" + String.Join(",", dados.Select(x =>
-                $"{x.Casa},{x.Id.ToString()},{x.NomeProspeccao},{x.Usuario},{x.Empresa.Nome},{x.TipoContratacao},{x.Status.FirstOrDefault().Status},{x.Status.FirstOrDefault().Anotacoes}"
+                $"{x.Casa};{x.Id.ToString()};{x.NomeProspeccao};{x.Usuario};{x.Empresa.Nome};{x.TipoContratacao};{x.Status.FirstOrDefault().Status};{x.Status.FirstOrDefault().Anotacoes} \n"
             ).ToArray());  
 
             return File(Encoding.UTF8.GetBytes(csv), "text/csv", "Relatório Semanal.csv");
