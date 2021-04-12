@@ -1,38 +1,20 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace BaseDeProjetos.Models
 {
 
     //Interface para artigos, palestras, notícias, eventos
-    public interface IProducao
+    public  class Producao
     {
-        public string RealizadoEm { get; set; }
+
+        [Key]
+        public int Id { get; set; }
+        public TipoProducao Tipo { get; set; }
         public DateTime DataDaRealizacao { get; set; }
-    }
-    public class Artigo : IProducao
-    {
         public string RealizadoEm { get; set; }
-        public DateTime DataDaRealizacao { get; set; }
-    }
-
-    public class Noticia : IProducao
-    {
-        public string RealizadoEm { get; set; }
-        public DateTime DataDaRealizacao { get; set; }
-
-    }
-
-    public class Evento : IProducao
-    {
-        public string RealizadoEm { get; set; }
-        public DateTime DataDaRealizacao { get; set; }
-
-    }
-
-    public class Palestra : IProducao
-    {
-        public string RealizadoEm { get; set; }
-        public DateTime DataDaRealizacao { get; set; }
-
+        public string Descricao { get; set; }
+        public string Link { get; set; }
+        public int? publico { get; set; }
     }
 }

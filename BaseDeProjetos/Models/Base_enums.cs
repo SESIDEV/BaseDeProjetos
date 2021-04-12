@@ -92,6 +92,18 @@ namespace BaseDeProjetos.Models
         Processo
     }
 
+    public enum TipoProducao
+    {
+        Palestra,
+        Artigo,
+        Patente,
+        [Display(Name = "Segredo Industrial")]
+        SegredoIndustrial,
+        Evento,
+        Noticia,
+        Dica
+    }
+
     public enum Estado
     {
 
