@@ -10,6 +10,7 @@ using SmartTesting.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Controllers
@@ -566,6 +567,32 @@ namespace BaseDeProjetos.Controllers
         private bool ProspeccaoExists(string id)
         {
             return _context.Prospeccao.Any(e => e.Id == id);
+        }
+
+        [HttpGet]
+        public FileResult RelatorioProspeccoes()
+        {
+
+            string query = @"SELECT prospeccao.Id, Data, Nome, Status, UserName, Anotacoes, prospeccao.Casa, prospeccao.TipoContratacao, 
+                Contatoid, Empresaid,LinhaPequisa,NomeProspeccao,PotenciaisParceiros, Usuarioid, ValorProposta FROM 
+                (`followup` INNER JOIN ((prospeccao INNER JOIN aspnetusers ON prospeccao.UsuarioId = aspnetusers.Id) 
+                INNER JOIN empresa ON empresa.Id = prospeccao.EmpresaId) ON followup.OrigemID = prospeccao.Id) WHERE 
+                      (followup.data > STR_TO_DATE('31/12/2019', '%d/%m/%Y') AND        prospeccao.Id NOT IN 
+                      ( 
+                             SELECT followup.origemid 
+                             FROM   followup 
+                             WHERE  status > 5 )
+                      )  ORDER BY prospeccao.Id";
+
+            var dados = _context.Prospeccao.FromSqlRaw(query);
+
+            string cabecalho = "Casa, Id, NomeProsppeccao, Usuario, Empresa, TipoContratacao, Status";
+
+            string csv = cabecalho + "\n" + String.Join(",", dados.Select(x =>
+                $"{x.Casa},{x.Id.ToString()},{x.NomeProspeccao},{x.Usuario},{x.Empresa.Nome},{x.TipoContratacao},{x.Status.FirstOrDefault().Status},{x.Status.FirstOrDefault().Anotacoes}"
+            ).ToArray());  
+
+            return File(Encoding.UTF8.GetBytes(csv), "text/csv", "Relatório Semanal.csv");
         }
     }
 }
