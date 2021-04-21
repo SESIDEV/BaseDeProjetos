@@ -341,8 +341,16 @@ Highcharts.chart('pizza_conversao', {
                 name: 'Em andamento',
                 y: @n_prospeccoes_andamento,
             }, {
-                name: 'Encerradas',
-                y: @(Model.Count() - n_prospeccoes_andamento),
+                name: 'Convertidas',
+                y: @n_convertidas,
+            },
+                {
+                name: 'Não Convertidas',
+                y: @n_nao_convertidas,
+            },
+             {
+                name: 'Canceladas',
+                y: @n_canceladas,
             }
         ]
     }]
