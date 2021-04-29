@@ -54,7 +54,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Tipo,DataDaRealizacao,RealizadoEm,Descricao,Link,publico")] Producao producao)
+        public async Task<IActionResult> Create([Bind("Id,Tipo,DataDaRealizacao,RealizadoEm,Descricao,Link,publico,Pessoa")] Producao producao)
         {
             if (ModelState.IsValid)
             {

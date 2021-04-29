@@ -12,6 +12,7 @@ namespace BaseDeProjetos.Models
         public int Id { get; set; }
         [Display(Name = "Tipo de Produção")]
         public TipoProducao Tipo { get; set; }
+        public String Pessoa { get; set; }
         public Casa Casa { get; set; }
         [Display(Name = "Data de Realização")]
         public DateTime DataDaRealizacao { get; set; }
