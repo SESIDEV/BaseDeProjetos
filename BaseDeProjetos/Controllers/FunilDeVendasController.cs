@@ -220,8 +220,9 @@ namespace BaseDeProjetos.Controllers
             if(followups.Any(f=>f.Status == followup.Status))
             {
                 var fp = followups.First(f => f.Status == followup.Status);
-                string texto = $"Em {followup.Data} : {followup.Anotacoes} ";
+                string texto = $"\n Em {followup.Data} : {followup.Anotacoes} ";
                 fp.Anotacoes += texto;
+                fp.Data = followup.Data;
                 _context.Update(fp);
             }
             else
