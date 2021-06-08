@@ -1,5 +1,4 @@
 ﻿using BaseDeProjetos.Models;
-using MailSenderApp.Services;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using System.Collections.Generic;

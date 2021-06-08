@@ -1,7 +1,6 @@
 ﻿using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace BaseDeProjetos.Data
 {

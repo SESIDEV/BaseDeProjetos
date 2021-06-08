@@ -1,6 +1,5 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
-using Castle.DynamicProxy.Generators;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -115,7 +114,7 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account.Manage
             {
                 return p.Lider.Id == user.Id;
             }
-            catch(Exception e)
+            catch (Exception)
             {
                 return false;
             }

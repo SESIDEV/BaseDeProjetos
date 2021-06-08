@@ -19,7 +19,7 @@ namespace BaseDeProjetos.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IEmailSender _mailer;
-        private ApplicationDbContext context;
+        private readonly ApplicationDbContext context;
 
         public FunilDeVendasController(ApplicationDbContext context, IEmailSender mailer)
         {
@@ -168,7 +168,7 @@ namespace BaseDeProjetos.Controllers
         // GET: FunilDeVendas/Create
         public IActionResult Create()
         {
-            var empresas = _context.Empresa.ToList();
+            List<Empresa> empresas = _context.Empresa.ToList();
             ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
             return View();
         }
@@ -186,7 +186,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (ModelState.IsValid)
             {
-                var prospeccao_origem = _context.Prospeccao.FirstOrDefault(p => p.Id == followup.OrigemID);
+                Prospeccao prospeccao_origem = _context.Prospeccao.FirstOrDefault(p => p.Id == followup.OrigemID);
                 followup.Origem = prospeccao_origem;
 
                 CriarFollowUp(followup);
@@ -219,7 +219,7 @@ namespace BaseDeProjetos.Controllers
             
             if(followups.Any(f=>f.Status == followup.Status))
             {
-                var fp = followups.First(f => f.Status == followup.Status);
+                FollowUp fp = followups.First(f => f.Status == followup.Status);
                 string texto = $"\n Em {followup.Data} : {followup.Anotacoes} ";
                 fp.Anotacoes += texto;
                 fp.Data = followup.Data;
@@ -421,10 +421,10 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {
-                    var Empresa_antigo = _context.Prospeccao.Include("Empresa").AsNoTracking().First(p => String.Equals(p.Id , id)).Empresa;
+                    Empresa Empresa_antigo = _context.Prospeccao.Include("Empresa").AsNoTracking().First(p => string.Equals(p.Id , id)).Empresa;
                     if (prospeccao.Empresa.Id != Empresa_antigo.Id) // Nova empresa existente
                     {
-                        var empresa = _context.Empresa.First(e => e.Id == prospeccao.Empresa.Id);
+                        Empresa empresa = _context.Empresa.First(e => e.Id == prospeccao.Empresa.Id);
                         prospeccao.Empresa = empresa;
                     }
                     else
@@ -585,11 +585,11 @@ namespace BaseDeProjetos.Controllers
                              WHERE  status > 5 )
                       )  ORDER BY prospeccao.Id";
 
-            var dados = _context.Prospeccao.FromSqlRaw(query);
+            IQueryable<Prospeccao> dados = _context.Prospeccao.FromSqlRaw(query);
 
             string cabecalho = "Casa, Id, NomeProsppeccao, Usuario, Empresa, TipoContratacao, Status";
 
-            string csv = cabecalho + "\n" + String.Join(",", dados.Select(x =>
+            string csv = cabecalho + "\n" + string.Join(",", dados.Select(x =>
                 $"{x.Casa};{x.Id.ToString()};{x.NomeProspeccao};{x.Usuario};{x.Empresa.Nome};{x.TipoContratacao};{x.Status.FirstOrDefault().Status};{x.Status.FirstOrDefault().Anotacoes} \n"
             ).ToArray());  
 

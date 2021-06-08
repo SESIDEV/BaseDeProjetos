@@ -245,13 +245,13 @@ namespace BaseDeProjetos.Models
     {
         public static string GetDisplayName(this Enum enu)
         {
-            var attr = GetDisplayAttribute(enu);
+            DisplayAttribute attr = GetDisplayAttribute(enu);
             return attr != null ? attr.Name : enu.ToString();
         }
 
         public static string GetDescription(this Enum enu)
         {
-            var attr = GetDisplayAttribute(enu);
+            DisplayAttribute attr = GetDisplayAttribute(enu);
             return attr != null ? attr.Description : enu.ToString();
         }
 
@@ -264,7 +264,7 @@ namespace BaseDeProjetos.Models
             }
 
             // Get the enum field.
-            var field = type.GetField(value.ToString());
+            FieldInfo field = type.GetField(value.ToString());
             return field == null ? null : field.GetCustomAttribute<DisplayAttribute>();
         }
     }

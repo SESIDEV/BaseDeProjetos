@@ -1,5 +1,4 @@
-﻿using BaseDeProjetos.Models;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -21,10 +20,6 @@ namespace BaseDeProjetos.Models
         public bool Concluida { get; set; } = false;
 
         [NotMapped]
-        public bool Atrasada { get
-            {
-                return Concluida ? false : DateTime.Today > DataFim;
-            }
-        }
+        public bool Atrasada => Concluida ? false : DateTime.Today > DataFim;
     }
 }

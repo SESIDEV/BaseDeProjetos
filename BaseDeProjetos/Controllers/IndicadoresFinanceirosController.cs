@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using BaseDeProjetos.Data;
-using BaseDeProjetos.Models;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -33,7 +30,7 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
-            var indicadoresFinanceiros = await _context.IndicadoresFinanceiros
+            IndicadoresFinanceiros indicadoresFinanceiros = await _context.IndicadoresFinanceiros
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (indicadoresFinanceiros == null)
             {
@@ -73,7 +70,7 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
-            var indicadoresFinanceiros = await _context.IndicadoresFinanceiros.FindAsync(id);
+            IndicadoresFinanceiros indicadoresFinanceiros = await _context.IndicadoresFinanceiros.FindAsync(id);
             if (indicadoresFinanceiros == null)
             {
                 return NotFound();
@@ -124,7 +121,7 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
-            var indicadoresFinanceiros = await _context.IndicadoresFinanceiros
+            IndicadoresFinanceiros indicadoresFinanceiros = await _context.IndicadoresFinanceiros
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (indicadoresFinanceiros == null)
             {
@@ -139,7 +136,7 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var indicadoresFinanceiros = await _context.IndicadoresFinanceiros.FindAsync(id);
+            IndicadoresFinanceiros indicadoresFinanceiros = await _context.IndicadoresFinanceiros.FindAsync(id);
             _context.IndicadoresFinanceiros.Remove(indicadoresFinanceiros);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

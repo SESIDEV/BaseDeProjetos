@@ -1,7 +1,7 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -139,7 +139,7 @@ namespace BaseDeProjetos.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             Empresa empresa = await _context.Empresa.FindAsync(id);
-            var pessoas_a_remover = _context.Pessoa.Where(p => p.empresa.Id == empresa.Id);
+            IQueryable<Pessoa> pessoas_a_remover = _context.Pessoa.Where(p => p.empresa.Id == empresa.Id);
             _context.Pessoa.RemoveRange(pessoas_a_remover);
             _context.Empresa.Remove(empresa);
             await _context.SaveChangesAsync();

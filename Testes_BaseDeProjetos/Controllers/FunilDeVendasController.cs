@@ -1,18 +1,9 @@
-﻿using Xunit;
-using Testes_BaseDeProjetos.Controllers;
-using System.Threading.Tasks;
-using BaseDeProjetos.Data;
-using Microsoft.AspNetCore.Mvc;
+﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
-using System.Collections.Generic;
-using System.Net.Http;
-using Newtonsoft.Json;
-using System.Text;
-using System;
-using System.Linq;
-using System.Net;
-using SmartTesting.Controllers;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using SmartTesting.Controllers;
+using Testes_BaseDeProjetos.Controllers;
+using Xunit;
 
 namespace BaseDeProjetos.Controllers.Tests
 {
@@ -41,7 +32,7 @@ namespace BaseDeProjetos.Controllers.Tests
 
         private FunilDeVendasController SetupController(ApplicationDbContext context)
         {
-            var _controller = new FunilDeVendasController(context, (IEmailSender)new Mailer());
+            FunilDeVendasController _controller = new FunilDeVendasController(context, (IEmailSender)new Mailer());
             CriarSeedDB();
             return _controller;
         }

@@ -39,13 +39,7 @@ namespace BaseDeProjetos.Models
         }
 
         [NotMapped]
-        public String NomeLider
-        {
-            get
-            {
-                return Lider.NormalizedEmail.Split("@")[0];
-            }
-        }
+        public string NomeLider => Lider.NormalizedEmail.Split("@")[0];
 
         public virtual Estado Estado { get; set; }
         [Display(AutoGenerateFilter = true, Name = "Fonte de Fomento")]

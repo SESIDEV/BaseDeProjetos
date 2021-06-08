@@ -1,11 +1,11 @@
 ﻿using BaseDeProjetos;
 using BaseDeProjetos.Data;
+using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using Xunit;
-using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
-    using System.Collections.Generic;
 
 namespace Testes_BaseDeProjetos.Controllers
 {
@@ -17,7 +17,7 @@ namespace Testes_BaseDeProjetos.Controllers
         public BaseTestes(BaseApplicationFactory<Startup> factory)
         {
             _client = factory.CreateClient();
-            var scope = factory.Services.CreateScope();
+            IServiceScope scope = factory.Services.CreateScope();
             _context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         }
 
@@ -29,12 +29,12 @@ namespace Testes_BaseDeProjetos.Controllers
         public static FormUrlEncodedContent ToKeyValueURL(object obj)
         {
 
-            var keyvalues = obj.GetType().GetProperties()
+            KeyValuePair<string, string>[] keyvalues = obj.GetType().GetProperties()
                 .ToList()
                     .Select(p => new KeyValuePair<string, string>(p.Name, p.GetValue(obj)?.ToString()))
                             .ToArray();
 
-            var content = new FormUrlEncodedContent(keyvalues);
+            FormUrlEncodedContent content = new FormUrlEncodedContent(keyvalues);
 
             return content; 
         }

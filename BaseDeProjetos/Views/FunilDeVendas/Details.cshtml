@@ -54,7 +54,7 @@
     <hr />
     <h5> Histórico de Atualizações </h5>
     <hr />
-    @foreach (var followup in Model.Status)
+    @foreach (var followup in Model.Status.OrderBy(s=>s.Data).ToList())
     {
         <div class="card m-1">
             <div class="card-body">

@@ -1,6 +1,5 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -40,7 +39,7 @@ namespace BaseDeProjetos.Controllers
         public IActionResult Index(string casa)
         {
 
-            var projetos = DefinirCasa(casa);
+            IQueryable<Projeto> projetos = DefinirCasa(casa);
             GerarIndicadores(casa, _context);
             return View(projetos.ToList());
         }
@@ -293,7 +292,7 @@ namespace BaseDeProjetos.Controllers
         {
             List<Usuario> usuarios_reais = new List<Usuario>();
 
-            for (var i = 0; i < projeto.Equipe.Count(); i++)
+            for (int i = 0; i < projeto.Equipe.Count(); i++)
             {
                 usuarios_reais.Add(_context.Users.First(p => p.Id == projeto.Equipe[i].Id));
             }
@@ -382,10 +381,8 @@ namespace BaseDeProjetos.Controllers
             foreach (string line in lines)
             {
                 string[] dados = line.Split("|");
-                double valorTotal = 0;
-                double valorAporte = 0;
-                _ = Double.TryParse(Regex.Replace(dados[10], @"[^\d]", ""), out valorTotal);
-                _ = double.TryParse(Regex.Replace(dados[11], @"[^\d]", ""), out valorAporte);
+                _ = double.TryParse(Regex.Replace(dados[10], @"[^\d]", ""), out double valorTotal);
+                _ = double.TryParse(Regex.Replace(dados[11], @"[^\d]", ""), out double valorAporte);
 
                 Projeto projeto = new Projeto
                 {

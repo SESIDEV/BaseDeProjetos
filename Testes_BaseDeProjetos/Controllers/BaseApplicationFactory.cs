@@ -5,8 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Testes_BaseDeProjetos.Controllers
 {
@@ -22,8 +20,8 @@ namespace Testes_BaseDeProjetos.Controllers
         {
             builder.ConfigureServices(services =>
             {
-            // Create a new service provider.
-            var serviceProvider = new ServiceCollection()
+                // Create a new service provider.
+                ServiceProvider serviceProvider = new ServiceCollection()
                     .AddEntityFrameworkMySql()
                     .BuildServiceProvider();
 
@@ -35,16 +33,16 @@ namespace Testes_BaseDeProjetos.Controllers
                     UseLazyLoadingProxies();
                 });
 
-            // Build the service provider.
-            var sp = services.BuildServiceProvider();
+                // Build the service provider.
+                ServiceProvider sp = services.BuildServiceProvider();
 
             // Create a scope to obtain a reference to the database
             // context (ApplicationDbContext).
-            using (var scope = sp.CreateScope())
+            using (IServiceScope scope = sp.CreateScope())
                 {
-                    var scopedServices = scope.ServiceProvider;
-                    var db = scopedServices.GetRequiredService<ApplicationDbContext>();
-                    var logger = scopedServices
+                    IServiceProvider scopedServices = scope.ServiceProvider;
+                    ApplicationDbContext db = scopedServices.GetRequiredService<ApplicationDbContext>();
+                    ILogger<BaseApplicationFactory<TStartup>> logger = scopedServices
                         .GetRequiredService<ILogger<BaseApplicationFactory<TStartup>>>();
 
                 // Ensure the database is created.

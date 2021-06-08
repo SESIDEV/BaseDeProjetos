@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using BaseDeProjetos.Data;
-using BaseDeProjetos.Models;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -33,7 +30,7 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
-            var atividadesProdutivas = await _context.AtividadesProdutivas
+            AtividadesProdutivas atividadesProdutivas = await _context.AtividadesProdutivas
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (atividadesProdutivas == null)
             {
@@ -47,7 +44,7 @@ namespace BaseDeProjetos.Controllers
         public IActionResult Create()
         {
 
-            ViewData["Projetos"] = _context.Projeto.Where(p=>!String.IsNullOrEmpty(p.NomeProjeto)).ToList();
+            ViewData["Projetos"] = _context.Projeto.Where(p=>!string.IsNullOrEmpty(p.NomeProjeto)).ToList();
             return View();
         }
 
@@ -75,7 +72,7 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
-            var atividadesProdutivas = await _context.AtividadesProdutivas.FindAsync(id);
+            AtividadesProdutivas atividadesProdutivas = await _context.AtividadesProdutivas.FindAsync(id);
             if (atividadesProdutivas == null)
             {
                 return NotFound();
@@ -126,7 +123,7 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
-            var atividadesProdutivas = await _context.AtividadesProdutivas
+            AtividadesProdutivas atividadesProdutivas = await _context.AtividadesProdutivas
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (atividadesProdutivas == null)
             {
@@ -141,7 +138,7 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var atividadesProdutivas = await _context.AtividadesProdutivas.FindAsync(id);
+            AtividadesProdutivas atividadesProdutivas = await _context.AtividadesProdutivas.FindAsync(id);
             _context.AtividadesProdutivas.Remove(atividadesProdutivas);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

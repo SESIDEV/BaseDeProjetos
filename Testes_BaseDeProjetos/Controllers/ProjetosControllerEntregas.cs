@@ -1,15 +1,15 @@
-﻿    using Xunit;
-using Testes_BaseDeProjetos.Controllers;
-using System.Threading.Tasks;
-using BaseDeProjetos.Data;
-using Microsoft.AspNetCore.Mvc;
+﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
-using System.Collections.Generic;
-using System.Net.Http;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Text;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Testes_BaseDeProjetos.Controllers;
+using Xunit;
 
 namespace BaseDeProjetos.Controllers.Tests
 {
@@ -17,7 +17,7 @@ namespace BaseDeProjetos.Controllers.Tests
     {
         private const string _IdValidoProjeto = "proj_637477823195206322";
         private const string _IdValidoEntrega = "seed_0";
-        private ApplicationDbContext context;
+        private readonly ApplicationDbContext context;
 
         public ProjetosControllerEntregas(BaseApplicationFactory<Startup> factory) : base(factory)
         {
@@ -28,7 +28,7 @@ namespace BaseDeProjetos.Controllers.Tests
         [Fact]
         public async Task IncluirEntrega_Valido_Deve_Retonar_OK()
         {
-            var response = await _client.GetAsync("/Projetos/IncluirEntrega/proj_637477823195206322");
+            HttpResponseMessage response = await _client.GetAsync("/Projetos/IncluirEntrega/proj_637477823195206322");
             Assert.True(response.IsSuccessStatusCode);
         }
 
@@ -37,7 +37,7 @@ namespace BaseDeProjetos.Controllers.Tests
         [InlineData("proj_")]
         public async Task IncluirEntrega_Invalido_Deve_Retornar404(string id)
         {
-            var response = await _client.GetAsync("/Projetos/IncluirEntrega/" + id);
+            HttpResponseMessage response = await _client.GetAsync("/Projetos/IncluirEntrega/" + id);
             Assert.False(response.IsSuccessStatusCode);
         }
 
@@ -46,15 +46,15 @@ namespace BaseDeProjetos.Controllers.Tests
         public void IncluirEntrega_Deve_Retornar_View_Correta()
         {
             ProjetosController _controller = SetupController(base._context);
-            var response = _controller.IncluirEntrega(_IdValidoProjeto) as ViewResult;
+            ViewResult response = _controller.IncluirEntrega(_IdValidoProjeto) as ViewResult;
             Assert.Equal("IncluirEntrega", response.ViewName);
         }
 
         [Fact]
         public void IncluirEntrega_Deve_Possuir_Dados_Projeto()
         {
-            var _controller = SetupController(_context);
-            var response = _controller.IncluirEntrega(_IdValidoProjeto) as ViewResult;
+            ProjetosController _controller = SetupController(_context);
+            ViewResult response = _controller.IncluirEntrega(_IdValidoProjeto) as ViewResult;
             Projeto projeto = response.ViewData["Projeto"] as Projeto;
             Assert.Equal(_IdValidoProjeto, projeto.Id);
             Assert.Equal("Projeto teste", projeto.NomeProjeto);
@@ -68,8 +68,8 @@ namespace BaseDeProjetos.Controllers.Tests
         public async Task IncluirEntrega_POST_Deve_Retornar404_Se_Id_Invalido(string id)
         {
             List<Entrega> entregas = ComEntregas(1, id, id);
-            var entrega = new StringContent(JsonConvert.SerializeObject(entregas[0]), Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync("/Projetos/IncluirEntrega/" + id,
+            StringContent entrega = new StringContent(JsonConvert.SerializeObject(entregas[0]), Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await _client.PostAsync("/Projetos/IncluirEntrega/" + id,
                                                    entrega);
 
             Assert.False(response.IsSuccessStatusCode);
@@ -81,9 +81,9 @@ namespace BaseDeProjetos.Controllers.Tests
 
             //Setup
             Entrega entrega = ComEntregas(1, _IdValidoProjeto, _IdValidoProjeto)[0];
-            var content = ToKeyValueURL(entrega);
+            FormUrlEncodedContent content = ToKeyValueURL(entrega);
             //Teste
-            var response = await _client.PostAsync("/Projetos/IncluirEntrega/" + entrega.Id,
+            HttpResponseMessage response = await _client.PostAsync("/Projetos/IncluirEntrega/" + entrega.Id,
                                                    content);
             Assert.True(response.IsSuccessStatusCode);
 
@@ -100,7 +100,7 @@ namespace BaseDeProjetos.Controllers.Tests
             int qtd_entregas_inicio = _context.Entrega.Count();
 
             Entrega entrega = ComEntregas(1, _IdValidoProjeto, _IdValidoProjeto)[0];
-            var response = _controller.IncluirEntrega(entrega.Id,
+            ViewResult response = _controller.IncluirEntrega(entrega.Id,
                                                       entrega) as ViewResult;
 
             //Teste
@@ -118,7 +118,7 @@ namespace BaseDeProjetos.Controllers.Tests
         [Fact]
         public async void EditarEntrega_GET_Deve_Retornar_OK_Se_IdValido()
         {
-            var response = await _client.GetAsync($"/Projetos/EditarEntrega/{_IdValidoEntrega}");
+            HttpResponseMessage response = await _client.GetAsync($"/Projetos/EditarEntrega/{_IdValidoEntrega}");
             Assert.True(response.IsSuccessStatusCode);
         }
 
@@ -132,7 +132,7 @@ namespace BaseDeProjetos.Controllers.Tests
 
         private ProjetosController SetupController(ApplicationDbContext context)
         {
-            var _controller = new ProjetosController(context);
+            ProjetosController _controller = new ProjetosController(context);
             Entrega seed = ComEntregas(1, _IdValidoProjeto, "seed_")[0];
 
             if(_context.Entrega.FirstOrDefault(e => e.Id == seed.Id) == null)
@@ -150,7 +150,7 @@ namespace BaseDeProjetos.Controllers.Tests
         {
 
             List<Entrega> entregas = new List<Entrega>();
-            for (var i = 0; i < qtd_entrega; i++)
+            for (int i = 0; i < qtd_entrega; i++)
             {
                 entregas.Add(new Entrega
                 {
@@ -166,8 +166,8 @@ namespace BaseDeProjetos.Controllers.Tests
 
         private List<Entrega> ComEntregasVencidas(int qtd_entrega, string proj_id)
         {
-            var entregas = ComEntregas(qtd_entrega, proj_id, proj_id);
-            for (var i = 0; i < qtd_entrega; i++)
+            List<Entrega> entregas = ComEntregas(qtd_entrega, proj_id, proj_id);
+            for (int i = 0; i < qtd_entrega; i++)
             {
                 //Atrasando as entegas geradas
                 entregas[i].DataInicioEntrega.AddDays(-2 * (i + 1));
