@@ -29,13 +29,13 @@
                     @if (!(Context.Session.GetString("_Casa") is null))
                     {
                         <select asp-for="Casa" class="form-control">
-                            @{ var enum_v = (int)Enum.Parse(typeof(Casa), Context.Session.GetString("_Casa"), true);}
+                            @{ var enum_v = (int)Enum.Parse(typeof(Instituto), Context.Session.GetString("_Casa"), true);}
                             <option value="@enum_v" selected="selected">@Context.Session.GetString("_Casa")</option>
                         </select>
                     }
                     else
                     {
-                        <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Casa>().OrderBy(p=>p.Text)"></select>
+                        <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Instituto>().OrderBy(p=>p.Text)"></select>
                     }
 
                     <span asp-validation-for="Casa" class="text-danger"></span>

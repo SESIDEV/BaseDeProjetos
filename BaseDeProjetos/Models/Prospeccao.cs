@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BaseDeProjetos.Models
 {
-    public class Prospeccao
+    public class Prospeccao:IEquatable<Prospeccao>
     {
         [Key]
         public virtual string Id { get; set; }
@@ -21,8 +22,16 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Linha de Pesquisa")]
         public virtual LinhaPesquisa LinhaPequisa { get; set; }
         public virtual List<FollowUp> Status { get; set; } = new List<FollowUp>();
-        public virtual Casa Casa { get; set; }
-        public virtual decimal ValorProposta { get; set; } 
+        public virtual Instituto Casa { get; set; }
+        public virtual decimal ValorProposta { get; set; }
+
+        public bool Equals([AllowNull] Prospeccao other)
+        {
+           if (other is null) return false;
+            return other.Id == Id;
+        }
+        public override int GetHashCode() => (Id).GetHashCode();
+
     }
 
     public class FollowUp

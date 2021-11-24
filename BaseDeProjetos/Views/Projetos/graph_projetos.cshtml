@@ -2,33 +2,33 @@
 @{
 
 
-    int cd_QV = Model.Where(p => p.Casa == Casa.ISIQV && p.FonteFomento == TipoContratacao.ContratacaoDireta).ToList().Count;
-    int cd_II = Model.Where(p => p.Casa == Casa.ISIII && p.FonteFomento == TipoContratacao.ContratacaoDireta).ToList().Count;
-    int cd_HO = Model.Where(p => p.Casa == Casa.CISHO && p.FonteFomento == TipoContratacao.ContratacaoDireta).ToList().Count;
+    int cd_QV = Model.Where(p => p.Casa == Instituto.ISIQV && p.FonteFomento == TipoContratacao.ContratacaoDireta).ToList().Count;
+    int cd_II = Model.Where(p => p.Casa == Instituto.ISIII && p.FonteFomento == TipoContratacao.ContratacaoDireta).ToList().Count;
+    int cd_HO = Model.Where(p => p.Casa == Instituto.CISHO && p.FonteFomento == TipoContratacao.ContratacaoDireta).ToList().Count;
 
-    int ei_QV = Model.Where(p => p.Casa == Casa.ISIQV && p.FonteFomento == TipoContratacao.EditalInovacao).ToList().Count;
-    int ei_II = Model.Where(p => p.Casa == Casa.ISIII && p.FonteFomento == TipoContratacao.EditalInovacao).ToList().Count;
-    int ei_HO = Model.Where(p => p.Casa == Casa.CISHO && p.FonteFomento == TipoContratacao.EditalInovacao).ToList().Count;
+    int ei_QV = Model.Where(p => p.Casa == Instituto.ISIQV && p.FonteFomento == TipoContratacao.EditalInovacao).ToList().Count;
+    int ei_II = Model.Where(p => p.Casa == Instituto.ISIII && p.FonteFomento == TipoContratacao.EditalInovacao).ToList().Count;
+    int ei_HO = Model.Where(p => p.Casa == Instituto.CISHO && p.FonteFomento == TipoContratacao.EditalInovacao).ToList().Count;
 
-    int emb_QV = Model.Where(p => p.Casa == Casa.ISIQV && p.FonteFomento == TipoContratacao.Embrapii).ToList().Count;
-    int emb_II = Model.Where(p => p.Casa == Casa.ISIII && p.FonteFomento == TipoContratacao.Embrapii).ToList().Count;
-    int emb_HO = Model.Where(p => p.Casa == Casa.CISHO && p.FonteFomento == TipoContratacao.Embrapii).ToList().Count;
+    int emb_QV = Model.Where(p => p.Casa == Instituto.ISIQV && p.FonteFomento == TipoContratacao.Embrapii).ToList().Count;
+    int emb_II = Model.Where(p => p.Casa == Instituto.ISIII && p.FonteFomento == TipoContratacao.Embrapii).ToList().Count;
+    int emb_HO = Model.Where(p => p.Casa == Instituto.CISHO && p.FonteFomento == TipoContratacao.Embrapii).ToList().Count;
 
-    int af_QV = Model.Where(p => p.Casa == Casa.ISIQV && p.FonteFomento == TipoContratacao.AgenciaFomento).ToList().Count;
-    int af_II = Model.Where(p => p.Casa == Casa.ISIII && p.FonteFomento == TipoContratacao.AgenciaFomento).ToList().Count;
-    int af_HO = Model.Where(p => p.Casa == Casa.CISHO && p.FonteFomento == TipoContratacao.AgenciaFomento).ToList().Count;
+    int af_QV = Model.Where(p => p.Casa == Instituto.ISIQV && p.FonteFomento == TipoContratacao.AgenciaFomento).ToList().Count;
+    int af_II = Model.Where(p => p.Casa == Instituto.ISIII && p.FonteFomento == TipoContratacao.AgenciaFomento).ToList().Count;
+    int af_HO = Model.Where(p => p.Casa == Instituto.CISHO && p.FonteFomento == TipoContratacao.AgenciaFomento).ToList().Count;
 
-    int ou_QV = Model.Where(p => p.Casa == Casa.ISIQV && p.FonteFomento == TipoContratacao.Indefinida).ToList().Count;
-    int ou_II = Model.Where(p => p.Casa == Casa.ISIII && p.FonteFomento == TipoContratacao.Indefinida).ToList().Count;
-    int ou_HO = Model.Where(p => p.Casa == Casa.CISHO && p.FonteFomento == TipoContratacao.Indefinida).ToList().Count;
+    int ou_QV = Model.Where(p => p.Casa == Instituto.ISIQV && p.FonteFomento == TipoContratacao.Indefinida).ToList().Count;
+    int ou_II = Model.Where(p => p.Casa == Instituto.ISIII && p.FonteFomento == TipoContratacao.Indefinida).ToList().Count;
+    int ou_HO = Model.Where(p => p.Casa == Instituto.CISHO && p.FonteFomento == TipoContratacao.Indefinida).ToList().Count;
 
-    int anp_QV = Model.Where(p => p.Casa == Casa.ISIQV && p.FonteFomento == TipoContratacao.ANP).ToList().Count;
-    int anp_II = Model.Where(p => p.Casa == Casa.ISIII && p.FonteFomento == TipoContratacao.ANP).ToList().Count;
-    int anp_HO = Model.Where(p => p.Casa == Casa.CISHO && p.FonteFomento == TipoContratacao.ANP).ToList().Count;
+    int anp_QV = Model.Where(p => p.Casa == Instituto.ISIQV && p.FonteFomento == TipoContratacao.ANP).ToList().Count;
+    int anp_II = Model.Where(p => p.Casa == Instituto.ISIII && p.FonteFomento == TipoContratacao.ANP).ToList().Count;
+    int anp_HO = Model.Where(p => p.Casa == Instituto.CISHO && p.FonteFomento == TipoContratacao.ANP).ToList().Count;
 
-    int par_QV = Model.Where(p => p.Casa == Casa.ISIQV && p.FonteFomento == TipoContratacao.Parceiro).ToList().Count;
-    int par_II = Model.Where(p => p.Casa == Casa.ISIII && p.FonteFomento == TipoContratacao.Parceiro).ToList().Count;
-    int par_HO = Model.Where(p => p.Casa == Casa.CISHO && p.FonteFomento == TipoContratacao.Parceiro).ToList().Count;
+    int par_QV = Model.Where(p => p.Casa == Instituto.ISIQV && p.FonteFomento == TipoContratacao.Parceiro).ToList().Count;
+    int par_II = Model.Where(p => p.Casa == Instituto.ISIII && p.FonteFomento == TipoContratacao.Parceiro).ToList().Count;
+    int par_HO = Model.Where(p => p.Casa == Instituto.CISHO && p.FonteFomento == TipoContratacao.Parceiro).ToList().Count;
 
 }
 <div>

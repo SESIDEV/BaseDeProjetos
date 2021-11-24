@@ -60,7 +60,7 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account
             [Display(Name = "Confirmar password")]
             [Compare("Password", ErrorMessage = "As senhas não conferem")]
             public string ConfirmPassword { get; set; }
-            public Casa Casa { get; set; }
+            public Instituto Casa { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)

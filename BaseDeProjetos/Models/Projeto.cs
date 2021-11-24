@@ -52,6 +52,6 @@ namespace BaseDeProjetos.Models
         public virtual int DuracaoProjetoEmMeses { get; set; }
         public virtual double ValorTotalProjeto { get; set; }
         public virtual double ValorAporteRecursos { get; set; }
-        public virtual Casa Casa { get; set; }
+        public virtual Instituto Casa { get; set; }
     }
 }

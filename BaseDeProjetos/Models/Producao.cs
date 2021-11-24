@@ -13,7 +13,7 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Tipo de Produção")]
         public TipoProducao Tipo { get; set; }
         public string Pessoa { get; set; }
-        public Casa Casa { get; set; }
+        public Instituto Casa { get; set; }
         [Display(Name = "Data de Realização")]
         public DateTime DataDaRealizacao { get; set; }
         [Display(Name = "Local onde ocorreu o(a) Evento/Palestra/Submissão/Publicação")]

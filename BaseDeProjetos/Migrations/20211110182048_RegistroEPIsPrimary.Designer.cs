@@ -3,14 +3,16 @@ using System;
 using BaseDeProjetos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BaseDeProjetos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211110182048_RegistroEPIsPrimary")]
+    partial class RegistroEPIsPrimary
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -329,31 +331,6 @@ namespace BaseDeProjetos.Migrations
                     b.ToTable("Prospeccao");
                 });
 
-            modelBuilder.Entity("BaseDeProjetos.Models.RegistroEPI", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("DataEntrega")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("Justificativa")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UnidadeOperacional")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UsuarioId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UsuarioId");
-
-                    b.ToTable("RegistroEPI");
-                });
-
             modelBuilder.Entity("BaseDeProjetos.Models.Usuario", b =>
                 {
                     b.Property<string>("Id")
@@ -619,13 +596,6 @@ namespace BaseDeProjetos.Migrations
                         .WithMany()
                         .HasForeignKey("EmpresaId");
 
-                    b.HasOne("BaseDeProjetos.Models.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("UsuarioId");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.RegistroEPI", b =>
-                {
                     b.HasOne("BaseDeProjetos.Models.Usuario", "Usuario")
                         .WithMany()
                         .HasForeignKey("UsuarioId");

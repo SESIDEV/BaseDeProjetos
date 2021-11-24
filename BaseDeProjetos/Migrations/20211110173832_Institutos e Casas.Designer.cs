@@ -3,18 +3,20 @@ using System;
 using BaseDeProjetos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BaseDeProjetos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211110173832_Institutos e Casas")]
+    partial class InstitutoseCasas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.21")
+                .HasAnnotation("ProductVersion", "3.1.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("BaseDeProjetos.Models.AtividadesProdutivas", b =>
@@ -329,31 +331,6 @@ namespace BaseDeProjetos.Migrations
                     b.ToTable("Prospeccao");
                 });
 
-            modelBuilder.Entity("BaseDeProjetos.Models.RegistroEPI", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("DataEntrega")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("Justificativa")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UnidadeOperacional")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UsuarioId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UsuarioId");
-
-                    b.ToTable("RegistroEPI");
-                });
-
             modelBuilder.Entity("BaseDeProjetos.Models.Usuario", b =>
                 {
                     b.Property<string>("Id")
@@ -382,9 +359,6 @@ namespace BaseDeProjetos.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("Matricula")
-                        .HasColumnType("int");
-
                     b.Property<int>("Nivel")
                         .HasColumnType("int");
 
@@ -411,18 +385,12 @@ namespace BaseDeProjetos.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("Titulacao")
-                        .HasColumnType("int");
-
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("UserName")
                         .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
-
-                    b.Property<int>("Vinculo")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -619,13 +587,6 @@ namespace BaseDeProjetos.Migrations
                         .WithMany()
                         .HasForeignKey("EmpresaId");
 
-                    b.HasOne("BaseDeProjetos.Models.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("UsuarioId");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.RegistroEPI", b =>
-                {
                     b.HasOne("BaseDeProjetos.Models.Usuario", "Usuario")
                         .WithMany()
                         .HasForeignKey("UsuarioId");

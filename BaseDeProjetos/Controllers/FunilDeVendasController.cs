@@ -33,11 +33,35 @@ namespace BaseDeProjetos.Controllers
             SetarFiltros(sortOrder, searchString);
 
             IQueryable<Prospeccao> lista = DefinirCasa(casa);
+            lista = PeriodizarProspecções(ano, lista);
             lista = OrdenarProspecções(sortOrder, lista);
             lista = FiltrarProspecções(searchString, lista);
-            lista = PeriodizarProspecções(ano, lista);
+
+            CategorizarProspecções(lista);
 
             return View(lista.ToList<Prospeccao>());
+        }
+
+        private void CategorizarProspecções(IQueryable<Prospeccao> lista)
+        {
+            var concluidos = lista.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida ||
+                                                              f.Status == StatusProspeccao.Suspensa ||
+                                                              f.Status == StatusProspeccao.NaoConvertida));
+
+            IQueryable<Prospeccao> emProposta = lista.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.ComProposta) &&
+                                                                 p.Status.All( f2 => f2.Status != StatusProspeccao.Suspensa &&
+                                                                               f2.Status != StatusProspeccao.Convertida &&
+                                                                               f2.Status != StatusProspeccao.NaoConvertida));
+
+            IQueryable<Prospeccao> ativos = lista.Where(p => p.Status.All(f => f.Status != StatusProspeccao.Convertida &&
+                                                              f.Status != StatusProspeccao.Suspensa &&
+                                                              f.Status != StatusProspeccao.ComProposta &&
+                                                              f.Status != StatusProspeccao.NaoConvertida));
+
+
+            ViewBag.Concluidas = concluidos.ToList<Prospeccao>();
+            ViewBag.Ativas = ativos.ToList<Prospeccao>();
+            ViewBag.EmProposta = emProposta.ToList();
         }
 
         private void SetarFiltros(string sortOrder="", string searchString="")
@@ -93,33 +117,33 @@ namespace BaseDeProjetos.Controllers
         private IQueryable<Prospeccao> DefinirCasa(string? casa)
         {
 
-            Casa enum_casa;
+            Instituto enum_casa;
 
             if (string.IsNullOrEmpty(casa))
             {
                 if (!string.IsNullOrEmpty(HttpContext.Session.GetString("_Casa")))
                 {
-                    enum_casa = (Casa)Enum.Parse(typeof(Casa), HttpContext.Session.GetString("_Casa"));
+                    enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
                 }
-                else { enum_casa = Casa.Super; }
+                else { enum_casa = Instituto.Super; }
             }
             else
             {
-                if (Enum.IsDefined(typeof(Casa), casa))
+                if (Enum.IsDefined(typeof(Instituto), casa))
                 {
                     HttpContext.Session.SetString("_Casa", casa);
-                    enum_casa = (Casa)Enum.Parse(typeof(Casa), HttpContext.Session.GetString("_Casa"));
+                    enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
                 }
                 else
                 {
-                    enum_casa = Casa.Super;
+                    enum_casa = Instituto.Super;
                 }
             }
 
 
             ViewData["Area"] = casa;
 
-            IQueryable<Prospeccao> lista = enum_casa == Casa.Super ?
+            IQueryable<Prospeccao> lista = enum_casa == Instituto.Super ?
                 _context.Prospeccao :
                 _context.Prospeccao.Where(p => p.Casa.Equals(enum_casa));
 

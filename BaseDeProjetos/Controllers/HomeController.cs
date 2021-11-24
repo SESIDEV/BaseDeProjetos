@@ -23,9 +23,9 @@ namespace BaseDeProjetos.Controllers
 
         public IActionResult Index()
         {
-            ViewData["receita_isiqv"] = ReceitaCasa(Casa.ISIQV);
-            ViewData["receita_isiii"] = ReceitaCasa(Casa.ISIII);
-            ViewData["receita_cisho"] = ReceitaCasa(Casa.CISHO);
+            ViewData["receita_isiqv"] = ReceitaCasa(Instituto.ISIQV);
+            ViewData["receita_isiii"] = ReceitaCasa(Instituto.ISIII);
+            ViewData["receita_cisho"] = ReceitaCasa(Instituto.CISHO);
             ViewData["n_prosp"] = _context.Prospeccao.ToList().Where(p => prospeccaoAtiva(p) == true).ToList().Count;
             ViewData["n_proj"] = _context.Projeto.Where(p => p.status != StatusProjeto.Concluido && p.DataEncerramento > DateTime.Now).ToList().Count;
             ViewData["n_empresas"] = _context.Empresa.ToList().Count;
@@ -51,7 +51,7 @@ namespace BaseDeProjetos.Controllers
             return true;
         }
 
-        private decimal ReceitaCasa(Casa casa)
+        private decimal ReceitaCasa(Instituto casa)
         {
             IQueryable<decimal> valores = _context.Projeto.
                 Where(p => p.Casa == casa && p.status == StatusProjeto.EmExecucao).

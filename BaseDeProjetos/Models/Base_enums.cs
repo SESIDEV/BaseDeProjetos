@@ -4,6 +4,56 @@ using System.Reflection;
 
 namespace BaseDeProjetos.Models
 {
+    public enum Titulacao
+    {
+        [Display(Name ="Nível Médio")]
+        Medio,
+        [Display(Name ="Nível Médio Técnico")]
+        Tecnico,
+        [Display(Name ="Nível Superior - Não Concluído")]
+        Graduando,
+        [Display(Name ="Nível Superior - Concluído")]
+        Graduado,
+        [Display(Name ="Pós-Graduado - Lato Sensu")]
+        Especialista,
+        [Display(Name ="Pós-Graduado - Stricto Sensu (Mestrado)")]
+        Mestre,
+        [Display(Name ="Pós-Graduado - Stricto Sensu (Doutorado)")]
+        Doutor,
+        [Display(Name ="Pós-Graduado - Stricto Sensu (Pós-Doutor)")]
+        PosDoutor
+    }
+
+    public enum JustificaEPI
+    {
+        [Display(Name ="Primeira Entrega")]
+        PrimeiraEntrega,
+        [Display(Name ="Substituição - Troca de rotina ou compulsória, em função da periodicidade")]
+        Subs_TrocaCompulsoria,
+        [Display(Name ="Necessidade de higienização e/ou manutenção periódica")]
+        Subs_HigienizacaoManutencao,
+        [Display(Name ="Danificado (sem condições de uso) ou extraviado")]
+        Subs_DanificadoExtraviado
+    }
+
+    public enum TipoVinculo
+    {
+        Visitante, 
+        Aluno,
+        JovemAprendiz,
+        Estagiario,
+        Empregado
+    }
+
+    public enum CasaFirjan
+    {
+         Firjan,
+         [Display(Name="Firjan SESI")]
+         FirjanSESI,
+         [Display(Name="Firjan SENAI")]
+         FirjanSENAI,
+    }
+
     public enum LinhaPesquisa
     {
         [Display(Name = "Química e Sustentabilidade")]
@@ -160,7 +210,7 @@ namespace BaseDeProjetos.Models
         Estrangeiro
     }
 
-    public enum Casa
+    public enum Instituto
     {
         [Display(Name = "ISI - Química Verde")]
         ISIQV,

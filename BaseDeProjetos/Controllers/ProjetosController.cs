@@ -60,33 +60,33 @@ namespace BaseDeProjetos.Controllers
         private IQueryable<Projeto> DefinirCasa(string? casa)
         {
 
-            Casa enum_casa;
+            Instituto enum_casa;
 
             if (string.IsNullOrEmpty(casa))
             {
                 if (!string.IsNullOrEmpty(HttpContext.Session.GetString("_Casa")))
                 {
-                    enum_casa = (Casa)Enum.Parse(typeof(Casa), HttpContext.Session.GetString("_Casa"));
+                    enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
                 }
-                else { enum_casa = Casa.Super; }
+                else { enum_casa = Instituto.Super; }
             }
             else
             {
-                if (Enum.IsDefined(typeof(Casa), casa))
+                if (Enum.IsDefined(typeof(Instituto), casa))
                 {
                     HttpContext.Session.SetString("_Casa", casa);
-                    enum_casa = (Casa)Enum.Parse(typeof(Casa), HttpContext.Session.GetString("_Casa"));
+                    enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
                 }
                 else
                 {
-                    enum_casa = Casa.Super;
+                    enum_casa = Instituto.Super;
                 }
             }
 
 
             ViewData["Area"] = casa;
 
-            IQueryable<Projeto> lista = enum_casa == Casa.Super ?
+            IQueryable<Projeto> lista = enum_casa == Instituto.Super ?
                 _context.Projeto :
                 _context.Projeto.Where(p => p.Casa.Equals(enum_casa));
 
@@ -387,7 +387,7 @@ namespace BaseDeProjetos.Controllers
                 Projeto projeto = new Projeto
                 {
                     Id = $"Proj_{DateTime.Now.Ticks}",
-                    Casa = Enum.Parse<Casa>(dados[0], true),
+                    Casa = Enum.Parse<Instituto>(dados[0], true),
                     NomeProjeto = dados[3],
                     Empresa = new Empresa { Nome = dados[2] },
                     AreaPesquisa = Enum.IsDefined(typeof(LinhaPesquisa), dados[1]) ? Enum.Parse<LinhaPesquisa>(dados[1]) : LinhaPesquisa.Indefinida,
