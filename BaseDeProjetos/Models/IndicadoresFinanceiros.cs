@@ -12,5 +12,6 @@ namespace BaseDeProjetos.Models
         public decimal Receita { get; set; }
         public decimal Despeita { get; set; }
         public decimal Investimento { get; set; }
+        public float QualiSeguranca { get; set; }
     }
 }

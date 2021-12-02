@@ -1,10 +1,11 @@
 ﻿@page
 @model BaseDeProjetos.Views.Home.LoggedInHomeModel
 @{
-    //decimal receita = 4722542.00M;
-    decimal receita = (decimal)ViewBag.receita_isiqv + (decimal)ViewBag.receita_isiii + (decimal)ViewBag.receita_cisho;
-    decimal investimento = 3631437.00M;
-    decimal despesas = 2558188M;
+    //decimal receita = (decimal)ViewBag.receita_isiqv + (decimal)ViewBag.receita_isiii + (decimal)ViewBag.receita_cisho;
+    decimal receita = (decimal)ViewBag.receita_total;
+    decimal investimento = (decimal)ViewBag.invest_total;
+    decimal despesas = (decimal)ViewBag.despesa_total;
+    float quali = (float)ViewBag.quali;
     decimal sustentatiblidade = receita / despesas;
 
 }
@@ -142,7 +143,7 @@
                             <span class="text-uppercase">Indice de Segurança e Qualidade</span>
                             <hr />
                             <h3 class="font-weight-bolder">
-                                @{string iss = ((sustentatiblidade - 1) * 100).ToString("F0");
+                                @{string iss = quali.ToString();
                                 }
                                 @iss
                             </h3>

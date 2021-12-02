@@ -23,9 +23,25 @@ namespace BaseDeProjetos.Controllers
 
         public IActionResult Index()
         {
+            /* Implementar quando base tiver atualizada
             ViewData["receita_isiqv"] = ReceitaCasa(Instituto.ISIQV);
             ViewData["receita_isiii"] = ReceitaCasa(Instituto.ISIII);
             ViewData["receita_cisho"] = ReceitaCasa(Instituto.CISHO);
+            */
+            try
+            {
+                ViewData["receita_total"] = _context.IndicadoresFinanceiros.ToList().LastOrDefault().Receita;
+                ViewData["despesa_total"] = _context.IndicadoresFinanceiros.ToList().LastOrDefault().Despeita;
+                ViewData["invest_total"] = _context.IndicadoresFinanceiros.ToList().LastOrDefault().Investimento;
+                ViewData["quali"] = _context.IndicadoresFinanceiros.ToList().LastOrDefault().QualiSeguranca;
+            }
+            catch (Exception)
+            {
+                ViewData["receita_total"] = 0;
+                ViewData["despesa_total"] = 1;
+                ViewData["invest_total"] = 0;
+                ViewData["quali"] = 0;
+            }
             ViewData["n_prosp"] = _context.Prospeccao.ToList().Where(p => prospeccaoAtiva(p) == true).ToList().Count;
             ViewData["n_proj"] = _context.Projeto.Where(p => p.status != StatusProjeto.Concluido && p.DataEncerramento > DateTime.Now).ToList().Count;
             ViewData["n_empresas"] = _context.Empresa.ToList().Count;
