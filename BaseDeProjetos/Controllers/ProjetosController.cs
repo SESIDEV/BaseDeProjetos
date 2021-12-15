@@ -36,13 +36,43 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: Projetos
-        public IActionResult Index(string casa)
+        public IActionResult Index(string casa, string ano = "")
         {
 
             IQueryable<Projeto> projetos = DefinirCasa(casa);
+            projetos = PeriodizarProjetos(ano, projetos);
+            CategorizarStatusProjetos(projetos);
             GerarIndicadores(casa, _context);
             return View(projetos.ToList());
         }
+
+        private void CategorizarStatusProjetos(IQueryable<Projeto> projetos)
+        {
+            ViewBag.Ativos = projetos.Where(p => p.status == StatusProjeto.EmExecucao || p.status == StatusProjeto.Contratado).ToList();
+            ViewBag.Encerrados = projetos.Where(p => p.status != StatusProjeto.EmExecucao && p.status != StatusProjeto.Contratado).ToList();
+        }
+
+        private IQueryable<Projeto> PeriodizarProjetos(string ano, IQueryable<Projeto> lista)
+        {
+            if (ano.Equals("Todos"))
+            {
+                return lista;
+            }
+
+            int ano_limite;
+
+            if (string.IsNullOrEmpty(ano))
+            {
+                ano_limite = DateTime.Now.Year;
+            }
+            else
+            {
+                ano_limite = Convert.ToInt32(ano);
+            }
+            
+            return lista.Where(s => s.DataEncerramento.Year >= ano_limite);
+        }
+
 
         private void GerarIndicadores(string casa, ApplicationDbContext _context)
         {

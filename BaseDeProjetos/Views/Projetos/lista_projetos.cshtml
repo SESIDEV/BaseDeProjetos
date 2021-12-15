@@ -1,0 +1,77 @@
+﻿@model IEnumerable<BaseDeProjetos.Models.Projeto>
+
+<table class="table card-text" style="overflow-y:scroll; max-height:150vh; font-size:0.8em">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Empresa.Nome)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.NomeProjeto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AreaPesquisa)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Lider)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FonteFomento)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Inovacao)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.status)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Empresa.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NomeProjeto)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AreaPesquisa)
+                </td>
+                <td>
+                    @try
+                    {
+                        @Html.DisplayFor(modelItem => item.NomeLider)
+                    }
+                    catch
+                    {
+                        <span class="text-secondary">A preencher</span>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Estado)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FonteFomento)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Inovacao)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.status)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
+                    <a asp-action="IncluirEntrega" asp-route-id="@item.Id">Inserir Entregas</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Remover</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
