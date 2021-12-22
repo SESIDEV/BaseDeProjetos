@@ -1,27 +1,48 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BaseDeProjetos.Models
 {
 
-    //Interface para artigos, palestras, notícias, eventos
-    public  class Producao
+    public class Producao
     {
 
         [Key]
         public int Id { get; set; }
-        [Display(Name = "Tipo de Produção")]
         public TipoProducao Tipo { get; set; }
-        public string Pessoa { get; set; }
-        public Instituto Casa { get; set; }
-        [Display(Name = "Data de Realização")]
-        public DateTime DataDaRealizacao { get; set; }
-        [Display(Name = "Local onde ocorreu o(a) Evento/Palestra/Submissão/Publicação")]
-        public string RealizadoEm { get; set; }
-        [Display(Name ="Descrição da Produção")]
-        public string Descricao { get; set; }
-        public string Link { get; set; }
-        [Display(Name ="Público alcançado (pessoas)")]
-        public int? publico { get; set; }
+        public virtual DadosBasicos DadosBasicos { get; set; }
+        public virtual Detalhamento Detalhamento { get; set; }
+        public virtual SetoresDeAtividade SetorDeAtividade { get; set; }
+        public string AreasDoConhecimento { get; set; }
+        public string PalavrasChaves { get; set; }
+        public string InformacoesAdicionais { get; set; }
+        public virtual List<Usuario> Autores { get; set; }
+
+    }
+
+    public class DadosBasicos
+    {
+        [Key]
+        public int Id { get; set; }
+        [Display(Name = "Título")]
+        public string Titulo { get; set; }
+        [Display(Name = "Meio de Divulgação")]
+        public MeioDivulgacao MeioDivulgacao { get; set; }
+        public int Ano { get; set; }
+        [Display(Name = "País")]
+        public Pais Pais { get; set; }
+        public Idioma Idioma { get; set; }
+        [Display(Name = "O trabalho está entre os mais relevantes da produção?")]
+        public bool FlagRelevancia { get; set; }
+    }
+
+    public class Detalhamento
+    {
+        [Key]
+        public int Id { get; set; }
+    }
+
+    public class DadosBasicosArtigo : DadosBasicos
+    {
     }
 }

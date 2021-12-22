@@ -3,14 +3,16 @@ using System;
 using BaseDeProjetos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BaseDeProjetos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211222174112_refazer_producao")]
+    partial class refazer_producao
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,38 +62,9 @@ namespace BaseDeProjetos.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("Ano")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("FlagRelevancia")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int>("Idioma")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MeioDivulgacao")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Pais")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Titulo")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
                     b.HasKey("Id");
 
                     b.ToTable("DadosBasicos");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.Detalhamento", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Detalhamento");
                 });
 
             modelBuilder.Entity("BaseDeProjetos.Models.Empresa", b =>
@@ -244,13 +217,7 @@ namespace BaseDeProjetos.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("AreasDoConhecimento")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
                     b.Property<int?>("DadosBasicosId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("DetalhamentoId")
                         .HasColumnType("int");
 
                     b.Property<string>("InformacoesAdicionais")
@@ -259,17 +226,9 @@ namespace BaseDeProjetos.Migrations
                     b.Property<string>("PalavrasChaves")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("SetorDeAtividade")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Tipo")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("DadosBasicosId");
-
-                    b.HasIndex("DetalhamentoId");
 
                     b.ToTable("Producao");
                 });
@@ -652,10 +611,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasOne("BaseDeProjetos.Models.DadosBasicos", "DadosBasicos")
                         .WithMany()
                         .HasForeignKey("DadosBasicosId");
-
-                    b.HasOne("BaseDeProjetos.Models.Detalhamento", "Detalhamento")
-                        .WithMany()
-                        .HasForeignKey("DetalhamentoId");
                 });
 
             modelBuilder.Entity("BaseDeProjetos.Models.Projeto", b =>
