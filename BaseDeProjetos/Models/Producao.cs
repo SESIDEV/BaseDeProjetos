@@ -44,5 +44,7 @@ namespace BaseDeProjetos.Models
 
     public class DadosBasicosArtigo : DadosBasicos
     {
+        private static string[] Natureza = { "COMPLETO", "RESUMO", "RESUMO_EXPANDIDO", "NAO_INFORMADO" };
+
     }
 }
