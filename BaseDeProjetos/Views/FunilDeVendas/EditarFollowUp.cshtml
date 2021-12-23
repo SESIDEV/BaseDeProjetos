@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Http
 @{
     ViewData["Title"] = "Atualizar Prospecção";
-if (!(Context.Session.GetString("_Casa") is null))
+    if (!(Context.Session.GetString("_Casa") is null))
     {
         ViewData["Area"] = Context.Session.GetString("_Casa");
     }
@@ -77,11 +77,18 @@ if (!(Context.Session.GetString("_Casa") is null))
                 <span asp-validation-for="Anotacoes" class="text-danger"></span>
             </div>
 
+            <hr />
             <div id="naoconversao" style="display:none">
                 <div class="form-group">
                     <label class="control-label"> Motivo de não conversão:</label>
-                    <select asp-for="MotivoNaoConversao" class="form-control" asp-items="Html.GetEnumSelectList<MotivosNaoConversao>()"></select>
-                    <span asp-validation-for="MotivoNaoConversao" class="text-danger"></span>
+                    <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<MotivosNaoConversao>()"></select>
+                </div>
+            </div>
+
+            <div id="valorproposta" style="display:none">
+                <div class="form-group">
+                    <label class="control-label"> Valor da proposta submetida</label>
+                    <input type="number" min=0 name="valorProposta" value="@prosp.ValorProposta" class="form-control" />
                 </div>
             </div>
 

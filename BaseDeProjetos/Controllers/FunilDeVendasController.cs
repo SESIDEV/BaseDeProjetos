@@ -152,22 +152,13 @@ namespace BaseDeProjetos.Controllers
 
         private static IQueryable<Prospeccao> OrdenarProspecções(string sortOrder, IQueryable<Prospeccao> lista)
         {
-            switch (sortOrder)
+            lista = sortOrder switch
             {
-                case "name_desc":
-                    lista = lista.OrderByDescending(s => s.Empresa.Nome);
-                    break;
-                case "TipoContratacao":
-                    lista = lista.OrderBy(s => s.TipoContratacao);
-                    break;
-                case "tipo_desc":
-                    lista = lista.OrderByDescending(s => s.TipoContratacao);
-                    break;
-                default:
-                    lista = lista.OrderBy(s => s.Empresa.Nome);
-                    break;
-            }
-
+                "name_desc" => lista.OrderByDescending(s => s.Empresa.Nome),
+                "TipoContratacao" => lista.OrderBy(s => s.TipoContratacao),
+                "tipo_desc" => lista.OrderByDescending(s => s.TipoContratacao),
+                _ => lista.OrderBy(s => s.Empresa.Nome),
+            };
             return lista;
         }
 
@@ -206,7 +197,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Atualizar(string id, [Bind("OrigemID, Data, Status, Anotacoes, MotivoNaoConversao")] FollowUp followup, string valorProposta = null)
+        public async Task<IActionResult> Atualizar(string id, [Bind("OrigemID, Data, Status, Anotacoes, MotivoNaoConversao")] FollowUp followup, decimal valorProposta = 0)
         {
             if (ModelState.IsValid)
             {
@@ -509,7 +500,7 @@ namespace BaseDeProjetos.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditarFollowUp(int id, [Bind("Id", "OrigemID", "Status", "Anotacoes", "Data", "Vencimento")] FollowUp followup)
+        public async Task<IActionResult> EditarFollowUp(int id, [Bind("Id", "OrigemID", "Status", "Anotacoes", "Data", "Vencimento")] FollowUp followup, double valorProposta = 0)
         {
             if (id != followup.Id)
             {

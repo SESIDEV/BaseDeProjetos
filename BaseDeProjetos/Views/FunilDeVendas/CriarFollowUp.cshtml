@@ -76,11 +76,18 @@
                 <span asp-validation-for="Anotacoes" class="text-danger"></span>
             </div>
 
+            <hr />
             <div id="naoconversao" style="display:none">
                 <div class="form-group">
                     <label  class="control-label"> Motivo de não conversão:</label>
                     <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<MotivosNaoConversao>()"></select>
-                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div id="valorproposta" style="display:none">
+                <div class="form-group">
+                    <label class="control-label"> Valor da proposta submetida</label>
+                    <input type="number" min=0 name="valorProposta" value="@prosp.ValorProposta" class="form-control" />
                 </div>
             </div>
 
@@ -94,12 +101,22 @@
     <script>
         function avaliarStatus(valor) {
             var NaoConvertida = 7;
+            var ComProposta = 5;
+
             if (valor.value == NaoConvertida) {
                 document.querySelector("#naoconversao").style.display = "block";
             }
             else {
                 document.querySelector("#naoconversao").style.display = "none";
             }
+
+            if (valor.value == ComProposta) {
+                document.querySelector("#valorproposta").style.display = "block";
+            }
+            else {
+                document.querySelector("#valorproposta").style.display = "none";
+            }
+
         }
     </script>
 

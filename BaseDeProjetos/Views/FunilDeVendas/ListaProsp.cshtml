@@ -1,4 +1,6 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
+@using System.Globalization
+
 
 <table class="table card-text" style="overflow-y:scroll; max-height:150vh; font-size:0.8em">
     <thead>
@@ -17,6 +19,9 @@
             </th>
             <th>
                 Líder
+            </th>
+            <th>
+                Valor da Proposta
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Status.Last().Status)
@@ -46,6 +51,10 @@
 
                 <td>
                     @Html.DisplayFor(modelItem => item.Usuario.UserName)
+                </td>
+                <td>
+                    @{var valor = string.Format(new CultureInfo("pt-BR", false), "{0:c2}", item.ValorProposta); }
+                    @Html.DisplayFor(modelItem => valor)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Status.OrderBy(p => p.Data).Last().Status)
