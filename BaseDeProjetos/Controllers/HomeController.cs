@@ -33,6 +33,7 @@ namespace BaseDeProjetos.Controllers
                 ViewData["receita_total"] = _context.IndicadoresFinanceiros.ToList().LastOrDefault().Receita;
                 ViewData["despesa_total"] = _context.IndicadoresFinanceiros.ToList().LastOrDefault().Despeita;
                 ViewData["invest_total"] = _context.IndicadoresFinanceiros.ToList().LastOrDefault().Investimento;
+                ViewData["Data"] = _context.IndicadoresFinanceiros.ToList().LastOrDefault().Data;
                 ViewData["quali"] = _context.IndicadoresFinanceiros.ToList().LastOrDefault().QualiSeguranca;
             }
             catch (Exception)
@@ -41,6 +42,7 @@ namespace BaseDeProjetos.Controllers
                 ViewData["despesa_total"] = 1;
                 ViewData["invest_total"] = 0;
                 ViewData["quali"] = 0;
+                ViewData["Data"] = DateTime.Today;
             }
             ViewData["n_prosp"] = _context.Prospeccao.ToList().Where(p => prospeccaoAtiva(p) == true).ToList().Count;
             ViewData["n_proj"] = _context.Projeto.Where(p => p.status != StatusProjeto.Concluido && p.DataEncerramento > DateTime.Now).ToList().Count;

@@ -36,6 +36,10 @@
                 <div class="col-8">
                     <ul class="col-12 list-group-flush">
                         <li class="list-group-item">
+                            <h5> Status Financeiro </h5>
+                            <small>@ViewBag.Data.ToString("dd/MM/yyyy")</small>
+                        </li>
+                        <li class="list-group-item">
                             <span class="font-weight-bold"> Receita:</span>
                             <a href="#" class="badge badge-success">@receita.ToString("C2")</a>
                         </li>
@@ -57,8 +61,9 @@
                                     <div class="card-text">
 
                                         <h2>
-                                            @ViewBag.n_proj </h2>
-                                            projetos ativos
+                                            @ViewBag.n_proj
+                                        </h2>
+                                        projetos ativos
 
 
                                     </div>
