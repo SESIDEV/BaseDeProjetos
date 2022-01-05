@@ -54,7 +54,12 @@
                 </td>
                 <td>
                     @{var valor = string.Format(new CultureInfo("pt-BR", false), "{0:c2}", item.ValorProposta); }
-                    @Html.DisplayFor(modelItem => valor)
+                    @if(item.ValorProposta > 1){
+                        @Html.DisplayFor(modelItem => valor)
+                    }
+                    else{
+                        <a>Não Informado</a>
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Status.OrderBy(p => p.Data).Last().Status)

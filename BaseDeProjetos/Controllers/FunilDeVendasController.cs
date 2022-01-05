@@ -33,9 +33,9 @@ namespace BaseDeProjetos.Controllers
             SetarFiltros(sortOrder, searchString);
 
             IQueryable<Prospeccao> lista = DefinirCasa(casa);
+            lista = FiltrarProspecções(searchString, lista);
             lista = PeriodizarProspecções(ano, lista);
             lista = OrdenarProspecções(sortOrder, lista);
-            lista = FiltrarProspecções(searchString, lista);
 
             CategorizarProspecções(lista);
 
@@ -100,7 +100,7 @@ namespace BaseDeProjetos.Controllers
                 return lista;
             }
 
-            return lista.Where(s => s.Status.Any(k => k.Data.Year == Convert.ToInt32(ano)));
+            return lista.Where(s => s.Status.Any(k => k.Data.Year == Convert.ToInt32(ano) || k.Status <= StatusProspeccao.ComProposta));
         }
 
         private static IQueryable<Prospeccao> FiltrarProspecções(string searchString, IQueryable<Prospeccao> lista)
@@ -425,7 +425,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Empresa, Contato, Casa, Usuario")] Prospeccao prospeccao)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Empresa, Contato, Casa, Usuario, ValorProposta")] Prospeccao prospeccao)
         {
             if (id != prospeccao.Id)
             {
