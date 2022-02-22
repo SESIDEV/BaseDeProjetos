@@ -100,7 +100,7 @@ namespace BaseDeProjetos.Controllers
                 return lista;
             }
 
-            return lista.Where(s => s.Status.Any(k => k.Data.Year == Convert.ToInt32(ano) || k.Status <= StatusProspeccao.ComProposta));
+            return lista.Where(s => s.Status.Any(k => k.Data.Year == Convert.ToInt32(ano)));
         }
 
         private static IQueryable<Prospeccao> FiltrarProspecções(string searchString, IQueryable<Prospeccao> lista)
