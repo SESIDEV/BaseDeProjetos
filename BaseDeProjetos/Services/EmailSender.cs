@@ -23,7 +23,8 @@ namespace MailSenderApp.Services
             Destinatarios.Add(new Usuario { UserName = "Antonio Fidalgo", Email = "aaneto@firjan.com.br"  , Nivel = Nivel.Supervisor});
             Destinatarios.Add(new Usuario { UserName = "Daniella Serrazine", Email = "dserrazine@firjan.com.br" , Nivel = Nivel.Supervisor});
             Destinatarios.Add(new Usuario { UserName = "Sergio Kuriyama", Email = "skuriyama@firjan.com.br",Nivel = Nivel.Supervisor  });
-            Destinatarios.Add(new Usuario { UserName = "PMO Integrado", Email = "pmointegrado@firjan.com.br" , Nivel = Nivel.PMO});
+            Destinatarios.Add(new Usuario { UserName = "Felipe, Lawrence e Paulo", Email = "pmointegrado@firjan.com.br" , Nivel = Nivel.PMO});
+            Destinatarios.Add(new Usuario { UserName = "Gabriela e Carlos Eduardo", Email = "nit@firjan.com.br" , Nivel = Nivel.PMO});
         }
 
         public Task SendEmailAsync(string email, string subject, string htmlMessage)

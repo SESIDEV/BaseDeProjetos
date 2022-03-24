@@ -87,23 +87,17 @@ namespace BaseDeProjetos.Models
     public enum StatusProspeccao
     {
         [Display(Name = "Contato inicial")]
-        ContatoInicial,
-        [Display(Name = "Em discussão: Busca de Literatura")]
-        Discussao_BuscaLiteratura,
-        [Display(Name = "Em discussão: Draft de Ideias")]
-        Discussao_DraftIdeias,
-        [Display(Name = "Em discussão: Definição de Desenho Experimental")]
-        Discussao_DesenhoExperimental,
+        ContatoInicial=0,
         [Display(Name = "Em discussão: Esboço do Projeto")]
-        Discussao_EsbocoProjeto,
+        Discussao_EsbocoProjeto=4,
         [Display(Name = "Com Proposta")]
-        ComProposta,
+        ComProposta=5,
         [Display(Name = "Convertida")]
-        Convertida,
+        Convertida=6,
         [Display(Name = "Não Convertida")]
-        NaoConvertida,
+        NaoConvertida=7,
         [Display(Name = "Cancelado/Suspenso")]
-        Suspensa
+        Suspensa=8
     }
 
     public enum StatusProjeto
@@ -284,7 +278,9 @@ namespace BaseDeProjetos.Models
         Preco,
         [Display(Name = "O cliente não aceitou o prazo")]
         Prazo,
-        [Display(Name = "O cliente não pode aceitar por motivos contextuais")]
+        [Display(Name = "O cliente não concordou com o escopo")]
+        Escopo,
+        [Display(Name = "O cliente não pode aceitar por motivos contextuais (orçamento do ano, estratégia empresarial,etc)")]
         Contexto,
         [Display(Name = "O cliente não quis informar o motivo")]
         NaoInformada
@@ -298,7 +294,7 @@ namespace BaseDeProjetos.Models
         Supervisor,
         [Display(Name = "PMO")]
         PMO,
-        [Display(Name = "PMO")]
+        [Display(Name = "Usuario")]
         Usuario
     }
 
@@ -391,11 +387,6 @@ namespace BaseDeProjetos.Models
         Transporte_aéreo,
         Transporte_aquaviário,
         Transporte_terrestre,
-    }
-
-    public enum AreasDoConhecimento
-    {
-        b
     }
 
     public enum Pais
