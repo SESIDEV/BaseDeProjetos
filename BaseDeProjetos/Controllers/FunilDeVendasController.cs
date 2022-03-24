@@ -367,6 +367,7 @@ namespace BaseDeProjetos.Controllers
             if (ModelState.IsValid)
             {
                 ValidarEmpresa(prospeccao);
+                prospeccao.Contato.empresa = prospeccao.Empresa;
                 await VincularUSuario(prospeccao);
 
                 prospeccao.Status[0].Origem = prospeccao;
@@ -389,16 +390,21 @@ namespace BaseDeProjetos.Controllers
 
         private void ValidarEmpresa(Prospeccao prospeccao)
         {
-            if (_context.Empresa.Where(e => e.EmpresaUnique == prospeccao.Empresa.EmpresaUnique).Count() > 0)
+            if (prospeccao.Empresa.Id != null)
             {
-                prospeccao.Empresa = _context.Empresa.First(e => e.EmpresaUnique == prospeccao.Empresa.EmpresaUnique);
+                if (_context.Empresa.Where(e => e.Id == prospeccao.Empresa.Id).Count() > 0)
+                {
+                    prospeccao.Empresa = _context.Empresa.First(e => e.EmpresaUnique == prospeccao.Empresa.EmpresaUnique);
+                }
+                else
+                {
+                    throw new Exception("Ocorreu um erro no registro da empresa. Contacte um administrador do sistema");
+                }
             }
             else
             {
                 prospeccao.Empresa = new Empresa { Estado = prospeccao.Empresa.Estado, CNPJ = prospeccao.Empresa.CNPJ, Nome = prospeccao.Empresa.Nome, Segmento = prospeccao.Empresa.Segmento };
             }
-
-            prospeccao.Contato.empresa = prospeccao.Empresa;
         }
 
         // GET: FunilDeVendas/Edit/5
