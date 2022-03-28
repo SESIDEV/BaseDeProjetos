@@ -28,7 +28,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: FunilDeVendas
-        public IActionResult Index(string casa, string sortOrder="", string searchString="", string ano="")
+        public IActionResult Index(string casa, string sortOrder = "", string searchString = "", string ano = "")
         {
             SetarFiltros(sortOrder, searchString);
 
@@ -49,9 +49,9 @@ namespace BaseDeProjetos.Controllers
                                                               f.Status == StatusProspeccao.NaoConvertida));
 
             IQueryable<Prospeccao> emProposta = lista.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.ComProposta) &&
-                                                                 p.Status.All( f2 => f2.Status != StatusProspeccao.Suspensa &&
-                                                                               f2.Status != StatusProspeccao.Convertida &&
-                                                                               f2.Status != StatusProspeccao.NaoConvertida));
+                                                                 p.Status.All(f2 => f2.Status != StatusProspeccao.Suspensa &&
+                                                                              f2.Status != StatusProspeccao.Convertida &&
+                                                                              f2.Status != StatusProspeccao.NaoConvertida));
 
             IQueryable<Prospeccao> ativos = lista.Where(p => p.Status.All(f => f.Status != StatusProspeccao.Convertida &&
                                                               f.Status != StatusProspeccao.Suspensa &&
@@ -62,9 +62,10 @@ namespace BaseDeProjetos.Controllers
             ViewBag.Concluidas = concluidos.ToList<Prospeccao>();
             ViewBag.Ativas = ativos.ToList<Prospeccao>();
             ViewBag.EmProposta = emProposta.ToList();
+
         }
 
-        private void SetarFiltros(string sortOrder="", string searchString="")
+        private void SetarFiltros(string sortOrder = "", string searchString = "")
         {
             //Filtros e ordenadores
             if (string.IsNullOrEmpty(searchString) && HttpContext.Session.Keys.Contains("_CurrentFilter"))
@@ -74,28 +75,24 @@ namespace BaseDeProjetos.Controllers
             else
             {
                 ViewData["CurrentFilter"] = searchString;
-                HttpContext.Session.SetString("_CurrentFilter",searchString);
+                HttpContext.Session.SetString("_CurrentFilter", searchString);
             }
 
             if (string.IsNullOrEmpty(sortOrder) && HttpContext.Session.Keys.Contains("_asdas"))
             {
-                ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder)  ?  "name_desc" : "";
+                ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
                 ViewData["DateSortParm"] = sortOrder == "TipoContratacao" ? "tipo_desc" : "TipoContratacao";
-            }else
+            }
+            else
             {
                 ViewData["CurrentFilter"] = sortOrder;
-                HttpContext.Session.SetString("____",sortOrder);
+                HttpContext.Session.SetString("____", sortOrder);
             }
         }
 
         private IQueryable<Prospeccao> PeriodizarProspecções(string ano, IQueryable<Prospeccao> lista)
         {
-
-            if (string.IsNullOrEmpty(ano))
-            {
-                ano = DateTime.Now.Year.ToString();
-            }
-            if (ano.Equals("Todos"))
+            if (ano.Equals("Todos") || string.IsNullOrEmpty(ano))
             {
                 return lista;
             }
@@ -231,8 +228,8 @@ namespace BaseDeProjetos.Controllers
         private void CriarFollowUp(FollowUp followup)
         {
             List<FollowUp> followups = _context.FollowUp.Where(f => f.OrigemID == followup.OrigemID).ToList();
-            
-            if(followups.Any(f=>f.Status == followup.Status))
+
+            if (followups.Any(f => f.Status == followup.Status))
             {
                 FollowUp fp = followups.First(f => f.Status == followup.Status);
                 string texto = $"\n Em {followup.Data} : {followup.Anotacoes} ";
@@ -442,7 +439,7 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {
-                    Empresa Empresa_antigo = _context.Prospeccao.Include("Empresa").AsNoTracking().First(p => string.Equals(p.Id , id)).Empresa;
+                    Empresa Empresa_antigo = _context.Prospeccao.Include("Empresa").AsNoTracking().First(p => string.Equals(p.Id, id)).Empresa;
                     if (prospeccao.Empresa.Id != Empresa_antigo.Id) // Nova empresa existente
                     {
                         Empresa empresa = _context.Empresa.First(e => e.Id == prospeccao.Empresa.Id);
@@ -450,7 +447,7 @@ namespace BaseDeProjetos.Controllers
                     }
                     else
                     {
-                        if(prospeccao.Empresa.Nome != Empresa_antigo.Nome
+                        if (prospeccao.Empresa.Nome != Empresa_antigo.Nome
                             || prospeccao.Empresa.CNPJ != Empresa_antigo.CNPJ) //Nova empresa inexistente
                         {
                             prospeccao.Empresa = new Empresa
