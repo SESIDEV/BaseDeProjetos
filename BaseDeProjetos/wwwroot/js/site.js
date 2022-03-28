@@ -40,6 +40,10 @@ function getSelected() {
             var ano = year[i].split('=')[1];
             return ano;
         }
+        else {
+
+            return document.getElementById('ano').value;
+        }
     }
 }
 getSelected();
