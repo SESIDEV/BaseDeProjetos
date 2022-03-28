@@ -368,7 +368,7 @@ namespace BaseDeProjetos.Controllers
             {
                 ValidarEmpresa(prospeccao);
                 prospeccao.Contato.empresa = prospeccao.Empresa;
-                await VincularUSuario(prospeccao);
+                await VincularUsuario(prospeccao);
 
                 prospeccao.Status[0].Origem = prospeccao;
 
@@ -381,7 +381,7 @@ namespace BaseDeProjetos.Controllers
             return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
         }
 
-        private async Task VincularUSuario(Prospeccao prospeccao)
+        private async Task VincularUsuario(Prospeccao prospeccao)
         {
             string userId = HttpContext.User.Identity.Name;
             Usuario user = await _context.Users.FirstAsync(u => u.UserName == userId);
@@ -611,7 +611,7 @@ namespace BaseDeProjetos.Controllers
             string cabecalho = "Casa, Id, NomeProsppeccao, Usuario, Empresa, TipoContratacao, Status";
 
             string csv = cabecalho + "\n" + string.Join(",", dados.Select(x =>
-                $"{x.Casa};{x.Id.ToString()};{x.NomeProspeccao};{x.Usuario};{x.Empresa.Nome};{x.TipoContratacao};{x.Status.FirstOrDefault().Status};{x.Status.FirstOrDefault().Anotacoes} \n"
+                $"{x.Casa};{x.Id};{x.NomeProspeccao};{x.Usuario};{x.Empresa.Nome};{x.TipoContratacao};{x.Status.FirstOrDefault().Status};{x.Status.FirstOrDefault().Anotacoes} \n"
             ).ToArray());  
 
             return File(Encoding.UTF8.GetBytes(csv), "text/csv", "Relatório Semanal.csv");
