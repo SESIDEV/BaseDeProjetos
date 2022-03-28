@@ -4,20 +4,21 @@
     ViewData["Title"] = "Projetos";
     List<Projeto> ativas = ViewBag.Ativos as List<Projeto>;
     List<Projeto> encerradas = ViewBag.Encerrados as List<Projeto>;
+
 }
 
 <div class="row card">
     <div class=" col-12 card-body">
         <h1 class="card-title">Projetos - @ViewData["Area"]</h1>
         <div>
-            <hr />
-            Período avaliado:
-            <a asp-action="Index" asp-route-ano="Todos">Todos</a> |
-            <a asp-action="Index" asp-route-ano="2022">2022</a> |
-            <a asp-action="Index" asp-route-ano="2021">2021</a> |
-            <a asp-action="Index" asp-route-ano="2020">2020</a> |
-            <a asp-action="Index" asp-route-ano="2019">2019</a>
-            <hr />
+            <label>Selecione o ano:</label>
+            <select class="form-select" id="ano" onchange="updateLink()">
+                <option selected value="Todos">Todos</option>
+                <option value="2019">2019</option>
+                <option value="2020">2020</option>
+                <option value="2021">2021</option>
+                <option value="2022">2022</option>
+            </select>
         </div>
 
 
@@ -94,13 +95,11 @@
         </div>
         <hr />
         <div>
-            <a asp-action="Create">
-                <button class="btn btn-primary col-12"> Adicionar Novo Projeto</button>
-            </a>
+            <button class="btn btn-primary col-12">
+                <a asp-action="Create">Adicionar Novo Projeto</a>
+            </button>
         </div>
-
         <hr />
-
     </div>
 </div>
 
