@@ -1,59 +1,149 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Empresa>
+<style>
+.empresa {
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+	display: flex;
+	max-width: 100%;
+	margin: 20px;
+	overflow: hidden;
+	width: 100%;
+}
 
+.empresa h6 {
+	opacity: 0.6;
+	margin: 0;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
+
+.empresa h2 {
+	letter-spacing: 1px;
+	margin: 10px 0;
+}
+
+.empresa-preview {
+	background-color: #2A265F;
+	color: #fff;
+	max-width: 250px;
+	width: 200px;
+	height: 200px;	
+	min-height: 200px;
+	min-width: 200px;
+}
+
+#logoEmpresa{
+	object-fit: cover;
+	position:center;
+	width: 100%;
+	height: 100%;
+	max-width: 200px;
+	max-width: 200px;
+	min-height: 200px;
+	min-width: 200px;
+}
+
+.empresa-preview a {
+	color: #fff;
+	display: inline-block;
+	font-size: 12px;
+	opacity: 0.6;
+	margin-top: 30px;
+	text-decoration: none;
+}
+
+.empresa-info {
+	padding: 30px;
+	position: relative;
+	width: 100%;
+}
+
+.dados-container {
+	position: absolute;
+	top: 30px;
+	right: 30px;
+	text-align: right;
+	width: 150px;
+}
+
+.dados {
+	background-color: #ddd;
+	border-radius: 3px;
+	height: 5px;
+	width: 100%;
+}
+
+.dados::after {
+	border-radius: 3px;
+	background-color: #2A265F;
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 5px;
+	width: 66%;
+}
+
+.dados-text {
+	font-size: 10px;
+	opacity: 0.6;
+	letter-spacing: 1px;
+}
+
+#btn{
+  background-color: #2A265F;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 5px;
+}
+
+#logo_alt{
+	text-align:center;
+	padding-top: 45px;
+}
+
+</style>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Empresas";
 }
 
-<h1>Index</h1>
+<h1>Lista de Empresas</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
+<p style="text-align: right">
+    <a asp-action="Create">Adicionar Empresa</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Logo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CNPJ)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Segmento)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Estado)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
+
+
 @foreach (var item in Model) {
-        <tr>
-            <td>
-                <img src="@item.Logo" alt="@item.Nome" width="150" height="100">
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CNPJ)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Segmento)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Estado)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+
+	<div class="empresa-container">
+		<div class="empresa">
+			<div class="empresa-preview">
+				@if(item.Logo != null){
+					<img style="background-color:white" id="logoEmpresa" src="@item.Logo" alt="Logo da Empresa"/>
+				} else
+				{
+					<h2 id="logo_alt">Logo da Empresa</h2>
+				}
+			
+			</div>
+			<div class="empresa-info">
+			<div class="dados-container">
+			</div>
+			<p><strong>Nome Empresa:</strong> @item.Nome</p>
+			<p><strong>CNPJ:</strong> @item.CNPJ</p>
+			<p><strong>Setor:</strong> @item.Segmento</p>
+			<button type="button" id="btn">Contatos</button>
+				<div style="text-align: right">
+				<a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+				<a asp-action="Details" asp-route-id="@item.Id">Ver Detalhes</a> |
+				<a asp-action="Delete" asp-route-id="@item.Id">Deletar</a>
+				</div>
+			</div>
+		</div>
+	</div>
 }
-    </tbody>
-</table>
