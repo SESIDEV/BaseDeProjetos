@@ -10,52 +10,31 @@
 </style>
 @{
     var cd_CI = Model.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
-    var cd_EDBL = Model.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_BuscaLiteratura).Count() > 0).ToList().Count();
-    var cd_EDDI = Model.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_DraftIdeias).Count() > 0).ToList().Count();
-    var cd_EDDDE = Model.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_DesenhoExperimental).Count() > 0).ToList().Count();
-    var cd_EDEP = Model.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_EsbocoProjeto).Count() > 0).ToList().Count();
+    var cd_ED = Model.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Any(k=>k.Status < StatusProspeccao.ComProposta && k.Status  > StatusProspeccao.ContatoInicial)).Count();
     var cd_CP = Model.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
 
     var ei_CI = Model.Where(p => p.TipoContratacao == TipoContratacao.EditalInovacao && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
-    var ei_EDBL = Model.Where(p => p.TipoContratacao == TipoContratacao.EditalInovacao && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_BuscaLiteratura).Count() > 0).ToList().Count();
-    var ei_EDDI = Model.Where(p => p.TipoContratacao == TipoContratacao.EditalInovacao && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_DraftIdeias).Count() > 0).ToList().Count();
-    var ei_EDDDE = Model.Where(p => p.TipoContratacao == TipoContratacao.EditalInovacao && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_DesenhoExperimental).Count() > 0).ToList().Count();
-    var ei_EDEP = Model.Where(p => p.TipoContratacao == TipoContratacao.EditalInovacao && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_EsbocoProjeto).Count() > 0).ToList().Count();
+    var ei_ED = Model.Where(p => p.TipoContratacao == TipoContratacao.EditalInovacao && p.Status.Any(k=>k.Status < StatusProspeccao.ComProposta && k.Status  > StatusProspeccao.ContatoInicial)).Count();
     var ei_CP = Model.Where(p => p.TipoContratacao == TipoContratacao.EditalInovacao && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
 
     var af_CI = Model.Where(p => p.TipoContratacao == TipoContratacao.AgenciaFomento && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
-    var af_EDBL = Model.Where(p => p.TipoContratacao == TipoContratacao.AgenciaFomento && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_BuscaLiteratura).Count() > 0).ToList().Count();
-    var af_EDDI = Model.Where(p => p.TipoContratacao == TipoContratacao.AgenciaFomento && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_DraftIdeias).Count() > 0).ToList().Count();
-    var af_EDDDE = Model.Where(p => p.TipoContratacao == TipoContratacao.AgenciaFomento && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_DesenhoExperimental).Count() > 0).ToList().Count();
-    var af_EDEP = Model.Where(p => p.TipoContratacao == TipoContratacao.AgenciaFomento && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_EsbocoProjeto).Count() > 0).ToList().Count();
+    var af_ED = Model.Where(p => p.TipoContratacao == TipoContratacao.AgenciaFomento && p.Status.Any(k=>k.Status < StatusProspeccao.ComProposta && k.Status  > StatusProspeccao.ContatoInicial)).Count();
     var af_CP = Model.Where(p => p.TipoContratacao == TipoContratacao.AgenciaFomento && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
 
     var emb_CI = Model.Where(p => p.TipoContratacao == TipoContratacao.Embrapii && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
-    var emb_EDBL = Model.Where(p => p.TipoContratacao == TipoContratacao.Embrapii && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_BuscaLiteratura).Count() > 0).ToList().Count();
-    var emb_EDDI = Model.Where(p => p.TipoContratacao == TipoContratacao.Embrapii && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_DraftIdeias).Count() > 0).ToList().Count();
-    var emb_EDDDE = Model.Where(p => p.TipoContratacao == TipoContratacao.Embrapii && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_DesenhoExperimental).Count() > 0).ToList().Count();
-    var emb_EDEP = Model.Where(p => p.TipoContratacao == TipoContratacao.Embrapii && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_EsbocoProjeto).Count() > 0).ToList().Count();
+    var emb_ED = Model.Where(p => p.TipoContratacao == TipoContratacao.Embrapii && p.Status.Any(k=>k.Status < StatusProspeccao.ComProposta && k.Status  > StatusProspeccao.ContatoInicial)).Count();
     var emb_CP = Model.Where(p => p.TipoContratacao == TipoContratacao.Embrapii && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
 
     var ou_CI = Model.Where(p => p.TipoContratacao == TipoContratacao.Indefinida && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
-    var ou_EDBL = Model.Where(p => p.TipoContratacao == TipoContratacao.Indefinida && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_BuscaLiteratura).Count() > 0).ToList().Count();
-    var ou_EDDI = Model.Where(p => p.TipoContratacao == TipoContratacao.Indefinida && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_DraftIdeias).Count() > 0).ToList().Count();
-    var ou_EDDDE = Model.Where(p => p.TipoContratacao == TipoContratacao.Indefinida && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_DesenhoExperimental).Count() > 0).ToList().Count();
-    var ou_EDEP = Model.Where(p => p.TipoContratacao == TipoContratacao.Indefinida && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_EsbocoProjeto).Count() > 0).ToList().Count();
+    var ou_ED = Model.Where(p => p.TipoContratacao == TipoContratacao.Indefinida && p.Status.Any(k=>k.Status < StatusProspeccao.ComProposta && k.Status  > StatusProspeccao.ContatoInicial)).Count();
     var ou_CP = Model.Where(p => p.TipoContratacao == TipoContratacao.Indefinida && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
 
     var par_CI = Model.Where(p => p.TipoContratacao == TipoContratacao.Parceiro && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
-    var par_EDBL = Model.Where(p => p.TipoContratacao == TipoContratacao.Parceiro && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_BuscaLiteratura).Count() > 0).ToList().Count();
-    var par_EDDI = Model.Where(p => p.TipoContratacao == TipoContratacao.Parceiro && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_DraftIdeias).Count() > 0).ToList().Count();
-    var par_EDDDE = Model.Where(p => p.TipoContratacao == TipoContratacao.Parceiro && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_DesenhoExperimental).Count() > 0).ToList().Count();
-    var par_EDEP = Model.Where(p => p.TipoContratacao == TipoContratacao.Parceiro && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_EsbocoProjeto).Count() > 0).ToList().Count();
+    var par_ED = Model.Where(p => p.TipoContratacao == TipoContratacao.Parceiro && p.Status.Any(k=>k.Status < StatusProspeccao.ComProposta && k.Status  > StatusProspeccao.ContatoInicial)).Count();
     var par_CP = Model.Where(p => p.TipoContratacao == TipoContratacao.Parceiro && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
 
     var anp_CI = Model.Where(p => p.TipoContratacao == TipoContratacao.ANP && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
-    var anp_EDBL = Model.Where(p => p.TipoContratacao == TipoContratacao.ANP && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_BuscaLiteratura).Count() > 0).ToList().Count();
-    var anp_EDDI = Model.Where(p => p.TipoContratacao == TipoContratacao.ANP && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_DraftIdeias).Count() > 0).ToList().Count();
-    var anp_EDDDE = Model.Where(p => p.TipoContratacao == TipoContratacao.ANP && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_DesenhoExperimental).Count() > 0).ToList().Count();
-    var anp_EDEP = Model.Where(p => p.TipoContratacao == TipoContratacao.ANP && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.Discussao_EsbocoProjeto).Count() > 0).ToList().Count();
+    var anp_ED = Model.Where(p => p.TipoContratacao == TipoContratacao.ANP && p.Status.Any(k=>k.Status < StatusProspeccao.ComProposta && k.Status  > StatusProspeccao.ContatoInicial)).Count();
     var anp_CP = Model.Where(p => p.TipoContratacao == TipoContratacao.ANP && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
 
     decimal n_propostas = Model.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.ComProposta)).Count();
@@ -196,10 +175,7 @@
         xAxis: {
             categories: [
                 "Contato inicial",
-                "Em discussão: Busca de Literatura",
-                "Em discussão: Draft de Ideias",
-                "Em discussão: Definição de Desenho Experimental",
-                "Em discussão: Esboço do Projeto",
+                "Em discussão",
                 "Com Proposta",
                 "Convertida",
             ],
@@ -226,33 +202,31 @@
         },
         series: [{
             name: 'Contratação Direta',
-            data: [@cd_CI,@cd_EDBL,@cd_EDDI, @cd_EDDDE, @cd_EDEP, @cd_CP]
+            data: [@cd_CI,@cd_ED,@cd_CP]
 
         }, {
             name: 'Editais de Inovação SESI/SENAI',
-            data: [@ei_CI,@ei_EDBL,@ei_EDDI, @ei_EDDDE, @ei_EDEP, @ei_CP]
+            data: [@ei_CI,@ei_ED,@ei_CP]
 
-        },
-        {
+        }, {
             name: 'Agências de Fomento',
-            data: [@af_CI,@af_EDBL,@af_EDDI, @af_EDDDE, @af_EDEP, @af_CP]
+            data: [@af_CI,@af_ED,@af_CP]
 
         }, {
             name: 'Embrapii',
-            data: [@emb_CI,@emb_EDBL,@emb_EDDI, @emb_EDDDE, @emb_EDEP, @emb_CP]
+            data: [@emb_CI,@emb_ED,@emb_CP]
 
         }, {
             name: 'A definir',
-            data: [@ou_CI,@ou_EDBL,@ou_EDDI, @ou_EDDDE, @ou_EDEP, @ou_CP]
+            data: [@ou_CI,@ou_ED,@ou_CP]
 
-        },
-         {
+        }, {
             name: 'Parceiros de Edital',
-            data: [@par_CI,@par_EDBL,@par_EDDI, @par_EDDDE, @par_EDEP, @par_CP]
+            data: [@par_CI,@par_ED,@par_CP]
 
         }, {
             name: 'ANP/ANEEL',
-            data: [@anp_CI,@anp_EDBL,@anp_EDDI, @anp_EDDDE, @anp_EDEP, @anp_CP]
+            data: [@anp_CI,@anp_ED,@anp_CP]
 
         }]
     });
