@@ -55,6 +55,7 @@
         diff = avancadas.Aggregate(new TimeSpan(0),
             (inicial, prospeccao) => prospeccao.Status.First().Data - prospeccao.Status.Last().Data,
             diff => diff);
+
         diff = new TimeSpan(diff.Ticks / avancadas.Count());
     }
     else
@@ -76,7 +77,7 @@
     decimal infrutiferas;
     try
     {
-        infrutiferas = n_canceladas / (Model.Count() - (avancadas.Count() - n_convertidas - n_nao_convertidas));
+        infrutiferas = (n_canceladas + n_nao_convertidas) / (Model.Count() - (avancadas.Count() - n_convertidas - n_nao_convertidas));
     }
     catch (Exception)
     {

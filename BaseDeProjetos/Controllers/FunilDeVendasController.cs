@@ -33,8 +33,8 @@ namespace BaseDeProjetos.Controllers
             SetarFiltros(sortOrder, searchString);
 
             IQueryable<Prospeccao> lista = DefinirCasa(casa);
-            lista = FiltrarProspecções(searchString, lista);
             lista = PeriodizarProspecções(ano, lista);
+            lista = FiltrarProspecções(searchString, lista);
             lista = OrdenarProspecções(sortOrder, lista);
 
             CategorizarProspecções(lista);
