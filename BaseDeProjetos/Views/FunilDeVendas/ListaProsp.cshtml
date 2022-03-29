@@ -72,6 +72,19 @@
                     <a asp-action="Delete" class="badge badge-danger" asp-route-id="@item.Id">Remover</a>
                 </td>
             </tr>
+            <tr>
+                <td colspan="8">
+                <div class="card">
+                    <div class="card-body">
+                        <div>
+                        <strong> Última Atualização (@item.Status.Last().Data.ToShortDateString())</strong>
+                        <hr />
+                        @item.Status.Last().Anotacoes
+                    </div>
+                    </div>
+                </div>
+</td>
+            </tr>
         }
     </tbody>
 </table>

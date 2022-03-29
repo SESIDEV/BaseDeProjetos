@@ -137,7 +137,7 @@
                 <legend>Informações do Contato Inicial</legend>
                 <div class="form-group">
                     <label asp-for="Status[0].Data" class="control-label"></label>
-                    <input type="date" class="form-control" asp-for="Status[0].Data" value="@DateTime.Now" />
+                    <input type="date" class="form-control" asp-for="Status[0].Data" value="@DateTime.Now" required/>
                     <span asp-validation-for="Status[0].Data" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -153,8 +153,7 @@
                 <div class="form-group">
                     <label asp-for="Status[0].Status" class="control-label"></label>
                     <select asp-for="Status[0].Status" class="form-control" disabled>
-                        <!-->option value="@StatusProspeccao.ContatoInicial"> @Enum.GetName(typeof(StatusProspeccao),StatusProspeccao.ContatoInicial)</!-option-->
-                        <option value="@StatusProspeccao.ContatoInicial"></option>
+                        <option value="@StatusProspeccao.ContatoInicial"> Contato Inicial</option>
                     </select>
                     <span asp-validation-for="Status[0].Status" class="text-danger"></span>
                 </div>

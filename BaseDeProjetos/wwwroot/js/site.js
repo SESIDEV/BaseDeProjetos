@@ -17,7 +17,7 @@
 function updateLink() {
 
     var path = location.pathname;
-    var baseUrl = "https://localhost:44352" + path;
+    var baseUrl = location.href.split("?")[0];
     var params = "?ano=";
     var select = document.getElementById('ano').value;
 
