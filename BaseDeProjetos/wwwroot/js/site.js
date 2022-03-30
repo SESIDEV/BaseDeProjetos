@@ -12,8 +12,6 @@
  * 
  * */
 
-
-
 function updateLink() {
 
     var path = location.pathname;
