@@ -387,20 +387,20 @@ namespace BaseDeProjetos.Controllers
 
         private void ValidarEmpresa(Prospeccao prospeccao)
         {
-            if (prospeccao.Empresa.Id != null)
+            if (prospeccao.Empresa.Id != -1)
             {
                 if (_context.Empresa.Where(e => e.Id == prospeccao.Empresa.Id).Count() > 0)
-                {
                     prospeccao.Empresa = _context.Empresa.First(e => e.EmpresaUnique == prospeccao.Empresa.EmpresaUnique);
-                }
                 else
-                {
                     throw new Exception("Ocorreu um erro no registro da empresa. Contacte um administrador do sistema");
-                }
             }
             else
             {
-                prospeccao.Empresa = new Empresa { Estado = prospeccao.Empresa.Estado, CNPJ = prospeccao.Empresa.CNPJ, Nome = prospeccao.Empresa.Nome, Segmento = prospeccao.Empresa.Segmento };
+                Empresa atual = new Empresa { Estado = prospeccao.Empresa.Estado, CNPJ = prospeccao.Empresa.CNPJ, Nome = prospeccao.Empresa.Nome, Segmento = prospeccao.Empresa.Segmento };
+                if (atual.EmpresaUnique != "- []")
+                    prospeccao.Empresa = atual;
+                else
+                    throw new Exception("Ocorreu um erro no registro da empresa. Contacte um administrador do sistema");
             }
         }
 

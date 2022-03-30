@@ -1,77 +1,173 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
 @using System.Globalization
 
+<style>
 
-<table class="table card-text" style="overflow-y:scroll; max-height:150vh; font-size:0.8em">
-    <thead>
-        <tr>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.Empresa.Nome)</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.NomeProspeccao)</a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LinhaPequisa)
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">@Html.DisplayNameFor(model => model.TipoContratacao)</a>
-            </th>
-            <th>
-                Líder
-            </th>
-            <th>
-                Valor da Proposta
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status.Last().Status)
-            </th>
-            <th>
-                Ações
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Empresa.Nome)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NomeProspeccao)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LinhaPequisa)
-                </td>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+    /*** Alteração de layout lista de empresas e prospecções / Funil de Vendas ***/
 
-                <td>
-                    @Html.DisplayFor(modelItem => item.TipoContratacao)
-                </td>
+    .card-container {
+        background-color: #fff;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-top: 10px;
+    }
 
-                <td>
-                    @Html.DisplayFor(modelItem => item.Usuario.UserName)
-                </td>
-                <td>
-                    @{var valor = string.Format(new CultureInfo("pt-BR", false), "{0:c2}", item.ValorProposta); }
-                    @if(item.ValorProposta > 1){
-                        @Html.DisplayFor(modelItem => valor)
-                    }
-                    else{
-                        <a>Não Informado</a>
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Status.OrderBy(p => p.Data).Last().Status)
-                </td>
+    .card {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+    }
 
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
-                    <a asp-action="Atualizar" asp-route-id="@item.Id">Atualizar</a> |
-                    <a asp-action="Delete" class="badge badge-danger" asp-route-id="@item.Id">Remover</a>
-                </td>
-            </tr>
+    .card-preview {
+        background-color: #2A265F;
+        color: #fff;
+        width: 20%;
+    }
+
+        .card-preview a {
+            color: #fff;
+            display: inline-block;
+            font-size: 12px;
+            opacity: 0.6;
+            margin-top: 30px;
+            text-decoration: none;
         }
-    </tbody>
-</table>
+
+        .card-preview h2 {
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+    .card-info {
+        width: 80%;
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .content-left, .content-right {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .description-info {
+        margin-top: 10px;
+        margin-left: 5px;
+    }
+
+    #card-body, #content {
+        display: flex;
+        flex-direction: row;
+    }
+
+    #content {
+        flex-direction: column;
+        width: 80%;
+    }
+
+    #box-btn-actions {
+        width: 20%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+
+    .btn-acao {
+        width: 60px;
+        font-size: 14px;
+        padding: 0;
+    }
+    .empresa-preview {
+        background-color: #2A265F;
+        color: #fff;
+        max-width: 250px;
+        width: 200px;
+        height: 200px;
+        min-height: 200px;
+        min-width: 200px;
+    }
+
+    #logoEmpresa {
+        object-fit: cover;
+        position: center;
+        width: 100%;
+        height: 100%;
+        max-width: 200px;
+        max-width: 200px;
+        min-height: 200px;
+        min-width: 200px;
+    }
+    .btn{
+        border-radius:0;
+    }
+
+    /*** Alteração de layout lista de empresas e prospecções / Funil de Vendas ***/
+</style>
+@foreach (var item in Model)
+{
+<div class="card-container container-fluid">
+    <div class="card">
+        <div class="empresa-preview">
+            @if (item.Empresa.Logo != null)
+            {
+<img style="background-color:white" id="logoEmpresa" src="@item.Empresa.Logo" alt="Logo da Empresa" /> }
+else
+{
+<h5 id="logo_alt">Logo - @item.Empresa.Nome</h5>}
+
+        </div>
+        <div class="card-info">
+
+            <div class="content-left">
+                <p class="description-info"><strong>Empresa: </strong>@item.Empresa.Nome</p>
+                <p class="description-info"><strong>Projeto: </strong>@item.NomeProspeccao</p>
+                <p class="description-info"><strong>Linha: </strong>@item.LinhaPequisa.GetDisplayName()</p>
+            </div>
+
+            <div class="content-right">
+                <p class="description-info"><strong>Tipo Contratação: </strong>@item.TipoContratacao.GetDisplayName()</p>
+                @if (item.Usuario != null)
+                {
+                    <p class="description-info"><strong>Lider: </strong>@item.Usuario.UserName.ToUpper()</p> 
+                }
+                else
+                {
+                <p class="description-info"><strong>Lider: </strong>Não Informado</p>
+                }
+
+                <p class="description-info"><strong>Valor da Proposta: </strong>@item.ValorProposta.ToString("C2")</p>
+            </div>
+        </div>
+    </div>
+    <button id="btn-collapse" class="btn btn-outline-secondary container-fluid" type="button" data-toggle="collapse" data-target="#@item.Id" aria-expanded="false" aria-controls="collapseExample">
+        Ver mais detalhes
+    </button>
+    <div class="collapse" id="@item.Id">
+        <div class="card card-body" id="card-body">
+            <div id="content">
+                <div id="title-status">
+                    <h4>Último Status:</h4>
+                </div>
+                <div>
+                    <p>@item.Status.Last().Anotacoes</p>
+                </div>
+                <div>
+                    Data: @item.Status.Last().Data.ToShortDateString()
+                </div>
+            </div>
+            <div id="box-btn-actions">
+                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                <a asp-action="Details" asp-route-id="@item.Id">Histórico</a>
+                <a asp-action="Atualizar" asp-route-id="@item.Id">Atualizar</a>
+            </div>
+        </div>
+    </div>
+
+</div>}
