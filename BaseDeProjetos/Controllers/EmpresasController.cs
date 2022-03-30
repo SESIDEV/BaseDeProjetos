@@ -21,6 +21,7 @@ namespace BaseDeProjetos.Controllers
         // GET: Empresas
         public async Task<IActionResult> Index()
         {
+            ViewBag.Contatos = _context.Pessoa.ToList();
             return View(await _context.Empresa.OrderBy(p=>p.Nome).ToListAsync());
         }
 

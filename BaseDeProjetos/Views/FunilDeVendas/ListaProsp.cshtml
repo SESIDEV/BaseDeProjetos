@@ -1,5 +1,8 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
 @using System.Globalization
+@{ 
+    var ptbr = new CultureInfo("pt-BR");
+}
 
 <style>
 
@@ -142,7 +145,15 @@ else
                 <p class="description-info"><strong>Lider: </strong>Não Informado</p>
                 }
 
-                <p class="description-info"><strong>Valor da Proposta: </strong>@item.ValorProposta.ToString("C2")</p>
+                @if(item.ValorProposta != 0)
+                {
+                    <p class="description-info"><strong>Valor da Proposta: </strong>@item.ValorProposta.ToString("C2")</p>
+                }
+                else
+                {
+
+                    <p class="description-info"><strong>Status: </strong>@item.Status.Last().Status.GetDisplayName()</p>
+                }
             </div>
         </div>
     </div>
