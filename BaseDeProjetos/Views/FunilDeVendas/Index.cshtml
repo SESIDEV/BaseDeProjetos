@@ -1,8 +1,10 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
-@{ ViewData["Title"] = "Index";
+@{
+    ViewData["Title"] = "Index";
     List<Prospeccao> ativas = ViewBag.Ativas as List<Prospeccao>;
     List<Prospeccao> propostas = ViewBag.EmProposta as List<Prospeccao>;
-    List<Prospeccao> concluidas = ViewBag.Concluidas as List<Prospeccao>; }
+    List<Prospeccao> concluidas = ViewBag.Concluidas as List<Prospeccao>;
+}
 
 <div class="row card">
     <div class=" col-12 card-body">
@@ -18,16 +20,22 @@
             </select>
         </div>
 
-        <div class="col-12 card-img" id="containerGraficos">
-            @Html.Partial("graph_funil", Model)
-        </div>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Gráficos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="ativas-tab" data-toggle="tab" href="#ativas" role="tab" aria-controls="ativas" aria-selected="false">Ativas</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="propostas-tab" data-toggle="tab" href="#propostas" role="tab" aria-controls="propostas" aria-selected="false">Com Proposta</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="concluidas-tab" data-toggle="tab" href="#concluidas" role="tab" aria-controls="concluidas" aria-selected="false">Concluídas</a>
+            </li>
+        </ul>
 
-        <hr />
-        <p>
-            <button class="btn btn-outline-primary" id="btn-new-prospection">
-                <a asp-action="Create">Criar Novo</a>
-            </button>
-        </p>
+
         <form asp-action="Index" method="get">
             <div class="form-actions">
                 <small>
@@ -38,35 +46,39 @@
                 </small>
             </div>
         </form>
-        <div>
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" id="ativas-tab" data-toggle="tab" href="#ativas" role="tab" aria-controls="ativas" aria-selected="true">Ativas</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="propostas-tab" data-toggle="tab" href="#propostas" role="tab" aria-controls="propostas" aria-selected="false">Com Proposta</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="concluidas-tab" data-toggle="tab" href="#concluidas" role="tab" aria-controls="concluidas" aria-selected="false">Concluídas</a>
-                </li>
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="ativas" role="tabpanel" aria-labelledby="ativas">
-                    <div>
-                        <partial name="ListaProsp" view-data="@ViewData" model="@ativas" />
-                    </div>
+
+
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div>
+                    <partial name="graph_funil" view-data="@ViewData" model="@Model" />
                 </div>
-                <div class="tab-pane fade" id="propostas" role="tabpanel" aria-labelledby="propostas">
-                    <div>
-                        <partial name="ListaProsp" view-data="@ViewData" model="@propostas" />
-                    </div>
+            </div>
+            <div class="tab-pane fade" id="ativas" role="tabpanel" aria-labelledby="ativas-tab">
+                <div>
+                    <partial name="ListaProsp" view-data="@ViewData" model="@ativas" />
                 </div>
-                <div class="tab-pane fade" id="concluidas" role="tabpanel" aria-labelledby="concluidas">
-                    <div>
-                        <partial name="ListaProsp" view-data="@ViewData" model="@concluidas" />
-                    </div>
+            </div>
+            <div class="tab-pane fade" id="propostas" role="tabpanel" aria-labelledby="propostas-tab">
+                <div>
+                    <partial name="ListaProsp" view-data="@ViewData" model="@propostas" />
+                </div>
+            </div>
+            <div class="tab-pane fade" id="concluidas" role="tabpanel" aria-labelledby="concluidas-tab">
+                <div>
+                    <partial name="ListaProsp" view-data="@ViewData" model="@concluidas" />
                 </div>
             </div>
         </div>
+
+
+        <hr />
+
+        <button class="btn btn-outline-primary col-12" id="btn-new-prospection">
+            <a asp-action="Create">Adicionar Novo Projeto</a>
+        </button>
+
     </div>
 </div>
+
+
