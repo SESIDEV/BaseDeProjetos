@@ -39,9 +39,7 @@
         width: 100%;
         height: 100%;
         max-width: 200px;
-        max-width: 200px;
-        min-height: 200px;
-        min-width: 200px;
+        max-height: 200px;
     }
 
     .empresa-preview a {
@@ -106,7 +104,9 @@
         padding-top: 45px;
     }
 </style>
-@{ ViewData["Title"] = "Empresas"; }
+@{
+    ViewData["Title"] = "Empresas";
+}
 
 <h1>Lista de Empresas</h1>
 
@@ -117,39 +117,42 @@
 <div class="row">
     @foreach (var item in Model)
     {
-<div class="empresa-container col-6">
-    <div class="empresa">
-        <div class="empresa-preview">
-            @if (item.Logo != null)
-            {
-<img style="background-color:white" id="logoEmpresa" src="@item.Logo" alt="Logo da Empresa" /> }
-else
-{
-<h2 id="logo_alt">Logo da Empresa</h2>}
+        <div class="empresa-container col-6">
+            <div class="empresa">
+                <div class="empresa-preview">
+                    @if (item.Logo != null)
+                    {
+                        <img style="background-color:white" id="logoEmpresa" src="@item.Logo" alt="Logo da Empresa" />
+                    }
+                    else
+                    {
+                        <h2 id="logo_alt">Logo da Empresa</h2>
+                    }
 
-        </div>
-        <div class="empresa-info">
-            <div class="dados-container">
+                </div>
+                <div class="empresa-info">
+                    <div class="dados-container">
+                    </div>
+                    <p><strong>Nome Empresa:</strong> @item.Nome</p>
+                    <p><strong>CNPJ:</strong> @item.CNPJ</p>
+                    <p><strong>Setor:</strong> @item.Segmento</p>
+                    <button type="button" class="btn-empresa" data-toggle="collapse" data-target="#e_@item.Id">Ver ações</button>
+                    <button type="button" class="btn-empresa">Ver contatos</button>
+
+                    <div id="e_@item.Id" class="collapse">
+                        <hr />
+                        <h6>Ações</h6>
+                        <small>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Ver Detalhes</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Deletar</a>
+                        </small>
+                        <br />
+                    </div>
+                </div>
+
+
             </div>
-            <p><strong>Nome Empresa:</strong> @item.Nome</p>
-            <p><strong>CNPJ:</strong> @item.CNPJ</p>
-            <p><strong>Setor:</strong> @item.Segmento</p>
-             <button type="button" class="btn-empresa" data-toggle="collapse" data-target="#e_@item.Id">Ver ações</button>
-             <button type="button" class="btn-empresa">Ver contatos</button>
-
-            <div id="e_@item.Id" class="collapse">
-                <hr />
-                <h6>Ações</h6>
-                <small>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Ver Detalhes</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Deletar</a>
-                </small>
-                <br />
-            </div>
         </div>
-
-
-    </div>
-</div>}
+    }
 </div>
