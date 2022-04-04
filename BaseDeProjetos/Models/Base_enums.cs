@@ -89,12 +89,15 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Contato inicial")]
         ContatoInicial=0,
         [Obsolete("Do not use this", true)]
+        [Display(Name = "Em discussão")]
         Discussao_BuscaLiteratura,
         [Obsolete("Do not use this", true)]
+        [Display(Name = "Em discussão")]
         Discussao_DraftIdeias,
         [Obsolete("Do not use this", true)]
+        [Display(Name = "Em discussão")]
         Discussao_DesenhoExperimental,
-        [Display(Name = "Em discussão: Esboço do Projeto")]
+        [Display(Name = "Em discussão")]
         Discussao_EsbocoProjeto=4,
         [Display(Name = "Com Proposta")]
         ComProposta=5,
