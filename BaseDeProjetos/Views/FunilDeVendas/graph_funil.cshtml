@@ -46,7 +46,11 @@
 
     var avancadas = Model.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.ComProposta));
 
-    var valor_propostas = "---";
+    decimal valor = 0;
+    foreach (Prospeccao prosp in Model)
+    {
+        valor += prosp.ValorProposta;
+    }
 
     TimeSpan diff;
     if (avancadas.Count() > 0)
@@ -139,7 +143,13 @@
             </div>
             <div class="col-4">
                 <!-- Quando transformar em calculado, remover o R$-->
-                <h4> R$ @valor_propostas</h4>
+                @if (valor > 0)
+                {
+                    <h4>@valor.ToString("C2")</h4> }
+                else
+                {
+                    <h4> R$ ---</h4>
+                }
                 <small>
                     Ticket médio das prospecções
                 </small>
