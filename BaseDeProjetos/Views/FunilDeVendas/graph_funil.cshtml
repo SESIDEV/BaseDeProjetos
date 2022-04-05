@@ -8,7 +8,8 @@
         border: 3px solid;
     }
 </style>
-@{ var cd_CI = Model.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
+@{
+    var cd_CI = Model.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
     var cd_ED = Model.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Any(k => k.Status < StatusProspeccao.ComProposta && k.Status > StatusProspeccao.ContatoInicial)).Count();
     var cd_CP = Model.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
 
@@ -46,6 +47,7 @@
     //Novo Filtro:
     decimal filtro_ativas = Model.Where(p => p.Status.All(k => k.Status <= StatusProspeccao.ComProposta)).Count();
 
+    var avancadas = Model.Where(p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)).Where(p => p.Status.First().Data - p.Status.Last().Data > TimeSpan.Zero);
 
     decimal valor = 0;
     foreach (Prospeccao prosp in Model)
@@ -87,7 +89,8 @@
     catch (Exception)
     {
         infrutiferas = 0;
-    } }
+    } 
+}
 
 <div class="row">
     <figure class="highcharts-figure col-12">
