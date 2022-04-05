@@ -8,7 +8,8 @@
         border: 3px solid;
     }
 </style>
-@{ var cd_CI = Model.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
+@{
+    var cd_CI = Model.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
     var cd_ED = Model.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Any(k => k.Status < StatusProspeccao.ComProposta && k.Status > StatusProspeccao.ContatoInicial)).Count();
     var cd_CP = Model.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
 
@@ -43,8 +44,10 @@
     decimal n_prospeccoes_andamento = Model.Count() - n_convertidas - n_nao_convertidas - n_canceladas;
     decimal n_empresas = Model.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();
 
+    //Novo Filtro:
+    decimal filtro_ativas = Model.Where(p => p.Status.All(k => k.Status <= StatusProspeccao.ComProposta)).Count();
 
-    var avancadas = Model.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.ComProposta));
+    var avancadas = Model.Where(p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)).Where(p => p.Status.First().Data - p.Status.Last().Data > TimeSpan.Zero);
 
     decimal valor = 0;
     foreach (Prospeccao prosp in Model)
@@ -86,42 +89,52 @@
     catch (Exception)
     {
         infrutiferas = 0;
-    } }
+    } 
+}
 
 <div class="row">
     <figure class="highcharts-figure col-12">
         <div id="funil"></div>
     </figure>
-
+    
     <div class="col-6">
-        <div id="tempo_SLA" class="jumbotron row text-center h-100">
-            <div class="col-12">
-                <h1 class="display-3"> @n_empresas</h1>
-                <small>
-                    Número de empresas prospectadas
-                </small>
+            
+            <div id="tempo_SLA" class="jumbotron row text-center h-100">
+                
+                <div class="col-12">
+                    <!--[Iury] checkbox \/ -->
+                    <input class="form-check-input" type="checkbox" id="caixaSelecaoAtivas" onclick="marcada()">
+                    <label class="form-check-label" for="botao_ativas"> Mostrar apenas as ativas</label><br>
                 <hr />
-            </div>
-            <div class="col-4">
-                <h4> @diff.ToString("%d") dias</h4>
-                <small>
-                    Tempo médio entre o primeiro contato e a emissão da proposta.
-                </small>
-            </div>
-            <div class="col-4">
-                <h4> @Model.Count()</h4>
-                <small>
-                    Contatos iniciais de prospecção
-                </small>
-            </div>
-            <div class="col-4">
-                <h4> @infrutiferas.ToString("P2")</h4>
-                <small>
-                    Percentual de prospecções infrutíferas
-                </small>
-            </div>
+                </div>
+                
+                <div class="col-12">
+                    <!--[Iury] IDs da checkbox \/ --> 
+                    <h1 id="CheckboxProspAtivas1" class="display-3"> @n_empresas</h1>
+                    <small id="CheckboxProspAtivas2"> Número de empresas prospectadas </small> <hr />
+                </div>
+            
+                <div class="col-4">
+                    <h4> @diff.ToString("%d") dias</h4>
+                    <small>
+                        Tempo médio entre o primeiro contato e a emissão da proposta.
+                    </small>
+                </div>
+            
+                <div class="col-4">
+                    <!--[Iury] IDs da checkbox \/ -->
+                    <h4 id="CheckboxProspAtivas4"> @Model.Count()</h4>
+                    <small id="CheckboxProspAtivas3"> Contatos iniciais de prospecção </small>
+                </div>
 
-        </div>
+                <div class="col-4">
+                    <h4> @infrutiferas.ToString("P2")</h4>
+                    <small>
+                        Percentual de prospecções infrutíferas
+                    </small>
+                </div>
+                
+            </div>
     </div>
 
     <figure class="highcharts-figure col-6">
@@ -131,7 +144,6 @@
     <figure class="highcharts-figure col-6">
         <div id="pizza_conversao"></div>
     </figure>
-
 
     <div class="col-6">
         <div id="taxa_conversao" class="row jumbotron text-center h-100">
@@ -170,7 +182,6 @@
             </div>
         </div>
     </div>
-
 </div>
 
 <!-- Gráfico de Fomentos por status-->
@@ -243,50 +254,50 @@
 </script>
 <!-- Pizzas -->
 <script>
-Highcharts.chart('pizza_conversao', {
-    chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie'
-    },
-    title: {
-        text: 'Status de Prospecções com propostas'
-    },
-    tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-    },
-    accessibility: {
-        point: {
-            valueSuffix: '%'
-        }
-    },
-    plotOptions: {
-        pie: {
-            allowPointSelect: true,
-            cursor: 'pointer',
-            dataLabels: {
-                enabled: true,
-                format: '<b>{point.name}</b>: {point.y} prospecções'
+    Highcharts.chart('pizza_conversao', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: 'Status de Prospecções com propostas'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        accessibility: {
+            point: {
+                valueSuffix: '%'
             }
-        }
-    },
-    series: [{
-        size: '60%',
-        name: 'Propostas',
-        colorByPoint: true,
-        data: [{
-            name: 'Em andamento',
-            y: @(n_propostas - n_convertidas - n_nao_convertidas),
-        }, {
-            name: 'Convertidas',
-            y: @n_convertidas
-        }, {
-            name: 'Não convertidas',
-            y: @n_nao_convertidas
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.y} prospecções'
+                }
+            }
+        },
+        series: [{
+            size: '60%',
+            name: 'Propostas',
+            colorByPoint: true,
+            data: [{
+                name: 'Em andamento',
+                y: @(n_propostas - n_convertidas - n_nao_convertidas),
+            }, {
+                name: 'Convertidas',
+                y: @n_convertidas
+            }, {
+                name: 'Não convertidas',
+                y: @n_nao_convertidas
+            }]
         }]
-    }]
-});
+    });
 
 
 Highcharts.chart('pizza_desistencia', {
@@ -358,5 +369,19 @@ Highcharts.chart('pizza_desistencia', {
 
 });
 </script>
-
-
+<!--[Iury] script da checkbox \/ --> 
+<script type="text/javascript">
+    function marcada() {
+        if (document.getElementById("caixaSelecaoAtivas").checked) {
+            document.getElementById("CheckboxProspAtivas1").innerHTML = @n_prospeccoes_andamento;
+            document.getElementById("CheckboxProspAtivas2").textContent = "Número de empresas prospectadas (Ativas)";
+            document.getElementById("CheckboxProspAtivas3").textContent = "Contatos iniciais de prospecção (Ativas)";
+            document.getElementById("CheckboxProspAtivas4").textContent = @filtro_ativas;
+        } else {
+            document.getElementById("CheckboxProspAtivas1").innerHTML = @n_empresas
+            document.getElementById("CheckboxProspAtivas2").textContent = "Número de empresas prospectadas";
+            document.getElementById("CheckboxProspAtivas3").textContent = "Contatos iniciais de prospecção";
+            document.getElementById("CheckboxProspAtivas4").textContent = @Model.Count();
+        }
+    }
+</script>

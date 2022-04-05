@@ -110,9 +110,17 @@
     .btn{
         border-radius:0;
     }
+    /*[Iury] ajuste no texto da logo \/*/
+    #logo_alt {
+        text-align: center;
+        padding-top: 75px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
 
     /*** Alteração de layout lista de empresas e prospecções / Funil de Vendas ***/
 </style>
+
 @foreach (var item in Model)
 {
 <div class="card-container container-fluid">
@@ -121,9 +129,7 @@
             @if (item.Empresa.Logo != null)
             {
 <img style="background-color:white" id="logoEmpresa" src="@item.Empresa.Logo" alt="Logo da Empresa" /> }
-else
-{
-<h5 id="logo_alt">Logo - @item.Empresa.Nome</h5>}
+else {<h5 id="logo_alt">Logo - @item.Empresa.Nome</h5>}
 
         </div>
         <div class="card-info">
