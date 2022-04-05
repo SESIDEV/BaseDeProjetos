@@ -24,11 +24,10 @@
 
         <hr />
         <p>
-            <button class="btn btn-primary">
-                <a asp-action="Create"> Criar Novo</a>
+            <button class="btn btn-outline-primary" id="btn-new-prospection">
+                <a asp-action="Create">Criar Novo</a>
             </button>
         </p>
-
         <form asp-action="Index" method="get">
             <div class="form-actions">
                 <small>
@@ -39,7 +38,6 @@
                 </small>
             </div>
         </form>
-
         <div>
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
@@ -52,7 +50,6 @@
                     <a class="nav-link" id="concluidas-tab" data-toggle="tab" href="#concluidas" role="tab" aria-controls="concluidas" aria-selected="false">Concluídas</a>
                 </li>
             </ul>
-
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="ativas" role="tabpanel" aria-labelledby="ativas">
                     <div>
@@ -69,9 +66,7 @@
                         <partial name="ListaProsp" view-data="@ViewData" model="@concluidas" />
                     </div>
                 </div>
-
             </div>
-
         </div>
     </div>
 </div>

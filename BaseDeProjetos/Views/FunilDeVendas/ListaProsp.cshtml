@@ -1,5 +1,8 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
 @using System.Globalization
+@{ 
+    var ptbr = new CultureInfo("pt-BR");
+}
 
 <style>
 
@@ -148,7 +151,15 @@ else {<h5 id="logo_alt">Logo - @item.Empresa.Nome</h5>}
                 <p class="description-info"><strong>Lider: </strong>Não Informado</p>
                 }
 
-                <p class="description-info"><strong>Valor da Proposta: </strong>@item.ValorProposta.ToString("C2")</p>
+                @if(item.ValorProposta != 0)
+                {
+                    <p class="description-info"><strong>Valor da Proposta: </strong>@item.ValorProposta.ToString("C2")</p>
+                }
+                else
+                {
+
+                    <p class="description-info"><strong>Status: </strong>@item.Status.Last().Status.GetDisplayName()</p>
+                }
             </div>
         </div>
     </div>
@@ -172,6 +183,7 @@ else {<h5 id="logo_alt">Logo - @item.Empresa.Nome</h5>}
                 <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
                 <a asp-action="Details" asp-route-id="@item.Id">Histórico</a>
                 <a asp-action="Atualizar" asp-route-id="@item.Id">Atualizar</a>
+                <a asp-action="Delete" asp-route-id="@item.Id">Remover</a>
             </div>
         </div>
     </div>
