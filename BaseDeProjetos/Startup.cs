@@ -5,10 +5,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace BaseDeProjetos
 {
@@ -72,7 +75,6 @@ namespace BaseDeProjetos
             app.UseStaticFiles();
 
             app.UseRouting();
-            //app.UseSession(new SessionOptions {IOTimeout=Timeout.InfiniteTimeSpan, IdleTimeout = Timeout.InfiniteTimeSpan});
             app.UseSession();
 
             app.UseAuthentication();
@@ -85,6 +87,16 @@ namespace BaseDeProjetos
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+
+            var locale = Configuration["SiteLocale"];
+            RequestLocalizationOptions localizationOptions = new RequestLocalizationOptions
+            {
+                SupportedCultures = new List<CultureInfo> { new CultureInfo(locale) },
+                SupportedUICultures = new List<CultureInfo> { new CultureInfo(locale) },
+                DefaultRequestCulture = new RequestCulture(locale)
+            };
+            app.UseRequestLocalization(localizationOptions);
+
 
             context.Database.Migrate();
         }
