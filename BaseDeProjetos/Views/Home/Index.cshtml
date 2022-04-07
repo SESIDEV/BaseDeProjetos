@@ -3,6 +3,7 @@
 @inject UserManager<Usuario> UserManager
 @{
     ViewData["Title"] = "Página Inicial";
+    
 }
 
 @if (SignInManager.IsSignedIn(User))
@@ -13,3 +14,4 @@ else
 {
     <partial name="LogoutHome" />
 }
+

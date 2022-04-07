@@ -61,7 +61,7 @@ namespace BaseDeProjetos.Controllers
 
             ViewBag.Concluidas = concluidos.ToList<Prospeccao>();
             ViewBag.Ativas = ativos.ToList<Prospeccao>();
-            ViewBag.EmProposta = emProposta.ToList();
+            ViewBag.EmProposta = emProposta.ToList();            
 
         }
 
@@ -98,6 +98,7 @@ namespace BaseDeProjetos.Controllers
             }
 
             return lista.Where(s => s.Status.Any(k => k.Data.Year == Convert.ToInt32(ano)));
+
         }
 
         private static IQueryable<Prospeccao> FiltrarProspecções(string searchString, IQueryable<Prospeccao> lista)
@@ -609,7 +610,7 @@ namespace BaseDeProjetos.Controllers
 
             string csv = cabecalho + "\n" + string.Join(",", dados.Select(x =>
                 $"{x.Casa};{x.Id};{x.NomeProspeccao};{x.Usuario};{x.Empresa.Nome};{x.TipoContratacao};{x.Status.FirstOrDefault().Status};{x.Status.FirstOrDefault().Anotacoes} \n"
-            ).ToArray());  
+            ).ToArray());
 
             return File(Encoding.UTF8.GetBytes(csv), "text/csv", "Relatório Semanal.csv");
         }
