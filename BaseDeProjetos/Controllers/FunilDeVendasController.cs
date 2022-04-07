@@ -112,7 +112,7 @@ namespace BaseDeProjetos.Controllers
             return lista;
         }
 
-        private IQueryable<Prospeccao> DefinirCasa(string? casa)
+        private IQueryable<Prospeccao> DefinirCasa(string casa)
         {
 
             Instituto enum_casa;

@@ -1,12 +1,7 @@
 ﻿@model BaseDeProjetos.Models.Projeto
 @using Microsoft.AspNetCore.Http
-
 @{
     ViewData["Title"] = "Criar Projeto";
-}
-@using Microsoft.AspNetCore.Http
-@{
-
     ViewData["Title"] = "Adicionar Prospecção";
     if (!(Context.Session.GetString("_Casa") is null))
     {

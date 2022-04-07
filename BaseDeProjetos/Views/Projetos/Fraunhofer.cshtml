@@ -1,6 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿
 @{
     decimal receita = 0;
     decimal ticket_medio = 0M;
@@ -63,7 +61,7 @@
     }
     catch (Exception e)
     {
-
+        ViewBag.erro = e;
     }
 
     decimal sti_cost_cover = sti_revenue / (sti_cost + 0.001M);
@@ -96,7 +94,6 @@
                     <div class="card-body">
                         Carteira de projetos do @ViewBag.Area no período
                         <h4>@ViewBag.n_empresas</h4>
-
                     </div>
                 </div>
             </div>

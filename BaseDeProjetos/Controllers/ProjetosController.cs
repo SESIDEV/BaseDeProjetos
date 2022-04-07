@@ -87,7 +87,7 @@ namespace BaseDeProjetos.Controllers
             ViewBag.Embrapii_prosps = _context.Prospeccao.ToList<Prospeccao>();
         }
 
-        private IQueryable<Projeto> DefinirCasa(string? casa)
+        private IQueryable<Projeto> DefinirCasa(string casa)
         {
 
             Instituto enum_casa;
@@ -175,7 +175,7 @@ namespace BaseDeProjetos.Controllers
             return true;
         }
 
-        public async Task<IActionResult> EditarEntrega(string? id)
+        public async Task<IActionResult> EditarEntrega(string id)
         {
             if (id == null)
             {
