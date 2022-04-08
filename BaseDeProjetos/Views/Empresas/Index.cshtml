@@ -21,7 +21,7 @@
 
         .empresa h2 {
             letter-spacing: 1px;
-            margin: 10px 0;
+            margin: 10px 0
         }
 
     .empresa-preview {
@@ -40,9 +40,7 @@
         width: 100%;
         height: 100%;
         max-width: 200px;
-        max-width: 200px;
-        min-height: 200px;
-        min-width: 200px;
+        max-height: 200px;
     }
 
     .empresa-preview a {
@@ -55,7 +53,7 @@
     }
 
     .empresa-info {
-        padding: 30px;
+        padding: 0 30px;
         position: relative;
         width: 100%;
     }
@@ -119,14 +117,17 @@
 <div class="row">
     @foreach (var item in Model)
     {
-<div class="empresa-container col-6">
-    <div class="empresa">
-        <div class="empresa-preview">
-            @if (item.Logo != null)
-            {
-<img style="background-color:white" id="logoEmpresa" src="@item.Logo" alt="Logo da Empresa" /> }
-else
-{<h2 id="logo_alt">Logo da Empresa</h2>}
+        <div class="empresa-container col-6">
+            <div class="empresa">
+                <div class="empresa-preview">
+                    @if (item.Logo != null)
+                    {
+                        <img style="background-color:white" id="logoEmpresa" src="@item.Logo" alt="Logo da Empresa" />
+                    }
+                    else
+                    {
+                        <h2 id="logo_alt">Logo da Empresa</h2>
+                    }
 
         </div>
         <div class="empresa-info">
