@@ -88,12 +88,11 @@ namespace BaseDeProjetos
                 endpoints.MapRazorPages();
             });
 
-            var locale = Configuration["SiteLocale"];
             RequestLocalizationOptions localizationOptions = new RequestLocalizationOptions
             {
-                SupportedCultures = new List<CultureInfo> { new CultureInfo(locale) },
-                SupportedUICultures = new List<CultureInfo> { new CultureInfo(locale) },
-                DefaultRequestCulture = new RequestCulture(locale)
+                SupportedCultures = new List<CultureInfo> { new CultureInfo("pt-BR") },
+                SupportedUICultures = new List<CultureInfo> { new CultureInfo("pt-BR") },
+                DefaultRequestCulture = new RequestCulture("pt-BR")
             };
             app.UseRequestLocalization(localizationOptions);
 
