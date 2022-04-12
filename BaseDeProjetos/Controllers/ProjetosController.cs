@@ -375,10 +375,8 @@ namespace BaseDeProjetos.Controllers
             {
                 if (formFile.Length > 0)
                 {
-                    using (StreamReader file = new StreamReader(formFile.OpenReadStream()))
-                    {
-                        CriarProjetos(file);
-                    }
+                    using StreamReader file = new StreamReader(formFile.OpenReadStream());
+                    CriarProjetos(file);
                 }
             }
 

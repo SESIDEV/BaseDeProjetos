@@ -39,6 +39,7 @@
                 <span asp-validation-for="QualiSeguranca" class="text-danger"></span>
             </div>
 
+            <label asp-for="Casa" class="control-label"></label>
             <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Instituto>().OrderBy(p=>p.Text)"></select>
 
             <div class="form-group">
