@@ -68,7 +68,7 @@
             <div class="form-group">
                 <label asp-for="Status" class="control-label"></label>
                 <select asp-for="Status" onchange="avaliarStatus(this)" class="form-control" asp-items="Html.GetEnumSelectList<StatusProspeccao>().
-                                                                                                               Where(p => Int32.Parse(p.Value) > 4 && Int32.Parse(p.Value) < 1)"></select>
+                                                                                                               Where(p => Int32.Parse(p.Value) > 4 || Int32.Parse(p.Value) < 1)"></select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -123,6 +123,7 @@
 
     <div>
         <a asp-action="Index" asp-route-casa="@ViewData["Area"]">Voltar</a>
+    </div>
     </div>
 
     @section Scripts {
