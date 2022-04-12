@@ -18,7 +18,6 @@ namespace BaseDeProjetos.Controllers
         {
             _context = context;
             _logger = logger;
-
         }
 
         public IActionResult Index()
@@ -31,7 +30,7 @@ namespace BaseDeProjetos.Controllers
             try
             {
                 ViewData["receita_total"] = _context.IndicadoresFinanceiros.ToList().LastOrDefault().Receita;
-                ViewData["despesa_total"] = _context.IndicadoresFinanceiros.ToList().LastOrDefault().Despeita;
+                ViewData["despesa_total"] = _context.IndicadoresFinanceiros.ToList().LastOrDefault().Despesa;
                 ViewData["invest_total"] = _context.IndicadoresFinanceiros.ToList().LastOrDefault().Investimento;
                 ViewData["Data"] = _context.IndicadoresFinanceiros.ToList().LastOrDefault().Data;
                 ViewData["quali"] = _context.IndicadoresFinanceiros.ToList().LastOrDefault().QualiSeguranca;
@@ -95,7 +94,6 @@ namespace BaseDeProjetos.Controllers
 
             if (p.DataEncerramento.Year == DateTime.Today.Year)
             {
-
                 if (p.DuracaoProjetoEmMeses >= 12)
                 {
                     //Caso relativamente simples, o projeto é longo e acaba neste ano, recebendo até o seu término (Jan/19 a Mar/21)
@@ -110,10 +108,9 @@ namespace BaseDeProjetos.Controllers
                     }
                     else
                     {
-                        //É um projeto curto que já vinha em andamento e que vai terminar neste ano (Ex.: De setembro a março) 
+                        //É um projeto curto que já vinha em andamento e que vai terminar neste ano (Ex.: De setembro a março)
                         return (decimal)((p.ValorAporteRecursos / p.DuracaoProjetoEmMeses) * p.DataEncerramento.Month);
                     }
-
                 }
             }
             else

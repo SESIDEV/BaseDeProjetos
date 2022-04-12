@@ -47,10 +47,10 @@
          *
          * @interface Highcharts.SymbolOptionsObject
          */ /**
-        * Whether to draw rounded edges.
-        * @name Highcharts.SymbolOptionsObject#rounded
-        * @type {boolean|undefined}
-        */
+       * Whether to draw rounded edges.
+       * @name Highcharts.SymbolOptionsObject#rounded
+       * @type {boolean|undefined}
+       */
         var Renderer = H.Renderer;
         /**
          * Symbol definition of an arc with round edges.
@@ -360,9 +360,9 @@
                         else {
                             point.graphic = graphic = renderer.arc(shapeArgs)
                                 .attr({
-                                fill: toColor,
-                                'sweep-flag': 0
-                            })
+                                    fill: toColor,
+                                    'sweep-flag': 0
+                                })
                                 .add(series.group);
                         }
                         if (!series.chart.styledMode) {
@@ -475,7 +475,5 @@
         return SolidGaugeAxis;
     });
     _registerModule(_modules, 'masters/modules/solid-gauge.src.js', [], function () {
-
-
     });
 }));

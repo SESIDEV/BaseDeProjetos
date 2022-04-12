@@ -127,7 +127,7 @@
                 var series = this, chart = series.chart, pointOptions = point.options, seriesOptions = series.options, xAxis = series.xAxis, yAxis = series.yAxis, connectorWidth = pick(pointOptions.connectorWidth, seriesOptions.connectorWidth), connectorColor = pick(pointOptions.connectorColor, seriesOptions.connectorColor, pointOptions.color, point.zone ? point.zone.color : void 0, point.color), connectorWidthPlus = pick(seriesOptions.states &&
                     seriesOptions.states.hover &&
                     seriesOptions.states.hover.connectorWidthPlus, 1), dashStyle = pick(pointOptions.dashStyle, seriesOptions.dashStyle), pointTop = pick(point.plotLow, point.plotY), pxThreshold = yAxis.toPixels(seriesOptions.threshold || 0, true), pointHeight = chart.inverted ?
-                    yAxis.len - pxThreshold : pxThreshold, pointBottom = pick(point.plotHigh, pointHeight), attribs, origProps;
+                        yAxis.len - pxThreshold : pxThreshold, pointBottom = pick(point.plotHigh, pointHeight), attribs, origProps;
                 if (point.state) {
                     connectorWidth = connectorWidth + connectorWidthPlus;
                 }
@@ -159,14 +159,14 @@
                 }
                 attribs = {
                     d: SVGRenderer.prototype.crispLine([[
-                            'M',
-                            point.plotX,
-                            pointTop
-                        ], [
-                            'L',
-                            point.plotX,
-                            pointBottom
-                        ]], connectorWidth, 'ceil')
+                        'M',
+                        point.plotX,
+                        pointTop
+                    ], [
+                        'L',
+                        point.plotX,
+                        pointBottom
+                    ]], connectorWidth, 'ceil')
                 };
                 if (!chart.styledMode) {
                     attribs.stroke = connectorColor;
@@ -193,8 +193,8 @@
                     point.connector = series.chart.renderer.path()
                         .addClass('highcharts-lollipop-stem')
                         .attr({
-                        zIndex: -1
-                    })
+                            zIndex: -1
+                        })
                         .add(series.markerGroup);
                 }
                 point.connector[verb](this.getConnectorAttribs(point));
@@ -460,10 +460,7 @@
          * @apioption   series.dumbbell.data.lowColor
          */
         ''; // adds doclets above to transpiled file
-
     });
     _registerModule(_modules, 'masters/modules/dumbbell.src.js', [], function () {
-
-
     });
 }));

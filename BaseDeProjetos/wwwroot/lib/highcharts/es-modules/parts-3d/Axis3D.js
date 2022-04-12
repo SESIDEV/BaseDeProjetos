@@ -60,10 +60,10 @@ var Axis3DAdditions = /** @class */ (function () {
             !chart.is3d()) {
             return pos;
         }
-        var alpha = deg2rad * chart.options.chart.options3d.alpha, beta = deg2rad * chart.options.chart.options3d.beta, positionMode = pick(isTitle && axis.options.title.position3d, axis.options.labels.position3d), skew = pick(isTitle && axis.options.title.skew3d, axis.options.labels.skew3d), frame = chart.chart3d.frame3d, plotLeft = chart.plotLeft, plotRight = chart.plotWidth + plotLeft, plotTop = chart.plotTop, plotBottom = chart.plotHeight + plotTop, 
-        // Indicates that we are labelling an X or Z axis on the "back" of
-        // the chart
-        reverseFlap = false, offsetX = 0, offsetY = 0, vecX, vecY = { x: 0, y: 1, z: 0 };
+        var alpha = deg2rad * chart.options.chart.options3d.alpha, beta = deg2rad * chart.options.chart.options3d.beta, positionMode = pick(isTitle && axis.options.title.position3d, axis.options.labels.position3d), skew = pick(isTitle && axis.options.title.skew3d, axis.options.labels.skew3d), frame = chart.chart3d.frame3d, plotLeft = chart.plotLeft, plotRight = chart.plotWidth + plotLeft, plotTop = chart.plotTop, plotBottom = chart.plotHeight + plotTop,
+            // Indicates that we are labelling an X or Z axis on the "back" of
+            // the chart
+            reverseFlap = false, offsetX = 0, offsetY = 0, vecX, vecY = { x: 0, y: 1, z: 0 };
         pos = axis.axis3D.swapZ({ x: pos.x, y: pos.y, z: 0 });
         if (axis.isZAxis) { // Z Axis
             if (axis.opposite) {
@@ -345,9 +345,9 @@ var Axis3D = /** @class */ (function () {
                     fromEndSeg[0] === 'L' &&
                     toStartSeg[0] === 'M' &&
                     toEndSeg[0] === 'L') {
-                    path.push(fromStartSeg, fromEndSeg, toEndSeg, 
-                    // lineTo instead of moveTo
-                    ['L', toStartSeg[1], toStartSeg[2]], ['Z']);
+                    path.push(fromStartSeg, fromEndSeg, toEndSeg,
+                        // lineTo instead of moveTo
+                        ['L', toStartSeg[1], toStartSeg[2]], ['Z']);
                 }
             }
         }
@@ -477,8 +477,8 @@ var Axis3D = /** @class */ (function () {
             // frame.
             slotWidth = Math.abs(prevLabelPos ?
                 labelPos.x - prevLabelPos.x : nextLabelPos ?
-                nextLabelPos.x - labelPos.x :
-                firstGridLine.x - frame3DLeft.x);
+                    nextLabelPos.x - labelPos.x :
+                    firstGridLine.x - frame3DLeft.x);
             return slotWidth;
         }
         return proceed.apply(axis, [].slice.call(arguments, 1));

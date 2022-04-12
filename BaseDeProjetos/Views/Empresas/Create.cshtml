@@ -1,8 +1,6 @@
 ﻿@model BaseDeProjetos.Models.Empresa
 
-@{
-    ViewData["Title"] = "Create";
-}
+@{ ViewData["Title"] = "Create"; }
 
 <h1>Create</h1>
 
@@ -27,11 +25,8 @@
                 <input asp-for="Segmento" class="form-control" />
                 <span asp-validation-for="Segmento" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Estado" class="control-label"></label>
-                <input asp-for="Estado" class="form-control" />
-                <span asp-validation-for="Estado" class="text-danger"></span>
-            </div>
+
+            <select asp-for="Estado" class="form-control" asp-items="Html.GetEnumSelectList<Estado>().OrderBy(p=>p.Text)"></select>
             <div class="form-group">
                 <label asp-for="Logo" class="control-label"></label>
                 <input asp-for="Logo" class="form-control" />

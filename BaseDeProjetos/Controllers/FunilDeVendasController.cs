@@ -10,7 +10,6 @@ using SmartTesting.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Controllers
@@ -19,7 +18,6 @@ namespace BaseDeProjetos.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IEmailSender _mailer;
-        private readonly ApplicationDbContext context;
 
         public FunilDeVendasController(ApplicationDbContext context, IEmailSender mailer)
         {
@@ -58,11 +56,9 @@ namespace BaseDeProjetos.Controllers
                                                               f.Status != StatusProspeccao.ComProposta &&
                                                               f.Status != StatusProspeccao.NaoConvertida));
 
-
             ViewBag.Concluidas = concluidos.ToList<Prospeccao>();
             ViewBag.Ativas = ativos.ToList<Prospeccao>();
             ViewBag.EmProposta = emProposta.ToList();
-
         }
 
         private void SetarFiltros(string sortOrder = "", string searchString = "")
@@ -113,7 +109,6 @@ namespace BaseDeProjetos.Controllers
 
         private IQueryable<Prospeccao> DefinirCasa(string? casa)
         {
-
             Instituto enum_casa;
 
             if (string.IsNullOrEmpty(casa))
@@ -136,7 +131,6 @@ namespace BaseDeProjetos.Controllers
                     enum_casa = Instituto.Super;
                 }
             }
-
 
             ViewData["Area"] = casa;
 
@@ -216,7 +210,6 @@ namespace BaseDeProjetos.Controllers
             if (followup.Status == StatusProspeccao.ComProposta)
             {
                 followup.Origem.ValorProposta = 0;
-
             }
 
             if (followup.Status == StatusProspeccao.Convertida)
@@ -248,7 +241,6 @@ namespace BaseDeProjetos.Controllers
             foreach (FollowUp status in followup.Origem.Status)
             {
                 status.isTratado = true;
-
             }
             _context.Update(followup);
             await _context.SaveChangesAsync();
@@ -256,7 +248,6 @@ namespace BaseDeProjetos.Controllers
 
         private void CriarProjetoConvertido(FollowUp followup)
         {
-
             //Evitar que duplique projetos. TODO: Consertar isso antes da virada do ano
             if (followup.Data.Year != 2020)
             {
@@ -273,7 +264,6 @@ namespace BaseDeProjetos.Controllers
                 _context.Add(novo_projeto);
                 _context.SaveChanges();
             }
-
         }
 
         private void NotificarProspecção(FollowUp followup)
@@ -346,6 +336,7 @@ namespace BaseDeProjetos.Controllers
                     };
 
                     break;
+
                 default:
                     throw new ArgumentException("Status não notificável");
             }
@@ -355,7 +346,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // POST: FunilDeVendas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -424,7 +415,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // POST: FunilDeVendas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -497,9 +488,7 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
             return View(followup);
-
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -562,7 +551,6 @@ namespace BaseDeProjetos.Controllers
             {
                 throw new InvalidOperationException("Não é possível remover todas os followups de uma prospecção");
             }
-
         }
 
         // POST: FunilDeVendas/Delete/5
@@ -587,33 +575,5 @@ namespace BaseDeProjetos.Controllers
         {
             return _context.Prospeccao.Any(e => e.Id == id);
         }
-
-        [HttpGet]
-        public FileResult RelatorioProspeccoes()
-        {
-
-            string query = @"SELECT prospeccao.Id, Data, Nome, Status, UserName, Anotacoes, prospeccao.Casa, prospeccao.TipoContratacao, 
-                Contatoid, Empresaid,LinhaPequisa,NomeProspeccao,PotenciaisParceiros, Usuarioid, ValorProposta FROM 
-                (`followup` INNER JOIN ((prospeccao INNER JOIN aspnetusers ON prospeccao.UsuarioId = aspnetusers.Id) 
-                INNER JOIN empresa ON empresa.Id = prospeccao.EmpresaId) ON followup.OrigemID = prospeccao.Id) WHERE 
-                      (followup.data > STR_TO_DATE('31/12/2019', '%d/%m/%Y') AND        prospeccao.Id NOT IN 
-                      ( 
-                             SELECT followup.origemid 
-                             FROM   followup 
-                             WHERE  status > 5 )
-                      )  ORDER BY prospeccao.Id";
-
-            IQueryable<Prospeccao> dados = _context.Prospeccao.FromSqlRaw(query);
-
-            string cabecalho = "Casa, Id, NomeProsppeccao, Usuario, Empresa, TipoContratacao, Status";
-
-            string csv = cabecalho + "\n" + string.Join(",", dados.Select(x =>
-                $"{x.Casa};{x.Id};{x.NomeProspeccao};{x.Usuario};{x.Empresa.Nome};{x.TipoContratacao};{x.Status.FirstOrDefault().Status};{x.Status.FirstOrDefault().Anotacoes} \n"
-            ).ToArray());  
-
-            return File(Encoding.UTF8.GetBytes(csv), "text/csv", "Relatório Semanal.csv");
-        }
     }
 }
-
-

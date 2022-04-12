@@ -506,8 +506,8 @@ var BubbleLegend = /** @class */ (function () {
     BubbleLegend.prototype.renderRange = function (range) {
         var mainRange = this.ranges[0], legend = this.legend, options = this.options, labelsOptions = options.labels, chart = this.chart, renderer = chart.renderer, symbols = this.symbols, labels = symbols.labels, label, elementCenter = range.center, absoluteRadius = Math.abs(range.radius), connectorDistance = options.connectorDistance || 0, labelsAlign = labelsOptions.align, rtl = legend.options.rtl, fontSize = labelsOptions.style.fontSize, connectorLength = rtl || labelsAlign === 'left' ?
             -connectorDistance : connectorDistance, borderWidth = options.borderWidth, connectorWidth = options.connectorWidth, posX = mainRange.radius || 0, posY = elementCenter - absoluteRadius -
-            borderWidth / 2 + connectorWidth / 2, labelY, labelX, fontMetrics = this.fontMetrics, labelMovement = fontSize / 2 - (fontMetrics.h - fontSize) / 2, crispMovement = (posY % 1 ? 1 : 0.5) -
-            (connectorWidth % 2 ? 0 : 0.5), styledMode = renderer.styledMode;
+                borderWidth / 2 + connectorWidth / 2, labelY, labelX, fontMetrics = this.fontMetrics, labelMovement = fontSize / 2 - (fontMetrics.h - fontSize) / 2, crispMovement = (posY % 1 ? 1 : 0.5) -
+                    (connectorWidth % 2 ? 0 : 0.5), styledMode = renderer.styledMode;
         // Set options for centered labels
         if (labelsAlign === 'center') {
             connectorLength = 0; // do not use connector
@@ -521,29 +521,29 @@ var BubbleLegend = /** @class */ (function () {
             .circle(posX, elementCenter + crispMovement, absoluteRadius)
             .attr(styledMode ? {} : range.bubbleStyle)
             .addClass((styledMode ?
-            'highcharts-color-' +
+                'highcharts-color-' +
                 this.options.seriesIndex + ' ' :
-            '') +
-            'highcharts-bubble-legend-symbol ' +
-            (options.className || '')).add(this.legendSymbol));
+                '') +
+                'highcharts-bubble-legend-symbol ' +
+                (options.className || '')).add(this.legendSymbol));
         // Render connector
         symbols.connectors.push(renderer
             .path(renderer.crispLine([
-            ['M', posX, posY],
-            ['L', posX + connectorLength, posY]
-        ], options.connectorWidth))
+                ['M', posX, posY],
+                ['L', posX + connectorLength, posY]
+            ], options.connectorWidth))
             .attr(styledMode ? {} : range.connectorStyle)
             .addClass((styledMode ?
-            'highcharts-color-' +
+                'highcharts-color-' +
                 this.options.seriesIndex + ' ' : '') +
-            'highcharts-bubble-legend-connectors ' +
-            (options.connectorClassName || '')).add(this.legendSymbol));
+                'highcharts-bubble-legend-connectors ' +
+                (options.connectorClassName || '')).add(this.legendSymbol));
         // Render label
         label = renderer
             .text(this.formatLabel(range), labelX, labelY + labelMovement)
             .attr(styledMode ? {} : range.labelStyle)
             .addClass('highcharts-bubble-legend-labels ' +
-            (options.labels.className || '')).add(this.legendSymbol);
+                (options.labels.className || '')).add(this.legendSymbol);
         labels.push(label);
         // To enable default 'hideOverlappingLabels' method
         label.placed = true;
@@ -681,7 +681,7 @@ var BubbleLegend = /** @class */ (function () {
             // size will not affect to bubbles series.
             if ((horizontal && plotSizeY - calculatedSize >=
                 plotSizeX) || (!horizontal && plotSizeX -
-                calculatedSize >= plotSizeY)) {
+                    calculatedSize >= plotSizeY)) {
                 calculatedSize = maxPxSize;
             }
         }
@@ -780,10 +780,10 @@ Legend.prototype.getLinesHeights = function () {
             items[i].itemHeight = items[i].legendItemHeight;
         }
         if ( // Line break
-        items[i] === items[length - 1] ||
+            items[i] === items[length - 1] ||
             items[i + 1] &&
-                items[i]._legendItemPos[1] !==
-                    items[i + 1]._legendItemPos[1]) {
+            items[i]._legendItemPos[1] !==
+            items[i + 1]._legendItemPos[1]) {
             lines.push({ height: 0 });
             lastLine = lines[lines.length - 1];
             // Find the highest item in line

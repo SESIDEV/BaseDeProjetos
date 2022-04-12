@@ -42,6 +42,19 @@ namespace BaseDeProjetos
             services.AddDefaultIdentity<Usuario>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddDistributedMemoryCache();
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+            services.Configure<RequestLocalizationOptions>(
+                options =>
+                    {
+                        var supportedCultures = new List<CultureInfo>
+                        {
+                            new CultureInfo("pt-BR"),
+                        };
+
+                        options.DefaultRequestCulture = new RequestCulture(culture: "pt-BR", uiCulture: "pt-BR");
+                        options.SupportedCultures = supportedCultures;
+                        options.SupportedUICultures = supportedCultures;
+                    });
 
             services.AddTransient<IEmailSender, EmailSender>();
 
@@ -87,15 +100,6 @@ namespace BaseDeProjetos
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
-
-            RequestLocalizationOptions localizationOptions = new RequestLocalizationOptions
-            {
-                SupportedCultures = new List<CultureInfo> { new CultureInfo("pt-BR") },
-                SupportedUICultures = new List<CultureInfo> { new CultureInfo("pt-BR") },
-                DefaultRequestCulture = new RequestCulture("pt-BR")
-            };
-            app.UseRequestLocalization(localizationOptions);
-
 
             context.Database.Migrate();
         }

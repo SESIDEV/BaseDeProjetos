@@ -45,41 +45,41 @@ var ElliottWave = /** @class */ (function (_super) {
     };
     return ElliottWave;
 }(CrookedLine));
-ElliottWave.prototype.defaultOptions = merge(CrookedLine.prototype.defaultOptions, 
-/**
- * An elliott wave annotation.
- *
- * @sample highcharts/annotations-advanced/elliott-wave/
- *         Elliott wave
- *
- * @extends      annotations.crookedLine
- * @product      highstock
- * @optionparent annotations.elliottWave
- */
-{
-    typeOptions: {
-        /**
-         * @extends   annotations.crookedLine.labelOptions
-         * @apioption annotations.elliottWave.typeOptions.points.label
-         */
-        /**
-         * @ignore-options
-         */
-        labels: ['(0)', '(A)', '(B)', '(C)', '(D)', '(E)'],
-        line: {
-            strokeWidth: 1
+ElliottWave.prototype.defaultOptions = merge(CrookedLine.prototype.defaultOptions,
+    /**
+     * An elliott wave annotation.
+     *
+     * @sample highcharts/annotations-advanced/elliott-wave/
+     *         Elliott wave
+     *
+     * @extends      annotations.crookedLine
+     * @product      highstock
+     * @optionparent annotations.elliottWave
+     */
+    {
+        typeOptions: {
+            /**
+             * @extends   annotations.crookedLine.labelOptions
+             * @apioption annotations.elliottWave.typeOptions.points.label
+             */
+            /**
+             * @ignore-options
+             */
+            labels: ['(0)', '(A)', '(B)', '(C)', '(D)', '(E)'],
+            line: {
+                strokeWidth: 1
+            }
+        },
+        labelOptions: {
+            align: 'center',
+            allowOverlap: true,
+            crop: true,
+            overflow: 'none',
+            type: 'rect',
+            backgroundColor: 'none',
+            borderWidth: 0,
+            y: -5
         }
-    },
-    labelOptions: {
-        align: 'center',
-        allowOverlap: true,
-        crop: true,
-        overflow: 'none',
-        type: 'rect',
-        backgroundColor: 'none',
-        borderWidth: 0,
-        y: -5
-    }
-});
+    });
 Annotation.types.elliottWave = ElliottWave;
 export default ElliottWave;

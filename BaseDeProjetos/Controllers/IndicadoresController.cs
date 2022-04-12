@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Controllers
 {
-    public class IndicadoresFinanceirosController : Controller
+    public class IndicadoresController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public IndicadoresFinanceirosController(ApplicationDbContext context)
+        public IndicadoresController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -47,7 +47,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // POST: IndicadoresFinanceiros/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -79,7 +79,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // POST: IndicadoresFinanceiros/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]

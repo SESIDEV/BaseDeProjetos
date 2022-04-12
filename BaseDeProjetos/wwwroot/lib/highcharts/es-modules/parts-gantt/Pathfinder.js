@@ -340,22 +340,22 @@ function getPointBB(point) {
  *         The calculated margin in pixels. At least 1.
  */
 function calculateObstacleMargin(obstacles) {
-    var len = obstacles.length, i = 0, j, obstacleDistance, distances = [], 
-    // Compute smallest distance between two rectangles
-    distance = function (a, b, bbMargin) {
-        // Count the distance even if we are slightly off
-        var margin = pick(bbMargin, 10), yOverlap = a.yMax + margin > b.yMin - margin &&
-            a.yMin - margin < b.yMax + margin, xOverlap = a.xMax + margin > b.xMin - margin &&
-            a.xMin - margin < b.xMax + margin, xDistance = yOverlap ? (a.xMin > b.xMax ? a.xMin - b.xMax : b.xMin - a.xMax) : Infinity, yDistance = xOverlap ? (a.yMin > b.yMax ? a.yMin - b.yMax : b.yMin - a.yMax) : Infinity;
-        // If the rectangles collide, try recomputing with smaller margin.
-        // If they collide anyway, discard the obstacle.
-        if (xOverlap && yOverlap) {
-            return (margin ?
-                distance(a, b, Math.floor(margin / 2)) :
-                Infinity);
-        }
-        return min(xDistance, yDistance);
-    };
+    var len = obstacles.length, i = 0, j, obstacleDistance, distances = [],
+        // Compute smallest distance between two rectangles
+        distance = function (a, b, bbMargin) {
+            // Count the distance even if we are slightly off
+            var margin = pick(bbMargin, 10), yOverlap = a.yMax + margin > b.yMin - margin &&
+                a.yMin - margin < b.yMax + margin, xOverlap = a.xMax + margin > b.xMin - margin &&
+                    a.xMin - margin < b.xMax + margin, xDistance = yOverlap ? (a.xMin > b.xMax ? a.xMin - b.xMax : b.xMin - a.xMax) : Infinity, yDistance = xOverlap ? (a.yMin > b.yMax ? a.yMin - b.yMax : b.yMin - a.yMax) : Infinity;
+            // If the rectangles collide, try recomputing with smaller margin.
+            // If they collide anyway, discard the obstacle.
+            if (xOverlap && yOverlap) {
+                return (margin ?
+                    distance(a, b, Math.floor(margin / 2)) :
+                    Infinity);
+            }
+            return min(xDistance, yDistance);
+        };
     // Go over all obstacles and compare them to the others.
     for (; i < len; ++i) {
         // Compare to all obstacles ahead. We will already have compared this
@@ -373,9 +373,9 @@ function calculateObstacleMargin(obstacles) {
     return max(Math.floor(distances.sort(function (a, b) {
         return (a - b);
     })[
-    // Discard first 10% of the relevant distances, and then grab
-    // the smallest one.
-    Math.floor(distances.length / 10)] / 2 - 1 // Divide the distance by 2 and subtract 1.
+        // Discard first 10% of the relevant distances, and then grab
+        // the smallest one.
+        Math.floor(distances.length / 10)] / 2 - 1 // Divide the distance by 2 and subtract 1.
     ), 1 // 1 is the minimum margin
     );
 }
@@ -551,8 +551,8 @@ Connection.prototype = {
                         opacity: 0
                     })
                         .animate({
-                        opacity: 1
-                    }, point.series.options.animation);
+                            opacity: 1
+                        }, point.series.options.animation);
                 }
             }
             else {
@@ -582,7 +582,7 @@ Connection.prototype = {
         if (algorithm.requiresObstacles && !chartObstacles) {
             chartObstacles =
                 pathfinder.chartObstacles =
-                    pathfinder.getChartObstacles(options);
+                pathfinder.getChartObstacles(options);
             // If the algorithmMargin was computed, store the result in default
             // options.
             chart.options.connectors.algorithmMargin =
@@ -593,24 +593,24 @@ Connection.prototype = {
         }
         // Get the SVG path
         return algorithm(
-        // From
-        this.fromPoint.getPathfinderAnchorPoint(options.startMarker), 
-        // To
-        this.toPoint.getPathfinderAnchorPoint(options.endMarker), merge({
-            chartObstacles: chartObstacles,
-            lineObstacles: pathfinder.lineObstacles || [],
-            obstacleMetrics: pathfinder.chartObstacleMetrics,
-            hardBounds: {
-                xMin: 0,
-                xMax: chart.plotWidth,
-                yMin: 0,
-                yMax: chart.plotHeight
-            },
-            obstacleOptions: {
-                margin: options.algorithmMargin
-            },
-            startDirectionX: pathfinder.getAlgorithmStartDirection(options.startMarker)
-        }, options));
+            // From
+            this.fromPoint.getPathfinderAnchorPoint(options.startMarker),
+            // To
+            this.toPoint.getPathfinderAnchorPoint(options.endMarker), merge({
+                chartObstacles: chartObstacles,
+                lineObstacles: pathfinder.lineObstacles || [],
+                obstacleMetrics: pathfinder.chartObstacleMetrics,
+                hardBounds: {
+                    xMin: 0,
+                    xMax: chart.plotWidth,
+                    yMin: 0,
+                    yMax: chart.plotHeight
+                },
+                obstacleOptions: {
+                    margin: options.algorithmMargin
+                },
+                startDirectionX: pathfinder.getAlgorithmStartDirection(options.startMarker)
+            }, options));
     },
     /**
      * (re)Calculate and (re)draw the connection.
@@ -629,7 +629,7 @@ Connection.prototype = {
         }
         attribs['class'] = // eslint-disable-line dot-notation
             'highcharts-point-connecting-path ' +
-                'highcharts-color-' + fromPoint.colorIndex;
+            'highcharts-color-' + fromPoint.colorIndex;
         options = merge(attribs, options);
         // Set common marker options
         if (!defined(options.marker.radius)) {
@@ -732,7 +732,7 @@ Pathfinder.prototype = {
                                 to.isInside !== false) {
                                 // Add new connection
                                 pathfinder.connections.push(new Connection(point, // from
-                                to, typeof connect === 'string' ?
+                                    to, typeof connect === 'string' ?
                                     {} :
                                     connect));
                             }
@@ -749,7 +749,7 @@ Pathfinder.prototype = {
                 if (oldConnections[j].fromPoint ===
                     pathfinder.connections[k].fromPoint &&
                     oldConnections[j].toPoint ===
-                        pathfinder.connections[k].toPoint) {
+                    pathfinder.connections[k].toPoint) {
                     pathfinder.connections[k].graphics =
                         oldConnections[j].graphics;
                     found = true;
@@ -853,7 +853,7 @@ Pathfinder.prototype = {
         if (!defined(options.algorithmMargin)) {
             calculatedMargin =
                 options.algorithmMargin =
-                    calculateObstacleMargin(obstacles);
+                calculateObstacleMargin(obstacles);
             obstacles.forEach(function (obstacle) {
                 obstacle.xMin -= calculatedMargin;
                 obstacle.xMax += calculatedMargin;
@@ -909,7 +909,7 @@ Pathfinder.prototype = {
     getAlgorithmStartDirection: function (markerOptions) {
         var xCenter = markerOptions.align !== 'left' &&
             markerOptions.align !== 'right', yCenter = markerOptions.verticalAlign !== 'top' &&
-            markerOptions.verticalAlign !== 'bottom', undef;
+                markerOptions.verticalAlign !== 'bottom', undef;
         return xCenter ?
             (yCenter ? undef : false) : // x is centered
             (yCenter ? true : undef); // x is off-center

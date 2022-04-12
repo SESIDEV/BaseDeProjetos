@@ -151,12 +151,12 @@ H.networkgraphIntegrations = {
          * @return {void}
          */
         integrate: function (layout, node) {
-            var friction = -layout.options.friction, maxSpeed = layout.options.maxSpeed, prevX = node.prevX, prevY = node.prevY, 
-            // Apply friciton:
-            diffX = ((node.plotX + node.dispX -
-                prevX) * friction), diffY = ((node.plotY + node.dispY -
-                prevY) * friction), abs = Math.abs, signX = abs(diffX) / (diffX || 1), // need to deal with 0
-            signY = abs(diffY) / (diffY || 1);
+            var friction = -layout.options.friction, maxSpeed = layout.options.maxSpeed, prevX = node.prevX, prevY = node.prevY,
+                // Apply friciton:
+                diffX = ((node.plotX + node.dispX -
+                    prevX) * friction), diffY = ((node.plotY + node.dispY -
+                        prevY) * friction), abs = Math.abs, signX = abs(diffX) / (diffX || 1), // need to deal with 0
+                signY = abs(diffY) / (diffY || 1);
             // Apply max speed:
             diffX = signX * Math.min(maxSpeed, Math.abs(diffX));
             diffY = signY * Math.min(maxSpeed, Math.abs(diffY));

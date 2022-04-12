@@ -239,7 +239,7 @@ Instrument.prototype.setGain = function (gainValue, rampTime) {
     if (this.gainNode) {
         if (gainValue > 1.2) {
             console.warn(// eslint-disable-line
-            'Highcharts sonification warning: ' +
+                'Highcharts sonification warning: ' +
                 'Volume of instrument set too high.');
             gainValue = 1.2;
         }
@@ -352,30 +352,30 @@ Instrument.prototype.preparePlay = function () {
  * @return {void}
  */
 Instrument.prototype.play = function (options) {
-    var instrument = this, duration = options.duration || 0, 
-    // Set a value, or if it is a function, set it continously as a timer.
-    // Pass in the value/function to set, the setter function, and any
-    // additional data to pass through to the setter function.
-    setOrStartTimer = function (value, setter, setterData) {
-        var target = options.duration, currentDurationIx = 0, callbackInterval = instrument.options.playCallbackInterval;
-        if (typeof value === 'function') {
-            var timer = setInterval(function () {
-                currentDurationIx++;
-                var curTime = (currentDurationIx * callbackInterval / target);
-                if (curTime >= 1) {
-                    instrument[setter](value(1), setterData);
-                    clearInterval(timer);
-                }
-                else {
-                    instrument[setter](value(curTime), setterData);
-                }
-            }, callbackInterval);
-            instrument.playCallbackTimers.push(timer);
-        }
-        else {
-            instrument[setter](value, setterData);
-        }
-    };
+    var instrument = this, duration = options.duration || 0,
+        // Set a value, or if it is a function, set it continously as a timer.
+        // Pass in the value/function to set, the setter function, and any
+        // additional data to pass through to the setter function.
+        setOrStartTimer = function (value, setter, setterData) {
+            var target = options.duration, currentDurationIx = 0, callbackInterval = instrument.options.playCallbackInterval;
+            if (typeof value === 'function') {
+                var timer = setInterval(function () {
+                    currentDurationIx++;
+                    var curTime = (currentDurationIx * callbackInterval / target);
+                    if (curTime >= 1) {
+                        instrument[setter](value(1), setterData);
+                        clearInterval(timer);
+                    }
+                    else {
+                        instrument[setter](value(curTime), setterData);
+                    }
+                }, callbackInterval);
+                instrument.playCallbackTimers.push(timer);
+            }
+            else {
+                instrument[setter](value, setterData);
+            }
+        };
     if (!instrument.id) {
         // No audio support - do nothing
         return;

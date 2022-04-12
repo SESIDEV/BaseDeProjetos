@@ -304,62 +304,62 @@
                 // 'gl_Position = uPMatrix * vec4(aVertexPosition.x, aVertexPosition.y, 0.0, 1.0);',
                 '}'
                 /* eslint-enable max-len, @typescript-eslint/indent */
-            ].join('\n'), 
-            // Fragment shader source
-            fragShade = [
-                /* eslint-disable max-len, @typescript-eslint/indent */
-                'precision highp float;',
-                'uniform vec4 fillColor;',
-                'varying highp vec2 position;',
-                'varying highp vec4 vColor;',
-                'uniform sampler2D uSampler;',
-                'uniform bool isCircle;',
-                'uniform bool hasColor;',
-                // 'vec4 toColor(float value, vec2 point) {',
-                //     'return vec4(0.0, 0.0, 0.0, 0.0);',
-                // '}',
-                'void main(void) {',
-                'vec4 col = fillColor;',
-                'vec4 tcol;',
-                'if (hasColor) {',
-                'col = vColor;',
-                '}',
-                'if (isCircle) {',
-                'tcol = texture2D(uSampler, gl_PointCoord.st);',
-                'col *= tcol;',
-                'if (tcol.r < 0.0) {',
-                'discard;',
-                '} else {',
-                'gl_FragColor = col;',
-                '}',
-                '} else {',
-                'gl_FragColor = col;',
-                '}',
-                '}'
-                /* eslint-enable max-len, @typescript-eslint/indent */
-            ].join('\n'), uLocations = {}, 
-            // The shader program
-            shaderProgram, 
-            // Uniform handle to the perspective matrix
-            pUniform, 
-            // Uniform for point size
-            psUniform, 
-            // Uniform for fill color
-            fillColorUniform, 
-            // Uniform for isBubble
-            isBubbleUniform, 
-            // Uniform for bubble abs sizing
-            bubbleSizeAbsUniform, bubbleSizeAreaUniform, 
-            // Skip translation uniform
-            skipTranslationUniform, 
-            // Set to 1 if circle
-            isCircleUniform, 
-            // Uniform for invertion
-            isInverted, 
-            // Error stack
-            errors = [], 
-            // Texture uniform
-            uSamplerUniform;
+            ].join('\n'),
+                // Fragment shader source
+                fragShade = [
+                    /* eslint-disable max-len, @typescript-eslint/indent */
+                    'precision highp float;',
+                    'uniform vec4 fillColor;',
+                    'varying highp vec2 position;',
+                    'varying highp vec4 vColor;',
+                    'uniform sampler2D uSampler;',
+                    'uniform bool isCircle;',
+                    'uniform bool hasColor;',
+                    // 'vec4 toColor(float value, vec2 point) {',
+                    //     'return vec4(0.0, 0.0, 0.0, 0.0);',
+                    // '}',
+                    'void main(void) {',
+                    'vec4 col = fillColor;',
+                    'vec4 tcol;',
+                    'if (hasColor) {',
+                    'col = vColor;',
+                    '}',
+                    'if (isCircle) {',
+                    'tcol = texture2D(uSampler, gl_PointCoord.st);',
+                    'col *= tcol;',
+                    'if (tcol.r < 0.0) {',
+                    'discard;',
+                    '} else {',
+                    'gl_FragColor = col;',
+                    '}',
+                    '} else {',
+                    'gl_FragColor = col;',
+                    '}',
+                    '}'
+                    /* eslint-enable max-len, @typescript-eslint/indent */
+                ].join('\n'), uLocations = {},
+                // The shader program
+                shaderProgram,
+                // Uniform handle to the perspective matrix
+                pUniform,
+                // Uniform for point size
+                psUniform,
+                // Uniform for fill color
+                fillColorUniform,
+                // Uniform for isBubble
+                isBubbleUniform,
+                // Uniform for bubble abs sizing
+                bubbleSizeAbsUniform, bubbleSizeAreaUniform,
+                // Skip translation uniform
+                skipTranslationUniform,
+                // Set to 1 if circle
+                isCircleUniform,
+                // Uniform for invertion
+                isInverted,
+                // Error stack
+                errors = [],
+                // Texture uniform
+                uSamplerUniform;
             /**
              * Handle errors accumulated in errors stack
              * @private
@@ -639,11 +639,11 @@
          * @return {*}
          */
         function GLVertexBuffer(gl, shader, dataComponents
-        /* , type */
+            /* , type */
         ) {
-            var buffer = false, vertAttribute = false, components = dataComponents || 2, preAllocated = false, iterator = 0, 
-            // farray = false,
-            data;
+            var buffer = false, vertAttribute = false, components = dataComponents || 2, preAllocated = false, iterator = 0,
+                // farray = false,
+                data;
             // type = type || 'float';
             /**
              * @private
@@ -797,55 +797,55 @@
          */
         function GLRenderer(postRenderCallback) {
             //  // Shader
-            var shader = false, 
-            // Vertex buffers - keyed on shader attribute name
-            vbuffer = false, 
-            // Opengl context
-            gl = false, 
-            // Width of our viewport in pixels
-            width = 0, 
-            // Height of our viewport in pixels
-            height = 0, 
-            // The data to render - array of coordinates
-            data = false, 
-            // The marker data
-            markerData = false, 
-            // Exports
-            exports = {}, 
-            // Is it inited?
-            isInited = false, 
-            // The series stack
-            series = [], 
-            // Texture handles
-            textureHandles = {}, 
-            // Things to draw as "rectangles" (i.e lines)
-            asBar = {
-                'column': true,
-                'columnrange': true,
-                'bar': true,
-                'area': true,
-                'arearange': true
-            }, asCircle = {
-                'scatter': true,
-                'bubble': true
-            }, 
-            // Render settings
-            settings = {
-                pointSize: 1,
-                lineWidth: 1,
-                fillColor: '#AA00AA',
-                useAlpha: true,
-                usePreallocated: false,
-                useGPUTranslations: false,
-                debug: {
-                    timeRendering: false,
-                    timeSeriesProcessing: false,
-                    timeSetup: false,
-                    timeBufferCopy: false,
-                    timeKDTree: false,
-                    showSkipSummary: false
-                }
-            };
+            var shader = false,
+                // Vertex buffers - keyed on shader attribute name
+                vbuffer = false,
+                // Opengl context
+                gl = false,
+                // Width of our viewport in pixels
+                width = 0,
+                // Height of our viewport in pixels
+                height = 0,
+                // The data to render - array of coordinates
+                data = false,
+                // The marker data
+                markerData = false,
+                // Exports
+                exports = {},
+                // Is it inited?
+                isInited = false,
+                // The series stack
+                series = [],
+                // Texture handles
+                textureHandles = {},
+                // Things to draw as "rectangles" (i.e lines)
+                asBar = {
+                    'column': true,
+                    'columnrange': true,
+                    'bar': true,
+                    'area': true,
+                    'arearange': true
+                }, asCircle = {
+                    'scatter': true,
+                    'bubble': true
+                },
+                // Render settings
+                settings = {
+                    pointSize: 1,
+                    lineWidth: 1,
+                    fillColor: '#AA00AA',
+                    useAlpha: true,
+                    usePreallocated: false,
+                    useGPUTranslations: false,
+                    debug: {
+                        timeRendering: false,
+                        timeSeriesProcessing: false,
+                        timeSetup: false,
+                        timeBufferCopy: false,
+                        timeKDTree: false,
+                        showSkipSummary: false
+                    }
+                };
             // /////////////////////////////////////////////////////////////////////////
             /**
              * @private
@@ -946,29 +946,29 @@
             function pushSeriesData(series, inst) {
                 var isRange = (series.pointArrayMap &&
                     series.pointArrayMap.join(',') === 'low,high'), chart = series.chart, options = series.options, isStacked = !!options.stacking, rawData = options.data, xExtremes = series.xAxis.getExtremes(), xMin = xExtremes.min, xMax = xExtremes.max, yExtremes = series.yAxis.getExtremes(), yMin = yExtremes.min, yMax = yExtremes.max, xData = series.xData || options.xData || series.processedXData, yData = series.yData || options.yData || series.processedYData, zData = (series.zData || options.zData ||
-                    series.processedZData), yAxis = series.yAxis, xAxis = series.xAxis, 
-                // plotHeight = series.chart.plotHeight,
-                plotWidth = series.chart.plotWidth, useRaw = !xData || xData.length === 0, 
-                // threshold = options.threshold,
-                // yBottom = chart.yAxis[0].getThreshold(threshold),
-                // hasThreshold = isNumber(threshold),
-                // colorByPoint = series.options.colorByPoint,
-                // This is required for color by point, so make sure this is
-                // uncommented if enabling that
-                // colorIndex = 0,
-                // Required for color axis support
-                // caxis,
-                connectNulls = options.connectNulls, 
-                // For some reason eslint/TypeScript don't pick up that this is
-                // actually used: --- bre1470: it is never read, just set
-                // maxVal: (number|undefined), // eslint-disable-line no-unused-vars
-                points = series.points || false, lastX = false, lastY = false, minVal, pcolor, scolor, sdata = isStacked ? series.data : (xData || rawData), closestLeft = { x: Number.MAX_VALUE, y: 0 }, closestRight = { x: -Number.MAX_VALUE, y: 0 }, 
-                //
-                skipped = 0, hadPoints = false, 
-                //
-                cullXThreshold = 1, cullYThreshold = 1, 
-                // The following are used in the builder while loop
-                x, y, d, z, i = -1, px = false, nx = false, low, chartDestroyed = typeof chart.index === 'undefined', nextInside = false, prevInside = false, pcolor = false, drawAsBar = asBar[series.type], isXInside = false, isYInside = true, firstPoint = true, zones = options.zones || false, zoneDefColor = false, threshold = options.threshold, gapSize = false;
+                        series.processedZData), yAxis = series.yAxis, xAxis = series.xAxis,
+                    // plotHeight = series.chart.plotHeight,
+                    plotWidth = series.chart.plotWidth, useRaw = !xData || xData.length === 0,
+                    // threshold = options.threshold,
+                    // yBottom = chart.yAxis[0].getThreshold(threshold),
+                    // hasThreshold = isNumber(threshold),
+                    // colorByPoint = series.options.colorByPoint,
+                    // This is required for color by point, so make sure this is
+                    // uncommented if enabling that
+                    // colorIndex = 0,
+                    // Required for color axis support
+                    // caxis,
+                    connectNulls = options.connectNulls,
+                    // For some reason eslint/TypeScript don't pick up that this is
+                    // actually used: --- bre1470: it is never read, just set
+                    // maxVal: (number|undefined), // eslint-disable-line no-unused-vars
+                    points = series.points || false, lastX = false, lastY = false, minVal, pcolor, scolor, sdata = isStacked ? series.data : (xData || rawData), closestLeft = { x: Number.MAX_VALUE, y: 0 }, closestRight = { x: -Number.MAX_VALUE, y: 0 },
+                    //
+                    skipped = 0, hadPoints = false,
+                    //
+                    cullXThreshold = 1, cullYThreshold = 1,
+                    // The following are used in the builder while loop
+                    x, y, d, z, i = -1, px = false, nx = false, low, chartDestroyed = typeof chart.index === 'undefined', nextInside = false, prevInside = false, pcolor = false, drawAsBar = asBar[series.type], isXInside = false, isYInside = true, firstPoint = true, zones = options.zones || false, zoneDefColor = false, threshold = options.threshold, gapSize = false;
                 if (options.boostData && options.boostData.length > 0) {
                     return;
                 }
@@ -1280,7 +1280,7 @@
                     if (zones) {
                         pcolor = zoneDefColor.rgba;
                         zones.some(function (// eslint-disable-line no-loop-func
-                        zone, i) {
+                            zone, i) {
                             var last = zones[i - 1];
                             if (typeof zone.value !== 'undefined' && y <= zone.value) {
                                 if (!last || y >= last.value) {
@@ -1331,7 +1331,7 @@
                         }
                         if (!isRange && !isStacked) {
                             minVal = Math.max(threshold === null ? yMin : threshold, // #5268
-                            yMin); // #8731
+                                yMin); // #8731
                         }
                         if (!settings.useGPUTranslations) {
                             minVal = yAxis.toPixels(minVal, true);
@@ -1573,10 +1573,10 @@
                     var options = s.series.options, shapeOptions = options.marker, sindex, lineWidth = (typeof options.lineWidth !== 'undefined' ?
                         options.lineWidth :
                         1), threshold = options.threshold, hasThreshold = isNumber(threshold), yBottom = s.series.yAxis.getThreshold(threshold), translatedThreshold = yBottom, cbuffer, showMarkers = pick(options.marker ? options.marker.enabled : null, s.series.xAxis.isRadial ? true : null, s.series.closestPointRangePx >
-                        2 * ((options.marker ?
-                            options.marker.radius :
-                            10) || 10)), fillColor, shapeTexture = textureHandles[(shapeOptions && shapeOptions.symbol) ||
-                        s.series.symbol] || textureHandles.circle, scolor = [];
+                            2 * ((options.marker ?
+                                options.marker.radius :
+                                10) || 10)), fillColor, shapeTexture = textureHandles[(shapeOptions && shapeOptions.symbol) ||
+                                    s.series.symbol] || textureHandles.circle, scolor = [];
                     if (s.segments.length === 0 ||
                         (s.segmentslength &&
                             s.segments[0].from === s.segments[0].to)) {
@@ -1593,7 +1593,7 @@
                     else {
                         fillColor =
                             (s.series.pointAttribs && s.series.pointAttribs().fill) ||
-                                s.series.color;
+                            s.series.color;
                         if (options.colorByPoint) {
                             fillColor = s.series.chart.options.colors[si];
                         }
@@ -1745,7 +1745,7 @@
                 }
                 for (; i < contexts.length; i++) {
                     gl = canvas.getContext(contexts[i], {
-                    //    premultipliedAlpha: false
+                        //    premultipliedAlpha: false
                     });
                     if (gl) {
                         break;
@@ -2001,16 +2001,16 @@
                     height = chart.chartHeight;
                     (target.renderTargetFo || target.renderTarget)
                         .attr({
-                        x: 0,
-                        y: 0,
-                        width: width,
-                        height: height
-                    })
+                            x: 0,
+                            y: 0,
+                            width: width,
+                            height: height
+                        })
                         .css({
-                        pointerEvents: 'none',
-                        mixedBlendMode: 'normal',
-                        opacity: alpha
-                    });
+                            pointerEvents: 'none',
+                            mixedBlendMode: 'normal',
+                            opacity: alpha
+                        });
                     if (target instanceof H.Chart) {
                         target.markerGroup.translate(chart.plotLeft, chart.plotTop);
                     }
@@ -2161,9 +2161,9 @@
                     if (boostableMap[series.type]) {
                         ++canBoostCount;
                     }
-                    if (patientMax(series.processedXData, series.options.data, 
-                    // series.xData,
-                    series.points) >= (series.options.boostThreshold || Number.MAX_VALUE)) {
+                    if (patientMax(series.processedXData, series.options.data,
+                        // series.xData,
+                        series.points) >= (series.options.boostThreshold || Number.MAX_VALUE)) {
                         ++sboostCount;
                     }
                 }
@@ -2345,33 +2345,33 @@
                 renderCanvas: function () {
                     var series = this, options = series.options || {}, renderer = false, chart = series.chart, xAxis = this.xAxis, yAxis = this.yAxis, xData = options.xData || series.processedXData, yData = options.yData || series.processedYData, rawData = options.data, xExtremes = xAxis.getExtremes(), xMin = xExtremes.min, xMax = xExtremes.max, yExtremes = yAxis.getExtremes(), yMin = yExtremes.min, yMax = yExtremes.max, pointTaken = {}, lastClientX, sampling = !!series.sampling, points, enableMouseTracking = options.enableMouseTracking !== false, threshold = options.threshold, yBottom = yAxis.getThreshold(threshold), isRange = series.pointArrayMap &&
                         series.pointArrayMap.join(',') === 'low,high', isStacked = !!options.stacking, cropStart = series.cropStart || 0, requireSorting = series.requireSorting, useRaw = !xData, minVal, maxVal, minI, maxI, boostOptions, compareX = options.findNearestPointBy === 'x', xDataFull = (this.xData ||
-                        this.options.xData ||
-                        this.processedXData ||
-                        false), addKDPoint = function (clientX, plotY, i) {
-                        // We need to do ceil on the clientX to make things
-                        // snap to pixel values. The renderer will frequently
-                        // draw stuff on "sub-pixels".
-                        clientX = Math.ceil(clientX);
-                        // Shaves off about 60ms compared to repeated concatenation
-                        index = compareX ? clientX : clientX + ',' + plotY;
-                        // The k-d tree requires series points.
-                        // Reduce the amount of points, since the time to build the
-                        // tree increases exponentially.
-                        if (enableMouseTracking && !pointTaken[index]) {
-                            pointTaken[index] = true;
-                            if (chart.inverted) {
-                                clientX = xAxis.len - clientX;
-                                plotY = yAxis.len - plotY;
-                            }
-                            points.push({
-                                x: xDataFull ? xDataFull[cropStart + i] : false,
-                                clientX: clientX,
-                                plotX: clientX,
-                                plotY: plotY,
-                                i: cropStart + i
-                            });
-                        }
-                    };
+                            this.options.xData ||
+                            this.processedXData ||
+                            false), addKDPoint = function (clientX, plotY, i) {
+                                // We need to do ceil on the clientX to make things
+                                // snap to pixel values. The renderer will frequently
+                                // draw stuff on "sub-pixels".
+                                clientX = Math.ceil(clientX);
+                                // Shaves off about 60ms compared to repeated concatenation
+                                index = compareX ? clientX : clientX + ',' + plotY;
+                                // The k-d tree requires series points.
+                                // Reduce the amount of points, since the time to build the
+                                // tree increases exponentially.
+                                if (enableMouseTracking && !pointTaken[index]) {
+                                    pointTaken[index] = true;
+                                    if (chart.inverted) {
+                                        clientX = xAxis.len - clientX;
+                                        plotY = yAxis.len - plotY;
+                                    }
+                                    points.push({
+                                        x: xDataFull ? xDataFull[cropStart + i] : false,
+                                        clientX: clientX,
+                                        plotX: clientX,
+                                        plotY: plotY,
+                                        i: cropStart + i
+                                    });
+                                }
+                            };
                     // Get or create the renderer
                     renderer = createAndAttachRenderer(chart, series);
                     chart.isBoosting = true;
@@ -2680,11 +2680,11 @@
                 false);
             if (boostPoint && !(boostPoint instanceof this.pointClass)) {
                 point = (new this.pointClass()).init(// eslint-disable-line new-cap
-                this, this.options.data[boostPoint.i], xData ? xData[boostPoint.i] : void 0);
+                    this, this.options.data[boostPoint.i], xData ? xData[boostPoint.i] : void 0);
                 point.category = pick(this.xAxis.categories ?
                     this.xAxis.categories[point.x] :
                     point.x, // @todo simplify
-                point.x);
+                    point.x);
                 point.dist = boostPoint.dist;
                 point.distX = boostPoint.distX;
                 point.plotX = boostPoint.plotX;
@@ -2962,7 +2962,6 @@
                 seriesTypes[type].prototype.fillOpacity = true;
             }
         });
-
     });
     _registerModule(_modules, 'modules/boost/named-colors.js', [_modules['parts/Color.js']], function (Color) {
         /* *
@@ -3155,11 +3154,8 @@
             // WebGL support is alright, and we're good to go.
             init();
         }
-
     });
     _registerModule(_modules, 'masters/modules/boost.src.js', [], function () {
-
-
         /* *
          * Options for the Boost module. The Boost module allows certain series types
          * to be rendered by WebGL instead of the default SVG. This allows hundreds of
@@ -3204,7 +3200,5 @@
          * @product   highcharts highstock
          * @apioption boost
          * */
-
-
     });
 }));

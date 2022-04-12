@@ -29,66 +29,66 @@ var seriesTypes = H.seriesTypes, Series = H.Series, parent = seriesTypes.xrange;
  * @augments Highcharts.Series
  */
 seriesType('gantt', 'xrange'
-/**
- * A `gantt` series. If the [type](#series.gantt.type) option is not specified,
- * it is inherited from [chart.type](#chart.type).
- *
- * @extends      plotOptions.xrange
- * @product      gantt
- * @requires     highcharts-gantt
- * @optionparent plotOptions.gantt
- */
-, {
-    // options - default options merged with parent
-    grouping: false,
-    dataLabels: {
-        enabled: true
-    },
-    tooltip: {
-        headerFormat: '<span style="font-size: 10px">{series.name}</span><br/>',
-        pointFormat: null,
-        pointFormatter: function () {
-            var point = this, series = point.series, tooltip = series.chart.tooltip, xAxis = series.xAxis, formats = series.tooltipOptions.dateTimeLabelFormats, startOfWeek = xAxis.options.startOfWeek, ttOptions = series.tooltipOptions, format = ttOptions.xDateFormat, start, end, milestone = point.options.milestone, retVal = '<b>' + (point.name || point.yCategory) + '</b>';
-            if (ttOptions.pointFormat) {
-                return point.tooltipFormatter(ttOptions.pointFormat);
-            }
-            if (!format) {
-                format = splat(tooltip.getDateFormat(xAxis.closestPointRange, point.start, startOfWeek, formats))[0];
-            }
-            start = dateFormat(format, point.start);
-            end = dateFormat(format, point.end);
-            retVal += '<br/>';
-            if (!milestone) {
-                retVal += 'Start: ' + start + '<br/>';
-                retVal += 'End: ' + end + '<br/>';
-            }
-            else {
-                retVal += start + '<br/>';
-            }
-            return retVal;
-        }
-    },
-    connectors: {
-        type: 'simpleConnect',
-        /**
-         * @declare Highcharts.ConnectorsAnimationOptionsObject
-         */
-        animation: {
-            reversed: true // Dependencies go from child to parent
+    /**
+     * A `gantt` series. If the [type](#series.gantt.type) option is not specified,
+     * it is inherited from [chart.type](#chart.type).
+     *
+     * @extends      plotOptions.xrange
+     * @product      gantt
+     * @requires     highcharts-gantt
+     * @optionparent plotOptions.gantt
+     */
+    , {
+        // options - default options merged with parent
+        grouping: false,
+        dataLabels: {
+            enabled: true
         },
-        startMarker: {
-            enabled: true,
-            symbol: 'arrow-filled',
-            radius: 4,
-            fill: '#fa0',
-            align: 'left'
+        tooltip: {
+            headerFormat: '<span style="font-size: 10px">{series.name}</span><br/>',
+            pointFormat: null,
+            pointFormatter: function () {
+                var point = this, series = point.series, tooltip = series.chart.tooltip, xAxis = series.xAxis, formats = series.tooltipOptions.dateTimeLabelFormats, startOfWeek = xAxis.options.startOfWeek, ttOptions = series.tooltipOptions, format = ttOptions.xDateFormat, start, end, milestone = point.options.milestone, retVal = '<b>' + (point.name || point.yCategory) + '</b>';
+                if (ttOptions.pointFormat) {
+                    return point.tooltipFormatter(ttOptions.pointFormat);
+                }
+                if (!format) {
+                    format = splat(tooltip.getDateFormat(xAxis.closestPointRange, point.start, startOfWeek, formats))[0];
+                }
+                start = dateFormat(format, point.start);
+                end = dateFormat(format, point.end);
+                retVal += '<br/>';
+                if (!milestone) {
+                    retVal += 'Start: ' + start + '<br/>';
+                    retVal += 'End: ' + end + '<br/>';
+                }
+                else {
+                    retVal += start + '<br/>';
+                }
+                return retVal;
+            }
         },
-        endMarker: {
-            enabled: false,
-            align: 'right'
+        connectors: {
+            type: 'simpleConnect',
+            /**
+             * @declare Highcharts.ConnectorsAnimationOptionsObject
+             */
+            animation: {
+                reversed: true // Dependencies go from child to parent
+            },
+            startMarker: {
+                enabled: true,
+                symbol: 'arrow-filled',
+                radius: 4,
+                fill: '#fa0',
+                align: 'left'
+            },
+            endMarker: {
+                enabled: false,
+                align: 'right'
+            }
         }
-    }
-}, {
+    }, {
     pointArrayMap: ['start', 'end', 'y'],
     // Keyboard navigation, don't use nearest vertical mode
     keyboardMoveVertical: false,

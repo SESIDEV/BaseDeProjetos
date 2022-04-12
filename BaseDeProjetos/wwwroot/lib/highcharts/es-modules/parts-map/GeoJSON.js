@@ -208,10 +208,10 @@ Chart.prototype.transformFromLatLon = function (latLon, transform) {
     }
     var projected = proj4(transform.crs, [latLon.lon, latLon.lat]), cosAngle = transform.cosAngle ||
         (transform.rotation && Math.cos(transform.rotation)), sinAngle = transform.sinAngle ||
-        (transform.rotation && Math.sin(transform.rotation)), rotated = transform.rotation ? [
-        projected[0] * cosAngle + projected[1] * sinAngle,
-        -projected[0] * sinAngle + projected[1] * cosAngle
-    ] : projected;
+            (transform.rotation && Math.sin(transform.rotation)), rotated = transform.rotation ? [
+                projected[0] * cosAngle + projected[1] * sinAngle,
+                -projected[0] * sinAngle + projected[1] * cosAngle
+            ] : projected;
     return {
         x: ((rotated[0] - (transform.xoffset || 0)) * (transform.scale || 1) +
             (transform.xpan || 0)) * (transform.jsonres || 1) +
@@ -258,12 +258,12 @@ Chart.prototype.transformToLatLon = function (point, transform) {
             (transform.yoffset || 0)
     }, cosAngle = transform.cosAngle ||
         (transform.rotation && Math.cos(transform.rotation)), sinAngle = transform.sinAngle ||
-        (transform.rotation && Math.sin(transform.rotation)), 
-    // Note: Inverted sinAngle to reverse rotation direction
-    projected = win.proj4(transform.crs, 'WGS84', transform.rotation ? {
-        x: normalized.x * cosAngle + normalized.y * -sinAngle,
-        y: normalized.x * sinAngle + normalized.y * cosAngle
-    } : normalized);
+            (transform.rotation && Math.sin(transform.rotation)),
+        // Note: Inverted sinAngle to reverse rotation direction
+        projected = win.proj4(transform.crs, 'WGS84', transform.rotation ? {
+            x: normalized.x * cosAngle + normalized.y * -sinAngle,
+            y: normalized.x * sinAngle + normalized.y * cosAngle
+        } : normalized);
     return { lat: projected.y, lon: projected.x };
 };
 /**

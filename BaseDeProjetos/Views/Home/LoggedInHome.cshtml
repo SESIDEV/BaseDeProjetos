@@ -6,7 +6,17 @@
     decimal investimento = (decimal)ViewBag.invest_total;
     decimal despesas = (decimal)ViewBag.despesa_total;
     float quali = (float)ViewBag.quali;
-    decimal sustentatiblidade = receita / despesas;
+    decimal sustentabilidade;
+
+    if (despesas > 0)
+    {
+
+        sustentabilidade = receita / despesas;
+    }
+    else
+    {
+        sustentabilidade = 1;
+    }
 
 }
 <style>
@@ -64,11 +74,8 @@
                                             @ViewBag.n_proj
                                         </h2>
                                         projetos ativos
-
-
                                     </div>
                                 </center>
-
                             </div>
                         </div>
                         <div class="col-md-4 card">
@@ -80,7 +87,6 @@
 
                                         <h2>@ViewBag.n_empresas </h2>
                                         empresas com relacionamento conosco
-
                                     </div>
                                 </center>
                             </div>
@@ -95,7 +101,6 @@
 
                                         <h2>@ViewBag.n_prosp </h2>
                                         prospecções ativas
-
                                     </div>
                                 </center>
                             </div>
@@ -109,7 +114,6 @@
 
                                         <h2> 48 </h2>
                                         colaboradores
-
                                     </div>
                                 </center>
                             </div>
@@ -122,13 +126,10 @@
                                     <div class="card-text">
 
                                         <h2>@ViewBag.satisfacao.ToString("P1") </h2>
-
-
                                     </div>
                                 </center>
                             </div>
                         </div>
-
                     </div>
                 </div>
                 <div class="col-4 row">
@@ -137,7 +138,7 @@
                             <span class="text-uppercase">Sustentabilidade</span>
                             <hr />
                             <h3 class="font-weight-bolder">
-                                @sustentatiblidade.ToString("P2")
+                                @sustentabilidade.ToString("P2")
                             </h3>
 
                             <span class="font-weight-lighter">das despesas são cobertas por receita</span>

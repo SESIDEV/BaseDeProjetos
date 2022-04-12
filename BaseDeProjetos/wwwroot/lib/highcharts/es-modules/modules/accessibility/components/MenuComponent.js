@@ -198,11 +198,11 @@ extend(MenuComponent.prototype, /** @lends Highcharts.MenuComponent */ {
         if (exportingShouldHaveA11y(chart)) {
             // Proxy button and group
             this.exportProxyGroup = this.addProxyGroup(
-            // Wrap in a region div if verbosity is high
-            a11yOptions.landmarkVerbosity === 'all' ? {
-                'aria-label': chart.langFormat('accessibility.exporting.exportRegionLabel', { chart: chart }),
-                'role': 'region'
-            } : {});
+                // Wrap in a region div if verbosity is high
+                a11yOptions.landmarkVerbosity === 'all' ? {
+                    'aria-label': chart.langFormat('accessibility.exporting.exportRegionLabel', { chart: chart }),
+                    'role': 'region'
+                } : {});
             var button = getExportMenuButtonElement(this.chart);
             this.exportButtonProxy = this.createProxyButton(button, this.exportProxyGroup, {
                 'aria-label': chart.langFormat('accessibility.exporting.menuButtonLabel', { chart: chart }),
@@ -269,7 +269,7 @@ extend(MenuComponent.prototype, /** @lends Highcharts.MenuComponent */ {
                 return chart.exportChart &&
                     chart.options.exporting.enabled !== false &&
                     chart.options.exporting.accessibility.enabled !==
-                        false;
+                    false;
             },
             // Focus export menu button
             init: function () {

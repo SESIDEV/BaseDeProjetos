@@ -450,45 +450,45 @@ Timeline.prototype.rewind = function (onEnd) {
  * @return {void}
  */
 Timeline.prototype.playPaths = function (direction) {
-    var curPaths = splat(this.paths[this.cursor]), nextPaths = this.paths[this.cursor + direction], timeline = this, signalHandler = this.signalHandler, pathsEnded = 0, 
-    // Play a path
-    playPath = function (path) {
-        // Emit signal and set playing state
-        signalHandler.emitSignal('onPathStart', path);
-        timeline.pathsPlaying[path.id] = path;
-        // Do the play
-        path[direction > 0 ? 'play' : 'rewind'](function (callbackData) {
-            // Play ended callback
-            // Data to pass to signal callbacks
-            var cancelled = callbackData && callbackData.cancelled, signalData = {
-                path: path,
-                cancelled: cancelled
-            };
-            // Clear state and send signal
-            delete timeline.pathsPlaying[path.id];
-            signalHandler.emitSignal('onPathEnd', signalData);
-            // Handle next paths
-            pathsEnded++;
-            if (pathsEnded >= curPaths.length) {
-                // We finished all of the current paths for cursor.
-                if (nextPaths && !cancelled) {
-                    // We have more paths, move cursor along
-                    timeline.cursor += direction;
-                    // Reset upcoming path cursors before playing
-                    splat(nextPaths).forEach(function (nextPath) {
-                        nextPath[direction > 0 ? 'resetCursor' : 'resetCursorEnd']();
-                    });
-                    // Play next
-                    timeline.playPaths(direction);
+    var curPaths = splat(this.paths[this.cursor]), nextPaths = this.paths[this.cursor + direction], timeline = this, signalHandler = this.signalHandler, pathsEnded = 0,
+        // Play a path
+        playPath = function (path) {
+            // Emit signal and set playing state
+            signalHandler.emitSignal('onPathStart', path);
+            timeline.pathsPlaying[path.id] = path;
+            // Do the play
+            path[direction > 0 ? 'play' : 'rewind'](function (callbackData) {
+                // Play ended callback
+                // Data to pass to signal callbacks
+                var cancelled = callbackData && callbackData.cancelled, signalData = {
+                    path: path,
+                    cancelled: cancelled
+                };
+                // Clear state and send signal
+                delete timeline.pathsPlaying[path.id];
+                signalHandler.emitSignal('onPathEnd', signalData);
+                // Handle next paths
+                pathsEnded++;
+                if (pathsEnded >= curPaths.length) {
+                    // We finished all of the current paths for cursor.
+                    if (nextPaths && !cancelled) {
+                        // We have more paths, move cursor along
+                        timeline.cursor += direction;
+                        // Reset upcoming path cursors before playing
+                        splat(nextPaths).forEach(function (nextPath) {
+                            nextPath[direction > 0 ? 'resetCursor' : 'resetCursorEnd']();
+                        });
+                        // Play next
+                        timeline.playPaths(direction);
+                    }
+                    else {
+                        // If it is the last path in this direction, call onEnd
+                        signalHandler.emitSignal('playOnEnd', signalData);
+                        signalHandler.emitSignal('masterOnEnd', signalData);
+                    }
                 }
-                else {
-                    // If it is the last path in this direction, call onEnd
-                    signalHandler.emitSignal('playOnEnd', signalData);
-                    signalHandler.emitSignal('masterOnEnd', signalData);
-                }
-            }
-        });
-    };
+            });
+        };
     // Go through the paths under cursor and play them
     curPaths.forEach(function (path) {
         if (path) {

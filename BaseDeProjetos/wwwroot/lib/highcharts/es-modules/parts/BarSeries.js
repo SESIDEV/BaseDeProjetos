@@ -20,22 +20,22 @@ import './ColumnSeries.js';
  *
  * @augments Highcharts.Series
  */
-seriesType('bar', 'column', 
-/**
- * A bar series is a special type of column series where the columns are
- * horizontal.
- *
- * @sample highcharts/demo/bar-basic/
- *         Bar chart
- *
- * @extends   plotOptions.column
- * @product   highcharts
- * @apioption plotOptions.bar
- */
-/**
- * @ignore
- */
-null, {
+seriesType('bar', 'column',
+    /**
+     * A bar series is a special type of column series where the columns are
+     * horizontal.
+     *
+     * @sample highcharts/demo/bar-basic/
+     *         Bar chart
+     *
+     * @extends   plotOptions.column
+     * @product   highcharts
+     * @apioption plotOptions.bar
+     */
+    /**
+     * @ignore
+     */
+    null, {
     inverted: true
 });
 /**

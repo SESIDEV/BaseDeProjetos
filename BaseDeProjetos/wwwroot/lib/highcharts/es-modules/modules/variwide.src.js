@@ -23,37 +23,37 @@ var seriesTypes = H.seriesTypes;
  * @augments Highcharts.Series
  */
 seriesType('variwide', 'column'
-/**
- * A variwide chart (related to marimekko chart) is a column chart with a
- * variable width expressing a third dimension.
- *
- * @sample {highcharts} highcharts/demo/variwide/
- *         Variwide chart
- * @sample {highcharts} highcharts/series-variwide/inverted/
- *         Inverted variwide chart
- * @sample {highcharts} highcharts/series-variwide/datetime/
- *         Variwide columns on a datetime axis
- *
- * @extends      plotOptions.column
- * @since        6.0.0
- * @product      highcharts
- * @excluding    boostThreshold, crisp, depth, edgeColor, edgeWidth,
- *               groupZPadding
- * @requires     modules/variwide
- * @optionparent plotOptions.variwide
- */
-, {
     /**
-     * In a variwide chart, the point padding is 0 in order to express the
-     * horizontal stacking of items.
+     * A variwide chart (related to marimekko chart) is a column chart with a
+     * variable width expressing a third dimension.
+     *
+     * @sample {highcharts} highcharts/demo/variwide/
+     *         Variwide chart
+     * @sample {highcharts} highcharts/series-variwide/inverted/
+     *         Inverted variwide chart
+     * @sample {highcharts} highcharts/series-variwide/datetime/
+     *         Variwide columns on a datetime axis
+     *
+     * @extends      plotOptions.column
+     * @since        6.0.0
+     * @product      highcharts
+     * @excluding    boostThreshold, crisp, depth, edgeColor, edgeWidth,
+     *               groupZPadding
+     * @requires     modules/variwide
+     * @optionparent plotOptions.variwide
      */
-    pointPadding: 0,
-    /**
-     * In a variwide chart, the group padding is 0 in order to express the
-     * horizontal stacking of items.
-     */
-    groupPadding: 0
-}, {
+    , {
+        /**
+         * In a variwide chart, the point padding is 0 in order to express the
+         * horizontal stacking of items.
+         */
+        pointPadding: 0,
+        /**
+         * In a variwide chart, the group padding is 0 in order to express the
+         * horizontal stacking of items.
+         */
+        groupPadding: 0
+    }, {
     irregularWidths: true,
     pointArrayMap: ['y', 'z'],
     parallelArrays: ['x', 'y', 'z'],
@@ -64,9 +64,9 @@ seriesType('variwide', 'column'
         (this.xAxis.reversed ?
             this.zData.slice().reverse() :
             this.zData).forEach(function (z, i) {
-            this.relZ[i] = this.totalZ;
-            this.totalZ += z;
-        }, this);
+                this.relZ[i] = this.totalZ;
+                this.totalZ += z;
+            }, this);
         if (this.xAxis.categories) {
             this.xAxis.variwide = true;
             this.xAxis.zData = this.zData; // Used for label rank
@@ -101,7 +101,7 @@ seriesType('variwide', 'column'
         }
         ret = slotLeft +
             xInsideLinearSlot * (slotRight - slotLeft) /
-                (linearSlotRight - linearSlotLeft);
+            (linearSlotRight - linearSlotLeft);
         return ret;
     },
     /* eslint-enable valid-jsdoc */
@@ -141,12 +141,12 @@ seriesType('variwide', 'column'
             if (!inverted) {
                 point.tooltipPos[0] =
                     point.shapeArgs.x +
-                        point.shapeArgs.width / 2;
+                    point.shapeArgs.width / 2;
             }
             else {
                 point.tooltipPos[1] =
                     xAxis.len - point.shapeArgs.x -
-                        point.shapeArgs.width / 2;
+                    point.shapeArgs.width / 2;
             }
         }, this);
         if (this.options.stacking) {
@@ -204,13 +204,13 @@ addEvent(H.Axis, 'afterRender', function () {
         this.chart.labelCollectors.push(function () {
             return axis.tickPositions
                 .filter(function (pos) {
-                return axis.ticks[pos].label;
-            })
+                    return axis.ticks[pos].label;
+                })
                 .map(function (pos, i) {
-                var label = axis.ticks[pos].label;
-                label.labelrank = axis.zData[i];
-                return label;
-            });
+                    var label = axis.ticks[pos].label;
+                    label.labelrank = axis.zData[i];
+                    return label;
+                });
         });
     }
 });

@@ -18,9 +18,9 @@ import SVGRenderer from '../parts/SVGRenderer.js';
 import U from '../parts/Utilities.js';
 var animObject = U.animObject, defined = U.defined, extend = U.extend, merge = U.merge, objectEach = U.objectEach, pick = U.pick;
 var cos = Math.cos, PI = Math.PI, sin = Math.sin;
-var charts = H.charts, deg2rad = H.deg2rad, perspective = H.perspective, 
-// internal:
-dFactor, element3dMethods, cuboidMethods;
+var charts = H.charts, deg2rad = H.deg2rad, perspective = H.perspective,
+    // internal:
+    dFactor, element3dMethods, cuboidMethods;
 /*
     EXTENSION TO THE SVG-RENDERER TO ENABLE 3D SHAPES
 */
@@ -44,18 +44,18 @@ function curveTo(cx, cy, rx, ry, start, end, dx, dy) {
         return result;
     }
     return [[
-            'C',
-            cx + (rx * Math.cos(start)) -
-                ((rx * dFactor * arcAngle) * Math.sin(start)) + dx,
-            cy + (ry * Math.sin(start)) +
-                ((ry * dFactor * arcAngle) * Math.cos(start)) + dy,
-            cx + (rx * Math.cos(end)) +
-                ((rx * dFactor * arcAngle) * Math.sin(end)) + dx,
-            cy + (ry * Math.sin(end)) -
-                ((ry * dFactor * arcAngle) * Math.cos(end)) + dy,
-            cx + (rx * Math.cos(end)) + dx,
-            cy + (ry * Math.sin(end)) + dy
-        ]];
+        'C',
+        cx + (rx * Math.cos(start)) -
+        ((rx * dFactor * arcAngle) * Math.sin(start)) + dx,
+        cy + (ry * Math.sin(start)) +
+        ((ry * dFactor * arcAngle) * Math.cos(start)) + dy,
+        cx + (rx * Math.cos(end)) +
+        ((rx * dFactor * arcAngle) * Math.sin(end)) + dx,
+        cy + (ry * Math.sin(end)) -
+        ((ry * dFactor * arcAngle) * Math.cos(end)) + dy,
+        cx + (rx * Math.cos(end)) + dx,
+        cy + (ry * Math.sin(end)) + dy
+    ]];
 }
 SVGRenderer.prototype.toLinePath = function (points, closed) {
     var result = [];
@@ -334,19 +334,19 @@ SVGRenderer.prototype.cuboid = function (shapeArgs) {
 };
 // Generates a cuboid path and zIndexes
 SVGRenderer.prototype.cuboidPath = function (shapeArgs) {
-    var x = shapeArgs.x, y = shapeArgs.y, z = shapeArgs.z || 0, 
-    // For side calculation (right/left)
-    // there is a need for height (and other shapeArgs arguments)
-    // to be at least 1px
-    h = shapeArgs.height, w = shapeArgs.width, d = shapeArgs.depth, chart = charts[this.chartIndex], front, back, top, bottom, left, right, shape, path1, path2, path3, isFront, isTop, isRight, options3d = chart.options.chart.options3d, alpha = options3d.alpha, 
-    // Priority for x axis is the biggest,
-    // because of x direction has biggest influence on zIndex
-    incrementX = 1000000, 
-    // y axis has the smallest priority in case of our charts
-    // (needs to be set because of stacking)
-    incrementY = 10, incrementZ = 100, zIndex = 0, 
-    // The 8 corners of the cube
-    pArr = [{
+    var x = shapeArgs.x, y = shapeArgs.y, z = shapeArgs.z || 0,
+        // For side calculation (right/left)
+        // there is a need for height (and other shapeArgs arguments)
+        // to be at least 1px
+        h = shapeArgs.height, w = shapeArgs.width, d = shapeArgs.depth, chart = charts[this.chartIndex], front, back, top, bottom, left, right, shape, path1, path2, path3, isFront, isTop, isRight, options3d = chart.options.chart.options3d, alpha = options3d.alpha,
+        // Priority for x axis is the biggest,
+        // because of x direction has biggest influence on zIndex
+        incrementX = 1000000,
+        // y axis has the smallest priority in case of our charts
+        // (needs to be set because of stacking)
+        incrementY = 10, incrementZ = 100, zIndex = 0,
+        // The 8 corners of the cube
+        pArr = [{
             x: x,
             y: y,
             z: z
@@ -442,13 +442,13 @@ SVGRenderer.prototype.cuboidPath = function (shapeArgs) {
      * @private
      */
     pickShape = function (verticesIndex1, verticesIndex2, side) {
-        var ret = [[], -1], 
-        // An array of vertices for cuboid face
-        face1 = verticesIndex1.map(mapPath), face2 = verticesIndex2.map(mapPath), 
-        // dummy face is calculated the same way as standard face,
-        // but if cuboid height is 0 additional height is added so it is
-        // possible to use this vertices array for visible face calculation
-        dummyFace1 = verticesIndex1.map(mapSidePath), dummyFace2 = verticesIndex2.map(mapSidePath);
+        var ret = [[], -1],
+            // An array of vertices for cuboid face
+            face1 = verticesIndex1.map(mapPath), face2 = verticesIndex2.map(mapPath),
+            // dummy face is calculated the same way as standard face,
+            // but if cuboid height is 0 additional height is added so it is
+            // possible to use this vertices array for visible face calculation
+            dummyFace1 = verticesIndex1.map(mapSidePath), dummyFace2 = verticesIndex2.map(mapSidePath);
         if (H.shapeArea(face1) < 0) {
             ret = [face1, 0];
         }
@@ -564,8 +564,8 @@ SVGRenderer.prototype.arc3d = function (attribs) {
         ['out', 'inn', 'side1', 'side2'].forEach(function (face) {
             wrapper[face]
                 .attr({
-                'class': className + ' highcharts-3d-side'
-            })
+                    'class': className + ' highcharts-3d-side'
+                })
                 .add(parent);
         });
     };
@@ -712,25 +712,25 @@ SVGRenderer.prototype.arc3d = function (attribs) {
 // Generate the paths required to draw a 3D arc
 SVGRenderer.prototype.arc3dPath = function (shapeArgs) {
     var cx = shapeArgs.x, // x coordinate of the center
-    cy = shapeArgs.y, // y coordinate of the center
-    start = shapeArgs.start, // start angle
-    end = shapeArgs.end - 0.00001, // end angle
-    r = shapeArgs.r, // radius
-    ir = shapeArgs.innerR || 0, // inner radius
-    d = shapeArgs.depth || 0, // depth
-    alpha = shapeArgs.alpha, // alpha rotation of the chart
-    beta = shapeArgs.beta; // beta rotation of the chart
+        cy = shapeArgs.y, // y coordinate of the center
+        start = shapeArgs.start, // start angle
+        end = shapeArgs.end - 0.00001, // end angle
+        r = shapeArgs.r, // radius
+        ir = shapeArgs.innerR || 0, // inner radius
+        d = shapeArgs.depth || 0, // depth
+        alpha = shapeArgs.alpha, // alpha rotation of the chart
+        beta = shapeArgs.beta; // beta rotation of the chart
     // Derived Variables
     var cs = Math.cos(start), // cosinus of the start angle
-    ss = Math.sin(start), // sinus of the start angle
-    ce = Math.cos(end), // cosinus of the end angle
-    se = Math.sin(end), // sinus of the end angle
-    rx = r * Math.cos(beta), // x-radius
-    ry = r * Math.cos(alpha), // y-radius
-    irx = ir * Math.cos(beta), // x-radius (inner)
-    iry = ir * Math.cos(alpha), // y-radius (inner)
-    dx = d * Math.sin(beta), // distance between top and bottom in x
-    dy = d * Math.sin(alpha); // distance between top and bottom in y
+        ss = Math.sin(start), // sinus of the start angle
+        ce = Math.cos(end), // cosinus of the end angle
+        se = Math.sin(end), // sinus of the end angle
+        rx = r * Math.cos(beta), // x-radius
+        ry = r * Math.cos(alpha), // y-radius
+        irx = ir * Math.cos(beta), // x-radius (inner)
+        iry = ir * Math.cos(alpha), // y-radius (inner)
+        dx = d * Math.sin(beta), // distance between top and bottom in x
+        dy = d * Math.sin(alpha); // distance between top and bottom in y
     // TOP
     var top = [
         ['M', cx + (rx * cs), cy + (ry * ss)]

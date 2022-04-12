@@ -39,11 +39,11 @@ seriesProto.searchPointByAngle = function (e) {
  *        well allows short recurence
  */
 seriesProto.getConnectors = function (segment, index, calculateNeighbours, connectEnds) {
-    var i, prevPointInd, nextPointInd, previousPoint, nextPoint, previousX, previousY, nextX, nextY, plotX, plotY, ret, 
-    // 1 means control points midway between points, 2 means 1/3 from
-    // the point, 3 is 1/4 etc;
-    smoothing = 1.5, denom = smoothing + 1, leftContX, leftContY, rightContX, rightContY, dLControlPoint, // distance left control point
-    dRControlPoint, leftContAngle, rightContAngle, jointAngle, addedNumber = connectEnds ? 1 : 0;
+    var i, prevPointInd, nextPointInd, previousPoint, nextPoint, previousX, previousY, nextX, nextY, plotX, plotY, ret,
+        // 1 means control points midway between points, 2 means 1/3 from
+        // the point, 3 is 1/4 etc;
+        smoothing = 1.5, denom = smoothing + 1, leftContX, leftContY, rightContX, rightContY, dLControlPoint, // distance left control point
+        dRControlPoint, leftContAngle, rightContAngle, jointAngle, addedNumber = connectEnds ? 1 : 0;
     // Calculate final index of points depending on the initial index value.
     // Because of calculating neighbours, index may be outisde segment
     // array.
@@ -610,12 +610,12 @@ if (seriesTypes.column) {
                     // inside
                     labelPos =
                         this.yAxis.postTranslate(
-                        // angle
-                        (shapeArgs.start + shapeArgs.end) / 2 -
+                            // angle
+                            (shapeArgs.start + shapeArgs.end) / 2 -
                             this
-                                .xAxis.startAngleRad, 
-                        // radius
-                        point.barX +
+                                .xAxis.startAngleRad,
+                            // radius
+                            point.barX +
                             point.pointWidth / 2);
                     alignTo = {
                         x: labelPos.x - chart.plotLeft,
@@ -694,7 +694,7 @@ addEvent(Chart, 'getAxes', function () {
     }
     splat(this.options.pane).forEach(function (paneOptions) {
         new Pane(// eslint-disable-line no-new
-        paneOptions, this);
+            paneOptions, this);
     }, this);
 });
 addEvent(Chart, 'afterDrawChartBox', function () {

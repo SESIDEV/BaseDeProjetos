@@ -62,9 +62,9 @@
          */
         function findLastObstacleBefore(obstacles, xMin, startIx) {
             var left = startIx || 0, // left limit
-            right = obstacles.length - 1, // right limit
-            min = xMin - 0.0000001, // Make sure we include all obstacles at xMin
-            cursor, cmp;
+                right = obstacles.length - 1, // right limit
+                min = xMin - 0.0000001, // Make sure we include all obstacles at xMin
+                cursor, cmp;
             while (left <= right) {
                 cursor = (right + left) >> 1;
                 cmp = min - obstacles[cursor].xMin;
@@ -277,8 +277,8 @@
                     // If we are going back again, switch direction to get around start
                     // obstacle.
                     if (
-                    // Going towards max from start:
-                    waypoint[dir] >= start[dir] ===
+                        // Going towards max from start:
+                        waypoint[dir] >= start[dir] ===
                         // Going towards min to end:
                         waypoint[dir] >= endPoint[dir]) {
                         dir = dir === 'y' ? 'x' : 'y';
@@ -369,12 +369,12 @@
                           shortest route, rather pick the one closer to the end point
                 */
                 var dirIsX = pick(options.startDirectionX, abs(end.x - start.x) > abs(end.y - start.y)), dir = dirIsX ? 'x' : 'y', segments, useMax, extractedEndPoint, endSegments = [], forceObstacleBreak = false, // Used in clearPathTo to keep track of
-                // when to force break through an obstacle.
-                // Boundaries to stay within. If beyond soft boundary, prefer to
-                // change direction ASAP. If at hard max, always change immediately.
-                metrics = options.obstacleMetrics, softMinX = min(start.x, end.x) - metrics.maxWidth - 10, softMaxX = max(start.x, end.x) + metrics.maxWidth + 10, softMinY = min(start.y, end.y) - metrics.maxHeight - 10, softMaxY = max(start.y, end.y) + metrics.maxHeight + 10, 
-                // Obstacles
-                chartObstacles = options.chartObstacles, startObstacleIx = findLastObstacleBefore(chartObstacles, softMinX), endObstacleIx = findLastObstacleBefore(chartObstacles, softMaxX);
+                    // when to force break through an obstacle.
+                    // Boundaries to stay within. If beyond soft boundary, prefer to
+                    // change direction ASAP. If at hard max, always change immediately.
+                    metrics = options.obstacleMetrics, softMinX = min(start.x, end.x) - metrics.maxWidth - 10, softMaxX = max(start.x, end.x) + metrics.maxWidth + 10, softMinY = min(start.y, end.y) - metrics.maxHeight - 10, softMaxY = max(start.y, end.y) + metrics.maxHeight + 10,
+                    // Obstacles
+                    chartObstacles = options.chartObstacles, startObstacleIx = findLastObstacleBefore(chartObstacles, softMinX), endObstacleIx = findLastObstacleBefore(chartObstacles, softMaxX);
                 // eslint-disable-next-line valid-jsdoc
                 /**
                  * How far can you go between two points before hitting an obstacle?
@@ -469,17 +469,17 @@
                 function getDodgeDirection(obstacle, fromPoint, toPoint, dirIsX, bounds) {
                     var softBounds = bounds.soft, hardBounds = bounds.hard, dir = dirIsX ? 'x' : 'y', toPointMax = { x: fromPoint.x, y: fromPoint.y }, toPointMin = { x: fromPoint.x, y: fromPoint.y }, minPivot, maxPivot, maxOutOfSoftBounds = obstacle[dir + 'Max'] >=
                         softBounds[dir + 'Max'], minOutOfSoftBounds = obstacle[dir + 'Min'] <=
-                        softBounds[dir + 'Min'], maxOutOfHardBounds = obstacle[dir + 'Max'] >=
-                        hardBounds[dir + 'Max'], minOutOfHardBounds = obstacle[dir + 'Min'] <=
-                        hardBounds[dir + 'Min'], 
-                    // Find out if we should prefer one direction over the other if
-                    // we can choose freely
-                    minDistance = abs(obstacle[dir + 'Min'] - fromPoint[dir]), maxDistance = abs(obstacle[dir + 'Max'] - fromPoint[dir]), 
-                    // If it's a small difference, pick the one leading towards dest
-                    // point. Otherwise pick the shortest distance
-                    useMax = abs(minDistance - maxDistance) < 10 ?
-                        fromPoint[dir] < toPoint[dir] :
-                        maxDistance < minDistance;
+                            softBounds[dir + 'Min'], maxOutOfHardBounds = obstacle[dir + 'Max'] >=
+                                hardBounds[dir + 'Max'], minOutOfHardBounds = obstacle[dir + 'Min'] <=
+                                    hardBounds[dir + 'Min'],
+                        // Find out if we should prefer one direction over the other if
+                        // we can choose freely
+                        minDistance = abs(obstacle[dir + 'Min'] - fromPoint[dir]), maxDistance = abs(obstacle[dir + 'Max'] - fromPoint[dir]),
+                        // If it's a small difference, pick the one leading towards dest
+                        // point. Otherwise pick the shortest distance
+                        useMax = abs(minDistance - maxDistance) < 10 ?
+                            fromPoint[dir] < toPoint[dir] :
+                            maxDistance < minDistance;
                     // Check if we hit any obstacles trying to go around in either
                     // direction.
                     toPointMin[dir] = obstacle[dir + 'Min'];
@@ -574,9 +574,9 @@
                             }
                         }
                         segments = [{
-                                start: fromPoint,
-                                end: envelopWaypoint
-                            }];
+                            start: fromPoint,
+                            end: envelopWaypoint
+                        }];
                     }
                     else { // If not enveloping, use standard pivot calculation
                         pivot = pivotPoint(fromPoint, {
@@ -584,12 +584,12 @@
                             y: dirIsX ? fromPoint.y : toPoint.y
                         }, dirIsX);
                         segments = [{
-                                start: fromPoint,
-                                end: {
-                                    x: pivot.x,
-                                    y: pivot.y
-                                }
-                            }];
+                            start: fromPoint,
+                            end: {
+                                x: pivot.x,
+                                y: pivot.y
+                            }
+                        }];
                         // Pivot before goal, use a waypoint to dodge obstacle
                         if (pivot[dirIsX ? 'x' : 'y'] !== toPoint[dirIsX ? 'x' : 'y']) {
                             // Find direction of waypoint
@@ -600,10 +600,10 @@
                                 x: dirIsX ?
                                     pivot.x :
                                     pivot.obstacle[waypointUseMax ? 'xMax' : 'xMin'] +
-                                        (waypointUseMax ? 1 : -1),
+                                    (waypointUseMax ? 1 : -1),
                                 y: dirIsX ?
                                     pivot.obstacle[waypointUseMax ? 'yMax' : 'yMin'] +
-                                        (waypointUseMax ? 1 : -1) :
+                                    (waypointUseMax ? 1 : -1) :
                                     pivot.y
                             };
                             // We're changing direction here, store that to make sure we
@@ -630,9 +630,9 @@
                 function extractFromObstacle(obstacle, point, goalPoint) {
                     var dirIsX = min(obstacle.xMax - point.x, point.x - obstacle.xMin) <
                         min(obstacle.yMax - point.y, point.y - obstacle.yMin), bounds = {
-                        soft: options.hardBounds,
-                        hard: options.hardBounds
-                    }, useMax = getDodgeDirection(obstacle, point, goalPoint, dirIsX, bounds);
+                            soft: options.hardBounds,
+                            hard: options.hardBounds
+                        }, useMax = getDodgeDirection(obstacle, point, goalPoint, dirIsX, bounds);
                     return dirIsX ? {
                         y: point.y,
                         x: obstacle[useMax ? 'xMax' : 'xMin'] + (useMax ? 1 : -1)
@@ -876,7 +876,6 @@
          *         Path array
          */
         SVGRenderer.prototype.symbols['arrow-filled-half'] = SVGRenderer.prototype.symbols['triangle-left-half'];
-
     });
     _registerModule(_modules, 'parts-gantt/Pathfinder.js', [_modules['parts/Chart.js'], _modules['parts/Globals.js'], _modules['parts/Options.js'], _modules['parts/Point.js'], _modules['parts/Utilities.js'], _modules['parts-gantt/PathfinderAlgorithms.js']], function (Chart, H, O, Point, U, pathfinderAlgorithms) {
         /* *
@@ -1213,22 +1212,22 @@
          *         The calculated margin in pixels. At least 1.
          */
         function calculateObstacleMargin(obstacles) {
-            var len = obstacles.length, i = 0, j, obstacleDistance, distances = [], 
-            // Compute smallest distance between two rectangles
-            distance = function (a, b, bbMargin) {
-                // Count the distance even if we are slightly off
-                var margin = pick(bbMargin, 10), yOverlap = a.yMax + margin > b.yMin - margin &&
-                    a.yMin - margin < b.yMax + margin, xOverlap = a.xMax + margin > b.xMin - margin &&
-                    a.xMin - margin < b.xMax + margin, xDistance = yOverlap ? (a.xMin > b.xMax ? a.xMin - b.xMax : b.xMin - a.xMax) : Infinity, yDistance = xOverlap ? (a.yMin > b.yMax ? a.yMin - b.yMax : b.yMin - a.yMax) : Infinity;
-                // If the rectangles collide, try recomputing with smaller margin.
-                // If they collide anyway, discard the obstacle.
-                if (xOverlap && yOverlap) {
-                    return (margin ?
-                        distance(a, b, Math.floor(margin / 2)) :
-                        Infinity);
-                }
-                return min(xDistance, yDistance);
-            };
+            var len = obstacles.length, i = 0, j, obstacleDistance, distances = [],
+                // Compute smallest distance between two rectangles
+                distance = function (a, b, bbMargin) {
+                    // Count the distance even if we are slightly off
+                    var margin = pick(bbMargin, 10), yOverlap = a.yMax + margin > b.yMin - margin &&
+                        a.yMin - margin < b.yMax + margin, xOverlap = a.xMax + margin > b.xMin - margin &&
+                            a.xMin - margin < b.xMax + margin, xDistance = yOverlap ? (a.xMin > b.xMax ? a.xMin - b.xMax : b.xMin - a.xMax) : Infinity, yDistance = xOverlap ? (a.yMin > b.yMax ? a.yMin - b.yMax : b.yMin - a.yMax) : Infinity;
+                    // If the rectangles collide, try recomputing with smaller margin.
+                    // If they collide anyway, discard the obstacle.
+                    if (xOverlap && yOverlap) {
+                        return (margin ?
+                            distance(a, b, Math.floor(margin / 2)) :
+                            Infinity);
+                    }
+                    return min(xDistance, yDistance);
+                };
             // Go over all obstacles and compare them to the others.
             for (; i < len; ++i) {
                 // Compare to all obstacles ahead. We will already have compared this
@@ -1246,9 +1245,9 @@
             return max(Math.floor(distances.sort(function (a, b) {
                 return (a - b);
             })[
-            // Discard first 10% of the relevant distances, and then grab
-            // the smallest one.
-            Math.floor(distances.length / 10)] / 2 - 1 // Divide the distance by 2 and subtract 1.
+                // Discard first 10% of the relevant distances, and then grab
+                // the smallest one.
+                Math.floor(distances.length / 10)] / 2 - 1 // Divide the distance by 2 and subtract 1.
             ), 1 // 1 is the minimum margin
             );
         }
@@ -1424,8 +1423,8 @@
                                 opacity: 0
                             })
                                 .animate({
-                                opacity: 1
-                            }, point.series.options.animation);
+                                    opacity: 1
+                                }, point.series.options.animation);
                         }
                     }
                     else {
@@ -1455,7 +1454,7 @@
                 if (algorithm.requiresObstacles && !chartObstacles) {
                     chartObstacles =
                         pathfinder.chartObstacles =
-                            pathfinder.getChartObstacles(options);
+                        pathfinder.getChartObstacles(options);
                     // If the algorithmMargin was computed, store the result in default
                     // options.
                     chart.options.connectors.algorithmMargin =
@@ -1466,24 +1465,24 @@
                 }
                 // Get the SVG path
                 return algorithm(
-                // From
-                this.fromPoint.getPathfinderAnchorPoint(options.startMarker), 
-                // To
-                this.toPoint.getPathfinderAnchorPoint(options.endMarker), merge({
-                    chartObstacles: chartObstacles,
-                    lineObstacles: pathfinder.lineObstacles || [],
-                    obstacleMetrics: pathfinder.chartObstacleMetrics,
-                    hardBounds: {
-                        xMin: 0,
-                        xMax: chart.plotWidth,
-                        yMin: 0,
-                        yMax: chart.plotHeight
-                    },
-                    obstacleOptions: {
-                        margin: options.algorithmMargin
-                    },
-                    startDirectionX: pathfinder.getAlgorithmStartDirection(options.startMarker)
-                }, options));
+                    // From
+                    this.fromPoint.getPathfinderAnchorPoint(options.startMarker),
+                    // To
+                    this.toPoint.getPathfinderAnchorPoint(options.endMarker), merge({
+                        chartObstacles: chartObstacles,
+                        lineObstacles: pathfinder.lineObstacles || [],
+                        obstacleMetrics: pathfinder.chartObstacleMetrics,
+                        hardBounds: {
+                            xMin: 0,
+                            xMax: chart.plotWidth,
+                            yMin: 0,
+                            yMax: chart.plotHeight
+                        },
+                        obstacleOptions: {
+                            margin: options.algorithmMargin
+                        },
+                        startDirectionX: pathfinder.getAlgorithmStartDirection(options.startMarker)
+                    }, options));
             },
             /**
              * (re)Calculate and (re)draw the connection.
@@ -1502,7 +1501,7 @@
                 }
                 attribs['class'] = // eslint-disable-line dot-notation
                     'highcharts-point-connecting-path ' +
-                        'highcharts-color-' + fromPoint.colorIndex;
+                    'highcharts-color-' + fromPoint.colorIndex;
                 options = merge(attribs, options);
                 // Set common marker options
                 if (!defined(options.marker.radius)) {
@@ -1605,7 +1604,7 @@
                                         to.isInside !== false) {
                                         // Add new connection
                                         pathfinder.connections.push(new Connection(point, // from
-                                        to, typeof connect === 'string' ?
+                                            to, typeof connect === 'string' ?
                                             {} :
                                             connect));
                                     }
@@ -1622,7 +1621,7 @@
                         if (oldConnections[j].fromPoint ===
                             pathfinder.connections[k].fromPoint &&
                             oldConnections[j].toPoint ===
-                                pathfinder.connections[k].toPoint) {
+                            pathfinder.connections[k].toPoint) {
                             pathfinder.connections[k].graphics =
                                 oldConnections[j].graphics;
                             found = true;
@@ -1726,7 +1725,7 @@
                 if (!defined(options.algorithmMargin)) {
                     calculatedMargin =
                         options.algorithmMargin =
-                            calculateObstacleMargin(obstacles);
+                        calculateObstacleMargin(obstacles);
                     obstacles.forEach(function (obstacle) {
                         obstacle.xMin -= calculatedMargin;
                         obstacle.xMax += calculatedMargin;
@@ -1782,7 +1781,7 @@
             getAlgorithmStartDirection: function (markerOptions) {
                 var xCenter = markerOptions.align !== 'left' &&
                     markerOptions.align !== 'right', yCenter = markerOptions.verticalAlign !== 'top' &&
-                    markerOptions.verticalAlign !== 'bottom', undef;
+                        markerOptions.verticalAlign !== 'bottom', undef;
                 return xCenter ?
                     (yCenter ? undef : false) : // x is centered
                     (yCenter ? true : undef); // x is off-center
@@ -1954,10 +1953,7 @@
                 this.pathfinder.update(true); // First draw, defer render
             }
         });
-
     });
     _registerModule(_modules, 'masters/modules/pathfinder.src.js', [], function () {
-
-
     });
 }));

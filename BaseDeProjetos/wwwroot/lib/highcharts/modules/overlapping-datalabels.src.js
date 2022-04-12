@@ -27,7 +27,5 @@
         }
     }
     _registerModule(_modules, 'masters/modules/overlapping-datalabels.src.js', [], function () {
-
-
     });
 }));

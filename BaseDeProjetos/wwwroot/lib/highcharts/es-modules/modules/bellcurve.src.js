@@ -57,67 +57,67 @@ function normalDensity(x, mean, standardDeviation) {
  * @augments Highcharts.Series
  */
 seriesType('bellcurve', 'areaspline'
-/**
- * A bell curve is an areaspline series which represents the probability
- * density function of the normal distribution. It calculates mean and
- * standard deviation of the base series data and plots the curve according
- * to the calculated parameters.
- *
- * @sample {highcharts} highcharts/demo/bellcurve/
- *         Bell curve
- *
- * @extends      plotOptions.areaspline
- * @since        6.0.0
- * @product      highcharts
- * @excluding    boostThreshold, connectNulls, dragDrop, stacking,
- *               pointInterval, pointIntervalUnit
- * @requires     modules/bellcurve
- * @optionparent plotOptions.bellcurve
- */
-, {
     /**
-     * This option allows to define the length of the bell curve. A unit of
-     * the length of the bell curve is standard deviation.
+     * A bell curve is an areaspline series which represents the probability
+     * density function of the normal distribution. It calculates mean and
+     * standard deviation of the base series data and plots the curve according
+     * to the calculated parameters.
      *
-     * @sample highcharts/plotoptions/bellcurve-intervals-pointsininterval
-     *         Intervals and points in interval
-     */
-    intervals: 3,
-    /**
-     * Defines how many points should be plotted within 1 interval. See
-     * `plotOptions.bellcurve.intervals`.
+     * @sample {highcharts} highcharts/demo/bellcurve/
+     *         Bell curve
      *
-     * @sample highcharts/plotoptions/bellcurve-intervals-pointsininterval
-     *         Intervals and points in interval
+     * @extends      plotOptions.areaspline
+     * @since        6.0.0
+     * @product      highcharts
+     * @excluding    boostThreshold, connectNulls, dragDrop, stacking,
+     *               pointInterval, pointIntervalUnit
+     * @requires     modules/bellcurve
+     * @optionparent plotOptions.bellcurve
      */
-    pointsInInterval: 3,
-    marker: {
-        enabled: false
-    }
-}, merge(derivedSeriesMixin, {
-    setMean: function () {
-        this.mean = correctFloat(mean(this.baseSeries.yData));
-    },
-    setStandardDeviation: function () {
-        this.standardDeviation = correctFloat(standardDeviation(this.baseSeries.yData, this.mean));
-    },
-    setDerivedData: function () {
-        if (this.baseSeries.yData.length > 1) {
-            this.setMean();
-            this.setStandardDeviation();
-            this.setData(this.derivedData(this.mean, this.standardDeviation), false);
+    , {
+        /**
+         * This option allows to define the length of the bell curve. A unit of
+         * the length of the bell curve is standard deviation.
+         *
+         * @sample highcharts/plotoptions/bellcurve-intervals-pointsininterval
+         *         Intervals and points in interval
+         */
+        intervals: 3,
+        /**
+         * Defines how many points should be plotted within 1 interval. See
+         * `plotOptions.bellcurve.intervals`.
+         *
+         * @sample highcharts/plotoptions/bellcurve-intervals-pointsininterval
+         *         Intervals and points in interval
+         */
+        pointsInInterval: 3,
+        marker: {
+            enabled: false
         }
-        return (void 0);
-    },
-    derivedData: function (mean, standardDeviation) {
-        var intervals = this.options.intervals, pointsInInterval = this.options.pointsInInterval, x = mean - intervals * standardDeviation, stop = intervals * pointsInInterval * 2 + 1, increment = standardDeviation / pointsInInterval, data = [], i;
-        for (i = 0; i < stop; i++) {
-            data.push([x, normalDensity(x, mean, standardDeviation)]);
-            x += increment;
+    }, merge(derivedSeriesMixin, {
+        setMean: function () {
+            this.mean = correctFloat(mean(this.baseSeries.yData));
+        },
+        setStandardDeviation: function () {
+            this.standardDeviation = correctFloat(standardDeviation(this.baseSeries.yData, this.mean));
+        },
+        setDerivedData: function () {
+            if (this.baseSeries.yData.length > 1) {
+                this.setMean();
+                this.setStandardDeviation();
+                this.setData(this.derivedData(this.mean, this.standardDeviation), false);
+            }
+            return (void 0);
+        },
+        derivedData: function (mean, standardDeviation) {
+            var intervals = this.options.intervals, pointsInInterval = this.options.pointsInInterval, x = mean - intervals * standardDeviation, stop = intervals * pointsInInterval * 2 + 1, increment = standardDeviation / pointsInInterval, data = [], i;
+            for (i = 0; i < stop; i++) {
+                data.push([x, normalDensity(x, mean, standardDeviation)]);
+                x += increment;
+            }
+            return data;
         }
-        return data;
-    }
-}));
+    }));
 /**
  * A `bellcurve` series. If the [type](#series.bellcurve.type) option is not
  * specified, it is inherited from [chart.type](#chart.type).

@@ -90,10 +90,10 @@ var LogarithmicAxisAdditions = /** @class */ (function () {
             var realMin = log.lin2log(min), realMax = log.lin2log(max), tickIntervalOption = minor ?
                 axis.getMinorTickInterval() :
                 options.tickInterval, filteredTickIntervalOption = tickIntervalOption === 'auto' ?
-                null :
-                tickIntervalOption, tickPixelIntervalOption = options.tickPixelInterval / (minor ? 5 : 1), totalPixelLength = minor ?
-                axisLength / axis.tickPositions.length :
-                axisLength;
+                    null :
+                    tickIntervalOption, tickPixelIntervalOption = options.tickPixelInterval / (minor ? 5 : 1), totalPixelLength = minor ?
+                        axisLength / axis.tickPositions.length :
+                        axisLength;
             interval = pick(filteredTickIntervalOption, log.minorAutoInterval, (realMax - realMin) *
                 tickPixelIntervalOption / (totalPixelLength || 1));
             interval = normalizeTickInterval(interval, void 0, getMagnitude(interval));

@@ -164,62 +164,62 @@ function GLShader(gl) {
         // 'gl_Position = uPMatrix * vec4(aVertexPosition.x, aVertexPosition.y, 0.0, 1.0);',
         '}'
         /* eslint-enable max-len, @typescript-eslint/indent */
-    ].join('\n'), 
-    // Fragment shader source
-    fragShade = [
-        /* eslint-disable max-len, @typescript-eslint/indent */
-        'precision highp float;',
-        'uniform vec4 fillColor;',
-        'varying highp vec2 position;',
-        'varying highp vec4 vColor;',
-        'uniform sampler2D uSampler;',
-        'uniform bool isCircle;',
-        'uniform bool hasColor;',
-        // 'vec4 toColor(float value, vec2 point) {',
-        //     'return vec4(0.0, 0.0, 0.0, 0.0);',
-        // '}',
-        'void main(void) {',
-        'vec4 col = fillColor;',
-        'vec4 tcol;',
-        'if (hasColor) {',
-        'col = vColor;',
-        '}',
-        'if (isCircle) {',
-        'tcol = texture2D(uSampler, gl_PointCoord.st);',
-        'col *= tcol;',
-        'if (tcol.r < 0.0) {',
-        'discard;',
-        '} else {',
-        'gl_FragColor = col;',
-        '}',
-        '} else {',
-        'gl_FragColor = col;',
-        '}',
-        '}'
-        /* eslint-enable max-len, @typescript-eslint/indent */
-    ].join('\n'), uLocations = {}, 
-    // The shader program
-    shaderProgram, 
-    // Uniform handle to the perspective matrix
-    pUniform, 
-    // Uniform for point size
-    psUniform, 
-    // Uniform for fill color
-    fillColorUniform, 
-    // Uniform for isBubble
-    isBubbleUniform, 
-    // Uniform for bubble abs sizing
-    bubbleSizeAbsUniform, bubbleSizeAreaUniform, 
-    // Skip translation uniform
-    skipTranslationUniform, 
-    // Set to 1 if circle
-    isCircleUniform, 
-    // Uniform for invertion
-    isInverted, 
-    // Error stack
-    errors = [], 
-    // Texture uniform
-    uSamplerUniform;
+    ].join('\n'),
+        // Fragment shader source
+        fragShade = [
+            /* eslint-disable max-len, @typescript-eslint/indent */
+            'precision highp float;',
+            'uniform vec4 fillColor;',
+            'varying highp vec2 position;',
+            'varying highp vec4 vColor;',
+            'uniform sampler2D uSampler;',
+            'uniform bool isCircle;',
+            'uniform bool hasColor;',
+            // 'vec4 toColor(float value, vec2 point) {',
+            //     'return vec4(0.0, 0.0, 0.0, 0.0);',
+            // '}',
+            'void main(void) {',
+            'vec4 col = fillColor;',
+            'vec4 tcol;',
+            'if (hasColor) {',
+            'col = vColor;',
+            '}',
+            'if (isCircle) {',
+            'tcol = texture2D(uSampler, gl_PointCoord.st);',
+            'col *= tcol;',
+            'if (tcol.r < 0.0) {',
+            'discard;',
+            '} else {',
+            'gl_FragColor = col;',
+            '}',
+            '} else {',
+            'gl_FragColor = col;',
+            '}',
+            '}'
+            /* eslint-enable max-len, @typescript-eslint/indent */
+        ].join('\n'), uLocations = {},
+        // The shader program
+        shaderProgram,
+        // Uniform handle to the perspective matrix
+        pUniform,
+        // Uniform for point size
+        psUniform,
+        // Uniform for fill color
+        fillColorUniform,
+        // Uniform for isBubble
+        isBubbleUniform,
+        // Uniform for bubble abs sizing
+        bubbleSizeAbsUniform, bubbleSizeAreaUniform,
+        // Skip translation uniform
+        skipTranslationUniform,
+        // Set to 1 if circle
+        isCircleUniform,
+        // Uniform for invertion
+        isInverted,
+        // Error stack
+        errors = [],
+        // Texture uniform
+        uSamplerUniform;
     /**
      * Handle errors accumulated in errors stack
      * @private

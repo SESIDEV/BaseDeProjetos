@@ -30,10 +30,10 @@ var nelderMead = function nelderMead(fn, initial) {
     var maxIterations = 100, sortByFx = function (a, b) {
         return a.fx - b.fx;
     }, pRef = 1, // Reflection parameter
-    pExp = 2, // Expansion parameter
-    pCon = -0.5, // Contraction parameter
-    pOCon = pCon * pRef, // Outwards contraction parameter
-    pShrink = 0.5; // Shrink parameter
+        pExp = 2, // Expansion parameter
+        pCon = -0.5, // Contraction parameter
+        pOCon = pCon * pRef, // Outwards contraction parameter
+        pShrink = 0.5; // Shrink parameter
     /**
      * @private
      */

@@ -183,10 +183,7 @@
         * @apioption series.line.data.y
         */
         ''; // adds doclets above to transpiled file
-
     });
     _registerModule(_modules, 'masters/modules/lollipop.src.js', [], function () {
-
-
     });
 }));

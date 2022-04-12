@@ -27,10 +27,10 @@ $tooltip-background: $neutral-color-100;
 // Buttons
 $highcharts-button-background: $neutral-color-100;
 $highcharts-button-border: #C0C0C8;
-$highcharts-button-text:  #000;
+$highcharts-button-text: #000;
 
 $highcharts-button-pressed-background: #D0D0D8;
-$highcharts-button-pressed-text:  #000;
+$highcharts-button-pressed-text: #000;
 
 $context-button-background: $neutral-color-100;
 
@@ -43,32 +43,32 @@ $scrollbar-track-border: #C0C0C8;
 
 // General
 .highcharts-container {
-  background: url(https://www.highcharts.com/samples/graphics/sand.png);
+    background: url(https://www.highcharts.com/samples/graphics/sand.png);
 }
 
 // Boxplot
 .highcharts-boxplot-box {
-   fill: #505053;
+    fill: #505053;
 }
 
 // Navigator
 .highcharts-navigator-xaxis .highcharts-grid-line {
-  stroke: #D0D0D8;
+    stroke: #D0D0D8;
 }
 
 // Scrollbar
 .highcharts-scrollbar-track {
-  stroke: #C0C0C8;
+    stroke: #C0C0C8;
 }
 
 // Title
 .highcharts-title {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 // Buttons
 .highcharts-button-box {
-	stroke-width: 1px;
+    stroke-width: 1px;
 }
 
 @import '../highcharts';

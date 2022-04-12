@@ -68,12 +68,12 @@ function addDummyPointElement(point) {
     var series = point.series, firstPointWithGraphic = findFirstPointWithGraphic(point), firstGraphic = firstPointWithGraphic && firstPointWithGraphic.graphic, parentGroup = firstGraphic ?
         firstGraphic.parentGroup :
         series.graph || series.group, dummyPos = firstPointWithGraphic ? {
-        x: pick(point.plotX, firstPointWithGraphic.plotX, 0),
-        y: pick(point.plotY, firstPointWithGraphic.plotY, 0)
-    } : {
-        x: pick(point.plotX, 0),
-        y: pick(point.plotY, 0)
-    }, dummyElement = makeDummyElement(point, dummyPos);
+            x: pick(point.plotX, firstPointWithGraphic.plotX, 0),
+            y: pick(point.plotY, firstPointWithGraphic.plotY, 0)
+        } : {
+            x: pick(point.plotX, 0),
+            y: pick(point.plotY, 0)
+        }, dummyElement = makeDummyElement(point, dummyPos);
     if (parentGroup && parentGroup.element) {
         point.graphic = dummyElement;
         point.hasDummyGraphic = true;
@@ -222,9 +222,9 @@ function getPointArrayMapValueDescription(point, prefix, suffix) {
 function getPointValue(point) {
     var series = point.series, a11yPointOpts = series.chart.options.accessibility.point || {}, tooltipOptions = series.tooltipOptions || {}, valuePrefix = a11yPointOpts.valuePrefix ||
         tooltipOptions.valuePrefix || '', valueSuffix = a11yPointOpts.valueSuffix ||
-        tooltipOptions.valueSuffix || '', fallbackKey = (typeof point.value !==
-        'undefined' ?
-        'value' : 'y'), fallbackDesc = pointNumberToString(point, point[fallbackKey]);
+            tooltipOptions.valueSuffix || '', fallbackKey = (typeof point.value !==
+                'undefined' ?
+                'value' : 'y'), fallbackDesc = pointNumberToString(point, point[fallbackKey]);
     if (point.isNull) {
         return series.chart.langFormat('accessibility.series.nullPointValue', {
             point: point
@@ -258,14 +258,14 @@ function getPointAnnotationDescription(point) {
 function getPointValueDescription(point) {
     var series = point.series, chart = series.chart, pointValueDescriptionFormat = chart.options.accessibility
         .point.valueDescriptionFormat, showXDescription = pick(series.xAxis &&
-        series.xAxis.options.accessibility &&
-        series.xAxis.options.accessibility.enabled, !chart.angular), xDesc = showXDescription ? getPointXDescription(point) : '', context = {
-        point: point,
-        index: defined(point.index) ? (point.index + 1) : '',
-        xDescription: xDesc,
-        value: getPointValue(point),
-        separator: showXDescription ? ', ' : ''
-    };
+            series.xAxis.options.accessibility &&
+            series.xAxis.options.accessibility.enabled, !chart.angular), xDesc = showXDescription ? getPointXDescription(point) : '', context = {
+                point: point,
+                index: defined(point.index) ? (point.index + 1) : '',
+                xDescription: xDesc,
+                value: getPointValue(point),
+                separator: showXDescription ? ', ' : ''
+            };
     return format(pointValueDescriptionFormat, context, chart);
 }
 /**
@@ -276,7 +276,7 @@ function getPointValueDescription(point) {
 function defaultPointDescriptionFormatter(point) {
     var series = point.series, chart = series.chart, valText = getPointValueDescription(point), description = point.options && point.options.accessibility &&
         point.options.accessibility.description, userDescText = description ? ' ' + description : '', seriesNameText = chart.series.length > 1 && series.name ?
-        ' ' + series.name + '.' : '', annotationsDesc = getPointAnnotationDescription(point), pointAnnotationsText = annotationsDesc ? ' ' + annotationsDesc : '';
+            ' ' + series.name + '.' : '', annotationsDesc = getPointAnnotationDescription(point), pointAnnotationsText = annotationsDesc ? ' ' + annotationsDesc : '';
     point.accessibility = point.accessibility || {};
     point.accessibility.valueDescription = valText;
     return valText + userDescText + seriesNameText + pointAnnotationsText;
@@ -291,7 +291,7 @@ function setPointScreenReaderAttribs(point, pointElement) {
     var series = point.series, a11yPointOptions = series.chart.options.accessibility.point || {}, seriesA11yOptions = series.options.accessibility || {}, label = escapeStringForHTML(stripHTMLTags(seriesA11yOptions.pointDescriptionFormatter &&
         seriesA11yOptions.pointDescriptionFormatter(point) ||
         a11yPointOptions.descriptionFormatter &&
-            a11yPointOptions.descriptionFormatter(point) ||
+        a11yPointOptions.descriptionFormatter(point) ||
         defaultPointDescriptionFormatter(point)));
     pointElement.setAttribute('role', 'img');
     pointElement.setAttribute('aria-label', label);

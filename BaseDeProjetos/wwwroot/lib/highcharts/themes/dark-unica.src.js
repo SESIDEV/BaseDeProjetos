@@ -241,10 +241,7 @@
         };
         // Apply the theme
         setOptions(Highcharts.theme);
-
     });
     _registerModule(_modules, 'masters/themes/dark-unica.src.js', [], function () {
-
-
     });
 }));

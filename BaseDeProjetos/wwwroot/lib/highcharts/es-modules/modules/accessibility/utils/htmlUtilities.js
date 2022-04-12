@@ -70,14 +70,14 @@ function getFakeMouseEvent(type) {
         var evt = doc.createEvent('MouseEvent');
         if (evt.initMouseEvent) {
             evt.initMouseEvent(type, true, // Bubble
-            true, // Cancel
-            win, // View
-            type === 'click' ? 1 : 0, // Detail
-            // Coords
-            0, 0, 0, 0, 
-            // Pressed keys
-            false, false, false, false, 0, // button
-            null // related target
+                true, // Cancel
+                win, // View
+                type === 'click' ? 1 : 0, // Detail
+                // Coords
+                0, 0, 0, 0,
+                // Pressed keys
+                false, false, false, false, 0, // button
+                null // related target
             );
             return evt;
         }

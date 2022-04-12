@@ -288,10 +288,7 @@
         };
         // Apply the theme
         setOptions(Highcharts.theme);
-
     });
     _registerModule(_modules, 'masters/themes/gray.src.js', [], function () {
-
-
     });
 }));

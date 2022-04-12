@@ -77,95 +77,95 @@ var CrookedLine = /** @class */ (function (_super) {
     };
     return CrookedLine;
 }(Annotation));
-CrookedLine.prototype.defaultOptions = merge(Annotation.prototype.defaultOptions, 
-/**
- * A crooked line annotation.
- *
- * @sample highcharts/annotations-advanced/crooked-line/
- *         Crooked line
- *
- * @product      highstock
- * @optionparent annotations.crookedLine
- */
-{
+CrookedLine.prototype.defaultOptions = merge(Annotation.prototype.defaultOptions,
     /**
-     * @extends   annotations.labelOptions
-     * @apioption annotations.crookedLine.labelOptions
+     * A crooked line annotation.
+     *
+     * @sample highcharts/annotations-advanced/crooked-line/
+     *         Crooked line
+     *
+     * @product      highstock
+     * @optionparent annotations.crookedLine
      */
-    /**
-     * @extends   annotations.shapeOptions
-     * @apioption annotations.crookedLine.shapeOptions
-     */
-    /**
-     * Additional options for an annotation with the type.
-     */
-    typeOptions: {
+    {
         /**
-         * This number defines which xAxis the point is connected to.
-         * It refers to either the axis id or the index of the axis
-         * in the xAxis array.
-         */
-        xAxis: 0,
-        /**
-         * This number defines which yAxis the point is connected to.
-         * It refers to either the axis id or the index of the axis
-         * in the xAxis array.
-         */
-        yAxis: 0,
-        /**
-         * @type      {Array<*>}
-         * @apioption annotations.crookedLine.typeOptions.points
+         * @extends   annotations.labelOptions
+         * @apioption annotations.crookedLine.labelOptions
          */
         /**
-         * The x position of the point.
-         *
-         * @type      {number}
-         * @apioption annotations.crookedLine.typeOptions.points.x
+         * @extends   annotations.shapeOptions
+         * @apioption annotations.crookedLine.shapeOptions
          */
         /**
-         * The y position of the point.
-         *
-         * @type      {number}
-         * @apioption annotations.crookedLine.typeOptions.points.y
+         * Additional options for an annotation with the type.
          */
-        /**
-         * @type      {number}
-         * @excluding positioner, events
-         * @apioption annotations.crookedLine.typeOptions.points.controlPoint
-         */
-        /**
-         * Line options.
-         *
-         * @excluding height, point, points, r, type, width
-         */
-        line: {
-            fill: 'none'
-        }
-    },
-    /**
-     * @excluding positioner, events
-     */
-    controlPointOptions: {
-        positioner: function (target) {
-            var graphic = this.graphic, xy = MockPoint.pointToPixels(target.points[this.index]);
-            return {
-                x: xy.x - graphic.width / 2,
-                y: xy.y - graphic.height / 2
-            };
+        typeOptions: {
+            /**
+             * This number defines which xAxis the point is connected to.
+             * It refers to either the axis id or the index of the axis
+             * in the xAxis array.
+             */
+            xAxis: 0,
+            /**
+             * This number defines which yAxis the point is connected to.
+             * It refers to either the axis id or the index of the axis
+             * in the xAxis array.
+             */
+            yAxis: 0,
+            /**
+             * @type      {Array<*>}
+             * @apioption annotations.crookedLine.typeOptions.points
+             */
+            /**
+             * The x position of the point.
+             *
+             * @type      {number}
+             * @apioption annotations.crookedLine.typeOptions.points.x
+             */
+            /**
+             * The y position of the point.
+             *
+             * @type      {number}
+             * @apioption annotations.crookedLine.typeOptions.points.y
+             */
+            /**
+             * @type      {number}
+             * @excluding positioner, events
+             * @apioption annotations.crookedLine.typeOptions.points.controlPoint
+             */
+            /**
+             * Line options.
+             *
+             * @excluding height, point, points, r, type, width
+             */
+            line: {
+                fill: 'none'
+            }
         },
-        events: {
-            drag: function (e, target) {
-                if (target.chart.isInsidePlot(e.chartX - target.chart.plotLeft, e.chartY - target.chart.plotTop)) {
-                    var translation = this.mouseMoveToTranslation(e);
-                    target.translatePoint(translation.x, translation.y, this.index);
-                    // Update options:
-                    target.options.typeOptions.points[this.index].x = target.points[this.index].x;
-                    target.options.typeOptions.points[this.index].y = target.points[this.index].y;
-                    target.redraw(false);
+        /**
+         * @excluding positioner, events
+         */
+        controlPointOptions: {
+            positioner: function (target) {
+                var graphic = this.graphic, xy = MockPoint.pointToPixels(target.points[this.index]);
+                return {
+                    x: xy.x - graphic.width / 2,
+                    y: xy.y - graphic.height / 2
+                };
+            },
+            events: {
+                drag: function (e, target) {
+                    if (target.chart.isInsidePlot(e.chartX - target.chart.plotLeft, e.chartY - target.chart.plotTop)) {
+                        var translation = this.mouseMoveToTranslation(e);
+                        target.translatePoint(translation.x, translation.y, this.index);
+                        // Update options:
+                        target.options.typeOptions.points[this.index].x = target.points[this.index].x;
+                        target.options.typeOptions.points[this.index].y = target.points[this.index].y;
+                        target.redraw(false);
+                    }
                 }
             }
         }
-    }
-});
+    });
 Annotation.types.crookedLine = CrookedLine;
 export default CrookedLine;

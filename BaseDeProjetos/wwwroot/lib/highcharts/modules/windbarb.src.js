@@ -97,14 +97,14 @@
                                         // the distance ratio, between 0 and 1
                                         distanceRatio =
                                             (point.x - leftPoint.x) /
-                                                (rightPoint.x - leftPoint.x);
+                                            (rightPoint.x - leftPoint.x);
                                         point.plotY +=
                                             distanceRatio *
-                                                // the plotY distance
-                                                (rightPoint[onKey] - leftPoint[onKey]);
+                                            // the plotY distance
+                                            (rightPoint[onKey] - leftPoint[onKey]);
                                         point.y +=
                                             distanceRatio *
-                                                (rightPoint.y - leftPoint.y);
+                                            (rightPoint.y - leftPoint.y);
                                     }
                                 }
                             }
@@ -212,112 +212,112 @@
          * @augments Highcharts.Series
          */
         seriesType('windbarb', 'column'
-        /**
-         * Wind barbs are a convenient way to represent wind speed and direction in
-         * one graphical form. Wind direction is given by the stem direction, and
-         * wind speed by the number and shape of barbs.
-         *
-         * @sample {highcharts|highstock} highcharts/demo/windbarb-series/
-         *         Wind barb series
-         *
-         * @extends      plotOptions.column
-         * @excluding    boostThreshold, marker, connectEnds, connectNulls,
-         *               cropThreshold, dashStyle, dragDrop, gapSize, gapUnit,
-         *               linecap, shadow, stacking, step
-         * @since        6.0.0
-         * @product      highcharts highstock
-         * @requires     modules/windbarb
-         * @optionparent plotOptions.windbarb
-         */
-        , {
             /**
-             * Data grouping options for the wind barbs. In Highcharts, this
-             * requires the `modules/datagrouping.js` module to be loaded. In
-             * Highstock, data grouping is included.
+             * Wind barbs are a convenient way to represent wind speed and direction in
+             * one graphical form. Wind direction is given by the stem direction, and
+             * wind speed by the number and shape of barbs.
              *
-             * @sample  highcharts/plotoptions/windbarb-datagrouping
-             *          Wind barb with data grouping
+             * @sample {highcharts|highstock} highcharts/demo/windbarb-series/
+             *         Wind barb series
              *
-             * @since   7.1.0
-             * @product highcharts highstock
+             * @extends      plotOptions.column
+             * @excluding    boostThreshold, marker, connectEnds, connectNulls,
+             *               cropThreshold, dashStyle, dragDrop, gapSize, gapUnit,
+             *               linecap, shadow, stacking, step
+             * @since        6.0.0
+             * @product      highcharts highstock
+             * @requires     modules/windbarb
+             * @optionparent plotOptions.windbarb
              */
-            dataGrouping: {
+            , {
                 /**
-                 * Whether to enable data grouping.
+                 * Data grouping options for the wind barbs. In Highcharts, this
+                 * requires the `modules/datagrouping.js` module to be loaded. In
+                 * Highstock, data grouping is included.
                  *
+                 * @sample  highcharts/plotoptions/windbarb-datagrouping
+                 *          Wind barb with data grouping
+                 *
+                 * @since   7.1.0
                  * @product highcharts highstock
                  */
-                enabled: true,
+                dataGrouping: {
+                    /**
+                     * Whether to enable data grouping.
+                     *
+                     * @product highcharts highstock
+                     */
+                    enabled: true,
+                    /**
+                     * Approximation function for the data grouping. The default
+                     * returns an average of wind speed and a vector average direction
+                     * weighted by wind speed.
+                     *
+                     * @product highcharts highstock
+                     *
+                     * @type {string|Function}
+                     */
+                    approximation: 'windbarb',
+                    /**
+                     * The approximate data group width.
+                     *
+                     * @product highcharts highstock
+                     */
+                    groupPixelWidth: 30
+                },
                 /**
-                 * Approximation function for the data grouping. The default
-                 * returns an average of wind speed and a vector average direction
-                 * weighted by wind speed.
-                 *
-                 * @product highcharts highstock
-                 *
-                 * @type {string|Function}
+                 * The line width of the wind barb symbols.
                  */
-                approximation: 'windbarb',
+                lineWidth: 2,
                 /**
-                 * The approximate data group width.
+                 * The id of another series in the chart that the wind barbs are
+                 * projected on. When `null`, the wind symbols are drawn on the X axis,
+                 * but offset up or down by the `yOffset` setting.
                  *
-                 * @product highcharts highstock
+                 * @sample {highcharts|highstock} highcharts/plotoptions/windbarb-onseries
+                 *         Projected on area series
+                 *
+                 * @type {string|null}
                  */
-                groupPixelWidth: 30
-            },
-            /**
-             * The line width of the wind barb symbols.
-             */
-            lineWidth: 2,
-            /**
-             * The id of another series in the chart that the wind barbs are
-             * projected on. When `null`, the wind symbols are drawn on the X axis,
-             * but offset up or down by the `yOffset` setting.
-             *
-             * @sample {highcharts|highstock} highcharts/plotoptions/windbarb-onseries
-             *         Projected on area series
-             *
-             * @type {string|null}
-             */
-            onSeries: null,
-            states: {
-                hover: {
-                    lineWidthPlus: 0
-                }
-            },
-            tooltip: {
+                onSeries: null,
+                states: {
+                    hover: {
+                        lineWidthPlus: 0
+                    }
+                },
+                tooltip: {
+                    /**
+                     * The default point format for the wind barb tooltip. Note the
+                     * `point.beaufort` property that refers to the Beaufort wind scale.
+                     * The names can be internationalized by modifying
+                     * `Highcharts.seriesTypes.windbarb.prototype.beaufortNames`.
+                     */
+                    pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.value}</b> ({point.beaufort})<br/>'
+                },
                 /**
-                 * The default point format for the wind barb tooltip. Note the
-                 * `point.beaufort` property that refers to the Beaufort wind scale.
-                 * The names can be internationalized by modifying
-                 * `Highcharts.seriesTypes.windbarb.prototype.beaufortNames`.
+                 * Pixel length of the stems.
                  */
-                pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.value}</b> ({point.beaufort})<br/>'
-            },
-            /**
-             * Pixel length of the stems.
-             */
-            vectorLength: 20,
-            /**
-             * @default   value
-             */
-            colorKey: 'value',
-            /**
-             * Vertical offset from the cartesian position, in pixels. The default
-             * value makes sure the symbols don't overlap the X axis when `onSeries`
-             * is `null`, and that they don't overlap the linked series when
-             * `onSeries` is given.
-             */
-            yOffset: -20,
-            /**
-             * Horizontal offset from the cartesian position, in pixels. When the
-             * chart is inverted, this option allows translation like
-             * [yOffset](#plotOptions.windbarb.yOffset) in non inverted charts.
-             *
-             * @since 6.1.0
-             */
-            xOffset: 0
-        }, {
+                vectorLength: 20,
+                /**
+                 * @default   value
+                 */
+                colorKey: 'value',
+                /**
+                 * Vertical offset from the cartesian position, in pixels. The default
+                 * value makes sure the symbols don't overlap the X axis when `onSeries`
+                 * is `null`, and that they don't overlap the linked series when
+                 * `onSeries` is given.
+                 */
+                yOffset: -20,
+                /**
+                 * Horizontal offset from the cartesian position, in pixels. When the
+                 * chart is inverted, this option allows translation like
+                 * [yOffset](#plotOptions.windbarb.yOffset) in non inverted charts.
+                 *
+                 * @since 6.1.0
+                 */
+                xOffset: 0
+            }, {
             pointArrayMap: ['value', 'direction'],
             parallelArrays: ['x', 'value', 'direction'],
             beaufortName: ['Calm', 'Light air', 'Light breeze',
@@ -338,7 +338,7 @@
                     stroke = options.states[state].color || stroke;
                     strokeWidth =
                         (options.states[state].lineWidth || strokeWidth) +
-                            (options.states[state].lineWidthPlus || 0);
+                        (options.states[state].lineWidthPlus || 0);
                 }
                 return {
                     'stroke': stroke,
@@ -427,17 +427,17 @@
                                 .path()
                                 .add(this.markerGroup)
                                 .addClass('highcharts-point ' +
-                                'highcharts-color-' +
-                                pick(point.colorIndex, point.series.colorIndex));
+                                    'highcharts-color-' +
+                                    pick(point.colorIndex, point.series.colorIndex));
                         }
                         // Position the graphic
                         point.graphic
                             .attr({
-                            d: this.windArrow(point),
-                            translateX: plotX + this.options.xOffset,
-                            translateY: plotY + this.options.yOffset,
-                            rotation: point.direction
-                        });
+                                d: this.windArrow(point),
+                                translateX: plotX + this.options.xOffset,
+                                translateY: plotY + this.options.yOffset,
+                                rotation: point.direction
+                            });
                         if (!this.chart.styledMode) {
                             point.graphic
                                 .attr(this.pointAttribs(point));
@@ -449,11 +449,11 @@
                     // Set the tooltip anchor position
                     point.tooltipPos = [
                         plotX + this.options.xOffset +
-                            (inverted && !this.onSeries ? shapeOffset : 0),
+                        (inverted && !this.onSeries ? shapeOffset : 0),
                         plotY + this.options.yOffset -
-                            (inverted ?
-                                0 :
-                                shapeOffset + yAxis.pos - chart.plotTop)
+                        (inverted ?
+                            0 :
+                            shapeOffset + yAxis.pos - chart.plotTop)
                     ]; // #6327
                 }, this);
             },
@@ -552,10 +552,7 @@
          * @apioption series.windbarb.data.direction
          */
         ''; // adds doclets above to transpiled file
-
     });
     _registerModule(_modules, 'masters/modules/windbarb.src.js', [], function () {
-
-
     });
 }));

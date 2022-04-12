@@ -164,12 +164,12 @@ addEvent(Chart, 'afterSetChartSize', function () {
 });
 // Center tick labels in cells.
 addEvent(Tick, 'afterGetLabelPosition', function (e) {
-    var tick = this, label = tick.label, axis = tick.axis, reversed = axis.reversed, chart = axis.chart, options = axis.options, gridOptions = options.grid || {}, labelOpts = axis.options.labels, align = labelOpts.align, 
-    // verticalAlign is currently not supported for axis.labels.
-    verticalAlign = 'middle', // labelOpts.verticalAlign,
-    side = GridAxis.Side[axis.side], tickmarkOffset = e.tickmarkOffset, tickPositions = axis.tickPositions, tickPos = tick.pos - tickmarkOffset, nextTickPos = (isNumber(tickPositions[e.index + 1]) ?
-        tickPositions[e.index + 1] - tickmarkOffset :
-        axis.max + tickmarkOffset), tickSize = axis.tickSize('tick'), tickWidth = tickSize ? tickSize[0] : 0, crispCorr = tickSize ? tickSize[1] / 2 : 0, labelHeight, lblMetrics, lines, bottom, top, left, right;
+    var tick = this, label = tick.label, axis = tick.axis, reversed = axis.reversed, chart = axis.chart, options = axis.options, gridOptions = options.grid || {}, labelOpts = axis.options.labels, align = labelOpts.align,
+        // verticalAlign is currently not supported for axis.labels.
+        verticalAlign = 'middle', // labelOpts.verticalAlign,
+        side = GridAxis.Side[axis.side], tickmarkOffset = e.tickmarkOffset, tickPositions = axis.tickPositions, tickPos = tick.pos - tickmarkOffset, nextTickPos = (isNumber(tickPositions[e.index + 1]) ?
+            tickPositions[e.index + 1] - tickmarkOffset :
+            axis.max + tickmarkOffset), tickSize = axis.tickSize('tick'), tickWidth = tickSize ? tickSize[0] : 0, crispCorr = tickSize ? tickSize[1] / 2 : 0, labelHeight, lblMetrics, lines, bottom, top, left, right;
     // Only center tick labels in grid axes
     if (gridOptions.enabled === true) {
         // Calculate top and bottom positions of the cell.
@@ -220,16 +220,16 @@ addEvent(Tick, 'afterGetLabelPosition', function (e) {
         if (!labelOpts.useHTML) {
             lines = Math.round(labelHeight / lblMetrics.h);
             e.pos.y += (
-            // Center the label
-            // TODO: why does this actually center the label?
-            ((lblMetrics.b - (lblMetrics.h - lblMetrics.f)) / 2) +
+                // Center the label
+                // TODO: why does this actually center the label?
+                ((lblMetrics.b - (lblMetrics.h - lblMetrics.f)) / 2) +
                 // Adjust for height of additional lines.
                 -(((lines - 1) * lblMetrics.h) / 2));
         }
         else {
             e.pos.y += (
-            // Readjust yCorr in htmlUpdateTransform
-            lblMetrics.b +
+                // Readjust yCorr in htmlUpdateTransform
+                lblMetrics.b +
                 // Adjust for height of html label
                 -(labelHeight / 2));
         }
@@ -360,8 +360,8 @@ var GridAxis = /** @class */ (function () {
             // the position in the perpendicular direction of the axis
             var offAxis = ((horiz ? axisTop + axisHeight : axisLeft) +
                 (horiz ? 1 : -1) * // horizontal axis reverses the margin
-                    (opposite ? -1 : 1) * // so does opposite axes
-                    crispCorr +
+                (opposite ? -1 : 1) * // so does opposite axes
+                crispCorr +
                 (axis.side === GridAxis.Side.bottom ? titleFontSize : 0));
             e.titlePosition.x = horiz ?
                 axisLeft - titleWidth / 2 - titleMargin + xOption :
@@ -490,8 +490,8 @@ var GridAxis = /** @class */ (function () {
                         axis.grid.axisLineExtra = renderer
                             .path(linePath)
                             .attr({
-                            zIndex: 7
-                        })
+                                zIndex: 7
+                            })
                             .addClass('highcharts-axis-line')
                             .add(axis.axisGroup);
                         if (!renderer.styledMode) {
@@ -597,30 +597,30 @@ var GridAxis = /** @class */ (function () {
                 // for example we shouln't have one grid cell spanning
                 // two days.
                 units: [[
-                        'millisecond',
-                        [1, 10, 100]
-                    ], [
-                        'second',
-                        [1, 10]
-                    ], [
-                        'minute',
-                        [1, 5, 15]
-                    ], [
-                        'hour',
-                        [1, 6]
-                    ], [
-                        'day',
-                        [1]
-                    ], [
-                        'week',
-                        [1]
-                    ], [
-                        'month',
-                        [1]
-                    ], [
-                        'year',
-                        null
-                    ]]
+                    'millisecond',
+                    [1, 10, 100]
+                ], [
+                    'second',
+                    [1, 10]
+                ], [
+                    'minute',
+                    [1, 5, 15]
+                ], [
+                    'hour',
+                    [1, 6]
+                ], [
+                    'day',
+                    [1]
+                ], [
+                    'week',
+                    [1]
+                ], [
+                    'month',
+                    [1]
+                ], [
+                    'year',
+                    null
+                ]]
             }, userOptions);
             // X-axis specific options
             if (this.coll === 'xAxis') {
@@ -634,8 +634,8 @@ var GridAxis = /** @class */ (function () {
                 // For the secondary grid axis, use the primary axis'
                 // tick intervals and return ticks one level higher.
                 if (
-                // Check for tick pixel interval in options
-                !defined(userOptions.tickPixelInterval) &&
+                    // Check for tick pixel interval in options
+                    !defined(userOptions.tickPixelInterval) &&
                     // Only for linked axes
                     defined(userOptions.linkedTo) &&
                     !defined(userOptions.tickPositioner) &&

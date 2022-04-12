@@ -136,10 +136,10 @@ var approximations = H.approximations = {
     }
 };
 var groupData = function (xData, yData, groupPositions, approximation) {
-    var series = this, data = series.data, dataOptions = series.options && series.options.data, groupedXData = [], groupedYData = [], groupMap = [], dataLength = xData.length, pointX, pointY, groupedY, 
-    // when grouping the fake extended axis for panning,
-    // we don't need to consider y
-    handleYData = !!yData, values = [], approximationFn, pointArrayMap = series.pointArrayMap, pointArrayMapLength = pointArrayMap && pointArrayMap.length, extendedPointArrayMap = ['x'].concat(pointArrayMap || ['y']), pos = 0, start = 0, valuesLen, i, j;
+    var series = this, data = series.data, dataOptions = series.options && series.options.data, groupedXData = [], groupedYData = [], groupMap = [], dataLength = xData.length, pointX, pointY, groupedY,
+        // when grouping the fake extended axis for panning,
+        // we don't need to consider y
+        handleYData = !!yData, values = [], approximationFn, pointArrayMap = series.pointArrayMap, pointArrayMapLength = pointArrayMap && pointArrayMap.length, extendedPointArrayMap = ['x'].concat(pointArrayMap || ['y']), pos = 0, start = 0, valuesLen, i, j;
     /**
      * @private
      */
@@ -260,106 +260,106 @@ var dataGrouping = {
 };
 // -----------------------------------------------------------------------------
 // The following code applies to implementation of data grouping on a Series
-var seriesProto = Series.prototype, baseProcessData = seriesProto.processData, baseGeneratePoints = seriesProto.generatePoints, 
-/** @ignore */
-commonOptions = {
-    // enabled: null, // (true for stock charts, false for basic),
-    // forced: undefined,
-    groupPixelWidth: 2,
-    // the first one is the point or start value, the second is the start
-    // value if we're dealing with range, the third one is the end value if
-    // dealing with a range
-    dateTimeLabelFormats: {
-        millisecond: [
-            '%A, %b %e, %H:%M:%S.%L',
-            '%A, %b %e, %H:%M:%S.%L',
-            '-%H:%M:%S.%L'
-        ],
-        second: [
-            '%A, %b %e, %H:%M:%S',
-            '%A, %b %e, %H:%M:%S',
-            '-%H:%M:%S'
-        ],
-        minute: [
-            '%A, %b %e, %H:%M',
-            '%A, %b %e, %H:%M',
-            '-%H:%M'
-        ],
-        hour: [
-            '%A, %b %e, %H:%M',
-            '%A, %b %e, %H:%M',
-            '-%H:%M'
-        ],
-        day: [
-            '%A, %b %e, %Y',
-            '%A, %b %e',
-            '-%A, %b %e, %Y'
-        ],
-        week: [
-            'Week from %A, %b %e, %Y',
-            '%A, %b %e',
-            '-%A, %b %e, %Y'
-        ],
-        month: [
-            '%B %Y',
-            '%B',
-            '-%B %Y'
-        ],
-        year: [
-            '%Y',
-            '%Y',
-            '-%Y'
+var seriesProto = Series.prototype, baseProcessData = seriesProto.processData, baseGeneratePoints = seriesProto.generatePoints,
+    /** @ignore */
+    commonOptions = {
+        // enabled: null, // (true for stock charts, false for basic),
+        // forced: undefined,
+        groupPixelWidth: 2,
+        // the first one is the point or start value, the second is the start
+        // value if we're dealing with range, the third one is the end value if
+        // dealing with a range
+        dateTimeLabelFormats: {
+            millisecond: [
+                '%A, %b %e, %H:%M:%S.%L',
+                '%A, %b %e, %H:%M:%S.%L',
+                '-%H:%M:%S.%L'
+            ],
+            second: [
+                '%A, %b %e, %H:%M:%S',
+                '%A, %b %e, %H:%M:%S',
+                '-%H:%M:%S'
+            ],
+            minute: [
+                '%A, %b %e, %H:%M',
+                '%A, %b %e, %H:%M',
+                '-%H:%M'
+            ],
+            hour: [
+                '%A, %b %e, %H:%M',
+                '%A, %b %e, %H:%M',
+                '-%H:%M'
+            ],
+            day: [
+                '%A, %b %e, %Y',
+                '%A, %b %e',
+                '-%A, %b %e, %Y'
+            ],
+            week: [
+                'Week from %A, %b %e, %Y',
+                '%A, %b %e',
+                '-%A, %b %e, %Y'
+            ],
+            month: [
+                '%B %Y',
+                '%B',
+                '-%B %Y'
+            ],
+            year: [
+                '%Y',
+                '%Y',
+                '-%Y'
+            ]
+        }
+        // smoothed = false, // enable this for navigator series only
+    }, specificOptions = {
+        line: {},
+        spline: {},
+        area: {},
+        areaspline: {},
+        arearange: {},
+        column: {
+            groupPixelWidth: 10
+        },
+        columnrange: {
+            groupPixelWidth: 10
+        },
+        candlestick: {
+            groupPixelWidth: 10
+        },
+        ohlc: {
+            groupPixelWidth: 5
+        }
+    },
+    // units are defined in a separate array to allow complete overriding in
+    // case of a user option
+    defaultDataGroupingUnits = H.defaultDataGroupingUnits = [
+        [
+            'millisecond',
+            [1, 2, 5, 10, 20, 25, 50, 100, 200, 500] // allowed multiples
+        ], [
+            'second',
+            [1, 2, 5, 10, 15, 30]
+        ], [
+            'minute',
+            [1, 2, 5, 10, 15, 30]
+        ], [
+            'hour',
+            [1, 2, 3, 4, 6, 8, 12]
+        ], [
+            'day',
+            [1]
+        ], [
+            'week',
+            [1]
+        ], [
+            'month',
+            [1, 3, 6]
+        ], [
+            'year',
+            null
         ]
-    }
-    // smoothed = false, // enable this for navigator series only
-}, specificOptions = {
-    line: {},
-    spline: {},
-    area: {},
-    areaspline: {},
-    arearange: {},
-    column: {
-        groupPixelWidth: 10
-    },
-    columnrange: {
-        groupPixelWidth: 10
-    },
-    candlestick: {
-        groupPixelWidth: 10
-    },
-    ohlc: {
-        groupPixelWidth: 5
-    }
-}, 
-// units are defined in a separate array to allow complete overriding in
-// case of a user option
-defaultDataGroupingUnits = H.defaultDataGroupingUnits = [
-    [
-        'millisecond',
-        [1, 2, 5, 10, 20, 25, 50, 100, 200, 500] // allowed multiples
-    ], [
-        'second',
-        [1, 2, 5, 10, 15, 30]
-    ], [
-        'minute',
-        [1, 2, 5, 10, 15, 30]
-    ], [
-        'hour',
-        [1, 2, 3, 4, 6, 8, 12]
-    ], [
-        'day',
-        [1]
-    ], [
-        'week',
-        [1]
-    ], [
-        'month',
-        [1, 3, 6]
-    ], [
-        'year',
-        null
-    ]
-];
+    ];
 // Set default approximations to the prototypes if present. Properties are
 // inherited down. Can be overridden for individual series types.
 seriesProto.getDGApproximation = function () {
@@ -418,9 +418,9 @@ seriesProto.processData = function () {
         var i, processedXData = dataGroupingOptions.groupAll ?
             series.xData :
             series.processedXData, processedYData = dataGroupingOptions.groupAll ?
-            series.yData :
-            series.processedYData, plotSizeX = chart.plotSizeX, xAxis = series.xAxis, ordinal = xAxis.options.ordinal, groupPixelWidth = series.groupPixelWidth =
-            xAxis.getGroupPixelWidth && xAxis.getGroupPixelWidth();
+                series.yData :
+                series.processedYData, plotSizeX = chart.plotSizeX, xAxis = series.xAxis, ordinal = xAxis.options.ordinal, groupPixelWidth = series.groupPixelWidth =
+                    xAxis.getGroupPixelWidth && xAxis.getGroupPixelWidth();
         // Execute grouping if the amount of points is greater than the limit
         // defined in groupPixelWidth
         if (groupPixelWidth) {
@@ -431,15 +431,15 @@ seriesProto.processData = function () {
             var extremes = xAxis.getExtremes(), xMin = extremes.min, xMax = extremes.max, groupIntervalFactor = (ordinal &&
                 xAxis.ordinal &&
                 xAxis.ordinal.getGroupIntervalFactor(xMin, xMax, series)) || 1, interval = (groupPixelWidth * (xMax - xMin) / plotSizeX) *
-                groupIntervalFactor, groupPositions = xAxis.getTimeTicks(DateTimeAxis.AdditionsClass.prototype.normalizeTimeTickInterval(interval, dataGroupingOptions.units ||
-                defaultDataGroupingUnits), 
-            // Processed data may extend beyond axis (#4907)
-            Math.min(xMin, processedXData[0]), Math.max(xMax, processedXData[processedXData.length - 1]), xAxis.options.startOfWeek, processedXData, series.closestPointRange), groupedData = seriesProto.groupData.apply(series, [
-                processedXData,
-                processedYData,
-                groupPositions,
-                dataGroupingOptions.approximation
-            ]), groupedXData = groupedData.groupedXData, groupedYData = groupedData.groupedYData, gapSize = 0;
+                    groupIntervalFactor, groupPositions = xAxis.getTimeTicks(DateTimeAxis.AdditionsClass.prototype.normalizeTimeTickInterval(interval, dataGroupingOptions.units ||
+                        defaultDataGroupingUnits),
+                        // Processed data may extend beyond axis (#4907)
+                        Math.min(xMin, processedXData[0]), Math.max(xMax, processedXData[processedXData.length - 1]), xAxis.options.startOfWeek, processedXData, series.closestPointRange), groupedData = seriesProto.groupData.apply(series, [
+                            processedXData,
+                            processedYData,
+                            groupPositions,
+                            dataGroupingOptions.approximation
+                        ]), groupedXData = groupedData.groupedXData, groupedYData = groupedData.groupedYData, gapSize = 0;
             // Prevent the smoothed data to spill out left and right, and make
             // sure data is not shifted to the left
             if (dataGroupingOptions.smoothed && groupedXData.length) {
@@ -496,7 +496,7 @@ seriesProto.processData = function () {
         series.currentDataGrouping = currentDataGrouping;
         series.preventGraphAnimation =
             (lastDataGrouping && lastDataGrouping.totalRange) !==
-                (currentDataGrouping && currentDataGrouping.totalRange);
+            (currentDataGrouping && currentDataGrouping.totalRange);
     }
 };
 // Destroy the grouped data points. #622, #740
@@ -587,17 +587,17 @@ addEvent(Series, 'destroy', seriesProto.destroyGroupedData);
 // Handle default options for data grouping. This must be set at runtime because
 // some series types are defined after this.
 addEvent(Series, 'afterSetOptions', function (e) {
-    var options = e.options, type = this.type, plotOptions = this.chart.options.plotOptions, defaultOptions = O.defaultOptions.plotOptions[type].dataGrouping, 
-    // External series, for example technical indicators should also
-    // inherit commonOptions which are not available outside this module
-    baseOptions = this.useCommonDataGrouping && commonOptions;
+    var options = e.options, type = this.type, plotOptions = this.chart.options.plotOptions, defaultOptions = O.defaultOptions.plotOptions[type].dataGrouping,
+        // External series, for example technical indicators should also
+        // inherit commonOptions which are not available outside this module
+        baseOptions = this.useCommonDataGrouping && commonOptions;
     if (specificOptions[type] || baseOptions) { // #1284
         if (!defaultOptions) {
             defaultOptions = merge(commonOptions, specificOptions[type]);
         }
         options.dataGrouping = merge(baseOptions, defaultOptions, plotOptions.series && plotOptions.series.dataGrouping, // #1228
-        // Set by the StockChart constructor:
-        plotOptions[type].dataGrouping, this.userOptions.dataGrouping);
+            // Set by the StockChart constructor:
+            plotOptions[type].dataGrouping, this.userOptions.dataGrouping);
     }
 });
 // When resetting the scale reset the hasProccessed flag to avoid taking
@@ -618,9 +618,9 @@ Axis.prototype.getGroupPixelWidth = function () {
     while (i--) {
         dgOptions = series[i].options.dataGrouping;
         if (dgOptions) {
-            groupPixelWidth = Math.max(groupPixelWidth, 
-            // Fallback to commonOptions (#9693)
-            pick(dgOptions.groupPixelWidth, commonOptions.groupPixelWidth));
+            groupPixelWidth = Math.max(groupPixelWidth,
+                // Fallback to commonOptions (#9693)
+                pick(dgOptions.groupPixelWidth, commonOptions.groupPixelWidth));
         }
     }
     // If one of the series needs grouping, apply it to all (#1634)
@@ -633,7 +633,7 @@ Axis.prototype.getGroupPixelWidth = function () {
             // limit defined in groupPixelWidth
             if (series[i].groupPixelWidth ||
                 dataLength >
-                    (this.chart.plotSizeX / groupPixelWidth) ||
+                (this.chart.plotSizeX / groupPixelWidth) ||
                 (dataLength && dgOptions.forced)) {
                 doGrouping = true;
             }

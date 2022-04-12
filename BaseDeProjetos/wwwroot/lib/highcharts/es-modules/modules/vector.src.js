@@ -23,64 +23,64 @@ var animObject = U.animObject, arrayMax = U.arrayMax, pick = U.pick, seriesType 
  * @augments Highcharts.seriesTypes.scatter
  */
 seriesType('vector', 'scatter'
-/**
- * A vector plot is a type of cartesian chart where each point has an X and
- * Y position, a length and a direction. Vectors are drawn as arrows.
- *
- * @sample {highcharts|highstock} highcharts/demo/vector-plot/
- *         Vector pot
- *
- * @since        6.0.0
- * @extends      plotOptions.scatter
- * @excluding    boostThreshold, marker, connectEnds, connectNulls,
- *               cropThreshold, dashStyle, dragDrop, gapSize, gapUnit,
- *               dataGrouping, linecap, shadow, stacking, step, jitter
- * @product      highcharts highstock
- * @requires     modules/vector
- * @optionparent plotOptions.vector
- */
-, {
     /**
-     * The line width for each vector arrow.
-     */
-    lineWidth: 2,
-    /**
-     * @ignore
-     */
-    marker: null,
-    /**
-     * What part of the vector it should be rotated around. Can be one of
-     * `start`, `center` and `end`. When `start`, the vectors will start
-     * from the given [x, y] position, and when `end` the vectors will end
-     * in the [x, y] position.
+     * A vector plot is a type of cartesian chart where each point has an X and
+     * Y position, a length and a direction. Vectors are drawn as arrows.
      *
-     * @sample highcharts/plotoptions/vector-rotationorigin-start/
-     *         Rotate from start
+     * @sample {highcharts|highstock} highcharts/demo/vector-plot/
+     *         Vector pot
      *
-     * @validvalue ["start", "center", "end"]
+     * @since        6.0.0
+     * @extends      plotOptions.scatter
+     * @excluding    boostThreshold, marker, connectEnds, connectNulls,
+     *               cropThreshold, dashStyle, dragDrop, gapSize, gapUnit,
+     *               dataGrouping, linecap, shadow, stacking, step, jitter
+     * @product      highcharts highstock
+     * @requires     modules/vector
+     * @optionparent plotOptions.vector
      */
-    rotationOrigin: 'center',
-    states: {
-        hover: {
-            /**
-             * Additonal line width for the vector errors when they are
-             * hovered.
-             */
-            lineWidthPlus: 1
-        }
-    },
-    tooltip: {
+    , {
         /**
-         * @default [{point.x}, {point.y}] Length: {point.length} Direction: {point.direction}°
+         * The line width for each vector arrow.
          */
-        pointFormat: '<b>[{point.x}, {point.y}]</b><br/>Length: <b>{point.length}</b><br/>Direction: <b>{point.direction}\u00B0</b><br/>'
-    },
-    /**
-     * Maximum length of the arrows in the vector plot. The individual arrow
-     * length is computed between 0 and this value.
-     */
-    vectorLength: 20
-}, {
+        lineWidth: 2,
+        /**
+         * @ignore
+         */
+        marker: null,
+        /**
+         * What part of the vector it should be rotated around. Can be one of
+         * `start`, `center` and `end`. When `start`, the vectors will start
+         * from the given [x, y] position, and when `end` the vectors will end
+         * in the [x, y] position.
+         *
+         * @sample highcharts/plotoptions/vector-rotationorigin-start/
+         *         Rotate from start
+         *
+         * @validvalue ["start", "center", "end"]
+         */
+        rotationOrigin: 'center',
+        states: {
+            hover: {
+                /**
+                 * Additonal line width for the vector errors when they are
+                 * hovered.
+                 */
+                lineWidthPlus: 1
+            }
+        },
+        tooltip: {
+            /**
+             * @default [{point.x}, {point.y}] Length: {point.length} Direction: {point.direction}°
+             */
+            pointFormat: '<b>[{point.x}, {point.y}]</b><br/>Length: <b>{point.length}</b><br/>Direction: <b>{point.direction}\u00B0</b><br/>'
+        },
+        /**
+         * Maximum length of the arrows in the vector plot. The individual arrow
+         * length is computed between 0 and this value.
+         */
+        vectorLength: 20
+    }, {
     pointArrayMap: ['y', 'length', 'direction'],
     parallelArrays: ['x', 'y', 'length', 'direction'],
     /* eslint-disable valid-jsdoc */
@@ -102,7 +102,7 @@ seriesType('vector', 'scatter'
             stroke = options.states[state].color || stroke;
             strokeWidth =
                 (options.states[state].lineWidth || strokeWidth) +
-                    (options.states[state].lineWidthPlus || 0);
+                (options.states[state].lineWidthPlus || 0);
         }
         return {
             'stroke': stroke,
@@ -173,16 +173,16 @@ seriesType('vector', 'scatter'
                         .path()
                         .add(this.markerGroup)
                         .addClass('highcharts-point ' +
-                        'highcharts-color-' +
-                        pick(point.colorIndex, point.series.colorIndex));
+                            'highcharts-color-' +
+                            pick(point.colorIndex, point.series.colorIndex));
                 }
                 point.graphic
                     .attr({
-                    d: this.arrow(point),
-                    translateX: plotX,
-                    translateY: plotY,
-                    rotation: point.direction
-                });
+                        d: this.arrow(point),
+                        translateX: plotX,
+                        translateY: plotY,
+                        rotation: point.direction
+                    });
                 if (!this.chart.styledMode) {
                     point.graphic
                         .attr(this.pointAttribs(point));
@@ -223,7 +223,6 @@ seriesType('vector', 'scatter'
             'stroke-width': 1,
             'stroke': 'black'
         }).add(item.legendGroup);
-
     },
     */
     /**

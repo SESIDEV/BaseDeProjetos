@@ -316,7 +316,7 @@ AccessibilityComponent.prototype = {
             var evt = doc.createEvent('MouseEvent');
             if (evt.initMouseEvent) {
                 evt.initMouseEvent(e.type, e.bubbles, // #10561, #12161
-                e.cancelable, e.view || win, e.detail, e.screenX, e.screenY, e.clientX, e.clientY, e.ctrlKey, e.altKey, e.shiftKey, e.metaKey, e.button, e.relatedTarget);
+                    e.cancelable, e.view || win, e.detail, e.screenX, e.screenY, e.clientX, e.clientY, e.ctrlKey, e.altKey, e.shiftKey, e.metaKey, e.button, e.relatedTarget);
                 return evt;
             }
         }

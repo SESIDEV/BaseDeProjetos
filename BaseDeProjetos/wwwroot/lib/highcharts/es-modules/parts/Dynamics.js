@@ -549,15 +549,15 @@ extend(Chart.prototype, /** @lends Highcharts.Chart.prototype */ {
                     }
                     // If oneToOne and no matching item is found, add one
                     if (!item && oneToOne && chart.collectionsWithInit[coll]) {
-                        chart.collectionsWithInit[coll][0].apply(chart, 
-                        // [newOptions, ...extraArguments, redraw=false]
-                        [
-                            newOptions
-                        ].concat(
-                        // Not all initializers require extra args
-                        chart.collectionsWithInit[coll][1] || []).concat([
-                            false
-                        ])).touched = true;
+                        chart.collectionsWithInit[coll][0].apply(chart,
+                            // [newOptions, ...extraArguments, redraw=false]
+                            [
+                                newOptions
+                            ].concat(
+                                // Not all initializers require extra args
+                                chart.collectionsWithInit[coll][1] || []).concat([
+                                    false
+                                ])).touched = true;
                     }
                 });
                 // Add items for removal
@@ -604,10 +604,10 @@ extend(Chart.prototype, /** @lends Highcharts.Chart.prototype */ {
             newHeight = relativeLength(newHeight, newWidth || chart.chartWidth);
         }
         if (
-        // In this case, run chart.setSize with newWidth and newHeight which
-        // are undefined, only for reflowing chart elements because margin
-        // or spacing has been set (#8190)
-        runSetSize ||
+            // In this case, run chart.setSize with newWidth and newHeight which
+            // are undefined, only for reflowing chart elements because margin
+            // or spacing has been set (#8190)
+            runSetSize ||
             // In this case, the size is actually set
             (isNumber(newWidth) && newWidth !== chart.chartWidth) ||
             (isNumber(newHeight) && newHeight !== chart.chartHeight)) {
@@ -1037,43 +1037,43 @@ extend(Series.prototype, /** @lends Series.prototype */ {
     update: function (options, redraw) {
         options = H.cleanRecursively(options, this.userOptions);
         fireEvent(this, 'update', { options: options });
-        var series = this, chart = series.chart, 
-        // must use user options when changing type because series.options
-        // is merged in with type specific plotOptions
-        oldOptions = series.userOptions, seriesOptions, initialType = series.initialType || series.type, newType = (options.type ||
-            oldOptions.type ||
-            chart.options.chart.type), keepPoints = !(
-        // Indicators, histograms etc recalculate the data. It should be
-        // possible to omit this.
-        this.hasDerivedData ||
-            // Changes to data grouping requires new points in new groups
-            options.dataGrouping ||
-            // New type requires new point classes
-            (newType && newType !== this.type) ||
-            // New options affecting how the data points are built
-            typeof options.pointStart !== 'undefined' ||
-            options.pointInterval ||
-            options.pointIntervalUnit ||
-            options.keys), initialSeriesProto = seriesTypes[initialType].prototype, n, groups = [
-            'group',
-            'markerGroup',
-            'dataLabelsGroup',
-            'transformGroup'
-        ], preserve = [
-            'eventOptions',
-            'navigatorSeries',
-            'baseSeries'
-        ], 
-        // Animation must be enabled when calling update before the initial
-        // animation has first run. This happens when calling update
-        // directly after chart initialization, or when applying responsive
-        // rules (#6912).
-        animation = series.finishedAnimating && { animation: false }, kinds = {};
+        var series = this, chart = series.chart,
+            // must use user options when changing type because series.options
+            // is merged in with type specific plotOptions
+            oldOptions = series.userOptions, seriesOptions, initialType = series.initialType || series.type, newType = (options.type ||
+                oldOptions.type ||
+                chart.options.chart.type), keepPoints = !(
+                    // Indicators, histograms etc recalculate the data. It should be
+                    // possible to omit this.
+                    this.hasDerivedData ||
+                    // Changes to data grouping requires new points in new groups
+                    options.dataGrouping ||
+                    // New type requires new point classes
+                    (newType && newType !== this.type) ||
+                    // New options affecting how the data points are built
+                    typeof options.pointStart !== 'undefined' ||
+                    options.pointInterval ||
+                    options.pointIntervalUnit ||
+                    options.keys), initialSeriesProto = seriesTypes[initialType].prototype, n, groups = [
+                        'group',
+                        'markerGroup',
+                        'dataLabelsGroup',
+                        'transformGroup'
+                    ], preserve = [
+                        'eventOptions',
+                        'navigatorSeries',
+                        'baseSeries'
+                    ],
+            // Animation must be enabled when calling update before the initial
+            // animation has first run. This happens when calling update
+            // directly after chart initialization, or when applying responsive
+            // rules (#6912).
+            animation = series.finishedAnimating && { animation: false }, kinds = {};
         if (keepPoints) {
-            preserve.push('data', 'isDirtyData', 'points', 'processedXData', 'processedYData', 'xIncrement', 'cropped', '_hasPointMarkers', '_hasPointLabels', 
-            // Map specific, consider moving it to series-specific preserve-
-            // properties (#10617)
-            'mapMap', 'mapData', 'minY', 'maxY', 'minX', 'maxX');
+            preserve.push('data', 'isDirtyData', 'points', 'processedXData', 'processedYData', 'xIncrement', 'cropped', '_hasPointMarkers', '_hasPointLabels',
+                // Map specific, consider moving it to series-specific preserve-
+                // properties (#10617)
+                'mapMap', 'mapData', 'minY', 'maxY', 'minX', 'maxX');
             if (options.visible !== false) {
                 preserve.push('area', 'graph');
             }
@@ -1096,10 +1096,10 @@ extend(Series.prototype, /** @lends Series.prototype */ {
             index: typeof oldOptions.index === 'undefined' ?
                 series.index : oldOptions.index,
             pointStart: pick(
-            // when updating from blank (#7933)
-            oldOptions.pointStart, 
-            // when updating after addPoint
-            series.xData[0])
+                // when updating from blank (#7933)
+                oldOptions.pointStart,
+                // when updating after addPoint
+                series.xData[0])
         }, (!keepPoints && { data: series.options.data }), options);
         // Merge does not merge arrays, but replaces them. Since points were
         // updated, `series.options.data` has correct merged options, use it:
@@ -1250,7 +1250,7 @@ extend(Axis.prototype, /** @lends Highcharts.Axis.prototype */ {
      */
     remove: function (redraw) {
         var chart = this.chart, key = this.coll, // xAxis or yAxis
-        axisSeries = this.series, i = axisSeries.length;
+            axisSeries = this.series, i = axisSeries.length;
         // Remove associated series (#2687)
         while (i--) {
             if (axisSeries[i]) {

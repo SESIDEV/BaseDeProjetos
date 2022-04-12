@@ -97,16 +97,16 @@ MapNavigation.prototype.update = function (options) {
             button = chart.renderer
                 .button(buttonOptions.text, 0, 0, outerHandler, attr, hoverStates, selectStates, 0, n === 'zoomIn' ? 'topbutton' : 'bottombutton')
                 .addClass('highcharts-map-navigation highcharts-' + {
-                zoomIn: 'zoom-in',
-                zoomOut: 'zoom-out'
-            }[n])
+                    zoomIn: 'zoom-in',
+                    zoomOut: 'zoom-out'
+                }[n])
                 .attr({
-                width: buttonOptions.width,
-                height: buttonOptions.height,
-                title: chart.options.lang[n],
-                padding: buttonOptions.padding,
-                zIndex: 5
-            })
+                    width: buttonOptions.width,
+                    height: buttonOptions.height,
+                    title: chart.options.lang[n],
+                    padding: buttonOptions.padding,
+                    zIndex: 5
+                })
                 .add();
             button.handler = buttonOptions.onclick;
             // Stop double click event (#4444)
@@ -153,12 +153,12 @@ MapNavigation.prototype.updateEvents = function (options) {
     if (pick(options.enableMouseWheelZoom, options.enabled)) {
         this.unbindMouseWheel = this.unbindMouseWheel || addEvent(chart.container, typeof doc.onmousewheel === 'undefined' ?
             'DOMMouseScroll' : 'mousewheel', function (e) {
-            chart.pointer.onContainerMouseWheel(e);
-            // Issue #5011, returning false from non-jQuery event does
-            // not prevent default
-            stopEvent(e);
-            return false;
-        });
+                chart.pointer.onContainerMouseWheel(e);
+                // Issue #5011, returning false from non-jQuery event does
+                // not prevent default
+                stopEvent(e);
+                return false;
+            });
     }
     else if (this.unbindMouseWheel) {
         // Unbind and set unbinder to undefined
@@ -248,7 +248,7 @@ extend(Chart.prototype, /** @lends Chart.prototype */ {
             height: yAxis.dataMax - yAxis.dataMin
         }), zoomOut = (newExt.x <= xAxis.dataMin &&
             newExt.width >=
-                xAxis.dataMax - xAxis.dataMin &&
+            xAxis.dataMax - xAxis.dataMin &&
             newExt.y <= yAxis.dataMin &&
             newExt.height >= yAxis.dataMax - yAxis.dataMin);
         // When mousewheel zooming, fix the point under the mouse

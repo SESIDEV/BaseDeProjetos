@@ -119,11 +119,11 @@ var controllableMixin = {
             Tooltip.prototype.getAnchor.call({
                 chart: point.series.chart
             }, point), anchor = {
-            x: box[0] + (this.options.x || 0),
-            y: box[1] + (this.options.y || 0),
-            height: box[2] || 0,
-            width: box[3] || 0
-        };
+                x: box[0] + (this.options.x || 0),
+                y: box[1] + (this.options.y || 0),
+                height: box[2] || 0,
+                width: box[3] || 0
+            };
         return {
             relativePosition: anchor,
             absolutePosition: merge(anchor, {
@@ -290,11 +290,11 @@ var controllableMixin = {
      * @param {number} dy translation for y coordinate
      */
     translateShape: function (dx, dy) {
-        var chart = this.annotation.chart, 
-        // Annotation.options
-        shapeOptions = this.annotation.userOptions, 
-        // Chart.options.annotations
-        annotationIndex = chart.annotations.indexOf(this.annotation), chartOptions = chart.options.annotations[annotationIndex];
+        var chart = this.annotation.chart,
+            // Annotation.options
+            shapeOptions = this.annotation.userOptions,
+            // Chart.options.annotations
+            annotationIndex = chart.annotations.indexOf(this.annotation), chartOptions = chart.options.annotations[annotationIndex];
         this.translatePoint(dx, dy, 0);
         // Options stored in:
         // - chart (for exporting)

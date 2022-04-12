@@ -31,14 +31,12 @@ namespace BaseDeProjetos.Controllers
                 _base = file.ReadToEnd().Split("\n");
             }
 
-
             return View(nameof(Index));
         }
 
         // GET: Projetos
         public IActionResult Index(string casa, string ano = "")
         {
-
             IQueryable<Projeto> projetos = DefinirCasa(casa);
             projetos = PeriodizarProjetos(ano, projetos);
             CategorizarStatusProjetos(projetos);
@@ -69,10 +67,9 @@ namespace BaseDeProjetos.Controllers
             {
                 ano_limite = Convert.ToInt32(ano);
             }
-            
+
             return lista.Where(s => s.DataEncerramento.Year >= ano_limite);
         }
-
 
         private void GerarIndicadores(string casa, ApplicationDbContext _context)
         {
@@ -89,7 +86,6 @@ namespace BaseDeProjetos.Controllers
 
         private IQueryable<Projeto> DefinirCasa(string? casa)
         {
-
             Instituto enum_casa;
 
             if (string.IsNullOrEmpty(casa))
@@ -112,7 +108,6 @@ namespace BaseDeProjetos.Controllers
                     enum_casa = Instituto.Super;
                 }
             }
-
 
             ViewData["Area"] = casa;
 
@@ -137,7 +132,6 @@ namespace BaseDeProjetos.Controllers
             return View("IncluirEntrega");
         }
 
-
         [HttpPost]
         public IActionResult IncluirEntrega(string id, [Bind("Id,NomeEntrega,DescricaoEntrega,DataFim,DataInicioEntrega,ProjetoId")] Entrega entrega)
         {
@@ -152,7 +146,6 @@ namespace BaseDeProjetos.Controllers
             {
                 _context.Entrega.Add(entrega);
                 _context.SaveChanges();
-
             }
 
             return RedirectToAction(nameof(Index), new { casa = projeto.Casa });
@@ -203,7 +196,6 @@ namespace BaseDeProjetos.Controllers
             return View();
         }
 
-
         // GET: Projetos/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -230,7 +222,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // POST: Projetos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -283,7 +275,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // POST: Projetos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -372,7 +364,6 @@ namespace BaseDeProjetos.Controllers
                 _context.Entry(local).State = EntityState.Detached;
             }
         }
-
 
         public IActionResult IncluirEntregas(string projetoId)
         {

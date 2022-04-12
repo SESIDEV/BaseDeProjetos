@@ -8,10 +8,12 @@ namespace BaseDeProjetos.Models
     {
         [Key]
         public int Id { get; set; }
+
         public DateTime Data { get; set; }
         public decimal Receita { get; set; }
-        public decimal Despeita { get; set; }
+        public decimal Despesa { get; set; }
         public decimal Investimento { get; set; }
         public float QualiSeguranca { get; set; }
+        public Instituto Casa { get; set; }
     }
 }

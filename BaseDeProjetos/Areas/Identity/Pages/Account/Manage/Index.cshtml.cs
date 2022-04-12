@@ -38,7 +38,7 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account.Manage
         public InputModel Input { get; set; }
 
         [BindProperty]
-        public Dictionary<string,double> Bag { get; set; }
+        public Dictionary<string, double> Bag { get; set; }
 
         public class InputModel
         {
@@ -98,9 +98,9 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account.Manage
 
         private static bool AvaliarColiderança(Projeto p, Usuario user)
         {
-            for(int i = 1; i< p.Equipe.Count; i++)
+            for (int i = 1; i < p.Equipe.Count; i++)
             {
-                if(p.Equipe[i].Id == user.Id)
+                if (p.Equipe[i].Id == user.Id)
                 {
                     return true;
                 }

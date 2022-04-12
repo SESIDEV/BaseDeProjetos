@@ -14,7 +14,6 @@
     }
 }
 
-
 <h1>Criar</h1>
 
 <h4>Projeto</h4>
@@ -35,7 +34,7 @@
                     <label asp-for="Casa" class="control-label"></label>
                     @if (!(Context.Session.GetString("_Casa") is null))
                     {
-                        <select asp-for="Casa" class="form-control" >
+                        <select asp-for="Casa" class="form-control">
                             @{ var enum_v = (int)Enum.Parse(typeof(Instituto), Context.Session.GetString("_Casa"), true);}
                             <option value="@enum_v" selected="selected">@Context.Session.GetString("_Casa")</option>
                         </select>
@@ -46,7 +45,6 @@
                     }
                     <span asp-validation-for="Casa" class="text-danger"></span>
                 </div>
-
 
                 <div class="form-group">
                     <label asp-for="NomeProjeto" class="control-label"></label>
@@ -84,7 +82,6 @@
                     <select asp-for="status" class="form-control" asp-items="Html.GetEnumSelectList<StatusProjeto>()"></select>
                     <span asp-validation-for="status" class="text-danger"></span>
                 </div>
-
             </fieldset>
             <fieldset class="col-6">
                 <legend>Dados contábeis do projeto</legend>
@@ -112,7 +109,6 @@
             <div class="form-group col-12">
                 <input type="submit" value="Criar" class="btn btn-primary" />
             </div>
-
         </form>
     </div>
 </div>

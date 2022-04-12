@@ -400,9 +400,9 @@ seriesType('bubble', 'scatter', {
      * @private
      */
     haloPath: function (size) {
-        return Point.prototype.haloPath.call(this, 
-        // #6067
-        size === 0 ? 0 : (this.marker ? this.marker.radius || 0 : 0) + size);
+        return Point.prototype.haloPath.call(this,
+            // #6067
+            size === 0 ? 0 : (this.marker ? this.marker.radius || 0 : 0) + size);
     },
     ttBelow: false
 });

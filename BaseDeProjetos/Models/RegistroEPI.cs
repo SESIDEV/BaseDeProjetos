@@ -6,20 +6,20 @@ namespace BaseDeProjetos.Models
     public class RegistroEPI
     {
         [Key]
-        public  int Id { get; set; }
+        public int Id { get; set; }
 
         public virtual DateTime DataEntrega { get; set; }
 
-        [Display(Name ="Unidade Operacional")]
+        [Display(Name = "Unidade Operacional")]
         public Instituto UnidadeOperacional { get; set; }
 
         public String UsuarioId { get; set; }
-        [Display(Name ="Nome do Usuário")]
-        //Usuario contém: Nome, Matricula, UOP, Setor, Tipo de Usuário (receptor)
+
+        [Display(Name = "Nome do Usuário")]
         public virtual Usuario Usuario { get; set; }
 
-        [Display(Name ="Motivo da Troca do EPI")]
-        public JustificaEPI Justificativa{ get; set; }
+        [Display(Name = "Motivo da Troca do EPI")]
+        public JustificaEPI Justificativa { get; set; }
     }
 
     public class ModeloEPI
@@ -28,11 +28,12 @@ namespace BaseDeProjetos.Models
         public uint IdEPI
         {
             get; set;
-         }
+        }
+
         public string Descricao;
         public string Marca;
     }
-    
+
     public class EpiConcreto
     {
         [Key]
@@ -48,6 +49,6 @@ namespace BaseDeProjetos.Models
 
         public Boolean isAtivo;
 
-        public DateTime DataDeVencimento; 
+        public DateTime DataDeVencimento;
     }
 }

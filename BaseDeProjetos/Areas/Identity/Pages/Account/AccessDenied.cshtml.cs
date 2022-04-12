@@ -6,8 +6,6 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account
     {
         public void OnGet()
         {
-
         }
     }
 }
-

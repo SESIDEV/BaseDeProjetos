@@ -22,12 +22,12 @@ H.layouts = {
     }
 };
 extend(
-/**
- * Reingold-Fruchterman algorithm from
- * "Graph Drawing by Force-directed Placement" paper.
- * @private
- */
-H.layouts['reingold-fruchterman'].prototype, {
+    /**
+     * Reingold-Fruchterman algorithm from
+     * "Graph Drawing by Force-directed Placement" paper.
+     * @private
+     */
+    H.layouts['reingold-fruchterman'].prototype, {
     init: function (options) {
         this.options = options;
         this.nodes = [];
@@ -342,8 +342,8 @@ H.layouts['reingold-fruchterman'].prototype, {
                 layout.nodes.forEach(function (repNode) {
                     var force, distanceR, distanceXY;
                     if (
-                    // Node can not repulse itself:
-                    node !== repNode &&
+                        // Node can not repulse itself:
+                        node !== repNode &&
                         // Only close nodes affect each other:
                         // layout.getDistR(node, repNode) < 2 * k &&
                         // Not dragged:

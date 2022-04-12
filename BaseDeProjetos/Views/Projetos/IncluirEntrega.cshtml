@@ -16,7 +16,7 @@
         </div>
         <div class="col-8">
             <div>
-                <form asp-action="IncluirEntrega" >
+                <form asp-action="IncluirEntrega">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="ProjetoId" value="@projeto.Id" />
 
@@ -28,7 +28,6 @@
                     <label asp-for="Projeto.NomeProjeto"></label>
                     <input asp-for="Projeto.NomeProjeto" class="form-control" value="@projeto.NomeProjeto" readonly />
                     <span asp-validation-for="Projeto.NomeProjeto" class="text-danger"></span>
-
 
                     <label asp-for="NomeEntrega"></label>
                     <input asp-for="NomeEntrega" class="form-control" />
@@ -44,10 +43,9 @@
                     <input asp-for="DataInicioEntrega" type="date" class="form-control" />
                     <span asp-validation-for="DataInicioEntrega" class="text-danger"></span>
 
-                     <label asp-for="DataFim"></label>
+                    <label asp-for="DataFim"></label>
                     <input asp-for="DataFim" type="date" class="form-control" />
                     <span asp-validation-for="DataFim" class="text-danger"></span>
-
 
                     <div>
                         <input class="btn btn-dark" type="submit" value="Cadastrar Entrega">
@@ -61,4 +59,3 @@
         </div>
     </div>
 </div>
-

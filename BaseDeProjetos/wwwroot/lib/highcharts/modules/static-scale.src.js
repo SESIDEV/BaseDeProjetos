@@ -100,10 +100,7 @@
             this.redrawTrigger = null;
         };
         addEvent(Chart, 'render', Chart.prototype.adjustHeight);
-
     });
     _registerModule(_modules, 'masters/modules/static-scale.src.js', [], function () {
-
-
     });
 }));

@@ -247,14 +247,14 @@
                 if (!renderer.styledMode) {
                     icon
                         .attr({
-                        'stroke-width': 1,
-                        'fill': pick(params.color, '#666666')
-                    })
+                            'stroke-width': 1,
+                            'fill': pick(params.color, '#666666')
+                        })
                         .css({
-                        cursor: 'pointer',
-                        stroke: options.lineColor,
-                        strokeWidth: options.lineWidth
-                    });
+                            cursor: 'pointer',
+                            stroke: options.lineColor,
+                            strokeWidth: options.lineWidth
+                        });
                 }
                 // Update the icon positions
                 icon[isNew ? 'attr' : 'animate']({
@@ -280,8 +280,8 @@
                     node = mapOfPosToGridNode && mapOfPosToGridNode[pos];
                     level = (node && node.depth) || 1;
                     result.x += (
-                    // Add space for symbols
-                    ((symbolOptions.width) + (symbolOptions.padding * 2)) +
+                        // Add space for symbols
+                        ((symbolOptions.width) + (symbolOptions.padding * 2)) +
                         // Apply indentation
                         ((level - 1) * indentation));
                 }
@@ -792,12 +792,12 @@
         });
         // Center tick labels in cells.
         addEvent(Tick, 'afterGetLabelPosition', function (e) {
-            var tick = this, label = tick.label, axis = tick.axis, reversed = axis.reversed, chart = axis.chart, options = axis.options, gridOptions = options.grid || {}, labelOpts = axis.options.labels, align = labelOpts.align, 
-            // verticalAlign is currently not supported for axis.labels.
-            verticalAlign = 'middle', // labelOpts.verticalAlign,
-            side = GridAxis.Side[axis.side], tickmarkOffset = e.tickmarkOffset, tickPositions = axis.tickPositions, tickPos = tick.pos - tickmarkOffset, nextTickPos = (isNumber(tickPositions[e.index + 1]) ?
-                tickPositions[e.index + 1] - tickmarkOffset :
-                axis.max + tickmarkOffset), tickSize = axis.tickSize('tick'), tickWidth = tickSize ? tickSize[0] : 0, crispCorr = tickSize ? tickSize[1] / 2 : 0, labelHeight, lblMetrics, lines, bottom, top, left, right;
+            var tick = this, label = tick.label, axis = tick.axis, reversed = axis.reversed, chart = axis.chart, options = axis.options, gridOptions = options.grid || {}, labelOpts = axis.options.labels, align = labelOpts.align,
+                // verticalAlign is currently not supported for axis.labels.
+                verticalAlign = 'middle', // labelOpts.verticalAlign,
+                side = GridAxis.Side[axis.side], tickmarkOffset = e.tickmarkOffset, tickPositions = axis.tickPositions, tickPos = tick.pos - tickmarkOffset, nextTickPos = (isNumber(tickPositions[e.index + 1]) ?
+                    tickPositions[e.index + 1] - tickmarkOffset :
+                    axis.max + tickmarkOffset), tickSize = axis.tickSize('tick'), tickWidth = tickSize ? tickSize[0] : 0, crispCorr = tickSize ? tickSize[1] / 2 : 0, labelHeight, lblMetrics, lines, bottom, top, left, right;
             // Only center tick labels in grid axes
             if (gridOptions.enabled === true) {
                 // Calculate top and bottom positions of the cell.
@@ -848,16 +848,16 @@
                 if (!labelOpts.useHTML) {
                     lines = Math.round(labelHeight / lblMetrics.h);
                     e.pos.y += (
-                    // Center the label
-                    // TODO: why does this actually center the label?
-                    ((lblMetrics.b - (lblMetrics.h - lblMetrics.f)) / 2) +
+                        // Center the label
+                        // TODO: why does this actually center the label?
+                        ((lblMetrics.b - (lblMetrics.h - lblMetrics.f)) / 2) +
                         // Adjust for height of additional lines.
                         -(((lines - 1) * lblMetrics.h) / 2));
                 }
                 else {
                     e.pos.y += (
-                    // Readjust yCorr in htmlUpdateTransform
-                    lblMetrics.b +
+                        // Readjust yCorr in htmlUpdateTransform
+                        lblMetrics.b +
                         // Adjust for height of html label
                         -(labelHeight / 2));
                 }
@@ -988,8 +988,8 @@
                     // the position in the perpendicular direction of the axis
                     var offAxis = ((horiz ? axisTop + axisHeight : axisLeft) +
                         (horiz ? 1 : -1) * // horizontal axis reverses the margin
-                            (opposite ? -1 : 1) * // so does opposite axes
-                            crispCorr +
+                        (opposite ? -1 : 1) * // so does opposite axes
+                        crispCorr +
                         (axis.side === GridAxis.Side.bottom ? titleFontSize : 0));
                     e.titlePosition.x = horiz ?
                         axisLeft - titleWidth / 2 - titleMargin + xOption :
@@ -1118,8 +1118,8 @@
                                 axis.grid.axisLineExtra = renderer
                                     .path(linePath)
                                     .attr({
-                                    zIndex: 7
-                                })
+                                        zIndex: 7
+                                    })
                                     .addClass('highcharts-axis-line')
                                     .add(axis.axisGroup);
                                 if (!renderer.styledMode) {
@@ -1225,30 +1225,30 @@
                         // for example we shouln't have one grid cell spanning
                         // two days.
                         units: [[
-                                'millisecond',
-                                [1, 10, 100]
-                            ], [
-                                'second',
-                                [1, 10]
-                            ], [
-                                'minute',
-                                [1, 5, 15]
-                            ], [
-                                'hour',
-                                [1, 6]
-                            ], [
-                                'day',
-                                [1]
-                            ], [
-                                'week',
-                                [1]
-                            ], [
-                                'month',
-                                [1]
-                            ], [
-                                'year',
-                                null
-                            ]]
+                            'millisecond',
+                            [1, 10, 100]
+                        ], [
+                            'second',
+                            [1, 10]
+                        ], [
+                            'minute',
+                            [1, 5, 15]
+                        ], [
+                            'hour',
+                            [1, 6]
+                        ], [
+                            'day',
+                            [1]
+                        ], [
+                            'week',
+                            [1]
+                        ], [
+                            'month',
+                            [1]
+                        ], [
+                            'year',
+                            null
+                        ]]
                     }, userOptions);
                     // X-axis specific options
                     if (this.coll === 'xAxis') {
@@ -1262,8 +1262,8 @@
                         // For the secondary grid axis, use the primary axis'
                         // tick intervals and return ticks one level higher.
                         if (
-                        // Check for tick pixel interval in options
-                        !defined(userOptions.tickPixelInterval) &&
+                            // Check for tick pixel interval in options
+                            !defined(userOptions.tickPixelInterval) &&
                             // Only for linked axes
                             defined(userOptions.linkedTo) &&
                             !defined(userOptions.tickPositioner) &&
@@ -1679,21 +1679,21 @@
                         Axis.prototype.setAxisTranslation.call(this, saveOld);
                         brokenAxis.unitLength = null;
                         if (brokenAxis.hasBreaks) {
-                            var breaks = axis.options.breaks || [], 
-                            // Temporary one:
-                            breakArrayT = [], breakArray = [], length = 0, inBrk, repeat, min = axis.userMin || axis.min, max = axis.userMax || axis.max, pointRangePadding = pick(axis.pointRangePadding, 0), start, i;
+                            var breaks = axis.options.breaks || [],
+                                // Temporary one:
+                                breakArrayT = [], breakArray = [], length = 0, inBrk, repeat, min = axis.userMin || axis.min, max = axis.userMax || axis.max, pointRangePadding = pick(axis.pointRangePadding, 0), start, i;
                             // Min & max check (#4247)
                             breaks.forEach(function (brk) {
                                 repeat = brk.repeat || Infinity;
                                 if (BrokenAxisAdditions.isInBreak(brk, min)) {
                                     min +=
                                         (brk.to % repeat) -
-                                            (min % repeat);
+                                        (min % repeat);
                                 }
                                 if (BrokenAxisAdditions.isInBreak(brk, max)) {
                                     max -=
                                         (max % repeat) -
-                                            (brk.from % repeat);
+                                        (brk.from % repeat);
                                 }
                             });
                             // Construct an array holding all breaks in the axis
@@ -1758,7 +1758,7 @@
                             else if (brokenAxis.unitLength) {
                                 axis.transA *=
                                     (max - axis.min + pointRangePadding) /
-                                        brokenAxis.unitLength;
+                                    brokenAxis.unitLength;
                             }
                             if (pointRangePadding) {
                                 axis.minPixelPadding =
@@ -1918,7 +1918,7 @@
                             if (next.x - current.x > gapSize) {
                                 var xRange = (current.x + next.x) / 2;
                                 points.splice(// insert after this one
-                                i + 1, 0, {
+                                    i + 1, 0, {
                                     isNull: true,
                                     x: xRange
                                 });
@@ -1983,8 +1983,8 @@
                             var isPointInBreak = (!nullGap && ((xAxis &&
                                 xAxis.brokenAxis &&
                                 xAxis.brokenAxis.isInAnyBreak(point.x, true)) || (yAxis &&
-                                yAxis.brokenAxis &&
-                                yAxis.brokenAxis.isInAnyBreak(point.y, true))));
+                                    yAxis.brokenAxis &&
+                                    yAxis.brokenAxis.isInAnyBreak(point.y, true))));
                             // Set point.visible if in any break.
                             // If not in break, reset visible to original value.
                             point.visible = isPointInBreak ?
@@ -2117,8 +2117,8 @@
                         var data = isObject(node.data, true) ? node.data : {}, name = isString(data.name) ? data.name : '', parentNode = mapOfIdToNode[node.parent], parentGridNode = (isObject(parentNode, true) ?
                             mapOfPosToGridNode[parentNode.pos] :
                             null), hasSameName = function (x) {
-                            return x.name === name;
-                        }, gridNode, pos;
+                                return x.name === name;
+                            }, gridNode, pos;
                         // If not unique names, look for sibling node with the same name
                         if (uniqueNamesEnabled &&
                             isObject(parentGridNode, true) &&
@@ -2414,31 +2414,31 @@
                             * @private
                             */
                             levels: [{
-                                    /**
-                                    * Specify the level which the options within this object
-                                    * applies to.
-                                    *
-                                    * @type      {number}
-                                    * @product   gantt
-                                    * @apioption yAxis.labels.levels.level
-                                    *
-                                    * @private
-                                    */
-                                    level: void 0
-                                }, {
-                                    level: 1,
-                                    /**
-                                     * @type      {Highcharts.CSSObject}
-                                     * @product   gantt
-                                     * @apioption yAxis.labels.levels.style
-                                     *
-                                     * @private
-                                     */
-                                    style: {
-                                        /** @ignore-option */
-                                        fontWeight: 'bold'
-                                    }
-                                }],
+                                /**
+                                * Specify the level which the options within this object
+                                * applies to.
+                                *
+                                * @type      {number}
+                                * @product   gantt
+                                * @apioption yAxis.labels.levels.level
+                                *
+                                * @private
+                                */
+                                level: void 0
+                            }, {
+                                level: 1,
+                                /**
+                                 * @type      {Highcharts.CSSObject}
+                                 * @product   gantt
+                                 * @apioption yAxis.labels.levels.style
+                                 *
+                                 * @private
+                                 */
+                                style: {
+                                    /** @ignore-option */
+                                    fontWeight: 'bold'
+                                }
+                            }],
                             /**
                              * The symbol for the collapse and expand icon in a
                              * treegrid.
@@ -2664,7 +2664,5 @@
         return TreeGridAxis;
     });
     _registerModule(_modules, 'masters/modules/treegrid.src.js', [], function () {
-
-
     });
 }));

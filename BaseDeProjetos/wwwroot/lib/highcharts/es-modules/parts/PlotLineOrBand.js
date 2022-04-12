@@ -858,10 +858,10 @@ extend(Axis.prototype, /** @lends Highcharts.Axis.prototype */ {
             value: from,
             force: true,
             acrossPanes: this.options.acrossPanes
-        }), result = [], i, 
-        // #4964 check if chart is inverted or plotband is on yAxis
-        horiz = this.horiz, plus = 1, isFlat, outside = (from < this.min && to < this.min) ||
-            (from > this.max && to > this.max);
+        }), result = [], i,
+            // #4964 check if chart is inverted or plotband is on yAxis
+            horiz = this.horiz, plus = 1, isFlat, outside = (from < this.min && to < this.min) ||
+                (from > this.max && to > this.max);
         if (path && toPath) {
             // Flat paths don't need labels (#3836)
             if (outside) {

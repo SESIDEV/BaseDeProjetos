@@ -250,18 +250,18 @@ extend(InfoRegionsComponent.prototype, /** @lends Highcharts.InfoRegionsComponen
     defaultBeforeChartFormatter: function () {
         var chart = this.chart, format = chart.options.accessibility
             .screenReaderSection.beforeChartFormat, axesDesc = this.getAxesDescription(), dataTableButtonId = 'hc-linkto-highcharts-data-table-' +
-            chart.index, annotationsTitleStr = chart.langFormat('accessibility.screenReaderSection.annotations.heading', { chart: chart }), context = {
-            chartTitle: getChartTitle(chart),
-            typeDescription: this.getTypeDescriptionText(),
-            chartSubtitle: this.getSubtitleText(),
-            chartLongdesc: this.getLongdescText(),
-            xAxisDescription: axesDesc.xAxis,
-            yAxisDescription: axesDesc.yAxis,
-            viewTableButton: chart.getCSV ?
-                this.getDataTableButtonText(dataTableButtonId) : '',
-            annotationsTitle: annotationsTitleStr,
-            annotationsList: getAnnotationsInfoHTML(chart)
-        }, formattedString = H.i18nFormat(format, context, chart);
+                chart.index, annotationsTitleStr = chart.langFormat('accessibility.screenReaderSection.annotations.heading', { chart: chart }), context = {
+                    chartTitle: getChartTitle(chart),
+                    typeDescription: this.getTypeDescriptionText(),
+                    chartSubtitle: this.getSubtitleText(),
+                    chartLongdesc: this.getLongdescText(),
+                    xAxisDescription: axesDesc.xAxis,
+                    yAxisDescription: axesDesc.yAxis,
+                    viewTableButton: chart.getCSV ?
+                        this.getDataTableButtonText(dataTableButtonId) : '',
+                    annotationsTitle: annotationsTitleStr,
+                    annotationsList: getAnnotationsInfoHTML(chart)
+                }, formattedString = H.i18nFormat(format, context, chart);
         this.dataTableButtonId = dataTableButtonId;
         return stringToSimpleHTML(formattedString);
     },
@@ -272,8 +272,8 @@ extend(InfoRegionsComponent.prototype, /** @lends Highcharts.InfoRegionsComponen
     defaultAfterChartFormatter: function () {
         var chart = this.chart, format = chart.options.accessibility
             .screenReaderSection.afterChartFormat, context = {
-            endOfChartMarker: this.getEndOfChartMarkerText()
-        }, formattedString = H.i18nFormat(format, context, chart);
+                endOfChartMarker: this.getEndOfChartMarkerText()
+            }, formattedString = H.i18nFormat(format, context, chart);
         return stringToSimpleHTML(formattedString);
     },
     /**
@@ -303,7 +303,7 @@ extend(InfoRegionsComponent.prototype, /** @lends Highcharts.InfoRegionsComponen
         var chart = this.chart;
         return chart.types ?
             chart.options.accessibility.typeDescription ||
-                chart.getTypeDescription(chart.types) : '';
+            chart.getTypeDescription(chart.types) : '';
     },
     /**
      * @private
@@ -486,8 +486,8 @@ extend(InfoRegionsComponent.prototype, /** @lends Highcharts.InfoRegionsComponen
     getAxisFromToDescription: function (axis) {
         var chart = this.chart, dateRangeFormat = chart.options.accessibility
             .screenReaderSection.axisRangeDateFormat, format = function (axisKey) {
-            return axis.isDatetimeAxis ? chart.time.dateFormat(dateRangeFormat, axis[axisKey]) : axis[axisKey];
-        };
+                return axis.isDatetimeAxis ? chart.time.dateFormat(dateRangeFormat, axis[axisKey]) : axis[axisKey];
+            };
         return chart.langFormat('accessibility.axis.rangeFromTo', {
             chart: chart,
             axis: axis,

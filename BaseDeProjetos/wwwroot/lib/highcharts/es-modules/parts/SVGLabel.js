@@ -56,8 +56,8 @@ var SVGLabel = /** @class */ (function (_super) {
         }
         _this.text = renderer.text('', 0, 0, useHTML)
             .attr({
-            zIndex: 1
-        });
+                zIndex: 1
+            });
         // Validate the shape argument
         var hasBGImage;
         if (typeof shape === 'string') {
@@ -304,10 +304,10 @@ var SVGLabel = /** @class */ (function (_super) {
         this.height = (this.heightSetting || bBox.height || 0) + 2 * padding;
         // Update the label-scoped y offset. Math.min because of inline
         // style (#9400)
-        this.baselineOffset = padding + Math.min(this.renderer.fontMetrics(style && style.fontSize, this.text).b, 
-        // When the height is 0, there is no bBox, so go with the font
-        // metrics. Highmaps CSS demos.
-        bBox.height || Infinity);
+        this.baselineOffset = padding + Math.min(this.renderer.fontMetrics(style && style.fontSize, this.text).b,
+            // When the height is 0, there is no bBox, so go with the font
+            // metrics. Highmaps CSS demos.
+            bBox.height || Infinity);
         if (this.needsBox) {
             // Create the border box if it is not already present
             if (!this.box) {
@@ -316,7 +316,7 @@ var SVGLabel = /** @class */ (function (_super) {
                     this.renderer.symbol(this.symbolKey) :
                     this.renderer.rect();
                 box.addClass(// Don't use label className for buttons
-                (this.className === 'button' ? '' : 'highcharts-label-box') +
+                    (this.className === 'button' ? '' : 'highcharts-label-box') +
                     (this.className ? ' highcharts-' + this.className + '-box' : ''));
                 box.add(this);
                 crispAdjust = this.getCrispAdjust();

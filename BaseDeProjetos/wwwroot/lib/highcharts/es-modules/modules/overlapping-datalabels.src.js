@@ -73,51 +73,51 @@ Chart.prototype.hideOverlappingLabels = function (labels) {
             box2.x + box2.width < box1.x ||
             box2.y > box1.y + box1.height ||
             box2.y + box2.height < box1.y);
-    }, 
-    // Get the box with its position inside the chart, as opposed to getBBox
-    // that only reports the position relative to the parent.
-    getAbsoluteBox = function (label) {
-        var pos, parent, bBox, 
-        // Substract the padding if no background or border (#4333)
-        padding = label.box ? 0 : (label.padding || 0), lineHeightCorrection = 0, xOffset = 0, boxWidth, alignValue;
-        if (label &&
-            (!label.alignAttr || label.placed)) {
-            pos = label.alignAttr || {
-                x: label.attr('x'),
-                y: label.attr('y')
-            };
-            parent = label.parentGroup;
-            // Get width and height if pure text nodes (stack labels)
-            if (!label.width) {
-                bBox = label.getBBox();
-                label.width = bBox.width;
-                label.height = bBox.height;
-                // Labels positions are computed from top left corner, so
-                // we need to substract the text height from text nodes too.
-                lineHeightCorrection = ren
-                    .fontMetrics(null, label.element).h;
+    },
+        // Get the box with its position inside the chart, as opposed to getBBox
+        // that only reports the position relative to the parent.
+        getAbsoluteBox = function (label) {
+            var pos, parent, bBox,
+                // Substract the padding if no background or border (#4333)
+                padding = label.box ? 0 : (label.padding || 0), lineHeightCorrection = 0, xOffset = 0, boxWidth, alignValue;
+            if (label &&
+                (!label.alignAttr || label.placed)) {
+                pos = label.alignAttr || {
+                    x: label.attr('x'),
+                    y: label.attr('y')
+                };
+                parent = label.parentGroup;
+                // Get width and height if pure text nodes (stack labels)
+                if (!label.width) {
+                    bBox = label.getBBox();
+                    label.width = bBox.width;
+                    label.height = bBox.height;
+                    // Labels positions are computed from top left corner, so
+                    // we need to substract the text height from text nodes too.
+                    lineHeightCorrection = ren
+                        .fontMetrics(null, label.element).h;
+                }
+                boxWidth = label.width - 2 * padding;
+                alignValue = {
+                    left: '0',
+                    center: '0.5',
+                    right: '1'
+                }[label.alignValue];
+                if (alignValue) {
+                    xOffset = +alignValue * boxWidth;
+                }
+                else if (isNumber(label.x) && Math.round(label.x) !== label.translateX) {
+                    xOffset = label.x - label.translateX;
+                }
+                return {
+                    x: pos.x + (parent.translateX || 0) + padding - xOffset,
+                    y: pos.y + (parent.translateY || 0) + padding -
+                        lineHeightCorrection,
+                    width: label.width - 2 * padding,
+                    height: label.height - 2 * padding
+                };
             }
-            boxWidth = label.width - 2 * padding;
-            alignValue = {
-                left: '0',
-                center: '0.5',
-                right: '1'
-            }[label.alignValue];
-            if (alignValue) {
-                xOffset = +alignValue * boxWidth;
-            }
-            else if (isNumber(label.x) && Math.round(label.x) !== label.translateX) {
-                xOffset = label.x - label.translateX;
-            }
-            return {
-                x: pos.x + (parent.translateX || 0) + padding - xOffset,
-                y: pos.y + (parent.translateY || 0) + padding -
-                    lineHeightCorrection,
-                width: label.width - 2 * padding,
-                height: label.height - 2 * padding
-            };
-        }
-    };
+        };
     for (i = 0; i < len; i++) {
         label = labels[i];
         if (label) {

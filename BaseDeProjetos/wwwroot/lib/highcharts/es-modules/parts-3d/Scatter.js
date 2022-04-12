@@ -22,28 +22,28 @@ var seriesTypes = H.seriesTypes;
  *
  * @augments Highcharts.Series
  */
-seriesType('scatter3d', 'scatter', 
-/**
- * A 3D scatter plot uses x, y and z coordinates to display values for three
- * variables for a set of data.
- *
- * @sample {highcharts} highcharts/3d/scatter/
- *         Simple 3D scatter
- * @sample {highcharts} highcharts/demo/3d-scatter-draggable
- *         Draggable 3d scatter
- *
- * @extends      plotOptions.scatter
- * @excluding    dragDrop, cluster
- * @product      highcharts
- * @requires     highcharts-3d
- * @optionparent plotOptions.scatter3d
- */
-{
-    tooltip: {
-        pointFormat: 'x: <b>{point.x}</b><br/>y: <b>{point.y}</b><br/>z: <b>{point.z}</b><br/>'
-    }
-    // Series class
-}, {
+seriesType('scatter3d', 'scatter',
+    /**
+     * A 3D scatter plot uses x, y and z coordinates to display values for three
+     * variables for a set of data.
+     *
+     * @sample {highcharts} highcharts/3d/scatter/
+     *         Simple 3D scatter
+     * @sample {highcharts} highcharts/demo/3d-scatter-draggable
+     *         Draggable 3d scatter
+     *
+     * @extends      plotOptions.scatter
+     * @excluding    dragDrop, cluster
+     * @product      highcharts
+     * @requires     highcharts-3d
+     * @optionparent plotOptions.scatter3d
+     */
+    {
+        tooltip: {
+            pointFormat: 'x: <b>{point.x}</b><br/>y: <b>{point.y}</b><br/>z: <b>{point.z}</b><br/>'
+        }
+        // Series class
+    }, {
     pointAttribs: function (point) {
         var attribs = seriesTypes.scatter.prototype.pointAttribs
             .apply(this, arguments);

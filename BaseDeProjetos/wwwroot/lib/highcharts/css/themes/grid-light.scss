@@ -23,11 +23,11 @@ $xaxis-grid-line: 1px !default;
 
 // Title
 .highcharts-title, .highcharts-subtitle, .highcharts-yaxis .highcharts-axis-title {
-	text-transform: uppercase;
+    text-transform: uppercase;
 }
 
 .highcharts-title {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 @import '../highcharts';

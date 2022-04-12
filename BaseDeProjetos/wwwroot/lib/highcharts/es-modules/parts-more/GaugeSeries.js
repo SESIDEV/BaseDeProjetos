@@ -295,8 +295,8 @@ seriesType('gauge', 'line', {
         series.points.forEach(function (point) {
             var dialOptions = merge(options.dial, point.dial), radius = ((pInt(pick(dialOptions.radius, '80%')) * center[2]) /
                 200), baseLength = ((pInt(pick(dialOptions.baseLength, '70%')) * radius) /
-                100), rearLength = ((pInt(pick(dialOptions.rearLength, '10%')) * radius) /
-                100), baseWidth = dialOptions.baseWidth || 3, topWidth = dialOptions.topWidth || 1, overshoot = options.overshoot, rotation = yAxis.startAngleRad + yAxis.translate(point.y, null, null, null, true);
+                    100), rearLength = ((pInt(pick(dialOptions.rearLength, '10%')) * radius) /
+                        100), baseWidth = dialOptions.baseWidth || 3, topWidth = dialOptions.topWidth || 1, overshoot = options.overshoot, rotation = yAxis.startAngleRad + yAxis.translate(point.y, null, null, null, true);
             // Handle the wrap and overshoot options
             if (isNumber(overshoot) || options.wrap === false) {
                 overshoot = isNumber(overshoot) ?
@@ -341,10 +341,10 @@ seriesType('gauge', 'line', {
                 point.graphic =
                     renderer[point.shapeType](shapeArgs)
                         .attr({
-                        // required by VML when animation is false
-                        rotation: shapeArgs.rotation,
-                        zIndex: 1
-                    })
+                            // required by VML when animation is false
+                            rotation: shapeArgs.rotation,
+                            zIndex: 1
+                        })
                         .addClass('highcharts-dial')
                         .add(series.group);
             }
@@ -369,8 +369,8 @@ seriesType('gauge', 'line', {
             series.pivot =
                 renderer.circle(0, 0, pick(pivotOptions.radius, 5))
                     .attr({
-                    zIndex: 2
-                })
+                        zIndex: 2
+                    })
                     .addClass('highcharts-pivot')
                     .translate(center[0], center[1])
                     .add(series.group);

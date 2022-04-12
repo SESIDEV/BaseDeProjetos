@@ -431,9 +431,9 @@ seriesType('waterfall', 'column', {
     // Call default processData then override yData to reflect waterfall's
     // extremes on yAxis
     processData: function (force) {
-        var series = this, options = series.options, yData = series.yData, 
-        // #3710 Update point does not propagate to sum
-        points = options.data, point, dataLength = yData.length, threshold = options.threshold || 0, subSum, sum, dataMin, dataMax, y, i;
+        var series = this, options = series.options, yData = series.yData,
+            // #3710 Update point does not propagate to sum
+            points = options.data, point, dataLength = yData.length, threshold = options.threshold || 0, subSum, sum, dataMin, dataMax, y, i;
         sum = subSum = dataMin = dataMax = 0;
         for (i = 0; i < dataLength; i++) {
             y = yData[i];
@@ -518,7 +518,7 @@ seriesType('waterfall', 'column', {
                 else {
                     yPos =
                         prevArgs.y + prevPoint.minPointLengthOffset +
-                            borderNormalizer - graphNormalizer;
+                        borderNormalizer - graphNormalizer;
                 }
                 path.push([
                     'M',

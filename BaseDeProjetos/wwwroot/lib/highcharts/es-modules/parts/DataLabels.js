@@ -52,8 +52,8 @@ var Series = H.Series;
  */
 H.distribute = function (boxes, len, maxDistance) {
     var i, overlapping = true, origBoxes = boxes, // Original array will be altered with added .pos
-    restBoxes = [], // The outranked overshoot
-    box, target, total = 0, reducedLen = origBoxes.reducedLen || len;
+        restBoxes = [], // The outranked overshoot
+        box, target, total = 0, reducedLen = origBoxes.reducedLen || len;
     /**
      * @private
      */
@@ -107,7 +107,7 @@ H.distribute = function (boxes, len, maxDistance) {
             // Overlap
             if (i > 0 &&
                 boxes[i - 1].pos + boxes[i - 1].size >
-                    boxes[i].pos) {
+                boxes[i].pos) {
                 // Add this size to the previous box
                 boxes[i - 1].size += boxes[i].size;
                 boxes[i - 1].targets = boxes[i - 1]
@@ -228,14 +228,14 @@ Series.prototype.drawDataLabels = function () {
         chart.options.plotOptions.series &&
         chart.options.plotOptions.series.dataLabels, chart.options.plotOptions &&
         chart.options.plotOptions[series.type] &&
-        chart.options.plotOptions[series.type].dataLabels), seriesDlOptions);
+    chart.options.plotOptions[series.type].dataLabels), seriesDlOptions);
     fireEvent(this, 'drawDataLabels');
     if (isArray(seriesDlOptions) ||
         seriesDlOptions.enabled ||
         series._hasPointLabels) {
         // Create a separate group for the data labels to avoid rotation
         dataLabelsGroup = series.plotGroup('dataLabelsGroup', 'data-labels', defer && !hasRendered ? 'hidden' : 'inherit', // #5133, #10220
-        seriesDlOptions.zIndex || 6);
+            seriesDlOptions.zIndex || 6);
         if (defer) {
             dataLabelsGroup.attr({ opacity: +hasRendered }); // #3300
             if (!hasRendered) {
@@ -264,8 +264,8 @@ Series.prototype.drawDataLabels = function () {
                     // #2282, #4641, #7112, #10049
                     (!point.isNull || point.dataLabelOnNull) &&
                     applyFilter(point, labelOptions)), labelConfig, formatString, labelText, style, rotation, attr, dataLabel = point.dataLabels ? point.dataLabels[i] :
-                    point.dataLabel, connector = point.connectors ? point.connectors[i] :
-                    point.connector, labelDistance = pick(labelOptions.distance, point.labelDistance), isNew = !dataLabel;
+                        point.dataLabel, connector = point.connectors ? point.connectors[i] :
+                            point.connector, labelDistance = pick(labelOptions.distance, point.labelDistance), isNew = !dataLabel;
                 if (labelEnabled) {
                     // Create individual options structure that can be extended
                     // without affecting others
@@ -363,9 +363,9 @@ Series.prototype.drawDataLabels = function () {
                         dataLabel.addClass(' highcharts-data-label-color-' + point.colorIndex +
                             ' ' + (labelOptions.className || '') +
                             ( // #3398
-                            labelOptions.useHTML ?
-                                ' highcharts-tracker' :
-                                ''));
+                                labelOptions.useHTML ?
+                                    ' highcharts-tracker' :
+                                    ''));
                     }
                     else {
                         // Use old element and just update text
@@ -414,26 +414,26 @@ Series.prototype.drawDataLabels = function () {
  */
 Series.prototype.alignDataLabel = function (point, dataLabel, options, alignTo, isNew) {
     var series = this, chart = this.chart, inverted = this.isCartesian && chart.inverted, enabledDataSorting = this.enabledDataSorting, plotX = pick(point.dlBox && point.dlBox.centerX, point.plotX, -9999), plotY = pick(point.plotY, -9999), bBox = dataLabel.getBBox(), baseline, rotation = options.rotation, normRotation, negRotation, align = options.align, rotCorr, // rotation correction
-    isInsidePlot = chart.isInsidePlot(plotX, Math.round(plotY), inverted), 
-    // Math.round for rounding errors (#2683), alignTo to allow column
-    // labels (#2700)
-    alignAttr, // the final position;
-    justify = pick(options.overflow, (enabledDataSorting ? 'none' : 'justify')) === 'justify', visible = this.visible &&
-        point.visible !== false &&
-        (point.series.forceDL ||
-            (enabledDataSorting && !justify) ||
-            isInsidePlot ||
-            (
-            // If the data label is inside the align box, it is enough
-            // that parts of the align box is inside the plot area
-            // (#12370)
-            options.inside && alignTo && chart.isInsidePlot(plotX, inverted ?
-                alignTo.x + 1 :
-                alignTo.y + alignTo.height - 1, inverted))), setStartPos = function (alignOptions) {
-        if (enabledDataSorting && series.xAxis && !justify) {
-            series.setDataLabelStartPos(point, dataLabel, isNew, isInsidePlot, alignOptions);
-        }
-    };
+        isInsidePlot = chart.isInsidePlot(plotX, Math.round(plotY), inverted),
+        // Math.round for rounding errors (#2683), alignTo to allow column
+        // labels (#2700)
+        alignAttr, // the final position;
+        justify = pick(options.overflow, (enabledDataSorting ? 'none' : 'justify')) === 'justify', visible = this.visible &&
+            point.visible !== false &&
+            (point.series.forceDL ||
+                (enabledDataSorting && !justify) ||
+                isInsidePlot ||
+                (
+                    // If the data label is inside the align box, it is enough
+                    // that parts of the align box is inside the plot area
+                    // (#12370)
+                    options.inside && alignTo && chart.isInsidePlot(plotX, inverted ?
+                        alignTo.x + 1 :
+                        alignTo.y + alignTo.height - 1, inverted))), setStartPos = function (alignOptions) {
+                            if (enabledDataSorting && series.xAxis && !justify) {
+                                series.setDataLabelStartPos(point, dataLabel, isNew, isInsidePlot, alignOptions);
+                            }
+                        };
     if (visible) {
         baseline = chart.renderer.fontMetrics(chart.styledMode ? void 0 : options.style.fontSize, dataLabel).b;
         // The alignment box is a singular point
@@ -461,13 +461,13 @@ Series.prototype.alignDataLabel = function (point, dataLabel, options, alignTo, 
                 y: (alignTo.y +
                     (options.y || 0) +
                     { top: 0, middle: 0.5, bottom: 1 }[options.verticalAlign] *
-                        alignTo.height)
+                    alignTo.height)
             };
             setStartPos(alignAttr); // data sorting
             dataLabel[isNew ? 'attr' : 'animate'](alignAttr)
                 .attr({
-                align: align
-            });
+                    align: align
+                });
             // Compensate for the rotated label sticking out on the sides
             normRotation = (rotation + 720) % 360;
             negRotation = normRotation > 180 && normRotation < 360;
@@ -498,7 +498,7 @@ Series.prototype.alignDataLabel = function (point, dataLabel, options, alignTo, 
         else if (pick(options.crop, true)) {
             visible =
                 chart.isInsidePlot(alignAttr.x, alignAttr.y) &&
-                    chart.isInsidePlot(alignAttr.x + bBox.width, alignAttr.y + bBox.height);
+                chart.isInsidePlot(alignAttr.x + bBox.width, alignAttr.y + bBox.height);
         }
         // When we're using a shape, make it possible with a connector or an
         // arrow pointing to thie point
@@ -697,15 +697,15 @@ if (seriesTypes.pie) {
      * @return {void}
      */
     seriesTypes.pie.prototype.drawDataLabels = function () {
-        var series = this, data = series.data, point, chart = series.chart, options = series.options.dataLabels || {}, connectorPadding = options.connectorPadding, connectorWidth, plotWidth = chart.plotWidth, plotHeight = chart.plotHeight, plotLeft = chart.plotLeft, maxWidth = Math.round(chart.chartWidth / 3), connector, seriesCenter = series.center, radius = seriesCenter[2] / 2, centerY = seriesCenter[1], dataLabel, dataLabelWidth, 
-        // labelPos,
-        labelPosition, labelHeight, 
-        // divide the points into right and left halves for anti collision
-        halves = [
-            [],
-            [] // left
-        ], x, y, visibility, j, overflow = [0, 0, 0, 0], // top, right, bottom, left
-        dataLabelPositioners = series.dataLabelPositioners, pointDataLabelsOptions;
+        var series = this, data = series.data, point, chart = series.chart, options = series.options.dataLabels || {}, connectorPadding = options.connectorPadding, connectorWidth, plotWidth = chart.plotWidth, plotHeight = chart.plotHeight, plotLeft = chart.plotLeft, maxWidth = Math.round(chart.chartWidth / 3), connector, seriesCenter = series.center, radius = seriesCenter[2] / 2, centerY = seriesCenter[1], dataLabel, dataLabelWidth,
+            // labelPos,
+            labelPosition, labelHeight,
+            // divide the points into right and left halves for anti collision
+            halves = [
+                [],
+                [] // left
+            ], x, y, visibility, j, overflow = [0, 0, 0, 0], // top, right, bottom, left
+            dataLabelPositioners = series.dataLabelPositioners, pointDataLabelsOptions;
         // get out if not enabled
         if (!series.visible ||
             (!options.enabled &&
@@ -717,11 +717,11 @@ if (seriesTypes.pie) {
             if (point.dataLabel && point.visible && point.dataLabel.shortened) {
                 point.dataLabel
                     .attr({
-                    width: 'auto'
-                }).css({
-                    width: 'auto',
-                    textOverflow: 'clip'
-                });
+                        width: 'auto'
+                    }).css({
+                        width: 'auto',
+                        textOverflow: 'clip'
+                    });
                 point.dataLabel.shortened = false;
             }
         });
@@ -917,10 +917,10 @@ if (seriesTypes.pie) {
                             point.connector = connector = chart.renderer
                                 .path()
                                 .addClass('highcharts-data-label-connector ' +
-                                ' highcharts-color-' + point.colorIndex +
-                                (point.className ?
-                                    ' ' + point.className :
-                                    ''))
+                                    ' highcharts-color-' + point.colorIndex +
+                                    (point.className ?
+                                        ' ' + point.className :
+                                        ''))
                                 .add(series.dataLabelsGroup);
                             if (!chart.styledMode) {
                                 connector.attr({
@@ -1032,10 +1032,10 @@ if (seriesTypes.pie) {
      * @return {boolean}
      */
     seriesTypes.pie.prototype.verifyDataLabelOverflow = function (overflow) {
-        var center = this.center, options = this.options, centerOption = options.center, minSize = options.minSize || 80, newSize = minSize, 
-        // If a size is set, return true and don't try to shrink the pie
-        // to fit the labels.
-        ret = options.size !== null;
+        var center = this.center, options = this.options, centerOption = options.center, minSize = options.minSize || 80, newSize = minSize,
+            // If a size is set, return true and don't try to shrink the pie
+            // to fit the labels.
+            ret = options.size !== null;
         if (!ret) {
             // Handle horizontal size and center
             if (centerOption[0] !== null) { // Fixed center
@@ -1044,8 +1044,8 @@ if (seriesTypes.pie) {
             }
             else { // Auto center
                 newSize = Math.max(
-                // horizontal overflow
-                center[2] - overflow[1] - overflow[3], minSize);
+                    // horizontal overflow
+                    center[2] - overflow[1] - overflow[3], minSize);
                 // horizontal center
                 center[0] += (overflow[3] - overflow[1]) / 2;
             }
@@ -1054,9 +1054,9 @@ if (seriesTypes.pie) {
                 newSize = clamp(newSize, minSize, center[2] - Math.max(overflow[0], overflow[2]));
             }
             else { // Auto center
-                newSize = clamp(newSize, minSize, 
-                // vertical overflow
-                center[2] - overflow[0] - overflow[2]);
+                newSize = clamp(newSize, minSize,
+                    // vertical overflow
+                    center[2] - overflow[0] - overflow[2]);
                 // vertical center
                 center[1] += (overflow[0] - overflow[2]) / 2;
             }
@@ -1065,7 +1065,7 @@ if (seriesTypes.pie) {
             if (newSize < center[2]) {
                 center[2] = newSize;
                 center[3] = Math.min(// #3632
-                relativeLength(options.innerSize || 0, newSize), newSize);
+                    relativeLength(options.innerSize || 0, newSize), newSize);
                 this.translate(center);
                 if (this.drawDataLabels) {
                     this.drawDataLabels();
@@ -1095,13 +1095,13 @@ if (seriesTypes.column) {
      * @return {void}
      */
     seriesTypes.column.prototype.alignDataLabel = function (point, dataLabel, options, alignTo, isNew) {
-        var inverted = this.chart.inverted, series = point.series, 
-        // data label box for alignment
-        dlBox = point.dlBox || point.shapeArgs, below = pick(point.below, // range series
-        point.plotY >
-            pick(this.translatedThreshold, series.yAxis.len)), 
-        // draw it inside the box?
-        inside = pick(options.inside, !!this.options.stacking), overshoot;
+        var inverted = this.chart.inverted, series = point.series,
+            // data label box for alignment
+            dlBox = point.dlBox || point.shapeArgs, below = pick(point.below, // range series
+                point.plotY >
+                pick(this.translatedThreshold, series.yAxis.len)),
+            // draw it inside the box?
+            inside = pick(options.inside, !!this.options.stacking), overshoot;
         // Align to the column itself, or the top of it
         if (dlBox) { // Area range uses this method but not alignTo
             alignTo = merge(dlBox);

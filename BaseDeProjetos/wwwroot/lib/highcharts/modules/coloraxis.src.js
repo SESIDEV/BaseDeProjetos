@@ -101,7 +101,6 @@
             }
             /* eslint-enable valid-jsdoc */
         };
-
     });
     _registerModule(_modules, 'parts-map/ColorAxis.js', [_modules['parts/Axis.js'], _modules['parts/Chart.js'], _modules['parts/Color.js'], _modules['parts/Globals.js'], _modules['parts/Legend.js'], _modules['mixins/legend-symbol.js'], _modules['parts/Point.js'], _modules['parts/Utilities.js']], function (Axis, Chart, Color, H, Legend, LegendSymbolMixin, Point, U) {
         /* *
@@ -222,7 +221,7 @@
             ColorAxis.prototype.init = function (chart, userOptions) {
                 var axis = this;
                 var options = ColorAxis.buildOptions(// Build the options
-                chart, ColorAxis.defaultOptions, userOptions);
+                    chart, ColorAxis.defaultOptions, userOptions);
                 axis.coll = 'colorAxis';
                 _super.prototype.init.call(this, chart, options);
                 // Base init() pushes it to the xAxis array, now pop it again
@@ -1164,11 +1163,11 @@
          * @private
          * @function Highcharts.Fx#fillSetter
          */ /**
-        * Handle animation of the color attributes directly
-        *
-        * @private
-        * @function Highcharts.Fx#strokeSetter
-        */
+       * Handle animation of the color attributes directly
+       *
+       * @private
+       * @function Highcharts.Fx#strokeSetter
+       */
         ['fill', 'stroke'].forEach(function (prop) {
             Fx.prototype[prop + 'Setter'] = function () {
                 this.elem.attr(prop, color(this.start).tweenTo(color(this.end), this.pos), null, true);
@@ -1261,7 +1260,5 @@
         return ColorAxis;
     });
     _registerModule(_modules, 'masters/modules/coloraxis.src.js', [], function () {
-
-
     });
 }));

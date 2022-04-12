@@ -235,7 +235,7 @@ var SVGElement = /** @class */ (function () {
      */
     SVGElement.prototype._defaultGetter = function (key) {
         var ret = pick(this[key + 'Value'], // align getter
-        this[key], this.element ? this.element.getAttribute(key) : null, 0);
+            this[key], this.element ? this.element.getAttribute(key) : null, 0);
         if (/^[\-0-9\.]+$/.test(ret)) { // is numerical
             ret = parseFloat(ret);
         }
@@ -324,13 +324,13 @@ var SVGElement = /** @class */ (function () {
         className = (className || '')
             .split(/ /g)
             .reduce(function (newClassName, name) {
-            if (currentClassName.indexOf(name) === -1) {
-                newClassName.push(name);
-            }
-            return newClassName;
-        }, (currentClassName ?
-            [currentClassName] :
-            []))
+                if (currentClassName.indexOf(name) === -1) {
+                    newClassName.push(name);
+                }
+                return newClassName;
+            }, (currentClassName ?
+                [currentClassName] :
+                []))
             .join(' ');
         if (className !== currentClassName) {
             this.attr('class', className);
@@ -590,60 +590,60 @@ var SVGElement = /** @class */ (function () {
      * @param {string} key
      * @return {number|string}
      */ /**
-    * Apply native and custom attributes to the SVG elements.
-    *
-    * In order to set the rotation center for rotation, set x and y to 0 and
-    * use `translateX` and `translateY` attributes to position the element
-    * instead.
-    *
-    * Attributes frequently used in Highcharts are `fill`, `stroke`,
-    * `stroke-width`.
-    *
-    * @sample highcharts/members/renderer-rect/
-    *         Setting some attributes
-    *
-    * @example
-    * // Set multiple attributes
-    * element.attr({
-    *     stroke: 'red',
-    *     fill: 'blue',
-    *     x: 10,
-    *     y: 10
-    * });
-    *
-    * // Set a single attribute
-    * element.attr('stroke', 'red');
-    *
-    * // Get an attribute
-    * element.attr('stroke'); // => 'red'
-    *
-    * @function Highcharts.SVGElement#attr
-    *
-    * @param {string|Highcharts.SVGAttributes} [hash]
-    *        The native and custom SVG attributes.
-    *
-    * @param {number|string|Highcharts.SVGPathArray} [val]
-    *        If the type of the first argument is `string`, the second can be a
-    *        value, which will serve as a single attribute setter. If the first
-    *        argument is a string and the second is undefined, the function
-    *        serves as a getter and the current value of the property is
-    *        returned.
-    *
-    * @param {Function} [complete]
-    *        A callback function to execute after setting the attributes. This
-    *        makes the function compliant and interchangeable with the
-    *        {@link SVGElement#animate} function.
-    *
-    * @param {boolean} [continueAnimation=true]
-    *        Used internally when `.attr` is called as part of an animation
-    *        step. Otherwise, calling `.attr` for an attribute will stop
-    *        animation for that attribute.
-    *
-    * @return {Highcharts.SVGElement}
-    *         If used as a setter, it returns the current
-    *         {@link Highcharts.SVGElement} so the calls can be chained. If
-    *         used as a getter, the current value of the attribute is returned.
-    */
+   * Apply native and custom attributes to the SVG elements.
+   *
+   * In order to set the rotation center for rotation, set x and y to 0 and
+   * use `translateX` and `translateY` attributes to position the element
+   * instead.
+   *
+   * Attributes frequently used in Highcharts are `fill`, `stroke`,
+   * `stroke-width`.
+   *
+   * @sample highcharts/members/renderer-rect/
+   *         Setting some attributes
+   *
+   * @example
+   * // Set multiple attributes
+   * element.attr({
+   *     stroke: 'red',
+   *     fill: 'blue',
+   *     x: 10,
+   *     y: 10
+   * });
+   *
+   * // Set a single attribute
+   * element.attr('stroke', 'red');
+   *
+   * // Get an attribute
+   * element.attr('stroke'); // => 'red'
+   *
+   * @function Highcharts.SVGElement#attr
+   *
+   * @param {string|Highcharts.SVGAttributes} [hash]
+   *        The native and custom SVG attributes.
+   *
+   * @param {number|string|Highcharts.SVGPathArray} [val]
+   *        If the type of the first argument is `string`, the second can be a
+   *        value, which will serve as a single attribute setter. If the first
+   *        argument is a string and the second is undefined, the function
+   *        serves as a getter and the current value of the property is
+   *        returned.
+   *
+   * @param {Function} [complete]
+   *        A callback function to execute after setting the attributes. This
+   *        makes the function compliant and interchangeable with the
+   *        {@link SVGElement#animate} function.
+   *
+   * @param {boolean} [continueAnimation=true]
+   *        Used internally when `.attr` is called as part of an animation
+   *        step. Otherwise, calling `.attr` for an attribute will stop
+   *        animation for that attribute.
+   *
+   * @return {Highcharts.SVGElement}
+   *         If used as a setter, it returns the current
+   *         {@link Highcharts.SVGElement} so the calls can be chained. If
+   *         used as a getter, the current value of the attribute is returned.
+   */
     SVGElement.prototype.attr = function (hash, val, complete, continueAnimation) {
         var key, element = this.element, hasSetSymbolSize, ret = this, skipAttr, setter, symbolCustomAttribs = this.symbolCustomAttribs;
         // single key-value pair
@@ -874,12 +874,12 @@ var SVGElement = /** @class */ (function () {
      *         Return the SVG element for chaining.
      */
     SVGElement.prototype.css = function (styles) {
-        var oldStyles = this.styles, newStyles = {}, elem = this.element, textWidth, serializedCss = '', hyphenate, hasNew = !oldStyles, 
-        // These CSS properties are interpreted internally by the SVG
-        // renderer, but are not supported by SVG and should not be added to
-        // the DOM. In styled mode, no CSS should find its way to the DOM
-        // whatsoever (#6173, #6474).
-        svgPseudoProps = ['textOutline', 'textOverflow', 'width'];
+        var oldStyles = this.styles, newStyles = {}, elem = this.element, textWidth, serializedCss = '', hyphenate, hasNew = !oldStyles,
+            // These CSS properties are interpreted internally by the SVG
+            // renderer, but are not supported by SVG and should not be added to
+            // the DOM. In styled mode, no CSS should find its way to the DOM
+            // whatsoever (#6173, #6474).
+            svgPseudoProps = ['textOutline', 'textOverflow', 'width'];
         // convert legacy
         if (styles && styles.color) {
             styles.fill = styles.color;
@@ -924,7 +924,7 @@ var SVGElement = /** @class */ (function () {
                     if (svgPseudoProps.indexOf(n) === -1) {
                         serializedCss +=
                             n.replace(/([A-Z])/g, hyphenate) + ':' +
-                                style + ';';
+                            style + ';';
                     }
                 });
                 if (serializedCss) {
@@ -1192,7 +1192,7 @@ var SVGElement = /** @class */ (function () {
      */
     SVGElement.prototype.getBBox = function (reload, rot) {
         var wrapper = this, bBox, // = wrapper.bBox,
-        renderer = wrapper.renderer, width, height, element = wrapper.element, styles = wrapper.styles, fontSize, textStr = wrapper.textStr, toggleTextShadowShim, cache = renderer.cache, cacheKeys = renderer.cacheKeys, isSVG = element.namespaceURI === wrapper.SVG_NS, cacheKey;
+            renderer = wrapper.renderer, width, height, element = wrapper.element, styles = wrapper.styles, fontSize, textStr = wrapper.textStr, toggleTextShadowShim, cache = renderer.cache, cacheKeys = renderer.cacheKeys, isSVG = element.namespaceURI === wrapper.SVG_NS, cacheKey;
         var rotation = pick(rot, wrapper.rotation, 0);
         fontSize = renderer.styledMode ? (element &&
             SVGElement.prototype.getStyle.call(element, 'font-size')) : (styles && styles.fontSize);
@@ -1240,10 +1240,10 @@ var SVGElement = /** @class */ (function () {
                         // SVG: use extend because IE9 is not allowed to change
                         // width and height in case of rotation (below)
                         extend({}, element.getBBox()) : {
-                        // Legacy IE in export mode
-                        width: element.offsetWidth,
-                        height: element.offsetHeight
-                    };
+                            // Legacy IE in export mode
+                            width: element.offsetWidth,
+                            height: element.offsetHeight
+                        };
                     // #3842
                     if (isFunction(toggleTextShadowShim)) {
                         toggleTextShadowShim('');
@@ -1507,8 +1507,8 @@ var SVGElement = /** @class */ (function () {
     SVGElement.prototype.removeClass = function (className) {
         return this.attr('class', ('' + this.attr('class'))
             .replace(isString(className) ?
-            new RegExp("(^| )" + className + "( |$)") : // #12064, #13590
-            className, ' ')
+                new RegExp("(^| )" + className + "( |$)") : // #12064, #13590
+                className, ' ')
             .replace(/ +/g, ' ')
             .trim());
     };
@@ -1727,9 +1727,9 @@ var SVGElement = /** @class */ (function () {
      *         Returns the SVGElement for chaining.
      */
     SVGElement.prototype.shadow = function (shadowOptions, group, cutOff) {
-        var shadows = [], i, shadow, element = this.element, strokeWidth, shadowElementOpacity, update = false, oldShadowOptions = this.oldShadowOptions, 
-        // compensate for inverted plot area
-        transform;
+        var shadows = [], i, shadow, element = this.element, strokeWidth, shadowElementOpacity, update = false, oldShadowOptions = this.oldShadowOptions,
+            // compensate for inverted plot area
+            transform;
         var defaultShadowOptions = {
             color: '#000000',
             offsetX: 1,
@@ -1950,11 +1950,11 @@ var SVGElement = /** @class */ (function () {
             titleNode.removeChild(titleNode.firstChild);
         }
         titleNode.appendChild(doc.createTextNode(
-        // #3276, #3895
-        String(pick(value, ''))
-            .replace(/<[^>]*>/g, '')
-            .replace(/&lt;/g, '<')
-            .replace(/&gt;/g, '>')));
+            // #3276, #3895
+            String(pick(value, ''))
+                .replace(/<[^>]*>/g, '')
+                .replace(/&lt;/g, '<')
+                .replace(/&gt;/g, '>')));
     };
     /**
      * Bring the element to the front. Alternatively, a new zIndex can be set.
@@ -2138,11 +2138,11 @@ var SVGElement = /** @class */ (function () {
                 undefinedOtherZIndex = !defined(otherZIndex);
                 if (otherElement !== element) {
                     if (
-                    // Negative zIndex versus no zIndex:
-                    // On all levels except the highest. If the parent is
-                    // <svg>, then we don't want to put items before <desc>
-                    // or <defs>
-                    value < 0 &&
+                        // Negative zIndex versus no zIndex:
+                        // On all levels except the highest. If the parent is
+                        // <svg>, then we don't want to put items before <desc>
+                        // or <defs>
+                        value < 0 &&
                         undefinedOtherZIndex &&
                         !svgParent &&
                         !i) {
@@ -2150,8 +2150,8 @@ var SVGElement = /** @class */ (function () {
                         inserted = true;
                     }
                     else if (
-                    // Insert after the first element with a lower zIndex
-                    pInt(otherZIndex) <= value ||
+                        // Insert after the first element with a lower zIndex
+                        pInt(otherZIndex) <= value ||
                         // If negative zIndex, add this before first undefined
                         // zIndex element
                         (undefinedOtherZIndex &&
@@ -2177,15 +2177,15 @@ SVGElement.prototype['stroke-widthSetter'] = SVGElement.prototype.strokeSetter;
 SVGElement.prototype.yGetter = SVGElement.prototype.xGetter;
 SVGElement.prototype.matrixSetter =
     SVGElement.prototype.rotationOriginXSetter =
-        SVGElement.prototype.rotationOriginYSetter =
-            SVGElement.prototype.rotationSetter =
-                SVGElement.prototype.scaleXSetter =
-                    SVGElement.prototype.scaleYSetter =
-                        SVGElement.prototype.translateXSetter =
-                            SVGElement.prototype.translateYSetter =
-                                SVGElement.prototype.verticalAlignSetter = function (value, key) {
-                                    this[key] = value;
-                                    this.doTransform = true;
-                                };
+    SVGElement.prototype.rotationOriginYSetter =
+    SVGElement.prototype.rotationSetter =
+    SVGElement.prototype.scaleXSetter =
+    SVGElement.prototype.scaleYSetter =
+    SVGElement.prototype.translateXSetter =
+    SVGElement.prototype.translateYSetter =
+    SVGElement.prototype.verticalAlignSetter = function (value, key) {
+        this[key] = value;
+        this.doTransform = true;
+    };
 H.SVGElement = SVGElement;
 export default H.SVGElement;

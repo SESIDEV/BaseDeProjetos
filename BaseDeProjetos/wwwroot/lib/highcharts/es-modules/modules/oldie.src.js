@@ -120,8 +120,8 @@ if (!svg) {
             .replace(/ transform /g, ' ')
             .replace(/:(path|rect)/g, '$1')
             .replace(/style="([^"]+)"/g, function (s) {
-            return s.toLowerCase();
-        });
+                return s.toLowerCase();
+            });
         return svg;
     };
     /**
@@ -244,11 +244,11 @@ if (!svg) {
          * @return {Highcharts.VMLElement}
          */
         add: function (parent) {
-            var wrapper = this, renderer = wrapper.renderer, element = wrapper.element, box = renderer.box, inverted = parent && parent.inverted, 
-            // get the parent node
-            parentNode = parent ?
-                parent.element || parent :
-                box;
+            var wrapper = this, renderer = wrapper.renderer, element = wrapper.element, box = renderer.box, inverted = parent && parent.inverted,
+                // get the parent node
+                parentNode = parent ?
+                    parent.element || parent :
+                    box;
             if (parent) {
                 this.parentGroup = parent;
             }
@@ -693,8 +693,8 @@ if (!svg) {
     // Some shared setters
     VMLElement.prototype.ySetter =
         VMLElement.prototype.widthSetter =
-            VMLElement.prototype.heightSetter =
-                VMLElement.prototype.xSetter;
+        VMLElement.prototype.heightSetter =
+        VMLElement.prototype.xSetter;
     /**
      * The VML renderer
      *
@@ -839,14 +839,14 @@ if (!svg) {
             if (fillType) {
                 var stopColor, stopOpacity, gradient = (colorOption.linearGradient ||
                     colorOption.radialGradient), x1, y1, x2, y2, opacity1, opacity2, color1, color2, fillAttr = '', stops = colorOption.stops, firstStop, lastStop, colors = [], addFillNode = function () {
-                    // Add the fill subnode. When colors attribute is used,
-                    // the meanings of opacity and o:opacity2 are reversed.
-                    markup = ['<fill colors="' + colors.join(',') +
+                        // Add the fill subnode. When colors attribute is used,
+                        // the meanings of opacity and o:opacity2 are reversed.
+                        markup = ['<fill colors="' + colors.join(',') +
                             '" opacity="', opacity2, '" o:opacity2="',
-                        opacity1, '" type="', fillType, '" ', fillAttr,
-                        'focus="100%" method="any" />'];
-                    createElement(renderer.prepVML(markup), null, null, elem);
-                };
+                            opacity1, '" type="', fillType, '" ', fillAttr,
+                            'focus="100%" method="any" />'];
+                        createElement(renderer.prepVML(markup), null, null, elem);
+                    };
                 // Extend from 0 to 1
                 firstStop = stops[0];
                 lastStop = stops[stops.length - 1];
@@ -913,11 +913,11 @@ if (!svg) {
                             }
                             fillAttr =
                                 'src="' + getOptions().global.VMLRadialGradientURL +
-                                    '" ' +
-                                    'size="' + sizex + ',' + sizey + '" ' +
-                                    'origin="0.5,0.5" ' +
-                                    'position="' + cx + ',' + cy + '" ' +
-                                    'color2="' + color2 + '" ';
+                                '" ' +
+                                'size="' + sizex + ',' + sizey + '" ' +
+                                'origin="0.5,0.5" ' +
+                                'position="' + cx + ',' + cy + '" ' +
+                                'color2="' + color2 + '" ';
                             addFillNode();
                         };
                         // Apply radial gradient
@@ -1158,20 +1158,20 @@ if (!svg) {
                 ];
                 if (options.open && !innerRadius) {
                     ret.push('e', 'M', x, // - innerRadius,
-                    y // - innerRadius
+                        y // - innerRadius
                     );
                 }
                 ret.push('at', // anti clockwise arc to
-                x - innerRadius, // left
-                y - innerRadius, // top
-                x + innerRadius, // right
-                y + innerRadius, // bottom
-                x + innerRadius * cosEnd, // start x
-                y + innerRadius * sinEnd, // start y
-                x + innerRadius * cosStart, // end x
-                y + innerRadius * sinStart, // end y
-                'x', // finish path
-                'e' // close
+                    x - innerRadius, // left
+                    y - innerRadius, // top
+                    x + innerRadius, // right
+                    y + innerRadius, // bottom
+                    x + innerRadius * cosEnd, // start x
+                    y + innerRadius * sinEnd, // start y
+                    x + innerRadius * cosStart, // end x
+                    y + innerRadius * sinStart, // end y
+                    'x', // finish path
+                    'e' // close
                 );
                 ret.isArc = true;
                 return ret;

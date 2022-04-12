@@ -611,7 +611,7 @@
                     this.autoConnect = (this.isCircular &&
                         typeof pick(this.userMax, this.options.max) === 'undefined' &&
                         correctFloat(this.endAngleRad - this.startAngleRad) ===
-                            correctFloat(2 * Math.PI));
+                        correctFloat(2 * Math.PI));
                     // This will lead to add an extra tick to xAxis in order to display
                     // a correct range on inverted polar
                     if (!this.isCircular && this.chart.inverted) {
@@ -674,12 +674,12 @@
                 axis.getPosition = function (value, length) {
                     var translatedVal = this.translate(value);
                     return this.postTranslate(this.isCircular ? translatedVal : this.angleRad, // #2848
-                    // In case when translatedVal is negative, the 0 value must be
-                    // used instead, in order to deal with lines and labels that
-                    // fall out of the visible range near the center of a pane
-                    pick(this.isCircular ?
-                        length :
-                        (translatedVal < 0 ? 0 : translatedVal), this.center[2] / 2) - this.offset);
+                        // In case when translatedVal is negative, the 0 value must be
+                        // used instead, in order to deal with lines and labels that
+                        // fall out of the visible range near the center of a pane
+                        pick(this.isCircular ?
+                            length :
+                            (translatedVal < 0 ? 0 : translatedVal), this.center[2] / 2) - this.offset);
                 };
                 /**
                  * Translate from intermediate plotX (angle), plotY (axis.len - radius)
@@ -731,7 +731,7 @@
                         return radius;
                     };
                     var center = this.center, startAngleRad = this.startAngleRad, fullRadius = center[2] / 2, offset = Math.min(this.offset, 0), percentRegex = /%$/, start, end, angle, xOnPerimeter, open, isCircular = this.isCircular, // X axis in a polar chart
-                    path, outerRadius = pick(radiusToPixels(options.outerRadius), fullRadius), innerRadius = radiusToPixels(options.innerRadius), thickness = pick(radiusToPixels(options.thickness), 10);
+                        path, outerRadius = pick(radiusToPixels(options.outerRadius), fullRadius), innerRadius = radiusToPixels(options.innerRadius), thickness = pick(radiusToPixels(options.thickness), 10);
                     // Polygonal plot bands
                     if (this.options.gridLineInterpolation === 'polygon') {
                         path = this.getPlotLinePath({ value: from }).concat(this.getPlotLinePath({ value: to, reverse: true }));
@@ -952,11 +952,11 @@
                             axis.options.labels.allowOverlap !== true) {
                             return axis.tickPositions
                                 .map(function (pos) {
-                                return axis.ticks[pos] && axis.ticks[pos].label;
-                            })
+                                    return axis.ticks[pos] && axis.ticks[pos].label;
+                                })
                                 .filter(function (label) {
-                                return Boolean(label);
-                            });
+                                    return Boolean(label);
+                                });
                         }
                     };
                 };
@@ -1092,10 +1092,10 @@
                         return;
                     }
                     var labelBBox = label.getBBox(), labelOptions = axis.options.labels, optionsY = labelOptions.y, ret, centerSlot = 20, // 20 degrees to each side at the top and bottom
-                    align = labelOptions.align, angle = ((axis.translate(this.pos) + axis.startAngleRad +
-                        Math.PI / 2) / Math.PI * 180) % 360, correctAngle = Math.round(angle), labelDir = 'end', // Direction of the label 'start' or 'end'
-                    reducedAngle1 = correctAngle < 0 ?
-                        correctAngle + 360 : correctAngle, reducedAngle2 = reducedAngle1, translateY = 0, translateX = 0, labelYPosCorrection = labelOptions.y === null ? -labelBBox.height * 0.3 : 0;
+                        align = labelOptions.align, angle = ((axis.translate(this.pos) + axis.startAngleRad +
+                            Math.PI / 2) / Math.PI * 180) % 360, correctAngle = Math.round(angle), labelDir = 'end', // Direction of the label 'start' or 'end'
+                        reducedAngle1 = correctAngle < 0 ?
+                            correctAngle + 360 : correctAngle, reducedAngle2 = reducedAngle1, translateY = 0, translateX = 0, labelYPosCorrection = labelOptions.y === null ? -labelBBox.height * 0.3 : 0;
                     if (axis.isRadial) { // Both X and Y axes in a polar chart
                         ret = axis.getPosition(this.pos, (axis.center[2] / 2) +
                             relativeLength(pick(labelOptions.distance, -25), axis.center[2] / 2, -axis.center[2] / 2));
@@ -1954,7 +1954,6 @@
          * @apioption series.arearange.data.low
          */
         ''; // adds doclets above to tranpiled file
-
     });
     _registerModule(_modules, 'parts-more/AreaSplineRangeSeries.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
@@ -2051,7 +2050,6 @@
          * @apioption series.areasplinerange.data
          */
         ''; // adds doclets above to transpiled file
-
     });
     _registerModule(_modules, 'parts-more/ColumnRangeSeries.js', [_modules['parts/Globals.js'], _modules['parts/Options.js'], _modules['parts/Utilities.js']], function (H, O, U) {
         /* *
@@ -2161,16 +2159,16 @@
                         point.tooltipPos = chart.inverted ?
                             [
                                 yAxis.len + yAxis.pos - chart.plotLeft - y -
-                                    height / 2,
+                                height / 2,
                                 xAxis.len + xAxis.pos - chart.plotTop -
-                                    shapeArgs.x - shapeArgs.width / 2,
+                                shapeArgs.x - shapeArgs.width / 2,
                                 height
                             ] : [
-                            xAxis.left - chart.plotLeft + shapeArgs.x +
+                                xAxis.left - chart.plotLeft + shapeArgs.x +
                                 shapeArgs.width / 2,
-                            yAxis.pos - chart.plotTop + y + height / 2,
-                            height
-                        ]; // don't inherit from column tooltip position - #3372
+                                yAxis.pos - chart.plotTop + y + height / 2,
+                                height
+                            ]; // don't inherit from column tooltip position - #3372
                     }
                 });
             },
@@ -2291,7 +2289,6 @@
          * @apioption series.columnrange.states.select
          */
         ''; // adds doclets above into transpiled
-
     });
     _registerModule(_modules, 'parts-more/ColumnPyramidSeries.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
@@ -2315,31 +2312,31 @@
          *
          * @augments Highcharts.Series
          */
-        seriesType('columnpyramid', 'column', 
-        /**
-         * Column pyramid series display one pyramid per value along an X axis.
-         * To display horizontal pyramids, set [chart.inverted](#chart.inverted) to
-         * `true`.
-         *
-         * @sample {highcharts|highstock} highcharts/demo/column-pyramid/
-         *         Column pyramid
-         * @sample {highcharts|highstock} highcharts/plotoptions/columnpyramid-stacked/
-         *         Column pyramid stacked
-         * @sample {highcharts|highstock} highcharts/plotoptions/columnpyramid-inverted/
-         *         Column pyramid inverted
-         *
-         * @extends      plotOptions.column
-         * @since        7.0.0
-         * @product      highcharts highstock
-         * @excluding    boostThreshold, borderRadius, crisp, depth, edgeColor,
-         *               edgeWidth, groupZPadding, negativeColor, softThreshold,
-         *               threshold, zoneAxis, zones
-         * @requires     highcharts-more
-         * @optionparent plotOptions.columnpyramid
-         */
-        {
-        // no additions
-        }, {
+        seriesType('columnpyramid', 'column',
+            /**
+             * Column pyramid series display one pyramid per value along an X axis.
+             * To display horizontal pyramids, set [chart.inverted](#chart.inverted) to
+             * `true`.
+             *
+             * @sample {highcharts|highstock} highcharts/demo/column-pyramid/
+             *         Column pyramid
+             * @sample {highcharts|highstock} highcharts/plotoptions/columnpyramid-stacked/
+             *         Column pyramid stacked
+             * @sample {highcharts|highstock} highcharts/plotoptions/columnpyramid-inverted/
+             *         Column pyramid inverted
+             *
+             * @extends      plotOptions.column
+             * @since        7.0.0
+             * @product      highcharts highstock
+             * @excluding    boostThreshold, borderRadius, crisp, depth, edgeColor,
+             *               edgeWidth, groupZPadding, negativeColor, softThreshold,
+             *               threshold, zoneAxis, zones
+             * @requires     highcharts-more
+             * @optionparent plotOptions.columnpyramid
+             */
+            {
+                // no additions
+            }, {
             /* eslint-disable-next-line valid-jsdoc */
             /**
              * Overrides the column translate method
@@ -2348,11 +2345,11 @@
             translate: function () {
                 var series = this, chart = series.chart, options = series.options, dense = series.dense =
                     series.closestPointRange * series.xAxis.transA < 2, borderWidth = series.borderWidth = pick(options.borderWidth, dense ? 0 : 1 // #3635
-                ), yAxis = series.yAxis, threshold = options.threshold, translatedThreshold = series.translatedThreshold =
-                    yAxis.getThreshold(threshold), minPointLength = pick(options.minPointLength, 5), metrics = series.getColumnMetrics(), pointWidth = metrics.width, 
-                // postprocessed for border width
-                seriesBarW = series.barW =
-                    Math.max(pointWidth, 1 + 2 * borderWidth), pointXOffset = series.pointXOffset = metrics.offset;
+                    ), yAxis = series.yAxis, threshold = options.threshold, translatedThreshold = series.translatedThreshold =
+                        yAxis.getThreshold(threshold), minPointLength = pick(options.minPointLength, 5), metrics = series.getColumnMetrics(), pointWidth = metrics.width,
+                    // postprocessed for border width
+                    seriesBarW = series.barW =
+                        Math.max(pointWidth, 1 + 2 * borderWidth), pointXOffset = series.pointXOffset = metrics.offset;
                 if (chart.inverted) {
                     translatedThreshold -= 0.5; // #3355
                 }
@@ -2367,10 +2364,10 @@
                 colProto.translate.apply(series);
                 // Record the new values
                 series.points.forEach(function (point) {
-                    var yBottom = pick(point.yBottom, translatedThreshold), safeDistance = 999 + Math.abs(yBottom), plotY = clamp(point.plotY, -safeDistance, yAxis.len + safeDistance), 
-                    // Don't draw too far outside plot area
-                    // (#1303, #2241, #4264)
-                    barX = point.plotX + pointXOffset, barW = seriesBarW / 2, barY = Math.min(plotY, yBottom), barH = Math.max(plotY, yBottom) - barY, stackTotal, stackHeight, topPointY, topXwidth, bottomXwidth, invBarPos, x1, x2, x3, x4, y1, y2;
+                    var yBottom = pick(point.yBottom, translatedThreshold), safeDistance = 999 + Math.abs(yBottom), plotY = clamp(point.plotY, -safeDistance, yAxis.len + safeDistance),
+                        // Don't draw too far outside plot area
+                        // (#1303, #2241, #4264)
+                        barX = point.plotX + pointXOffset, barW = seriesBarW / 2, barY = Math.min(plotY, yBottom), barH = Math.max(plotY, yBottom) - barY, stackTotal, stackHeight, topPointY, topXwidth, bottomXwidth, invBarPos, x1, x2, x3, x4, y1, y2;
                     point.barX = barX;
                     point.pointWidth = pointWidth;
                     // Fix the tooltip on center of grouped pyramids
@@ -2400,7 +2397,7 @@
                     // calculate height of stack (in pixels)
                     stackHeight =
                         chart.plotHeight - topPointY -
-                            (chart.plotHeight - translatedThreshold);
+                        (chart.plotHeight - translatedThreshold);
                     // topXwidth and bottomXwidth = width of lines from the center
                     // calculated from tanges proportion.
                     // Can not be a NaN #12514
@@ -2546,7 +2543,6 @@
          * @apioption series.columnpyramid.data
          */
         ''; // adds doclets above to transpiled file;
-
     });
     _registerModule(_modules, 'parts-more/GaugeSeries.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
@@ -2839,8 +2835,8 @@
                 series.points.forEach(function (point) {
                     var dialOptions = merge(options.dial, point.dial), radius = ((pInt(pick(dialOptions.radius, '80%')) * center[2]) /
                         200), baseLength = ((pInt(pick(dialOptions.baseLength, '70%')) * radius) /
-                        100), rearLength = ((pInt(pick(dialOptions.rearLength, '10%')) * radius) /
-                        100), baseWidth = dialOptions.baseWidth || 3, topWidth = dialOptions.topWidth || 1, overshoot = options.overshoot, rotation = yAxis.startAngleRad + yAxis.translate(point.y, null, null, null, true);
+                            100), rearLength = ((pInt(pick(dialOptions.rearLength, '10%')) * radius) /
+                                100), baseWidth = dialOptions.baseWidth || 3, topWidth = dialOptions.topWidth || 1, overshoot = options.overshoot, rotation = yAxis.startAngleRad + yAxis.translate(point.y, null, null, null, true);
                     // Handle the wrap and overshoot options
                     if (isNumber(overshoot) || options.wrap === false) {
                         overshoot = isNumber(overshoot) ?
@@ -2885,10 +2881,10 @@
                         point.graphic =
                             renderer[point.shapeType](shapeArgs)
                                 .attr({
-                                // required by VML when animation is false
-                                rotation: shapeArgs.rotation,
-                                zIndex: 1
-                            })
+                                    // required by VML when animation is false
+                                    rotation: shapeArgs.rotation,
+                                    zIndex: 1
+                                })
                                 .addClass('highcharts-dial')
                                 .add(series.group);
                     }
@@ -2913,8 +2909,8 @@
                     series.pivot =
                         renderer.circle(0, 0, pick(pivotOptions.radius, 5))
                             .attr({
-                            zIndex: 2
-                        })
+                                zIndex: 2
+                            })
                             .addClass('highcharts-pivot')
                             .translate(center[0], center[1])
                             .add(series.group);
@@ -3051,7 +3047,6 @@
          * @apioption series.gauge.data
          */
         ''; // adds the doclets above in the transpiled file
-
     });
     _registerModule(_modules, 'parts-more/BoxPlotSeries.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
@@ -3361,9 +3356,9 @@
              * @private
              */
             drawPoints: function () {
-                var series = this, points = series.points, options = series.options, chart = series.chart, renderer = chart.renderer, q1Plot, q3Plot, highPlot, lowPlot, medianPlot, medianPath, crispCorr, crispX = 0, boxPath, width, left, right, halfWidth, 
-                // error bar inherits this series type but doesn't do quartiles
-                doQuartiles = series.doQuartiles !== false, pointWiskerLength, whiskerLength = series.options.whiskerLength;
+                var series = this, points = series.points, options = series.options, chart = series.chart, renderer = chart.renderer, q1Plot, q3Plot, highPlot, lowPlot, medianPlot, medianPath, crispCorr, crispX = 0, boxPath, width, left, right, halfWidth,
+                    // error bar inherits this series type but doesn't do quartiles
+                    doQuartiles = series.doQuartiles !== false, pointWiskerLength, whiskerLength = series.options.whiskerLength;
                 points.forEach(function (point) {
                     var graphic = point.graphic, verb = graphic ? 'animate' : 'attr', shapeArgs = point.shapeArgs, boxAttr = {}, stemAttr = {}, whiskersAttr = {}, medianAttr = {}, color = point.color || series.color;
                     if (typeof point.plotY !== 'undefined') {
@@ -3666,7 +3661,6 @@
          * @apioption series.boxplot.data.whiskerDashStyle
          */
         ''; // adds doclets above to transpiled file
-
     });
     _registerModule(_modules, 'parts-more/ErrorBarSeries.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
@@ -3830,7 +3824,6 @@
          * @apioption series.errorbar.data
          */
         ''; // adds doclets above to transpiled file
-
     });
     _registerModule(_modules, 'parts-more/WaterfallSeries.js', [_modules['parts/Axis.js'], _modules['parts/Chart.js'], _modules['parts/Globals.js'], _modules['parts/Point.js'], _modules['parts/Stacking.js'], _modules['parts/Utilities.js']], function (Axis, Chart, H, Point, StackItem, U) {
         /* *
@@ -4257,9 +4250,9 @@
             // Call default processData then override yData to reflect waterfall's
             // extremes on yAxis
             processData: function (force) {
-                var series = this, options = series.options, yData = series.yData, 
-                // #3710 Update point does not propagate to sum
-                points = options.data, point, dataLength = yData.length, threshold = options.threshold || 0, subSum, sum, dataMin, dataMax, y, i;
+                var series = this, options = series.options, yData = series.yData,
+                    // #3710 Update point does not propagate to sum
+                    points = options.data, point, dataLength = yData.length, threshold = options.threshold || 0, subSum, sum, dataMin, dataMax, y, i;
                 sum = subSum = dataMin = dataMax = 0;
                 for (i = 0; i < dataLength; i++) {
                     y = yData[i];
@@ -4344,7 +4337,7 @@
                         else {
                             yPos =
                                 prevArgs.y + prevPoint.minPointLengthOffset +
-                                    borderNormalizer - graphNormalizer;
+                                borderNormalizer - graphNormalizer;
                         }
                         path.push([
                             'M',
@@ -4773,7 +4766,6 @@
          * @apioption series.polygon.data
          */
         ''; // adds doclets above to transpiled file
-
     });
     _registerModule(_modules, 'parts-more/BubbleLegend.js', [_modules['parts/Chart.js'], _modules['parts/Color.js'], _modules['parts/Globals.js'], _modules['parts/Legend.js'], _modules['parts/Utilities.js']], function (Chart, Color, H, Legend, U) {
         /* *
@@ -4792,10 +4784,10 @@
         /**
          * @interface Highcharts.BubbleLegendFormatterContextObject
          */ /**
-        * The center y position of the range.
-        * @name Highcharts.BubbleLegendFormatterContextObject#center
-        * @type {number}
-        */ /**
+       * The center y position of the range.
+       * @name Highcharts.BubbleLegendFormatterContextObject#center
+       * @type {number}
+       */ /**
         * The radius of the bubble range.
         * @name Highcharts.BubbleLegendFormatterContextObject#radius
         * @type {number}
@@ -5278,8 +5270,8 @@
             BubbleLegend.prototype.renderRange = function (range) {
                 var mainRange = this.ranges[0], legend = this.legend, options = this.options, labelsOptions = options.labels, chart = this.chart, renderer = chart.renderer, symbols = this.symbols, labels = symbols.labels, label, elementCenter = range.center, absoluteRadius = Math.abs(range.radius), connectorDistance = options.connectorDistance || 0, labelsAlign = labelsOptions.align, rtl = legend.options.rtl, fontSize = labelsOptions.style.fontSize, connectorLength = rtl || labelsAlign === 'left' ?
                     -connectorDistance : connectorDistance, borderWidth = options.borderWidth, connectorWidth = options.connectorWidth, posX = mainRange.radius || 0, posY = elementCenter - absoluteRadius -
-                    borderWidth / 2 + connectorWidth / 2, labelY, labelX, fontMetrics = this.fontMetrics, labelMovement = fontSize / 2 - (fontMetrics.h - fontSize) / 2, crispMovement = (posY % 1 ? 1 : 0.5) -
-                    (connectorWidth % 2 ? 0 : 0.5), styledMode = renderer.styledMode;
+                        borderWidth / 2 + connectorWidth / 2, labelY, labelX, fontMetrics = this.fontMetrics, labelMovement = fontSize / 2 - (fontMetrics.h - fontSize) / 2, crispMovement = (posY % 1 ? 1 : 0.5) -
+                            (connectorWidth % 2 ? 0 : 0.5), styledMode = renderer.styledMode;
                 // Set options for centered labels
                 if (labelsAlign === 'center') {
                     connectorLength = 0; // do not use connector
@@ -5293,29 +5285,29 @@
                     .circle(posX, elementCenter + crispMovement, absoluteRadius)
                     .attr(styledMode ? {} : range.bubbleStyle)
                     .addClass((styledMode ?
-                    'highcharts-color-' +
+                        'highcharts-color-' +
                         this.options.seriesIndex + ' ' :
-                    '') +
-                    'highcharts-bubble-legend-symbol ' +
-                    (options.className || '')).add(this.legendSymbol));
+                        '') +
+                        'highcharts-bubble-legend-symbol ' +
+                        (options.className || '')).add(this.legendSymbol));
                 // Render connector
                 symbols.connectors.push(renderer
                     .path(renderer.crispLine([
-                    ['M', posX, posY],
-                    ['L', posX + connectorLength, posY]
-                ], options.connectorWidth))
+                        ['M', posX, posY],
+                        ['L', posX + connectorLength, posY]
+                    ], options.connectorWidth))
                     .attr(styledMode ? {} : range.connectorStyle)
                     .addClass((styledMode ?
-                    'highcharts-color-' +
+                        'highcharts-color-' +
                         this.options.seriesIndex + ' ' : '') +
-                    'highcharts-bubble-legend-connectors ' +
-                    (options.connectorClassName || '')).add(this.legendSymbol));
+                        'highcharts-bubble-legend-connectors ' +
+                        (options.connectorClassName || '')).add(this.legendSymbol));
                 // Render label
                 label = renderer
                     .text(this.formatLabel(range), labelX, labelY + labelMovement)
                     .attr(styledMode ? {} : range.labelStyle)
                     .addClass('highcharts-bubble-legend-labels ' +
-                    (options.labels.className || '')).add(this.legendSymbol);
+                        (options.labels.className || '')).add(this.legendSymbol);
                 labels.push(label);
                 // To enable default 'hideOverlappingLabels' method
                 label.placed = true;
@@ -5453,7 +5445,7 @@
                     // size will not affect to bubbles series.
                     if ((horizontal && plotSizeY - calculatedSize >=
                         plotSizeX) || (!horizontal && plotSizeX -
-                        calculatedSize >= plotSizeY)) {
+                            calculatedSize >= plotSizeY)) {
                         calculatedSize = maxPxSize;
                     }
                 }
@@ -5552,10 +5544,10 @@
                     items[i].itemHeight = items[i].legendItemHeight;
                 }
                 if ( // Line break
-                items[i] === items[length - 1] ||
+                    items[i] === items[length - 1] ||
                     items[i + 1] &&
-                        items[i]._legendItemPos[1] !==
-                            items[i + 1]._legendItemPos[1]) {
+                    items[i]._legendItemPos[1] !==
+                    items[i + 1]._legendItemPos[1]) {
                     lines.push({ height: 0 });
                     lastLine = lines[lines.length - 1];
                     // Find the highest item in line
@@ -6071,9 +6063,9 @@
              * @private
              */
             haloPath: function (size) {
-                return Point.prototype.haloPath.call(this, 
-                // #6067
-                size === 0 ? 0 : (this.marker ? this.marker.radius || 0 : 0) + size);
+                return Point.prototype.haloPath.call(this,
+                    // #6067
+                    size === 0 ? 0 : (this.marker ? this.marker.radius || 0 : 0) + size);
             },
             ttBelow: false
         });
@@ -6232,7 +6224,6 @@
          * @apioption series.bubble.marker
          */
         ''; // adds doclets above to transpiled file
-
     });
     _registerModule(_modules, 'modules/networkgraph/integrations.js', [_modules['parts/Globals.js']], function (H) {
         /* *
@@ -6386,12 +6377,12 @@
                  * @return {void}
                  */
                 integrate: function (layout, node) {
-                    var friction = -layout.options.friction, maxSpeed = layout.options.maxSpeed, prevX = node.prevX, prevY = node.prevY, 
-                    // Apply friciton:
-                    diffX = ((node.plotX + node.dispX -
-                        prevX) * friction), diffY = ((node.plotY + node.dispY -
-                        prevY) * friction), abs = Math.abs, signX = abs(diffX) / (diffX || 1), // need to deal with 0
-                    signY = abs(diffY) / (diffY || 1);
+                    var friction = -layout.options.friction, maxSpeed = layout.options.maxSpeed, prevX = node.prevX, prevY = node.prevY,
+                        // Apply friciton:
+                        diffX = ((node.plotX + node.dispX -
+                            prevX) * friction), diffY = ((node.plotY + node.dispY -
+                                prevY) * friction), abs = Math.abs, signX = abs(diffX) / (diffX || 1), // need to deal with 0
+                        signY = abs(diffY) / (diffY || 1);
                     // Apply max speed:
                     diffX = signX * Math.min(maxSpeed, Math.abs(diffX));
                     diffY = signY * Math.min(maxSpeed, Math.abs(diffY));
@@ -6595,7 +6586,6 @@
                 }
             }
         };
-
     });
     _registerModule(_modules, 'modules/networkgraph/QuadTree.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
@@ -6670,180 +6660,180 @@
              */
             this.isEmpty = true;
         };
-        extend(QuadTreeNode.prototype, 
-        /** @lends Highcharts.QuadTreeNode.prototype */
-        {
-            /**
-             * Insert recursively point(node) into the QuadTree. If the given
-             * quadrant is already occupied, divide it into smaller quadrants.
-             *
-             * @param {Highcharts.Point} point
-             *        Point/node to be inserted
-             * @param {number} depth
-             *        Max depth of the QuadTree
-             */
-            insert: function (point, depth) {
-                var newQuadTreeNode;
-                if (this.isInternal) {
-                    // Internal node:
-                    this.nodes[this.getBoxPosition(point)].insert(point, depth - 1);
-                }
-                else {
-                    this.isEmpty = false;
-                    if (!this.body) {
-                        // First body in a quadrant:
-                        this.isInternal = false;
-                        this.body = point;
+        extend(QuadTreeNode.prototype,
+            /** @lends Highcharts.QuadTreeNode.prototype */
+            {
+                /**
+                 * Insert recursively point(node) into the QuadTree. If the given
+                 * quadrant is already occupied, divide it into smaller quadrants.
+                 *
+                 * @param {Highcharts.Point} point
+                 *        Point/node to be inserted
+                 * @param {number} depth
+                 *        Max depth of the QuadTree
+                 */
+                insert: function (point, depth) {
+                    var newQuadTreeNode;
+                    if (this.isInternal) {
+                        // Internal node:
+                        this.nodes[this.getBoxPosition(point)].insert(point, depth - 1);
                     }
                     else {
-                        if (depth) {
-                            // Every other body in a quadrant:
-                            this.isInternal = true;
-                            this.divideBox();
-                            // Reinsert main body only once:
-                            if (this.body !== true) {
-                                this.nodes[this.getBoxPosition(this.body)]
-                                    .insert(this.body, depth - 1);
-                                this.body = true;
-                            }
-                            // Add second body:
-                            this.nodes[this.getBoxPosition(point)]
-                                .insert(point, depth - 1);
+                        this.isEmpty = false;
+                        if (!this.body) {
+                            // First body in a quadrant:
+                            this.isInternal = false;
+                            this.body = point;
                         }
                         else {
-                            // We are below max allowed depth. That means either:
-                            // - really huge number of points
-                            // - falling two points into exactly the same position
-                            // In this case, create another node in the QuadTree.
-                            //
-                            // Alternatively we could add some noise to the
-                            // position, but that could result in different
-                            // rendered chart in exporting.
-                            newQuadTreeNode = new QuadTreeNode({
-                                top: point.plotX,
-                                left: point.plotY,
-                                // Width/height below 1px
-                                width: 0.1,
-                                height: 0.1
-                            });
-                            newQuadTreeNode.body = point;
-                            newQuadTreeNode.isInternal = false;
-                            this.nodes.push(newQuadTreeNode);
+                            if (depth) {
+                                // Every other body in a quadrant:
+                                this.isInternal = true;
+                                this.divideBox();
+                                // Reinsert main body only once:
+                                if (this.body !== true) {
+                                    this.nodes[this.getBoxPosition(this.body)]
+                                        .insert(this.body, depth - 1);
+                                    this.body = true;
+                                }
+                                // Add second body:
+                                this.nodes[this.getBoxPosition(point)]
+                                    .insert(point, depth - 1);
+                            }
+                            else {
+                                // We are below max allowed depth. That means either:
+                                // - really huge number of points
+                                // - falling two points into exactly the same position
+                                // In this case, create another node in the QuadTree.
+                                //
+                                // Alternatively we could add some noise to the
+                                // position, but that could result in different
+                                // rendered chart in exporting.
+                                newQuadTreeNode = new QuadTreeNode({
+                                    top: point.plotX,
+                                    left: point.plotY,
+                                    // Width/height below 1px
+                                    width: 0.1,
+                                    height: 0.1
+                                });
+                                newQuadTreeNode.body = point;
+                                newQuadTreeNode.isInternal = false;
+                                this.nodes.push(newQuadTreeNode);
+                            }
                         }
                     }
-                }
-            },
-            /**
-             * Each quad node requires it's mass and center position. That mass and
-             * position is used to imitate real node in the layout by approximation.
-             */
-            updateMassAndCenter: function () {
-                var mass = 0, plotX = 0, plotY = 0;
-                if (this.isInternal) {
-                    // Calcualte weightened mass of the quad node:
-                    this.nodes.forEach(function (pointMass) {
-                        if (!pointMass.isEmpty) {
-                            mass += pointMass.mass;
-                            plotX +=
-                                pointMass.plotX * pointMass.mass;
-                            plotY +=
-                                pointMass.plotY * pointMass.mass;
-                        }
+                },
+                /**
+                 * Each quad node requires it's mass and center position. That mass and
+                 * position is used to imitate real node in the layout by approximation.
+                 */
+                updateMassAndCenter: function () {
+                    var mass = 0, plotX = 0, plotY = 0;
+                    if (this.isInternal) {
+                        // Calcualte weightened mass of the quad node:
+                        this.nodes.forEach(function (pointMass) {
+                            if (!pointMass.isEmpty) {
+                                mass += pointMass.mass;
+                                plotX +=
+                                    pointMass.plotX * pointMass.mass;
+                                plotY +=
+                                    pointMass.plotY * pointMass.mass;
+                            }
+                        });
+                        plotX /= mass;
+                        plotY /= mass;
+                    }
+                    else if (this.body) {
+                        // Just one node, use coordinates directly:
+                        mass = this.body.mass;
+                        plotX = this.body.plotX;
+                        plotY = this.body.plotY;
+                    }
+                    // Store details:
+                    this.mass = mass;
+                    this.plotX = plotX;
+                    this.plotY = plotY;
+                },
+                /**
+                 * When inserting another node into the box, that already hove one node,
+                 * divide the available space into another four quadrants.
+                 *
+                 * Indexes of quadrants are:
+                 * ```
+                 * -------------               -------------
+                 * |           |               |     |     |
+                 * |           |               |  0  |  1  |
+                 * |           |   divide()    |     |     |
+                 * |     1     | ----------->  -------------
+                 * |           |               |     |     |
+                 * |           |               |  3  |  2  |
+                 * |           |               |     |     |
+                 * -------------               -------------
+                 * ```
+                 */
+                divideBox: function () {
+                    var halfWidth = this.box.width / 2, halfHeight = this.box.height / 2;
+                    // Top left
+                    this.nodes[0] = new QuadTreeNode({
+                        left: this.box.left,
+                        top: this.box.top,
+                        width: halfWidth,
+                        height: halfHeight
                     });
-                    plotX /= mass;
-                    plotY /= mass;
-                }
-                else if (this.body) {
-                    // Just one node, use coordinates directly:
-                    mass = this.body.mass;
-                    plotX = this.body.plotX;
-                    plotY = this.body.plotY;
-                }
-                // Store details:
-                this.mass = mass;
-                this.plotX = plotX;
-                this.plotY = plotY;
-            },
-            /**
-             * When inserting another node into the box, that already hove one node,
-             * divide the available space into another four quadrants.
-             *
-             * Indexes of quadrants are:
-             * ```
-             * -------------               -------------
-             * |           |               |     |     |
-             * |           |               |  0  |  1  |
-             * |           |   divide()    |     |     |
-             * |     1     | ----------->  -------------
-             * |           |               |     |     |
-             * |           |               |  3  |  2  |
-             * |           |               |     |     |
-             * -------------               -------------
-             * ```
-             */
-            divideBox: function () {
-                var halfWidth = this.box.width / 2, halfHeight = this.box.height / 2;
-                // Top left
-                this.nodes[0] = new QuadTreeNode({
-                    left: this.box.left,
-                    top: this.box.top,
-                    width: halfWidth,
-                    height: halfHeight
-                });
-                // Top right
-                this.nodes[1] = new QuadTreeNode({
-                    left: this.box.left + halfWidth,
-                    top: this.box.top,
-                    width: halfWidth,
-                    height: halfHeight
-                });
-                // Bottom right
-                this.nodes[2] = new QuadTreeNode({
-                    left: this.box.left + halfWidth,
-                    top: this.box.top + halfHeight,
-                    width: halfWidth,
-                    height: halfHeight
-                });
-                // Bottom left
-                this.nodes[3] = new QuadTreeNode({
-                    left: this.box.left,
-                    top: this.box.top + halfHeight,
-                    width: halfWidth,
-                    height: halfHeight
-                });
-            },
-            /**
-             * Determine which of the quadrants should be used when placing node in
-             * the QuadTree. Returned index is always in range `< 0 , 3 >`.
-             *
-             * @param {Highcharts.Point} point
-             * @return {number}
-             */
-            getBoxPosition: function (point) {
-                var left = point.plotX < this.box.left + this.box.width / 2, top = point.plotY < this.box.top + this.box.height / 2, index;
-                if (left) {
-                    if (top) {
-                        // Top left
-                        index = 0;
+                    // Top right
+                    this.nodes[1] = new QuadTreeNode({
+                        left: this.box.left + halfWidth,
+                        top: this.box.top,
+                        width: halfWidth,
+                        height: halfHeight
+                    });
+                    // Bottom right
+                    this.nodes[2] = new QuadTreeNode({
+                        left: this.box.left + halfWidth,
+                        top: this.box.top + halfHeight,
+                        width: halfWidth,
+                        height: halfHeight
+                    });
+                    // Bottom left
+                    this.nodes[3] = new QuadTreeNode({
+                        left: this.box.left,
+                        top: this.box.top + halfHeight,
+                        width: halfWidth,
+                        height: halfHeight
+                    });
+                },
+                /**
+                 * Determine which of the quadrants should be used when placing node in
+                 * the QuadTree. Returned index is always in range `< 0 , 3 >`.
+                 *
+                 * @param {Highcharts.Point} point
+                 * @return {number}
+                 */
+                getBoxPosition: function (point) {
+                    var left = point.plotX < this.box.left + this.box.width / 2, top = point.plotY < this.box.top + this.box.height / 2, index;
+                    if (left) {
+                        if (top) {
+                            // Top left
+                            index = 0;
+                        }
+                        else {
+                            // Bottom left
+                            index = 3;
+                        }
                     }
                     else {
-                        // Bottom left
-                        index = 3;
+                        if (top) {
+                            // Top right
+                            index = 1;
+                        }
+                        else {
+                            // Bottom right
+                            index = 2;
+                        }
                     }
+                    return index;
                 }
-                else {
-                    if (top) {
-                        // Top right
-                        index = 1;
-                    }
-                    else {
-                        // Bottom right
-                        index = 2;
-                    }
-                }
-                return index;
-            }
-        });
+            });
         /**
          * The QuadTree class. Used in Networkgraph chart as a base for Barnes-Hut
          * approximation.
@@ -6871,85 +6861,84 @@
             this.root.isRoot = true;
             this.root.divideBox();
         };
-        extend(QuadTree.prototype, 
-        /** @lends Highcharts.QuadTree.prototype */
-        {
-            /**
-             * Insert nodes into the QuadTree
-             *
-             * @param {Array<Highcharts.Point>} points
-             */
-            insertNodes: function (points) {
-                points.forEach(function (point) {
-                    this.root.insert(point, this.maxDepth);
-                }, this);
-            },
-            /**
-             * Depfth first treversal (DFS). Using `before` and `after` callbacks,
-             * we can get two results: preorder and postorder traversals, reminder:
-             *
-             * ```
-             *     (a)
-             *     / \
-             *   (b) (c)
-             *   / \
-             * (d) (e)
-             * ```
-             *
-             * DFS (preorder): `a -> b -> d -> e -> c`
-             *
-             * DFS (postorder): `d -> e -> b -> c -> a`
-             *
-             * @param {Highcharts.QuadTreeNode|null} node
-             * @param {Function} [beforeCallback] function to be called before
-             *                      visiting children nodes
-             * @param {Function} [afterCallback] function to be called after
-             *                      visiting children nodes
-             */
-            visitNodeRecursive: function (node, beforeCallback, afterCallback) {
-                var goFurther;
-                if (!node) {
-                    node = this.root;
-                }
-                if (node === this.root && beforeCallback) {
-                    goFurther = beforeCallback(node);
-                }
-                if (goFurther === false) {
-                    return;
-                }
-                node.nodes.forEach(function (qtNode) {
-                    if (qtNode.isInternal) {
-                        if (beforeCallback) {
-                            goFurther = beforeCallback(qtNode);
-                        }
-                        if (goFurther === false) {
-                            return;
-                        }
-                        this.visitNodeRecursive(qtNode, beforeCallback, afterCallback);
+        extend(QuadTree.prototype,
+            /** @lends Highcharts.QuadTree.prototype */
+            {
+                /**
+                 * Insert nodes into the QuadTree
+                 *
+                 * @param {Array<Highcharts.Point>} points
+                 */
+                insertNodes: function (points) {
+                    points.forEach(function (point) {
+                        this.root.insert(point, this.maxDepth);
+                    }, this);
+                },
+                /**
+                 * Depfth first treversal (DFS). Using `before` and `after` callbacks,
+                 * we can get two results: preorder and postorder traversals, reminder:
+                 *
+                 * ```
+                 *     (a)
+                 *     / \
+                 *   (b) (c)
+                 *   / \
+                 * (d) (e)
+                 * ```
+                 *
+                 * DFS (preorder): `a -> b -> d -> e -> c`
+                 *
+                 * DFS (postorder): `d -> e -> b -> c -> a`
+                 *
+                 * @param {Highcharts.QuadTreeNode|null} node
+                 * @param {Function} [beforeCallback] function to be called before
+                 *                      visiting children nodes
+                 * @param {Function} [afterCallback] function to be called after
+                 *                      visiting children nodes
+                 */
+                visitNodeRecursive: function (node, beforeCallback, afterCallback) {
+                    var goFurther;
+                    if (!node) {
+                        node = this.root;
                     }
-                    else if (qtNode.body) {
-                        if (beforeCallback) {
-                            beforeCallback(qtNode.body);
+                    if (node === this.root && beforeCallback) {
+                        goFurther = beforeCallback(node);
+                    }
+                    if (goFurther === false) {
+                        return;
+                    }
+                    node.nodes.forEach(function (qtNode) {
+                        if (qtNode.isInternal) {
+                            if (beforeCallback) {
+                                goFurther = beforeCallback(qtNode);
+                            }
+                            if (goFurther === false) {
+                                return;
+                            }
+                            this.visitNodeRecursive(qtNode, beforeCallback, afterCallback);
                         }
+                        else if (qtNode.body) {
+                            if (beforeCallback) {
+                                beforeCallback(qtNode.body);
+                            }
+                        }
+                        if (afterCallback) {
+                            afterCallback(qtNode);
+                        }
+                    }, this);
+                    if (node === this.root && afterCallback) {
+                        afterCallback(node);
                     }
-                    if (afterCallback) {
-                        afterCallback(qtNode);
-                    }
-                }, this);
-                if (node === this.root && afterCallback) {
-                    afterCallback(node);
+                },
+                /**
+                 * Calculate mass of the each QuadNode in the tree.
+                 */
+                calculateMassAndCenter: function () {
+                    this.visitNodeRecursive(null, null, function (node) {
+                        node.updateMassAndCenter();
+                    });
                 }
-            },
-            /**
-             * Calculate mass of the each QuadNode in the tree.
-             */
-            calculateMassAndCenter: function () {
-                this.visitNodeRecursive(null, null, function (node) {
-                    node.updateMassAndCenter();
-                });
-            }
-        });
-
+            });
     });
     _registerModule(_modules, 'modules/networkgraph/layouts.js', [_modules['parts/Chart.js'], _modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (Chart, H, U) {
         /* *
@@ -6970,12 +6959,12 @@
             }
         };
         extend(
-        /**
-         * Reingold-Fruchterman algorithm from
-         * "Graph Drawing by Force-directed Placement" paper.
-         * @private
-         */
-        H.layouts['reingold-fruchterman'].prototype, {
+            /**
+             * Reingold-Fruchterman algorithm from
+             * "Graph Drawing by Force-directed Placement" paper.
+             * @private
+             */
+            H.layouts['reingold-fruchterman'].prototype, {
             init: function (options) {
                 this.options = options;
                 this.nodes = [];
@@ -7290,8 +7279,8 @@
                         layout.nodes.forEach(function (repNode) {
                             var force, distanceR, distanceXY;
                             if (
-                            // Node can not repulse itself:
-                            node !== repNode &&
+                                // Node can not repulse itself:
+                                node !== repNode &&
                                 // Only close nodes affect each other:
                                 // layout.getDistR(node, repNode) < 2 * k &&
                                 // Not dragged:
@@ -7499,7 +7488,6 @@
             }
             this.redraw();
         });
-
     });
     _registerModule(_modules, 'modules/networkgraph/draggable-nodes.js', [_modules['parts/Chart.js'], _modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (Chart, H, U) {
         /* *
@@ -7632,7 +7620,6 @@
                 mousedownUnbinder();
             });
         });
-
     });
     _registerModule(_modules, 'parts-more/PackedBubbleSeries.js', [_modules['parts/Chart.js'], _modules['parts/Color.js'], _modules['parts/Globals.js'], _modules['parts/Point.js'], _modules['parts/Utilities.js']], function (Chart, Color, H, Point, U) {
         /* *
@@ -7664,11 +7651,11 @@
          * @extends Highcharts.PointLabelObject
          * @since 7.0.0
          */ /**
-        * The color of the node.
-        * @name Highcharts.SeriesPackedBubbleDataLabelsFormatterContextObject#color
-        * @type {Highcharts.ColorString}
-        * @since 7.0.0
-        */ /**
+       * The color of the node.
+       * @name Highcharts.SeriesPackedBubbleDataLabelsFormatterContextObject#color
+       * @type {Highcharts.ColorString}
+       * @since 7.0.0
+       */ /**
         * The point (node) object. The node name, if defined, is available through
         * `this.point.name`. Arrays: `this.point.linksFrom` and `this.point.linksTo`
         * contains all nodes connected to this point.
@@ -7709,12 +7696,12 @@
                     if (!node.fixedPosition) {
                         node.plotX -=
                             (node.plotX - centerX) *
-                                gravitationalConstant /
-                                (node.mass * Math.sqrt(nodes.length));
+                            gravitationalConstant /
+                            (node.mass * Math.sqrt(nodes.length));
                         node.plotY -=
                             (node.plotY - centerY) *
-                                gravitationalConstant /
-                                (node.mass * Math.sqrt(nodes.length));
+                            gravitationalConstant /
+                            (node.mass * Math.sqrt(nodes.length));
                     }
                 });
             },
@@ -7771,8 +7758,8 @@
                     layout.nodes.forEach(function (repNode) {
                         force = 0;
                         if (
-                        // Node can not repulse itself:
-                        node !== repNode &&
+                            // Node can not repulse itself:
+                            node !== repNode &&
                             // Only close nodes affect each other:
                             // Not dragged:
                             !node.fixedPosition &&
@@ -7821,317 +7808,317 @@
          *
          * @extends Highcharts.Series
          */
-        seriesType('packedbubble', 'bubble', 
-        /**
-         * A packed bubble series is a two dimensional series type, where each point
-         * renders a value in X, Y position. Each point is drawn as a bubble
-         * where the bubbles don't overlap with each other and the radius
-         * of the bubble relates to the value.
-         *
-         * @sample highcharts/demo/packed-bubble/
-         *         Packed bubble chart
-         * @sample highcharts/demo/packed-bubble-split/
-         *         Split packed bubble chart
+        seriesType('packedbubble', 'bubble',
+            /**
+             * A packed bubble series is a two dimensional series type, where each point
+             * renders a value in X, Y position. Each point is drawn as a bubble
+             * where the bubbles don't overlap with each other and the radius
+             * of the bubble relates to the value.
+             *
+             * @sample highcharts/demo/packed-bubble/
+             *         Packed bubble chart
+             * @sample highcharts/demo/packed-bubble-split/
+             *         Split packed bubble chart
 
-         * @extends      plotOptions.bubble
-         * @excluding    connectEnds, connectNulls, dragDrop, jitter, keys,
-         *               pointPlacement, sizeByAbsoluteValue, step, xAxis, yAxis,
-         *               zMax, zMin, dataSorting
-         * @product      highcharts
-         * @since        7.0.0
-         * @requires     highcharts-more
-         * @optionparent plotOptions.packedbubble
-         */
-        {
-            /**
-             * Minimum bubble size. Bubbles will automatically size between the
-             * `minSize` and `maxSize` to reflect the value of each bubble.
-             * Can be either pixels (when no unit is given), or a percentage of
-             * the smallest one of the plot width and height, divided by the square
-             * root of total number of points.
-             *
-             * @sample highcharts/plotoptions/bubble-size/
-             *         Bubble size
-             *
-             * @type {number|string}
-             *
-             * @private
+             * @extends      plotOptions.bubble
+             * @excluding    connectEnds, connectNulls, dragDrop, jitter, keys,
+             *               pointPlacement, sizeByAbsoluteValue, step, xAxis, yAxis,
+             *               zMax, zMin, dataSorting
+             * @product      highcharts
+             * @since        7.0.0
+             * @requires     highcharts-more
+             * @optionparent plotOptions.packedbubble
              */
-            minSize: '10%',
-            /**
-             * Maximum bubble size. Bubbles will automatically size between the
-             * `minSize` and `maxSize` to reflect the value of each bubble.
-             * Can be either pixels (when no unit is given), or a percentage of
-             * the smallest one of the plot width and height, divided by the square
-             * root of total number of points.
-             *
-             * @sample highcharts/plotoptions/bubble-size/
-             *         Bubble size
-             *
-             * @type {number|string}
-             *
-             * @private
-             */
-            maxSize: '50%',
-            sizeBy: 'area',
-            zoneAxis: 'y',
-            crisp: false,
-            tooltip: {
-                pointFormat: 'Value: {point.value}'
-            },
-            /**
-             * Flag to determine if nodes are draggable or not. Available for
-             * graph with useSimulation set to true only.
-             *
-             * @since 7.1.0
-             *
-             * @private
-             */
-            draggable: true,
-            /**
-             * An option is giving a possibility to choose between using simulation
-             * for calculating bubble positions. These reflects in both animation
-             * and final position of bubbles. Simulation is also adding options to
-             * the series graph based on used layout. In case of big data sets, with
-             * any performance issues, it is possible to disable animation and pack
-             * bubble in a simple circular way.
-             *
-             * @sample highcharts/series-packedbubble/spiral/
-             *         useSimulation set to false
-             *
-             * @since 7.1.0
-             *
-             * @private
-             */
-            useSimulation: true,
-            /**
-             * Series options for parent nodes.
-             *
-             * @since 8.1.1
-             *
-             * @private
-             */
-            parentNode: {
+            {
                 /**
-                 * Allow this series' parent nodes to be selected
-                 * by clicking on the graph.
+                 * Minimum bubble size. Bubbles will automatically size between the
+                 * `minSize` and `maxSize` to reflect the value of each bubble.
+                 * Can be either pixels (when no unit is given), or a percentage of
+                 * the smallest one of the plot width and height, divided by the square
+                 * root of total number of points.
+                 *
+                 * @sample highcharts/plotoptions/bubble-size/
+                 *         Bubble size
+                 *
+                 * @type {number|string}
+                 *
+                 * @private
+                 */
+                minSize: '10%',
+                /**
+                 * Maximum bubble size. Bubbles will automatically size between the
+                 * `minSize` and `maxSize` to reflect the value of each bubble.
+                 * Can be either pixels (when no unit is given), or a percentage of
+                 * the smallest one of the plot width and height, divided by the square
+                 * root of total number of points.
+                 *
+                 * @sample highcharts/plotoptions/bubble-size/
+                 *         Bubble size
+                 *
+                 * @type {number|string}
+                 *
+                 * @private
+                 */
+                maxSize: '50%',
+                sizeBy: 'area',
+                zoneAxis: 'y',
+                crisp: false,
+                tooltip: {
+                    pointFormat: 'Value: {point.value}'
+                },
+                /**
+                 * Flag to determine if nodes are draggable or not. Available for
+                 * graph with useSimulation set to true only.
+                 *
+                 * @since 7.1.0
+                 *
+                 * @private
+                 */
+                draggable: true,
+                /**
+                 * An option is giving a possibility to choose between using simulation
+                 * for calculating bubble positions. These reflects in both animation
+                 * and final position of bubbles. Simulation is also adding options to
+                 * the series graph based on used layout. In case of big data sets, with
+                 * any performance issues, it is possible to disable animation and pack
+                 * bubble in a simple circular way.
+                 *
+                 * @sample highcharts/series-packedbubble/spiral/
+                 *         useSimulation set to false
+                 *
+                 * @since 7.1.0
+                 *
+                 * @private
+                 */
+                useSimulation: true,
+                /**
+                 * Series options for parent nodes.
                  *
                  * @since 8.1.1
-                 */
-                allowPointSelect: false
-            },
-            /**
-            /**
-             *
-             * @declare Highcharts.SeriesPackedBubbleDataLabelsOptionsObject
-             *
-             * @private
-             */
-            dataLabels: {
-                /**
-                 * The
-                 * [format string](https://www.highcharts.com/docs/chart-concepts/labels-and-string-formatting)
-                 * specifying what to show for _node_ in the networkgraph. In v7.0
-                 * defaults to `{key}`, since v7.1 defaults to `undefined` and
-                 * `formatter` is used instead.
                  *
-                 * @type      {string}
-                 * @since     7.0.0
-                 * @apioption plotOptions.packedbubble.dataLabels.format
+                 * @private
                  */
-                // eslint-disable-next-line valid-jsdoc
-                /**
-                 * Callback JavaScript function to format the data label for a node.
-                 * Note that if a `format` is defined, the format takes precedence
-                 * and the formatter is ignored.
-                 *
-                 * @type  {Highcharts.SeriesPackedBubbleDataLabelsFormatterCallbackFunction}
-                 * @since 7.0.0
-                 */
-                formatter: function () {
-                    return this.point.value;
-                },
-                /**
-                 * @type      {string}
-                 * @since     7.1.0
-                 * @apioption plotOptions.packedbubble.dataLabels.parentNodeFormat
-                 */
-                // eslint-disable-next-line valid-jsdoc
-                /**
-                 * @type  {Highcharts.SeriesPackedBubbleDataLabelsFormatterCallbackFunction}
-                 * @since 7.1.0
-                 */
-                parentNodeFormatter: function () {
-                    return this.name;
-                },
-                /**
-                 * @sample {highcharts} highcharts/series-packedbubble/packed-dashboard
-                 *         Dashboard with dataLabels on parentNodes
-                 *
-                 * @declare Highcharts.SeriesPackedBubbleDataLabelsTextPathOptionsObject
-                 * @since   7.1.0
-                 */
-                parentNodeTextPath: {
+                parentNode: {
                     /**
-                     * Presentation attributes for the text path.
+                     * Allow this series' parent nodes to be selected
+                     * by clicking on the graph.
                      *
-                     * @type      {Highcharts.SVGAttributes}
-                     * @since     7.1.0
-                     * @apioption plotOptions.packedbubble.dataLabels.attributes
+                     * @since 8.1.1
                      */
+                    allowPointSelect: false
+                },
+                /**
+                /**
+                 *
+                 * @declare Highcharts.SeriesPackedBubbleDataLabelsOptionsObject
+                 *
+                 * @private
+                 */
+                dataLabels: {
                     /**
-                     * Enable or disable `textPath` option for link's or marker's
-                     * data labels.
+                     * The
+                     * [format string](https://www.highcharts.com/docs/chart-concepts/labels-and-string-formatting)
+                     * specifying what to show for _node_ in the networkgraph. In v7.0
+                     * defaults to `{key}`, since v7.1 defaults to `undefined` and
+                     * `formatter` is used instead.
                      *
+                     * @type      {string}
+                     * @since     7.0.0
+                     * @apioption plotOptions.packedbubble.dataLabels.format
+                     */
+                    // eslint-disable-next-line valid-jsdoc
+                    /**
+                     * Callback JavaScript function to format the data label for a node.
+                     * Note that if a `format` is defined, the format takes precedence
+                     * and the formatter is ignored.
+                     *
+                     * @type  {Highcharts.SeriesPackedBubbleDataLabelsFormatterCallbackFunction}
+                     * @since 7.0.0
+                     */
+                    formatter: function () {
+                        return this.point.value;
+                    },
+                    /**
+                     * @type      {string}
+                     * @since     7.1.0
+                     * @apioption plotOptions.packedbubble.dataLabels.parentNodeFormat
+                     */
+                    // eslint-disable-next-line valid-jsdoc
+                    /**
+                     * @type  {Highcharts.SeriesPackedBubbleDataLabelsFormatterCallbackFunction}
                      * @since 7.1.0
                      */
-                    enabled: true
-                },
-                /**
-                 * Options for a _node_ label text which should follow marker's
-                 * shape.
-                 *
-                 * **Note:** Only SVG-based renderer supports this option.
-                 *
-                 * @extends   plotOptions.series.dataLabels.textPath
-                 * @apioption plotOptions.packedbubble.dataLabels.textPath
-                 */
-                padding: 0,
-                style: {
-                    transition: 'opacity 2000ms'
-                }
-            },
-            /**
-             * Options for layout algorithm when simulation is enabled. Inside there
-             * are options to change the speed, padding, initial bubbles positions
-             * and more.
-             *
-             * @extends   plotOptions.networkgraph.layoutAlgorithm
-             * @excluding approximation, attractiveForce, repulsiveForce, theta
-             * @since     7.1.0
-             *
-             * @private
-             */
-            layoutAlgorithm: {
-                /**
-                 * Initial layout algorithm for positioning nodes. Can be one of
-                 * the built-in options ("circle", "random") or a function where
-                 * positions should be set on each node (`this.nodes`) as
-                 * `node.plotX` and `node.plotY`.
-                 *
-                 * @sample highcharts/series-networkgraph/initial-positions/
-                 *         Initial positions with callback
-                 *
-                 * @type {"circle"|"random"|Function}
-                 */
-                initialPositions: 'circle',
-                /**
-                 * @sample highcharts/series-packedbubble/initial-radius/
-                 *         Initial radius set to 200
-                 *
-                 * @extends   plotOptions.networkgraph.layoutAlgorithm.initialPositionRadius
-                 * @excluding states
-                 */
-                initialPositionRadius: 20,
-                /**
-                 * The distance between two bubbles, when the algorithm starts to
-                 * treat two bubbles as overlapping. The `bubblePadding` is also the
-                 * expected distance between all the bubbles on simulation end.
-                 */
-                bubblePadding: 5,
-                /**
-                 * Whether bubbles should interact with their parentNode to keep
-                 * them inside.
-                 */
-                parentNodeLimit: false,
-                /**
-                 * Whether series should interact with each other or not. When
-                 * `parentNodeLimit` is set to true, thi option should be set to
-                 * false to avoid sticking points in wrong series parentNode.
-                 */
-                seriesInteraction: true,
-                /**
-                 * In case of split series, this option allows user to drag and
-                 * drop points between series, for changing point related series.
-                 *
-                 * @sample highcharts/series-packedbubble/packed-dashboard/
-                 *         Example of drag'n drop bubbles for bubble kanban
-                 */
-                dragBetweenSeries: false,
-                /**
-                 * Layout algorithm options for parent nodes.
-                 *
-                 * @extends   plotOptions.networkgraph.layoutAlgorithm
-                 * @excluding approximation, attractiveForce, enableSimulation,
-                 *            repulsiveForce, theta
-                 */
-                parentNodeOptions: {
-                    maxIterations: 400,
-                    gravitationalConstant: 0.03,
-                    maxSpeed: 50,
-                    initialPositionRadius: 100,
-                    seriesInteraction: true,
+                    parentNodeFormatter: function () {
+                        return this.name;
+                    },
                     /**
-                     * Styling options for parentNodes markers. Similar to
-                     * line.marker options.
+                     * @sample {highcharts} highcharts/series-packedbubble/packed-dashboard
+                     *         Dashboard with dataLabels on parentNodes
                      *
-                     * @sample highcharts/series-packedbubble/parentnode-style/
-                     *         Bubble size
-                     *
-                     * @extends   plotOptions.series.marker
-                     * @excluding states
+                     * @declare Highcharts.SeriesPackedBubbleDataLabelsTextPathOptionsObject
+                     * @since   7.1.0
                      */
-                    marker: {
-                        fillColor: null,
-                        fillOpacity: 1,
-                        lineWidth: 1,
-                        lineColor: null,
-                        symbol: 'circle'
+                    parentNodeTextPath: {
+                        /**
+                         * Presentation attributes for the text path.
+                         *
+                         * @type      {Highcharts.SVGAttributes}
+                         * @since     7.1.0
+                         * @apioption plotOptions.packedbubble.dataLabels.attributes
+                         */
+                        /**
+                         * Enable or disable `textPath` option for link's or marker's
+                         * data labels.
+                         *
+                         * @since 7.1.0
+                         */
+                        enabled: true
+                    },
+                    /**
+                     * Options for a _node_ label text which should follow marker's
+                     * shape.
+                     *
+                     * **Note:** Only SVG-based renderer supports this option.
+                     *
+                     * @extends   plotOptions.series.dataLabels.textPath
+                     * @apioption plotOptions.packedbubble.dataLabels.textPath
+                     */
+                    padding: 0,
+                    style: {
+                        transition: 'opacity 2000ms'
                     }
                 },
-                enableSimulation: true,
                 /**
-                 * Type of the algorithm used when positioning bubbles.
-                 * @ignore-option
+                 * Options for layout algorithm when simulation is enabled. Inside there
+                 * are options to change the speed, padding, initial bubbles positions
+                 * and more.
+                 *
+                 * @extends   plotOptions.networkgraph.layoutAlgorithm
+                 * @excluding approximation, attractiveForce, repulsiveForce, theta
+                 * @since     7.1.0
+                 *
+                 * @private
                  */
-                type: 'packedbubble',
-                /**
-                 * Integration type. Integration determines how forces are applied
-                 * on particles. The `packedbubble` integration is based on
-                 * the networkgraph `verlet` integration, where the new position
-                 * is based on a previous position without velocity:
-                 * `newPosition += previousPosition - newPosition`.
-                 *
-                 * @sample highcharts/series-networkgraph/forces/
-                 *
-                 * @ignore-option
-                 */
-                integration: 'packedbubble',
-                maxIterations: 1000,
-                /**
-                 * Whether to split series into individual groups or to mix all
-                 * series together.
-                 *
-                 * @since   7.1.0
-                 * @default false
-                 */
-                splitSeries: false,
-                /**
-                 * Max speed that node can get in one iteration. In terms of
-                 * simulation, it's a maximum translation (in pixels) that a node
-                 * can move (in both, x and y, dimensions). While `friction` is
-                 * applied on all nodes, max speed is applied only for nodes that
-                 * move very fast, for example small or disconnected ones.
-                 *
-                 * @see [layoutAlgorithm.integration](#series.networkgraph.layoutAlgorithm.integration)
-                 *
-                 * @see [layoutAlgorithm.friction](#series.networkgraph.layoutAlgorithm.friction)
-                 */
-                maxSpeed: 5,
-                gravitationalConstant: 0.01,
-                friction: -0.981
-            }
-        }, {
+                layoutAlgorithm: {
+                    /**
+                     * Initial layout algorithm for positioning nodes. Can be one of
+                     * the built-in options ("circle", "random") or a function where
+                     * positions should be set on each node (`this.nodes`) as
+                     * `node.plotX` and `node.plotY`.
+                     *
+                     * @sample highcharts/series-networkgraph/initial-positions/
+                     *         Initial positions with callback
+                     *
+                     * @type {"circle"|"random"|Function}
+                     */
+                    initialPositions: 'circle',
+                    /**
+                     * @sample highcharts/series-packedbubble/initial-radius/
+                     *         Initial radius set to 200
+                     *
+                     * @extends   plotOptions.networkgraph.layoutAlgorithm.initialPositionRadius
+                     * @excluding states
+                     */
+                    initialPositionRadius: 20,
+                    /**
+                     * The distance between two bubbles, when the algorithm starts to
+                     * treat two bubbles as overlapping. The `bubblePadding` is also the
+                     * expected distance between all the bubbles on simulation end.
+                     */
+                    bubblePadding: 5,
+                    /**
+                     * Whether bubbles should interact with their parentNode to keep
+                     * them inside.
+                     */
+                    parentNodeLimit: false,
+                    /**
+                     * Whether series should interact with each other or not. When
+                     * `parentNodeLimit` is set to true, thi option should be set to
+                     * false to avoid sticking points in wrong series parentNode.
+                     */
+                    seriesInteraction: true,
+                    /**
+                     * In case of split series, this option allows user to drag and
+                     * drop points between series, for changing point related series.
+                     *
+                     * @sample highcharts/series-packedbubble/packed-dashboard/
+                     *         Example of drag'n drop bubbles for bubble kanban
+                     */
+                    dragBetweenSeries: false,
+                    /**
+                     * Layout algorithm options for parent nodes.
+                     *
+                     * @extends   plotOptions.networkgraph.layoutAlgorithm
+                     * @excluding approximation, attractiveForce, enableSimulation,
+                     *            repulsiveForce, theta
+                     */
+                    parentNodeOptions: {
+                        maxIterations: 400,
+                        gravitationalConstant: 0.03,
+                        maxSpeed: 50,
+                        initialPositionRadius: 100,
+                        seriesInteraction: true,
+                        /**
+                         * Styling options for parentNodes markers. Similar to
+                         * line.marker options.
+                         *
+                         * @sample highcharts/series-packedbubble/parentnode-style/
+                         *         Bubble size
+                         *
+                         * @extends   plotOptions.series.marker
+                         * @excluding states
+                         */
+                        marker: {
+                            fillColor: null,
+                            fillOpacity: 1,
+                            lineWidth: 1,
+                            lineColor: null,
+                            symbol: 'circle'
+                        }
+                    },
+                    enableSimulation: true,
+                    /**
+                     * Type of the algorithm used when positioning bubbles.
+                     * @ignore-option
+                     */
+                    type: 'packedbubble',
+                    /**
+                     * Integration type. Integration determines how forces are applied
+                     * on particles. The `packedbubble` integration is based on
+                     * the networkgraph `verlet` integration, where the new position
+                     * is based on a previous position without velocity:
+                     * `newPosition += previousPosition - newPosition`.
+                     *
+                     * @sample highcharts/series-networkgraph/forces/
+                     *
+                     * @ignore-option
+                     */
+                    integration: 'packedbubble',
+                    maxIterations: 1000,
+                    /**
+                     * Whether to split series into individual groups or to mix all
+                     * series together.
+                     *
+                     * @since   7.1.0
+                     * @default false
+                     */
+                    splitSeries: false,
+                    /**
+                     * Max speed that node can get in one iteration. In terms of
+                     * simulation, it's a maximum translation (in pixels) that a node
+                     * can move (in both, x and y, dimensions). While `friction` is
+                     * applied on all nodes, max speed is applied only for nodes that
+                     * move very fast, for example small or disconnected ones.
+                     *
+                     * @see [layoutAlgorithm.integration](#series.networkgraph.layoutAlgorithm.integration)
+                     *
+                     * @see [layoutAlgorithm.friction](#series.networkgraph.layoutAlgorithm.friction)
+                     */
+                    maxSpeed: 5,
+                    gravitationalConstant: 0.01,
+                    friction: -0.981
+                }
+            }, {
             /**
              * An internal option used for allowing nodes dragging.
              * @private
@@ -8275,14 +8262,14 @@
              * @private
              */
             seriesBox: function () {
-                var series = this, chart = series.chart, data = series.data, max = Math.max, min = Math.min, radius, 
-                // bBox = [xMin, xMax, yMin, yMax]
-                bBox = [
-                    chart.plotLeft,
-                    chart.plotLeft + chart.plotWidth,
-                    chart.plotTop,
-                    chart.plotTop + chart.plotHeight
-                ];
+                var series = this, chart = series.chart, data = series.data, max = Math.max, min = Math.min, radius,
+                    // bBox = [xMin, xMax, yMin, yMax]
+                    bBox = [
+                        chart.plotLeft,
+                        chart.plotLeft + chart.plotWidth,
+                        chart.plotTop,
+                        chart.plotTop + chart.plotHeight
+                    ];
                 data.forEach(function (p) {
                     if (defined(p.plotX) &&
                         defined(p.plotY) &&
@@ -8435,7 +8422,7 @@
                 if (!parentNodeLayout) {
                     graphLayoutsStorage[layoutOptions.type + '-series'] =
                         parentNodeLayout =
-                            new H.layouts[layoutOptions.type]();
+                        new H.layouts[layoutOptions.type]();
                     parentNodeLayout.init(parentNodeOptions);
                     graphLayoutsLookup.splice(parentNodeLayout.index, 0, parentNodeLayout);
                 }
@@ -8547,8 +8534,8 @@
              */
             checkOverlap: function (bubble1, bubble2) {
                 var diffX = bubble1[0] - bubble2[0], // diff of X center values
-                diffY = bubble1[1] - bubble2[1], // diff of Y center values
-                sumRad = bubble1[2] + bubble2[2]; // sum of bubble radius
+                    diffY = bubble1[1] - bubble2[1], // diff of Y center values
+                    sumRad = bubble1[2] + bubble2[2]; // sum of bubble radius
                 return (Math.sqrt(diffX * diffX + diffY * diffY) -
                     Math.abs(sumRad)) < -0.001;
             },
@@ -8565,27 +8552,27 @@
              */
             positionBubble: function (lastBubble, newOrigin, nextBubble) {
                 var sqrt = Math.sqrt, asin = Math.asin, acos = Math.acos, pow = Math.pow, abs = Math.abs, distance = sqrt(// dist between lastBubble and newOrigin
-                pow((lastBubble[0] - newOrigin[0]), 2) +
+                    pow((lastBubble[0] - newOrigin[0]), 2) +
                     pow((lastBubble[1] - newOrigin[1]), 2)), alfa = acos(
-                // from cosinus theorem: alfa is an angle used for
-                // calculating correct position
-                (pow(distance, 2) +
-                    pow(nextBubble[2] + newOrigin[2], 2) -
-                    pow(nextBubble[2] + lastBubble[2], 2)) / (2 * (nextBubble[2] + newOrigin[2]) * distance)), beta = asin(// from sinus theorem.
-                abs(lastBubble[0] - newOrigin[0]) /
-                    distance), 
-                // providing helping variables, related to angle between
-                // lastBubble and newOrigin
-                gamma = (lastBubble[1] - newOrigin[1]) < 0 ? 0 : Math.PI, 
-                // if new origin y is smaller than last bubble y value
-                // (2 and 3 quarter),
-                // add Math.PI to final angle
-                delta = (lastBubble[0] - newOrigin[0]) *
-                    (lastBubble[1] - newOrigin[1]) < 0 ?
-                    1 : -1, // (1st and 3rd quarter)
-                finalAngle = gamma + alfa + beta * delta, cosA = Math.cos(finalAngle), sinA = Math.sin(finalAngle), posX = newOrigin[0] + (newOrigin[2] + nextBubble[2]) * sinA, 
-                // center of new origin + (radius1 + radius2) * sinus A
-                posY = newOrigin[1] - (newOrigin[2] + nextBubble[2]) * cosA;
+                        // from cosinus theorem: alfa is an angle used for
+                        // calculating correct position
+                        (pow(distance, 2) +
+                            pow(nextBubble[2] + newOrigin[2], 2) -
+                            pow(nextBubble[2] + lastBubble[2], 2)) / (2 * (nextBubble[2] + newOrigin[2]) * distance)), beta = asin(// from sinus theorem.
+                                abs(lastBubble[0] - newOrigin[0]) /
+                                distance),
+                    // providing helping variables, related to angle between
+                    // lastBubble and newOrigin
+                    gamma = (lastBubble[1] - newOrigin[1]) < 0 ? 0 : Math.PI,
+                    // if new origin y is smaller than last bubble y value
+                    // (2 and 3 quarter),
+                    // add Math.PI to final angle
+                    delta = (lastBubble[0] - newOrigin[0]) *
+                        (lastBubble[1] - newOrigin[1]) < 0 ?
+                        1 : -1, // (1st and 3rd quarter)
+                    finalAngle = gamma + alfa + beta * delta, cosA = Math.cos(finalAngle), sinA = Math.sin(finalAngle), posX = newOrigin[0] + (newOrigin[2] + nextBubble[2]) * sinA,
+                    // center of new origin + (radius1 + radius2) * sinus A
+                    posY = newOrigin[1] - (newOrigin[2] + nextBubble[2]) * cosA;
                 return [
                     posX,
                     posY,
@@ -8962,7 +8949,6 @@
          * @apioption series.packedbubble.marker
          */
         ''; // adds doclets above to transpiled file
-
     });
     _registerModule(_modules, 'parts-more/Polar.js', [_modules['parts/Chart.js'], _modules['parts/Globals.js'], _modules['parts-more/Pane.js'], _modules['parts/Pointer.js'], _modules['parts/SVGRenderer.js'], _modules['parts/Utilities.js']], function (Chart, H, Pane, Pointer, SVGRenderer, U) {
         /* *
@@ -8998,11 +8984,11 @@
          *        well allows short recurence
          */
         seriesProto.getConnectors = function (segment, index, calculateNeighbours, connectEnds) {
-            var i, prevPointInd, nextPointInd, previousPoint, nextPoint, previousX, previousY, nextX, nextY, plotX, plotY, ret, 
-            // 1 means control points midway between points, 2 means 1/3 from
-            // the point, 3 is 1/4 etc;
-            smoothing = 1.5, denom = smoothing + 1, leftContX, leftContY, rightContX, rightContY, dLControlPoint, // distance left control point
-            dRControlPoint, leftContAngle, rightContAngle, jointAngle, addedNumber = connectEnds ? 1 : 0;
+            var i, prevPointInd, nextPointInd, previousPoint, nextPoint, previousX, previousY, nextX, nextY, plotX, plotY, ret,
+                // 1 means control points midway between points, 2 means 1/3 from
+                // the point, 3 is 1/4 etc;
+                smoothing = 1.5, denom = smoothing + 1, leftContX, leftContY, rightContX, rightContY, dLControlPoint, // distance left control point
+                dRControlPoint, leftContAngle, rightContAngle, jointAngle, addedNumber = connectEnds ? 1 : 0;
             // Calculate final index of points depending on the initial index value.
             // Because of calculating neighbours, index may be outisde segment
             // array.
@@ -9569,12 +9555,12 @@
                             // inside
                             labelPos =
                                 this.yAxis.postTranslate(
-                                // angle
-                                (shapeArgs.start + shapeArgs.end) / 2 -
+                                    // angle
+                                    (shapeArgs.start + shapeArgs.end) / 2 -
                                     this
-                                        .xAxis.startAngleRad, 
-                                // radius
-                                point.barX +
+                                        .xAxis.startAngleRad,
+                                    // radius
+                                    point.barX +
                                     point.pointWidth / 2);
                             alignTo = {
                                 x: labelPos.x - chart.plotLeft,
@@ -9653,7 +9639,7 @@
             }
             splat(this.options.pane).forEach(function (paneOptions) {
                 new Pane(// eslint-disable-line no-new
-                paneOptions, this);
+                    paneOptions, this);
             }, this);
         });
         addEvent(Chart, 'afterDrawChartBox', function () {
@@ -9681,10 +9667,7 @@
                 return pane.options.id === id;
             }) || proceed.call(this, id);
         });
-
     });
     _registerModule(_modules, 'masters/highcharts-more.src.js', [], function () {
-
-
     });
 }));

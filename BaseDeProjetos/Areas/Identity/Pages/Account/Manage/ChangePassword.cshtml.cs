@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+
 namespace BaseDeProjetos.Areas.Identity.Pages.Account.Manage
 {
     public class ChangePasswordModel : PageModel

@@ -105,8 +105,8 @@ merge(true, ControllablePath.prototype, controllableMixin, /** @lends Highcharts
             .path([['M', 0, 0]])
             .addClass('highcharts-tracker-line')
             .attr({
-            zIndex: 2
-        })
+                zIndex: 2
+            })
             .add(parent);
         if (!this.annotation.chart.styledMode) {
             this.tracker.attr({

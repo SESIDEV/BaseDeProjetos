@@ -223,9 +223,9 @@ var Chart = /** @class */ (function () {
      */
     Chart.prototype.init = function (userOptions, callback) {
         // Handle regular options
-        var options, 
-        // skip merging data points to increase performance
-        seriesOptions = userOptions.series, userPlotOptions = userOptions.plotOptions || {};
+        var options,
+            // skip merging data points to increase performance
+            seriesOptions = userOptions.series, userPlotOptions = userOptions.plotOptions || {};
         // Fire the event with a default function
         fireEvent(this, 'init', { args: arguments }, function () {
             userOptions.series = null;
@@ -654,8 +654,8 @@ var Chart = /** @class */ (function () {
         ret =
             // Search axes
             find(this.axes, itemById) ||
-                // Search series
-                find(this.series, itemById);
+            // Search series
+            find(this.series, itemById);
         // Search points
         for (i = 0; !ret && i < series.length; i++) {
             ret = find(series[i].points || [], itemById);
@@ -784,8 +784,8 @@ var Chart = /** @class */ (function () {
         };
         // Merge default options with explicit options
         var options = this.options[name] = merge(
-        // Default styles
-        (!this.styledMode && { style: style }), this.options[name], explicitOptions);
+            // Default styles
+            (!this.styledMode && { style: style }), this.options[name], explicitOptions);
         var elem = this[name];
         if (elem && explicitOptions) {
             this[name] = elem = elem.destroy(); // remove old
@@ -793,10 +793,10 @@ var Chart = /** @class */ (function () {
         if (options && !elem) {
             elem = this.renderer.text(options.text, 0, 0, options.useHTML)
                 .attr({
-                align: options.align,
-                'class': 'highcharts-' + name,
-                zIndex: options.zIndex || 4
-            })
+                    align: options.align,
+                    'class': 'highcharts-' + name,
+                    zIndex: options.zIndex || 4
+                })
                 .add();
             // Update methods, shortcut to Chart.setTitle, Chart.setSubtitle and
             // Chart.setCaption
@@ -859,9 +859,9 @@ var Chart = /** @class */ (function () {
                 titleSize = renderer.fontMetrics(titleSize, title).b;
                 title
                     .css({
-                    width: (titleOptions.width ||
-                        spacingBox.width + (titleOptions.widthAdjust || 0)) + 'px'
-                });
+                        width: (titleOptions.width ||
+                            spacingBox.width + (titleOptions.widthAdjust || 0)) + 'px'
+                    });
                 // Skip the cache for HTML (#3481, #11666)
                 height = Math.round(title.getBBox(titleOptions.useHTML).height);
                 title.align(extend({
@@ -928,7 +928,7 @@ var Chart = /** @class */ (function () {
          * @type {number}
          */
         chart.chartWidth = Math.max(// #1393
-        0, widthOption || chart.containerWidth || 600 // #1460
+            0, widthOption || chart.containerWidth || 600 // #1460
         );
         /**
          * The current pixel height of the chart.
@@ -1159,15 +1159,15 @@ var Chart = /** @class */ (function () {
      * @function Highcharts.Chart#getAxisMargins
      */
     Chart.prototype.getAxisMargins = function () {
-        var chart = this, 
-        // [top, right, bottom, left]
-        axisOffset = chart.axisOffset = [0, 0, 0, 0], colorAxis = chart.colorAxis, margin = chart.margin, getOffset = function (axes) {
-            axes.forEach(function (axis) {
-                if (axis.visible) {
-                    axis.getOffset();
-                }
-            });
-        };
+        var chart = this,
+            // [top, right, bottom, left]
+            axisOffset = chart.axisOffset = [0, 0, 0, 0], colorAxis = chart.colorAxis, margin = chart.margin, getOffset = function (axes) {
+                axes.forEach(function (axis) {
+                    if (axis.visible) {
+                        axis.getOffset();
+                    }
+                });
+            };
         // pre-render axes to get labels offset width
         if (chart.hasCartesianSeries) {
             getOffset(chart.axes);
@@ -1504,8 +1504,8 @@ var Chart = /** @class */ (function () {
             // Presentational attributes for the background
             plotBackground
                 .attr({
-                fill: plotBackgroundColor || 'none'
-            })
+                    fill: plotBackgroundColor || 'none'
+                })
                 .shadow(optionsChart.plotShadow);
             // Create the background image
             if (plotBackgroundImage) {
@@ -1537,8 +1537,8 @@ var Chart = /** @class */ (function () {
             chart.plotBorder = plotBorder = renderer.rect()
                 .addClass('highcharts-plot-border')
                 .attr({
-                zIndex: 1 // Above the grid
-            })
+                    zIndex: 1 // Above the grid
+                })
                 .add();
         }
         if (!styledMode) {
@@ -1584,8 +1584,8 @@ var Chart = /** @class */ (function () {
             value =
                 // It is set in the options:
                 optionsChart[key] ||
-                    // The default series class:
-                    (klass && klass.prototype[key]);
+                // The default series class:
+                (klass && klass.prototype[key]);
             // requires it
             // 4. Check if any the chart's series require it
             i = seriesOptions && seriesOptions.length;
@@ -1678,13 +1678,13 @@ var Chart = /** @class */ (function () {
      */
     Chart.prototype.render = function () {
         var chart = this, axes = chart.axes, colorAxis = chart.colorAxis, renderer = chart.renderer, options = chart.options, correction = 0, // correction for X axis labels
-        tempWidth, tempHeight, redoHorizontal, redoVertical, renderAxes = function (axes) {
-            axes.forEach(function (axis) {
-                if (axis.visible) {
-                    axis.render();
-                }
-            });
-        };
+            tempWidth, tempHeight, redoHorizontal, redoVertical, renderAxes = function (axes) {
+                axes.forEach(function (axis) {
+                    if (axis.visible) {
+                        axis.render();
+                    }
+                });
+            };
         // Title
         chart.setTitle();
         /**
@@ -1790,14 +1790,14 @@ var Chart = /** @class */ (function () {
             this.credits = this.renderer.text(creds.text + (this.mapCredits || ''), 0, 0)
                 .addClass('highcharts-credits')
                 .on('click', function () {
-                if (creds.href) {
-                    win.location.href = creds.href;
-                }
-            })
+                    if (creds.href) {
+                        win.location.href = creds.href;
+                    }
+                })
                 .attr({
-                align: creds.position.align,
-                zIndex: 8
-            });
+                    align: creds.position.align,
+                    zIndex: 8
+                });
             if (!chart.styledMode) {
                 this.credits.css(creds.style);
             }
@@ -1929,10 +1929,10 @@ var Chart = /** @class */ (function () {
         chart.getAxes();
         // Initialize the series
         (isArray(options.series) ? options.series : []).forEach(
-        // #9680
-        function (serieOptions) {
-            chart.initSeries(serieOptions);
-        });
+            // #9680
+            function (serieOptions) {
+                chart.initSeries(serieOptions);
+            });
         chart.linkSeries();
         chart.setSeriesData();
         // Run an event after axes and series are initialized, but before

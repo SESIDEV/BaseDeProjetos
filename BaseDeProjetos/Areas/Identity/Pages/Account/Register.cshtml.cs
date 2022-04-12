@@ -60,6 +60,7 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account
             [Display(Name = "Confirmar password")]
             [Compare("Password", ErrorMessage = "As senhas não conferem")]
             public string ConfirmPassword { get; set; }
+
             public Instituto Casa { get; set; }
         }
 
@@ -79,7 +80,8 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account
                 IdentityResult result = new IdentityResult();
 
                 //Só aceitar e-mails da firjan
-                if (Input.Email.ToLower().Contains("firjan.com.br")){
+                if (Input.Email.ToLower().Contains("firjan.com.br"))
+                {
                     result = await _userManager.CreateAsync(user, Input.Password);
                 }
                 if (result.Succeeded)

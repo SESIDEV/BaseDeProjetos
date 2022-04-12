@@ -54,7 +54,7 @@ var correctFloat = function (number, precision) {
  */
 var getNormals = function getNormal(p1, p2) {
     var dx = p2[0] - p1[0], // x2 - x1
-    dy = p2[1] - p1[1]; // y2 - y1
+        dy = p2[1] - p1[1]; // y2 - y1
     return [
         [-dy, dx],
         [dy, -dx]

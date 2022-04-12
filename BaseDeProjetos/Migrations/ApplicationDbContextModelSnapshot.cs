@@ -196,10 +196,13 @@ namespace BaseDeProjetos.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int>("Casa")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Data")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<decimal>("Despeita")
+                    b.Property<decimal>("Despesa")
                         .HasColumnType("decimal(65,30)");
 
                     b.Property<decimal>("Investimento")
@@ -221,6 +224,9 @@ namespace BaseDeProjetos.Migrations
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<string>("Cargo")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Email")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");

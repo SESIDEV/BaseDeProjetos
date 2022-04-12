@@ -44,11 +44,11 @@
          * */
         var color = Color.parse;
         var error = U.error, extend = U.extend, merge = U.merge, pick = U.pick, relativeLength = U.relativeLength, seriesType = U.seriesType;
-        var charts = H.charts, seriesTypes = H.seriesTypes, 
-        // Use H.Renderer instead of SVGRenderer for VML support.
-        RendererProto = H.Renderer.prototype, 
-        //
-        cuboidPath = RendererProto.cuboidPath, funnel3dMethods;
+        var charts = H.charts, seriesTypes = H.seriesTypes,
+            // Use H.Renderer instead of SVGRenderer for VML support.
+            RendererProto = H.Renderer.prototype,
+            //
+            cuboidPath = RendererProto.cuboidPath, funnel3dMethods;
         /**
          * The funnel3d series type.
          *
@@ -58,95 +58,95 @@
          * @requires modules/cylinder
          * @requires modules/funnel3d
          */
-        seriesType('funnel3d', 'column', 
-        /**
-         * A funnel3d is a 3d version of funnel series type. Funnel charts are
-         * a type of chart often used to visualize stages in a sales project,
-         * where the top are the initial stages with the most clients.
-         *
-         * It requires that the `highcharts-3d.js`, `cylinder.js` and
-         * `funnel3d.js` module are loaded.
-         *
-         * @sample highcharts/demo/funnel3d/
-         *         Funnel3d
-         *
-         * @extends      plotOptions.column
-         * @excluding    allAreas, boostThreshold, colorAxis, compare, compareBase,
-         *               dataSorting
-         * @product      highcharts
-         * @since        7.1.0
-         * @requires     highcharts-3d
-         * @requires     modules/cylinder
-         * @requires     modules/funnel3d
-         * @optionparent plotOptions.funnel3d
-         */
-        {
-            /** @ignore-option */
-            center: ['50%', '50%'],
+        seriesType('funnel3d', 'column',
             /**
-             * The max width of the series compared to the width of the plot area,
-             * or the pixel width if it is a number.
+             * A funnel3d is a 3d version of funnel series type. Funnel charts are
+             * a type of chart often used to visualize stages in a sales project,
+             * where the top are the initial stages with the most clients.
              *
-             * @type    {number|string}
-             * @sample  {highcharts} highcharts/demo/funnel3d/ Funnel3d demo
-             * @product highcharts
-             */
-            width: '90%',
-            /**
-             * The width of the neck, the lower part of the funnel. A number defines
-             * pixel width, a percentage string defines a percentage of the plot
-             * area width.
+             * It requires that the `highcharts-3d.js`, `cylinder.js` and
+             * `funnel3d.js` module are loaded.
              *
-             * @type    {number|string}
-             * @sample  {highcharts} highcharts/demo/funnel3d/ Funnel3d demo
-             * @product highcharts
-             */
-            neckWidth: '30%',
-            /**
-             * The height of the series. If it is a number it defines
-             * the pixel height, if it is a percentage string it is the percentage
-             * of the plot area height.
+             * @sample highcharts/demo/funnel3d/
+             *         Funnel3d
              *
-             * @type    {number|string}
-             * @sample  {highcharts} highcharts/demo/funnel3d/ Funnel3d demo
-             * @product highcharts
+             * @extends      plotOptions.column
+             * @excluding    allAreas, boostThreshold, colorAxis, compare, compareBase,
+             *               dataSorting
+             * @product      highcharts
+             * @since        7.1.0
+             * @requires     highcharts-3d
+             * @requires     modules/cylinder
+             * @requires     modules/funnel3d
+             * @optionparent plotOptions.funnel3d
              */
-            height: '100%',
-            /**
-             * The height of the neck, the lower part of the funnel. A number
-             * defines pixel width, a percentage string defines a percentage
-             * of the plot area height.
-             *
-             * @type    {number|string}
-             * @sample  {highcharts} highcharts/demo/funnel3d/ Funnel3d demo
-             * @product highcharts
-             */
-            neckHeight: '25%',
-            /**
-             * A reversed funnel has the widest area down. A reversed funnel with
-             * no neck width and neck height is a pyramid.
-             *
-             * @product highcharts
-             */
-            reversed: false,
-            /**
-             * By deafult sides fill is set to a gradient through this option being
-             * set to `true`. Set to `false` to get solid color for the sides.
-             *
-             * @product highcharts
-             */
-            gradientForSides: true,
-            animation: false,
-            edgeWidth: 0,
-            colorByPoint: true,
-            showInLegend: false,
-            dataLabels: {
-                align: 'right',
-                crop: false,
-                inside: false,
-                overflow: 'allow'
-            }
-        }, {
+            {
+                /** @ignore-option */
+                center: ['50%', '50%'],
+                /**
+                 * The max width of the series compared to the width of the plot area,
+                 * or the pixel width if it is a number.
+                 *
+                 * @type    {number|string}
+                 * @sample  {highcharts} highcharts/demo/funnel3d/ Funnel3d demo
+                 * @product highcharts
+                 */
+                width: '90%',
+                /**
+                 * The width of the neck, the lower part of the funnel. A number defines
+                 * pixel width, a percentage string defines a percentage of the plot
+                 * area width.
+                 *
+                 * @type    {number|string}
+                 * @sample  {highcharts} highcharts/demo/funnel3d/ Funnel3d demo
+                 * @product highcharts
+                 */
+                neckWidth: '30%',
+                /**
+                 * The height of the series. If it is a number it defines
+                 * the pixel height, if it is a percentage string it is the percentage
+                 * of the plot area height.
+                 *
+                 * @type    {number|string}
+                 * @sample  {highcharts} highcharts/demo/funnel3d/ Funnel3d demo
+                 * @product highcharts
+                 */
+                height: '100%',
+                /**
+                 * The height of the neck, the lower part of the funnel. A number
+                 * defines pixel width, a percentage string defines a percentage
+                 * of the plot area height.
+                 *
+                 * @type    {number|string}
+                 * @sample  {highcharts} highcharts/demo/funnel3d/ Funnel3d demo
+                 * @product highcharts
+                 */
+                neckHeight: '25%',
+                /**
+                 * A reversed funnel has the widest area down. A reversed funnel with
+                 * no neck width and neck height is a pyramid.
+                 *
+                 * @product highcharts
+                 */
+                reversed: false,
+                /**
+                 * By deafult sides fill is set to a gradient through this option being
+                 * set to `true`. Set to `false` to get solid color for the sides.
+                 *
+                 * @product highcharts
+                 */
+                gradientForSides: true,
+                animation: false,
+                edgeWidth: 0,
+                colorByPoint: true,
+                showInLegend: false,
+                dataLabels: {
+                    align: 'right',
+                    crop: false,
+                    inside: false,
+                    overflow: 'allow'
+                }
+            }, {
             // Override default axis options with series required options for axes
             bindAxes: function () {
                 H.Series.prototype.bindAxes.apply(this, arguments);
@@ -168,18 +168,18 @@
             translate: function () {
                 H.Series.prototype.translate.apply(this, arguments);
                 var sum = 0, series = this, chart = series.chart, options = series.options, reversed = options.reversed, ignoreHiddenPoint = options.ignoreHiddenPoint, plotWidth = chart.plotWidth, plotHeight = chart.plotHeight, cumulative = 0, // start at top
-                center = options.center, centerX = relativeLength(center[0], plotWidth), centerY = relativeLength(center[1], plotHeight), width = relativeLength(options.width, plotWidth), tempWidth, getWidthAt, height = relativeLength(options.height, plotHeight), neckWidth = relativeLength(options.neckWidth, plotWidth), neckHeight = relativeLength(options.neckHeight, plotHeight), neckY = (centerY - height / 2) + height - neckHeight, data = series.data, fraction, tooltipPos, 
-                //
-                y1, y3, y5, 
-                //
-                h, shapeArgs;
+                    center = options.center, centerX = relativeLength(center[0], plotWidth), centerY = relativeLength(center[1], plotHeight), width = relativeLength(options.width, plotWidth), tempWidth, getWidthAt, height = relativeLength(options.height, plotHeight), neckWidth = relativeLength(options.neckWidth, plotWidth), neckHeight = relativeLength(options.neckHeight, plotHeight), neckY = (centerY - height / 2) + height - neckHeight, data = series.data, fraction, tooltipPos,
+                    //
+                    y1, y3, y5,
+                    //
+                    h, shapeArgs;
                 // Return the width at a specific y coordinate
                 series.getWidthAt = getWidthAt = function (y) {
                     var top = (centerY - height / 2);
                     return (y > neckY || height === neckHeight) ?
                         neckWidth :
                         neckWidth + (width - neckWidth) *
-                            (1 - (y - top) / (height - neckHeight));
+                        (1 - (y - top) / (height - neckHeight));
                 };
                 // Expose
                 series.center = [centerX, centerY, height];
@@ -272,12 +272,12 @@
                     }
                     // Placement of tooltips and data labels in 3D
                     tooltipPos = H.perspective([{
-                            x: centerX,
-                            y: point.plotY,
-                            z: reversed ?
-                                -(width - getWidthAt(point.plotY)) / 2 :
-                                -(getWidthAt(point.plotY)) / 2
-                        }], chart, true)[0];
+                        x: centerX,
+                        y: point.plotY,
+                        z: reversed ?
+                            -(width - getWidthAt(point.plotY)) / 2 :
+                            -(getWidthAt(point.plotY)) / 2
+                    }], chart, true)[0];
                     point.tooltipPos = [tooltipPos.x, tooltipPos.y];
                     // base to be used when alignment options are known
                     point.dlBoxRaw = {
@@ -435,13 +435,13 @@
                         tagName: 'filter',
                         id: filterId,
                         children: [{
-                                tagName: 'feComponentTransfer',
-                                children: [{
-                                        tagName: 'feFuncA',
-                                        type: 'table',
-                                        tableValues: '0 ' + opacity
-                                    }]
+                            tagName: 'feComponentTransfer',
+                            children: [{
+                                tagName: 'feFuncA',
+                                type: 'table',
+                                tableValues: '0 ' + opacity
                             }]
+                        }]
                     });
                     funnel3d.sideGroups.forEach(function (groupName) {
                         funnel3d[groupName].attr({
@@ -596,12 +596,12 @@
         });
         RendererProto.elements3d.funnel3d = funnel3dMethods;
         RendererProto.funnel3d = function (shapeArgs) {
-            var renderer = this, funnel3d = renderer.element3d('funnel3d', shapeArgs), styledMode = renderer.styledMode, 
-            // hide stroke for Firefox
-            strokeAttrs = {
-                'stroke-width': 1,
-                stroke: 'none'
-            };
+            var renderer = this, funnel3d = renderer.element3d('funnel3d', shapeArgs), styledMode = renderer.styledMode,
+                // hide stroke for Firefox
+                strokeAttrs = {
+                    'stroke-width': 1,
+                    stroke: 'none'
+                };
             // create groups for sides for oppacity setter
             funnel3d.upperGroup = renderer.g('funnel3d-upper-group').attr({
                 zIndex: funnel3d.frontUpper.zIndex
@@ -643,31 +643,31 @@
             if (!this.getCylinderEnd) {
                 error('A required Highcharts module is missing: cylinder.js', true, charts[this.chartIndex]);
             }
-            var renderer = this, chart = charts[renderer.chartIndex], 
-            // adjust angles for visible edges
-            // based on alpha, selected through visual tests
-            alphaCorrection = shapeArgs.alphaCorrection = 90 -
-                Math.abs((chart.options.chart.options3d.alpha % 180) - 90), 
-            // set zIndexes of parts based on cubiod logic, for consistency
-            cuboidData = cuboidPath.call(renderer, merge(shapeArgs, {
-                depth: shapeArgs.width,
-                width: (shapeArgs.width + shapeArgs.bottom.width) / 2
-            })), isTopFirst = cuboidData.isTop, isFrontFirst = !cuboidData.isFront, hasMiddle = !!shapeArgs.middle, 
-            //
-            top = renderer.getCylinderEnd(chart, merge(shapeArgs, {
-                x: shapeArgs.x - shapeArgs.width / 2,
-                z: shapeArgs.z - shapeArgs.width / 2,
-                alphaCorrection: alphaCorrection
-            })), bottomWidth = shapeArgs.bottom.width, bottomArgs = merge(shapeArgs, {
-                width: bottomWidth,
-                x: shapeArgs.x - bottomWidth / 2,
-                z: shapeArgs.z - bottomWidth / 2,
-                alphaCorrection: alphaCorrection
-            }), bottom = renderer.getCylinderEnd(chart, bottomArgs, true), 
-            //
-            middleWidth = bottomWidth, middleTopArgs = bottomArgs, middleTop = bottom, middleBottom = bottom, ret, 
-            // masking for cylinders or a missing part of a side shape
-            useAlphaCorrection;
+            var renderer = this, chart = charts[renderer.chartIndex],
+                // adjust angles for visible edges
+                // based on alpha, selected through visual tests
+                alphaCorrection = shapeArgs.alphaCorrection = 90 -
+                    Math.abs((chart.options.chart.options3d.alpha % 180) - 90),
+                // set zIndexes of parts based on cubiod logic, for consistency
+                cuboidData = cuboidPath.call(renderer, merge(shapeArgs, {
+                    depth: shapeArgs.width,
+                    width: (shapeArgs.width + shapeArgs.bottom.width) / 2
+                })), isTopFirst = cuboidData.isTop, isFrontFirst = !cuboidData.isFront, hasMiddle = !!shapeArgs.middle,
+                //
+                top = renderer.getCylinderEnd(chart, merge(shapeArgs, {
+                    x: shapeArgs.x - shapeArgs.width / 2,
+                    z: shapeArgs.z - shapeArgs.width / 2,
+                    alphaCorrection: alphaCorrection
+                })), bottomWidth = shapeArgs.bottom.width, bottomArgs = merge(shapeArgs, {
+                    width: bottomWidth,
+                    x: shapeArgs.x - bottomWidth / 2,
+                    z: shapeArgs.z - bottomWidth / 2,
+                    alphaCorrection: alphaCorrection
+                }), bottom = renderer.getCylinderEnd(chart, bottomArgs, true),
+                //
+                middleWidth = bottomWidth, middleTopArgs = bottomArgs, middleTop = bottom, middleBottom = bottom, ret,
+                // masking for cylinders or a missing part of a side shape
+                useAlphaCorrection;
             if (hasMiddle) {
                 middleWidth = shapeArgs.middle.width;
                 middleTopArgs = merge(shapeArgs, {
@@ -724,10 +724,7 @@
             }
             return ret;
         };
-
     });
     _registerModule(_modules, 'masters/modules/funnel3d.src.js', [], function () {
-
-
     });
 }));

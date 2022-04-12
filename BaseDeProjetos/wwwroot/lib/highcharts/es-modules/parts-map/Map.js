@@ -402,12 +402,12 @@ H.Map = H.mapChart = function (a, b, c) {
         xAxis: hiddenAxis,
         yAxis: merge(hiddenAxis, { reversed: true })
     }, options, // user's options
-    {
-        chart: {
-            inverted: false,
-            alignTicks: false
-        }
-    });
+        {
+            chart: {
+                inverted: false,
+                alignTicks: false
+            }
+        });
     options.series = userOptions.series = seriesOptions;
     return hasRenderToArg ?
         new Chart(a, options, c) :

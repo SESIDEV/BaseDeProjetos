@@ -166,18 +166,18 @@ var StackItem = /** @class */ (function () {
      * @param {number} [defaultX]
      */
     StackItem.prototype.setOffset = function (xOffset, xWidth, boxBottom, boxTop, defaultX) {
-        var stackItem = this, axis = stackItem.axis, chart = axis.chart, 
-        // stack value translated mapped to chart coordinates
-        y = axis.translate(axis.stacking.usePercentage ?
-            100 :
-            (boxTop ?
-                boxTop :
-                stackItem.total), 0, 0, 0, 1), yZero = axis.translate(boxBottom ? boxBottom : 0), // stack origin
-        // stack height:
-        h = defined(y) && Math.abs(y - yZero), 
-        // x position:
-        x = pick(defaultX, chart.xAxis[0].translate(stackItem.x)) +
-            xOffset, stackBox = defined(y) && stackItem.getStackBox(chart, stackItem, x, y, xWidth, h, axis), label = stackItem.label, isNegative = stackItem.isNegative, isJustify = pick(stackItem.options.overflow, 'justify') === 'justify', textAlign = stackItem.textAlign, visible;
+        var stackItem = this, axis = stackItem.axis, chart = axis.chart,
+            // stack value translated mapped to chart coordinates
+            y = axis.translate(axis.stacking.usePercentage ?
+                100 :
+                (boxTop ?
+                    boxTop :
+                    stackItem.total), 0, 0, 0, 1), yZero = axis.translate(boxBottom ? boxBottom : 0), // stack origin
+            // stack height:
+            h = defined(y) && Math.abs(y - yZero),
+            // x position:
+            x = pick(defaultX, chart.xAxis[0].translate(stackItem.x)) +
+                xOffset, stackBox = defined(y) && stackItem.getStackBox(chart, stackItem, x, y, xWidth, h, axis), label = stackItem.label, isNegative = stackItem.isNegative, isJustify = pick(stackItem.options.overflow, 'justify') === 'justify', textAlign = stackItem.textAlign, visible;
         if (label && stackBox) {
             var bBox = label.getBBox(), padding = label.padding, boxOffsetX, boxOffsetY;
             if (textAlign === 'left') {
@@ -225,9 +225,9 @@ var StackItem = /** @class */ (function () {
             if (pick(!isJustify && stackItem.options.crop, true)) {
                 visible =
                     isNumber(label.x) &&
-                        isNumber(label.y) &&
-                        chart.isInsidePlot(label.x - padding + label.width, label.y) &&
-                        chart.isInsidePlot(label.x + padding, label.y);
+                    isNumber(label.y) &&
+                    chart.isInsidePlot(label.x - padding + label.width, label.y) &&
+                    chart.isInsidePlot(label.x + padding, label.y);
                 if (!visible) {
                     label.hide();
                 }
@@ -257,7 +257,7 @@ var StackItem = /** @class */ (function () {
     StackItem.prototype.getStackBox = function (chart, stackItem, x, y, xWidth, h, axis) {
         var reversed = stackItem.axis.reversed, inverted = chart.inverted, axisPos = axis.height + axis.pos -
             (inverted ? chart.plotLeft : chart.plotTop), neg = (stackItem.isNegative && !reversed) ||
-            (!stackItem.isNegative && reversed); // #4056
+                (!stackItem.isNegative && reversed); // #4056
         return {
             x: inverted ? (neg ? y - axis.right : y - h + axis.pos - chart.plotLeft) :
                 x + chart.xAxis[0].transB - chart.plotLeft,
@@ -396,8 +396,8 @@ Series.prototype.setStackedPoints = function (stackingParam) {
                 other = stacks[other][x];
                 stack.total = other.total =
                     Math.max(other.total, stack.total) +
-                        Math.abs(y) ||
-                        0;
+                    Math.abs(y) ||
+                    0;
                 // Percent stacked areas
             }
             else {

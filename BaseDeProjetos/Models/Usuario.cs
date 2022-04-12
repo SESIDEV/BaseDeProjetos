@@ -7,15 +7,14 @@ namespace BaseDeProjetos.Models
     {
         public Instituto Casa { get; set; }
 
-        public Nivel Nivel { get; set; } 
+        public Nivel Nivel { get; set; }
 
-        [Display(Name="Matrícula")]
+        [Display(Name = "Matrícula")]
         public int Matricula { get; set; }
 
-        [Display(Name="Titulação Máxima")]
+        [Display(Name = "Titulação Máxima")]
         public Titulacao Titulacao { get; set; }
 
         public TipoVinculo Vinculo { get; set; }
     }
-
 }

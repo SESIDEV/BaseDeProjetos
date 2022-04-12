@@ -37,13 +37,13 @@ $range-selector-input-border: $neutral-color-5;
 
 // Buttons
 $highcharts-button-background: $neutral-color-5;
-$highcharts-button-text:  #ccc;
+$highcharts-button-text: #ccc;
 
 $highcharts-button-pressed-background: #000003;
-$highcharts-button-pressed-text:  $neutral-color-100;
+$highcharts-button-pressed-text: $neutral-color-100;
 
 $highcharts-button-hover-background: $neutral-color-10;
-$highcharts-button-hover-text:  $neutral-color-100;
+$highcharts-button-hover-text: $neutral-color-100;
 
 $context-button-background: $neutral-color-5;
 
@@ -57,66 +57,64 @@ $scrollbar-track-border: #404043;
 
 // Titles
 .highcharts-title, .highcharts-subtitle {
-	text-transform: uppercase;
+    text-transform: uppercase;
 }
 
 // Tooltip
-.highcharts-tooltip text { 
-	fill: #F0F0F0
+.highcharts-tooltip text {
+    fill: #F0F0F0
 }
 
 // Range-selector
 .highcharts-range-selector-buttons text {
-	fill: silver;
+    fill: silver;
 }
 
 // Axes
-.highcharts-yaxis-grid  {
-	stroke-width: 1px;
+.highcharts-yaxis-grid {
+    stroke-width: 1px;
 }
 
 .highcharts-axis-labels, .highcharts-axis-title {
-	fill: #E0E0E3;
+    fill: #E0E0E3;
 }
 
 // Navigator
 .highcharts-navigator .highcharts-navigator-handle {
-  fill: $neutral-color-40;
-  stroke: #aaa;
+    fill: $neutral-color-40;
+    stroke: #aaa;
 }
 
 .highcharts-navigator .highcharts-navigator-outline {
-  stroke: #CCC;
+    stroke: #CCC;
 }
 
 .highcharts-navigator .highcharts-navigator-xaxis .highcharts-grid-line {
-  stroke: $neutral-color-5;
-} 
+    stroke: $neutral-color-5;
+}
 
 // Scrollbar
 .highcharts-scrollbar .highcharts-scrollbar-rifles {
-  stroke: $neutral-color-100;
+    stroke: $neutral-color-100;
 }
 
-.highcharts-scrollbar .highcharts-scrollbar-button { 
-  stroke: #606063;
-  fill: #606063;
+.highcharts-scrollbar .highcharts-scrollbar-button {
+    stroke: #606063;
+    fill: #606063;
 }
 
-.highcharts-scrollbar .highcharts-scrollbar-arrow { 
-  fill: #CCC;
+.highcharts-scrollbar .highcharts-scrollbar-arrow {
+    fill: #CCC;
 }
 
-.highcharts-scrollbar .highcharts-scrollbar-thumb { 
-   fill: #808083;
-   stroke: #808083;
+.highcharts-scrollbar .highcharts-scrollbar-thumb {
+    fill: #808083;
+    stroke: #808083;
 }
 
 // Navigation
-.highcharts-contextbutton .highcharts-button-symbol { 
-   stroke: #DDDDDD;
+.highcharts-contextbutton .highcharts-button-symbol {
+    stroke: #DDDDDD;
 }
 
 @import '../highcharts';
-
-

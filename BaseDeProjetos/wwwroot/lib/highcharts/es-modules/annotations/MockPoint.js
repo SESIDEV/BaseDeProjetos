@@ -310,8 +310,8 @@ var MockPoint = /** @class */ (function () {
         if (yAxis) {
             e.isInsidePlot =
                 e.isInsidePlot &&
-                    defined(plotY) &&
-                    plotY >= 0 && plotY <= yAxis.len;
+                defined(plotY) &&
+                plotY >= 0 && plotY <= yAxis.len;
         }
         fireEvent(this.series.chart, 'afterIsInsidePlot', e);
         return e.isInsidePlot;

@@ -66,23 +66,23 @@ H.ganttChart = function (renderTo, options, callback) {
             opposite: true,
             linkedTo: defaultLinkedTo
         }, xAxisOptions, // user options
-        {
-            type: 'datetime'
-        });
+            {
+                type: 'datetime'
+            });
     });
     // apply Y axis options to both single and multi y axes
     options.yAxis = (splat(options.yAxis || {})).map(function (yAxisOptions) {
         return merge(defaultOptions.yAxis, // #3802
-        {
-            grid: {
-                enabled: true
-            },
-            staticScale: 50,
-            reversed: true,
-            // Set default type treegrid, but only if 'categories' is
-            // undefined
-            type: yAxisOptions.categories ? yAxisOptions.type : 'treegrid'
-        }, yAxisOptions // user options
+            {
+                grid: {
+                    enabled: true
+                },
+                staticScale: 50,
+                reversed: true,
+                // Set default type treegrid, but only if 'categories' is
+                // undefined
+                type: yAxisOptions.categories ? yAxisOptions.type : 'treegrid'
+            }, yAxisOptions // user options
         );
     });
     options.series = null;
@@ -97,10 +97,10 @@ H.ganttChart = function (renderTo, options, callback) {
             enabled: false
         }
     }, options, // user's options
-    // forced options
-    {
-        isGantt: true
-    });
+        // forced options
+        {
+            isGantt: true
+        });
     options.series = userOptions.series = seriesOptions;
     (options.series || []).forEach(function (series) {
         if (series.data) {

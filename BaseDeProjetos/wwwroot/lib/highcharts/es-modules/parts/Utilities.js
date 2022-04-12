@@ -358,16 +358,16 @@ function error(code, stop, chart, params) {
     var isCode = isNumber(code), message = isCode ?
         severity + " #" + code + ": www.highcharts.com/errors/" + code + "/" :
         code.toString(), defaultHandler = function () {
-        if (stop) {
-            throw new Error(message);
-        }
-        // else ...
-        if (win.console &&
-            error.messages.indexOf(message) === -1 // prevent console flooting
-        ) {
-            console.log(message); // eslint-disable-line no-console
-        }
-    };
+            if (stop) {
+                throw new Error(message);
+            }
+            // else ...
+            if (win.console &&
+                error.messages.indexOf(message) === -1 // prevent console flooting
+            ) {
+                console.log(message); // eslint-disable-line no-console
+            }
+        };
     if (typeof params !== 'undefined') {
         var additionalMessages_1 = '';
         if (isCode) {
@@ -488,7 +488,7 @@ var Fx = /** @class */ (function () {
      */
     Fx.prototype.update = function () {
         var elem = this.elem, prop = this.prop, // if destroyed, it is null
-        now = this.now, step = this.options.step;
+            now = this.now, step = this.options.step;
         // Animation setter defined from outside
         if (this[prop + 'Setter']) {
             this[prop + 'Setter']();
@@ -530,15 +530,15 @@ var Fx = /** @class */ (function () {
             function (step) {
                 setTimeout(step, 13);
             }, step = function () {
-            for (var i = 0; i < H.timers.length; i++) {
-                if (!H.timers[i]()) {
-                    H.timers.splice(i--, 1);
+                for (var i = 0; i < H.timers.length; i++) {
+                    if (!H.timers[i]()) {
+                        H.timers.splice(i--, 1);
+                    }
                 }
-            }
-            if (H.timers.length) {
-                requestAnimationFrame(step);
-            }
-        };
+                if (H.timers.length) {
+                    requestAnimationFrame(step);
+                }
+            };
         if (from === to && !this.elem['forceAnimate:' + this.prop]) {
             delete options.curAnim[this.prop];
             if (options.complete && Object.keys(options.curAnim).length === 0) {
@@ -619,8 +619,8 @@ var Fx = /** @class */ (function () {
      */
     Fx.prototype.initPath = function (elem, fromD, toD) {
         var shift, startX = elem.startX, endX = elem.endX, fullLength, i, start = fromD && fromD.slice(), // copy
-        end = toD.slice(), // copy
-        isArea = elem.isArea, positionFactor = isArea ? 2 : 1, reverse;
+            end = toD.slice(), // copy
+            isArea = elem.isArea, positionFactor = isArea ? 2 : 1, reverse;
         if (!start) {
             return [end, end];
         }
@@ -1828,13 +1828,13 @@ var getStyle = H.getStyle = function (el, prop, toInt) {
             offsetWidth = Math.floor(boundingClientRectWidth);
         }
         return Math.max(0, // #8377
-        (offsetWidth -
-            H.getStyle(el, 'padding-left') -
-            H.getStyle(el, 'padding-right')));
+            (offsetWidth -
+                H.getStyle(el, 'padding-left') -
+                H.getStyle(el, 'padding-right')));
     }
     if (prop === 'height') {
         return Math.max(0, // #8377
-        Math.min(el.offsetHeight, el.scrollHeight) -
+            Math.min(el.offsetHeight, el.scrollHeight) -
             H.getStyle(el, 'padding-top') -
             H.getStyle(el, 'padding-bottom'));
     }
@@ -2550,34 +2550,34 @@ if (win.jQuery) {
      * @return {Highcharts.Chart}
      *         The chart that is linked to the JQuery selector element.
      */ /**
-    * Factory function to create a chart in the current JQuery selector
-    * element.
-    *
-    * @function external:JQuery#highcharts
-    *
-    * @param {'Chart'|'Map'|'StockChart'|string} [className]
-    *        Name of the factory class in the Highcharts namespace.
-    *
-    * @param {Highcharts.Options} [options]
-    *        The chart options structure.
-    *
-    * @param {Highcharts.ChartCallbackFunction} [callback]
-    *        Function to run when the chart has loaded and and all external
-    *        images are loaded. Defining a
-    *        [chart.events.load](https://api.highcharts.com/highcharts/chart.events.load)
-    *        handler is equivalent.
-    *
-    * @return {JQuery}
-    *         The current JQuery selector.
-    */
+   * Factory function to create a chart in the current JQuery selector
+   * element.
+   *
+   * @function external:JQuery#highcharts
+   *
+   * @param {'Chart'|'Map'|'StockChart'|string} [className]
+   *        Name of the factory class in the Highcharts namespace.
+   *
+   * @param {Highcharts.Options} [options]
+   *        The chart options structure.
+   *
+   * @param {Highcharts.ChartCallbackFunction} [callback]
+   *        Function to run when the chart has loaded and and all external
+   *        images are loaded. Defining a
+   *        [chart.events.load](https://api.highcharts.com/highcharts/chart.events.load)
+   *        handler is equivalent.
+   *
+   * @return {JQuery}
+   *         The current JQuery selector.
+   */
     win.jQuery.fn.highcharts = function () {
         var args = [].slice.call(arguments);
         if (this[0]) { // this[0] is the renderTo div
             // Create the chart
             if (args[0]) {
                 new H[ // eslint-disable-line computed-property-spacing, no-new
-                // Constructor defaults to Chart
-                isString(args[0]) ? args.shift() : 'Chart'](this[0], args[0], args[1]);
+                    // Constructor defaults to Chart
+                    isString(args[0]) ? args.shift() : 'Chart'](this[0], args[0], args[1]);
                 return this;
             }
             // When called without parameters or with the return argument,

@@ -28,11 +28,11 @@
  * @return {*}
  */
 function GLVertexBuffer(gl, shader, dataComponents
-/* , type */
+    /* , type */
 ) {
-    var buffer = false, vertAttribute = false, components = dataComponents || 2, preAllocated = false, iterator = 0, 
-    // farray = false,
-    data;
+    var buffer = false, vertAttribute = false, components = dataComponents || 2, preAllocated = false, iterator = 0,
+        // farray = false,
+        data;
     // type = type || 'float';
     /**
      * @private

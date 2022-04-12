@@ -61,9 +61,9 @@ var AxisResizer = /** @class */ (function () {
      * @function Highcharts.AxisResizer#render
      */
     AxisResizer.prototype.render = function () {
-        var resizer = this, axis = resizer.axis, chart = axis.chart, options = resizer.options, x = options.x || 0, y = options.y, 
-        // Normalize control line position according to the plot area
-        pos = clamp(axis.top + axis.height + y, chart.plotTop, chart.plotTop + chart.plotHeight), attr = {}, lineWidth;
+        var resizer = this, axis = resizer.axis, chart = axis.chart, options = resizer.options, x = options.x || 0, y = options.y,
+            // Normalize control line position according to the plot area
+            pos = clamp(axis.top + axis.height + y, chart.plotTop, chart.plotTop + chart.plotHeight), attr = {}, lineWidth;
         if (!chart.styledMode) {
             attr = {
                 cursor: options.cursor,
@@ -178,15 +178,15 @@ var AxisResizer = /** @class */ (function () {
      */
     AxisResizer.prototype.updateAxes = function (chartY) {
         var resizer = this, chart = resizer.axis.chart, axes = resizer.options.controlledAxis, nextAxes = axes.next.length === 0 ?
-            [chart.yAxis.indexOf(resizer.axis) + 1] : axes.next, 
-        // Main axis is included in the prev array by default
-        prevAxes = [resizer.axis].concat(axes.prev), 
-        // prev and next configs
-        axesConfigs = [], stopDrag = false, plotTop = chart.plotTop, plotHeight = chart.plotHeight, plotBottom = plotTop + plotHeight, yDelta, calculatePercent = function (value) {
-            return value * 100 / plotHeight + '%';
-        }, normalize = function (val, min, max) {
-            return Math.round(clamp(val, min, max));
-        };
+            [chart.yAxis.indexOf(resizer.axis) + 1] : axes.next,
+            // Main axis is included in the prev array by default
+            prevAxes = [resizer.axis].concat(axes.prev),
+            // prev and next configs
+            axesConfigs = [], stopDrag = false, plotTop = chart.plotTop, plotHeight = chart.plotHeight, plotBottom = plotTop + plotHeight, yDelta, calculatePercent = function (value) {
+                return value * 100 / plotHeight + '%';
+            }, normalize = function (val, min, max) {
+                return Math.round(clamp(val, min, max));
+            };
         // Normalize chartY to plot area limits
         chartY = clamp(chartY, plotTop, plotBottom);
         yDelta = chartY - resizer.lastPos;
@@ -202,12 +202,12 @@ var AxisResizer = /** @class */ (function () {
                     // If it's a number - it's an index
                     chart.yAxis[axisInfo] :
                     (
-                    // If it's first elem. in first group
-                    (!isNext && !i) ?
-                        // then it's an Axis object
-                        axisInfo :
-                        // else it should be an id
-                        chart.get(axisInfo)), axisOptions = axis && axis.options, optionsToUpdate = {}, hDelta = 0, height, top, minLength, maxLength;
+                        // If it's first elem. in first group
+                        (!isNext && !i) ?
+                            // then it's an Axis object
+                            axisInfo :
+                            // else it should be an id
+                            chart.get(axisInfo)), axisOptions = axis && axis.options, optionsToUpdate = {}, hDelta = 0, height, top, minLength, maxLength;
                 // Skip if axis is not found
                 // or it is navigator's yAxis (#7732)
                 if (!axisOptions ||

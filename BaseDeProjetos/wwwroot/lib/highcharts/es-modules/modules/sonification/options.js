@@ -19,18 +19,18 @@ var options = {
         order: 'sequential',
         pointPlayTime: 'x',
         instruments: [{
-                instrument: 'sineMusical',
-                instrumentMapping: {
-                    duration: 400,
-                    frequency: 'y',
-                    volume: 0.7
-                },
-                // Start at G4 note, end at C6
-                instrumentOptions: {
-                    minFrequency: 392,
-                    maxFrequency: 1046
-                }
-            }]
+            instrument: 'sineMusical',
+            instrumentMapping: {
+                duration: 400,
+                frequency: 'y',
+                volume: 0.7
+            },
+            // Start at G4 note, end at C6
+            instrumentOptions: {
+                minFrequency: 392,
+                maxFrequency: 1046
+            }
+        }]
     }
 };
 export default options;

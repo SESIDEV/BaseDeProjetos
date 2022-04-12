@@ -219,10 +219,7 @@
          *         Path array
          */
         SVGRenderer.prototype.symbols['arrow-filled-half'] = SVGRenderer.prototype.symbols['triangle-left-half'];
-
     });
     _registerModule(_modules, 'masters/modules/arrow-symbols.src.js', [], function () {
-
-
     });
 }));

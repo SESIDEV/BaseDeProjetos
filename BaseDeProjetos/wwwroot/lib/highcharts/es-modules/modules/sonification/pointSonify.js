@@ -208,30 +208,30 @@ var defaultInstrumentOptions = {
  * @return {void}
  */
 function pointSonify(options) {
-    var point = this, chart = point.series.chart, dataExtremes = options.dataExtremes || {}, 
-    // Get the value to pass to instrument.play from the mapping value
-    // passed in.
-    getMappingValue = function (value, makeFunction, allowedExtremes) {
-        // Function. Return new function if we try to use callback,
-        // otherwise call it now and return result.
-        if (typeof value === 'function') {
-            return makeFunction ?
-                function (time) {
-                    return value(point, dataExtremes, time);
-                } :
-                value(point, dataExtremes);
-        }
-        // String, this is a data prop.
-        if (typeof value === 'string') {
-            // Find data extremes if we don't have them
-            dataExtremes[value] = dataExtremes[value] ||
-                utilities.calculateDataExtremes(point.series.chart, value);
-            // Find the value
-            return utilities.virtualAxisTranslate(pick(point[value], point.options[value]), dataExtremes[value], allowedExtremes);
-        }
-        // Fixed number or something else weird, just use that
-        return value;
-    };
+    var point = this, chart = point.series.chart, dataExtremes = options.dataExtremes || {},
+        // Get the value to pass to instrument.play from the mapping value
+        // passed in.
+        getMappingValue = function (value, makeFunction, allowedExtremes) {
+            // Function. Return new function if we try to use callback,
+            // otherwise call it now and return result.
+            if (typeof value === 'function') {
+                return makeFunction ?
+                    function (time) {
+                        return value(point, dataExtremes, time);
+                    } :
+                    value(point, dataExtremes);
+            }
+            // String, this is a data prop.
+            if (typeof value === 'string') {
+                // Find data extremes if we don't have them
+                dataExtremes[value] = dataExtremes[value] ||
+                    utilities.calculateDataExtremes(point.series.chart, value);
+                // Find the value
+                return utilities.virtualAxisTranslate(pick(point[value], point.options[value]), dataExtremes[value], allowedExtremes);
+            }
+            // Fixed number or something else weird, just use that
+            return value;
+        };
     // Register playing point on chart
     chart.sonification.currentlyPlayingPoint = point;
     // Keep track of instruments playing
@@ -241,7 +241,7 @@ function pointSonify(options) {
     // Register signal handler for the point
     var signalHandler = point.sonification.signalHandler =
         point.sonification.signalHandler ||
-            new utilities.SignalHandler(['onEnd']);
+        new utilities.SignalHandler(['onEnd']);
     signalHandler.clearSignalCallbacks();
     signalHandler.registerSignalCallbacks({ onEnd: options.onEnd });
     // If we have a null point or invisible point, just return
@@ -254,24 +254,24 @@ function pointSonify(options) {
         var instrument = typeof instrumentDefinition.instrument === 'string' ?
             H.sonification.instruments[instrumentDefinition.instrument] :
             instrumentDefinition.instrument, mapping = instrumentDefinition.instrumentMapping || {}, extremes = merge(defaultInstrumentOptions, instrumentDefinition.instrumentOptions), id = instrument.id, onEnd = function (cancelled) {
-            // Instrument on end
-            if (instrumentDefinition.onEnd) {
-                instrumentDefinition.onEnd.apply(this, arguments);
-            }
-            // Remove currently playing point reference on chart
-            if (chart.sonification &&
-                chart.sonification.currentlyPlayingPoint) {
-                delete chart.sonification.currentlyPlayingPoint;
-            }
-            // Remove reference from instruments playing
-            if (point.sonification && point.sonification.instrumentsPlaying) {
-                delete point.sonification.instrumentsPlaying[id];
-                // This was the last instrument?
-                if (!Object.keys(point.sonification.instrumentsPlaying).length) {
-                    signalHandler.emitSignal('onEnd', cancelled);
+                // Instrument on end
+                if (instrumentDefinition.onEnd) {
+                    instrumentDefinition.onEnd.apply(this, arguments);
                 }
-            }
-        };
+                // Remove currently playing point reference on chart
+                if (chart.sonification &&
+                    chart.sonification.currentlyPlayingPoint) {
+                    delete chart.sonification.currentlyPlayingPoint;
+                }
+                // Remove reference from instruments playing
+                if (point.sonification && point.sonification.instrumentsPlaying) {
+                    delete point.sonification.instrumentsPlaying[id];
+                    // This was the last instrument?
+                    if (!Object.keys(point.sonification.instrumentsPlaying).length) {
+                        signalHandler.emitSignal('onEnd', cancelled);
+                    }
+                }
+            };
         // Play the note on the instrument
         if (instrument && instrument.play) {
             point.sonification.instrumentsPlaying[instrument.id] =

@@ -232,9 +232,9 @@
                 }
                 else {
                     // Height of first triangle segment.
-                    var d1 = (r1 * r1 - r2 * r2 + d * d) / (2 * d), 
-                    // Height of second triangle segment.
-                    d2 = d - d1;
+                    var d1 = (r1 * r1 - r2 * r2 + d * d) / (2 * d),
+                        // Height of second triangle segment.
+                        d2 = d - d1;
                     overlap = (getCircularSegmentArea(r1, r1 - d1) +
                         getCircularSegmentArea(r2, r2 - d2));
                 }
@@ -261,11 +261,11 @@
             if (d < r1 + r2 && d > Math.abs(r1 - r2)) {
                 // If the circles are overlapping, but not completely overlapping, then
                 // it exists intersecting points.
-                var r1Square = r1 * r1, r2Square = r2 * r2, 
-                // d^2 - r^2 + R^2 / 2d
-                x = (r1Square - r2Square + d * d) / (2 * d), 
-                // y^2 = R^2 - x^2
-                y = Math.sqrt(r1Square - x * x), x1 = c1.x, x2 = c2.x, y1 = c1.y, y2 = c2.y, x0 = x1 + x * (x2 - x1) / d, y0 = y1 + x * (y2 - y1) / d, rx = -(y2 - y1) * (y / d), ry = -(x2 - x1) * (y / d);
+                var r1Square = r1 * r1, r2Square = r2 * r2,
+                    // d^2 - r^2 + R^2 / 2d
+                    x = (r1Square - r2Square + d * d) / (2 * d),
+                    // y^2 = R^2 - x^2
+                    y = Math.sqrt(r1Square - x * x), x1 = c1.x, x2 = c2.x, y1 = c1.y, y2 = c2.y, x0 = x1 + x * (x2 - x1) / d, y0 = y1 + x * (y2 - y1) / d, rx = -(y2 - y1) * (y / d), ry = -(x2 - x1) * (y / d);
                 points = [
                     { x: round(x0 + rx, 14), y: round(y0 - ry, 14) },
                     { x: round(x0 - rx, 14), y: round(y0 + ry, 14) }
@@ -285,13 +285,13 @@
             return circles.reduce(function (points, c1, i, arr) {
                 var additional = arr.slice(i + 1)
                     .reduce(function (points, c2, j) {
-                    var indexes = [i, j + i + 1];
-                    return points.concat(getCircleCircleIntersection(c1, c2)
-                        .map(function (p) {
-                        p.indexes = indexes;
-                        return p;
-                    }));
-                }, []);
+                        var indexes = [i, j + i + 1];
+                        return points.concat(getCircleCircleIntersection(c1, c2)
+                            .map(function (p) {
+                                p.indexes = indexes;
+                                return p;
+                            }));
+                    }, []);
                 return points.concat(additional);
             }, []);
         }
@@ -366,8 +366,8 @@
         function getCirclesIntersectionPolygon(circles) {
             return getCirclesIntersectionPoints(circles)
                 .filter(function (p) {
-                return isPointInsideAllCircles(p, circles);
-            });
+                    return isPointInsideAllCircles(p, circles);
+                });
         }
         /**
          * Calculate the path for the area of overlap between a set of circles.
@@ -387,64 +387,64 @@
                 intersectionPoints = intersectionPoints
                     // Calculate the angle between the center and the points.
                     .map(function (p) {
-                    p.angle = getAngleBetweenPoints(center_1, p);
-                    return p;
-                })
+                        p.angle = getAngleBetweenPoints(center_1, p);
+                        return p;
+                    })
                     // Sort the points by the angle to the center.
                     .sort(function (a, b) {
-                    return b.angle - a.angle;
-                });
+                        return b.angle - a.angle;
+                    });
                 var startPoint = intersectionPoints[intersectionPoints.length - 1];
                 var arcs = intersectionPoints
                     .reduce(function (data, p1) {
-                    var startPoint = data.startPoint, midPoint = getCenterOfPoints([startPoint, p1]);
-                    // Calculate the arc from the intersection points and their
-                    // circles.
-                    var arc = p1.indexes
-                        // Filter out circles that are not included in both
-                        // intersection points.
-                        .filter(function (index) {
-                        return startPoint.indexes.indexOf(index) > -1;
-                    })
-                        // Iterate the circles of the intersection points and
-                        // calculate arcs.
-                        .reduce(function (arc, index) {
-                        var circle = circles[index], angle1 = getAngleBetweenPoints(circle, p1), angle2 = getAngleBetweenPoints(circle, startPoint), angleDiff = angle2 - angle1 +
-                            (angle2 < angle1 ? 2 * Math.PI : 0), angle = angle2 - angleDiff / 2;
-                        var width = getDistanceBetweenPoints(midPoint, {
-                            x: circle.x + circle.r * Math.sin(angle),
-                            y: circle.y + circle.r * Math.cos(angle)
-                        });
-                        var r = circle.r;
-                        // Width can sometimes become to large due to floating
-                        // point errors
-                        if (width > r * 2) {
-                            width = r * 2;
+                        var startPoint = data.startPoint, midPoint = getCenterOfPoints([startPoint, p1]);
+                        // Calculate the arc from the intersection points and their
+                        // circles.
+                        var arc = p1.indexes
+                            // Filter out circles that are not included in both
+                            // intersection points.
+                            .filter(function (index) {
+                                return startPoint.indexes.indexOf(index) > -1;
+                            })
+                            // Iterate the circles of the intersection points and
+                            // calculate arcs.
+                            .reduce(function (arc, index) {
+                                var circle = circles[index], angle1 = getAngleBetweenPoints(circle, p1), angle2 = getAngleBetweenPoints(circle, startPoint), angleDiff = angle2 - angle1 +
+                                    (angle2 < angle1 ? 2 * Math.PI : 0), angle = angle2 - angleDiff / 2;
+                                var width = getDistanceBetweenPoints(midPoint, {
+                                    x: circle.x + circle.r * Math.sin(angle),
+                                    y: circle.y + circle.r * Math.cos(angle)
+                                });
+                                var r = circle.r;
+                                // Width can sometimes become to large due to floating
+                                // point errors
+                                if (width > r * 2) {
+                                    width = r * 2;
+                                }
+                                // Get the arc with the smallest width.
+                                if (!arc || arc.width > width) {
+                                    arc = {
+                                        r: r,
+                                        largeArc: width > r ? 1 : 0,
+                                        width: width,
+                                        x: p1.x,
+                                        y: p1.y
+                                    };
+                                }
+                                // Return the chosen arc.
+                                return arc;
+                            }, null);
+                        // If we find an arc then add it to the list and update p2.
+                        if (arc) {
+                            var r = arc.r;
+                            data.arcs.push(['A', r, r, 0, arc.largeArc, 1, arc.x, arc.y]);
+                            data.startPoint = p1;
                         }
-                        // Get the arc with the smallest width.
-                        if (!arc || arc.width > width) {
-                            arc = {
-                                r: r,
-                                largeArc: width > r ? 1 : 0,
-                                width: width,
-                                x: p1.x,
-                                y: p1.y
-                            };
-                        }
-                        // Return the chosen arc.
-                        return arc;
-                    }, null);
-                    // If we find an arc then add it to the list and update p2.
-                    if (arc) {
-                        var r = arc.r;
-                        data.arcs.push(['A', r, r, 0, arc.largeArc, 1, arc.x, arc.y]);
-                        data.startPoint = p1;
-                    }
-                    return data;
-                }, {
-                    startPoint: startPoint,
-                    arcs: []
-                }).arcs;
+                        return data;
+                    }, {
+                        startPoint: startPoint,
+                        arcs: []
+                    }).arcs;
                 if (arcs.length === 0) {
                     // empty
                 }
@@ -511,10 +511,10 @@
             var maxIterations = 100, sortByFx = function (a, b) {
                 return a.fx - b.fx;
             }, pRef = 1, // Reflection parameter
-            pExp = 2, // Expansion parameter
-            pCon = -0.5, // Contraction parameter
-            pOCon = pCon * pRef, // Outwards contraction parameter
-            pShrink = 0.5; // Shrink parameter
+                pExp = 2, // Expansion parameter
+                pCon = -0.5, // Contraction parameter
+                pOCon = pCon * pRef, // Outwards contraction parameter
+                pShrink = 0.5; // Shrink parameter
             /**
              * @private
              */
@@ -681,10 +681,10 @@
                     var wantedOverlap = relation.value;
                     // Calculate the actual overlap between the sets.
                     var actualOverlap = getOverlapBetweenCircles(
-                    // Get the circles for the given sets.
-                    relation.sets.map(function (set) {
-                        return mapOfIdToCircle[set];
-                    }));
+                        // Get the circles for the given sets.
+                        relation.sets.map(function (set) {
+                            return mapOfIdToCircle[set];
+                        }));
                     var diff = wantedOverlap - actualOverlap;
                     loss = Math.round((diff * diff) * precision) / precision;
                 }
@@ -838,14 +838,14 @@
                     // Iterate the given points and return the one with the largest
                     // margin.
                     .reduce(function (best, point) {
-                    var margin = getMarginFromCircles(point, internal, external);
-                    // If the margin better than the current best, then update best.
-                    if (best.margin < margin) {
-                        best.point = point;
-                        best.margin = margin;
-                    }
-                    return best;
-                }, best);
+                        var margin = getMarginFromCircles(point, internal, external);
+                        // If the margin better than the current best, then update best.
+                        if (best.margin < margin) {
+                            best.point = point;
+                            best.margin = margin;
+                        }
+                        return best;
+                    }, best);
             }, {
                 point: void 0,
                 margin: -Number.MAX_VALUE
@@ -894,11 +894,11 @@
         var getLabelWidth = function getLabelWidth(pos, internal, external) {
             var radius = internal.reduce(function (min, circle) {
                 return Math.min(circle.r, min);
-            }, Infinity), 
-            // Filter out external circles that are completely overlapping.
-            filteredExternals = external.filter(function (circle) {
-                return !isPointInsideCircle(pos, circle);
-            });
+            }, Infinity),
+                // Filter out external circles that are completely overlapping.
+                filteredExternals = external.filter(function (circle) {
+                    return !isPointInsideCircle(pos, circle);
+                });
             var findDistance = function (maxDistance, direction) {
                 return bisect(function (x) {
                     var testPos = {
@@ -973,31 +973,31 @@
             var mapOfIdToProps = relations
                 // Filter out relations consisting of 2 sets.
                 .filter(function (relation) {
-                return relation.sets.length === 2;
-            })
+                    return relation.sets.length === 2;
+                })
                 // Sum up the amount of overlap for each set.
                 .reduce(function (map, relation) {
-                var sets = relation.sets;
-                sets.forEach(function (set, i, arr) {
-                    if (!isObject(map[set])) {
-                        map[set] = {
-                            overlapping: {},
-                            totalOverlap: 0
-                        };
-                    }
-                    map[set].totalOverlap += relation.value;
-                    map[set].overlapping[arr[1 - i]] = relation.value;
-                });
-                return map;
-            }, {});
+                    var sets = relation.sets;
+                    sets.forEach(function (set, i, arr) {
+                        if (!isObject(map[set])) {
+                            map[set] = {
+                                overlapping: {},
+                                totalOverlap: 0
+                            };
+                        }
+                        map[set].totalOverlap += relation.value;
+                        map[set].overlapping[arr[1 - i]] = relation.value;
+                    });
+                    return map;
+                }, {});
             relations
                 // Filter out single sets
                 .filter(isSet)
                 // Extend the set with the calculated properties.
                 .forEach(function (set) {
-                var properties = mapOfIdToProps[set.sets[0]];
-                extend(set, properties);
-            });
+                    var properties = mapOfIdToProps[set.sets[0]];
+                    extend(set, properties);
+                });
             // Returns the modified relations.
             return relations;
         };
@@ -1025,14 +1025,14 @@
             // Define a circle for each set.
             relations
                 .filter(function (relation) {
-                return relation.sets.length === 1;
-            }).forEach(function (relation) {
-                mapOfIdToCircles[relation.sets[0]] = relation.circle = {
-                    x: Number.MAX_VALUE,
-                    y: Number.MAX_VALUE,
-                    r: Math.sqrt(relation.value / Math.PI)
-                };
-            });
+                    return relation.sets.length === 1;
+                }).forEach(function (relation) {
+                    mapOfIdToCircles[relation.sets[0]] = relation.circle = {
+                        x: Number.MAX_VALUE,
+                        y: Number.MAX_VALUE,
+                        r: Math.sqrt(relation.value / Math.PI)
+                    };
+                });
             /**
              * Takes a set and updates the position, and add the set to the list of
              * positioned sets.
@@ -1065,51 +1065,51 @@
                 var circle = set.circle, radius = circle.r, overlapping = set.overlapping;
                 var bestPosition = positionedSets
                     .reduce(function (best, positionedSet, i) {
-                    var positionedCircle = positionedSet.circle, overlap = overlapping[positionedSet.sets[0]];
-                    // Calculate the distance between the sets to get the correct
-                    // overlap
-                    var distance = getDistanceBetweenCirclesByOverlap(radius, positionedCircle.r, overlap);
-                    // Create a list of possible coordinates calculated from
-                    // distance.
-                    var possibleCoordinates = [
-                        { x: positionedCircle.x + distance, y: positionedCircle.y },
-                        { x: positionedCircle.x - distance, y: positionedCircle.y },
-                        { x: positionedCircle.x, y: positionedCircle.y + distance },
-                        { x: positionedCircle.x, y: positionedCircle.y - distance }
-                    ];
-                    // If there are more circles overlapping, then add the
-                    // intersection points as possible positions.
-                    positionedSets.slice(i + 1).forEach(function (positionedSet2) {
-                        var positionedCircle2 = positionedSet2.circle, overlap2 = overlapping[positionedSet2.sets[0]], distance2 = getDistanceBetweenCirclesByOverlap(radius, positionedCircle2.r, overlap2);
-                        // Add intersections to list of coordinates.
-                        possibleCoordinates = possibleCoordinates.concat(getCircleCircleIntersection({
-                            x: positionedCircle.x,
-                            y: positionedCircle.y,
-                            r: distance
-                        }, {
-                            x: positionedCircle2.x,
-                            y: positionedCircle2.y,
-                            r: distance2
-                        }));
+                        var positionedCircle = positionedSet.circle, overlap = overlapping[positionedSet.sets[0]];
+                        // Calculate the distance between the sets to get the correct
+                        // overlap
+                        var distance = getDistanceBetweenCirclesByOverlap(radius, positionedCircle.r, overlap);
+                        // Create a list of possible coordinates calculated from
+                        // distance.
+                        var possibleCoordinates = [
+                            { x: positionedCircle.x + distance, y: positionedCircle.y },
+                            { x: positionedCircle.x - distance, y: positionedCircle.y },
+                            { x: positionedCircle.x, y: positionedCircle.y + distance },
+                            { x: positionedCircle.x, y: positionedCircle.y - distance }
+                        ];
+                        // If there are more circles overlapping, then add the
+                        // intersection points as possible positions.
+                        positionedSets.slice(i + 1).forEach(function (positionedSet2) {
+                            var positionedCircle2 = positionedSet2.circle, overlap2 = overlapping[positionedSet2.sets[0]], distance2 = getDistanceBetweenCirclesByOverlap(radius, positionedCircle2.r, overlap2);
+                            // Add intersections to list of coordinates.
+                            possibleCoordinates = possibleCoordinates.concat(getCircleCircleIntersection({
+                                x: positionedCircle.x,
+                                y: positionedCircle.y,
+                                r: distance
+                            }, {
+                                x: positionedCircle2.x,
+                                y: positionedCircle2.y,
+                                r: distance2
+                            }));
+                        });
+                        // Iterate all suggested coordinates and find the best one.
+                        possibleCoordinates.forEach(function (coordinates) {
+                            circle.x = coordinates.x;
+                            circle.y = coordinates.y;
+                            // Calculate loss for the suggested coordinates.
+                            var currentLoss = loss(mapOfIdToCircles, relationsWithTwoSets);
+                            // If the loss is better, then use these new coordinates.
+                            if (currentLoss < best.loss) {
+                                best.loss = currentLoss;
+                                best.coordinates = coordinates;
+                            }
+                        });
+                        // Return resulting coordinates.
+                        return best;
+                    }, {
+                        loss: Number.MAX_VALUE,
+                        coordinates: void 0
                     });
-                    // Iterate all suggested coordinates and find the best one.
-                    possibleCoordinates.forEach(function (coordinates) {
-                        circle.x = coordinates.x;
-                        circle.y = coordinates.y;
-                        // Calculate loss for the suggested coordinates.
-                        var currentLoss = loss(mapOfIdToCircles, relationsWithTwoSets);
-                        // If the loss is better, then use these new coordinates.
-                        if (currentLoss < best.loss) {
-                            best.loss = currentLoss;
-                            best.coordinates = coordinates;
-                        }
-                    });
-                    // Return resulting coordinates.
-                    return best;
-                }, {
-                    loss: Number.MAX_VALUE,
-                    coordinates: void 0
-                });
                 // Add the set to its final position.
                 positionSet(set, bestPosition.coordinates);
             });
@@ -1136,20 +1136,20 @@
                 var setRelations_1 = relations.filter(isSet);
                 relations
                     .forEach(function (relation) {
-                    var sets = relation.sets;
-                    var id = sets.join();
-                    // Get shape from map of circles, or calculate intersection.
-                    var shape = isSet(relation) ?
-                        mapOfIdToCircles_1[id] :
-                        getAreaOfIntersectionBetweenCircles(sets.map(function (set) {
-                            return mapOfIdToCircles_1[set];
-                        }));
-                    // Calculate label values if the set has a shape
-                    if (shape) {
-                        mapOfIdToShape[id] = shape;
-                        mapOfIdToLabelValues[id] = getLabelValues(relation, setRelations_1);
-                    }
-                });
+                        var sets = relation.sets;
+                        var id = sets.join();
+                        // Get shape from map of circles, or calculate intersection.
+                        var shape = isSet(relation) ?
+                            mapOfIdToCircles_1[id] :
+                            getAreaOfIntersectionBetweenCircles(sets.map(function (set) {
+                                return mapOfIdToCircles_1[set];
+                            }));
+                        // Calculate label values if the set has a shape
+                        if (shape) {
+                            mapOfIdToShape[id] = shape;
+                            mapOfIdToLabelValues[id] = getLabelValues(relation, setRelations_1);
+                        }
+                    });
             }
             return { mapOfIdToShape: mapOfIdToShape, mapOfIdToLabelValues: mapOfIdToLabelValues };
         }
@@ -1185,12 +1185,12 @@
             var d = isArray(data) ? data : [];
             var validSets = d
                 .reduce(function (arr, x) {
-                // Check if x is a valid set, and that it is not an duplicate.
-                if (isValidSet(x) && arr.indexOf(x.sets[0]) === -1) {
-                    arr.push(x.sets[0]);
-                }
-                return arr;
-            }, [])
+                    // Check if x is a valid set, and that it is not an duplicate.
+                    if (isValidSet(x) && arr.indexOf(x.sets[0]) === -1) {
+                        arr.push(x.sets[0]);
+                    }
+                    return arr;
+                }, [])
                 .sort();
             var mapOfIdToRelation = d.reduce(function (mapOfIdToRelation, relation) {
                 if (isValidRelation(relation) &&
@@ -1236,7 +1236,7 @@
          */
         var getScale = function getScale(targetWidth, targetHeight, field) {
             var height = field.bottom - field.top, // top is smaller than bottom
-            width = field.right - field.left, scaleX = width > 0 ? 1 / width * targetWidth : 1, scaleY = height > 0 ? 1 / height * targetHeight : 1, adjustX = (field.right + field.left) / 2, adjustY = (field.top + field.bottom) / 2, scale = Math.min(scaleX, scaleY);
+                width = field.right - field.left, scaleX = width > 0 ? 1 / width * targetWidth : 1, scaleY = height > 0 ? 1 / height * targetHeight : 1, adjustX = (field.right + field.left) / 2, adjustY = (field.top + field.bottom) / 2, scale = Math.min(scaleX, scaleY);
             return {
                 scale: scale,
                 centerX: targetWidth / 2 - adjustX * scale,
@@ -1363,12 +1363,12 @@
                 // Calculate the scale, and center of the plot area.
                 var field = Object.keys(mapOfIdToShape)
                     .filter(function (key) {
-                    var shape = mapOfIdToShape[key];
-                    return shape && isNumber(shape.r);
-                })
+                        var shape = mapOfIdToShape[key];
+                        return shape && isNumber(shape.r);
+                    })
                     .reduce(function (field, key) {
-                    return updateFieldBoundaries(field, mapOfIdToShape[key]);
-                }, { top: 0, bottom: 0, left: 0, right: 0 }), scaling = getScale(chart.plotWidth, chart.plotHeight, field), scale = scaling.scale, centerX = scaling.centerX, centerY = scaling.centerY;
+                        return updateFieldBoundaries(field, mapOfIdToShape[key]);
+                    }, { top: 0, bottom: 0, left: 0, right: 0 }), scaling = getScale(chart.plotWidth, chart.plotHeight, field), scale = scaling.scale, centerX = scaling.centerX, centerY = scaling.centerY;
                 // Iterate all points and calculate and draw their graphics.
                 this.points.forEach(function (point) {
                     var sets = isArray(point.sets) ? point.sets : [], id = sets.join(), shape = mapOfIdToShape[id], shapeArgs, dataLabelValues = mapOfIdToLabelValues[id] || {}, dataLabelWidth = dataLabelValues.width, dataLabelPosition = dataLabelValues.position, dlOptions = point.options && point.options.dataLabels;
@@ -1432,11 +1432,11 @@
              * @private
              */
             drawPoints: function () {
-                var series = this, 
-                // Series properties
-                chart = series.chart, group = series.group, points = series.points || [], 
-                // Chart properties
-                renderer = chart.renderer;
+                var series = this,
+                    // Series properties
+                    chart = series.chart, group = series.group, points = series.points || [],
+                    // Chart properties
+                    renderer = chart.renderer;
                 // Iterate all points and calculate and draw their graphics.
                 points.forEach(function (point) {
                     var attribs = {
@@ -1633,10 +1633,7 @@
                 });
             }
         });
-
     });
     _registerModule(_modules, 'masters/modules/venn.src.js', [], function () {
-
-
     });
 }));

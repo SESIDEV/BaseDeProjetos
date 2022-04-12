@@ -336,9 +336,9 @@ seriesType('solidgauge', 'gauge', solidGaugeOptions, {
                 else {
                     point.graphic = graphic = renderer.arc(shapeArgs)
                         .attr({
-                        fill: toColor,
-                        'sweep-flag': 0
-                    })
+                            fill: toColor,
+                            'sweep-flag': 0
+                        })
                         .add(series.group);
                 }
                 if (!series.chart.styledMode) {

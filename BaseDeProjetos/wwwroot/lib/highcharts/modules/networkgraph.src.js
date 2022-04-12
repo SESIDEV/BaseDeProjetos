@@ -66,12 +66,12 @@
                     node.name = node.name || node.options.id || ''; // for use in formats
                     // Mass is used in networkgraph:
                     node.mass = pick(
-                    // Node:
-                    node.options.mass, node.options.marker && node.options.marker.radius, 
-                    // Series:
-                    this.options.marker && this.options.marker.radius, 
-                    // Default:
-                    4);
+                        // Node:
+                        node.options.mass, node.options.marker && node.options.marker.radius,
+                        // Series:
+                        this.options.marker && this.options.marker.radius,
+                        // Default:
+                        4);
                     /**
                      * Return the largest sum of either the incoming or outgoing links.
                      * @private
@@ -204,7 +204,6 @@
             }
             /* eslint-enable valid-jsdoc */
         };
-
     });
     _registerModule(_modules, 'modules/networkgraph/integrations.js', [_modules['parts/Globals.js']], function (H) {
         /* *
@@ -358,12 +357,12 @@
                  * @return {void}
                  */
                 integrate: function (layout, node) {
-                    var friction = -layout.options.friction, maxSpeed = layout.options.maxSpeed, prevX = node.prevX, prevY = node.prevY, 
-                    // Apply friciton:
-                    diffX = ((node.plotX + node.dispX -
-                        prevX) * friction), diffY = ((node.plotY + node.dispY -
-                        prevY) * friction), abs = Math.abs, signX = abs(diffX) / (diffX || 1), // need to deal with 0
-                    signY = abs(diffY) / (diffY || 1);
+                    var friction = -layout.options.friction, maxSpeed = layout.options.maxSpeed, prevX = node.prevX, prevY = node.prevY,
+                        // Apply friciton:
+                        diffX = ((node.plotX + node.dispX -
+                            prevX) * friction), diffY = ((node.plotY + node.dispY -
+                                prevY) * friction), abs = Math.abs, signX = abs(diffX) / (diffX || 1), // need to deal with 0
+                        signY = abs(diffY) / (diffY || 1);
                     // Apply max speed:
                     diffX = signX * Math.min(maxSpeed, Math.abs(diffX));
                     diffY = signY * Math.min(maxSpeed, Math.abs(diffY));
@@ -567,7 +566,6 @@
                 }
             }
         };
-
     });
     _registerModule(_modules, 'modules/networkgraph/QuadTree.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
@@ -642,180 +640,180 @@
              */
             this.isEmpty = true;
         };
-        extend(QuadTreeNode.prototype, 
-        /** @lends Highcharts.QuadTreeNode.prototype */
-        {
-            /**
-             * Insert recursively point(node) into the QuadTree. If the given
-             * quadrant is already occupied, divide it into smaller quadrants.
-             *
-             * @param {Highcharts.Point} point
-             *        Point/node to be inserted
-             * @param {number} depth
-             *        Max depth of the QuadTree
-             */
-            insert: function (point, depth) {
-                var newQuadTreeNode;
-                if (this.isInternal) {
-                    // Internal node:
-                    this.nodes[this.getBoxPosition(point)].insert(point, depth - 1);
-                }
-                else {
-                    this.isEmpty = false;
-                    if (!this.body) {
-                        // First body in a quadrant:
-                        this.isInternal = false;
-                        this.body = point;
+        extend(QuadTreeNode.prototype,
+            /** @lends Highcharts.QuadTreeNode.prototype */
+            {
+                /**
+                 * Insert recursively point(node) into the QuadTree. If the given
+                 * quadrant is already occupied, divide it into smaller quadrants.
+                 *
+                 * @param {Highcharts.Point} point
+                 *        Point/node to be inserted
+                 * @param {number} depth
+                 *        Max depth of the QuadTree
+                 */
+                insert: function (point, depth) {
+                    var newQuadTreeNode;
+                    if (this.isInternal) {
+                        // Internal node:
+                        this.nodes[this.getBoxPosition(point)].insert(point, depth - 1);
                     }
                     else {
-                        if (depth) {
-                            // Every other body in a quadrant:
-                            this.isInternal = true;
-                            this.divideBox();
-                            // Reinsert main body only once:
-                            if (this.body !== true) {
-                                this.nodes[this.getBoxPosition(this.body)]
-                                    .insert(this.body, depth - 1);
-                                this.body = true;
-                            }
-                            // Add second body:
-                            this.nodes[this.getBoxPosition(point)]
-                                .insert(point, depth - 1);
+                        this.isEmpty = false;
+                        if (!this.body) {
+                            // First body in a quadrant:
+                            this.isInternal = false;
+                            this.body = point;
                         }
                         else {
-                            // We are below max allowed depth. That means either:
-                            // - really huge number of points
-                            // - falling two points into exactly the same position
-                            // In this case, create another node in the QuadTree.
-                            //
-                            // Alternatively we could add some noise to the
-                            // position, but that could result in different
-                            // rendered chart in exporting.
-                            newQuadTreeNode = new QuadTreeNode({
-                                top: point.plotX,
-                                left: point.plotY,
-                                // Width/height below 1px
-                                width: 0.1,
-                                height: 0.1
-                            });
-                            newQuadTreeNode.body = point;
-                            newQuadTreeNode.isInternal = false;
-                            this.nodes.push(newQuadTreeNode);
+                            if (depth) {
+                                // Every other body in a quadrant:
+                                this.isInternal = true;
+                                this.divideBox();
+                                // Reinsert main body only once:
+                                if (this.body !== true) {
+                                    this.nodes[this.getBoxPosition(this.body)]
+                                        .insert(this.body, depth - 1);
+                                    this.body = true;
+                                }
+                                // Add second body:
+                                this.nodes[this.getBoxPosition(point)]
+                                    .insert(point, depth - 1);
+                            }
+                            else {
+                                // We are below max allowed depth. That means either:
+                                // - really huge number of points
+                                // - falling two points into exactly the same position
+                                // In this case, create another node in the QuadTree.
+                                //
+                                // Alternatively we could add some noise to the
+                                // position, but that could result in different
+                                // rendered chart in exporting.
+                                newQuadTreeNode = new QuadTreeNode({
+                                    top: point.plotX,
+                                    left: point.plotY,
+                                    // Width/height below 1px
+                                    width: 0.1,
+                                    height: 0.1
+                                });
+                                newQuadTreeNode.body = point;
+                                newQuadTreeNode.isInternal = false;
+                                this.nodes.push(newQuadTreeNode);
+                            }
                         }
                     }
-                }
-            },
-            /**
-             * Each quad node requires it's mass and center position. That mass and
-             * position is used to imitate real node in the layout by approximation.
-             */
-            updateMassAndCenter: function () {
-                var mass = 0, plotX = 0, plotY = 0;
-                if (this.isInternal) {
-                    // Calcualte weightened mass of the quad node:
-                    this.nodes.forEach(function (pointMass) {
-                        if (!pointMass.isEmpty) {
-                            mass += pointMass.mass;
-                            plotX +=
-                                pointMass.plotX * pointMass.mass;
-                            plotY +=
-                                pointMass.plotY * pointMass.mass;
-                        }
+                },
+                /**
+                 * Each quad node requires it's mass and center position. That mass and
+                 * position is used to imitate real node in the layout by approximation.
+                 */
+                updateMassAndCenter: function () {
+                    var mass = 0, plotX = 0, plotY = 0;
+                    if (this.isInternal) {
+                        // Calcualte weightened mass of the quad node:
+                        this.nodes.forEach(function (pointMass) {
+                            if (!pointMass.isEmpty) {
+                                mass += pointMass.mass;
+                                plotX +=
+                                    pointMass.plotX * pointMass.mass;
+                                plotY +=
+                                    pointMass.plotY * pointMass.mass;
+                            }
+                        });
+                        plotX /= mass;
+                        plotY /= mass;
+                    }
+                    else if (this.body) {
+                        // Just one node, use coordinates directly:
+                        mass = this.body.mass;
+                        plotX = this.body.plotX;
+                        plotY = this.body.plotY;
+                    }
+                    // Store details:
+                    this.mass = mass;
+                    this.plotX = plotX;
+                    this.plotY = plotY;
+                },
+                /**
+                 * When inserting another node into the box, that already hove one node,
+                 * divide the available space into another four quadrants.
+                 *
+                 * Indexes of quadrants are:
+                 * ```
+                 * -------------               -------------
+                 * |           |               |     |     |
+                 * |           |               |  0  |  1  |
+                 * |           |   divide()    |     |     |
+                 * |     1     | ----------->  -------------
+                 * |           |               |     |     |
+                 * |           |               |  3  |  2  |
+                 * |           |               |     |     |
+                 * -------------               -------------
+                 * ```
+                 */
+                divideBox: function () {
+                    var halfWidth = this.box.width / 2, halfHeight = this.box.height / 2;
+                    // Top left
+                    this.nodes[0] = new QuadTreeNode({
+                        left: this.box.left,
+                        top: this.box.top,
+                        width: halfWidth,
+                        height: halfHeight
                     });
-                    plotX /= mass;
-                    plotY /= mass;
-                }
-                else if (this.body) {
-                    // Just one node, use coordinates directly:
-                    mass = this.body.mass;
-                    plotX = this.body.plotX;
-                    plotY = this.body.plotY;
-                }
-                // Store details:
-                this.mass = mass;
-                this.plotX = plotX;
-                this.plotY = plotY;
-            },
-            /**
-             * When inserting another node into the box, that already hove one node,
-             * divide the available space into another four quadrants.
-             *
-             * Indexes of quadrants are:
-             * ```
-             * -------------               -------------
-             * |           |               |     |     |
-             * |           |               |  0  |  1  |
-             * |           |   divide()    |     |     |
-             * |     1     | ----------->  -------------
-             * |           |               |     |     |
-             * |           |               |  3  |  2  |
-             * |           |               |     |     |
-             * -------------               -------------
-             * ```
-             */
-            divideBox: function () {
-                var halfWidth = this.box.width / 2, halfHeight = this.box.height / 2;
-                // Top left
-                this.nodes[0] = new QuadTreeNode({
-                    left: this.box.left,
-                    top: this.box.top,
-                    width: halfWidth,
-                    height: halfHeight
-                });
-                // Top right
-                this.nodes[1] = new QuadTreeNode({
-                    left: this.box.left + halfWidth,
-                    top: this.box.top,
-                    width: halfWidth,
-                    height: halfHeight
-                });
-                // Bottom right
-                this.nodes[2] = new QuadTreeNode({
-                    left: this.box.left + halfWidth,
-                    top: this.box.top + halfHeight,
-                    width: halfWidth,
-                    height: halfHeight
-                });
-                // Bottom left
-                this.nodes[3] = new QuadTreeNode({
-                    left: this.box.left,
-                    top: this.box.top + halfHeight,
-                    width: halfWidth,
-                    height: halfHeight
-                });
-            },
-            /**
-             * Determine which of the quadrants should be used when placing node in
-             * the QuadTree. Returned index is always in range `< 0 , 3 >`.
-             *
-             * @param {Highcharts.Point} point
-             * @return {number}
-             */
-            getBoxPosition: function (point) {
-                var left = point.plotX < this.box.left + this.box.width / 2, top = point.plotY < this.box.top + this.box.height / 2, index;
-                if (left) {
-                    if (top) {
-                        // Top left
-                        index = 0;
+                    // Top right
+                    this.nodes[1] = new QuadTreeNode({
+                        left: this.box.left + halfWidth,
+                        top: this.box.top,
+                        width: halfWidth,
+                        height: halfHeight
+                    });
+                    // Bottom right
+                    this.nodes[2] = new QuadTreeNode({
+                        left: this.box.left + halfWidth,
+                        top: this.box.top + halfHeight,
+                        width: halfWidth,
+                        height: halfHeight
+                    });
+                    // Bottom left
+                    this.nodes[3] = new QuadTreeNode({
+                        left: this.box.left,
+                        top: this.box.top + halfHeight,
+                        width: halfWidth,
+                        height: halfHeight
+                    });
+                },
+                /**
+                 * Determine which of the quadrants should be used when placing node in
+                 * the QuadTree. Returned index is always in range `< 0 , 3 >`.
+                 *
+                 * @param {Highcharts.Point} point
+                 * @return {number}
+                 */
+                getBoxPosition: function (point) {
+                    var left = point.plotX < this.box.left + this.box.width / 2, top = point.plotY < this.box.top + this.box.height / 2, index;
+                    if (left) {
+                        if (top) {
+                            // Top left
+                            index = 0;
+                        }
+                        else {
+                            // Bottom left
+                            index = 3;
+                        }
                     }
                     else {
-                        // Bottom left
-                        index = 3;
+                        if (top) {
+                            // Top right
+                            index = 1;
+                        }
+                        else {
+                            // Bottom right
+                            index = 2;
+                        }
                     }
+                    return index;
                 }
-                else {
-                    if (top) {
-                        // Top right
-                        index = 1;
-                    }
-                    else {
-                        // Bottom right
-                        index = 2;
-                    }
-                }
-                return index;
-            }
-        });
+            });
         /**
          * The QuadTree class. Used in Networkgraph chart as a base for Barnes-Hut
          * approximation.
@@ -843,85 +841,84 @@
             this.root.isRoot = true;
             this.root.divideBox();
         };
-        extend(QuadTree.prototype, 
-        /** @lends Highcharts.QuadTree.prototype */
-        {
-            /**
-             * Insert nodes into the QuadTree
-             *
-             * @param {Array<Highcharts.Point>} points
-             */
-            insertNodes: function (points) {
-                points.forEach(function (point) {
-                    this.root.insert(point, this.maxDepth);
-                }, this);
-            },
-            /**
-             * Depfth first treversal (DFS). Using `before` and `after` callbacks,
-             * we can get two results: preorder and postorder traversals, reminder:
-             *
-             * ```
-             *     (a)
-             *     / \
-             *   (b) (c)
-             *   / \
-             * (d) (e)
-             * ```
-             *
-             * DFS (preorder): `a -> b -> d -> e -> c`
-             *
-             * DFS (postorder): `d -> e -> b -> c -> a`
-             *
-             * @param {Highcharts.QuadTreeNode|null} node
-             * @param {Function} [beforeCallback] function to be called before
-             *                      visiting children nodes
-             * @param {Function} [afterCallback] function to be called after
-             *                      visiting children nodes
-             */
-            visitNodeRecursive: function (node, beforeCallback, afterCallback) {
-                var goFurther;
-                if (!node) {
-                    node = this.root;
-                }
-                if (node === this.root && beforeCallback) {
-                    goFurther = beforeCallback(node);
-                }
-                if (goFurther === false) {
-                    return;
-                }
-                node.nodes.forEach(function (qtNode) {
-                    if (qtNode.isInternal) {
-                        if (beforeCallback) {
-                            goFurther = beforeCallback(qtNode);
-                        }
-                        if (goFurther === false) {
-                            return;
-                        }
-                        this.visitNodeRecursive(qtNode, beforeCallback, afterCallback);
+        extend(QuadTree.prototype,
+            /** @lends Highcharts.QuadTree.prototype */
+            {
+                /**
+                 * Insert nodes into the QuadTree
+                 *
+                 * @param {Array<Highcharts.Point>} points
+                 */
+                insertNodes: function (points) {
+                    points.forEach(function (point) {
+                        this.root.insert(point, this.maxDepth);
+                    }, this);
+                },
+                /**
+                 * Depfth first treversal (DFS). Using `before` and `after` callbacks,
+                 * we can get two results: preorder and postorder traversals, reminder:
+                 *
+                 * ```
+                 *     (a)
+                 *     / \
+                 *   (b) (c)
+                 *   / \
+                 * (d) (e)
+                 * ```
+                 *
+                 * DFS (preorder): `a -> b -> d -> e -> c`
+                 *
+                 * DFS (postorder): `d -> e -> b -> c -> a`
+                 *
+                 * @param {Highcharts.QuadTreeNode|null} node
+                 * @param {Function} [beforeCallback] function to be called before
+                 *                      visiting children nodes
+                 * @param {Function} [afterCallback] function to be called after
+                 *                      visiting children nodes
+                 */
+                visitNodeRecursive: function (node, beforeCallback, afterCallback) {
+                    var goFurther;
+                    if (!node) {
+                        node = this.root;
                     }
-                    else if (qtNode.body) {
-                        if (beforeCallback) {
-                            beforeCallback(qtNode.body);
+                    if (node === this.root && beforeCallback) {
+                        goFurther = beforeCallback(node);
+                    }
+                    if (goFurther === false) {
+                        return;
+                    }
+                    node.nodes.forEach(function (qtNode) {
+                        if (qtNode.isInternal) {
+                            if (beforeCallback) {
+                                goFurther = beforeCallback(qtNode);
+                            }
+                            if (goFurther === false) {
+                                return;
+                            }
+                            this.visitNodeRecursive(qtNode, beforeCallback, afterCallback);
                         }
+                        else if (qtNode.body) {
+                            if (beforeCallback) {
+                                beforeCallback(qtNode.body);
+                            }
+                        }
+                        if (afterCallback) {
+                            afterCallback(qtNode);
+                        }
+                    }, this);
+                    if (node === this.root && afterCallback) {
+                        afterCallback(node);
                     }
-                    if (afterCallback) {
-                        afterCallback(qtNode);
-                    }
-                }, this);
-                if (node === this.root && afterCallback) {
-                    afterCallback(node);
+                },
+                /**
+                 * Calculate mass of the each QuadNode in the tree.
+                 */
+                calculateMassAndCenter: function () {
+                    this.visitNodeRecursive(null, null, function (node) {
+                        node.updateMassAndCenter();
+                    });
                 }
-            },
-            /**
-             * Calculate mass of the each QuadNode in the tree.
-             */
-            calculateMassAndCenter: function () {
-                this.visitNodeRecursive(null, null, function (node) {
-                    node.updateMassAndCenter();
-                });
-            }
-        });
-
+            });
     });
     _registerModule(_modules, 'modules/networkgraph/layouts.js', [_modules['parts/Chart.js'], _modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (Chart, H, U) {
         /* *
@@ -942,12 +939,12 @@
             }
         };
         extend(
-        /**
-         * Reingold-Fruchterman algorithm from
-         * "Graph Drawing by Force-directed Placement" paper.
-         * @private
-         */
-        H.layouts['reingold-fruchterman'].prototype, {
+            /**
+             * Reingold-Fruchterman algorithm from
+             * "Graph Drawing by Force-directed Placement" paper.
+             * @private
+             */
+            H.layouts['reingold-fruchterman'].prototype, {
             init: function (options) {
                 this.options = options;
                 this.nodes = [];
@@ -1262,8 +1259,8 @@
                         layout.nodes.forEach(function (repNode) {
                             var force, distanceR, distanceXY;
                             if (
-                            // Node can not repulse itself:
-                            node !== repNode &&
+                                // Node can not repulse itself:
+                                node !== repNode &&
                                 // Only close nodes affect each other:
                                 // layout.getDistR(node, repNode) < 2 * k &&
                                 // Not dragged:
@@ -1471,7 +1468,6 @@
             }
             this.redraw();
         });
-
     });
     _registerModule(_modules, 'modules/networkgraph/draggable-nodes.js', [_modules['parts/Chart.js'], _modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (Chart, H, U) {
         /* *
@@ -1604,7 +1600,6 @@
                 mousedownUnbinder();
             });
         });
-
     });
     _registerModule(_modules, 'modules/networkgraph/networkgraph.src.js', [_modules['parts/Globals.js'], _modules['parts/Point.js'], _modules['parts/Utilities.js']], function (H, Point, U) {
         /* *
@@ -1637,11 +1632,11 @@
          * @extends Highcharts.PointLabelObject
          * @since 7.0.0
          */ /**
-        * The color of the node.
-        * @name Highcharts.SeriesNetworkgraphDataLabelsFormatterContextObject#color
-        * @type {Highcharts.ColorString}
-        * @since 7.0.0
-        */ /**
+       * The color of the node.
+       * @name Highcharts.SeriesNetworkgraphDataLabelsFormatterContextObject#color
+       * @type {Highcharts.ColorString}
+       * @since 7.0.0
+       */ /**
         * The point (node) object. The node name, if defined, is available through
         * `this.point.name`. Arrays: `this.point.linksFrom` and `this.point.linksTo`
         * contains all nodes connected to this point.
@@ -1663,46 +1658,70 @@
          *
          * @extends Highcharts.Series
          */
-        seriesType('networkgraph', 'line', 
-        /**
-         * A networkgraph is a type of relationship chart, where connnections
-         * (links) attracts nodes (points) and other nodes repulse each other.
-         *
-         * @extends      plotOptions.line
-         * @product      highcharts
-         * @sample       highcharts/demo/network-graph/
-         *               Networkgraph
-         * @since        7.0.0
-         * @excluding    boostThreshold, animation, animationLimit, connectEnds,
-         *               colorAxis, colorKey, connectNulls, dragDrop,
-         *               getExtremesFromAll, label, linecap, negativeColor,
-         *               pointInterval, pointIntervalUnit, pointPlacement,
-         *               pointStart, softThreshold, stack, stacking, step,
-         *               threshold, xAxis, yAxis, zoneAxis, dataSorting
-         * @requires     modules/networkgraph
-         * @optionparent plotOptions.networkgraph
-         */
-        {
-            stickyTracking: false,
+        seriesType('networkgraph', 'line',
             /**
-             * @ignore-option
-             * @private
+             * A networkgraph is a type of relationship chart, where connnections
+             * (links) attracts nodes (points) and other nodes repulse each other.
+             *
+             * @extends      plotOptions.line
+             * @product      highcharts
+             * @sample       highcharts/demo/network-graph/
+             *               Networkgraph
+             * @since        7.0.0
+             * @excluding    boostThreshold, animation, animationLimit, connectEnds,
+             *               colorAxis, colorKey, connectNulls, dragDrop,
+             *               getExtremesFromAll, label, linecap, negativeColor,
+             *               pointInterval, pointIntervalUnit, pointPlacement,
+             *               pointStart, softThreshold, stack, stacking, step,
+             *               threshold, xAxis, yAxis, zoneAxis, dataSorting
+             * @requires     modules/networkgraph
+             * @optionparent plotOptions.networkgraph
              */
-            inactiveOtherPoints: true,
-            marker: {
-                enabled: true,
+            {
+                stickyTracking: false,
+                /**
+                 * @ignore-option
+                 * @private
+                 */
+                inactiveOtherPoints: true,
+                marker: {
+                    enabled: true,
+                    states: {
+                        /**
+                         * The opposite state of a hover for a single point node.
+                         * Applied to all not connected nodes to the hovered one.
+                         *
+                         * @declare Highcharts.PointStatesInactiveOptionsObject
+                         */
+                        inactive: {
+                            /**
+                             * Opacity of inactive markers.
+                             */
+                            opacity: 0.3,
+                            /**
+                             * Animation when not hovering over the node.
+                             *
+                             * @type {boolean|Highcharts.AnimationOptionsObject}
+                             */
+                            animation: {
+                                /** @internal */
+                                duration: 50
+                            }
+                        }
+                    }
+                },
                 states: {
                     /**
-                     * The opposite state of a hover for a single point node.
-                     * Applied to all not connected nodes to the hovered one.
+                     * The opposite state of a hover for a single point link. Applied
+                     * to all links that are not comming from the hovered node.
                      *
-                     * @declare Highcharts.PointStatesInactiveOptionsObject
+                     * @declare Highcharts.SeriesStatesInactiveOptionsObject
                      */
                     inactive: {
                         /**
-                         * Opacity of inactive markers.
+                         * Opacity of inactive links.
                          */
-                        opacity: 0.3,
+                        linkOpacity: 0.3,
                         /**
                          * Animation when not hovering over the node.
                          *
@@ -1713,324 +1732,300 @@
                             duration: 50
                         }
                     }
-                }
-            },
-            states: {
+                },
                 /**
-                 * The opposite state of a hover for a single point link. Applied
-                 * to all links that are not comming from the hovered node.
+                 * @sample highcharts/series-networkgraph/link-datalabels
+                 *         Networkgraph with labels on links
+                 * @sample highcharts/series-networkgraph/textpath-datalabels
+                 *         Networkgraph with labels around nodes
+                 * @sample highcharts/series-networkgraph/link-datalabels
+                 *         Data labels moved into the nodes
+                 * @sample highcharts/series-networkgraph/link-datalabels
+                 *         Data labels moved under the links
                  *
-                 * @declare Highcharts.SeriesStatesInactiveOptionsObject
+                 * @declare Highcharts.SeriesNetworkgraphDataLabelsOptionsObject
+                 *
+                 * @private
                  */
-                inactive: {
+                dataLabels: {
                     /**
-                     * Opacity of inactive links.
-                     */
-                    linkOpacity: 0.3,
-                    /**
-                     * Animation when not hovering over the node.
+                     * The
+                     * [format string](https://www.highcharts.com/docs/chart-concepts/labels-and-string-formatting)
+                     * specifying what to show for _node_ in the networkgraph. In v7.0
+                     * defaults to `{key}`, since v7.1 defaults to `undefined` and
+                     * `formatter` is used instead.
                      *
-                     * @type {boolean|Highcharts.AnimationOptionsObject}
+                     * @type      {string}
+                     * @since     7.0.0
+                     * @apioption plotOptions.networkgraph.dataLabels.format
                      */
-                    animation: {
-                        /** @internal */
-                        duration: 50
+                    // eslint-disable-next-line valid-jsdoc
+                    /**
+                     * Callback JavaScript function to format the data label for a node.
+                     * Note that if a `format` is defined, the format takes precedence
+                     * and the formatter is ignored.
+                     *
+                     * @type  {Highcharts.SeriesNetworkgraphDataLabelsFormatterCallbackFunction}
+                     * @since 7.0.0
+                     */
+                    formatter: function () {
+                        return this.key;
+                    },
+                    /**
+                     * The
+                     * [format string](https://www.highcharts.com/docs/chart-concepts/labels-and-string-formatting)
+                     * specifying what to show for _links_ in the networkgraph.
+                     * (Default: `undefined`)
+                     *
+                     * @type      {string}
+                     * @since     7.1.0
+                     * @apioption plotOptions.networkgraph.dataLabels.linkFormat
+                     */
+                    // eslint-disable-next-line valid-jsdoc
+                    /**
+                     * Callback to format data labels for _links_ in the sankey diagram.
+                     * The `linkFormat` option takes precedence over the
+                     * `linkFormatter`.
+                     *
+                     * @type  {Highcharts.SeriesNetworkgraphDataLabelsFormatterCallbackFunction}
+                     * @since 7.1.0
+                     */
+                    linkFormatter: function () {
+                        return (this.point.fromNode.name +
+                            '<br>' +
+                            this.point.toNode.name);
+                    },
+                    /**
+                     * Options for a _link_ label text which should follow link
+                     * connection. Border and background are disabled for a label that
+                     * follows a path.
+                     *
+                     * **Note:** Only SVG-based renderer supports this option. Setting
+                     * `useHTML` to true will disable this option.
+                     *
+                     * @extends plotOptions.networkgraph.dataLabels.textPath
+                     * @since   7.1.0
+                     */
+                    linkTextPath: {
+                        enabled: true
+                    },
+                    textPath: {
+                        enabled: false
+                    },
+                    style: {
+                        transition: 'opacity 2000ms'
                     }
-                }
-            },
-            /**
-             * @sample highcharts/series-networkgraph/link-datalabels
-             *         Networkgraph with labels on links
-             * @sample highcharts/series-networkgraph/textpath-datalabels
-             *         Networkgraph with labels around nodes
-             * @sample highcharts/series-networkgraph/link-datalabels
-             *         Data labels moved into the nodes
-             * @sample highcharts/series-networkgraph/link-datalabels
-             *         Data labels moved under the links
-             *
-             * @declare Highcharts.SeriesNetworkgraphDataLabelsOptionsObject
-             *
-             * @private
-             */
-            dataLabels: {
-                /**
-                 * The
-                 * [format string](https://www.highcharts.com/docs/chart-concepts/labels-and-string-formatting)
-                 * specifying what to show for _node_ in the networkgraph. In v7.0
-                 * defaults to `{key}`, since v7.1 defaults to `undefined` and
-                 * `formatter` is used instead.
-                 *
-                 * @type      {string}
-                 * @since     7.0.0
-                 * @apioption plotOptions.networkgraph.dataLabels.format
-                 */
-                // eslint-disable-next-line valid-jsdoc
-                /**
-                 * Callback JavaScript function to format the data label for a node.
-                 * Note that if a `format` is defined, the format takes precedence
-                 * and the formatter is ignored.
-                 *
-                 * @type  {Highcharts.SeriesNetworkgraphDataLabelsFormatterCallbackFunction}
-                 * @since 7.0.0
-                 */
-                formatter: function () {
-                    return this.key;
                 },
                 /**
-                 * The
-                 * [format string](https://www.highcharts.com/docs/chart-concepts/labels-and-string-formatting)
-                 * specifying what to show for _links_ in the networkgraph.
-                 * (Default: `undefined`)
-                 *
-                 * @type      {string}
-                 * @since     7.1.0
-                 * @apioption plotOptions.networkgraph.dataLabels.linkFormat
+                 * Link style options
+                 * @private
                  */
-                // eslint-disable-next-line valid-jsdoc
-                /**
-                 * Callback to format data labels for _links_ in the sankey diagram.
-                 * The `linkFormat` option takes precedence over the
-                 * `linkFormatter`.
-                 *
-                 * @type  {Highcharts.SeriesNetworkgraphDataLabelsFormatterCallbackFunction}
-                 * @since 7.1.0
-                 */
-                linkFormatter: function () {
-                    return (this.point.fromNode.name +
-                        '<br>' +
-                        this.point.toNode.name);
+                link: {
+                    /**
+                     * A name for the dash style to use for links.
+                     *
+                     * @type      {string}
+                     * @apioption plotOptions.networkgraph.link.dashStyle
+                     */
+                    /**
+                     * Color of the link between two nodes.
+                     */
+                    color: 'rgba(100, 100, 100, 0.5)',
+                    /**
+                     * Width (px) of the link between two nodes.
+                     */
+                    width: 1
                 },
                 /**
-                 * Options for a _link_ label text which should follow link
-                 * connection. Border and background are disabled for a label that
-                 * follows a path.
-                 *
-                 * **Note:** Only SVG-based renderer supports this option. Setting
-                 * `useHTML` to true will disable this option.
-                 *
-                 * @extends plotOptions.networkgraph.dataLabels.textPath
-                 * @since   7.1.0
+                 * Flag to determine if nodes are draggable or not.
+                 * @private
                  */
-                linkTextPath: {
-                    enabled: true
+                draggable: true,
+                layoutAlgorithm: {
+                    /**
+                     * Repulsive force applied on a node. Passed are two arguments:
+                     * - `d` - which is current distance between two nodes
+                     * - `k` - which is desired distance between two nodes
+                     *
+                     * In `verlet` integration, defaults to:
+                     * `function (d, k) { return (k - d) / d * (k > d ? 1 : 0) }`
+                     *
+                     * @see [layoutAlgorithm.integration](#series.networkgraph.layoutAlgorithm.integration)
+                     *
+                     * @sample highcharts/series-networkgraph/forces/
+                     *         Custom forces with Euler integration
+                     * @sample highcharts/series-networkgraph/cuboids/
+                     *         Custom forces with Verlet integration
+                     *
+                     * @type      {Function}
+                     * @default   function (d, k) { return k * k / d; }
+                     * @apioption plotOptions.networkgraph.layoutAlgorithm.repulsiveForce
+                     */
+                    /**
+                     * Attraction force applied on a node which is conected to another
+                     * node by a link. Passed are two arguments:
+                     * - `d` - which is current distance between two nodes
+                     * - `k` - which is desired distance between two nodes
+                     *
+                     * In `verlet` integration, defaults to:
+                     * `function (d, k) { return (k - d) / d; }`
+                     *
+                     * @see [layoutAlgorithm.integration](#series.networkgraph.layoutAlgorithm.integration)
+                     *
+                     * @sample highcharts/series-networkgraph/forces/
+                     *         Custom forces with Euler integration
+                     * @sample highcharts/series-networkgraph/cuboids/
+                     *         Custom forces with Verlet integration
+                     *
+                     * @type      {Function}
+                     * @default   function (d, k) { return k * k / d; }
+                     * @apioption plotOptions.networkgraph.layoutAlgorithm.attractiveForce
+                     */
+                    /**
+                     * Ideal length (px) of the link between two nodes. When not
+                     * defined, length is calculated as:
+                     * `Math.pow(availableWidth * availableHeight / nodesLength, 0.4);`
+                     *
+                     * Note: Because of the algorithm specification, length of each link
+                     * might be not exactly as specified.
+                     *
+                     * @sample highcharts/series-networkgraph/styled-links/
+                     *         Numerical values
+                     *
+                     * @type      {number}
+                     * @apioption plotOptions.networkgraph.layoutAlgorithm.linkLength
+                     */
+                    /**
+                     * Initial layout algorithm for positioning nodes. Can be one of
+                     * built-in options ("circle", "random") or a function where
+                     * positions should be set on each node (`this.nodes`) as
+                     * `node.plotX` and `node.plotY`
+                     *
+                     * @sample highcharts/series-networkgraph/initial-positions/
+                     *         Initial positions with callback
+                     *
+                     * @type {"circle"|"random"|Function}
+                     */
+                    initialPositions: 'circle',
+                    /**
+                     * When `initialPositions` are set to 'circle',
+                     * `initialPositionRadius` is a distance from the center of circle,
+                     * in which nodes are created.
+                     *
+                     * @type    {number}
+                     * @default 1
+                     * @since   7.1.0
+                     */
+                    initialPositionRadius: 1,
+                    /**
+                     * Experimental. Enables live simulation of the algorithm
+                     * implementation. All nodes are animated as the forces applies on
+                     * them.
+                     *
+                     * @sample highcharts/demo/network-graph/
+                     *         Live simulation enabled
+                     */
+                    enableSimulation: false,
+                    /**
+                     * Barnes-Hut approximation only.
+                     * Deteremines when distance between cell and node is small enough
+                     * to caculate forces. Value of `theta` is compared directly with
+                     * quotient `s / d`, where `s` is the size of the cell, and `d` is
+                     * distance between center of cell's mass and currently compared
+                     * node.
+                     *
+                     * @see [layoutAlgorithm.approximation](#series.networkgraph.layoutAlgorithm.approximation)
+                     *
+                     * @since 7.1.0
+                     */
+                    theta: 0.5,
+                    /**
+                     * Verlet integration only.
+                     * Max speed that node can get in one iteration. In terms of
+                     * simulation, it's a maximum translation (in pixels) that node can
+                     * move (in both, x and y, dimensions). While `friction` is applied
+                     * on all nodes, max speed is applied only for nodes that move very
+                     * fast, for example small or disconnected ones.
+                     *
+                     * @see [layoutAlgorithm.integration](#series.networkgraph.layoutAlgorithm.integration)
+                     * @see [layoutAlgorithm.friction](#series.networkgraph.layoutAlgorithm.friction)
+                     *
+                     * @since 7.1.0
+                     */
+                    maxSpeed: 10,
+                    /**
+                     * Approximation used to calculate repulsive forces affecting nodes.
+                     * By default, when calculateing net force, nodes are compared
+                     * against each other, which gives O(N^2) complexity. Using
+                     * Barnes-Hut approximation, we decrease this to O(N log N), but the
+                     * resulting graph will have different layout. Barnes-Hut
+                     * approximation divides space into rectangles via quad tree, where
+                     * forces exerted on nodes are calculated directly for nearby cells,
+                     * and for all others, cells are treated as a separate node with
+                     * center of mass.
+                     *
+                     * @see [layoutAlgorithm.theta](#series.networkgraph.layoutAlgorithm.theta)
+                     *
+                     * @sample highcharts/series-networkgraph/barnes-hut-approximation/
+                     *         A graph with Barnes-Hut approximation
+                     *
+                     * @type       {string}
+                     * @validvalue ["barnes-hut", "none"]
+                     * @since      7.1.0
+                     */
+                    approximation: 'none',
+                    /**
+                     * Type of the algorithm used when positioning nodes.
+                     *
+                     * @type       {string}
+                     * @validvalue ["reingold-fruchterman"]
+                     */
+                    type: 'reingold-fruchterman',
+                    /**
+                     * Integration type. Available options are `'euler'` and `'verlet'`.
+                     * Integration determines how forces are applied on particles. In
+                     * Euler integration, force is applied direct as
+                     * `newPosition += velocity;`.
+                     * In Verlet integration, new position is based on a previous
+                     * posittion without velocity:
+                     * `newPosition += previousPosition - newPosition`.
+                     *
+                     * Note that different integrations give different results as forces
+                     * are different.
+                     *
+                     * In Highcharts v7.0.x only `'euler'` integration was supported.
+                     *
+                     * @sample highcharts/series-networkgraph/integration-comparison/
+                     *         Comparison of Verlet and Euler integrations
+                     *
+                     * @type       {string}
+                     * @validvalue ["euler", "verlet"]
+                     * @since      7.1.0
+                     */
+                    integration: 'euler',
+                    /**
+                     * Max number of iterations before algorithm will stop. In general,
+                     * algorithm should find positions sooner, but when rendering huge
+                     * number of nodes, it is recommended to increase this value as
+                     * finding perfect graph positions can require more time.
+                     */
+                    maxIterations: 1000,
+                    /**
+                     * Gravitational const used in the barycenter force of the
+                     * algorithm.
+                     *
+                     * @sample highcharts/series-networkgraph/forces/
+                     *         Custom forces with Euler integration
+                     */
+                    gravitationalConstant: 0.0625,
+                    /**
+                     * Friction applied on forces to prevent nodes rushing to fast to
+                     * the desired positions.
+                     */
+                    friction: -0.981
                 },
-                textPath: {
-                    enabled: false
-                },
-                style: {
-                    transition: 'opacity 2000ms'
-                }
-            },
-            /**
-             * Link style options
-             * @private
-             */
-            link: {
-                /**
-                 * A name for the dash style to use for links.
-                 *
-                 * @type      {string}
-                 * @apioption plotOptions.networkgraph.link.dashStyle
-                 */
-                /**
-                 * Color of the link between two nodes.
-                 */
-                color: 'rgba(100, 100, 100, 0.5)',
-                /**
-                 * Width (px) of the link between two nodes.
-                 */
-                width: 1
-            },
-            /**
-             * Flag to determine if nodes are draggable or not.
-             * @private
-             */
-            draggable: true,
-            layoutAlgorithm: {
-                /**
-                 * Repulsive force applied on a node. Passed are two arguments:
-                 * - `d` - which is current distance between two nodes
-                 * - `k` - which is desired distance between two nodes
-                 *
-                 * In `verlet` integration, defaults to:
-                 * `function (d, k) { return (k - d) / d * (k > d ? 1 : 0) }`
-                 *
-                 * @see [layoutAlgorithm.integration](#series.networkgraph.layoutAlgorithm.integration)
-                 *
-                 * @sample highcharts/series-networkgraph/forces/
-                 *         Custom forces with Euler integration
-                 * @sample highcharts/series-networkgraph/cuboids/
-                 *         Custom forces with Verlet integration
-                 *
-                 * @type      {Function}
-                 * @default   function (d, k) { return k * k / d; }
-                 * @apioption plotOptions.networkgraph.layoutAlgorithm.repulsiveForce
-                 */
-                /**
-                 * Attraction force applied on a node which is conected to another
-                 * node by a link. Passed are two arguments:
-                 * - `d` - which is current distance between two nodes
-                 * - `k` - which is desired distance between two nodes
-                 *
-                 * In `verlet` integration, defaults to:
-                 * `function (d, k) { return (k - d) / d; }`
-                 *
-                 * @see [layoutAlgorithm.integration](#series.networkgraph.layoutAlgorithm.integration)
-                 *
-                 * @sample highcharts/series-networkgraph/forces/
-                 *         Custom forces with Euler integration
-                 * @sample highcharts/series-networkgraph/cuboids/
-                 *         Custom forces with Verlet integration
-                 *
-                 * @type      {Function}
-                 * @default   function (d, k) { return k * k / d; }
-                 * @apioption plotOptions.networkgraph.layoutAlgorithm.attractiveForce
-                 */
-                /**
-                 * Ideal length (px) of the link between two nodes. When not
-                 * defined, length is calculated as:
-                 * `Math.pow(availableWidth * availableHeight / nodesLength, 0.4);`
-                 *
-                 * Note: Because of the algorithm specification, length of each link
-                 * might be not exactly as specified.
-                 *
-                 * @sample highcharts/series-networkgraph/styled-links/
-                 *         Numerical values
-                 *
-                 * @type      {number}
-                 * @apioption plotOptions.networkgraph.layoutAlgorithm.linkLength
-                 */
-                /**
-                 * Initial layout algorithm for positioning nodes. Can be one of
-                 * built-in options ("circle", "random") or a function where
-                 * positions should be set on each node (`this.nodes`) as
-                 * `node.plotX` and `node.plotY`
-                 *
-                 * @sample highcharts/series-networkgraph/initial-positions/
-                 *         Initial positions with callback
-                 *
-                 * @type {"circle"|"random"|Function}
-                 */
-                initialPositions: 'circle',
-                /**
-                 * When `initialPositions` are set to 'circle',
-                 * `initialPositionRadius` is a distance from the center of circle,
-                 * in which nodes are created.
-                 *
-                 * @type    {number}
-                 * @default 1
-                 * @since   7.1.0
-                 */
-                initialPositionRadius: 1,
-                /**
-                 * Experimental. Enables live simulation of the algorithm
-                 * implementation. All nodes are animated as the forces applies on
-                 * them.
-                 *
-                 * @sample highcharts/demo/network-graph/
-                 *         Live simulation enabled
-                 */
-                enableSimulation: false,
-                /**
-                 * Barnes-Hut approximation only.
-                 * Deteremines when distance between cell and node is small enough
-                 * to caculate forces. Value of `theta` is compared directly with
-                 * quotient `s / d`, where `s` is the size of the cell, and `d` is
-                 * distance between center of cell's mass and currently compared
-                 * node.
-                 *
-                 * @see [layoutAlgorithm.approximation](#series.networkgraph.layoutAlgorithm.approximation)
-                 *
-                 * @since 7.1.0
-                 */
-                theta: 0.5,
-                /**
-                 * Verlet integration only.
-                 * Max speed that node can get in one iteration. In terms of
-                 * simulation, it's a maximum translation (in pixels) that node can
-                 * move (in both, x and y, dimensions). While `friction` is applied
-                 * on all nodes, max speed is applied only for nodes that move very
-                 * fast, for example small or disconnected ones.
-                 *
-                 * @see [layoutAlgorithm.integration](#series.networkgraph.layoutAlgorithm.integration)
-                 * @see [layoutAlgorithm.friction](#series.networkgraph.layoutAlgorithm.friction)
-                 *
-                 * @since 7.1.0
-                 */
-                maxSpeed: 10,
-                /**
-                 * Approximation used to calculate repulsive forces affecting nodes.
-                 * By default, when calculateing net force, nodes are compared
-                 * against each other, which gives O(N^2) complexity. Using
-                 * Barnes-Hut approximation, we decrease this to O(N log N), but the
-                 * resulting graph will have different layout. Barnes-Hut
-                 * approximation divides space into rectangles via quad tree, where
-                 * forces exerted on nodes are calculated directly for nearby cells,
-                 * and for all others, cells are treated as a separate node with
-                 * center of mass.
-                 *
-                 * @see [layoutAlgorithm.theta](#series.networkgraph.layoutAlgorithm.theta)
-                 *
-                 * @sample highcharts/series-networkgraph/barnes-hut-approximation/
-                 *         A graph with Barnes-Hut approximation
-                 *
-                 * @type       {string}
-                 * @validvalue ["barnes-hut", "none"]
-                 * @since      7.1.0
-                 */
-                approximation: 'none',
-                /**
-                 * Type of the algorithm used when positioning nodes.
-                 *
-                 * @type       {string}
-                 * @validvalue ["reingold-fruchterman"]
-                 */
-                type: 'reingold-fruchterman',
-                /**
-                 * Integration type. Available options are `'euler'` and `'verlet'`.
-                 * Integration determines how forces are applied on particles. In
-                 * Euler integration, force is applied direct as
-                 * `newPosition += velocity;`.
-                 * In Verlet integration, new position is based on a previous
-                 * posittion without velocity:
-                 * `newPosition += previousPosition - newPosition`.
-                 *
-                 * Note that different integrations give different results as forces
-                 * are different.
-                 *
-                 * In Highcharts v7.0.x only `'euler'` integration was supported.
-                 *
-                 * @sample highcharts/series-networkgraph/integration-comparison/
-                 *         Comparison of Verlet and Euler integrations
-                 *
-                 * @type       {string}
-                 * @validvalue ["euler", "verlet"]
-                 * @since      7.1.0
-                 */
-                integration: 'euler',
-                /**
-                 * Max number of iterations before algorithm will stop. In general,
-                 * algorithm should find positions sooner, but when rendering huge
-                 * number of nodes, it is recommended to increase this value as
-                 * finding perfect graph positions can require more time.
-                 */
-                maxIterations: 1000,
-                /**
-                 * Gravitational const used in the barycenter force of the
-                 * algorithm.
-                 *
-                 * @sample highcharts/series-networkgraph/forces/
-                 *         Custom forces with Euler integration
-                 */
-                gravitationalConstant: 0.0625,
-                /**
-                 * Friction applied on forces to prevent nodes rushing to fast to
-                 * the desired positions.
-                 */
-                friction: -0.981
-            },
-            showInLegend: false
-        }, {
+                showInLegend: false
+            }, {
             /**
              * Array of internal forces. Each force should be later defined in
              * integrations.js.
@@ -2486,19 +2481,19 @@
                         .concat(point.linksFrom)
                         .concat(point.linksTo)
                         .forEach(function (linkFromTo) {
-                        // Incoming links
-                        index = linkFromTo.fromNode.linksFrom.indexOf(linkFromTo);
-                        if (index > -1) {
-                            linkFromTo.fromNode.linksFrom.splice(index, 1);
-                        }
-                        // Outcoming links
-                        index = linkFromTo.toNode.linksTo.indexOf(linkFromTo);
-                        if (index > -1) {
-                            linkFromTo.toNode.linksTo.splice(index, 1);
-                        }
-                        // Remove link from data/points collections
-                        Series.prototype.removePoint.call(series, series.data.indexOf(linkFromTo), false, false);
-                    });
+                            // Incoming links
+                            index = linkFromTo.fromNode.linksFrom.indexOf(linkFromTo);
+                            if (index > -1) {
+                                linkFromTo.fromNode.linksFrom.splice(index, 1);
+                            }
+                            // Outcoming links
+                            index = linkFromTo.toNode.linksTo.indexOf(linkFromTo);
+                            if (index > -1) {
+                                linkFromTo.toNode.linksTo.splice(index, 1);
+                            }
+                            // Remove link from data/points collections
+                            Series.prototype.removePoint.call(series, series.data.indexOf(linkFromTo), false, false);
+                        });
                     // Restore points array, after links are removed
                     series.points = series.data.slice();
                     // Proceed with removing node. It's similar to
@@ -2686,10 +2681,7 @@
          * @apioption series.networkgraph.nodes.dataLabels
          */
         ''; // adds doclets above to transpiled file
-
     });
     _registerModule(_modules, 'masters/modules/networkgraph.src.js', [], function () {
-
-
     });
 }));

@@ -45,11 +45,11 @@
         /* *
          * @interface Highcharts.PointOptionsObject in parts/Point.ts
          */ /**
-        * The ending X value of the range point.
-        * @name Highcharts.PointOptionsObject#x2
-        * @type {number|undefined}
-        * @requires modules/xrange
-        */
+       * The ending X value of the range point.
+       * @name Highcharts.PointOptionsObject#x2
+       * @type {number|undefined}
+       * @requires modules/xrange
+       */
         var columnType = H.seriesTypes.column, seriesTypes = H.seriesTypes, Series = H.Series;
         /**
          * Return color of a point based on its category.
@@ -83,83 +83,83 @@
          * @augments Highcharts.Series
          */
         seriesType('xrange', 'column'
-        /**
-         * The X-range series displays ranges on the X axis, typically time
-         * intervals with a start and end date.
-         *
-         * @sample {highcharts} highcharts/demo/x-range/
-         *         X-range
-         * @sample {highcharts} highcharts/css/x-range/
-         *         Styled mode X-range
-         * @sample {highcharts} highcharts/chart/inverted-xrange/
-         *         Inverted X-range
-         *
-         * @extends      plotOptions.column
-         * @since        6.0.0
-         * @product      highcharts highstock gantt
-         * @excluding    boostThreshold, crisp, cropThreshold, depth, edgeColor,
-         *               edgeWidth, findNearestPointBy, getExtremesFromAll,
-         *               negativeColor, pointInterval, pointIntervalUnit,
-         *               pointPlacement, pointRange, pointStart, softThreshold,
-         *               stacking, threshold, data, dataSorting
-         * @requires     modules/xrange
-         * @optionparent plotOptions.xrange
-         */
-        , {
             /**
-             * A partial fill for each point, typically used to visualize how much
-             * of a task is performed. The partial fill object can be set either on
-             * series or point level.
+             * The X-range series displays ranges on the X axis, typically time
+             * intervals with a start and end date.
              *
-             * @sample {highcharts} highcharts/demo/x-range
-             *         X-range with partial fill
+             * @sample {highcharts} highcharts/demo/x-range/
+             *         X-range
+             * @sample {highcharts} highcharts/css/x-range/
+             *         Styled mode X-range
+             * @sample {highcharts} highcharts/chart/inverted-xrange/
+             *         Inverted X-range
              *
-             * @product   highcharts highstock gantt
-             * @apioption plotOptions.xrange.partialFill
+             * @extends      plotOptions.column
+             * @since        6.0.0
+             * @product      highcharts highstock gantt
+             * @excluding    boostThreshold, crisp, cropThreshold, depth, edgeColor,
+             *               edgeWidth, findNearestPointBy, getExtremesFromAll,
+             *               negativeColor, pointInterval, pointIntervalUnit,
+             *               pointPlacement, pointRange, pointStart, softThreshold,
+             *               stacking, threshold, data, dataSorting
+             * @requires     modules/xrange
+             * @optionparent plotOptions.xrange
              */
-            /**
-             * The fill color to be used for partial fills. Defaults to a darker
-             * shade of the point color.
-             *
-             * @type      {Highcharts.ColorString|Highcharts.GradientColorObject|Highcharts.PatternObject}
-             * @product   highcharts highstock gantt
-             * @apioption plotOptions.xrange.partialFill.fill
-             */
-            /**
-             * A partial fill for each point, typically used to visualize how much
-             * of a task is performed. See [completed](series.gantt.data.completed).
-             *
-             * @sample gantt/demo/progress-indicator
-             *         Gantt with progress indicator
-             *
-             * @product   gantt
-             * @apioption plotOptions.gantt.partialFill
-             */
-            /**
-             * In an X-range series, this option makes all points of the same Y-axis
-             * category the same color.
-             */
-            colorByPoint: true,
-            dataLabels: {
-                formatter: function () {
-                    var point = this.point, amount = point.partialFill;
-                    if (isObject(amount)) {
-                        amount = amount.amount;
-                    }
-                    if (isNumber(amount) && amount > 0) {
-                        return correctFloat(amount * 100) + '%';
-                    }
+            , {
+                /**
+                 * A partial fill for each point, typically used to visualize how much
+                 * of a task is performed. The partial fill object can be set either on
+                 * series or point level.
+                 *
+                 * @sample {highcharts} highcharts/demo/x-range
+                 *         X-range with partial fill
+                 *
+                 * @product   highcharts highstock gantt
+                 * @apioption plotOptions.xrange.partialFill
+                 */
+                /**
+                 * The fill color to be used for partial fills. Defaults to a darker
+                 * shade of the point color.
+                 *
+                 * @type      {Highcharts.ColorString|Highcharts.GradientColorObject|Highcharts.PatternObject}
+                 * @product   highcharts highstock gantt
+                 * @apioption plotOptions.xrange.partialFill.fill
+                 */
+                /**
+                 * A partial fill for each point, typically used to visualize how much
+                 * of a task is performed. See [completed](series.gantt.data.completed).
+                 *
+                 * @sample gantt/demo/progress-indicator
+                 *         Gantt with progress indicator
+                 *
+                 * @product   gantt
+                 * @apioption plotOptions.gantt.partialFill
+                 */
+                /**
+                 * In an X-range series, this option makes all points of the same Y-axis
+                 * category the same color.
+                 */
+                colorByPoint: true,
+                dataLabels: {
+                    formatter: function () {
+                        var point = this.point, amount = point.partialFill;
+                        if (isObject(amount)) {
+                            amount = amount.amount;
+                        }
+                        if (isNumber(amount) && amount > 0) {
+                            return correctFloat(amount * 100) + '%';
+                        }
+                    },
+                    inside: true,
+                    verticalAlign: 'middle'
                 },
-                inside: true,
-                verticalAlign: 'middle'
-            },
-            tooltip: {
-                headerFormat: '<span style="font-size: 10px">{point.x} - {point.x2}</span><br/>',
-                pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.yCategory}</b><br/>'
-            },
-            borderRadius: 3,
-            pointRange: 0
-        }, {
+                tooltip: {
+                    headerFormat: '<span style="font-size: 10px">{point.x} - {point.x2}</span><br/>',
+                    pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.yCategory}</b><br/>'
+                },
+                borderRadius: 3,
+                pointRange: 0
+            }, {
             type: 'xrange',
             parallelArrays: ['x', 'x2', 'y'],
             requireSorting: false,
@@ -388,7 +388,7 @@
             drawPoint: function (point, verb) {
                 var series = this, seriesOpts = series.options, renderer = series.chart.renderer, graphic = point.graphic, type = point.shapeType, shapeArgs = point.shapeArgs, partShapeArgs = point.partShapeArgs, clipRectArgs = point.clipRectArgs, pfOptions = point.partialFill, cutOff = seriesOpts.stacking && !seriesOpts.borderRadius, pointState = point.state, stateOpts = (seriesOpts.states[pointState || 'normal'] ||
                     {}), pointStateVerb = typeof pointState === 'undefined' ?
-                    'attr' : verb, pointAttr = series.pointAttribs(point, pointState), animation = pick(series.chart.options.chart.animation, stateOpts.animation), fill;
+                        'attr' : verb, pointAttr = series.pointAttribs(point, pointState), animation = pick(series.chart.options.chart.animation, stateOpts.animation), fill;
                 if (!point.isNull && point.visible !== false) {
                     // Original graphic
                     if (graphic) { // update
@@ -572,18 +572,18 @@
          */
         addEvent(Axis, 'afterGetSeriesExtremes', function () {
             var axis = this, // eslint-disable-line no-invalid-this
-            axisSeries = axis.series, dataMax, modMax;
+                axisSeries = axis.series, dataMax, modMax;
             if (axis.isXAxis) {
                 dataMax = pick(axis.dataMax, -Number.MAX_VALUE);
                 axisSeries.forEach(function (series) {
                     if (series.x2Data) {
                         series.x2Data
                             .forEach(function (val) {
-                            if (val > dataMax) {
-                                dataMax = val;
-                                modMax = true;
-                            }
-                        });
+                                if (val > dataMax) {
+                                    dataMax = val;
+                                    modMax = true;
+                                }
+                            });
                     }
                 });
                 if (modMax) {
@@ -694,10 +694,7 @@
          * @apioption series.xrange.data.partialFill.fill
          */
         ''; // adds doclets above to transpiled file
-
     });
     _registerModule(_modules, 'masters/modules/xrange.src.js', [], function () {
-
-
     });
 }));

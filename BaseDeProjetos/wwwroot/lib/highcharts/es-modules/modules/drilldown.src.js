@@ -137,24 +137,24 @@ import '../parts/Series.js';
 import '../parts/ColumnSeries.js';
 var noop = H.noop, seriesTypes = H.seriesTypes, PieSeries = seriesTypes.pie, ColumnSeries = seriesTypes.column, ddSeriesId = 1;
 // Add language
-extend(defaultOptions.lang, 
-/**
- * @optionparent lang
- */
-{
+extend(defaultOptions.lang,
     /**
-     * The text for the button that appears when drilling down, linking back
-     * to the parent series. The parent series' name is inserted for
-     * `{series.name}`.
-     *
-     * @since    3.0.8
-     * @product  highcharts highmaps
-     * @requires modules/drilldown
-     *
-     * @private
+     * @optionparent lang
      */
-    drillUpText: '◁ Back to {series.name}'
-});
+    {
+        /**
+         * The text for the button that appears when drilling down, linking back
+         * to the parent series. The parent series' name is inserted for
+         * `{series.name}`.
+         *
+         * @since    3.0.8
+         * @product  highcharts highmaps
+         * @requires modules/drilldown
+         *
+         * @private
+         */
+        drillUpText: '◁ Back to {series.name}'
+    });
 /**
  * Options for drill down, the concept of inspecting increasingly high
  * resolution data through clicking on chart items like columns or pie slices.
@@ -424,14 +424,14 @@ defaultOptions.drilldown = {
 SVGRenderer.prototype.Element.prototype.fadeIn = function (animation) {
     this
         .attr({
-        opacity: 0.1,
-        visibility: 'inherit'
-    })
+            opacity: 0.1,
+            visibility: 'inherit'
+        })
         .animate({
-        opacity: pick(this.newOpacity, 1) // newOpacity used in maps
-    }, animation || {
-        duration: 250
-    });
+            opacity: pick(this.newOpacity, 1) // newOpacity used in maps
+        }, animation || {
+            duration: 250
+        });
 };
 /**
  * Add a series to the chart as drilldown from a specific point in the parent
@@ -587,9 +587,9 @@ Chart.prototype.showDrillUpButton = function () {
         }, attr, states && states.hover, states && states.select)
             .addClass('highcharts-drillup-button')
             .attr({
-            align: buttonOptions.position.align,
-            zIndex: 7
-        })
+                align: buttonOptions.position.align,
+                zIndex: 7
+            })
             .add()
             .align(buttonOptions.position, false, buttonOptions.relativeTo || 'plotBox');
     }
@@ -640,7 +640,7 @@ Chart.prototype.drillUp = function () {
                     if (chartSeries[seriesI].options.id ===
                         level.lowerSeriesOptions.id &&
                         chartSeries[seriesI].options._levelNumber ===
-                            levelNumber + 1) { // #3867
+                        levelNumber + 1) { // #3867
                         oldSeries = chartSeries[seriesI];
                         break;
                     }
@@ -833,10 +833,10 @@ ColumnSeries.prototype.animateDrilldown = function (init) {
  * @return {void}
  */
 ColumnSeries.prototype.animateDrillupFrom = function (level) {
-    var animationOptions = animObject(this.chart.options.drilldown.animation), group = this.group, 
-    // For 3d column series all columns are added to one group
-    // so we should not delete the whole group. #5297
-    removeGroup = group !== this.chart.columnGroup, series = this;
+    var animationOptions = animObject(this.chart.options.drilldown.animation), group = this.group,
+        // For 3d column series all columns are added to one group
+        // so we should not delete the whole group. #5297
+        removeGroup = group !== this.chart.columnGroup, series = this;
     // Cancel mouse events on the series group (#2787)
     series.trackerGroups.forEach(function (key) {
         if (series[key]) { // we don't always have dataLabelsGroup
@@ -890,9 +890,9 @@ if (PieSeries) {
                         if (point.graphic) {
                             point.graphic
                                 .attr(merge(animateFrom, {
-                                start: start + i * startAngle,
-                                end: start + (i + 1) * startAngle
-                            }))[animationOptions ? 'animate' : 'attr'](animateTo, animationOptions);
+                                    start: start + i * startAngle,
+                                    end: start + (i + 1) * startAngle
+                                }))[animationOptions ? 'animate' : 'attr'](animateTo, animationOptions);
                         }
                     });
                     // Reset to prototype
@@ -1016,7 +1016,7 @@ addEvent(Point, 'afterInit', function () {
         addEvent(point, 'click', function (e) {
             if (series.xAxis &&
                 series.chart.options.drilldown.allowPointDrilldown ===
-                    false) {
+                false) {
                 // #5822, x changed
                 series.xAxis.drilldownCategory(point.x, e);
             }

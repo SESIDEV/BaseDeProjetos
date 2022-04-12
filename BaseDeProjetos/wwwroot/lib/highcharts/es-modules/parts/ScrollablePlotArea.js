@@ -134,9 +134,9 @@ addEvent(Chart, 'afterSetChartSize', function (e) {
                     // Get the plot lines right in getPlotLinePath,
                     // temporarily set it to the adjusted plot width.
                     axis.getPlotLinePath = function () {
-                        var marginName = corrections[axis.side].name, correctionValue = corrections[axis.side].value, 
-                        // axis.right or axis.bottom
-                        margin = this[marginName], path;
+                        var marginName = corrections[axis.side].name, correctionValue = corrections[axis.side].value,
+                            // axis.right or axis.bottom
+                            margin = this[marginName], path;
                         // Temporarily adjust
                         this[marginName] = margin - correctionValue;
                         path = H.Axis.prototype.getPlotLinePath.apply(this, arguments);
@@ -269,10 +269,10 @@ Chart.prototype.applyFixed = function () {
         this.scrollableMask = fixedRenderer
             .path()
             .attr({
-            fill: this.options.chart.backgroundColor || '#fff',
-            'fill-opacity': pick(scrollableOptions.opacity, 0.85),
-            zIndex: -1
-        })
+                fill: this.options.chart.backgroundColor || '#fff',
+                'fill-opacity': pick(scrollableOptions.opacity, 0.85),
+                zIndex: -1
+            })
             .addClass('highcharts-scrollable-mask')
             .add();
         this.moveFixedElements();
@@ -304,18 +304,18 @@ Chart.prototype.applyFixed = function () {
         if (scrollableOptions.scrollPositionX) {
             this.scrollingContainer.scrollLeft =
                 this.scrollablePixelsX *
-                    scrollableOptions.scrollPositionX;
+                scrollableOptions.scrollPositionX;
         }
         if (scrollableOptions.scrollPositionY) {
             this.scrollingContainer.scrollTop =
                 this.scrollablePixelsY *
-                    scrollableOptions.scrollPositionY;
+                scrollableOptions.scrollPositionY;
         }
     }
     // Mask behind the left and right side
     var axisOffset = this.axisOffset, maskTop = this.plotTop - axisOffset[0] - 1, maskLeft = this.plotLeft - axisOffset[3] - 1, maskBottom = this.plotTop + this.plotHeight + axisOffset[2] + 1, maskRight = this.plotLeft + this.plotWidth + axisOffset[1] + 1, maskPlotRight = this.plotLeft + this.plotWidth -
         (this.scrollablePixelsX || 0), maskPlotBottom = this.plotTop + this.plotHeight -
-        (this.scrollablePixelsY || 0), d;
+            (this.scrollablePixelsY || 0), d;
     if (this.scrollablePixelsX) {
         d = [
             // Left side

@@ -371,9 +371,9 @@ var SVGRenderer = /** @class */ (function () {
         var renderer = this, boxWrapper, element, desc;
         boxWrapper = renderer.createElement('svg')
             .attr({
-            version: '1.1',
-            'class': 'highcharts-root'
-        });
+                version: '1.1',
+                'class': 'highcharts-root'
+            });
         if (!styledMode) {
             boxWrapper.css(this.getStyle(style));
         }
@@ -608,46 +608,46 @@ var SVGRenderer = /** @class */ (function () {
      * True if tspan is too long.
      */
     SVGRenderer.prototype.truncate = function (wrapper, tspan, text, words, startAt, width, getString) {
-        var renderer = this, rotation = wrapper.rotation, str, 
-        // Word wrap can not be truncated to shorter than one word, ellipsis
-        // text can be completely blank.
-        minIndex = words ? 1 : 0, maxIndex = (text || words).length, currentIndex = maxIndex, 
-        // Cache the lengths to avoid checking the same twice
-        lengths = [], updateTSpan = function (s) {
-            if (tspan.firstChild) {
-                tspan.removeChild(tspan.firstChild);
-            }
-            if (s) {
-                tspan.appendChild(doc.createTextNode(s));
-            }
-        }, getSubStringLength = function (charEnd, concatenatedEnd) {
-            // charEnd is useed when finding the character-by-character
-            // break for ellipsis, concatenatedEnd is used for word-by-word
-            // break for word wrapping.
-            var end = concatenatedEnd || charEnd;
-            if (typeof lengths[end] === 'undefined') {
-                // Modern browsers
-                if (tspan.getSubStringLength) {
-                    // Fails with DOM exception on unit-tests/legend/members
-                    // of unknown reason. Desired width is 0, text content
-                    // is "5" and end is 1.
-                    try {
+        var renderer = this, rotation = wrapper.rotation, str,
+            // Word wrap can not be truncated to shorter than one word, ellipsis
+            // text can be completely blank.
+            minIndex = words ? 1 : 0, maxIndex = (text || words).length, currentIndex = maxIndex,
+            // Cache the lengths to avoid checking the same twice
+            lengths = [], updateTSpan = function (s) {
+                if (tspan.firstChild) {
+                    tspan.removeChild(tspan.firstChild);
+                }
+                if (s) {
+                    tspan.appendChild(doc.createTextNode(s));
+                }
+            }, getSubStringLength = function (charEnd, concatenatedEnd) {
+                // charEnd is useed when finding the character-by-character
+                // break for ellipsis, concatenatedEnd is used for word-by-word
+                // break for word wrapping.
+                var end = concatenatedEnd || charEnd;
+                if (typeof lengths[end] === 'undefined') {
+                    // Modern browsers
+                    if (tspan.getSubStringLength) {
+                        // Fails with DOM exception on unit-tests/legend/members
+                        // of unknown reason. Desired width is 0, text content
+                        // is "5" and end is 1.
+                        try {
+                            lengths[end] = startAt +
+                                tspan.getSubStringLength(0, words ? end + 1 : end);
+                        }
+                        catch (e) {
+                            '';
+                        }
+                        // Legacy
+                    }
+                    else if (renderer.getSpanWidth) { // #9058 jsdom
+                        updateTSpan(getString(text || words, charEnd));
                         lengths[end] = startAt +
-                            tspan.getSubStringLength(0, words ? end + 1 : end);
+                            renderer.getSpanWidth(wrapper, tspan);
                     }
-                    catch (e) {
-                        '';
-                    }
-                    // Legacy
                 }
-                else if (renderer.getSpanWidth) { // #9058 jsdom
-                    updateTSpan(getString(text || words, charEnd));
-                    lengths[end] = startAt +
-                        renderer.getSpanWidth(wrapper, tspan);
-                }
-            }
-            return lengths[end];
-        }, actualWidth, truncated;
+                return lengths[end];
+            }, actualWidth, truncated;
         wrapper.rotation = 0; // discard rotation when computing box
         actualWidth = getSubStringLength(tspan.textContent.length);
         truncated = startAt + actualWidth > width;
@@ -720,9 +720,9 @@ var SVGRenderer = /** @class */ (function () {
             }
             return textLineHeight ?
                 pInt(textLineHeight) :
-                renderer.fontMetrics(fontSizeStyle, 
-                // Get the computed size from parent if not explicit
-                (tspan.getAttribute('style') ? tspan : textNode)).h;
+                renderer.fontMetrics(fontSizeStyle,
+                    // Get the computed size from parent if not explicit
+                    (tspan.getAttribute('style') ? tspan : textNode)).h;
         }, unescapeEntities = function (inputStr, except) {
             objectEach(renderer.escapes, function (value, key) {
                 if (!except || except.indexOf(value) === -1) {
@@ -784,8 +784,8 @@ var SVGRenderer = /** @class */ (function () {
                 lines = renderer.styledMode ? (textStr
                     .replace(/<(b|strong)>/g, '<span class="highcharts-strong">')
                     .replace(/<(i|em)>/g, '<span class="highcharts-emphasized">')) : (textStr
-                    .replace(/<(b|strong)>/g, '<span style="font-weight:bold">')
-                    .replace(/<(i|em)>/g, '<span style="font-style:italic">'));
+                        .replace(/<(b|strong)>/g, '<span style="font-weight:bold">')
+                        .replace(/<(i|em)>/g, '<span style="font-style:italic">'));
                 lines = lines
                     .replace(/<a/g, '<span')
                     .replace(/<\/(b|strong|i|em|a)>/g, '</span>')
@@ -811,7 +811,7 @@ var SVGRenderer = /** @class */ (function () {
                 spans.forEach(function buildTextSpans(span) {
                     if (span !== '' || spans.length === 1) {
                         var attributes = {}, tspan = doc.createElementNS(renderer.SVG_NS, 'tspan'), a, classAttribute, styleAttribute, // #390
-                        hrefAttribute;
+                            hrefAttribute;
                         classAttribute = parseAttribute(span, 'class');
                         if (classAttribute) {
                             attr(tspan, 'class', classAttribute);
@@ -827,9 +827,9 @@ var SVGRenderer = /** @class */ (function () {
                         hrefAttribute = parseAttribute(span, 'href');
                         if (hrefAttribute && !forExport) {
                             if (
-                            // Stop JavaScript links, vulnerable to XSS
-                            hrefAttribute.split(':')[0].toLowerCase()
-                                .indexOf('javascript') === -1) {
+                                // Stop JavaScript links, vulnerable to XSS
+                                hrefAttribute.split(':')[0].toLowerCase()
+                                    .indexOf('javascript') === -1) {
                                 a = doc.createElementNS(renderer.SVG_NS, 'a');
                                 attr(a, 'href', hrefAttribute);
                                 attr(tspan, 'class', 'highcharts-anchor');
@@ -874,20 +874,20 @@ var SVGRenderer = /** @class */ (function () {
                             // Check width and apply soft breaks or ellipsis
                             if (width) {
                                 var words = span.replace(/([^\^])-/g, '$1- ').split(' '), // #1273
-                                hasWhiteSpace = !noWrap && (spans.length > 1 ||
-                                    lineNo ||
-                                    words.length > 1), wrapLineNo = 0, dy = getLineHeight(tspan);
+                                    hasWhiteSpace = !noWrap && (spans.length > 1 ||
+                                        lineNo ||
+                                        words.length > 1), wrapLineNo = 0, dy = getLineHeight(tspan);
                                 if (ellipsis) {
-                                    truncated = renderer.truncate(wrapper, tspan, span, void 0, 0, 
-                                    // Target width
-                                    Math.max(0, 
-                                    // Substract the font face to make
-                                    // room for the ellipsis itself
-                                    width - parseInt(fontSize || 12, 10)), 
-                                    // Build the text to test for
-                                    function (text, currentIndex) {
-                                        return text.substring(0, currentIndex) + '\u2026';
-                                    });
+                                    truncated = renderer.truncate(wrapper, tspan, span, void 0, 0,
+                                        // Target width
+                                        Math.max(0,
+                                            // Substract the font face to make
+                                            // room for the ellipsis itself
+                                            width - parseInt(fontSize || 12, 10)),
+                                        // Build the text to test for
+                                        function (text, currentIndex) {
+                                            return text.substring(0, currentIndex) + '\u2026';
+                                        });
                                 }
                                 else if (hasWhiteSpace) {
                                     while (words.length) {
@@ -913,14 +913,14 @@ var SVGRenderer = /** @class */ (function () {
                                         }
                                         // For each line, truncate the remaining
                                         // words into the line length.
-                                        renderer.truncate(wrapper, tspan, null, words, wrapLineNo === 0 ? lineLength : 0, width, 
-                                        // Build the text to test for
-                                        function (text, currentIndex) {
-                                            return words
-                                                .slice(0, currentIndex)
-                                                .join(' ')
-                                                .replace(/- /g, '-');
-                                        });
+                                        renderer.truncate(wrapper, tspan, null, words, wrapLineNo === 0 ? lineLength : 0, width,
+                                            // Build the text to test for
+                                            function (text, currentIndex) {
+                                                return words
+                                                    .slice(0, currentIndex)
+                                                    .join(' ')
+                                                    .replace(/- /g, '-');
+                                            });
                                         lineLength = wrapper.actualWidth;
                                         wrapLineNo++;
                                     }
@@ -1081,21 +1081,21 @@ var SVGRenderer = /** @class */ (function () {
             label
                 .removeClass(/highcharts-button-(normal|hover|pressed|disabled)/)
                 .addClass('highcharts-button-' +
-                ['normal', 'hover', 'pressed', 'disabled'][state || 0]);
+                    ['normal', 'hover', 'pressed', 'disabled'][state || 0]);
             if (!styledMode) {
                 label
                     .attr([
-                    normalState,
-                    hoverState,
-                    pressedState,
-                    disabledState
-                ][state || 0])
+                        normalState,
+                        hoverState,
+                        pressedState,
+                        disabledState
+                    ][state || 0])
                     .css([
-                    normalStyle,
-                    hoverStyle,
-                    pressedStyle,
-                    disabledStyle
-                ][state || 0]);
+                        normalStyle,
+                        hoverStyle,
+                        pressedStyle,
+                        disabledStyle
+                    ][state || 0]);
             }
         };
         // Presentational attributes
@@ -1106,10 +1106,10 @@ var SVGRenderer = /** @class */ (function () {
         }
         return label
             .on('click', function (e) {
-            if (curState !== 3) {
-                callback.call(label, e);
-            }
-        });
+                if (curState !== 3) {
+                    callback.call(label, e);
+                }
+            });
     };
     /**
      * Make a straight line crisper by not spilling out to neighbour pixels.
@@ -1168,16 +1168,16 @@ var SVGRenderer = /** @class */ (function () {
      * The generated wrapper element.
      *
      */ /**
-    * Draw a path, wraps the SVG `path` element.
-    *
-    * @function Highcharts.SVGRenderer#path
-    *
-    * @param {Highcharts.SVGAttributes} [attribs]
-    * The initial attributes.
-    *
-    * @return {Highcharts.SVGElement}
-    * The generated wrapper element.
-    */
+   * Draw a path, wraps the SVG `path` element.
+   *
+   * @function Highcharts.SVGRenderer#path
+   *
+   * @param {Highcharts.SVGAttributes} [attribs]
+   * The initial attributes.
+   *
+   * @return {Highcharts.SVGElement}
+   * The generated wrapper element.
+   */
     SVGRenderer.prototype.path = function (path) {
         var attribs = (this.styledMode ? {} : {
             fill: 'none'
@@ -1210,16 +1210,16 @@ var SVGRenderer = /** @class */ (function () {
      * @return {Highcharts.SVGElement}
      * The generated wrapper element.
      */ /**
-    * Draw a circle, wraps the SVG `circle` element.
-    *
-    * @function Highcharts.SVGRenderer#circle
-    *
-    * @param {Highcharts.SVGAttributes} [attribs]
-    * The initial attributes.
-    *
-    * @return {Highcharts.SVGElement}
-    * The generated wrapper element.
-    */
+   * Draw a circle, wraps the SVG `circle` element.
+   *
+   * @function Highcharts.SVGRenderer#circle
+   *
+   * @param {Highcharts.SVGAttributes} [attribs]
+   * The initial attributes.
+   *
+   * @return {Highcharts.SVGElement}
+   * The generated wrapper element.
+   */
     SVGRenderer.prototype.circle = function (x, y, r) {
         var attribs = (isObject(x) ?
             x :
@@ -1261,16 +1261,16 @@ var SVGRenderer = /** @class */ (function () {
      * @return {Highcharts.SVGElement}
      * The generated wrapper element.
      */ /**
-    * Draw and return an arc. Overloaded function that takes arguments object.
-    *
-    * @function Highcharts.SVGRenderer#arc
-    *
-    * @param {Highcharts.SVGAttributes} attribs
-    * Initial SVG attributes.
-    *
-    * @return {Highcharts.SVGElement}
-    * The generated wrapper element.
-    */
+   * Draw and return an arc. Overloaded function that takes arguments object.
+   *
+   * @function Highcharts.SVGRenderer#arc
+   *
+   * @param {Highcharts.SVGAttributes} attribs
+   * Initial SVG attributes.
+   *
+   * @return {Highcharts.SVGElement}
+   * The generated wrapper element.
+   */
     SVGRenderer.prototype.arc = function (x, y, r, innerR, start, end) {
         var arc, options;
         if (isObject(x)) {
@@ -1321,21 +1321,21 @@ var SVGRenderer = /** @class */ (function () {
      * @return {Highcharts.SVGElement}
      * The generated wrapper element.
      */ /**
-    * Draw and return a rectangle.
-    *
-    * @sample highcharts/members/renderer-rect-on-chart/
-    *         Draw a rectangle in a chart
-    * @sample highcharts/members/renderer-rect/
-    *         Draw a rectangle independent from a chart
-    *
-    * @function Highcharts.SVGRenderer#rect
-    *
-    * @param {Highcharts.SVGAttributes} [attributes]
-    * General SVG attributes for the rectangle.
-    *
-    * @return {Highcharts.SVGElement}
-    * The generated wrapper element.
-    */
+   * Draw and return a rectangle.
+   *
+   * @sample highcharts/members/renderer-rect-on-chart/
+   *         Draw a rectangle in a chart
+   * @sample highcharts/members/renderer-rect/
+   *         Draw a rectangle independent from a chart
+   *
+   * @function Highcharts.SVGRenderer#rect
+   *
+   * @param {Highcharts.SVGAttributes} [attributes]
+   * General SVG attributes for the rectangle.
+   *
+   * @return {Highcharts.SVGElement}
+   * The generated wrapper element.
+   */
     SVGRenderer.prototype.rect = function (x, y, width, height, r, strokeWidth) {
         r = isObject(x) ? x.r : r;
         var wrapper = this.createElement('rect'), attribs = isObject(x) ?
@@ -1533,9 +1533,9 @@ var SVGRenderer = /** @class */ (function () {
      * @return {Highcharts.SVGElement}
      */
     SVGRenderer.prototype.symbol = function (symbol, x, y, width, height, options) {
-        var ren = this, obj, imageRegex = /^url\((.*?)\)$/, isImage = imageRegex.test(symbol), sym = (!isImage && (this.symbols[symbol] ? symbol : 'circle')), 
-        // get the symbol definition function
-        symbolFn = (sym && this.symbols[sym]), path, imageSrc, centerImage;
+        var ren = this, obj, imageRegex = /^url\((.*?)\)$/, isImage = imageRegex.test(symbol), sym = (!isImage && (this.symbols[symbol] ? symbol : 'circle')),
+            // get the symbol definition function
+            symbolFn = (sym && this.symbols[sym]), path, imageSrc, centerImage;
         if (symbolFn) {
             // Check if there's a path defined for this symbol
             if (typeof x === 'number') {
@@ -1691,12 +1691,12 @@ var SVGRenderer = /** @class */ (function () {
      *         A clipping rectangle.
      */
     SVGRenderer.prototype.clipRect = function (x, y, width, height) {
-        var wrapper, 
-        // Add a hyphen at the end to avoid confusion in testing indexes
-        // -1 and -10, -11 etc (#6550)
-        id = uniqueKey() + '-', clipPath = this.createElement('clipPath').attr({
-            id: id
-        }).add(this.defs);
+        var wrapper,
+            // Add a hyphen at the end to avoid confusion in testing indexes
+            // -1 and -10, -11 etc (#6550)
+            id = uniqueKey() + '-', clipPath = this.createElement('clipPath').attr({
+                id: id
+            }).add(this.defs);
         wrapper = this.rect(x, y, width, height, 0).add(clipPath);
         wrapper.id = id;
         wrapper.clipPath = clipPath;
@@ -1920,7 +1920,6 @@ var SVGRenderer = /** @class */ (function () {
             const commandUC = command.toUpperCase();
 
             if (commandUC in commands) {
-
                 // No numeric parameters
                 if (command === 'Z' || command === 'z') {
                     ret.push([command]);
@@ -1929,7 +1928,6 @@ var SVGRenderer = /** @class */ (function () {
                 } else {
                     const val0 = path[i];
                     if (typeof val0 === 'number') {
-
                         // Horizontal line to
                         if (command === 'H' || command === 'h') {
                             ret.push([command, val0]);
@@ -2044,16 +2042,13 @@ var SVGRenderer = /** @class */ (function () {
                                                             val6
                                                         ]);
                                                         i += 7;
-
                                                     }
-
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
-
                         }
                     }
                 }
@@ -2218,12 +2213,12 @@ SVGRenderer.prototype.symbols = {
         var arc = [];
         if (options) {
             var start = options.start || 0, end = options.end || 0, rx = options.r || w, ry = options.r || h || w, proximity = 0.001, fullCircle = Math.abs(end - start - 2 * Math.PI) <
-                proximity, 
-            // Substract a small number to prevent cos and sin of start and
-            // end from becoming equal on 360 arcs (related: #1561)
-            end = end - proximity, innerRadius = options.innerR, open = pick(options.open, fullCircle), cosStart = Math.cos(start), sinStart = Math.sin(start), cosEnd = Math.cos(end), sinEnd = Math.sin(end), 
-            // Proximity takes care of rounding errors around PI (#6971)
-            longArc = pick(options.longArc, end - start - Math.PI < proximity ? 0 : 1);
+                proximity,
+                // Substract a small number to prevent cos and sin of start and
+                // end from becoming equal on 360 arcs (related: #1561)
+                end = end - proximity, innerRadius = options.innerR, open = pick(options.open, fullCircle), cosStart = Math.cos(start), sinStart = Math.sin(start), cosEnd = Math.cos(end), sinEnd = Math.sin(end),
+                // Proximity takes care of rounding errors around PI (#6971)
+                longArc = pick(options.longArc, end - start - Math.PI < proximity ? 0 : 1);
             arc.push([
                 'M',
                 x + rx * cosStart,
@@ -2245,10 +2240,10 @@ SVGRenderer.prototype.symbols = {
                         x + innerRadius * cosEnd,
                         y + innerRadius * sinEnd
                     ] : [
-                    'L',
-                    x + innerRadius * cosEnd,
-                    y + innerRadius * sinEnd
-                ], [
+                        'L',
+                        x + innerRadius * cosEnd,
+                        y + innerRadius * sinEnd
+                    ], [
                     'A',
                     innerRadius,
                     innerRadius,
@@ -2308,14 +2303,14 @@ SVGRenderer.prototype.symbols = {
             }
         }
         else if ( // replace bottom
-        anchorY &&
+            anchorY &&
             anchorY > h &&
             anchorX > x + safeDistance &&
             anchorX < x + w - safeDistance) {
             path.splice(5, 1, ['L', anchorX + halfDistance, y + h], ['L', anchorX, y + h + arrowLength], ['L', anchorX - halfDistance, y + h], ['L', x + r, y + h]);
         }
         else if ( // replace top
-        anchorY &&
+            anchorY &&
             anchorY < 0 &&
             anchorX > x + safeDistance &&
             anchorX < x + w - safeDistance) {

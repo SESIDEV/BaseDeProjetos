@@ -184,103 +184,103 @@
                     }, ctx, c = 0, xData = series.processedXData, yData = series.processedYData, rawData = options.data, xExtremes = xAxis.getExtremes(), xMin = xExtremes.min, xMax = xExtremes.max, yExtremes = yAxis.getExtremes(), yMin = yExtremes.min, yMax = yExtremes.max, pointTaken = {}, lastClientX, sampling = !!series.sampling, points, r = options.marker && options.marker.radius, cvsDrawPoint = this.cvsDrawPoint, cvsLineTo = options.lineWidth ? this.cvsLineTo : void 0, cvsMarker = (r && r <= 1 ?
                         this.cvsMarkerSquare :
                         this.cvsMarkerCircle), strokeBatch = this.cvsStrokeBatch || 1000, enableMouseTracking = options.enableMouseTracking !== false, lastPoint, threshold = options.threshold, yBottom = yAxis.getThreshold(threshold), hasThreshold = isNumber(threshold), translatedThreshold = yBottom, doFill = this.fill, isRange = (series.pointArrayMap &&
-                        series.pointArrayMap.join(',') === 'low,high'), isStacked = !!options.stacking, cropStart = series.cropStart || 0, loadingOptions = chart.options.loading, requireSorting = series.requireSorting, wasNull, connectNulls = options.connectNulls, useRaw = !xData, minVal, maxVal, minI, maxI, index, sdata = (isStacked ?
-                        series.data :
-                        (xData || rawData)), fillColor = (series.fillOpacity ?
-                        new Color(series.color).setOpacity(pick(options.fillOpacity, 0.75)).get() :
-                        series.color), 
-                    //
-                    stroke = function () {
-                        if (doFill) {
-                            ctx.fillStyle = fillColor;
-                            ctx.fill();
-                        }
-                        else {
-                            ctx.strokeStyle = series.color;
-                            ctx.lineWidth = options.lineWidth;
-                            ctx.stroke();
-                        }
-                    }, 
-                    //
-                    drawPoint = function (clientX, plotY, yBottom, i) {
-                        if (c === 0) {
-                            ctx.beginPath();
-                            if (cvsLineTo) {
-                                ctx.lineJoin = 'round';
+                            series.pointArrayMap.join(',') === 'low,high'), isStacked = !!options.stacking, cropStart = series.cropStart || 0, loadingOptions = chart.options.loading, requireSorting = series.requireSorting, wasNull, connectNulls = options.connectNulls, useRaw = !xData, minVal, maxVal, minI, maxI, index, sdata = (isStacked ?
+                                series.data :
+                                (xData || rawData)), fillColor = (series.fillOpacity ?
+                                    new Color(series.color).setOpacity(pick(options.fillOpacity, 0.75)).get() :
+                                    series.color),
+                        //
+                        stroke = function () {
+                            if (doFill) {
+                                ctx.fillStyle = fillColor;
+                                ctx.fill();
                             }
-                        }
-                        if (chart.scroller &&
-                            series.options.className ===
+                            else {
+                                ctx.strokeStyle = series.color;
+                                ctx.lineWidth = options.lineWidth;
+                                ctx.stroke();
+                            }
+                        },
+                        //
+                        drawPoint = function (clientX, plotY, yBottom, i) {
+                            if (c === 0) {
+                                ctx.beginPath();
+                                if (cvsLineTo) {
+                                    ctx.lineJoin = 'round';
+                                }
+                            }
+                            if (chart.scroller &&
+                                series.options.className ===
                                 'highcharts-navigator-series') {
-                            plotY += chart.scroller.top;
-                            if (yBottom) {
-                                yBottom += chart.scroller.top;
+                                plotY += chart.scroller.top;
+                                if (yBottom) {
+                                    yBottom += chart.scroller.top;
+                                }
                             }
-                        }
-                        else {
-                            plotY += chart.plotTop;
-                        }
-                        clientX += chart.plotLeft;
-                        if (wasNull) {
-                            ctx.moveTo(clientX, plotY);
-                        }
-                        else {
-                            if (cvsDrawPoint) {
-                                cvsDrawPoint(ctx, clientX, plotY, yBottom, lastPoint);
+                            else {
+                                plotY += chart.plotTop;
                             }
-                            else if (cvsLineTo) {
-                                cvsLineTo(ctx, clientX, plotY);
+                            clientX += chart.plotLeft;
+                            if (wasNull) {
+                                ctx.moveTo(clientX, plotY);
                             }
-                            else if (cvsMarker) {
-                                cvsMarker.call(series, ctx, clientX, plotY, r, i);
+                            else {
+                                if (cvsDrawPoint) {
+                                    cvsDrawPoint(ctx, clientX, plotY, yBottom, lastPoint);
+                                }
+                                else if (cvsLineTo) {
+                                    cvsLineTo(ctx, clientX, plotY);
+                                }
+                                else if (cvsMarker) {
+                                    cvsMarker.call(series, ctx, clientX, plotY, r, i);
+                                }
                             }
-                        }
-                        // We need to stroke the line for every 1000 pixels. It will
-                        // crash the browser memory use if we stroke too
-                        // infrequently.
-                        c = c + 1;
-                        if (c === strokeBatch) {
-                            stroke();
-                            c = 0;
-                        }
-                        // Area charts need to keep track of the last point
-                        lastPoint = {
-                            clientX: clientX,
-                            plotY: plotY,
-                            yBottom: yBottom
-                        };
-                    }, 
-                    //
-                    compareX = options.findNearestPointBy === 'x', 
-                    //
-                    xDataFull = (this.xData ||
-                        this.options.xData ||
-                        this.processedXData ||
-                        false), 
-                    //
-                    addKDPoint = function (clientX, plotY, i) {
-                        // Shaves off about 60ms compared to repeated concatenation
-                        index = compareX ? clientX : clientX + ',' + plotY;
-                        // The k-d tree requires series points.
-                        // Reduce the amount of points, since the time to build the
-                        // tree increases exponentially.
-                        if (enableMouseTracking && !pointTaken[index]) {
-                            pointTaken[index] = true;
-                            if (chart.inverted) {
-                                clientX = xAxis.len - clientX;
-                                plotY = yAxis.len - plotY;
+                            // We need to stroke the line for every 1000 pixels. It will
+                            // crash the browser memory use if we stroke too
+                            // infrequently.
+                            c = c + 1;
+                            if (c === strokeBatch) {
+                                stroke();
+                                c = 0;
                             }
-                            points.push({
-                                x: xDataFull ?
-                                    xDataFull[cropStart + i] :
-                                    false,
+                            // Area charts need to keep track of the last point
+                            lastPoint = {
                                 clientX: clientX,
-                                plotX: clientX,
                                 plotY: plotY,
-                                i: cropStart + i
-                            });
-                        }
-                    };
+                                yBottom: yBottom
+                            };
+                        },
+                        //
+                        compareX = options.findNearestPointBy === 'x',
+                        //
+                        xDataFull = (this.xData ||
+                            this.options.xData ||
+                            this.processedXData ||
+                            false),
+                        //
+                        addKDPoint = function (clientX, plotY, i) {
+                            // Shaves off about 60ms compared to repeated concatenation
+                            index = compareX ? clientX : clientX + ',' + plotY;
+                            // The k-d tree requires series points.
+                            // Reduce the amount of points, since the time to build the
+                            // tree increases exponentially.
+                            if (enableMouseTracking && !pointTaken[index]) {
+                                pointTaken[index] = true;
+                                if (chart.inverted) {
+                                    clientX = xAxis.len - clientX;
+                                    plotY = yAxis.len - plotY;
+                                }
+                                points.push({
+                                    x: xDataFull ?
+                                        xDataFull[cropStart + i] :
+                                        false,
+                                    clientX: clientX,
+                                    plotX: clientX,
+                                    plotY: plotY,
+                                    i: cropStart + i
+                                });
+                            }
+                        };
                     if (this.renderTarget) {
                         this.renderTarget.attr({ 'href': '' });
                     }
@@ -528,10 +528,7 @@
                 addEvent(chart, 'render', canvasToSVG);
             });
         };
-
     });
     _registerModule(_modules, 'masters/modules/boost-canvas.src.js', [], function () {
-
-
     });
 }));

@@ -168,8 +168,8 @@ extend(SVGElement.prototype, {
         this.focusBorder = this.renderer.rect(borderPosX, borderPosY, borderWidth, borderHeight, parseInt((style && style.borderRadius || 0).toString(), 10))
             .addClass('highcharts-focus-border')
             .attr({
-            zIndex: 99
-        })
+                zIndex: 99
+            })
             .add(this.parentGroup);
         if (!this.renderer.styledMode) {
             this.focusBorder.attr({
