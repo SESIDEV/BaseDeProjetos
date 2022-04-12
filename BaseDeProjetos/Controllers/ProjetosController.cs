@@ -52,22 +52,12 @@ namespace BaseDeProjetos.Controllers
 
         private IQueryable<Projeto> PeriodizarProjetos(string ano, IQueryable<Projeto> lista)
         {
-            if (ano.Equals("Todos"))
+            if (ano.Equals("Todos") || string.IsNullOrEmpty(ano))
             {
                 return lista;
             }
 
-            int ano_limite;
-
-            if (string.IsNullOrEmpty(ano))
-            {
-                ano_limite = DateTime.Now.Year;
-            }
-            else
-            {
-                ano_limite = Convert.ToInt32(ano);
-            }
-
+            int ano_limite = Convert.ToInt32(ano);
             return lista.Where(s => s.DataEncerramento.Year >= ano_limite);
         }
 
