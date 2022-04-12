@@ -1,8 +1,8 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
 @{ ViewData["Title"] = "Index";
-                List<Prospeccao> ativas = ViewBag.Ativas as List<Prospeccao>;
-                List<Prospeccao> propostas = ViewBag.EmProposta as List<Prospeccao>;
-                List<Prospeccao> concluidas = ViewBag.Concluidas as List<Prospeccao>; }
+    List<Prospeccao> ativas = ViewBag.Ativas as List<Prospeccao>;
+    List<Prospeccao> propostas = ViewBag.EmProposta as List<Prospeccao>;
+    List<Prospeccao> concluidas = ViewBag.Concluidas as List<Prospeccao>; }
 
 <div class="row card">
     <div class=" col-12 card-body">
@@ -68,9 +68,10 @@
         </div>
 
         <hr />
-
-        <button class="btn btn-outline-primary col-12" id="btn-new-prospection">
-            <a asp-action="Create">Adicionar Novo Projeto</a>
-        </button>
+        <a asp-action="Create">
+            <button class="btn btn-outline-primary col-12" id="btn-new-prospection">
+                Adicionar Novo Projeto
+            </button>
+        </a>
     </div>
 </div>

@@ -106,7 +106,7 @@
     }
 </style>
 @{ ViewData["Title"] = "Empresas";
-                List<Pessoa> contatos = ViewBag.Contatos as List<Pessoa>; }
+    List<Pessoa> contatos = ViewBag.Contatos as List<Pessoa>; }
 
 <h1>Lista de Empresas</h1>
 
@@ -117,66 +117,68 @@
 <div class="row">
     @foreach (var item in Model)
     {
-<div class="empresa-container col-6">
-    <div class="empresa">
-        <div class="empresa-preview">
-            @if (item.Logo != null)
-            {
-<img style="background-color:white" id="logoEmpresa" src="@item.Logo" alt="Logo da Empresa" /> }
-                else
-                {
-<h2 id="logo_alt">Sem Logo</h2>}
-        </div>
-        <div class="empresa-info">
+        <div class="empresa-container col-6">
+            <div class="empresa">
+                <div class="empresa-preview">
+                    @if (item.Logo != null)
+                    {
+                        <img style="background-color:white" id="logoEmpresa" src="@item.Logo" alt="Logo da Empresa" /> }
+                    else
+                    {
+                        <h2 id="logo_alt">Sem Logo</h2>}
+                </div>
+                <div class="empresa-info">
 
-            <div class="dados-container">
+                    <div class="dados-container">
+                    </div>
+
+                    <p><strong>Nome Empresa:</strong> @item.Nome</p>
+                    <p><strong>CNPJ:</strong> @item.CNPJ</p>
+                    <p><strong>Setor:</strong> @item.Segmento</p>
+                    <button type="button" class="btn-empresa" data-toggle="collapse" data-target="#e_@item.Id">Ver ações</button>
+                    <button type="button" class="btn-empresa" data-toggle="collapse" data-target="#ce_@item.Id">Ver contatos</button>
+
+                    <div id="e_@item.Id" class="collapse">
+                        <hr />
+                        <h6>Ações</h6>
+                        <small>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Ver Detalhes</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Deletar</a>
+                        </small>
+                        <br />
+                    </div>
+
+                    <div id="ce_@item.Id" class="collapse">
+                        <hr />
+                        <h6>Contatos Registrados</h6>
+                        @if (contatos != null)
+                        {
+                            <small>
+                                <table>
+                                    <tr>
+                                        <th> Nome</th>
+                                        <th> E-mail</th>
+                                        <th> Telefone</th>
+                                    </tr>
+
+                                    @foreach (Pessoa contato in contatos.Where(c => c.empresa != null).Where(c2 => c2.empresa.Id == item.Id))
+                                    {
+                                        <tr>
+                                            <td>@contato.Nome</td>
+                                            <td>@contato.Cargo</td>
+                                            <td>@contato.Email</td>
+                                            <td>@contato.Telefone</td>
+                                        </tr>
+}
+                                </table>
+                            </small> }
+                        else
+                        {
+                            <p>Sem contatos registrados</p>}
+                        <br />
+                    </div>
+                </div>
             </div>
-
-            <p><strong>Nome Empresa:</strong> @item.Nome</p>
-            <p><strong>CNPJ:</strong> @item.CNPJ</p>
-            <p><strong>Setor:</strong> @item.Segmento</p>
-            <button type="button" class="btn-empresa" data-toggle="collapse" data-target="#e_@item.Id">Ver ações</button>
-            <button type="button" class="btn-empresa" data-toggle="collapse" data-target="#ce_@item.Id">Ver contatos</button>
-
-            <div id="e_@item.Id" class="collapse">
-                <hr />
-                <h6>Ações</h6>
-                <small>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Ver Detalhes</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Deletar</a>
-                </small>
-                <br />
-            </div>
-
-            <div id="ce_@item.Id" class="collapse">
-                <hr />
-                <h6>Contatos Registrados</h6>
-                @if (contatos != null)
-                {
-<small>
-    <table>
-        <tr>
-            <th> Nome</th>
-            <th> E-mail</th>
-            <th> Telefone</th>
-        </tr>
-
-        @foreach (Pessoa contato in contatos.Where(c => c.empresa != null).Where(c2 => c2.empresa.Id == item.Id))
-        {
-<tr>
-    <td>@contato.Nome</td>
-    <td>@contato.Email</td>
-    <td>@contato.Telefone</td>
-</tr>}
-    </table>
-</small> }
-                else
-                {
-<p>Sem contatos registrados</p>}
-                <br />
-            </div>
-        </div>
-    </div>
-</div>}
+        </div>}
 </div>

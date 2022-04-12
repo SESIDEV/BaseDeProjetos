@@ -17,5 +17,6 @@ namespace BaseDeProjetos.Models
         public virtual string Telefone { get; set; }
 
         public virtual Empresa empresa { get; set; }
+        public virtual string Cargo { get; set; }
     }
 }
