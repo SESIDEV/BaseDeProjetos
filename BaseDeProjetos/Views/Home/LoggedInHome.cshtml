@@ -6,7 +6,17 @@
     decimal investimento = (decimal)ViewBag.invest_total;
     decimal despesas = (decimal)ViewBag.despesa_total;
     float quali = (float)ViewBag.quali;
-    decimal sustentatiblidade = receita / despesas;
+    decimal sustentabilidade;
+
+    if (despesas > 0)
+    {
+
+        sustentabilidade = receita / despesas;
+    }
+    else
+    {
+        sustentabilidade = 1;
+    }
 
 }
 <style>
@@ -137,7 +147,7 @@
                             <span class="text-uppercase">Sustentabilidade</span>
                             <hr />
                             <h3 class="font-weight-bolder">
-                                @sustentatiblidade.ToString("P2")
+                                @sustentabilidade.ToString("P2")
                             </h3>
 
                             <span class="font-weight-lighter">das despesas são cobertas por receita</span>

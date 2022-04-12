@@ -31,7 +31,7 @@ namespace BaseDeProjetos.Controllers
             try
             {
                 ViewData["receita_total"] = _context.IndicadoresFinanceiros.ToList().LastOrDefault().Receita;
-                ViewData["despesa_total"] = _context.IndicadoresFinanceiros.ToList().LastOrDefault().Despeita;
+                ViewData["despesa_total"] = _context.IndicadoresFinanceiros.ToList().LastOrDefault().Despesa;
                 ViewData["invest_total"] = _context.IndicadoresFinanceiros.ToList().LastOrDefault().Investimento;
                 ViewData["Data"] = _context.IndicadoresFinanceiros.ToList().LastOrDefault().Data;
                 ViewData["quali"] = _context.IndicadoresFinanceiros.ToList().LastOrDefault().QualiSeguranca;

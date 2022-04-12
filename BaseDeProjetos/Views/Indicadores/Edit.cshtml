@@ -24,9 +24,9 @@
                 <span asp-validation-for="Receita" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Despeita" class="control-label"></label>
-                <input asp-for="Despeita" class="form-control" />
-                <span asp-validation-for="Despeita" class="text-danger"></span>
+                <label asp-for="Despesa" class="control-label"></label>
+                <input asp-for="Despesa" class="form-control" />
+                <span asp-validation-for="Despesa" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Investimento" class="control-label"></label>
@@ -37,6 +37,8 @@
                 <label asp-for="QualiSeguranca" class="control-label"></label>
                 <input asp-for="QualiSeguranca" class="form-control" />
                 <span asp-validation-for="QualiSeguranca" class="text-danger"></span> </div>
+
+            <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Instituto>().OrderBy(p=>p.Text)"></select>
  
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
