@@ -44,7 +44,7 @@ namespace BaseDeProjetos.Controllers
                 ViewData["Data"] = DateTime.Today;
             }
             ViewData["n_prosp"] = _context.Prospeccao.ToList().Where(p => prospeccaoAtiva(p) == true).ToList().Count;
-            ViewData["n_proj"] = _context.Projeto.Where(p => p.status != StatusProjeto.Concluido && p.DataEncerramento > DateTime.Now).ToList().Count;
+            ViewData["n_proj"] = _context.Projeto.Where(p => p.status != StatusProjeto.Concluido).ToList().Count;
             ViewData["n_empresas"] = _context.Empresa.ToList().Count;
             ViewData["satisfacao"] = 0.8872;
             return View();
