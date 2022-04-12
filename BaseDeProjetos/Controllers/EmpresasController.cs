@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,11 +20,36 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: Empresas
-        public async Task<IActionResult> Index()
+        public IActionResult Index(string searchString = "")
         {
             ViewBag.Contatos = _context.Pessoa.ToList();
-            return View(await _context.Empresa.OrderBy(p => p.Nome).ToListAsync());
+            //Filtros e ordenadores
+            if (string.IsNullOrEmpty(searchString) && HttpContext.Session.Keys.Contains("_CurrentFilter"))
+            {
+                ViewData["CurrentFilter"] = HttpContext.Session.GetString("_CurrentFilter");
+            }
+            else
+            {
+                ViewData["CurrentFilter"] = searchString;
+                HttpContext.Session.SetString("_CurrentFilter", searchString);
+            }
+
+            var empresas = FiltrarEmpresas(searchString, _context.Empresa.ToList());
+
+            return View(empresas);
         }
+        private static List<Empresa> FiltrarEmpresas(string searchString, List<Empresa> lista)
+        {
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                lista = lista.Where(j => j.Segmento != null).
+                              Where(s => s.Nome.Contains(searchString)
+                                      || s.Segmento.Contains(searchString)).ToList();
+            }
+
+            return lista;
+        }
+
 
         // GET: Empresas/Details/5
         public async Task<IActionResult> Details(int? id)

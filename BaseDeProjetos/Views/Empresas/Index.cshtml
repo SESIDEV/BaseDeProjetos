@@ -2,14 +2,14 @@
 @using System.Collections
 <style>
     .empresa {
-        background-color: #fff;
         border-radius: 10px;
         box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
         display: flex;
         max-width: 100%;
-        margin: 20px;
+        margin: 0 20px 20px 0;
         overflow: hidden;
         width: 100%;
+        border: 0.5px solid black;
     }
 
         .empresa h6 {
@@ -53,7 +53,7 @@
     }
 
     .empresa-info {
-        padding: 0 30px;
+        padding: 30px;
         position: relative;
         width: 100%;
     }
@@ -113,8 +113,23 @@
 <p style="text-align: right">
     <a asp-action="Create">Adicionar Empresa</a>
 </p>
+<div class="col-12">
+    <form asp-action="Index" method="get">
+        <div class="form-actions">
+            <small>
+                Buscar empresa por <strong>nome</strong> ou <strong>segmento: </strong><input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+                <input type="hidden" name="ano" value="Todos" />
+                <input type="submit" value="Procurar" class="btn btn-default" /> |
+                <a asp-action="Index">Exibir Lista Completa</a>>
+            </small>
+        </div>
+    </form>
+</div>
+<hr />
+
 
 <div class="row">
+
     @foreach (var item in Model)
     {
         <div class="empresa-container col-6">
@@ -170,7 +185,7 @@
                                             <td>@contato.Email</td>
                                             <td>@contato.Telefone</td>
                                         </tr>
-}
+                                    }
                                 </table>
                             </small> }
                         else
