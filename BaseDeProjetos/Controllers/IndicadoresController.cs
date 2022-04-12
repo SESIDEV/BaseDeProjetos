@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Controllers
 {
-    public class IndicadoresFinanceirosController : Controller
+    public class IndicadoresController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public IndicadoresFinanceirosController(ApplicationDbContext context)
+        public IndicadoresController(ApplicationDbContext context)
         {
             _context = context;
         }
