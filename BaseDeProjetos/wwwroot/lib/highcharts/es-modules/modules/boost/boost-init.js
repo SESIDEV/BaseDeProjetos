@@ -34,33 +34,33 @@ function init() {
         renderCanvas: function () {
             var series = this, options = series.options || {}, renderer = false, chart = series.chart, xAxis = this.xAxis, yAxis = this.yAxis, xData = options.xData || series.processedXData, yData = options.yData || series.processedYData, rawData = options.data, xExtremes = xAxis.getExtremes(), xMin = xExtremes.min, xMax = xExtremes.max, yExtremes = yAxis.getExtremes(), yMin = yExtremes.min, yMax = yExtremes.max, pointTaken = {}, lastClientX, sampling = !!series.sampling, points, enableMouseTracking = options.enableMouseTracking !== false, threshold = options.threshold, yBottom = yAxis.getThreshold(threshold), isRange = series.pointArrayMap &&
                 series.pointArrayMap.join(',') === 'low,high', isStacked = !!options.stacking, cropStart = series.cropStart || 0, requireSorting = series.requireSorting, useRaw = !xData, minVal, maxVal, minI, maxI, boostOptions, compareX = options.findNearestPointBy === 'x', xDataFull = (this.xData ||
-                this.options.xData ||
-                this.processedXData ||
-                false), addKDPoint = function (clientX, plotY, i) {
-                // We need to do ceil on the clientX to make things
-                // snap to pixel values. The renderer will frequently
-                // draw stuff on "sub-pixels".
-                clientX = Math.ceil(clientX);
-                // Shaves off about 60ms compared to repeated concatenation
-                index = compareX ? clientX : clientX + ',' + plotY;
-                // The k-d tree requires series points.
-                // Reduce the amount of points, since the time to build the
-                // tree increases exponentially.
-                if (enableMouseTracking && !pointTaken[index]) {
-                    pointTaken[index] = true;
-                    if (chart.inverted) {
-                        clientX = xAxis.len - clientX;
-                        plotY = yAxis.len - plotY;
-                    }
-                    points.push({
-                        x: xDataFull ? xDataFull[cropStart + i] : false,
-                        clientX: clientX,
-                        plotX: clientX,
-                        plotY: plotY,
-                        i: cropStart + i
-                    });
-                }
-            };
+                    this.options.xData ||
+                    this.processedXData ||
+                    false), addKDPoint = function (clientX, plotY, i) {
+                        // We need to do ceil on the clientX to make things
+                        // snap to pixel values. The renderer will frequently
+                        // draw stuff on "sub-pixels".
+                        clientX = Math.ceil(clientX);
+                        // Shaves off about 60ms compared to repeated concatenation
+                        index = compareX ? clientX : clientX + ',' + plotY;
+                        // The k-d tree requires series points.
+                        // Reduce the amount of points, since the time to build the
+                        // tree increases exponentially.
+                        if (enableMouseTracking && !pointTaken[index]) {
+                            pointTaken[index] = true;
+                            if (chart.inverted) {
+                                clientX = xAxis.len - clientX;
+                                plotY = yAxis.len - plotY;
+                            }
+                            points.push({
+                                x: xDataFull ? xDataFull[cropStart + i] : false,
+                                clientX: clientX,
+                                plotX: clientX,
+                                plotY: plotY,
+                                i: cropStart + i
+                            });
+                        }
+                    };
             // Get or create the renderer
             renderer = createAndAttachRenderer(chart, series);
             chart.isBoosting = true;

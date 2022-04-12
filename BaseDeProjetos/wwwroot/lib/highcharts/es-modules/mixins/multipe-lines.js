@@ -123,9 +123,9 @@ var multipleLinesMixin = {
             options: {
                 gapSize: mainLineOptions.gapSize
             }
-        }, 
-        // additional lines point place holders:
-        secondaryLines = [], secondaryLinesNames = indicator.getTranslatedLinesNames(pointValKey), point;
+        },
+            // additional lines point place holders:
+            secondaryLines = [], secondaryLinesNames = indicator.getTranslatedLinesNames(pointValKey), point;
         // Generate points for additional lines:
         secondaryLinesNames.forEach(function (plotLine, index) {
             // create additional lines point place holders

@@ -209,21 +209,21 @@ var BrokenAxisAdditions = /** @class */ (function () {
                 Axis.prototype.setAxisTranslation.call(this, saveOld);
                 brokenAxis.unitLength = null;
                 if (brokenAxis.hasBreaks) {
-                    var breaks = axis.options.breaks || [], 
-                    // Temporary one:
-                    breakArrayT = [], breakArray = [], length = 0, inBrk, repeat, min = axis.userMin || axis.min, max = axis.userMax || axis.max, pointRangePadding = pick(axis.pointRangePadding, 0), start, i;
+                    var breaks = axis.options.breaks || [],
+                        // Temporary one:
+                        breakArrayT = [], breakArray = [], length = 0, inBrk, repeat, min = axis.userMin || axis.min, max = axis.userMax || axis.max, pointRangePadding = pick(axis.pointRangePadding, 0), start, i;
                     // Min & max check (#4247)
                     breaks.forEach(function (brk) {
                         repeat = brk.repeat || Infinity;
                         if (BrokenAxisAdditions.isInBreak(brk, min)) {
                             min +=
                                 (brk.to % repeat) -
-                                    (min % repeat);
+                                (min % repeat);
                         }
                         if (BrokenAxisAdditions.isInBreak(brk, max)) {
                             max -=
                                 (max % repeat) -
-                                    (brk.from % repeat);
+                                (brk.from % repeat);
                         }
                     });
                     // Construct an array holding all breaks in the axis
@@ -288,7 +288,7 @@ var BrokenAxisAdditions = /** @class */ (function () {
                     else if (brokenAxis.unitLength) {
                         axis.transA *=
                             (max - axis.min + pointRangePadding) /
-                                brokenAxis.unitLength;
+                            brokenAxis.unitLength;
                     }
                     if (pointRangePadding) {
                         axis.minPixelPadding =
@@ -448,7 +448,7 @@ var BrokenAxis = /** @class */ (function () {
                     if (next.x - current.x > gapSize) {
                         var xRange = (current.x + next.x) / 2;
                         points.splice(// insert after this one
-                        i + 1, 0, {
+                            i + 1, 0, {
                             isNull: true,
                             x: xRange
                         });
@@ -513,8 +513,8 @@ var BrokenAxis = /** @class */ (function () {
                     var isPointInBreak = (!nullGap && ((xAxis &&
                         xAxis.brokenAxis &&
                         xAxis.brokenAxis.isInAnyBreak(point.x, true)) || (yAxis &&
-                        yAxis.brokenAxis &&
-                        yAxis.brokenAxis.isInAnyBreak(point.y, true))));
+                            yAxis.brokenAxis &&
+                            yAxis.brokenAxis.isInAnyBreak(point.y, true))));
                     // Set point.visible if in any break.
                     // If not in break, reset visible to original value.
                     point.visible = isPointInBreak ?

@@ -253,9 +253,9 @@ var Pointer = /** @class */ (function () {
                     this.selectionMarker = selectionMarker =
                         chart.renderer.rect(plotLeft, plotTop, zoomHor ? 1 : plotWidth, zoomVert ? 1 : plotHeight, 0)
                             .attr({
-                            'class': 'highcharts-selection-marker',
-                            zIndex: 7
-                        })
+                                'class': 'highcharts-selection-marker',
+                                zIndex: 7
+                            })
                             .add();
                     if (!chart.styledMode) {
                         selectionMarker.attr({
@@ -326,12 +326,12 @@ var Pointer = /** @class */ (function () {
             }, selectionBox = this.selectionMarker, selectionLeft = selectionBox.attr ?
                 selectionBox.attr('x') :
                 selectionBox.x, selectionTop = selectionBox.attr ?
-                selectionBox.attr('y') :
-                selectionBox.y, selectionWidth = selectionBox.attr ?
-                selectionBox.attr('width') :
-                selectionBox.width, selectionHeight = selectionBox.attr ?
-                selectionBox.attr('height') :
-                selectionBox.height, runZoom;
+                    selectionBox.attr('y') :
+                    selectionBox.y, selectionWidth = selectionBox.attr ?
+                        selectionBox.attr('width') :
+                        selectionBox.width, selectionHeight = selectionBox.attr ?
+                            selectionBox.attr('height') :
+                            selectionBox.height, runZoom;
             // a selection has been made
             if (this.hasDragged || hasPinched) {
                 // record each axis' min and max
@@ -348,10 +348,10 @@ var Pointer = /** @class */ (function () {
                         var horiz = axis.horiz, minPixelPadding = e.type === 'touchend' ?
                             axis.minPixelPadding :
                             0, // #1207, #3075
-                        selectionMin = axis.toValue((horiz ? selectionLeft : selectionTop) +
-                            minPixelPadding), selectionMax = axis.toValue((horiz ?
-                            selectionLeft + selectionWidth :
-                            selectionTop + selectionHeight) - minPixelPadding);
+                            selectionMin = axis.toValue((horiz ? selectionLeft : selectionTop) +
+                                minPixelPadding), selectionMax = axis.toValue((horiz ?
+                                    selectionLeft + selectionWidth :
+                                    selectionTop + selectionHeight) - minPixelPadding);
                         selectionData[axis.coll].push({
                             axis: axis,
                             // Min/max for reversed axes
@@ -445,7 +445,7 @@ var Pointer = /** @class */ (function () {
             var noSharedTooltip = s.noSharedTooltip && shared, compareX = (!noSharedTooltip &&
                 s.options.findNearestPointBy.indexOf('y') < 0), point = s.searchPoint(e, compareX);
             if ( // Check that we actually found a point on the series.
-            isObject(point, true) &&
+                isObject(point, true) &&
                 // Use the new point if it is closer.
                 (!isObject(closest, true) ||
                     (sort(closest, point) > 0))) {
@@ -546,19 +546,19 @@ var Pointer = /** @class */ (function () {
      *         and hoverPoints.
      */
     Pointer.prototype.getHoverData = function (existingHoverPoint, existingHoverSeries, series, isDirectTouch, shared, e) {
-        var hoverPoint, hoverPoints = [], hoverSeries = existingHoverSeries, useExisting = !!(isDirectTouch && existingHoverPoint), notSticky = hoverSeries && !hoverSeries.stickyTracking, 
-        // Which series to look in for the hover point
-        searchSeries, 
-        // Parameters needed for beforeGetHoverData event.
-        eventArgs = {
-            chartX: e ? e.chartX : void 0,
-            chartY: e ? e.chartY : void 0,
-            shared: shared
-        }, filter = function (s) {
-            return (s.visible &&
-                !(!shared && s.directTouch) && // #3821
-                pick(s.options.enableMouseTracking, true));
-        };
+        var hoverPoint, hoverPoints = [], hoverSeries = existingHoverSeries, useExisting = !!(isDirectTouch && existingHoverPoint), notSticky = hoverSeries && !hoverSeries.stickyTracking,
+            // Which series to look in for the hover point
+            searchSeries,
+            // Parameters needed for beforeGetHoverData event.
+            eventArgs = {
+                chartX: e ? e.chartX : void 0,
+                chartY: e ? e.chartY : void 0,
+                shared: shared
+            }, filter = function (s) {
+                return (s.visible &&
+                    !(!shared && s.directTouch) && // #3821
+                    pick(s.options.enableMouseTracking, true));
+            };
         // Find chart.hoverPane and update filter method in polar.
         fireEvent(this, 'beforeGetHoverData', eventArgs);
         searchSeries = notSticky ?
@@ -705,7 +705,7 @@ var Pointer = /** @class */ (function () {
         // Do we need to handle click on a touch device?
         this.runChartClick =
             options.chart.events &&
-                !!options.chart.events.click;
+            !!options.chart.events.click;
         this.pinchDown = [];
         this.lastValidTouch = {};
         if (Tooltip) {
@@ -743,7 +743,7 @@ var Pointer = /** @class */ (function () {
             touches.length ?
                 touches.item(0) :
                 (pick(// #13534
-                touches.changedTouches, e.changedTouches))[0] :
+                    touches.changedTouches, e.changedTouches))[0] :
             e);
         // Get mouse position
         if (!chartPosition) {
@@ -838,7 +838,7 @@ var Pointer = /** @class */ (function () {
             chart.pointer.chartPosition = void 0;
         }
         if ( // #11635, Firefox wheel scroll does not fire out events consistently
-        tooltip &&
+            tooltip &&
             !tooltip.isHidden) {
             this.reset();
         }
@@ -986,9 +986,9 @@ var Pointer = /** @class */ (function () {
                 pinchDown[i] = { chartX: e.chartX, chartY: e.chartY };
             });
             lastValidTouch.x = [pinchDown[0].chartX, pinchDown[1] &&
-                    pinchDown[1].chartX];
+                pinchDown[1].chartX];
             lastValidTouch.y = [pinchDown[0].chartY, pinchDown[1] &&
-                    pinchDown[1].chartY];
+                pinchDown[1].chartY];
             // Identify the data bounds in pixels
             chart.axes.forEach(function (axis) {
                 if (axis.zoomEnabled) {
@@ -1085,7 +1085,7 @@ var Pointer = /** @class */ (function () {
                 Math.abs(touch0Start - touch1Start) > 20) {
                 scale = forcedScale ||
                     Math.abs(touch0Now - touch1Now) /
-                        Math.abs(touch0Start - touch1Start);
+                    Math.abs(touch0Start - touch1Start);
             }
             clipXY = ((plotLeftTop - touch0Now) / scale) + touch0Start;
             selectionWH = chart['plot' + (horiz ? 'Width' : 'Height')] / scale;
@@ -1238,11 +1238,11 @@ var Pointer = /** @class */ (function () {
         var pointer = this, chart = pointer.chart, series = chart.series, tooltip = (chart.tooltip && chart.tooltip.options.enabled ?
             chart.tooltip :
             void 0), shared = (tooltip ?
-            tooltip.shared :
-            false), hoverPoint = p || chart.hoverPoint, hoverSeries = hoverPoint && hoverPoint.series || chart.hoverSeries, 
-        // onMouseOver or already hovering a series with directTouch
-        isDirectTouch = (!e || e.type !== 'touchmove') && (!!p || ((hoverSeries && hoverSeries.directTouch) &&
-            pointer.isDirectTouch)), hoverData = this.getHoverData(hoverPoint, hoverSeries, series, isDirectTouch, shared, e), useSharedTooltip, followPointer, anchor, points;
+                tooltip.shared :
+                false), hoverPoint = p || chart.hoverPoint, hoverSeries = hoverPoint && hoverPoint.series || chart.hoverSeries,
+            // onMouseOver or already hovering a series with directTouch
+            isDirectTouch = (!e || e.type !== 'touchmove') && (!!p || ((hoverSeries && hoverSeries.directTouch) &&
+                pointer.isDirectTouch)), hoverData = this.getHoverData(hoverPoint, hoverSeries, series, isDirectTouch, shared, e), useSharedTooltip, followPointer, anchor, points;
         // Update variables from hoverData.
         hoverPoint = hoverData.hoverPoint;
         points = hoverData.hoverPoints;
@@ -1453,7 +1453,7 @@ var Pointer = /** @class */ (function () {
                 if (e.type === 'touchmove') {
                     pinchDown = this.pinchDown;
                     hasMoved = pinchDown[0] ? Math.sqrt(// #5266
-                    Math.pow(pinchDown[0].chartX - e.chartX, 2) +
+                        Math.pow(pinchDown[0].chartX - e.chartX, 2) +
                         Math.pow(pinchDown[0].chartY - e.chartY, 2)) >= 4 : false;
                 }
                 if (pick(hasMoved, true)) {

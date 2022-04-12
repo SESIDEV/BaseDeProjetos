@@ -29,12 +29,12 @@ extend(SVGElement.prototype, /** @lends SVGElement.prototype */ {
      * @return {Highcharts.SVGElement}
      */
     htmlCss: function (styles) {
-        var wrapper = this, element = wrapper.element, 
-        // When setting or unsetting the width style, we need to update
-        // transform (#8809)
-        isSettingWidth = (element.tagName === 'SPAN' &&
-            styles &&
-            'width' in styles), textWidth = pick(isSettingWidth && styles.width, void 0), doTransform;
+        var wrapper = this, element = wrapper.element,
+            // When setting or unsetting the width style, we need to update
+            // transform (#8809)
+            isSettingWidth = (element.tagName === 'SPAN' &&
+                styles &&
+                'width' in styles), textWidth = pick(isSettingWidth && styles.width, void 0), doTransform;
         if (isSettingWidth) {
             delete styles.width;
             wrapper.textWidth = textWidth;
@@ -138,10 +138,10 @@ extend(SVGElement.prototype, /** @lends SVGElement.prototype */ {
             if (textWidth !== wrapper.oldTextWidth &&
                 ((textWidth > wrapper.oldTextWidth) ||
                     (wrapper.textPxLength || getTextPxLength()) > textWidth) && (
-            // Only set the width if the text is able to word-wrap, or
-            // text-overflow is ellipsis (#9537)
-            /[ \-]/.test(elem.textContent || elem.innerText) ||
-                elem.style.textOverflow === 'ellipsis')) { // #983, #1254
+                    // Only set the width if the text is able to word-wrap, or
+                    // text-overflow is ellipsis (#9537)
+                    /[ \-]/.test(elem.textContent || elem.innerText) ||
+                    elem.style.textOverflow === 'ellipsis')) { // #983, #1254
                 css(elem, {
                     width: textWidth + 'px',
                     display: 'block',
@@ -164,10 +164,10 @@ extend(SVGElement.prototype, /** @lends SVGElement.prototype */ {
                     wrapper.setSpanRotation(rotation, alignCorrection, baseline);
                 }
                 wrapper.getSpanCorrection(
-                // Avoid elem.offsetWidth if we can, it affects rendering
-                // time heavily (#7656)
-                ((!defined(rotation) && wrapper.textPxLength) || // #7920
-                    elem.offsetWidth), baseline, alignCorrection, rotation, align);
+                    // Avoid elem.offsetWidth if we can, it affects rendering
+                    // time heavily (#7656)
+                    ((!defined(rotation) && wrapper.textPxLength) || // #7920
+                        elem.offsetWidth), baseline, alignCorrection, rotation, align);
             }
             // apply position with correction
             css(elem, {
@@ -196,7 +196,7 @@ extend(SVGElement.prototype, /** @lends SVGElement.prototype */ {
             'rotate(' + rotation + 'deg)';
         rotationStyle[cssTransformKey + (isFirefox ? 'Origin' : '-origin')] =
             rotationStyle.transformOrigin =
-                (alignCorrection * 100) + '% ' + baseline + 'px';
+            (alignCorrection * 100) + '% ' + baseline + 'px';
         css(this.element, rotationStyle);
     },
     /**
@@ -286,16 +286,16 @@ extend(SVGRenderer.prototype, /** @lends SVGRenderer.prototype */ {
         // Various setters which rely on update transform
         wrapper.xSetter =
             wrapper.ySetter =
-                wrapper.alignSetter =
-                    wrapper.rotationSetter =
-                        function (value, key) {
-                            if (key === 'align') {
-                                // Do not overwrite the SVGElement.align method. Same as VML.
-                                key = 'textAlign';
-                            }
-                            wrapper[key] = value;
-                            wrapper.doTransform = true;
-                        };
+            wrapper.alignSetter =
+            wrapper.rotationSetter =
+            function (value, key) {
+                if (key === 'align') {
+                    // Do not overwrite the SVGElement.align method. Same as VML.
+                    key = 'textAlign';
+                }
+                wrapper[key] = value;
+                wrapper.doTransform = true;
+            };
         // Runs at the end of .attr()
         wrapper.afterSetters = function () {
             // Update transform. Do this outside the loop to prevent redundant
@@ -308,13 +308,13 @@ extend(SVGRenderer.prototype, /** @lends SVGRenderer.prototype */ {
         // Set the default attributes
         wrapper
             .attr({
-            text: str,
-            x: Math.round(x),
-            y: Math.round(y)
-        })
+                text: str,
+                x: Math.round(x),
+                y: Math.round(y)
+            })
             .css({
-            position: 'absolute'
-        });
+                position: 'absolute'
+            });
         if (!renderer.styledMode) {
             wrapper.css({
                 fontFamily: this.style.fontFamily,
@@ -370,16 +370,16 @@ extend(SVGRenderer.prototype, /** @lends SVGRenderer.prototype */ {
                             // to emulate the SVG group structure
                             htmlGroup =
                                 parentGroup.div =
-                                    parentGroup.div || createElement('div', cls ? { className: cls } : void 0, {
-                                        position: 'absolute',
-                                        left: (parentGroup.translateX || 0) + 'px',
-                                        top: (parentGroup.translateY || 0) + 'px',
-                                        display: parentGroup.display,
-                                        opacity: parentGroup.opacity,
-                                        pointerEvents: (parentGroup.styles &&
-                                            parentGroup.styles.pointerEvents) // #5595
-                                        // the top group is appended to container
-                                    }, htmlGroup || container);
+                                parentGroup.div || createElement('div', cls ? { className: cls } : void 0, {
+                                    position: 'absolute',
+                                    left: (parentGroup.translateX || 0) + 'px',
+                                    top: (parentGroup.translateY || 0) + 'px',
+                                    display: parentGroup.display,
+                                    opacity: parentGroup.opacity,
+                                    pointerEvents: (parentGroup.styles &&
+                                        parentGroup.styles.pointerEvents) // #5595
+                                    // the top group is appended to container
+                                }, htmlGroup || container);
                             // Shortcut
                             htmlGroupStyle = htmlGroup.style;
                             // Set listeners to update the HTML div's position

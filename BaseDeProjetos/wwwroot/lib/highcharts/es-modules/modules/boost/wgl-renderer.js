@@ -36,55 +36,55 @@ var win = H.win, doc = win.document;
  */
 function GLRenderer(postRenderCallback) {
     //  // Shader
-    var shader = false, 
-    // Vertex buffers - keyed on shader attribute name
-    vbuffer = false, 
-    // Opengl context
-    gl = false, 
-    // Width of our viewport in pixels
-    width = 0, 
-    // Height of our viewport in pixels
-    height = 0, 
-    // The data to render - array of coordinates
-    data = false, 
-    // The marker data
-    markerData = false, 
-    // Exports
-    exports = {}, 
-    // Is it inited?
-    isInited = false, 
-    // The series stack
-    series = [], 
-    // Texture handles
-    textureHandles = {}, 
-    // Things to draw as "rectangles" (i.e lines)
-    asBar = {
-        'column': true,
-        'columnrange': true,
-        'bar': true,
-        'area': true,
-        'arearange': true
-    }, asCircle = {
-        'scatter': true,
-        'bubble': true
-    }, 
-    // Render settings
-    settings = {
-        pointSize: 1,
-        lineWidth: 1,
-        fillColor: '#AA00AA',
-        useAlpha: true,
-        usePreallocated: false,
-        useGPUTranslations: false,
-        debug: {
-            timeRendering: false,
-            timeSeriesProcessing: false,
-            timeSetup: false,
-            timeBufferCopy: false,
-            timeKDTree: false,
-            showSkipSummary: false
-        }
-    };
+    var shader = false,
+        // Vertex buffers - keyed on shader attribute name
+        vbuffer = false,
+        // Opengl context
+        gl = false,
+        // Width of our viewport in pixels
+        width = 0,
+        // Height of our viewport in pixels
+        height = 0,
+        // The data to render - array of coordinates
+        data = false,
+        // The marker data
+        markerData = false,
+        // Exports
+        exports = {},
+        // Is it inited?
+        isInited = false,
+        // The series stack
+        series = [],
+        // Texture handles
+        textureHandles = {},
+        // Things to draw as "rectangles" (i.e lines)
+        asBar = {
+            'column': true,
+            'columnrange': true,
+            'bar': true,
+            'area': true,
+            'arearange': true
+        }, asCircle = {
+            'scatter': true,
+            'bubble': true
+        },
+        // Render settings
+        settings = {
+            pointSize: 1,
+            lineWidth: 1,
+            fillColor: '#AA00AA',
+            useAlpha: true,
+            usePreallocated: false,
+            useGPUTranslations: false,
+            debug: {
+                timeRendering: false,
+                timeSeriesProcessing: false,
+                timeSetup: false,
+                timeBufferCopy: false,
+                timeKDTree: false,
+                showSkipSummary: false
+            }
+        };
     // /////////////////////////////////////////////////////////////////////////
     /**
      * @private
@@ -185,29 +185,29 @@ function GLRenderer(postRenderCallback) {
     function pushSeriesData(series, inst) {
         var isRange = (series.pointArrayMap &&
             series.pointArrayMap.join(',') === 'low,high'), chart = series.chart, options = series.options, isStacked = !!options.stacking, rawData = options.data, xExtremes = series.xAxis.getExtremes(), xMin = xExtremes.min, xMax = xExtremes.max, yExtremes = series.yAxis.getExtremes(), yMin = yExtremes.min, yMax = yExtremes.max, xData = series.xData || options.xData || series.processedXData, yData = series.yData || options.yData || series.processedYData, zData = (series.zData || options.zData ||
-            series.processedZData), yAxis = series.yAxis, xAxis = series.xAxis, 
-        // plotHeight = series.chart.plotHeight,
-        plotWidth = series.chart.plotWidth, useRaw = !xData || xData.length === 0, 
-        // threshold = options.threshold,
-        // yBottom = chart.yAxis[0].getThreshold(threshold),
-        // hasThreshold = isNumber(threshold),
-        // colorByPoint = series.options.colorByPoint,
-        // This is required for color by point, so make sure this is
-        // uncommented if enabling that
-        // colorIndex = 0,
-        // Required for color axis support
-        // caxis,
-        connectNulls = options.connectNulls, 
-        // For some reason eslint/TypeScript don't pick up that this is
-        // actually used: --- bre1470: it is never read, just set
-        // maxVal: (number|undefined), // eslint-disable-line no-unused-vars
-        points = series.points || false, lastX = false, lastY = false, minVal, pcolor, scolor, sdata = isStacked ? series.data : (xData || rawData), closestLeft = { x: Number.MAX_VALUE, y: 0 }, closestRight = { x: -Number.MAX_VALUE, y: 0 }, 
-        //
-        skipped = 0, hadPoints = false, 
-        //
-        cullXThreshold = 1, cullYThreshold = 1, 
-        // The following are used in the builder while loop
-        x, y, d, z, i = -1, px = false, nx = false, low, chartDestroyed = typeof chart.index === 'undefined', nextInside = false, prevInside = false, pcolor = false, drawAsBar = asBar[series.type], isXInside = false, isYInside = true, firstPoint = true, zones = options.zones || false, zoneDefColor = false, threshold = options.threshold, gapSize = false;
+                series.processedZData), yAxis = series.yAxis, xAxis = series.xAxis,
+            // plotHeight = series.chart.plotHeight,
+            plotWidth = series.chart.plotWidth, useRaw = !xData || xData.length === 0,
+            // threshold = options.threshold,
+            // yBottom = chart.yAxis[0].getThreshold(threshold),
+            // hasThreshold = isNumber(threshold),
+            // colorByPoint = series.options.colorByPoint,
+            // This is required for color by point, so make sure this is
+            // uncommented if enabling that
+            // colorIndex = 0,
+            // Required for color axis support
+            // caxis,
+            connectNulls = options.connectNulls,
+            // For some reason eslint/TypeScript don't pick up that this is
+            // actually used: --- bre1470: it is never read, just set
+            // maxVal: (number|undefined), // eslint-disable-line no-unused-vars
+            points = series.points || false, lastX = false, lastY = false, minVal, pcolor, scolor, sdata = isStacked ? series.data : (xData || rawData), closestLeft = { x: Number.MAX_VALUE, y: 0 }, closestRight = { x: -Number.MAX_VALUE, y: 0 },
+            //
+            skipped = 0, hadPoints = false,
+            //
+            cullXThreshold = 1, cullYThreshold = 1,
+            // The following are used in the builder while loop
+            x, y, d, z, i = -1, px = false, nx = false, low, chartDestroyed = typeof chart.index === 'undefined', nextInside = false, prevInside = false, pcolor = false, drawAsBar = asBar[series.type], isXInside = false, isYInside = true, firstPoint = true, zones = options.zones || false, zoneDefColor = false, threshold = options.threshold, gapSize = false;
         if (options.boostData && options.boostData.length > 0) {
             return;
         }
@@ -519,7 +519,7 @@ function GLRenderer(postRenderCallback) {
             if (zones) {
                 pcolor = zoneDefColor.rgba;
                 zones.some(function (// eslint-disable-line no-loop-func
-                zone, i) {
+                    zone, i) {
                     var last = zones[i - 1];
                     if (typeof zone.value !== 'undefined' && y <= zone.value) {
                         if (!last || y >= last.value) {
@@ -570,7 +570,7 @@ function GLRenderer(postRenderCallback) {
                 }
                 if (!isRange && !isStacked) {
                     minVal = Math.max(threshold === null ? yMin : threshold, // #5268
-                    yMin); // #8731
+                        yMin); // #8731
                 }
                 if (!settings.useGPUTranslations) {
                     minVal = yAxis.toPixels(minVal, true);
@@ -812,10 +812,10 @@ function GLRenderer(postRenderCallback) {
             var options = s.series.options, shapeOptions = options.marker, sindex, lineWidth = (typeof options.lineWidth !== 'undefined' ?
                 options.lineWidth :
                 1), threshold = options.threshold, hasThreshold = isNumber(threshold), yBottom = s.series.yAxis.getThreshold(threshold), translatedThreshold = yBottom, cbuffer, showMarkers = pick(options.marker ? options.marker.enabled : null, s.series.xAxis.isRadial ? true : null, s.series.closestPointRangePx >
-                2 * ((options.marker ?
-                    options.marker.radius :
-                    10) || 10)), fillColor, shapeTexture = textureHandles[(shapeOptions && shapeOptions.symbol) ||
-                s.series.symbol] || textureHandles.circle, scolor = [];
+                    2 * ((options.marker ?
+                        options.marker.radius :
+                        10) || 10)), fillColor, shapeTexture = textureHandles[(shapeOptions && shapeOptions.symbol) ||
+                            s.series.symbol] || textureHandles.circle, scolor = [];
             if (s.segments.length === 0 ||
                 (s.segmentslength &&
                     s.segments[0].from === s.segments[0].to)) {
@@ -832,7 +832,7 @@ function GLRenderer(postRenderCallback) {
             else {
                 fillColor =
                     (s.series.pointAttribs && s.series.pointAttribs().fill) ||
-                        s.series.color;
+                    s.series.color;
                 if (options.colorByPoint) {
                     fillColor = s.series.chart.options.colors[si];
                 }
@@ -984,7 +984,7 @@ function GLRenderer(postRenderCallback) {
         }
         for (; i < contexts.length; i++) {
             gl = canvas.getContext(contexts[i], {
-            //    premultipliedAlpha: false
+                //    premultipliedAlpha: false
             });
             if (gl) {
                 break;

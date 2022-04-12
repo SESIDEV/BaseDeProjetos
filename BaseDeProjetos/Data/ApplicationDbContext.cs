@@ -9,7 +9,8 @@ namespace BaseDeProjetos.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
-                    }
+        }
+
         public DbSet<BaseDeProjetos.Models.Projeto> Projeto { get; set; }
         public DbSet<BaseDeProjetos.Models.Prospeccao> Prospeccao { get; set; }
         public DbSet<BaseDeProjetos.Models.FollowUp> FollowUp { get; set; }

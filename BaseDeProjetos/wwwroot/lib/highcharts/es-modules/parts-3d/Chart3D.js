@@ -98,25 +98,25 @@ var Chart3D;
             []
                 .concat(chart.xAxis, chart.yAxis, chart.zAxis)
                 .forEach(function (axis) {
-                if (axis) {
-                    if (axis.horiz) {
-                        if (axis.opposite) {
-                            defaultShowTop = true;
+                    if (axis) {
+                        if (axis.horiz) {
+                            if (axis.opposite) {
+                                defaultShowTop = true;
+                            }
+                            else {
+                                defaultShowBottom = true;
+                            }
                         }
                         else {
-                            defaultShowBottom = true;
+                            if (axis.opposite) {
+                                defaultShowRight = true;
+                            }
+                            else {
+                                defaultShowLeft = true;
+                            }
                         }
                     }
-                    else {
-                        if (axis.opposite) {
-                            defaultShowRight = true;
-                        }
-                        else {
-                            defaultShowLeft = true;
-                        }
-                    }
-                }
-            });
+                });
             var getFaceOptions = function (sources, faceOrientation, defaultVisible) {
                 var faceAttrs = ['size', 'color', 'visible'];
                 var options = {};
@@ -381,14 +381,14 @@ var Chart3D;
             }, corners, scale = 1;
             // Top left corners:
             corners = [{
-                    x: plotLeft,
-                    y: plotTop,
-                    z: 0
-                }, {
-                    x: plotLeft,
-                    y: plotTop,
-                    z: depth
-                }];
+                x: plotLeft,
+                y: plotTop,
+                z: 0
+            }, {
+                x: plotLeft,
+                y: plotTop,
+                z: depth
+            }];
             // Top right corners:
             [0, 1].forEach(function (i) {
                 corners.push({
@@ -702,781 +702,781 @@ var Chart3D;
                 'class': 'highcharts-3d-frame highcharts-3d-frame-bottom',
                 zIndex: frame.bottom.frontFacing ? -1000 : 1000,
                 faces: [{
-                        fill: H.color(frame.bottom.color).brighten(0.1).get(),
-                        vertexes: [{
-                                x: xmm,
-                                y: ypp,
-                                z: zmm
-                            }, {
-                                x: xpp,
-                                y: ypp,
-                                z: zmm
-                            }, {
-                                x: xpp,
-                                y: ypp,
-                                z: zpp
-                            }, {
-                                x: xmm,
-                                y: ypp,
-                                z: zpp
-                            }],
-                        enabled: frame.bottom.visible
-                    },
-                    {
-                        fill: H.color(frame.bottom.color).brighten(0.1).get(),
-                        vertexes: [{
-                                x: xm,
-                                y: yp,
-                                z: zp
-                            }, {
-                                x: xp,
-                                y: yp,
-                                z: zp
-                            }, {
-                                x: xp,
-                                y: yp,
-                                z: zm
-                            }, {
-                                x: xm,
-                                y: yp,
-                                z: zm
-                            }],
-                        enabled: frame.bottom.visible
-                    },
-                    {
-                        fill: H.color(frame.bottom.color).brighten(-0.1).get(),
-                        vertexes: [{
-                                x: xmm,
-                                y: ypp,
-                                z: zmm
-                            }, {
-                                x: xmm,
-                                y: ypp,
-                                z: zpp
-                            }, {
-                                x: xm,
-                                y: yp,
-                                z: zp
-                            }, {
-                                x: xm,
-                                y: yp,
-                                z: zm
-                            }],
-                        enabled: frame.bottom.visible && !frame.left.visible
-                    },
-                    {
-                        fill: H.color(frame.bottom.color).brighten(-0.1).get(),
-                        vertexes: [{
-                                x: xpp,
-                                y: ypp,
-                                z: zpp
-                            }, {
-                                x: xpp,
-                                y: ypp,
-                                z: zmm
-                            }, {
-                                x: xp,
-                                y: yp,
-                                z: zm
-                            }, {
-                                x: xp,
-                                y: yp,
-                                z: zp
-                            }],
-                        enabled: frame.bottom.visible && !frame.right.visible
-                    },
-                    {
-                        fill: H.color(frame.bottom.color).get(),
-                        vertexes: [{
-                                x: xpp,
-                                y: ypp,
-                                z: zmm
-                            }, {
-                                x: xmm,
-                                y: ypp,
-                                z: zmm
-                            }, {
-                                x: xm,
-                                y: yp,
-                                z: zm
-                            }, {
-                                x: xp,
-                                y: yp,
-                                z: zm
-                            }],
-                        enabled: frame.bottom.visible && !frame.front.visible
-                    },
-                    {
-                        fill: H.color(frame.bottom.color).get(),
-                        vertexes: [{
-                                x: xmm,
-                                y: ypp,
-                                z: zpp
-                            }, {
-                                x: xpp,
-                                y: ypp,
-                                z: zpp
-                            }, {
-                                x: xp,
-                                y: yp,
-                                z: zp
-                            }, {
-                                x: xm,
-                                y: yp,
-                                z: zp
-                            }],
-                        enabled: frame.bottom.visible && !frame.back.visible
-                    }]
+                    fill: H.color(frame.bottom.color).brighten(0.1).get(),
+                    vertexes: [{
+                        x: xmm,
+                        y: ypp,
+                        z: zmm
+                    }, {
+                        x: xpp,
+                        y: ypp,
+                        z: zmm
+                    }, {
+                        x: xpp,
+                        y: ypp,
+                        z: zpp
+                    }, {
+                        x: xmm,
+                        y: ypp,
+                        z: zpp
+                    }],
+                    enabled: frame.bottom.visible
+                },
+                {
+                    fill: H.color(frame.bottom.color).brighten(0.1).get(),
+                    vertexes: [{
+                        x: xm,
+                        y: yp,
+                        z: zp
+                    }, {
+                        x: xp,
+                        y: yp,
+                        z: zp
+                    }, {
+                        x: xp,
+                        y: yp,
+                        z: zm
+                    }, {
+                        x: xm,
+                        y: yp,
+                        z: zm
+                    }],
+                    enabled: frame.bottom.visible
+                },
+                {
+                    fill: H.color(frame.bottom.color).brighten(-0.1).get(),
+                    vertexes: [{
+                        x: xmm,
+                        y: ypp,
+                        z: zmm
+                    }, {
+                        x: xmm,
+                        y: ypp,
+                        z: zpp
+                    }, {
+                        x: xm,
+                        y: yp,
+                        z: zp
+                    }, {
+                        x: xm,
+                        y: yp,
+                        z: zm
+                    }],
+                    enabled: frame.bottom.visible && !frame.left.visible
+                },
+                {
+                    fill: H.color(frame.bottom.color).brighten(-0.1).get(),
+                    vertexes: [{
+                        x: xpp,
+                        y: ypp,
+                        z: zpp
+                    }, {
+                        x: xpp,
+                        y: ypp,
+                        z: zmm
+                    }, {
+                        x: xp,
+                        y: yp,
+                        z: zm
+                    }, {
+                        x: xp,
+                        y: yp,
+                        z: zp
+                    }],
+                    enabled: frame.bottom.visible && !frame.right.visible
+                },
+                {
+                    fill: H.color(frame.bottom.color).get(),
+                    vertexes: [{
+                        x: xpp,
+                        y: ypp,
+                        z: zmm
+                    }, {
+                        x: xmm,
+                        y: ypp,
+                        z: zmm
+                    }, {
+                        x: xm,
+                        y: yp,
+                        z: zm
+                    }, {
+                        x: xp,
+                        y: yp,
+                        z: zm
+                    }],
+                    enabled: frame.bottom.visible && !frame.front.visible
+                },
+                {
+                    fill: H.color(frame.bottom.color).get(),
+                    vertexes: [{
+                        x: xmm,
+                        y: ypp,
+                        z: zpp
+                    }, {
+                        x: xpp,
+                        y: ypp,
+                        z: zpp
+                    }, {
+                        x: xp,
+                        y: yp,
+                        z: zp
+                    }, {
+                        x: xm,
+                        y: yp,
+                        z: zp
+                    }],
+                    enabled: frame.bottom.visible && !frame.back.visible
+                }]
             });
             this.frameShapes.top[verb]({
                 'class': 'highcharts-3d-frame highcharts-3d-frame-top',
                 zIndex: frame.top.frontFacing ? -1000 : 1000,
                 faces: [{
-                        fill: H.color(frame.top.color).brighten(0.1).get(),
-                        vertexes: [{
-                                x: xmm,
-                                y: ymm,
-                                z: zpp
-                            }, {
-                                x: xpp,
-                                y: ymm,
-                                z: zpp
-                            }, {
-                                x: xpp,
-                                y: ymm,
-                                z: zmm
-                            }, {
-                                x: xmm,
-                                y: ymm,
-                                z: zmm
-                            }],
-                        enabled: frame.top.visible
-                    },
-                    {
-                        fill: H.color(frame.top.color).brighten(0.1).get(),
-                        vertexes: [{
-                                x: xm,
-                                y: ym,
-                                z: zm
-                            }, {
-                                x: xp,
-                                y: ym,
-                                z: zm
-                            }, {
-                                x: xp,
-                                y: ym,
-                                z: zp
-                            }, {
-                                x: xm,
-                                y: ym,
-                                z: zp
-                            }],
-                        enabled: frame.top.visible
-                    },
-                    {
-                        fill: H.color(frame.top.color).brighten(-0.1).get(),
-                        vertexes: [{
-                                x: xmm,
-                                y: ymm,
-                                z: zpp
-                            }, {
-                                x: xmm,
-                                y: ymm,
-                                z: zmm
-                            }, {
-                                x: xm,
-                                y: ym,
-                                z: zm
-                            }, {
-                                x: xm,
-                                y: ym,
-                                z: zp
-                            }],
-                        enabled: frame.top.visible && !frame.left.visible
-                    },
-                    {
-                        fill: H.color(frame.top.color).brighten(-0.1).get(),
-                        vertexes: [{
-                                x: xpp,
-                                y: ymm,
-                                z: zmm
-                            }, {
-                                x: xpp,
-                                y: ymm,
-                                z: zpp
-                            }, {
-                                x: xp,
-                                y: ym,
-                                z: zp
-                            }, {
-                                x: xp,
-                                y: ym,
-                                z: zm
-                            }],
-                        enabled: frame.top.visible && !frame.right.visible
-                    },
-                    {
-                        fill: H.color(frame.top.color).get(),
-                        vertexes: [{
-                                x: xmm,
-                                y: ymm,
-                                z: zmm
-                            }, {
-                                x: xpp,
-                                y: ymm,
-                                z: zmm
-                            }, {
-                                x: xp,
-                                y: ym,
-                                z: zm
-                            }, {
-                                x: xm,
-                                y: ym,
-                                z: zm
-                            }],
-                        enabled: frame.top.visible && !frame.front.visible
-                    },
-                    {
-                        fill: H.color(frame.top.color).get(),
-                        vertexes: [{
-                                x: xpp,
-                                y: ymm,
-                                z: zpp
-                            }, {
-                                x: xmm,
-                                y: ymm,
-                                z: zpp
-                            }, {
-                                x: xm,
-                                y: ym,
-                                z: zp
-                            }, {
-                                x: xp,
-                                y: ym,
-                                z: zp
-                            }],
-                        enabled: frame.top.visible && !frame.back.visible
-                    }]
+                    fill: H.color(frame.top.color).brighten(0.1).get(),
+                    vertexes: [{
+                        x: xmm,
+                        y: ymm,
+                        z: zpp
+                    }, {
+                        x: xpp,
+                        y: ymm,
+                        z: zpp
+                    }, {
+                        x: xpp,
+                        y: ymm,
+                        z: zmm
+                    }, {
+                        x: xmm,
+                        y: ymm,
+                        z: zmm
+                    }],
+                    enabled: frame.top.visible
+                },
+                {
+                    fill: H.color(frame.top.color).brighten(0.1).get(),
+                    vertexes: [{
+                        x: xm,
+                        y: ym,
+                        z: zm
+                    }, {
+                        x: xp,
+                        y: ym,
+                        z: zm
+                    }, {
+                        x: xp,
+                        y: ym,
+                        z: zp
+                    }, {
+                        x: xm,
+                        y: ym,
+                        z: zp
+                    }],
+                    enabled: frame.top.visible
+                },
+                {
+                    fill: H.color(frame.top.color).brighten(-0.1).get(),
+                    vertexes: [{
+                        x: xmm,
+                        y: ymm,
+                        z: zpp
+                    }, {
+                        x: xmm,
+                        y: ymm,
+                        z: zmm
+                    }, {
+                        x: xm,
+                        y: ym,
+                        z: zm
+                    }, {
+                        x: xm,
+                        y: ym,
+                        z: zp
+                    }],
+                    enabled: frame.top.visible && !frame.left.visible
+                },
+                {
+                    fill: H.color(frame.top.color).brighten(-0.1).get(),
+                    vertexes: [{
+                        x: xpp,
+                        y: ymm,
+                        z: zmm
+                    }, {
+                        x: xpp,
+                        y: ymm,
+                        z: zpp
+                    }, {
+                        x: xp,
+                        y: ym,
+                        z: zp
+                    }, {
+                        x: xp,
+                        y: ym,
+                        z: zm
+                    }],
+                    enabled: frame.top.visible && !frame.right.visible
+                },
+                {
+                    fill: H.color(frame.top.color).get(),
+                    vertexes: [{
+                        x: xmm,
+                        y: ymm,
+                        z: zmm
+                    }, {
+                        x: xpp,
+                        y: ymm,
+                        z: zmm
+                    }, {
+                        x: xp,
+                        y: ym,
+                        z: zm
+                    }, {
+                        x: xm,
+                        y: ym,
+                        z: zm
+                    }],
+                    enabled: frame.top.visible && !frame.front.visible
+                },
+                {
+                    fill: H.color(frame.top.color).get(),
+                    vertexes: [{
+                        x: xpp,
+                        y: ymm,
+                        z: zpp
+                    }, {
+                        x: xmm,
+                        y: ymm,
+                        z: zpp
+                    }, {
+                        x: xm,
+                        y: ym,
+                        z: zp
+                    }, {
+                        x: xp,
+                        y: ym,
+                        z: zp
+                    }],
+                    enabled: frame.top.visible && !frame.back.visible
+                }]
             });
             this.frameShapes.left[verb]({
                 'class': 'highcharts-3d-frame highcharts-3d-frame-left',
                 zIndex: frame.left.frontFacing ? -1000 : 1000,
                 faces: [{
-                        fill: H.color(frame.left.color).brighten(0.1).get(),
-                        vertexes: [{
-                                x: xmm,
-                                y: ypp,
-                                z: zmm
-                            }, {
-                                x: xm,
-                                y: yp,
-                                z: zm
-                            }, {
-                                x: xm,
-                                y: yp,
-                                z: zp
-                            }, {
-                                x: xmm,
-                                y: ypp,
-                                z: zpp
-                            }],
-                        enabled: frame.left.visible && !frame.bottom.visible
-                    },
-                    {
-                        fill: H.color(frame.left.color).brighten(0.1).get(),
-                        vertexes: [{
-                                x: xmm,
-                                y: ymm,
-                                z: zpp
-                            }, {
-                                x: xm,
-                                y: ym,
-                                z: zp
-                            }, {
-                                x: xm,
-                                y: ym,
-                                z: zm
-                            }, {
-                                x: xmm,
-                                y: ymm,
-                                z: zmm
-                            }],
-                        enabled: frame.left.visible && !frame.top.visible
-                    },
-                    {
-                        fill: H.color(frame.left.color).brighten(-0.1).get(),
-                        vertexes: [{
-                                x: xmm,
-                                y: ypp,
-                                z: zpp
-                            }, {
-                                x: xmm,
-                                y: ymm,
-                                z: zpp
-                            }, {
-                                x: xmm,
-                                y: ymm,
-                                z: zmm
-                            }, {
-                                x: xmm,
-                                y: ypp,
-                                z: zmm
-                            }],
-                        enabled: frame.left.visible
-                    },
-                    {
-                        fill: H.color(frame.left.color).brighten(-0.1).get(),
-                        vertexes: [{
-                                x: xm,
-                                y: ym,
-                                z: zp
-                            }, {
-                                x: xm,
-                                y: yp,
-                                z: zp
-                            }, {
-                                x: xm,
-                                y: yp,
-                                z: zm
-                            }, {
-                                x: xm,
-                                y: ym,
-                                z: zm
-                            }],
-                        enabled: frame.left.visible
-                    },
-                    {
-                        fill: H.color(frame.left.color).get(),
-                        vertexes: [{
-                                x: xmm,
-                                y: ypp,
-                                z: zmm
-                            }, {
-                                x: xmm,
-                                y: ymm,
-                                z: zmm
-                            }, {
-                                x: xm,
-                                y: ym,
-                                z: zm
-                            }, {
-                                x: xm,
-                                y: yp,
-                                z: zm
-                            }],
-                        enabled: frame.left.visible && !frame.front.visible
-                    },
-                    {
-                        fill: H.color(frame.left.color).get(),
-                        vertexes: [{
-                                x: xmm,
-                                y: ymm,
-                                z: zpp
-                            }, {
-                                x: xmm,
-                                y: ypp,
-                                z: zpp
-                            }, {
-                                x: xm,
-                                y: yp,
-                                z: zp
-                            }, {
-                                x: xm,
-                                y: ym,
-                                z: zp
-                            }],
-                        enabled: frame.left.visible && !frame.back.visible
-                    }]
+                    fill: H.color(frame.left.color).brighten(0.1).get(),
+                    vertexes: [{
+                        x: xmm,
+                        y: ypp,
+                        z: zmm
+                    }, {
+                        x: xm,
+                        y: yp,
+                        z: zm
+                    }, {
+                        x: xm,
+                        y: yp,
+                        z: zp
+                    }, {
+                        x: xmm,
+                        y: ypp,
+                        z: zpp
+                    }],
+                    enabled: frame.left.visible && !frame.bottom.visible
+                },
+                {
+                    fill: H.color(frame.left.color).brighten(0.1).get(),
+                    vertexes: [{
+                        x: xmm,
+                        y: ymm,
+                        z: zpp
+                    }, {
+                        x: xm,
+                        y: ym,
+                        z: zp
+                    }, {
+                        x: xm,
+                        y: ym,
+                        z: zm
+                    }, {
+                        x: xmm,
+                        y: ymm,
+                        z: zmm
+                    }],
+                    enabled: frame.left.visible && !frame.top.visible
+                },
+                {
+                    fill: H.color(frame.left.color).brighten(-0.1).get(),
+                    vertexes: [{
+                        x: xmm,
+                        y: ypp,
+                        z: zpp
+                    }, {
+                        x: xmm,
+                        y: ymm,
+                        z: zpp
+                    }, {
+                        x: xmm,
+                        y: ymm,
+                        z: zmm
+                    }, {
+                        x: xmm,
+                        y: ypp,
+                        z: zmm
+                    }],
+                    enabled: frame.left.visible
+                },
+                {
+                    fill: H.color(frame.left.color).brighten(-0.1).get(),
+                    vertexes: [{
+                        x: xm,
+                        y: ym,
+                        z: zp
+                    }, {
+                        x: xm,
+                        y: yp,
+                        z: zp
+                    }, {
+                        x: xm,
+                        y: yp,
+                        z: zm
+                    }, {
+                        x: xm,
+                        y: ym,
+                        z: zm
+                    }],
+                    enabled: frame.left.visible
+                },
+                {
+                    fill: H.color(frame.left.color).get(),
+                    vertexes: [{
+                        x: xmm,
+                        y: ypp,
+                        z: zmm
+                    }, {
+                        x: xmm,
+                        y: ymm,
+                        z: zmm
+                    }, {
+                        x: xm,
+                        y: ym,
+                        z: zm
+                    }, {
+                        x: xm,
+                        y: yp,
+                        z: zm
+                    }],
+                    enabled: frame.left.visible && !frame.front.visible
+                },
+                {
+                    fill: H.color(frame.left.color).get(),
+                    vertexes: [{
+                        x: xmm,
+                        y: ymm,
+                        z: zpp
+                    }, {
+                        x: xmm,
+                        y: ypp,
+                        z: zpp
+                    }, {
+                        x: xm,
+                        y: yp,
+                        z: zp
+                    }, {
+                        x: xm,
+                        y: ym,
+                        z: zp
+                    }],
+                    enabled: frame.left.visible && !frame.back.visible
+                }]
             });
             this.frameShapes.right[verb]({
                 'class': 'highcharts-3d-frame highcharts-3d-frame-right',
                 zIndex: frame.right.frontFacing ? -1000 : 1000,
                 faces: [{
-                        fill: H.color(frame.right.color).brighten(0.1).get(),
-                        vertexes: [{
-                                x: xpp,
-                                y: ypp,
-                                z: zpp
-                            }, {
-                                x: xp,
-                                y: yp,
-                                z: zp
-                            }, {
-                                x: xp,
-                                y: yp,
-                                z: zm
-                            }, {
-                                x: xpp,
-                                y: ypp,
-                                z: zmm
-                            }],
-                        enabled: frame.right.visible && !frame.bottom.visible
-                    },
-                    {
-                        fill: H.color(frame.right.color).brighten(0.1).get(),
-                        vertexes: [{
-                                x: xpp,
-                                y: ymm,
-                                z: zmm
-                            }, {
-                                x: xp,
-                                y: ym,
-                                z: zm
-                            }, {
-                                x: xp,
-                                y: ym,
-                                z: zp
-                            }, {
-                                x: xpp,
-                                y: ymm,
-                                z: zpp
-                            }],
-                        enabled: frame.right.visible && !frame.top.visible
-                    },
-                    {
-                        fill: H.color(frame.right.color).brighten(-0.1).get(),
-                        vertexes: [{
-                                x: xp,
-                                y: ym,
-                                z: zm
-                            }, {
-                                x: xp,
-                                y: yp,
-                                z: zm
-                            }, {
-                                x: xp,
-                                y: yp,
-                                z: zp
-                            }, {
-                                x: xp,
-                                y: ym,
-                                z: zp
-                            }],
-                        enabled: frame.right.visible
-                    },
-                    {
-                        fill: H.color(frame.right.color).brighten(-0.1).get(),
-                        vertexes: [{
-                                x: xpp,
-                                y: ypp,
-                                z: zmm
-                            }, {
-                                x: xpp,
-                                y: ymm,
-                                z: zmm
-                            }, {
-                                x: xpp,
-                                y: ymm,
-                                z: zpp
-                            }, {
-                                x: xpp,
-                                y: ypp,
-                                z: zpp
-                            }],
-                        enabled: frame.right.visible
-                    },
-                    {
-                        fill: H.color(frame.right.color).get(),
-                        vertexes: [{
-                                x: xpp,
-                                y: ymm,
-                                z: zmm
-                            }, {
-                                x: xpp,
-                                y: ypp,
-                                z: zmm
-                            }, {
-                                x: xp,
-                                y: yp,
-                                z: zm
-                            }, {
-                                x: xp,
-                                y: ym,
-                                z: zm
-                            }],
-                        enabled: frame.right.visible && !frame.front.visible
-                    },
-                    {
-                        fill: H.color(frame.right.color).get(),
-                        vertexes: [{
-                                x: xpp,
-                                y: ypp,
-                                z: zpp
-                            }, {
-                                x: xpp,
-                                y: ymm,
-                                z: zpp
-                            }, {
-                                x: xp,
-                                y: ym,
-                                z: zp
-                            }, {
-                                x: xp,
-                                y: yp,
-                                z: zp
-                            }],
-                        enabled: frame.right.visible && !frame.back.visible
-                    }]
+                    fill: H.color(frame.right.color).brighten(0.1).get(),
+                    vertexes: [{
+                        x: xpp,
+                        y: ypp,
+                        z: zpp
+                    }, {
+                        x: xp,
+                        y: yp,
+                        z: zp
+                    }, {
+                        x: xp,
+                        y: yp,
+                        z: zm
+                    }, {
+                        x: xpp,
+                        y: ypp,
+                        z: zmm
+                    }],
+                    enabled: frame.right.visible && !frame.bottom.visible
+                },
+                {
+                    fill: H.color(frame.right.color).brighten(0.1).get(),
+                    vertexes: [{
+                        x: xpp,
+                        y: ymm,
+                        z: zmm
+                    }, {
+                        x: xp,
+                        y: ym,
+                        z: zm
+                    }, {
+                        x: xp,
+                        y: ym,
+                        z: zp
+                    }, {
+                        x: xpp,
+                        y: ymm,
+                        z: zpp
+                    }],
+                    enabled: frame.right.visible && !frame.top.visible
+                },
+                {
+                    fill: H.color(frame.right.color).brighten(-0.1).get(),
+                    vertexes: [{
+                        x: xp,
+                        y: ym,
+                        z: zm
+                    }, {
+                        x: xp,
+                        y: yp,
+                        z: zm
+                    }, {
+                        x: xp,
+                        y: yp,
+                        z: zp
+                    }, {
+                        x: xp,
+                        y: ym,
+                        z: zp
+                    }],
+                    enabled: frame.right.visible
+                },
+                {
+                    fill: H.color(frame.right.color).brighten(-0.1).get(),
+                    vertexes: [{
+                        x: xpp,
+                        y: ypp,
+                        z: zmm
+                    }, {
+                        x: xpp,
+                        y: ymm,
+                        z: zmm
+                    }, {
+                        x: xpp,
+                        y: ymm,
+                        z: zpp
+                    }, {
+                        x: xpp,
+                        y: ypp,
+                        z: zpp
+                    }],
+                    enabled: frame.right.visible
+                },
+                {
+                    fill: H.color(frame.right.color).get(),
+                    vertexes: [{
+                        x: xpp,
+                        y: ymm,
+                        z: zmm
+                    }, {
+                        x: xpp,
+                        y: ypp,
+                        z: zmm
+                    }, {
+                        x: xp,
+                        y: yp,
+                        z: zm
+                    }, {
+                        x: xp,
+                        y: ym,
+                        z: zm
+                    }],
+                    enabled: frame.right.visible && !frame.front.visible
+                },
+                {
+                    fill: H.color(frame.right.color).get(),
+                    vertexes: [{
+                        x: xpp,
+                        y: ypp,
+                        z: zpp
+                    }, {
+                        x: xpp,
+                        y: ymm,
+                        z: zpp
+                    }, {
+                        x: xp,
+                        y: ym,
+                        z: zp
+                    }, {
+                        x: xp,
+                        y: yp,
+                        z: zp
+                    }],
+                    enabled: frame.right.visible && !frame.back.visible
+                }]
             });
             this.frameShapes.back[verb]({
                 'class': 'highcharts-3d-frame highcharts-3d-frame-back',
                 zIndex: frame.back.frontFacing ? -1000 : 1000,
                 faces: [{
-                        fill: H.color(frame.back.color).brighten(0.1).get(),
-                        vertexes: [{
-                                x: xpp,
-                                y: ypp,
-                                z: zpp
-                            }, {
-                                x: xmm,
-                                y: ypp,
-                                z: zpp
-                            }, {
-                                x: xm,
-                                y: yp,
-                                z: zp
-                            }, {
-                                x: xp,
-                                y: yp,
-                                z: zp
-                            }],
-                        enabled: frame.back.visible && !frame.bottom.visible
-                    },
-                    {
-                        fill: H.color(frame.back.color).brighten(0.1).get(),
-                        vertexes: [{
-                                x: xmm,
-                                y: ymm,
-                                z: zpp
-                            }, {
-                                x: xpp,
-                                y: ymm,
-                                z: zpp
-                            }, {
-                                x: xp,
-                                y: ym,
-                                z: zp
-                            }, {
-                                x: xm,
-                                y: ym,
-                                z: zp
-                            }],
-                        enabled: frame.back.visible && !frame.top.visible
-                    },
-                    {
-                        fill: H.color(frame.back.color).brighten(-0.1).get(),
-                        vertexes: [{
-                                x: xmm,
-                                y: ypp,
-                                z: zpp
-                            }, {
-                                x: xmm,
-                                y: ymm,
-                                z: zpp
-                            }, {
-                                x: xm,
-                                y: ym,
-                                z: zp
-                            }, {
-                                x: xm,
-                                y: yp,
-                                z: zp
-                            }],
-                        enabled: frame.back.visible && !frame.left.visible
-                    },
-                    {
-                        fill: H.color(frame.back.color).brighten(-0.1).get(),
-                        vertexes: [{
-                                x: xpp,
-                                y: ymm,
-                                z: zpp
-                            }, {
-                                x: xpp,
-                                y: ypp,
-                                z: zpp
-                            }, {
-                                x: xp,
-                                y: yp,
-                                z: zp
-                            }, {
-                                x: xp,
-                                y: ym,
-                                z: zp
-                            }],
-                        enabled: frame.back.visible && !frame.right.visible
-                    },
-                    {
-                        fill: H.color(frame.back.color).get(),
-                        vertexes: [{
-                                x: xm,
-                                y: ym,
-                                z: zp
-                            }, {
-                                x: xp,
-                                y: ym,
-                                z: zp
-                            }, {
-                                x: xp,
-                                y: yp,
-                                z: zp
-                            }, {
-                                x: xm,
-                                y: yp,
-                                z: zp
-                            }],
-                        enabled: frame.back.visible
-                    },
-                    {
-                        fill: H.color(frame.back.color).get(),
-                        vertexes: [{
-                                x: xmm,
-                                y: ypp,
-                                z: zpp
-                            }, {
-                                x: xpp,
-                                y: ypp,
-                                z: zpp
-                            }, {
-                                x: xpp,
-                                y: ymm,
-                                z: zpp
-                            }, {
-                                x: xmm,
-                                y: ymm,
-                                z: zpp
-                            }],
-                        enabled: frame.back.visible
-                    }]
+                    fill: H.color(frame.back.color).brighten(0.1).get(),
+                    vertexes: [{
+                        x: xpp,
+                        y: ypp,
+                        z: zpp
+                    }, {
+                        x: xmm,
+                        y: ypp,
+                        z: zpp
+                    }, {
+                        x: xm,
+                        y: yp,
+                        z: zp
+                    }, {
+                        x: xp,
+                        y: yp,
+                        z: zp
+                    }],
+                    enabled: frame.back.visible && !frame.bottom.visible
+                },
+                {
+                    fill: H.color(frame.back.color).brighten(0.1).get(),
+                    vertexes: [{
+                        x: xmm,
+                        y: ymm,
+                        z: zpp
+                    }, {
+                        x: xpp,
+                        y: ymm,
+                        z: zpp
+                    }, {
+                        x: xp,
+                        y: ym,
+                        z: zp
+                    }, {
+                        x: xm,
+                        y: ym,
+                        z: zp
+                    }],
+                    enabled: frame.back.visible && !frame.top.visible
+                },
+                {
+                    fill: H.color(frame.back.color).brighten(-0.1).get(),
+                    vertexes: [{
+                        x: xmm,
+                        y: ypp,
+                        z: zpp
+                    }, {
+                        x: xmm,
+                        y: ymm,
+                        z: zpp
+                    }, {
+                        x: xm,
+                        y: ym,
+                        z: zp
+                    }, {
+                        x: xm,
+                        y: yp,
+                        z: zp
+                    }],
+                    enabled: frame.back.visible && !frame.left.visible
+                },
+                {
+                    fill: H.color(frame.back.color).brighten(-0.1).get(),
+                    vertexes: [{
+                        x: xpp,
+                        y: ymm,
+                        z: zpp
+                    }, {
+                        x: xpp,
+                        y: ypp,
+                        z: zpp
+                    }, {
+                        x: xp,
+                        y: yp,
+                        z: zp
+                    }, {
+                        x: xp,
+                        y: ym,
+                        z: zp
+                    }],
+                    enabled: frame.back.visible && !frame.right.visible
+                },
+                {
+                    fill: H.color(frame.back.color).get(),
+                    vertexes: [{
+                        x: xm,
+                        y: ym,
+                        z: zp
+                    }, {
+                        x: xp,
+                        y: ym,
+                        z: zp
+                    }, {
+                        x: xp,
+                        y: yp,
+                        z: zp
+                    }, {
+                        x: xm,
+                        y: yp,
+                        z: zp
+                    }],
+                    enabled: frame.back.visible
+                },
+                {
+                    fill: H.color(frame.back.color).get(),
+                    vertexes: [{
+                        x: xmm,
+                        y: ypp,
+                        z: zpp
+                    }, {
+                        x: xpp,
+                        y: ypp,
+                        z: zpp
+                    }, {
+                        x: xpp,
+                        y: ymm,
+                        z: zpp
+                    }, {
+                        x: xmm,
+                        y: ymm,
+                        z: zpp
+                    }],
+                    enabled: frame.back.visible
+                }]
             });
             this.frameShapes.front[verb]({
                 'class': 'highcharts-3d-frame highcharts-3d-frame-front',
                 zIndex: frame.front.frontFacing ? -1000 : 1000,
                 faces: [{
-                        fill: H.color(frame.front.color).brighten(0.1).get(),
-                        vertexes: [{
-                                x: xmm,
-                                y: ypp,
-                                z: zmm
-                            }, {
-                                x: xpp,
-                                y: ypp,
-                                z: zmm
-                            }, {
-                                x: xp,
-                                y: yp,
-                                z: zm
-                            }, {
-                                x: xm,
-                                y: yp,
-                                z: zm
-                            }],
-                        enabled: frame.front.visible && !frame.bottom.visible
-                    },
-                    {
-                        fill: H.color(frame.front.color).brighten(0.1).get(),
-                        vertexes: [{
-                                x: xpp,
-                                y: ymm,
-                                z: zmm
-                            }, {
-                                x: xmm,
-                                y: ymm,
-                                z: zmm
-                            }, {
-                                x: xm,
-                                y: ym,
-                                z: zm
-                            }, {
-                                x: xp,
-                                y: ym,
-                                z: zm
-                            }],
-                        enabled: frame.front.visible && !frame.top.visible
-                    },
-                    {
-                        fill: H.color(frame.front.color).brighten(-0.1).get(),
-                        vertexes: [{
-                                x: xmm,
-                                y: ymm,
-                                z: zmm
-                            }, {
-                                x: xmm,
-                                y: ypp,
-                                z: zmm
-                            }, {
-                                x: xm,
-                                y: yp,
-                                z: zm
-                            }, {
-                                x: xm,
-                                y: ym,
-                                z: zm
-                            }],
-                        enabled: frame.front.visible && !frame.left.visible
-                    },
-                    {
-                        fill: H.color(frame.front.color).brighten(-0.1).get(),
-                        vertexes: [{
-                                x: xpp,
-                                y: ypp,
-                                z: zmm
-                            }, {
-                                x: xpp,
-                                y: ymm,
-                                z: zmm
-                            }, {
-                                x: xp,
-                                y: ym,
-                                z: zm
-                            }, {
-                                x: xp,
-                                y: yp,
-                                z: zm
-                            }],
-                        enabled: frame.front.visible && !frame.right.visible
-                    },
-                    {
-                        fill: H.color(frame.front.color).get(),
-                        vertexes: [{
-                                x: xp,
-                                y: ym,
-                                z: zm
-                            }, {
-                                x: xm,
-                                y: ym,
-                                z: zm
-                            }, {
-                                x: xm,
-                                y: yp,
-                                z: zm
-                            }, {
-                                x: xp,
-                                y: yp,
-                                z: zm
-                            }],
-                        enabled: frame.front.visible
-                    },
-                    {
-                        fill: H.color(frame.front.color).get(),
-                        vertexes: [{
-                                x: xpp,
-                                y: ypp,
-                                z: zmm
-                            }, {
-                                x: xmm,
-                                y: ypp,
-                                z: zmm
-                            }, {
-                                x: xmm,
-                                y: ymm,
-                                z: zmm
-                            }, {
-                                x: xpp,
-                                y: ymm,
-                                z: zmm
-                            }],
-                        enabled: frame.front.visible
-                    }]
+                    fill: H.color(frame.front.color).brighten(0.1).get(),
+                    vertexes: [{
+                        x: xmm,
+                        y: ypp,
+                        z: zmm
+                    }, {
+                        x: xpp,
+                        y: ypp,
+                        z: zmm
+                    }, {
+                        x: xp,
+                        y: yp,
+                        z: zm
+                    }, {
+                        x: xm,
+                        y: yp,
+                        z: zm
+                    }],
+                    enabled: frame.front.visible && !frame.bottom.visible
+                },
+                {
+                    fill: H.color(frame.front.color).brighten(0.1).get(),
+                    vertexes: [{
+                        x: xpp,
+                        y: ymm,
+                        z: zmm
+                    }, {
+                        x: xmm,
+                        y: ymm,
+                        z: zmm
+                    }, {
+                        x: xm,
+                        y: ym,
+                        z: zm
+                    }, {
+                        x: xp,
+                        y: ym,
+                        z: zm
+                    }],
+                    enabled: frame.front.visible && !frame.top.visible
+                },
+                {
+                    fill: H.color(frame.front.color).brighten(-0.1).get(),
+                    vertexes: [{
+                        x: xmm,
+                        y: ymm,
+                        z: zmm
+                    }, {
+                        x: xmm,
+                        y: ypp,
+                        z: zmm
+                    }, {
+                        x: xm,
+                        y: yp,
+                        z: zm
+                    }, {
+                        x: xm,
+                        y: ym,
+                        z: zm
+                    }],
+                    enabled: frame.front.visible && !frame.left.visible
+                },
+                {
+                    fill: H.color(frame.front.color).brighten(-0.1).get(),
+                    vertexes: [{
+                        x: xpp,
+                        y: ypp,
+                        z: zmm
+                    }, {
+                        x: xpp,
+                        y: ymm,
+                        z: zmm
+                    }, {
+                        x: xp,
+                        y: ym,
+                        z: zm
+                    }, {
+                        x: xp,
+                        y: yp,
+                        z: zm
+                    }],
+                    enabled: frame.front.visible && !frame.right.visible
+                },
+                {
+                    fill: H.color(frame.front.color).get(),
+                    vertexes: [{
+                        x: xp,
+                        y: ym,
+                        z: zm
+                    }, {
+                        x: xm,
+                        y: ym,
+                        z: zm
+                    }, {
+                        x: xm,
+                        y: yp,
+                        z: zm
+                    }, {
+                        x: xp,
+                        y: yp,
+                        z: zm
+                    }],
+                    enabled: frame.front.visible
+                },
+                {
+                    fill: H.color(frame.front.color).get(),
+                    vertexes: [{
+                        x: xpp,
+                        y: ypp,
+                        z: zmm
+                    }, {
+                        x: xmm,
+                        y: ypp,
+                        z: zmm
+                    }, {
+                        x: xmm,
+                        y: ymm,
+                        z: zmm
+                    }, {
+                        x: xpp,
+                        y: ymm,
+                        z: zmm
+                    }],
+                    enabled: frame.front.visible
+                }]
             });
         }
     }
@@ -1498,31 +1498,31 @@ var Chart3D;
             // Add add definitions used by brighter and darker faces of the
             // cuboids.
             [{
-                    name: 'darker',
-                    slope: 0.6
-                }, {
-                    name: 'brighter',
-                    slope: 1.4
-                }].forEach(function (cfg) {
+                name: 'darker',
+                slope: 0.6
+            }, {
+                name: 'brighter',
+                slope: 1.4
+            }].forEach(function (cfg) {
                 this.renderer.definition({
                     tagName: 'filter',
                     id: 'highcharts-' + cfg.name,
                     children: [{
-                            tagName: 'feComponentTransfer',
-                            children: [{
-                                    tagName: 'feFuncR',
-                                    type: 'linear',
-                                    slope: cfg.slope
-                                }, {
-                                    tagName: 'feFuncG',
-                                    type: 'linear',
-                                    slope: cfg.slope
-                                }, {
-                                    tagName: 'feFuncB',
-                                    type: 'linear',
-                                    slope: cfg.slope
-                                }]
+                        tagName: 'feComponentTransfer',
+                        children: [{
+                            tagName: 'feFuncR',
+                            type: 'linear',
+                            slope: cfg.slope
+                        }, {
+                            tagName: 'feFuncG',
+                            type: 'linear',
+                            slope: cfg.slope
+                        }, {
+                            tagName: 'feFuncB',
+                            type: 'linear',
+                            slope: cfg.slope
                         }]
+                    }]
                 });
             }, this);
         }

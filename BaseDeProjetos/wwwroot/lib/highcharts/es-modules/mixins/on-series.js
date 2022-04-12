@@ -69,14 +69,14 @@ var onSeriesMixin = {
                                 // the distance ratio, between 0 and 1
                                 distanceRatio =
                                     (point.x - leftPoint.x) /
-                                        (rightPoint.x - leftPoint.x);
+                                    (rightPoint.x - leftPoint.x);
                                 point.plotY +=
                                     distanceRatio *
-                                        // the plotY distance
-                                        (rightPoint[onKey] - leftPoint[onKey]);
+                                    // the plotY distance
+                                    (rightPoint[onKey] - leftPoint[onKey]);
                                 point.y +=
                                     distanceRatio *
-                                        (rightPoint.y - leftPoint.y);
+                                    (rightPoint.y - leftPoint.y);
                             }
                         }
                     }

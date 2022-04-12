@@ -314,19 +314,19 @@ Series.prototype.getPointsOnGraph = function () {
                         pushDiscrete({
                             chartX: last.chartX +
                                 (point.chartX - last.chartX) *
-                                    (j / n),
+                                (j / n),
                             chartY: last.chartY +
                                 (point.chartY - last.chartY) *
-                                    (j / n),
+                                (j / n),
                             chartCenterY: last.chartCenterY +
                                 (point.chartCenterY -
                                     last.chartCenterY) * (j / n),
                             plotX: last.plotX +
                                 (point.plotX - last.plotX) *
-                                    (j / n),
+                                (j / n),
                             plotY: last.plotY +
                                 (point.plotY - last.plotY) *
-                                    (j / n)
+                                (j / n)
                         });
                     }
                 }
@@ -366,7 +366,7 @@ Series.prototype.labelFontSize = function (minFontSize, maxFontSize) {
  */
 Series.prototype.checkClearPoint = function (x, y, bBox, checkDistance) {
     var distToOthersSquared = Number.MAX_VALUE, // distance to other graphs
-    distToPointSquared = Number.MAX_VALUE, dist, connectorPoint, onArea = pick(this.options.label.onArea, !!this.area), findDistanceToOthers = (onArea || this.options.label.connectorAllowed), chart = this.chart, series, points, leastDistance = 16, withinRange, xDist, yDist, i, j;
+        distToPointSquared = Number.MAX_VALUE, dist, connectorPoint, onArea = pick(this.options.label.onArea, !!this.area), findDistanceToOthers = (onArea || this.options.label.connectorAllowed), chart = this.chart, series, points, leastDistance = 16, withinRange, xDist, yDist, i, j;
     /**
      * @private
      */
@@ -404,19 +404,19 @@ Series.prototype.checkClearPoint = function (x, y, bBox, checkDistance) {
         if (series.visible && points) {
             for (j = 1; j < points.length; j += 1) {
                 if (
-                // To avoid processing, only check intersection if the X
-                // values are close to the box.
-                points[j].chartX >= x - leastDistance &&
+                    // To avoid processing, only check intersection if the X
+                    // values are close to the box.
+                    points[j].chartX >= x - leastDistance &&
                     points[j - 1].chartX <= x + bBox.width +
-                        leastDistance
-                /* @todo condition above is not the same as below
-                (
-                    (points[j].chartX as any) >=
-                    (x - leastDistance)
-                ) && (
-                    (points[j - 1].chartX as any) <=
-                    (x + bBox.width + leastDistance)
-                ) */
+                    leastDistance
+                    /* @todo condition above is not the same as below
+                    (
+                        (points[j].chartX as any) >=
+                        (x - leastDistance)
+                    ) && (
+                        (points[j - 1].chartX as any) <=
+                        (x + bBox.width + leastDistance)
+                    ) */
                 ) {
                     // If any of the box sides intersect with the line, return.
                     if (boxIntersectLine(x, y, bBox.width, bBox.height, points[j - 1].chartX, points[j - 1].chartY, points[j].chartX, points[j].chartY)) {
@@ -446,10 +446,10 @@ Series.prototype.checkClearPoint = function (x, y, bBox, checkDistance) {
                 for (j = 1; j < points.length; j += 1) {
                     dist = Math.min((Math.pow(x + bBox.width / 2 - points[j].chartX, 2) +
                         Math.pow(y + bBox.height / 2 - points[j].chartY, 2)), (Math.pow(x - points[j].chartX, 2) +
-                        Math.pow(y - points[j].chartY, 2)), (Math.pow(x + bBox.width - points[j].chartX, 2) +
-                        Math.pow(y - points[j].chartY, 2)), (Math.pow(x + bBox.width - points[j].chartX, 2) +
-                        Math.pow(y + bBox.height - points[j].chartY, 2)), (Math.pow(x - points[j].chartX, 2) +
-                        Math.pow(y + bBox.height - points[j].chartY, 2)));
+                            Math.pow(y - points[j].chartY, 2)), (Math.pow(x + bBox.width - points[j].chartX, 2) +
+                                Math.pow(y - points[j].chartY, 2)), (Math.pow(x + bBox.width - points[j].chartX, 2) +
+                                    Math.pow(y + bBox.height - points[j].chartY, 2)), (Math.pow(x - points[j].chartX, 2) +
+                                        Math.pow(y + bBox.height - points[j].chartY, 2)));
                     if (dist < distToPointSquared) {
                         distToPointSquared = dist;
                         connectorPoint = points[j];
@@ -530,9 +530,9 @@ Chart.prototype.drawSeriesLabels = function () {
                 series.labelBySeries = label = chart.renderer
                     .label(labelText, 0, -9999, 'connector')
                     .addClass('highcharts-series-label ' +
-                    'highcharts-series-label-' + series.index + ' ' +
-                    (series.options.className || '') + ' ' +
-                    colorClass);
+                        'highcharts-series-label-' + series.index + ' ' +
+                        (series.options.className || '') + ' ' +
+                        colorClass);
                 if (!chart.renderer.styledMode) {
                     label.css(extend({
                         color: onArea ?
@@ -553,9 +553,9 @@ Chart.prototype.drawSeriesLabels = function () {
                 }
                 label
                     .attr({
-                    padding: 0,
-                    zIndex: 3
-                })
+                        padding: 0,
+                        zIndex: 3
+                    })
                     .add();
             }
             bBox = label.getBBox();
@@ -666,11 +666,11 @@ Chart.prototype.drawSeriesLabels = function () {
                     }
                     series.labelBySeries
                         .attr(extend(attr, {
-                        anchorX: best.connectorPoint &&
-                            best.connectorPoint.plotX + paneLeft,
-                        anchorY: best.connectorPoint &&
-                            best.connectorPoint.plotY + paneTop
-                    }))
+                            anchorX: best.connectorPoint &&
+                                best.connectorPoint.plotX + paneLeft,
+                            anchorY: best.connectorPoint &&
+                                best.connectorPoint.plotY + paneTop
+                        }))
                         .animate(anim, animationOptions);
                     // Record closest point to stick to for sync redraw
                     series.options.kdNow = true;

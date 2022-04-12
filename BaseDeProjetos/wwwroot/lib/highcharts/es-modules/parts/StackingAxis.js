@@ -115,9 +115,9 @@ var StackingAxisAdditions = /** @class */ (function () {
             renderer
                 .g('stack-labels')
                 .attr({
-                visibility: 'visible',
-                zIndex: 6
-            })
+                    visibility: 'visible',
+                    zIndex: 6
+                })
                 .add());
         // plotLeft/Top will change when y axis gets wider so we need to
         // translate the stackTotalGroup at every render call. See bug #506

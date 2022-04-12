@@ -19,9 +19,9 @@ import U from '../parts/Utilities.js';
 var merge = U.merge, pick = U.pick, seriesType = U.seriesType;
 import '../parts/ColumnSeries.js';
 import '../parts/SVGRenderer.js';
-var charts = H.charts, deg2rad = H.deg2rad, perspective = H.perspective, 
-// Work on H.Renderer instead of SVGRenderer for VML support.
-RendererProto = H.Renderer.prototype, cuboidPath = RendererProto.cuboidPath, cylinderMethods;
+var charts = H.charts, deg2rad = H.deg2rad, perspective = H.perspective,
+    // Work on H.Renderer instead of SVGRenderer for VML support.
+    RendererProto = H.Renderer.prototype, cuboidPath = RendererProto.cuboidPath, cylinderMethods;
 // Check if a path is simplified. The simplified path contains only lineTo
 // segments, whereas non-simplified contain curves.
 var isSimplified = function (path) {
@@ -39,31 +39,31 @@ var isSimplified = function (path) {
   *
   * @augments Highcharts.Series
   */
-seriesType('cylinder', 'column', 
-/**
- * A cylinder graph is a variation of a 3d column graph. The cylinder graph
- * features cylindrical points.
- *
- * @sample {highcharts} highcharts/demo/cylinder/
- *         Cylinder graph
- *
- * @extends      plotOptions.column
- * @since        7.0.0
- * @product      highcharts
- * @excluding    allAreas, boostThreshold, colorAxis, compare, compareBase,
- *               dragDrop
- * @requires     modules/cylinder
- * @optionparent plotOptions.cylinder
- */
-{}, {}, 
-/** @lends Highcharts.seriesTypes.cylinder#pointClass# */
-{
-    shapeType: 'cylinder',
-    hasNewShapeType: H
-        .seriesTypes.column.prototype
-        .pointClass.prototype
-        .hasNewShapeType
-});
+seriesType('cylinder', 'column',
+    /**
+     * A cylinder graph is a variation of a 3d column graph. The cylinder graph
+     * features cylindrical points.
+     *
+     * @sample {highcharts} highcharts/demo/cylinder/
+     *         Cylinder graph
+     *
+     * @extends      plotOptions.column
+     * @since        7.0.0
+     * @product      highcharts
+     * @excluding    allAreas, boostThreshold, colorAxis, compare, compareBase,
+     *               dragDrop
+     * @requires     modules/cylinder
+     * @optionparent plotOptions.cylinder
+     */
+    {}, {},
+    /** @lends Highcharts.seriesTypes.cylinder#pointClass# */
+    {
+        shapeType: 'cylinder',
+        hasNewShapeType: H
+            .seriesTypes.column.prototype
+            .pointClass.prototype
+            .hasNewShapeType
+    });
 /**
  * A `cylinder` series. If the [type](#series.cylinder.type) option is not
  * specified, it is inherited from [chart.type](#chart.type).
@@ -157,9 +157,9 @@ RendererProto.cylinder = function (shapeArgs) {
 };
 // Generates paths and zIndexes.
 RendererProto.cylinderPath = function (shapeArgs) {
-    var renderer = this, chart = charts[renderer.chartIndex], 
-    // decide zIndexes of parts based on cubiod logic, for consistency.
-    cuboidData = cuboidPath.call(renderer, shapeArgs), isTopFirst = !cuboidData.isTop, isFronFirst = !cuboidData.isFront, top = renderer.getCylinderEnd(chart, shapeArgs), bottom = renderer.getCylinderEnd(chart, shapeArgs, true);
+    var renderer = this, chart = charts[renderer.chartIndex],
+        // decide zIndexes of parts based on cubiod logic, for consistency.
+        cuboidData = cuboidPath.call(renderer, shapeArgs), isTopFirst = !cuboidData.isTop, isFronFirst = !cuboidData.isFront, top = renderer.getCylinderEnd(chart, shapeArgs), bottom = renderer.getCylinderEnd(chart, shapeArgs, true);
     return {
         front: renderer.getCylinderFront(top, bottom),
         back: renderer.getCylinderBack(top, bottom),
@@ -237,17 +237,17 @@ RendererProto.getCylinderBack = function (topPath, bottomPath) {
 RendererProto.getCylinderEnd = function (chart, shapeArgs, isBottom) {
     // A half of the smaller one out of width or depth (optional, because
     // there's no depth for a funnel that reuses the code)
-    var depth = pick(shapeArgs.depth, shapeArgs.width), radius = Math.min(shapeArgs.width, depth) / 2, 
-    // Approximated longest diameter
-    angleOffset = deg2rad * (chart.options.chart.options3d.beta - 90 +
-        (shapeArgs.alphaCorrection || 0)), 
-    // Could be top or bottom of the cylinder
-    y = shapeArgs.y + (isBottom ? shapeArgs.height : 0), 
-    // Use cubic Bezier curve to draw a cricle in x,z (y is constant).
-    // More math. at spencermortensen.com/articles/bezier-circle/
-    c = 0.5519 * radius, centerX = shapeArgs.width / 2 + shapeArgs.x, centerZ = depth / 2 + shapeArgs.z, 
-    // points could be generated in a loop, but readability will plummet
-    points = [{
+    var depth = pick(shapeArgs.depth, shapeArgs.width), radius = Math.min(shapeArgs.width, depth) / 2,
+        // Approximated longest diameter
+        angleOffset = deg2rad * (chart.options.chart.options3d.beta - 90 +
+            (shapeArgs.alphaCorrection || 0)),
+        // Could be top or bottom of the cylinder
+        y = shapeArgs.y + (isBottom ? shapeArgs.height : 0),
+        // Use cubic Bezier curve to draw a cricle in x,z (y is constant).
+        // More math. at spencermortensen.com/articles/bezier-circle/
+        c = 0.5519 * radius, centerX = shapeArgs.width / 2 + shapeArgs.x, centerZ = depth / 2 + shapeArgs.z,
+        // points could be generated in a loop, but readability will plummet
+        points = [{
             x: 0,
             y: y,
             z: radius

@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Testes_BaseDeProjetos.Controllers
 {
-    public class BaseTestes : IClassFixture<BaseApplicationFactory<Startup>>,IDisposable
+    public class BaseTestes : IClassFixture<BaseApplicationFactory<Startup>>, IDisposable
     {
         protected readonly HttpClient _client;
         protected readonly ApplicationDbContext _context;
@@ -28,7 +28,6 @@ namespace Testes_BaseDeProjetos.Controllers
 
         public static FormUrlEncodedContent ToKeyValueURL(object obj)
         {
-
             KeyValuePair<string, string>[] keyvalues = obj.GetType().GetProperties()
                 .ToList()
                     .Select(p => new KeyValuePair<string, string>(p.Name, p.GetValue(obj)?.ToString()))
@@ -36,7 +35,7 @@ namespace Testes_BaseDeProjetos.Controllers
 
             FormUrlEncodedContent content = new FormUrlEncodedContent(keyvalues);
 
-            return content; 
+            return content;
         }
     }
 }

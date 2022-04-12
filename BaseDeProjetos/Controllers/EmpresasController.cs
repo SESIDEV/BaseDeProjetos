@@ -22,7 +22,7 @@ namespace BaseDeProjetos.Controllers
         public async Task<IActionResult> Index()
         {
             ViewBag.Contatos = _context.Pessoa.ToList();
-            return View(await _context.Empresa.OrderBy(p=>p.Nome).ToListAsync());
+            return View(await _context.Empresa.OrderBy(p => p.Nome).ToListAsync());
         }
 
         // GET: Empresas/Details/5
@@ -50,7 +50,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // POST: Empresas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -82,7 +82,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // POST: Empresas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -152,7 +152,6 @@ namespace BaseDeProjetos.Controllers
             return _context.Empresa.Any(e => e.Id == id);
         }
 
-
         public async Task<IActionResult> RetornarKPIsEmbrapii()
         {
             throw new NotImplementedException();
@@ -163,7 +162,6 @@ namespace BaseDeProjetos.Controllers
             throw new NotImplementedException();
         }
 
-        
         public async Task<IActionResult> IncluirCronograma()
         {
             throw new NotImplementedException();

@@ -315,8 +315,8 @@ extend(NavigationBindings.prototype, {
             var height = isPercentage(yAxis.options.height) ?
                 parseFloat(yAxis.options.height) / 100 :
                 yAxis.height / plotHeight, top = isPercentage(yAxis.options.top) ?
-                parseFloat(yAxis.options.top) / 100 :
-                correctFloat(yAxis.top - yAxis.chart.plotTop) / plotHeight;
+                    parseFloat(yAxis.options.top) / 100 :
+                    correctFloat(yAxis.top - yAxis.chart.plotTop) / plotHeight;
             // New yAxis does not contain "height" info yet
             if (!isNumber(height)) {
                 height = defaultHeight / 100;
@@ -387,11 +387,11 @@ extend(NavigationBindings.prototype, {
      */
     resizeYAxes: function (defaultHeight) {
         defaultHeight = defaultHeight || 20; // in %, but as a number
-        var chart = this.chart, 
-        // Only non-navigator axes
-        yAxes = chart.yAxis.filter(bindingsUtils.isNotNavigatorYAxis), plotHeight = chart.plotHeight, allAxesLength = yAxes.length, 
-        // Gather current heights (in %)
-        positions = this.getYAxisPositions(yAxes, plotHeight, defaultHeight), resizers = this.getYAxisResizers(yAxes), allAxesHeight = positions.allAxesHeight, changedSpace = defaultHeight;
+        var chart = this.chart,
+            // Only non-navigator axes
+            yAxes = chart.yAxis.filter(bindingsUtils.isNotNavigatorYAxis), plotHeight = chart.plotHeight, allAxesLength = yAxes.length,
+            // Gather current heights (in %)
+            positions = this.getYAxisPositions(yAxes, plotHeight, defaultHeight), resizers = this.getYAxisResizers(yAxes), allAxesHeight = positions.allAxesHeight, changedSpace = defaultHeight;
         // More than 100%
         if (allAxesHeight > 1) {
             // Simple case, add new panes up to 5
@@ -498,12 +498,12 @@ var stockToolsBindings = {
                 type: 'crookedLine',
                 typeOptions: {
                     points: [{
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }]
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }]
                 }
             }, navigation.annotationsOptions, navigation.bindings.segment.annotationsOptions);
             return this.chart.addAnnotation(options);
@@ -535,12 +535,12 @@ var stockToolsBindings = {
                         markerEnd: 'arrow'
                     },
                     points: [{
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }]
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }]
                 }
             }, navigation.annotationsOptions, navigation.bindings.arrowSegment.annotationsOptions);
             return this.chart.addAnnotation(options);
@@ -570,12 +570,12 @@ var stockToolsBindings = {
                 typeOptions: {
                     type: 'ray',
                     points: [{
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }]
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }]
                 }
             }, navigation.annotationsOptions, navigation.bindings.ray.annotationsOptions);
             return this.chart.addAnnotation(options);
@@ -608,12 +608,12 @@ var stockToolsBindings = {
                         markerEnd: 'arrow'
                     },
                     points: [{
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }]
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }]
                 }
             }, navigation.annotationsOptions, navigation.bindings.arrowRay.annotationsOptions);
             return this.chart.addAnnotation(options);
@@ -642,12 +642,12 @@ var stockToolsBindings = {
                 typeOptions: {
                     type: 'line',
                     points: [{
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }]
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }]
                 }
             }, navigation.annotationsOptions, navigation.bindings.infinityLine.annotationsOptions);
             return this.chart.addAnnotation(options);
@@ -680,12 +680,12 @@ var stockToolsBindings = {
                         markerEnd: 'arrow'
                     },
                     points: [{
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }]
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }]
                 }
             }, navigation.annotationsOptions, navigation.bindings.arrowInfinityLine.annotationsOptions);
             return this.chart.addAnnotation(options);
@@ -715,9 +715,9 @@ var stockToolsBindings = {
                 typeOptions: {
                     type: 'horizontalLine',
                     points: [{
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }]
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }]
                 }
             }, navigation.annotationsOptions, navigation.bindings.horizontalLine.annotationsOptions);
             this.chart.addAnnotation(options);
@@ -743,9 +743,9 @@ var stockToolsBindings = {
                 typeOptions: {
                     type: 'verticalLine',
                     points: [{
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }]
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }]
                 }
             }, navigation.annotationsOptions, navigation.bindings.verticalLine.annotationsOptions);
             this.chart.addAnnotation(options);
@@ -771,15 +771,15 @@ var stockToolsBindings = {
                 type: 'crookedLine',
                 typeOptions: {
                     points: [{
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }]
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }]
                 }
             }, navigation.annotationsOptions, navigation.bindings.crooked3.annotationsOptions);
             return this.chart.addAnnotation(options);
@@ -809,21 +809,21 @@ var stockToolsBindings = {
                 type: 'crookedLine',
                 typeOptions: {
                     points: [{
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }]
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }]
                 }
             }, navigation.annotationsOptions, navigation.bindings.crooked5.annotationsOptions);
             return this.chart.addAnnotation(options);
@@ -855,18 +855,18 @@ var stockToolsBindings = {
                 type: 'elliottWave',
                 typeOptions: {
                     points: [{
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }]
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }]
                 },
                 labelOptions: {
                     style: {
@@ -902,24 +902,24 @@ var stockToolsBindings = {
                 type: 'elliottWave',
                 typeOptions: {
                     points: [{
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }]
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }]
                 },
                 labelOptions: {
                     style: {
@@ -1118,12 +1118,12 @@ var stockToolsBindings = {
                 type: 'fibonacci',
                 typeOptions: {
                     points: [{
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }]
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }]
                 },
                 labelOptions: {
                     style: {
@@ -1158,12 +1158,12 @@ var stockToolsBindings = {
                 type: 'tunnel',
                 typeOptions: {
                     points: [{
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }]
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }]
                 }
             }, navigation.annotationsOptions, navigation.bindings.parallelChannel.annotationsOptions);
             return this.chart.addAnnotation(options);
@@ -1193,20 +1193,20 @@ var stockToolsBindings = {
                 type: 'pitchfork',
                 typeOptions: {
                     points: [{
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value,
-                            controlPoint: {
-                                style: {
-                                    fill: 'red'
-                                }
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value,
+                        controlPoint: {
+                            style: {
+                                fill: 'red'
                             }
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }, {
-                            x: coords.xAxis[0].value,
-                            y: coords.yAxis[0].value
-                        }],
+                        }
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }, {
+                        x: coords.xAxis[0].value,
+                        y: coords.yAxis[0].value
+                    }],
                     innerBackground: {
                         fill: 'rgba(100, 170, 255, 0.8)'
                     }
@@ -1241,31 +1241,31 @@ var stockToolsBindings = {
         start: function (e) {
             var closestPoint = bindingsUtils.attractToPoint(e, this.chart), navigation = this.chart.options.navigation, verticalCounter = !defined(this.verticalCounter) ? 0 :
                 this.verticalCounter, options = merge({
-                langKey: 'verticalCounter',
-                type: 'verticalLine',
-                typeOptions: {
-                    point: {
-                        x: closestPoint.x,
-                        y: closestPoint.y,
-                        xAxis: closestPoint.xAxis,
-                        yAxis: closestPoint.yAxis
+                    langKey: 'verticalCounter',
+                    type: 'verticalLine',
+                    typeOptions: {
+                        point: {
+                            x: closestPoint.x,
+                            y: closestPoint.y,
+                            xAxis: closestPoint.xAxis,
+                            yAxis: closestPoint.yAxis
+                        },
+                        label: {
+                            offset: closestPoint.below ? 40 : -40,
+                            text: verticalCounter.toString()
+                        }
                     },
-                    label: {
-                        offset: closestPoint.below ? 40 : -40,
-                        text: verticalCounter.toString()
+                    labelOptions: {
+                        style: {
+                            color: '#666666',
+                            fontSize: '11px'
+                        }
+                    },
+                    shapeOptions: {
+                        stroke: 'rgba(0, 0, 0, 0.75)',
+                        strokeWidth: 1
                     }
-                },
-                labelOptions: {
-                    style: {
-                        color: '#666666',
-                        fontSize: '11px'
-                    }
-                },
-                shapeOptions: {
-                    stroke: 'rgba(0, 0, 0, 0.75)',
-                    strokeWidth: 1
-                }
-            }, navigation.annotationsOptions, navigation.bindings.verticalCounter.annotationsOptions), annotation;
+                }, navigation.annotationsOptions, navigation.bindings.verticalCounter.annotationsOptions), annotation;
             annotation = this.chart.addAnnotation(options);
             verticalCounter++;
             annotation.options.events.click.call(annotation, {});
@@ -1580,12 +1580,12 @@ var stockToolsBindings = {
                 if (lastPrice) {
                     button.firstChild.style['background-image'] =
                         'url("' + iconsURL +
-                            'current-price-show.svg")';
+                        'current-price-show.svg")';
                 }
                 else {
                     button.firstChild.style['background-image'] =
                         'url("' + iconsURL +
-                            'current-price-hide.svg")';
+                        'current-price-hide.svg")';
                 }
             }
             series.update({
@@ -1656,12 +1656,12 @@ var stockToolsBindings = {
                 if (this.toggledAnnotations) {
                     button.firstChild.style['background-image'] =
                         'url("' + iconsURL +
-                            'annotations-hidden.svg")';
+                        'annotations-hidden.svg")';
                 }
                 else {
                     button.firstChild.style['background-image'] =
                         'url("' + iconsURL +
-                            'annotations-visible.svg")';
+                        'annotations-visible.svg")';
                 }
             }
             fireEvent(this, 'deselectButton', { button: button });

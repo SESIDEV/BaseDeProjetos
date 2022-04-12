@@ -18,25 +18,25 @@ var addEvent = U.addEvent, extend = U.extend, getOptions = U.getOptions;
 import '../parts/Series.js';
 var chartPrototype = H.Chart.prototype, defaultOptions = getOptions();
 // Add language option
-extend(defaultOptions.lang, 
-/**
- * @optionparent lang
- */
-{
+extend(defaultOptions.lang,
     /**
-     * The text to display when the chart contains no data.
-     *
-     * @see [noData](#noData)
-     *
-     * @sample highcharts/no-data-to-display/no-data-line
-     *         No-data text
-     *
-     * @since    3.0.8
-     * @product  highcharts highstock
-     * @requires modules/no-data-to-display
+     * @optionparent lang
      */
-    noData: 'No data to display'
-});
+    {
+        /**
+         * The text to display when the chart contains no data.
+         *
+         * @see [noData](#noData)
+         *
+         * @sample highcharts/no-data-to-display/no-data-line
+         *         No-data text
+         *
+         * @since    3.0.8
+         * @product  highcharts highstock
+         * @requires modules/no-data-to-display
+         */
+        noData: 'No data to display'
+    });
 // Add default display options for message
 /**
  * Options for displaying a message like "No data to display".

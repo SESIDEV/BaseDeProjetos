@@ -56,7 +56,6 @@ namespace BaseDeProjetos
                         options.SupportedUICultures = supportedCultures;
                     });
 
-
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddSession();

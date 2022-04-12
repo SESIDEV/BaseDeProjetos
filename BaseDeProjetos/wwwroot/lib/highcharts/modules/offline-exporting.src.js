@@ -119,7 +119,6 @@
                 }
             }
         };
-
     });
     _registerModule(_modules, 'modules/offline-exporting.src.js', [_modules['parts/Chart.js'], _modules['parts/Globals.js'], _modules['parts/SVGRenderer.js'], _modules['parts/Utilities.js']], function (Chart, H, SVGRenderer, U) {
         /* *
@@ -136,9 +135,9 @@
         /* global MSBlobBuilder */
         var win = H.win, doc = H.doc;
         var addEvent = U.addEvent, error = U.error, extend = U.extend, getOptions = U.getOptions, merge = U.merge;
-        var domurl = win.URL || win.webkitURL || win, nav = win.navigator, isMSBrowser = /Edge\/|Trident\/|MSIE /.test(nav.userAgent), 
-        // Milliseconds to defer image load event handlers to offset IE bug
-        loadEventDeferDelay = isMSBrowser ? 150 : 0;
+        var domurl = win.URL || win.webkitURL || win, nav = win.navigator, isMSBrowser = /Edge\/|Trident\/|MSIE /.test(nav.userAgent),
+            // Milliseconds to defer image load event handlers to offset IE bug
+            loadEventDeferDelay = isMSBrowser ? 150 : 0;
         // Dummy object so we can reuse our canvas-tools.js without errors
         H.CanVGRenderer = {};
         /* eslint-disable valid-jsdoc */
@@ -252,14 +251,14 @@
                     // IE bug where image is not always ready despite calling load
                     // event.
                 }, loadEventDeferDelay);
-            }, 
-            // Image load failed (e.g. invalid URL)
-            errorHandler = function () {
-                failedLoadCallback(imageURL, imageType, callbackArgs, scale);
-                if (finallyCallback) {
-                    finallyCallback(imageURL, imageType, callbackArgs, scale);
-                }
-            };
+            },
+                // Image load failed (e.g. invalid URL)
+                errorHandler = function () {
+                    failedLoadCallback(imageURL, imageType, callbackArgs, scale);
+                    if (finallyCallback) {
+                        finallyCallback(imageURL, imageType, callbackArgs, scale);
+                    }
+                };
             // This is called on load if the image drawing to canvas failed with a
             // security error. We retry the drawing with crossOrigin set to Anonymous.
             taintedHandler = function () {
@@ -319,8 +318,8 @@
              */
             function svgToPdf(svgElement, margin) {
                 var width = svgElement.width.baseVal.value + 2 * margin, height = svgElement.height.baseVal.value + 2 * margin, pdf = new win.jsPDF(// eslint-disable-line new-cap
-                height > width ? 'p' : 'l', // setting orientation to portrait if height exceeds width
-                'pt', [width, height]);
+                    height > width ? 'p' : 'l', // setting orientation to portrait if height exceeds width
+                    'pt', [width, height]);
                 // Workaround for #7090, hidden elements were drawn anyway. It comes
                 // down to https://github.com/yWorks/svg2pdf.js/issues/28. Check this
                 // later.
@@ -336,21 +335,21 @@
              */
             function downloadPDF() {
                 dummySVGContainer.innerHTML = svg;
-                var textElements = dummySVGContainer.getElementsByTagName('text'), titleElements, svgData, 
-                // Copy style property to element from parents if it's not there.
-                // Searches up hierarchy until it finds prop, or hits the chart
-                // container.
-                setStylePropertyFromParents = function (el, propName) {
-                    var curParent = el;
-                    while (curParent && curParent !== dummySVGContainer) {
-                        if (curParent.style[propName]) {
-                            el.style[propName] =
-                                curParent.style[propName];
-                            break;
+                var textElements = dummySVGContainer.getElementsByTagName('text'), titleElements, svgData,
+                    // Copy style property to element from parents if it's not there.
+                    // Searches up hierarchy until it finds prop, or hits the chart
+                    // container.
+                    setStylePropertyFromParents = function (el, propName) {
+                        var curParent = el;
+                        while (curParent && curParent !== dummySVGContainer) {
+                            if (curParent.style[propName]) {
+                                el.style[propName] =
+                                    curParent.style[propName];
+                                break;
+                            }
+                            curParent = curParent.parentNode;
                         }
-                        curParent = curParent.parentNode;
-                    }
-                };
+                    };
                 // Workaround for the text styling. Making sure it does pick up settings
                 // for parent elements.
                 [].forEach.call(textElements, function (el) {
@@ -479,17 +478,17 @@
                             });
                         });
                     }
-                }, 
-                // No canvas support
-                failCallback, 
-                // Failed to load image
-                failCallback, 
-                // Finally
-                function () {
-                    if (objectURLRevoke) {
-                        finallyHandler();
-                    }
-                });
+                },
+                    // No canvas support
+                    failCallback,
+                    // Failed to load image
+                    failCallback,
+                    // Finally
+                    function () {
+                        if (objectURLRevoke) {
+                            finallyHandler();
+                        }
+                    });
             }
         };
         /* eslint-disable valid-jsdoc */
@@ -508,25 +507,25 @@
          * @return {void}
          */
         Chart.prototype.getSVGForLocalExport = function (options, chartOptions, failCallback, successCallback) {
-            var chart = this, images, imagesEmbedded = 0, chartCopyContainer, chartCopyOptions, el, i, l, href, 
-            // After grabbing the SVG of the chart's copy container we need to do
-            // sanitation on the SVG
-            sanitize = function (svg) {
-                return chart.sanitizeSVG(svg, chartCopyOptions);
-            }, 
-            // When done with last image we have our SVG
-            checkDone = function () {
-                if (imagesEmbedded === images.length) {
-                    successCallback(sanitize(chartCopyContainer.innerHTML));
-                }
-            }, 
-            // Success handler, we converted image to base64!
-            embeddedSuccess = function (imageURL, imageType, callbackArgs) {
-                ++imagesEmbedded;
-                // Change image href in chart copy
-                callbackArgs.imageElement.setAttributeNS('http://www.w3.org/1999/xlink', 'href', imageURL);
-                checkDone();
-            };
+            var chart = this, images, imagesEmbedded = 0, chartCopyContainer, chartCopyOptions, el, i, l, href,
+                // After grabbing the SVG of the chart's copy container we need to do
+                // sanitation on the SVG
+                sanitize = function (svg) {
+                    return chart.sanitizeSVG(svg, chartCopyOptions);
+                },
+                // When done with last image we have our SVG
+                checkDone = function () {
+                    if (imagesEmbedded === images.length) {
+                        successCallback(sanitize(chartCopyContainer.innerHTML));
+                    }
+                },
+                // Success handler, we converted image to base64!
+                embeddedSuccess = function (imageURL, imageType, callbackArgs) {
+                    ++imagesEmbedded;
+                    // Change image href in chart copy
+                    callbackArgs.imageElement.setAttributeNS('http://www.w3.org/1999/xlink', 'href', imageURL);
+                    checkDone();
+                };
             // Hook into getSVG to get a copy of the chart copy's container (#8273)
             chart.unbindGetSVG = addEvent(chart, 'getSVG', function (e) {
                 chartCopyOptions = e.chartCopy.options;
@@ -547,13 +546,13 @@
                     el = images[i];
                     href = el.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
                     if (href) {
-                        H.imageToDataUrl(href, 'image/png', { imageElement: el }, options.scale, embeddedSuccess, 
-                        // Tainted canvas
-                        failCallback, 
-                        // No canvas support
-                        failCallback, 
-                        // Failed to load source
-                        failCallback);
+                        H.imageToDataUrl(href, 'image/png', { imageElement: el }, options.scale, embeddedSuccess,
+                            // Tainted canvas
+                            failCallback,
+                            // No canvas support
+                            failCallback,
+                            // Failed to load source
+                            failCallback);
                         // Hidden, boosted series have blank href (#10243)
                     }
                     else {
@@ -613,16 +612,16 @@
                 else {
                     H.downloadSVGLocal(svg, extend({ filename: chart.getFilename() }, options), fallbackToExportServer);
                 }
-            }, 
-            // Return true if the SVG contains images with external data. With the
-            // boost module there are `image` elements with encoded PNGs, these are
-            // supported by svg2pdf and should pass (#10243).
-            hasExternalImages = function () {
-                return [].some.call(chart.container.getElementsByTagName('image'), function (image) {
-                    var href = image.getAttribute('href');
-                    return href !== '' && href.indexOf('data:') !== 0;
-                });
-            };
+            },
+                // Return true if the SVG contains images with external data. With the
+                // boost module there are `image` elements with encoded PNGs, these are
+                // supported by svg2pdf and should pass (#10243).
+                hasExternalImages = function () {
+                    return [].some.call(chart.container.getElementsByTagName('image'), function (image) {
+                        var href = image.getAttribute('href');
+                        return href !== '' && href.indexOf('data:') !== 0;
+                    });
+                };
             // If we are on IE and in styled mode, add a whitelist to the renderer for
             // inline styles that we want to pass through. There are so many styles by
             // default in IE that we don't want to blacklist them all.
@@ -664,8 +663,8 @@
             if ((isMSBrowser &&
                 (options.type === 'application/pdf' ||
                     chart.container.getElementsByTagName('image').length &&
-                        options.type !== 'image/svg+xml')) || (options.type === 'application/pdf' &&
-                hasExternalImages())) {
+                    options.type !== 'image/svg+xml')) || (options.type === 'application/pdf' &&
+                        hasExternalImages())) {
                 fallbackToExportServer('Image type not supported for this chart/browser.');
                 return;
             }
@@ -709,10 +708,7 @@
                 }
             }
         });
-
     });
     _registerModule(_modules, 'masters/modules/offline-exporting.src.js', [], function () {
-
-
     });
 }));

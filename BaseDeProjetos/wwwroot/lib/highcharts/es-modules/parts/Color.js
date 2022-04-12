@@ -134,24 +134,24 @@ var Color = /** @class */ (function () {
         // Collection of parsers. This can be extended from the outside by pushing
         // parsers to Highcharts.Color.prototype.parsers.
         this.parsers = [{
-                // RGBA color
-                // eslint-disable-next-line max-len
-                regex: /rgba\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]?(?:\.[0-9]+)?)\s*\)/,
-                parse: function (result) {
-                    return [
-                        pInt(result[1]),
-                        pInt(result[2]),
-                        pInt(result[3]),
-                        parseFloat(result[4], 10)
-                    ];
-                }
-            }, {
-                // RGB color
-                regex: /rgb\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*\)/,
-                parse: function (result) {
-                    return [pInt(result[1]), pInt(result[2]), pInt(result[3]), 1];
-                }
-            }];
+            // RGBA color
+            // eslint-disable-next-line max-len
+            regex: /rgba\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]?(?:\.[0-9]+)?)\s*\)/,
+            parse: function (result) {
+                return [
+                    pInt(result[1]),
+                    pInt(result[2]),
+                    pInt(result[3]),
+                    parseFloat(result[4], 10)
+                ];
+            }
+        }, {
+            // RGB color
+            regex: /rgb\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*\)/,
+            parse: function (result) {
+                return [pInt(result[1]), pInt(result[2]), pInt(result[3]), 1];
+            }
+        }];
         this.rgba = [];
         // Backwards compatibility, allow instanciation without new (#13053)
         if (!(this instanceof Color)) {

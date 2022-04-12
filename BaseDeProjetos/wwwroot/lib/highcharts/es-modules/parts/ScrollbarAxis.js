@@ -44,7 +44,7 @@ var ScrollbarAxis = /** @class */ (function () {
                 addEvent(axis.scrollbar, 'changed', function (e) {
                     var axisMin = pick(axis.options && axis.options.min, axis.min), axisMax = pick(axis.options && axis.options.max, axis.max), unitedMin = defined(axis.dataMin) ?
                         Math.min(axisMin, axis.min, axis.dataMin) : axisMin, unitedMax = defined(axis.dataMax) ?
-                        Math.max(axisMax, axis.max, axis.dataMax) : axisMax, range = unitedMax - unitedMin, to, from;
+                            Math.max(axisMax, axis.max, axis.dataMax) : axisMax, range = unitedMax - unitedMin, to, from;
                     // #12834, scroll when show/hide series, wrong extremes
                     if (!defined(axisMin) || !defined(axisMax)) {
                         return;

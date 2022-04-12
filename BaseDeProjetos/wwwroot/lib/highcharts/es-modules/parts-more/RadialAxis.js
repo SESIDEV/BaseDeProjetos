@@ -138,7 +138,7 @@ var RadialAxis = /** @class */ (function () {
             this.autoConnect = (this.isCircular &&
                 typeof pick(this.userMax, this.options.max) === 'undefined' &&
                 correctFloat(this.endAngleRad - this.startAngleRad) ===
-                    correctFloat(2 * Math.PI));
+                correctFloat(2 * Math.PI));
             // This will lead to add an extra tick to xAxis in order to display
             // a correct range on inverted polar
             if (!this.isCircular && this.chart.inverted) {
@@ -201,12 +201,12 @@ var RadialAxis = /** @class */ (function () {
         axis.getPosition = function (value, length) {
             var translatedVal = this.translate(value);
             return this.postTranslate(this.isCircular ? translatedVal : this.angleRad, // #2848
-            // In case when translatedVal is negative, the 0 value must be
-            // used instead, in order to deal with lines and labels that
-            // fall out of the visible range near the center of a pane
-            pick(this.isCircular ?
-                length :
-                (translatedVal < 0 ? 0 : translatedVal), this.center[2] / 2) - this.offset);
+                // In case when translatedVal is negative, the 0 value must be
+                // used instead, in order to deal with lines and labels that
+                // fall out of the visible range near the center of a pane
+                pick(this.isCircular ?
+                    length :
+                    (translatedVal < 0 ? 0 : translatedVal), this.center[2] / 2) - this.offset);
         };
         /**
          * Translate from intermediate plotX (angle), plotY (axis.len - radius)
@@ -258,7 +258,7 @@ var RadialAxis = /** @class */ (function () {
                 return radius;
             };
             var center = this.center, startAngleRad = this.startAngleRad, fullRadius = center[2] / 2, offset = Math.min(this.offset, 0), percentRegex = /%$/, start, end, angle, xOnPerimeter, open, isCircular = this.isCircular, // X axis in a polar chart
-            path, outerRadius = pick(radiusToPixels(options.outerRadius), fullRadius), innerRadius = radiusToPixels(options.innerRadius), thickness = pick(radiusToPixels(options.thickness), 10);
+                path, outerRadius = pick(radiusToPixels(options.outerRadius), fullRadius), innerRadius = radiusToPixels(options.innerRadius), thickness = pick(radiusToPixels(options.thickness), 10);
             // Polygonal plot bands
             if (this.options.gridLineInterpolation === 'polygon') {
                 path = this.getPlotLinePath({ value: from }).concat(this.getPlotLinePath({ value: to, reverse: true }));
@@ -479,11 +479,11 @@ var RadialAxis = /** @class */ (function () {
                     axis.options.labels.allowOverlap !== true) {
                     return axis.tickPositions
                         .map(function (pos) {
-                        return axis.ticks[pos] && axis.ticks[pos].label;
-                    })
+                            return axis.ticks[pos] && axis.ticks[pos].label;
+                        })
                         .filter(function (label) {
-                        return Boolean(label);
-                    });
+                            return Boolean(label);
+                        });
                 }
             };
         };
@@ -619,10 +619,10 @@ var RadialAxis = /** @class */ (function () {
                 return;
             }
             var labelBBox = label.getBBox(), labelOptions = axis.options.labels, optionsY = labelOptions.y, ret, centerSlot = 20, // 20 degrees to each side at the top and bottom
-            align = labelOptions.align, angle = ((axis.translate(this.pos) + axis.startAngleRad +
-                Math.PI / 2) / Math.PI * 180) % 360, correctAngle = Math.round(angle), labelDir = 'end', // Direction of the label 'start' or 'end'
-            reducedAngle1 = correctAngle < 0 ?
-                correctAngle + 360 : correctAngle, reducedAngle2 = reducedAngle1, translateY = 0, translateX = 0, labelYPosCorrection = labelOptions.y === null ? -labelBBox.height * 0.3 : 0;
+                align = labelOptions.align, angle = ((axis.translate(this.pos) + axis.startAngleRad +
+                    Math.PI / 2) / Math.PI * 180) % 360, correctAngle = Math.round(angle), labelDir = 'end', // Direction of the label 'start' or 'end'
+                reducedAngle1 = correctAngle < 0 ?
+                    correctAngle + 360 : correctAngle, reducedAngle2 = reducedAngle1, translateY = 0, translateX = 0, labelYPosCorrection = labelOptions.y === null ? -labelBBox.height * 0.3 : 0;
             if (axis.isRadial) { // Both X and Y axes in a polar chart
                 ret = axis.getPosition(this.pos, (axis.center[2] / 2) +
                     relativeLength(pick(labelOptions.distance, -25), axis.center[2] / 2, -axis.center[2] / 2));

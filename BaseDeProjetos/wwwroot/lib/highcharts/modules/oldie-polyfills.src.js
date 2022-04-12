@@ -63,7 +63,7 @@
         }
         if (!Array.prototype.map) {
             Array.prototype.map = function (fn
-            // @todo support optional ctx
+                // @todo support optional ctx
             ) {
                 var results = [], i = 0, len = this.length;
                 for (; i < len; i++) {
@@ -75,7 +75,7 @@
         if (!Array.prototype.indexOf) {
             Array.prototype.indexOf = function (member, fromIndex) {
                 var arr = this, // #8874
-                len, i = fromIndex || 0; // #8346
+                    len, i = fromIndex || 0; // #8346
                 if (arr) {
                     len = arr.length;
                     for (; i < len; i++) {
@@ -89,7 +89,7 @@
         }
         if (!Array.prototype.filter) {
             Array.prototype.filter = function (fn
-            // @todo support optional ctx
+                // @todo support optional ctx
             ) {
                 var ret = [], i = 0, length = this.length;
                 for (; i < length; i++) {
@@ -178,10 +178,7 @@
                 return results;
             };
         }
-
     });
     _registerModule(_modules, 'masters/modules/oldie-polyfills.src.js', [], function () {
-
-
     });
 }));

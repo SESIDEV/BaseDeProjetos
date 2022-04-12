@@ -136,21 +136,21 @@ addEvent(Chart, 'init', function (e) {
         if (typeof options.legend.enabled === 'undefined') {
             options.legend.enabled = false;
         }
-        merge(true, options, 
-        // Disable boost
-        {
-            boost: {
-                seriesThreshold: Number.MAX_VALUE
-            },
-            plotOptions: {
-                series: {
-                    boostThreshold: Number.MAX_VALUE
+        merge(true, options,
+            // Disable boost
+            {
+                boost: {
+                    seriesThreshold: Number.MAX_VALUE
+                },
+                plotOptions: {
+                    series: {
+                        boostThreshold: Number.MAX_VALUE
+                    }
                 }
-            }
-        });
+            });
         options.yAxis = defaultYAxis.concat(newYAxes);
         options.xAxis = merge(defaultXAxisOptions, // docs
-        splat(options.xAxis || {})[0]);
+            splat(options.xAxis || {})[0]);
     }
 });
 // Initialize parallelCoordinates
@@ -274,35 +274,35 @@ function addFormattedValue(proceed) {
         yAxis = chart.yAxis[this.x];
         yAxisOptions = yAxis.options;
         labelFormat = pick(
-        /**
-         * Parallel coordinates only. Format that will be used for point.y
-         * and available in [tooltip.pointFormat](#tooltip.pointFormat) as
-         * `{point.formattedValue}`. If not set, `{point.formattedValue}`
-         * will use other options, in this order:
-         *
-         * 1. [yAxis.labels.format](#yAxis.labels.format) will be used if
-         *    set
-         *
-         * 2. If yAxis is a category, then category name will be displayed
-         *
-         * 3. If yAxis is a datetime, then value will use the same format as
-         *    yAxis labels
-         *
-         * 4. If yAxis is linear/logarithmic type, then simple value will be
-         *    used
-         *
-         * @sample {highcharts}
-         *         /highcharts/parallel-coordinates/tooltipvalueformat/
-         *         Different tooltipValueFormats's
-         *
-         * @type      {string}
-         * @default   undefined
-         * @since     6.0.0
-         * @product   highcharts
-         * @requires  modules/parallel-coordinates
-         * @apioption yAxis.tooltipValueFormat
-         */
-        yAxisOptions.tooltipValueFormat, yAxisOptions.labels.format);
+            /**
+             * Parallel coordinates only. Format that will be used for point.y
+             * and available in [tooltip.pointFormat](#tooltip.pointFormat) as
+             * `{point.formattedValue}`. If not set, `{point.formattedValue}`
+             * will use other options, in this order:
+             *
+             * 1. [yAxis.labels.format](#yAxis.labels.format) will be used if
+             *    set
+             *
+             * 2. If yAxis is a category, then category name will be displayed
+             *
+             * 3. If yAxis is a datetime, then value will use the same format as
+             *    yAxis labels
+             *
+             * 4. If yAxis is linear/logarithmic type, then simple value will be
+             *    used
+             *
+             * @sample {highcharts}
+             *         /highcharts/parallel-coordinates/tooltipvalueformat/
+             *         Different tooltipValueFormats's
+             *
+             * @type      {string}
+             * @default   undefined
+             * @since     6.0.0
+             * @product   highcharts
+             * @requires  modules/parallel-coordinates
+             * @apioption yAxis.tooltipValueFormat
+             */
+            yAxisOptions.tooltipValueFormat, yAxisOptions.labels.format);
         if (labelFormat) {
             formattedValue = format(labelFormat, extend(this, { value: this.y }), chart);
         }

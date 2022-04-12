@@ -21,7 +21,6 @@ namespace BaseDeProjetos.Controllers.Tests
 
         public ProjetosControllerEntregas(BaseApplicationFactory<Startup> factory) : base(factory)
         {
-
             factory.CreateClient();
         }
 
@@ -41,7 +40,6 @@ namespace BaseDeProjetos.Controllers.Tests
             Assert.False(response.IsSuccessStatusCode);
         }
 
-
         [Fact]
         public void IncluirEntrega_Deve_Retornar_View_Correta()
         {
@@ -59,7 +57,6 @@ namespace BaseDeProjetos.Controllers.Tests
             Assert.Equal(_IdValidoProjeto, projeto.Id);
             Assert.Equal("Projeto teste", projeto.NomeProjeto);
             Assert.Equal("TESTE", projeto.NomeLider);
-
         }
 
         [Theory]
@@ -78,7 +75,6 @@ namespace BaseDeProjetos.Controllers.Tests
         [Fact]
         public async Task IncluirEntrega_POST_Deve_RetornarOK_Se_Id_valido()
         {
-
             //Setup
             Entrega entrega = ComEntregas(1, _IdValidoProjeto, _IdValidoProjeto)[0];
             FormUrlEncodedContent content = ToKeyValueURL(entrega);
@@ -86,7 +82,6 @@ namespace BaseDeProjetos.Controllers.Tests
             HttpResponseMessage response = await _client.PostAsync("/Projetos/IncluirEntrega/" + entrega.Id,
                                                    content);
             Assert.True(response.IsSuccessStatusCode);
-
 
             //Teardown
             RemoverEntregaDeTeste(entrega);
@@ -122,12 +117,11 @@ namespace BaseDeProjetos.Controllers.Tests
             Assert.True(response.IsSuccessStatusCode);
         }
 
-
         /*
-         * 
+         *
          *  Funções auxiliares de teste
-         * 
-         * 
+         *
+         *
          */
 
         private ProjetosController SetupController(ApplicationDbContext context)
@@ -135,7 +129,7 @@ namespace BaseDeProjetos.Controllers.Tests
             ProjetosController _controller = new ProjetosController(context);
             Entrega seed = ComEntregas(1, _IdValidoProjeto, "seed_")[0];
 
-            if(_context.Entrega.FirstOrDefault(e => e.Id == seed.Id) == null)
+            if (_context.Entrega.FirstOrDefault(e => e.Id == seed.Id) == null)
             {
                 //Incluir uma entrega para testes
                 _context.Entrega.Add(seed);
@@ -143,12 +137,10 @@ namespace BaseDeProjetos.Controllers.Tests
             }
 
             return _controller;
-
-
         }
+
         private List<Entrega> ComEntregas(int qtd_entrega, string proj_id, string prefixo = "test_p")
         {
-
             List<Entrega> entregas = new List<Entrega>();
             for (int i = 0; i < qtd_entrega; i++)
             {

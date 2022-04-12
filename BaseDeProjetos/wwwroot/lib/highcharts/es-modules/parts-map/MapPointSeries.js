@@ -21,34 +21,34 @@ var merge = H.merge, Point = H.Point, Series = H.Series, seriesType = H.seriesTy
  *
  * @augments Highcharts.Series
  */
-seriesType('mappoint', 'scatter', 
-/**
- * A mappoint series is a special form of scatter series where the points
- * can be laid out in map coordinates on top of a map.
- *
- * @sample maps/demo/mapline-mappoint/
- *         Map-line and map-point series.
- *
- * @extends      plotOptions.scatter
- * @product      highmaps
- * @optionparent plotOptions.mappoint
- */
-{
-    dataLabels: {
-        crop: false,
-        defer: false,
-        enabled: true,
-        formatter: function () {
-            return this.point.name;
-        },
-        overflow: false,
-        style: {
-            /** @internal */
-            color: '#000000'
+seriesType('mappoint', 'scatter',
+    /**
+     * A mappoint series is a special form of scatter series where the points
+     * can be laid out in map coordinates on top of a map.
+     *
+     * @sample maps/demo/mapline-mappoint/
+     *         Map-line and map-point series.
+     *
+     * @extends      plotOptions.scatter
+     * @product      highmaps
+     * @optionparent plotOptions.mappoint
+     */
+    {
+        dataLabels: {
+            crop: false,
+            defer: false,
+            enabled: true,
+            formatter: function () {
+                return this.point.name;
+            },
+            overflow: false,
+            style: {
+                /** @internal */
+                color: '#000000'
+            }
         }
-    }
-    // Prototype members
-}, {
+        // Prototype members
+    }, {
     type: 'mappoint',
     forceDL: true,
     drawDataLabels: function () {

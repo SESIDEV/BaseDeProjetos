@@ -92,16 +92,16 @@ function createAndAttachRenderer(chart, series) {
             height = chart.chartHeight;
             (target.renderTargetFo || target.renderTarget)
                 .attr({
-                x: 0,
-                y: 0,
-                width: width,
-                height: height
-            })
+                    x: 0,
+                    y: 0,
+                    width: width,
+                    height: height
+                })
                 .css({
-                pointerEvents: 'none',
-                mixedBlendMode: 'normal',
-                opacity: alpha
-            });
+                    pointerEvents: 'none',
+                    mixedBlendMode: 'normal',
+                    opacity: alpha
+                });
             if (target instanceof H.Chart) {
                 target.markerGroup.translate(chart.plotLeft, chart.plotTop);
             }

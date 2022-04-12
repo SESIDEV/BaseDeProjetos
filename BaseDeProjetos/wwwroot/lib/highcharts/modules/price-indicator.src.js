@@ -153,10 +153,7 @@
                 yAxis.crossLabel = origLabel;
             }
         });
-
     });
     _registerModule(_modules, 'masters/modules/price-indicator.src.js', [], function () {
-
-
     });
 }));

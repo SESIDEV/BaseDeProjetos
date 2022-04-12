@@ -1,7 +1,6 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Projeto>
 @{
 
-
     int cd_QV = Model.Where(p => p.Casa == Instituto.ISIQV && p.FonteFomento == TipoContratacao.ContratacaoDireta).ToList().Count;
     int cd_II = Model.Where(p => p.Casa == Instituto.ISIII && p.FonteFomento == TipoContratacao.ContratacaoDireta).ToList().Count;
     int cd_HO = Model.Where(p => p.Casa == Instituto.CISHO && p.FonteFomento == TipoContratacao.ContratacaoDireta).ToList().Count;
@@ -36,7 +35,6 @@
         <div id="projetos"></div>
     </figure>
 </div>
-
 
 <script type="text/javascript">
     Highcharts.chart('projetos', {

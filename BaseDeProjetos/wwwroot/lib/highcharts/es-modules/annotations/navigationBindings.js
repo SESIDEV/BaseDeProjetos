@@ -401,7 +401,7 @@ var NavigationBindings = /** @class */ (function () {
     NavigationBindings.prototype.annotationToFields = function (annotation) {
         var options = annotation.options, editables = NavigationBindings.annotationsEditable, nestedEditables = editables.nestedOptions, getFieldType = this.utils.getFieldType, type = pick(options.type, options.shapes && options.shapes[0] &&
             options.shapes[0].type, options.labels && options.labels[0] &&
-            options.labels[0].itemType, 'label'), nonEditables = NavigationBindings.annotationsNonEditable[options.langKey] || [], visualOptions = {
+        options.labels[0].itemType, 'label'), nonEditables = NavigationBindings.annotationsNonEditable[options.langKey] || [], visualOptions = {
             langKey: options.langKey,
             type: type
         };
@@ -517,11 +517,11 @@ var NavigationBindings = /** @class */ (function () {
                 classNames = classNames.concat(elemClassName
                     .split(' ')
                     .map(function (name) {
-                    return [
-                        name,
-                        element
-                    ];
-                }));
+                        return [
+                            name,
+                            element
+                        ];
+                    }));
             }
             element = element.parentNode;
             if (element === container) {
@@ -838,19 +838,19 @@ setOptions({
                         langKey: 'circle',
                         type: 'basicAnnotation',
                         shapes: [{
-                                type: 'circle',
-                                point: {
-                                    xAxis: 0,
-                                    yAxis: 0,
-                                    x: coords.xAxis[0].value,
-                                    y: coords.yAxis[0].value
-                                },
-                                r: 5
-                            }]
+                            type: 'circle',
+                            point: {
+                                xAxis: 0,
+                                yAxis: 0,
+                                x: coords.xAxis[0].value,
+                                y: coords.yAxis[0].value
+                            },
+                            r: 5
+                        }]
                     }, navigation
                         .annotationsOptions, navigation
-                        .bindings
-                        .circleAnnotation
+                            .bindings
+                            .circleAnnotation
                         .annotationsOptions));
                 },
                 /** @ignore-option */
@@ -860,8 +860,8 @@ setOptions({
                             Math.pow(inverted ? x - e.chartY : y - e.chartY, 2)), 5);
                         annotation.update({
                             shapes: [{
-                                    r: distance
-                                }]
+                                r: distance
+                            }]
                         });
                     }
                 ]
@@ -883,33 +883,33 @@ setOptions({
                         langKey: 'rectangle',
                         type: 'basicAnnotation',
                         shapes: [{
-                                type: 'path',
-                                points: [{
-                                        xAxis: 0,
-                                        yAxis: 0,
-                                        x: x,
-                                        y: y
-                                    }, {
-                                        xAxis: 0,
-                                        yAxis: 0,
-                                        x: x,
-                                        y: y
-                                    }, {
-                                        xAxis: 0,
-                                        yAxis: 0,
-                                        x: x,
-                                        y: y
-                                    }, {
-                                        xAxis: 0,
-                                        yAxis: 0,
-                                        x: x,
-                                        y: y
-                                    }]
+                            type: 'path',
+                            points: [{
+                                xAxis: 0,
+                                yAxis: 0,
+                                x: x,
+                                y: y
+                            }, {
+                                xAxis: 0,
+                                yAxis: 0,
+                                x: x,
+                                y: y
+                            }, {
+                                xAxis: 0,
+                                yAxis: 0,
+                                x: x,
+                                y: y
+                            }, {
+                                xAxis: 0,
+                                yAxis: 0,
+                                x: x,
+                                y: y
                             }]
+                        }]
                     }, navigation
                         .annotationsOptions, navigation
-                        .bindings
-                        .rectangleAnnotation
+                            .bindings
+                            .rectangleAnnotation
                         .annotationsOptions));
                 },
                 /** @ignore-option */
@@ -925,8 +925,8 @@ setOptions({
                         points[3].y = y;
                         annotation.update({
                             shapes: [{
-                                    points: points
-                                }]
+                                points: points
+                            }]
                         });
                     }
                 ]
@@ -950,19 +950,19 @@ setOptions({
                             format: '{y:.2f}'
                         },
                         labels: [{
-                                point: {
-                                    xAxis: 0,
-                                    yAxis: 0,
-                                    x: coords.xAxis[0].value,
-                                    y: coords.yAxis[0].value
-                                },
-                                overflow: 'none',
-                                crop: true
-                            }]
+                            point: {
+                                xAxis: 0,
+                                yAxis: 0,
+                                x: coords.xAxis[0].value,
+                                y: coords.yAxis[0].value
+                            },
+                            overflow: 'none',
+                            crop: true
+                        }]
                     }, navigation
                         .annotationsOptions, navigation
-                        .bindings
-                        .labelAnnotation
+                            .bindings
+                            .labelAnnotation
                         .annotationsOptions));
                 }
             }

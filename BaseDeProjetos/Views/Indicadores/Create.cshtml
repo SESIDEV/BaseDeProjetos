@@ -35,9 +35,9 @@
             <div class="form-group">
                 <label asp-for="QualiSeguranca" class="control-label"></label>
                 <input asp-for="QualiSeguranca" class="form-control" />
-                <span asp-validation-for="QualiSeguranca" class="text-danger"></span> </div>
+                <span asp-validation-for="QualiSeguranca" class="text-danger"></span>
+            </div>
 
-            
             <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Instituto>().OrderBy(p=>p.Text)"></select>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

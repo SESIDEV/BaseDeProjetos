@@ -855,12 +855,12 @@ var Toolbar = /** @class */ (function () {
                 // calculate position of submenu in the box
                 // if submenu is inside, reset top margin
                 if (
-                // cut on the bottom
-                !(submenuWrapper.offsetHeight +
-                    buttonWrapper.offsetTop >
-                    wrapper.offsetHeight &&
-                    // cut on the top
-                    buttonWrapper.offsetTop > topMargin)) {
+                    // cut on the bottom
+                    !(submenuWrapper.offsetHeight +
+                        buttonWrapper.offsetTop >
+                        wrapper.offsetHeight &&
+                        // cut on the top
+                        buttonWrapper.offsetTop > topMargin)) {
                     topMargin = 0;
                 }
                 // apply calculated styles
@@ -1111,9 +1111,9 @@ var Toolbar = /** @class */ (function () {
      *
      */
     Toolbar.prototype.switchSymbol = function (button, redraw) {
-        var buttonWrapper = button.parentNode, buttonWrapperClass = buttonWrapper.classList.value, 
-        // main button in first level og GUI
-        mainNavButton = buttonWrapper.parentNode.parentNode;
+        var buttonWrapper = button.parentNode, buttonWrapperClass = buttonWrapper.classList.value,
+            // main button in first level og GUI
+            mainNavButton = buttonWrapper.parentNode.parentNode;
         // set class
         mainNavButton.className = '';
         if (buttonWrapperClass) {

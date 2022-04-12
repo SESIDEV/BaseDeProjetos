@@ -126,7 +126,7 @@ var ColorAxis = /** @class */ (function (_super) {
     ColorAxis.prototype.init = function (chart, userOptions) {
         var axis = this;
         var options = ColorAxis.buildOptions(// Build the options
-        chart, ColorAxis.defaultOptions, userOptions);
+            chart, ColorAxis.defaultOptions, userOptions);
         axis.coll = 'colorAxis';
         _super.prototype.init.call(this, chart, options);
         // Base init() pushes it to the xAxis array, now pop it again

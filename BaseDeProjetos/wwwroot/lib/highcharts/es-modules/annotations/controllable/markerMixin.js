@@ -59,10 +59,10 @@ var defaultMarkers = {
          * @type {Array<Highcharts.DefsOptions>}
          */
         children: [{
-                tagName: 'path',
-                d: 'M 0 0 L 10 5 L 0 10 Z',
-                strokeWidth: 0
-            }]
+            tagName: 'path',
+            d: 'M 0 0 L 10 5 L 0 10 Z',
+            strokeWidth: 0
+        }]
     },
     /**
      * @type {Highcharts.SVGDefinitionObject}
@@ -76,11 +76,11 @@ var defaultMarkers = {
         markerWidth: 10,
         markerHeight: 10,
         children: [{
-                tagName: 'path',
-                // reverse triangle (used as an arrow)
-                d: 'M 0 5 L 10 0 L 10 10 Z',
-                strokeWidth: 0
-            }]
+            tagName: 'path',
+            // reverse triangle (used as an arrow)
+            d: 'M 0 5 L 10 0 L 10 10 Z',
+            strokeWidth: 0
+        }]
     }
 };
 H.SVGRenderer.prototype.addMarker = function (id, markerOptions) {
@@ -125,24 +125,24 @@ var markerMixin = {
         var itemOptions = item.options, chart = item.chart, defs = chart.options.defs, fill = itemOptions.fill, color = defined(fill) && fill !== 'none' ?
             fill :
             itemOptions.stroke, setMarker = function (markerType) {
-            var markerId = itemOptions[markerType], def, predefinedMarker, key, marker;
-            if (markerId) {
-                for (key in defs) { // eslint-disable-line guard-for-in
-                    def = defs[key];
-                    if (markerId === def.id &&
-                        def.tagName === 'marker') {
-                        predefinedMarker = def;
-                        break;
+                var markerId = itemOptions[markerType], def, predefinedMarker, key, marker;
+                if (markerId) {
+                    for (key in defs) { // eslint-disable-line guard-for-in
+                        def = defs[key];
+                        if (markerId === def.id &&
+                            def.tagName === 'marker') {
+                            predefinedMarker = def;
+                            break;
+                        }
+                    }
+                    if (predefinedMarker) {
+                        marker = item[markerType] = chart.renderer
+                            .addMarker((itemOptions.id || uniqueKey()) + '-' +
+                                predefinedMarker.id, merge(predefinedMarker, { color: color }));
+                        item.attr(markerType, marker.attr('id'));
                     }
                 }
-                if (predefinedMarker) {
-                    marker = item[markerType] = chart.renderer
-                        .addMarker((itemOptions.id || uniqueKey()) + '-' +
-                        predefinedMarker.id, merge(predefinedMarker, { color: color }));
-                    item.attr(markerType, marker.attr('id'));
-                }
-            }
-        };
+            };
         ['markerStart', 'markerEnd'].forEach(setMarker);
     }
 };

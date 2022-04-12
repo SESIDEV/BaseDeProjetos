@@ -107,7 +107,7 @@ var Tick = /** @class */ (function () {
         var tick = this, axis = tick.axis, options = axis.options, chart = axis.chart, categories = axis.categories, log = axis.logarithmic, names = axis.names, pos = tick.pos, labelOptions = pick(tick.options && tick.options.labels, options.labels), str, tickPositions = axis.tickPositions, isFirst = pos === tickPositions[0], isLast = pos === tickPositions[tickPositions.length - 1], value = this.parameters.category || (categories ?
             pick(categories[pos], names[pos], pos) :
             pos), label = tick.label, animateLabels = (!labelOptions.step || labelOptions.step === 1) &&
-            axis.tickInterval === 1, tickPositionInfo = tickPositions.info, dateTimeLabelFormat, dateTimeLabelFormats, i, list;
+                axis.tickInterval === 1, tickPositionInfo = tickPositions.info, dateTimeLabelFormat, dateTimeLabelFormats, i, list;
         // Set the datetime label format. If a higher rank is set for this
         // position, use that. If not, use the general format.
         if (axis.dateTime && tickPositionInfo) {
@@ -153,7 +153,7 @@ var Tick = /** @class */ (function () {
                     });
                     if (label.getBBox().width <
                         axis.getSlotWidth(tick) - 2 *
-                            pick(labelOptions.padding, 5)) {
+                        pick(labelOptions.padding, 5)) {
                         return;
                     }
                 }
@@ -285,13 +285,13 @@ var Tick = /** @class */ (function () {
      */
     Tick.prototype.getLabelPosition = function (x, y, label, horiz, labelOptions, tickmarkOffset, index, step) {
         var axis = this.axis, transA = axis.transA, reversed = ( // #7911
-        axis.isLinked && axis.linkedParent ?
-            axis.linkedParent.reversed :
-            axis.reversed), staggerLines = axis.staggerLines, rotCorr = axis.tickRotCorr || { x: 0, y: 0 }, yOffset = labelOptions.y, 
-        // Adjust for label alignment if we use reserveSpace: true (#5286)
-        labelOffsetCorrection = (!horiz && !axis.reserveSpaceDefault ?
-            -axis.labelOffset * (axis.labelAlign === 'center' ? 0.5 : 1) :
-            0), line, pos = {};
+            axis.isLinked && axis.linkedParent ?
+                axis.linkedParent.reversed :
+                axis.reversed), staggerLines = axis.staggerLines, rotCorr = axis.tickRotCorr || { x: 0, y: 0 }, yOffset = labelOptions.y,
+            // Adjust for label alignment if we use reserveSpace: true (#5286)
+            labelOffsetCorrection = (!horiz && !axis.reserveSpaceDefault ?
+                -axis.labelOffset * (axis.labelAlign === 'center' ? 0.5 : 1) :
+                0), line, pos = {};
         if (!defined(yOffset)) {
             if (axis.side === 0) {
                 yOffset = label.rotation ? -8 : -label.getBBox().height;
@@ -347,14 +347,14 @@ var Tick = /** @class */ (function () {
      */
     Tick.prototype.getMarkPath = function (x, y, tickLength, tickWidth, horiz, renderer) {
         return renderer.crispLine([[
-                'M',
-                x,
-                y
-            ], [
-                'L',
-                x + (horiz ? 0 : -tickLength),
-                y + (horiz ? tickLength : 0)
-            ]], tickWidth);
+            'M',
+            x,
+            y
+        ], [
+            'L',
+            x + (horiz ? 0 : -tickLength),
+            y + (horiz ? tickLength : 0)
+        ]], tickWidth);
     };
     /**
      * Handle the label overflow by adjusting the labels to the left and right
@@ -557,7 +557,7 @@ var Tick = /** @class */ (function () {
      */
     Tick.prototype.renderMark = function (xy, opacity, reverseCrisp) {
         var tick = this, axis = tick.axis, options = axis.options, renderer = axis.chart.renderer, type = tick.type, tickPrefix = type ? type + 'Tick' : 'tick', tickSize = axis.tickSize(tickPrefix), mark = tick.mark, isNewMark = !mark, x = xy.x, y = xy.y, tickWidth = pick(options[tickPrefix + 'Width'], !type && axis.isXAxis ? 1 : 0), // X axis defaults to 1
-        tickColor = options[tickPrefix + 'Color'];
+            tickColor = options[tickPrefix + 'Color'];
         if (tickSize) {
             // negate the length
             if (axis.opposite) {

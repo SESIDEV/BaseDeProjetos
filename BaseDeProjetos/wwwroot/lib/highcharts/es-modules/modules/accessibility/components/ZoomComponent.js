@@ -181,7 +181,7 @@ extend(ZoomComponent.prototype, /** @lends Highcharts.ZoomComponent */ {
     onMapKbdArrow: function (keyboardNavigationHandler, keyCode) {
         var keys = this.keyCodes, panAxis = (keyCode === keys.up || keyCode === keys.down) ?
             'yAxis' : 'xAxis', stepDirection = (keyCode === keys.left || keyCode === keys.up) ?
-            -1 : 1;
+                -1 : 1;
         this.chart[panAxis][0].panStep(stepDirection);
         return keyboardNavigationHandler.response.success;
     },

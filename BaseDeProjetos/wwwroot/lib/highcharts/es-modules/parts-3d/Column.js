@@ -95,7 +95,7 @@ seriesTypes.column.prototype.translate3dShapes = function () {
     var series = this, chart = series.chart, seriesOptions = series.options, depth = seriesOptions.depth, stack = seriesOptions.stacking ?
         (seriesOptions.stack || 0) :
         series.index, // #4743
-    z = stack * (depth + (seriesOptions.groupZPadding || 1)), borderCrisp = series.borderWidth % 2 ? 0.5 : 0, point2dPos; // Position of point in 2D, used for 3D position calculation.
+        z = stack * (depth + (seriesOptions.groupZPadding || 1)), borderCrisp = series.borderWidth % 2 ? 0.5 : 0, point2dPos; // Position of point in 2D, used for 3D position calculation.
     if (chart.inverted && !series.yAxis.reversed) {
         borderCrisp *= -1;
     }
@@ -107,10 +107,10 @@ seriesTypes.column.prototype.translate3dShapes = function () {
         // #7103 Reset outside3dPlot flag
         point.outside3dPlot = null;
         if (point.y !== null) {
-            var shapeArgs = point.shapeArgs, tooltipPos = point.tooltipPos, 
-            // Array for final shapeArgs calculation.
-            // We are checking two dimensions (x and y).
-            dimensions = [['x', 'width'], ['y', 'height']], borderlessBase; // Crisped rects can have +/- 0.5 pixels offset.
+            var shapeArgs = point.shapeArgs, tooltipPos = point.tooltipPos,
+                // Array for final shapeArgs calculation.
+                // We are checking two dimensions (x and y).
+                dimensions = [['x', 'width'], ['y', 'height']], borderlessBase; // Crisped rects can have +/- 0.5 pixels offset.
             // #3131 We need to check if column is inside plotArea.
             dimensions.forEach(function (d) {
                 borderlessBase = shapeArgs[d[0]] - borderCrisp;
@@ -129,15 +129,15 @@ seriesTypes.column.prototype.translate3dShapes = function () {
                     shapeArgs[d[1]] !== 0) {
                     shapeArgs[d[1]] =
                         series[d[0] + 'Axis'].len -
-                            shapeArgs[d[0]];
+                        shapeArgs[d[0]];
                 }
                 if (
-                // Do not remove columns with zero height/width.
-                (shapeArgs[d[1]] !== 0) &&
+                    // Do not remove columns with zero height/width.
+                    (shapeArgs[d[1]] !== 0) &&
                     (shapeArgs[d[0]] >=
                         series[d[0] + 'Axis'].len ||
                         shapeArgs[d[0]] + shapeArgs[d[1]] <=
-                            borderCrisp)) {
+                        borderCrisp)) {
                     // Set args to 0 if column is outside the chart.
                     for (var key in shapeArgs) { // eslint-disable-line guard-for-in
                         shapeArgs[key] = 0;
@@ -170,10 +170,10 @@ seriesTypes.column.prototype.translate3dShapes = function () {
             point.plot3d = perspective([point2dPos], chart, true, false)[0];
             // Translate the tooltip position in 3d space
             tooltipPos = perspective([{
-                    x: tooltipPos[0],
-                    y: tooltipPos[1],
-                    z: z + depth / 2 // The center of column in Z dimension
-                }], chart, true, false)[0];
+                x: tooltipPos[0],
+                y: tooltipPos[1],
+                z: z + depth / 2 // The center of column in Z dimension
+            }], chart, true, false)[0];
             point.tooltipPos = [tooltipPos.x, tooltipPos.y];
         }
     });
@@ -197,14 +197,14 @@ wrap(seriesTypes.column.prototype, 'animate', function (proceed) {
                             if (point.stackY) {
                                 point.shapeArgs.y =
                                     point.plotY +
-                                        yAxis.translate(point.stackY);
+                                    yAxis.translate(point.stackY);
                             }
                             else {
                                 point.shapeArgs.y =
                                     point.plotY +
-                                        (point.negative ?
-                                            -point.height :
-                                            point.height);
+                                    (point.negative ?
+                                        -point.height :
+                                        point.height);
                             }
                         }
                     }

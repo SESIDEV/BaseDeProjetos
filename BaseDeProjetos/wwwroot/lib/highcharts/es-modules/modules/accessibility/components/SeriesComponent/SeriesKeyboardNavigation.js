@@ -76,7 +76,7 @@ function isSkipSeries(series) {
         // reached
         (seriesNavOptions.pointNavigationEnabledThreshold &&
             seriesNavOptions.pointNavigationEnabledThreshold <=
-                series.points.length);
+            series.points.length);
 }
 /**
  * Determine if navigation for a point should be skipped
@@ -125,8 +125,8 @@ function getClosestPoint(point, series, xWeight, yWeight) {
             (point.plotX - dPoint.plotX) *
             (xWeight || 1) +
             (point.plotY - dPoint.plotY) *
-                (point.plotY - dPoint.plotY) *
-                (yWeight || 1);
+            (point.plotY - dPoint.plotY) *
+            (yWeight || 1);
         if (distance < minDistance) {
             minDistance = distance;
             minIx = i;
@@ -444,17 +444,17 @@ extend(SeriesKeyboardNavigation.prototype, /** @lends Highcharts.SeriesKeyboardN
         return new KeyboardNavigationHandler(chart, {
             keyCodeMap: [
                 [inverted ? [keys.up, keys.down] : [keys.left, keys.right], function (keyCode) {
-                        return keyboardNavigation.onKbdSideways(this, keyCode);
-                    }],
+                    return keyboardNavigation.onKbdSideways(this, keyCode);
+                }],
                 [inverted ? [keys.left, keys.right] : [keys.up, keys.down], function (keyCode) {
-                        return keyboardNavigation.onKbdVertical(this, keyCode);
-                    }],
+                    return keyboardNavigation.onKbdVertical(this, keyCode);
+                }],
                 [[keys.enter, keys.space], function () {
-                        if (chart.highlightedPoint) {
-                            chart.highlightedPoint.firePointEvent('click');
-                        }
-                        return this.response.success;
-                    }]
+                    if (chart.highlightedPoint) {
+                        chart.highlightedPoint.firePointEvent('click');
+                    }
+                    return this.response.success;
+                }]
             ],
             init: function (dir) {
                 return keyboardNavigation.onHandlerInit(this, dir);

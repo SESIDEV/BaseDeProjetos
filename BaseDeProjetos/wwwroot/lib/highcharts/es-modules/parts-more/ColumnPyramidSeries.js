@@ -22,31 +22,31 @@ var colProto = seriesTypes.column.prototype;
  *
  * @augments Highcharts.Series
  */
-seriesType('columnpyramid', 'column', 
-/**
- * Column pyramid series display one pyramid per value along an X axis.
- * To display horizontal pyramids, set [chart.inverted](#chart.inverted) to
- * `true`.
- *
- * @sample {highcharts|highstock} highcharts/demo/column-pyramid/
- *         Column pyramid
- * @sample {highcharts|highstock} highcharts/plotoptions/columnpyramid-stacked/
- *         Column pyramid stacked
- * @sample {highcharts|highstock} highcharts/plotoptions/columnpyramid-inverted/
- *         Column pyramid inverted
- *
- * @extends      plotOptions.column
- * @since        7.0.0
- * @product      highcharts highstock
- * @excluding    boostThreshold, borderRadius, crisp, depth, edgeColor,
- *               edgeWidth, groupZPadding, negativeColor, softThreshold,
- *               threshold, zoneAxis, zones
- * @requires     highcharts-more
- * @optionparent plotOptions.columnpyramid
- */
-{
-// no additions
-}, {
+seriesType('columnpyramid', 'column',
+    /**
+     * Column pyramid series display one pyramid per value along an X axis.
+     * To display horizontal pyramids, set [chart.inverted](#chart.inverted) to
+     * `true`.
+     *
+     * @sample {highcharts|highstock} highcharts/demo/column-pyramid/
+     *         Column pyramid
+     * @sample {highcharts|highstock} highcharts/plotoptions/columnpyramid-stacked/
+     *         Column pyramid stacked
+     * @sample {highcharts|highstock} highcharts/plotoptions/columnpyramid-inverted/
+     *         Column pyramid inverted
+     *
+     * @extends      plotOptions.column
+     * @since        7.0.0
+     * @product      highcharts highstock
+     * @excluding    boostThreshold, borderRadius, crisp, depth, edgeColor,
+     *               edgeWidth, groupZPadding, negativeColor, softThreshold,
+     *               threshold, zoneAxis, zones
+     * @requires     highcharts-more
+     * @optionparent plotOptions.columnpyramid
+     */
+    {
+        // no additions
+    }, {
     /* eslint-disable-next-line valid-jsdoc */
     /**
      * Overrides the column translate method
@@ -55,11 +55,11 @@ seriesType('columnpyramid', 'column',
     translate: function () {
         var series = this, chart = series.chart, options = series.options, dense = series.dense =
             series.closestPointRange * series.xAxis.transA < 2, borderWidth = series.borderWidth = pick(options.borderWidth, dense ? 0 : 1 // #3635
-        ), yAxis = series.yAxis, threshold = options.threshold, translatedThreshold = series.translatedThreshold =
-            yAxis.getThreshold(threshold), minPointLength = pick(options.minPointLength, 5), metrics = series.getColumnMetrics(), pointWidth = metrics.width, 
-        // postprocessed for border width
-        seriesBarW = series.barW =
-            Math.max(pointWidth, 1 + 2 * borderWidth), pointXOffset = series.pointXOffset = metrics.offset;
+            ), yAxis = series.yAxis, threshold = options.threshold, translatedThreshold = series.translatedThreshold =
+                yAxis.getThreshold(threshold), minPointLength = pick(options.minPointLength, 5), metrics = series.getColumnMetrics(), pointWidth = metrics.width,
+            // postprocessed for border width
+            seriesBarW = series.barW =
+                Math.max(pointWidth, 1 + 2 * borderWidth), pointXOffset = series.pointXOffset = metrics.offset;
         if (chart.inverted) {
             translatedThreshold -= 0.5; // #3355
         }
@@ -74,10 +74,10 @@ seriesType('columnpyramid', 'column',
         colProto.translate.apply(series);
         // Record the new values
         series.points.forEach(function (point) {
-            var yBottom = pick(point.yBottom, translatedThreshold), safeDistance = 999 + Math.abs(yBottom), plotY = clamp(point.plotY, -safeDistance, yAxis.len + safeDistance), 
-            // Don't draw too far outside plot area
-            // (#1303, #2241, #4264)
-            barX = point.plotX + pointXOffset, barW = seriesBarW / 2, barY = Math.min(plotY, yBottom), barH = Math.max(plotY, yBottom) - barY, stackTotal, stackHeight, topPointY, topXwidth, bottomXwidth, invBarPos, x1, x2, x3, x4, y1, y2;
+            var yBottom = pick(point.yBottom, translatedThreshold), safeDistance = 999 + Math.abs(yBottom), plotY = clamp(point.plotY, -safeDistance, yAxis.len + safeDistance),
+                // Don't draw too far outside plot area
+                // (#1303, #2241, #4264)
+                barX = point.plotX + pointXOffset, barW = seriesBarW / 2, barY = Math.min(plotY, yBottom), barH = Math.max(plotY, yBottom) - barY, stackTotal, stackHeight, topPointY, topXwidth, bottomXwidth, invBarPos, x1, x2, x3, x4, y1, y2;
             point.barX = barX;
             point.pointWidth = pointWidth;
             // Fix the tooltip on center of grouped pyramids
@@ -107,7 +107,7 @@ seriesType('columnpyramid', 'column',
             // calculate height of stack (in pixels)
             stackHeight =
                 chart.plotHeight - topPointY -
-                    (chart.plotHeight - translatedThreshold);
+                (chart.plotHeight - translatedThreshold);
             // topXwidth and bottomXwidth = width of lines from the center
             // calculated from tanges proportion.
             // Can not be a NaN #12514

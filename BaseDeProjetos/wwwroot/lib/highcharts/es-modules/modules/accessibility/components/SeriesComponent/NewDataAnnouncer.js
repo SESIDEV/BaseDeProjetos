@@ -18,7 +18,7 @@ var getChartTitle = ChartUtilities.getChartTitle;
 import SeriesDescriber from './SeriesDescriber.js';
 var defaultPointDescriptionFormatter = SeriesDescriber
     .defaultPointDescriptionFormatter, defaultSeriesDescriptionFormatter = SeriesDescriber
-    .defaultSeriesDescriptionFormatter;
+        .defaultSeriesDescriptionFormatter;
 import Announcer from '../../utils/Announcer.js';
 import EventProvider from '../../utils/EventProvider.js';
 /* eslint-disable no-invalid-this, valid-jsdoc */
@@ -44,9 +44,9 @@ function findPointInDataArray(point) {
 function getUniqueSeries(arrayA, arrayB) {
     var uniqueSeries = (arrayA || []).concat(arrayB || [])
         .reduce(function (acc, cur) {
-        acc[cur.name + cur.index] = cur;
-        return acc;
-    }, {});
+            acc[cur.name + cur.index] = cur;
+            return acc;
+        }, {});
     return Object.keys(uniqueSeries).map(function (ix) {
         return uniqueSeries[ix];
     });

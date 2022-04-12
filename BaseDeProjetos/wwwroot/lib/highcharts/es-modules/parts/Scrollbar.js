@@ -339,8 +339,8 @@ var Scrollbar = /** @class */ (function () {
         }
         scroller.grabbedCenter =
             scroller.hasDragged =
-                scroller.chartX =
-                    scroller.chartY = null;
+            scroller.chartX =
+            scroller.chartY = null;
     };
     /**
      * Position the scrollbar, method called from a parent with defined
@@ -425,11 +425,11 @@ var Scrollbar = /** @class */ (function () {
         scroller.track = renderer.rect()
             .addClass('highcharts-scrollbar-track')
             .attr({
-            x: 0,
-            r: options.trackBorderRadius || 0,
-            height: size,
-            width: size
-        }).add(group);
+                x: 0,
+                r: options.trackBorderRadius || 0,
+                height: size,
+                width: size
+            }).add(group);
         if (!styledMode) {
             scroller.track.attr({
                 fill: options.trackBackgroundColor,
@@ -446,19 +446,19 @@ var Scrollbar = /** @class */ (function () {
         scroller.scrollbar = renderer.rect()
             .addClass('highcharts-scrollbar-thumb')
             .attr({
-            height: size,
-            width: size,
-            r: options.barBorderRadius || 0
-        }).add(scroller.scrollbarGroup);
+                height: size,
+                width: size,
+                r: options.barBorderRadius || 0
+            }).add(scroller.scrollbarGroup);
         scroller.scrollbarRifles = renderer
             .path(swapXY([
-            ['M', -3, size / 4],
-            ['L', -3, 2 * size / 3],
-            ['M', 0, size / 4],
-            ['L', 0, 2 * size / 3],
-            ['M', 3, size / 4],
-            ['L', 3, 2 * size / 3]
-        ], options.vertical))
+                ['M', -3, size / 4],
+                ['L', -3, 2 * size / 3],
+                ['M', 0, size / 4],
+                ['L', 0, 2 * size / 3],
+                ['M', 3, size / 4],
+                ['L', 3, 2 * size / 3]
+            ], options.vertical))
             .addClass('highcharts-scrollbar-rifles')
             .add(scroller.scrollbarGroup);
         if (!styledMode) {

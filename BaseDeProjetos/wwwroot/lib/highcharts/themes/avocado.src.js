@@ -63,10 +63,7 @@
         };
         // Apply the theme
         setOptions(Highcharts.theme);
-
     });
     _registerModule(_modules, 'masters/themes/avocado.src.js', [], function () {
-
-
     });
 }));

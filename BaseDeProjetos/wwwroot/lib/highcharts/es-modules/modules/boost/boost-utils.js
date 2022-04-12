@@ -108,9 +108,9 @@ function shouldForceChartSeriesBoosting(chart) {
             if (boostableMap[series.type]) {
                 ++canBoostCount;
             }
-            if (patientMax(series.processedXData, series.options.data, 
-            // series.xData,
-            series.points) >= (series.options.boostThreshold || Number.MAX_VALUE)) {
+            if (patientMax(series.processedXData, series.options.data,
+                // series.xData,
+                series.points) >= (series.options.boostThreshold || Number.MAX_VALUE)) {
                 ++sboostCount;
             }
         }

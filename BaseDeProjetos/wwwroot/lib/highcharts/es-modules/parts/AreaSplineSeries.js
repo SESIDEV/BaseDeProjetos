@@ -26,22 +26,22 @@ var areaProto = H.seriesTypes.area.prototype;
  *
  * @augments Highcharts.Series
  */
-seriesType('areaspline', 'spline', 
-/**
- * The area spline series is an area series where the graph between the
- * points is smoothed into a spline.
- *
- * @sample {highcharts} highcharts/demo/areaspline/
- *         Area spline chart
- * @sample {highstock} stock/demo/areaspline/
- *         Area spline chart
- *
- * @extends   plotOptions.area
- * @excluding step
- * @product   highcharts highstock
- * @apioption plotOptions.areaspline
- */
-defaultOptions.plotOptions.area, {
+seriesType('areaspline', 'spline',
+    /**
+     * The area spline series is an area series where the graph between the
+     * points is smoothed into a spline.
+     *
+     * @sample {highcharts} highcharts/demo/areaspline/
+     *         Area spline chart
+     * @sample {highstock} stock/demo/areaspline/
+     *         Area spline chart
+     *
+     * @extends   plotOptions.area
+     * @excluding step
+     * @product   highcharts highstock
+     * @apioption plotOptions.areaspline
+     */
+    defaultOptions.plotOptions.area, {
     getStackPoints: areaProto.getStackPoints,
     getGraphPath: areaProto.getGraphPath,
     drawGraph: areaProto.drawGraph,

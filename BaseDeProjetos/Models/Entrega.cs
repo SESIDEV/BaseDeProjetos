@@ -9,14 +9,19 @@ namespace BaseDeProjetos.Models
         public string Id { get; set; }
         public virtual Projeto Projeto { get; set; }
         public string ProjetoId { get; set; }
+
         [Display(Name = "Nome da entrega")]
         public string NomeEntrega { get; set; }
+
         [Display(Name = "Descrição da entrega")]
         public string DescricaoEntrega { get; set; }
-        [Display(Name ="Data de início da atividade")]
+
+        [Display(Name = "Data de início da atividade")]
         public virtual DateTime DataInicioEntrega { get; set; }
-        [Display(Name ="Data prevista de término da atividade")]
+
+        [Display(Name = "Data prevista de término da atividade")]
         public virtual DateTime DataFim { get; set; }
+
         public bool Concluida { get; set; } = false;
 
         [NotMapped]

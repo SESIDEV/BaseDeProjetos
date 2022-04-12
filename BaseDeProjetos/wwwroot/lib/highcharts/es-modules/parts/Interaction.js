@@ -117,8 +117,8 @@ TrackerMixin = H.TrackerMixin = {
                         .addClass('highcharts-tracker')
                         .on('mouseover', onMouseOver)
                         .on('mouseout', function (e) {
-                        pointer.onTrackerMouseOut(e);
-                    });
+                            pointer.onTrackerMouseOut(e);
+                        });
                     if (hasTouch) {
                         series[key].on('touchstart', onMouseOver);
                     }
@@ -147,27 +147,27 @@ TrackerMixin = H.TrackerMixin = {
     drawTrackerGraph: function () {
         var series = this, options = series.options, trackByArea = options.trackByArea, trackerPath = [].concat(trackByArea ?
             series.areaPath :
-            series.graphPath), 
-        // trackerPathLength = trackerPath.length,
-        chart = series.chart, pointer = chart.pointer, renderer = chart.renderer, snap = chart.options.tooltip.snap, tracker = series.tracker, i, onMouseOver = function (e) {
-            if (chart.hoverSeries !== series) {
-                series.onMouseOver();
-            }
-        }, 
-        /*
-         * Empirical lowest possible opacities for TRACKER_FILL for an
-         * element to stay invisible but clickable
-         * IE6: 0.002
-         * IE7: 0.002
-         * IE8: 0.002
-         * IE9: 0.00000000001 (unlimited)
-         * IE10: 0.0001 (exporting only)
-         * FF: 0.00000000001 (unlimited)
-         * Chrome: 0.000001
-         * Safari: 0.000001
-         * Opera: 0.00000000001 (unlimited)
-         */
-        TRACKER_FILL = 'rgba(192,192,192,' + (svg ? 0.0001 : 0.002) + ')';
+            series.graphPath),
+            // trackerPathLength = trackerPath.length,
+            chart = series.chart, pointer = chart.pointer, renderer = chart.renderer, snap = chart.options.tooltip.snap, tracker = series.tracker, i, onMouseOver = function (e) {
+                if (chart.hoverSeries !== series) {
+                    series.onMouseOver();
+                }
+            },
+            /*
+             * Empirical lowest possible opacities for TRACKER_FILL for an
+             * element to stay invisible but clickable
+             * IE6: 0.002
+             * IE7: 0.002
+             * IE8: 0.002
+             * IE9: 0.00000000001 (unlimited)
+             * IE10: 0.0001 (exporting only)
+             * FF: 0.00000000001 (unlimited)
+             * Chrome: 0.000001
+             * Safari: 0.000001
+             * Opera: 0.00000000001 (unlimited)
+             */
+            TRACKER_FILL = 'rgba(192,192,192,' + (svg ? 0.0001 : 0.002) + ')';
         // Draw the tracker
         if (tracker) {
             tracker.attr({ d: trackerPath });
@@ -175,12 +175,12 @@ TrackerMixin = H.TrackerMixin = {
         else if (series.graph) { // create
             series.tracker = renderer.path(trackerPath)
                 .attr({
-                visibility: series.visible ? 'visible' : 'hidden',
-                zIndex: 2
-            })
+                    visibility: series.visible ? 'visible' : 'hidden',
+                    zIndex: 2
+                })
                 .addClass(trackByArea ?
-                'highcharts-tracker-area' :
-                'highcharts-tracker-line')
+                    'highcharts-tracker-area' :
+                    'highcharts-tracker-line')
                 .add(series.group);
             if (!chart.styledMode) {
                 series.tracker.attr({
@@ -199,8 +199,8 @@ TrackerMixin = H.TrackerMixin = {
                 tracker.addClass('highcharts-tracker')
                     .on('mouseover', onMouseOver)
                     .on('mouseout', function (e) {
-                    pointer.onTrackerMouseOut(e);
-                });
+                        pointer.onTrackerMouseOut(e);
+                    });
                 if (options.cursor && !chart.styledMode) {
                     tracker.css({ cursor: options.cursor });
                 }
@@ -249,80 +249,80 @@ extend(Legend.prototype, {
      */
     setItemEvents: function (item, legendItem, useHTML) {
         var legend = this, boxWrapper = legend.chart.renderer.boxWrapper, isPoint = item instanceof Point, activeClass = 'highcharts-legend-' +
-            (isPoint ? 'point' : 'series') + '-active', styledMode = legend.chart.styledMode, 
-        // When `useHTML`, the symbol is rendered in other group, so
-        // we need to apply events listeners to both places
-        legendItems = useHTML ?
-            [legendItem, item.legendSymbol] :
-            [item.legendGroup];
+            (isPoint ? 'point' : 'series') + '-active', styledMode = legend.chart.styledMode,
+            // When `useHTML`, the symbol is rendered in other group, so
+            // we need to apply events listeners to both places
+            legendItems = useHTML ?
+                [legendItem, item.legendSymbol] :
+                [item.legendGroup];
         // Set the events on the item group, or in case of useHTML, the item
         // itself (#1249)
         legendItems.forEach(function (element) {
             if (element) {
                 element
                     .on('mouseover', function () {
-                    if (item.visible) {
+                        if (item.visible) {
+                            legend.allItems.forEach(function (inactiveItem) {
+                                if (item !== inactiveItem) {
+                                    inactiveItem.setState('inactive', !isPoint);
+                                }
+                            });
+                        }
+                        item.setState('hover');
+                        // A CSS class to dim or hide other than the hovered
+                        // series.
+                        // Works only if hovered series is visible (#10071).
+                        if (item.visible) {
+                            boxWrapper.addClass(activeClass);
+                        }
+                        if (!styledMode) {
+                            legendItem.css(legend.options.itemHoverStyle);
+                        }
+                    })
+                    .on('mouseout', function () {
+                        if (!legend.chart.styledMode) {
+                            legendItem.css(merge(item.visible ?
+                                legend.itemStyle :
+                                legend.itemHiddenStyle));
+                        }
                         legend.allItems.forEach(function (inactiveItem) {
                             if (item !== inactiveItem) {
-                                inactiveItem.setState('inactive', !isPoint);
+                                inactiveItem.setState('', !isPoint);
                             }
                         });
-                    }
-                    item.setState('hover');
-                    // A CSS class to dim or hide other than the hovered
-                    // series.
-                    // Works only if hovered series is visible (#10071).
-                    if (item.visible) {
-                        boxWrapper.addClass(activeClass);
-                    }
-                    if (!styledMode) {
-                        legendItem.css(legend.options.itemHoverStyle);
-                    }
-                })
-                    .on('mouseout', function () {
-                    if (!legend.chart.styledMode) {
-                        legendItem.css(merge(item.visible ?
-                            legend.itemStyle :
-                            legend.itemHiddenStyle));
-                    }
-                    legend.allItems.forEach(function (inactiveItem) {
-                        if (item !== inactiveItem) {
-                            inactiveItem.setState('', !isPoint);
+                        // A CSS class to dim or hide other than the hovered
+                        // series.
+                        boxWrapper.removeClass(activeClass);
+                        item.setState();
+                    })
+                    .on('click', function (event) {
+                        var strLegendItemClick = 'legendItemClick', fnLegendItemClick = function () {
+                            if (item.setVisible) {
+                                item.setVisible();
+                            }
+                            // Reset inactive state
+                            legend.allItems.forEach(function (inactiveItem) {
+                                if (item !== inactiveItem) {
+                                    inactiveItem.setState(item.visible ? 'inactive' : '', !isPoint);
+                                }
+                            });
+                        };
+                        // A CSS class to dim or hide other than the hovered
+                        // series. Event handling in iOS causes the activeClass
+                        // to be added prior to click in some cases (#7418).
+                        boxWrapper.removeClass(activeClass);
+                        // Pass over the click/touch event. #4.
+                        event = {
+                            browserEvent: event
+                        };
+                        // click the name or symbol
+                        if (item.firePointEvent) { // point
+                            item.firePointEvent(strLegendItemClick, event, fnLegendItemClick);
+                        }
+                        else {
+                            fireEvent(item, strLegendItemClick, event, fnLegendItemClick);
                         }
                     });
-                    // A CSS class to dim or hide other than the hovered
-                    // series.
-                    boxWrapper.removeClass(activeClass);
-                    item.setState();
-                })
-                    .on('click', function (event) {
-                    var strLegendItemClick = 'legendItemClick', fnLegendItemClick = function () {
-                        if (item.setVisible) {
-                            item.setVisible();
-                        }
-                        // Reset inactive state
-                        legend.allItems.forEach(function (inactiveItem) {
-                            if (item !== inactiveItem) {
-                                inactiveItem.setState(item.visible ? 'inactive' : '', !isPoint);
-                            }
-                        });
-                    };
-                    // A CSS class to dim or hide other than the hovered
-                    // series. Event handling in iOS causes the activeClass
-                    // to be added prior to click in some cases (#7418).
-                    boxWrapper.removeClass(activeClass);
-                    // Pass over the click/touch event. #4.
-                    event = {
-                        browserEvent: event
-                    };
-                    // click the name or symbol
-                    if (item.firePointEvent) { // point
-                        item.firePointEvent(strLegendItemClick, event, fnLegendItemClick);
-                    }
-                    else {
-                        fireEvent(item, strLegendItemClick, event, fnLegendItemClick);
-                    }
-                });
             }
         });
     },
@@ -377,9 +377,9 @@ extend(Chart.prototype, /** @lends Chart.prototype */ {
             chart.resetZoomButton = chart.renderer
                 .button(lang.resetZoom, null, null, zoomOut, theme, states && states.hover)
                 .attr({
-                align: btnOptions.position.align,
-                title: lang.resetZoomTitle
-            })
+                    align: btnOptions.position.align,
+                    title: lang.resetZoomTitle
+                })
                 .addClass('highcharts-reset-zoom')
                 .add()
                 .align(btnOptions.position, false, alignTo);
@@ -494,8 +494,8 @@ extend(Chart.prototype, /** @lends Chart.prototype */ {
                     (!axis.reversed && chart.inverted) ?
                     -1 :
                     1, extremes = axis.getExtremes(), panMin = axis.toValue(startPos - mousePos, true) +
-                    halfPointRange * pointRangeDirection, panMax = axis.toValue(startPos + axis.len - mousePos, true) -
-                    halfPointRange * pointRangeDirection, flipped = panMax < panMin, newMin = flipped ? panMax : panMin, newMax = flipped ? panMin : panMax, hasVerticalPanning = axis.hasVerticalPanning(), paddedMin, paddedMax, spill, panningState = axis.panningState;
+                        halfPointRange * pointRangeDirection, panMax = axis.toValue(startPos + axis.len - mousePos, true) -
+                            halfPointRange * pointRangeDirection, flipped = panMax < panMin, newMin = flipped ? panMax : panMin, newMax = flipped ? panMin : panMax, hasVerticalPanning = axis.hasVerticalPanning(), paddedMin, paddedMax, spill, panningState = axis.panningState;
                 // General calculations of panning state.
                 // This is related to using vertical panning. (#11315).
                 axis.series.forEach(function (series) {
@@ -711,13 +711,13 @@ extend(Point.prototype, /** @lends Highcharts.Point.prototype */ {
     setState: function (state, move) {
         var point = this, series = point.series, previousState = point.state, stateOptions = (series.options.states[state || 'normal'] ||
             {}), markerOptions = (defaultOptions.plotOptions[series.type].marker &&
-            series.options.marker), normalDisabled = (markerOptions && markerOptions.enabled === false), markerStateOptions = ((markerOptions &&
-            markerOptions.states &&
-            markerOptions.states[state || 'normal']) || {}), stateDisabled = markerStateOptions.enabled === false, stateMarkerGraphic = series.stateMarkerGraphic, pointMarker = point.marker || {}, chart = series.chart, halo = series.halo, haloOptions, markerAttribs, pointAttribs, pointAttribsAnimation, hasMarkers = (markerOptions && series.markerAttribs), newSymbol;
+                series.options.marker), normalDisabled = (markerOptions && markerOptions.enabled === false), markerStateOptions = ((markerOptions &&
+                    markerOptions.states &&
+                    markerOptions.states[state || 'normal']) || {}), stateDisabled = markerStateOptions.enabled === false, stateMarkerGraphic = series.stateMarkerGraphic, pointMarker = point.marker || {}, chart = series.chart, halo = series.halo, haloOptions, markerAttribs, pointAttribs, pointAttribsAnimation, hasMarkers = (markerOptions && series.markerAttribs), newSymbol;
         state = state || ''; // empty string
         if (
-        // already has this state
-        (state === point.state && !move) ||
+            // already has this state
+            (state === point.state && !move) ||
             // selected points don't respond to hover
             (point.selected && state !== 'select') ||
             // series' state options is disabled
@@ -769,8 +769,8 @@ extend(Point.prototype, /** @lends Highcharts.Point.prototype */ {
             }
             if (markerAttribs) {
                 point.graphic.animate(markerAttribs, pick(
-                // Turn off globally:
-                chart.options.chart.animation, markerStateOptions.animation, markerOptions.animation));
+                    // Turn off globally:
+                    chart.options.chart.animation, markerStateOptions.animation, markerOptions.animation));
             }
             // Zooming in from a range with no markers to a range with markers
             if (stateMarkerGraphic) {
@@ -850,10 +850,10 @@ extend(Point.prototype, /** @lends Highcharts.Point.prototype */ {
         }
         else if (halo && halo.point && halo.point.haloPath) {
             // Animate back to 0 on the current halo point (#6055)
-            halo.animate({ d: halo.point.haloPath(0) }, null, 
-            // Hide after unhovering. The `complete` callback runs in the
-            // halo's context (#7681).
-            halo.hide);
+            halo.animate({ d: halo.point.haloPath(0) }, null,
+                // Hide after unhovering. The `complete` callback runs in the
+                // halo's context (#7681).
+                halo.hide);
         }
         fireEvent(point, 'afterSetState');
     },
@@ -950,11 +950,11 @@ extend(Series.prototype, /** @lends Highcharts.Series.prototype */ {
      *        Determines if state should be inherited by points too.
      */
     setState: function (state, inherit) {
-        var series = this, options = series.options, graph = series.graph, inactiveOtherPoints = options.inactiveOtherPoints, stateOptions = options.states, lineWidth = options.lineWidth, opacity = options.opacity, 
-        // By default a quick animation to hover/inactive,
-        // slower to un-hover
-        stateAnimation = pick((stateOptions[state || 'normal'] &&
-            stateOptions[state || 'normal'].animation), series.chart.options.chart.animation), attribs, i = 0;
+        var series = this, options = series.options, graph = series.graph, inactiveOtherPoints = options.inactiveOtherPoints, stateOptions = options.states, lineWidth = options.lineWidth, opacity = options.opacity,
+            // By default a quick animation to hover/inactive,
+            // slower to un-hover
+            stateAnimation = pick((stateOptions[state || 'normal'] &&
+                stateOptions[state || 'normal'].animation), series.chart.options.chart.animation), attribs, i = 0;
         state = state || '';
         if (series.state !== state) {
             // Toggle class names
@@ -1059,9 +1059,9 @@ extend(Series.prototype, /** @lends Highcharts.Series.prototype */ {
         // if called without an argument, toggle visibility
         series.visible =
             vis =
-                series.options.visible =
-                    series.userOptions.visible =
-                        typeof vis === 'undefined' ? !oldVisibility : vis; // #5618
+            series.options.visible =
+            series.userOptions.visible =
+            typeof vis === 'undefined' ? !oldVisibility : vis; // #5618
         showOrHide = vis ? 'show' : 'hide';
         // show or hide elements
         [
@@ -1154,9 +1154,9 @@ extend(Series.prototype, /** @lends Highcharts.Series.prototype */ {
         var series = this;
         series.selected =
             selected =
-                this.options.selected = (typeof selected === 'undefined' ?
-                    !series.selected :
-                    selected);
+            this.options.selected = (typeof selected === 'undefined' ?
+                !series.selected :
+                selected);
         if (series.checkbox) {
             series.checkbox.checked = selected;
         }

@@ -259,8 +259,8 @@ var Legend = /** @class */ (function () {
             var legend = this, options = legend.options, legendItem = item.legendItem, legendLine = item.legendLine, legendSymbol = item.legendSymbol, hiddenColor = legend.itemHiddenStyle.color, textColor = visible ?
                 options.itemStyle.color :
                 hiddenColor, symbolColor = visible ?
-                (item.color || hiddenColor) :
-                hiddenColor, markerOptions = item.options && item.options.marker, symbolAttr = { fill: symbolColor };
+                    (item.color || hiddenColor) :
+                    hiddenColor, markerOptions = item.options && item.options.marker, symbolAttr = { fill: symbolColor };
             if (legendItem) {
                 legendItem.css({
                     fill: textColor,
@@ -478,22 +478,22 @@ var Legend = /** @class */ (function () {
         var legend = this, chart = legend.chart, renderer = chart.renderer, options = legend.options, horizontal = options.layout === 'horizontal', symbolWidth = legend.symbolWidth, symbolPadding = options.symbolPadding, itemStyle = legend.itemStyle, itemHiddenStyle = legend.itemHiddenStyle, itemDistance = horizontal ? pick(options.itemDistance, 20) : 0, ltr = !options.rtl, bBox, li = item.legendItem, isSeries = !item.series, series = !isSeries && item.series.drawLegendSymbol ?
             item.series :
             item, seriesOptions = series.options, showCheckbox = legend.createCheckboxForItem &&
-            seriesOptions &&
-            seriesOptions.showCheckbox, 
-        // full width minus text width
-        itemExtraWidth = symbolWidth + symbolPadding +
-            itemDistance + (showCheckbox ? 20 : 0), useHTML = options.useHTML, itemClassName = item.options.className;
+                seriesOptions &&
+                seriesOptions.showCheckbox,
+            // full width minus text width
+            itemExtraWidth = symbolWidth + symbolPadding +
+                itemDistance + (showCheckbox ? 20 : 0), useHTML = options.useHTML, itemClassName = item.options.className;
         if (!li) { // generate it once, later move it
             // Generate the group box, a group to hold the symbol and text. Text
             // is to be appended in Legend class.
             item.legendGroup = renderer
                 .g('legend-item')
                 .addClass('highcharts-' + series.type + '-series ' +
-                'highcharts-color-' + item.colorIndex +
-                (itemClassName ? ' ' + itemClassName : '') +
-                (isSeries ?
-                    ' highcharts-series-' + item.index :
-                    ''))
+                    'highcharts-color-' + item.colorIndex +
+                    (itemClassName ? ' ' + itemClassName : '') +
+                    (isSeries ?
+                        ' highcharts-series-' + item.index :
+                        ''))
                 .attr({ zIndex: 1 })
                 .add(legend.scrollGroup);
             // Generate the list item text and add it to the group
@@ -508,9 +508,9 @@ var Legend = /** @class */ (function () {
             }
             li
                 .attr({
-                align: ltr ? 'left' : 'right',
-                zIndex: 2
-            })
+                    align: ltr ? 'left' : 'right',
+                    zIndex: 2
+                })
                 .add(item.legendGroup);
             // Get the baseline for the first item - the font size is equal for
             // all
@@ -548,8 +548,8 @@ var Legend = /** @class */ (function () {
         bBox = li.getBBox();
         item.itemWidth = item.checkboxOffset =
             options.itemWidth ||
-                item.legendItemWidth ||
-                bBox.width + itemExtraWidth;
+            item.legendItemWidth ||
+            bBox.width + itemExtraWidth;
         legend.maxItemWidth = Math.max(legend.maxItemWidth, item.itemWidth);
         legend.totalItemWidth += item.itemWidth;
         legend.itemHeight = item.itemHeight = Math.round(item.legendItemHeight || bBox.height || legend.symbolHeight);
@@ -581,7 +581,7 @@ var Legend = /** @class */ (function () {
         // Set the edge positions
         this.lastItemY = itemMarginTop + this.itemY + itemMarginBottom;
         this.lastLineHeight = Math.max(// #915
-        itemHeight, this.lastLineHeight);
+            itemHeight, this.lastLineHeight);
         // cache the position of the newly generated or reordered items
         item._legendItemPos = [this.itemX, this.itemY];
         // advance
@@ -693,8 +693,8 @@ var Legend = /** @class */ (function () {
                 lastPoint = find(useFirstPoint ?
                     item.points :
                     item.points.slice(0).reverse(), function (item) {
-                    return isNumber(item.plotY);
-                });
+                        return isNumber(item.plotY);
+                    });
                 height = this.itemMarginTop +
                     item.legendItem.getBBox().height +
                     this.itemMarginBottom;
@@ -810,8 +810,8 @@ var Legend = /** @class */ (function () {
             legend.box = box = renderer.rect()
                 .addClass('highcharts-legend-box')
                 .attr({
-                r: options.borderRadius
-            })
+                    r: options.borderRadius
+                })
                 .add(legendGroup);
             box.isNew = true;
         }
@@ -819,10 +819,10 @@ var Legend = /** @class */ (function () {
         if (!chart.styledMode) {
             box
                 .attr({
-                stroke: options.borderColor,
-                'stroke-width': options.borderWidth || 0,
-                fill: options.backgroundColor || 'none'
-            })
+                    stroke: options.borderColor,
+                    'stroke-width': options.borderWidth || 0,
+                    fill: options.backgroundColor || 'none'
+                })
                 .shadow(options.shadow);
         }
         if (legendWidth > 0 && legendHeight > 0) {
@@ -893,32 +893,32 @@ var Legend = /** @class */ (function () {
     Legend.prototype.handleOverflow = function (legendHeight) {
         var legend = this, chart = this.chart, renderer = chart.renderer, options = this.options, optionsY = options.y, alignTop = options.verticalAlign === 'top', padding = this.padding, spaceHeight = (chart.spacingBox.height +
             (alignTop ? -optionsY : optionsY) - padding), maxHeight = options.maxHeight, clipHeight, clipRect = this.clipRect, navOptions = options.navigation, animation = pick(navOptions.animation, true), arrowSize = navOptions.arrowSize || 12, nav = this.nav, pages = this.pages, lastY, allItems = this.allItems, clipToHeight = function (height) {
-            if (typeof height === 'number') {
-                clipRect.attr({
-                    height: height
-                });
-            }
-            else if (clipRect) { // Reset (#5912)
-                legend.clipRect = clipRect.destroy();
-                legend.contentGroup.clip();
-            }
-            // useHTML
-            if (legend.contentGroup.div) {
-                legend.contentGroup.div.style.clip = height ?
-                    'rect(' + padding + 'px,9999px,' +
+                if (typeof height === 'number') {
+                    clipRect.attr({
+                        height: height
+                    });
+                }
+                else if (clipRect) { // Reset (#5912)
+                    legend.clipRect = clipRect.destroy();
+                    legend.contentGroup.clip();
+                }
+                // useHTML
+                if (legend.contentGroup.div) {
+                    legend.contentGroup.div.style.clip = height ?
+                        'rect(' + padding + 'px,9999px,' +
                         (padding + height) + 'px,0)' :
-                    'auto';
-            }
-        }, addTracker = function (key) {
-            legend[key] = renderer
-                .circle(0, 0, arrowSize * 1.3)
-                .translate(arrowSize / 2, arrowSize / 2)
-                .add(nav);
-            if (!chart.styledMode) {
-                legend[key].attr('fill', 'rgba(0,0,0,0.0001)');
-            }
-            return legend[key];
-        };
+                        'auto';
+                }
+            }, addTracker = function (key) {
+                legend[key] = renderer
+                    .circle(0, 0, arrowSize * 1.3)
+                    .translate(arrowSize / 2, arrowSize / 2)
+                    .add(nav);
+                if (!chart.styledMode) {
+                    legend[key].attr('fill', 'rgba(0,0,0,0.0001)');
+                }
+                return legend[key];
+            };
         // Adjust the height
         if (options.layout === 'horizontal' &&
             options.verticalAlign !== 'middle' &&
@@ -979,8 +979,8 @@ var Legend = /** @class */ (function () {
                     .add(nav);
                 addTracker('upTracker')
                     .on('click', function () {
-                    legend.scroll(-1, animation);
-                });
+                        legend.scroll(-1, animation);
+                    });
                 this.pager = renderer.text('', 15, 10)
                     .addClass('highcharts-legend-navigation');
                 if (!chart.styledMode) {
@@ -992,8 +992,8 @@ var Legend = /** @class */ (function () {
                     .add(nav);
                 addTracker('downTracker')
                     .on('click', function () {
-                    legend.scroll(1, animation);
-                });
+                        legend.scroll(1, animation);
+                    });
             }
             // Set initial position
             legend.scroll(0);
@@ -1062,26 +1062,26 @@ var Legend = /** @class */ (function () {
             if (!chart.styledMode) {
                 this.up
                     .attr({
-                    fill: currentPage === 1 ?
-                        navOptions.inactiveColor :
-                        navOptions.activeColor
-                });
+                        fill: currentPage === 1 ?
+                            navOptions.inactiveColor :
+                            navOptions.activeColor
+                    });
                 this.upTracker
                     .css({
-                    cursor: currentPage === 1 ? 'default' : 'pointer'
-                });
+                        cursor: currentPage === 1 ? 'default' : 'pointer'
+                    });
                 this.down
                     .attr({
-                    fill: currentPage === pageCount ?
-                        navOptions.inactiveColor :
-                        navOptions.activeColor
-                });
+                        fill: currentPage === pageCount ?
+                            navOptions.inactiveColor :
+                            navOptions.activeColor
+                    });
                 this.downTracker
                     .css({
-                    cursor: currentPage === pageCount ?
-                        'default' :
-                        'pointer'
-                });
+                        cursor: currentPage === pageCount ?
+                            'default' :
+                            'pointer'
+                    });
             }
             this.scrollOffset = -pages[currentPage - 1] + this.initialItemY;
             this.scrollGroup.animate({
@@ -1106,13 +1106,13 @@ var Legend = /** @class */ (function () {
 if (/Trident\/7\.0/.test(win.navigator && win.navigator.userAgent) ||
     isFirefox) {
     wrap(Legend.prototype, 'positionItem', function (proceed, item) {
-        var legend = this, 
-        // If chart destroyed in sync, this is undefined (#2030)
-        runPositionItem = function () {
-            if (item._legendItemPos) {
-                proceed.call(legend, item);
-            }
-        };
+        var legend = this,
+            // If chart destroyed in sync, this is undefined (#2030)
+            runPositionItem = function () {
+                if (item._legendItemPos) {
+                    proceed.call(legend, item);
+                }
+            };
         // Do it now, for export and to get checkbox placement
         runPositionItem();
         // Do it after to work around the core issue

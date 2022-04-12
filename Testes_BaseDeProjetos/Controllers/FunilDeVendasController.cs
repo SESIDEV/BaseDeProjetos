@@ -15,20 +15,19 @@ namespace BaseDeProjetos.Controllers.Tests
         {
             factory.CreateClient();
         }
-        
+
         [Fact]
         public void DeveSerVeradeiro()
         {
             Assert.True(true);
         }
 
-
-         /*
-         * 
-         *  Funções auxiliares de teste
-         * 
-         * 
-         */
+        /*
+        *
+        *  Funções auxiliares de teste
+        *
+        *
+        */
 
         private FunilDeVendasController SetupController(ApplicationDbContext context)
         {
@@ -48,7 +47,5 @@ namespace BaseDeProjetos.Controllers.Tests
             _context.Prospeccao.Remove(prosp);
             _context.SaveChanges();
         }
-
     }
-
 }

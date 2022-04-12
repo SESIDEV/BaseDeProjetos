@@ -42,11 +42,11 @@
         /**
          * @interface Highcharts.AjaxSettingsObject
          */ /**
-        * The payload to send.
-        *
-        * @name Highcharts.AjaxSettingsObject#data
-        * @type {string|Highcharts.Dictionary<any>}
-        */ /**
+       * The payload to send.
+       *
+       * @name Highcharts.AjaxSettingsObject#data
+       * @type {string|Highcharts.Dictionary<any>}
+       */ /**
         * The data type expected.
         * @name Highcharts.AjaxSettingsObject#dataType
         * @type {"json"|"xml"|"text"|"octet"}
@@ -171,7 +171,6 @@
                 }
             });
         };
-
     });
     _registerModule(_modules, 'modules/data.src.js', [_modules['parts/Chart.js'], _modules['parts/Globals.js'], _modules['parts/Point.js'], _modules['parts/Utilities.js']], function (Chart, H, Point, U) {
         /* *
@@ -219,9 +218,9 @@
          *
          * @interface Highcharts.DataDateFormatObject
          */ /**
-        * @name Highcharts.DataDateFormatObject#alternative
-        * @type {string|undefined}
-        */ /**
+       * @name Highcharts.DataDateFormatObject#alternative
+       * @type {string|undefined}
+       */ /**
         * @name Highcharts.DataDateFormatObject#parser
         * @type {Highcharts.DataDateFormatCallbackFunction}
         */ /**
@@ -791,16 +790,16 @@
                         .prototype.pointArrayMap;
                 }, globalType = (chartOptions &&
                     chartOptions.chart &&
-                    chartOptions.chart.type), individualCounts = [], seriesBuilders = [], seriesIndex = 0, 
-                // If no series mapping is defined, check if the series array is
-                // defined with types.
-                seriesMapping = ((options && options.seriesMapping) ||
-                    (chartOptions &&
-                        chartOptions.series &&
-                        chartOptions.series.map(function () {
-                            return { x: 0 };
-                        })) ||
-                    []), i;
+                    chartOptions.chart.type), individualCounts = [], seriesBuilders = [], seriesIndex = 0,
+                    // If no series mapping is defined, check if the series array is
+                    // defined with types.
+                    seriesMapping = ((options && options.seriesMapping) ||
+                        (chartOptions &&
+                            chartOptions.series &&
+                            chartOptions.series.map(function () {
+                                return { x: 0 };
+                            })) ||
+                        []), i;
                 ((chartOptions && chartOptions.series) || []).forEach(function (series) {
                     individualCounts.push(getValueCount(series.type || globalType));
                 });
@@ -819,8 +818,8 @@
                     var builder = new SeriesBuilder(), numberOfValueColumnsNeeded = individualCounts[seriesIndex] ||
                         getValueCount(globalType), seriesArr = (chartOptions && chartOptions.series) || [], series = seriesArr[seriesIndex] || {}, defaultPointArrayMap = getPointArrayMap(series.type || globalType), pointArrayMap = defaultPointArrayMap || ['y'];
                     if (
-                    // User-defined x.mapping
-                    defined(mapping.x) ||
+                        // User-defined x.mapping
+                        defined(mapping.x) ||
                         // All non cartesian don't need 'x'
                         series.isCartesian ||
                         // Except pie series:
@@ -893,16 +892,16 @@
                 var self = this, options = inOptions || this.options, csv = options.csv, columns, startRow = (typeof options.startRow !== 'undefined' && options.startRow ?
                     options.startRow :
                     0), endRow = options.endRow || Number.MAX_VALUE, startColumn = (typeof options.startColumn !== 'undefined' &&
-                    options.startColumn) ? options.startColumn : 0, endColumn = options.endColumn || Number.MAX_VALUE, itemDelimiter, lines, rowIt = 0, 
-                // activeRowNo = 0,
-                dataTypes = [], 
-                // We count potential delimiters in the prepass, and use the
-                // result as the basis of half-intelligent guesses.
-                potDelimiters = {
-                    ',': 0,
-                    ';': 0,
-                    '\t': 0
-                };
+                        options.startColumn) ? options.startColumn : 0, endColumn = options.endColumn || Number.MAX_VALUE, itemDelimiter, lines, rowIt = 0,
+                    // activeRowNo = 0,
+                    dataTypes = [],
+                    // We count potential delimiters in the prepass, and use the
+                    // result as the basis of half-intelligent guesses.
+                    potDelimiters = {
+                        ',': 0,
+                        ';': 0,
+                        '\t': 0
+                    };
                 columns = this.columns = [];
                 /*
                     This implementation is quite verbose. It will be shortened once
@@ -1144,9 +1143,9 @@
                  * @private
                  */
                 function deduceDateFormat(data, limit) {
-                    var format = 'YYYY/mm/dd', thing, guessedFormat = [], calculatedFormat, i = 0, madeDeduction = false, 
-                    // candidates = {},
-                    stable = [], max = [], j;
+                    var format = 'YYYY/mm/dd', thing, guessedFormat = [], calculatedFormat, i = 0, madeDeduction = false,
+                        // candidates = {},
+                        stable = [], max = [], j;
                     if (!limit || limit > data.length) {
                         limit = data.length;
                     }
@@ -1457,11 +1456,11 @@
              *         Always returns false, because it is an intermediate fetch.
              */
             Data.prototype.parseGoogleSpreadsheet = function () {
-                var data = this, options = this.options, googleSpreadsheetKey = options.googleSpreadsheetKey, chart = this.chart, 
-                // use sheet 1 as the default rather than od6
-                // as the latter sometimes cause issues (it looks like it can
-                // be renamed in some cases, ref. a fogbugz case).
-                worksheet = options.googleSpreadsheetWorksheet || 1, startRow = options.startRow || 0, endRow = options.endRow || Number.MAX_VALUE, startColumn = options.startColumn || 0, endColumn = options.endColumn || Number.MAX_VALUE, refreshRate = (options.dataRefreshRate || 2) * 1000;
+                var data = this, options = this.options, googleSpreadsheetKey = options.googleSpreadsheetKey, chart = this.chart,
+                    // use sheet 1 as the default rather than od6
+                    // as the latter sometimes cause issues (it looks like it can
+                    // be renamed in some cases, ref. a fogbugz case).
+                    worksheet = options.googleSpreadsheetWorksheet || 1, startRow = options.startRow || 0, endRow = options.endRow || Number.MAX_VALUE, startColumn = options.startColumn || 0, endColumn = options.endColumn || Number.MAX_VALUE, refreshRate = (options.dataRefreshRate || 2) * 1000;
                 if (refreshRate < 4000) {
                     refreshRate = 4000;
                 }
@@ -1768,7 +1767,7 @@
                             match.getTime) {
                             ret = (match.getTime() -
                                 match.getTimezoneOffset() *
-                                    60000);
+                                60000);
                             // Timestamp
                         }
                         else if (isNumber(match)) {
@@ -1996,7 +1995,7 @@
                             if (dataOptions.xAxis &&
                                 chart.xAxis[0] &&
                                 dataOptions.xAxis.type ===
-                                    chart.xAxis[0].options.type) {
+                                chart.xAxis[0].options.type) {
                                 delete dataOptions.xAxis;
                             }
                             // @todo looks not right:
@@ -2032,7 +2031,7 @@
         // option group, data.
         addEvent(Chart, 'init', function (e) {
             var chart = this, // eslint-disable-line no-invalid-this
-            userOptions = (e.args[0] || {}), callback = e.args[1];
+                userOptions = (e.args[0] || {}), callback = e.args[1];
             if (userOptions && userOptions.data && !chart.hasDataDef) {
                 chart.hasDataDef = true;
                 /**
@@ -2236,7 +2235,5 @@
         return H.Data;
     });
     _registerModule(_modules, 'masters/modules/data.src.js', [], function () {
-
-
     });
 }));

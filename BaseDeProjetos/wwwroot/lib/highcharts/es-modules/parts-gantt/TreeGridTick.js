@@ -107,14 +107,14 @@ var TreeGridTick;
         if (!renderer.styledMode) {
             icon
                 .attr({
-                'stroke-width': 1,
-                'fill': pick(params.color, '#666666')
-            })
+                    'stroke-width': 1,
+                    'fill': pick(params.color, '#666666')
+                })
                 .css({
-                cursor: 'pointer',
-                stroke: options.lineColor,
-                strokeWidth: options.lineWidth
-            });
+                    cursor: 'pointer',
+                    stroke: options.lineColor,
+                    strokeWidth: options.lineWidth
+                });
         }
         // Update the icon positions
         icon[isNew ? 'attr' : 'animate']({
@@ -140,8 +140,8 @@ var TreeGridTick;
             node = mapOfPosToGridNode && mapOfPosToGridNode[pos];
             level = (node && node.depth) || 1;
             result.x += (
-            // Add space for symbols
-            ((symbolOptions.width) + (symbolOptions.padding * 2)) +
+                // Add space for symbols
+                ((symbolOptions.width) + (symbolOptions.padding * 2)) +
                 // Apply indentation
                 ((level - 1) * indentation));
         }

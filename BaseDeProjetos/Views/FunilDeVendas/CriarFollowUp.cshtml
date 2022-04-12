@@ -51,7 +51,6 @@
                 <input type="text" class="form-control" value="@prosp.Status.First().Anotacoes" readonly />
             </div>
         </fieldset>
-
     </div>
 
     <hr />
@@ -80,7 +79,7 @@
             <hr />
             <div id="naoconversao" style="display:none">
                 <div class="form-group">
-                    <label  class="control-label"> Motivo de não conversão:</label>
+                    <label class="control-label"> Motivo de não conversão:</label>
                     <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<MotivosNaoConversao>()"></select>
                 </div>
             </div>
@@ -97,7 +96,6 @@
             </div>
         </form>
     </div>
-
 
     <script>
         function avaliarStatus(valor) {
@@ -124,8 +122,8 @@
     <div>
         <a asp-action="Index" asp-route-casa="@ViewData["Area"]">Voltar</a>
     </div>
-    </div>
+</div>
 
-    @section Scripts {
-        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    }
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

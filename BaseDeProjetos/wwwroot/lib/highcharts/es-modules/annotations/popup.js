@@ -270,10 +270,10 @@ H.Popup.prototype = {
             // create label
             createElement(SPAN, {
                 innerHTML: pick(
-                // Advanced annotations:
-                lang[options.langKey] || options.langKey, 
-                // Basic shapes:
-                options.shapes && options.shapes[0].type)
+                    // Advanced annotations:
+                    lang[options.langKey] || options.langKey,
+                    // Basic shapes:
+                    options.shapes && options.shapes[0].type)
             }, null, popupDiv);
             // add buttons
             button = this.addButton(popupDiv, lang.removeButton || 'remove', 'remove', callback, popupDiv);
@@ -343,8 +343,8 @@ H.Popup.prototype = {
                     parentNode + '.' + option : option;
                 if (isObject(value)) {
                     if (
-                    // value is object of options
-                    !isArray(value) ||
+                        // value is object of options
+                        !isArray(value) ||
                         // array of objects with params. i.e labels in Fibonacci
                         (isArray(value) && isObject(value[0]))) {
                         titleName = lang[option] || option;
@@ -469,10 +469,10 @@ H.Popup.prototype = {
          * @return {Object} - series name and type like: sma, ema, etc.
          */
         getNameType: function (series, type) {
-            var options = series.options, seriesTypes = H.seriesTypes, 
-            // add mode
-            seriesName = seriesTypes[type] &&
-                seriesTypes[type].prototype.nameBase || type.toUpperCase(), seriesType = type;
+            var options = series.options, seriesTypes = H.seriesTypes,
+                // add mode
+                seriesName = seriesTypes[type] &&
+                    seriesTypes[type].prototype.nameBase || type.toUpperCase(), seriesType = type;
             // edit
             if (options && options.type) {
                 seriesType = series.options.type;
@@ -590,8 +590,8 @@ H.Popup.prototype = {
                     addParamInputs.call(_self, chart, parentFullName, value, type, parentDiv);
                 }
                 else if (
-                // skip volume field which is created by addFormFields
-                parentFullName !== 'params.volumeSeriesID') {
+                    // skip volume field which is created by addFormFields
+                    parentFullName !== 'params.volumeSeriesID') {
                     addInput.call(_self, parentFullName, type, parentDiv, [value, 'text'] // all inputs are text type
                     );
                 }
@@ -708,7 +708,7 @@ H.Popup.prototype = {
         deselectAll: function () {
             var popupDiv = this.popup.container, tabs = popupDiv
                 .querySelectorAll('.' + PREFIX + 'tab-item'), tabsContent = popupDiv
-                .querySelectorAll('.' + PREFIX + 'tab-item-content'), i;
+                    .querySelectorAll('.' + PREFIX + 'tab-item-content'), i;
             for (i = 0; i < tabs.length; i++) {
                 tabs[i].classList.remove(PREFIX + 'tab-item-active');
                 tabsContent[i].classList.remove(PREFIX + 'tab-item-show');

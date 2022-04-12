@@ -65,10 +65,7 @@
         };
         // Apply the theme
         setOptions(Highcharts.theme);
-
     });
     _registerModule(_modules, 'masters/themes/high-contrast-light.src.js', [], function () {
-
-
     });
 }));

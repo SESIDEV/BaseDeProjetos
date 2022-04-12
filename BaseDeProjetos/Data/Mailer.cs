@@ -9,6 +9,7 @@ namespace SmartTesting.Controllers
     public class Mailer
     {
         private EmailAddress From { get; set; }
+
         public Mailer()
         {
             From = new EmailAddress("l.nasc@live.com", "Leon Nascimento");
@@ -37,7 +38,6 @@ namespace SmartTesting.Controllers
 
             foreach (Usuario pessoa in lista)
             {
-
                 EmailAddress email = new EmailAddress(pessoa.Email, pessoa.UserName);
                 Task<Response> resposta = Enviar(email, notificacao.Titulo, notificacao.TextoBase, notificacao.HTML);
                 resposta.Wait();
@@ -366,7 +366,6 @@ namespace SmartTesting.Controllers
                                         <td class='pc-fb-font' style='padding: 0 20px; text-align: center; font-family: 'Fira Sans', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 700; line-height: 1.42; letter-spacing: -0.4px; color: #151515;' valign='top'>
             ";
 
-
         public static string footer = @"
                                         </td>
                                       </tr>
@@ -500,6 +499,7 @@ namespace SmartTesting.Controllers
 </body>
 </html>
             ";
+
         public static string MontarTemplate(string texto)
         {
             return header + texto + footer;

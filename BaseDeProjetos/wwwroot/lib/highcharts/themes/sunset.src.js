@@ -62,10 +62,7 @@
         };
         // Apply the theme
         setOptions(Highcharts.theme);
-
     });
     _registerModule(_modules, 'masters/themes/sunset.src.js', [], function () {
-
-
     });
 }));

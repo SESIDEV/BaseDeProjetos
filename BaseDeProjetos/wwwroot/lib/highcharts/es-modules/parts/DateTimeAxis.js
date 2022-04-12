@@ -46,31 +46,31 @@ var DateTimeAxisAdditions = /** @class */ (function () {
      */
     DateTimeAxisAdditions.prototype.normalizeTimeTickInterval = function (tickInterval, unitsOption) {
         var units = unitsOption || [[
-                'millisecond',
-                [1, 2, 5, 10, 20, 25, 50, 100, 200, 500] // allowed multiples
-            ], [
-                'second',
-                [1, 2, 5, 10, 15, 30]
-            ], [
-                'minute',
-                [1, 2, 5, 10, 15, 30]
-            ], [
-                'hour',
-                [1, 2, 3, 4, 6, 8, 12]
-            ], [
-                'day',
-                [1, 2]
-            ], [
-                'week',
-                [1, 2]
-            ], [
-                'month',
-                [1, 2, 3, 4, 6]
-            ], [
-                'year',
-                null
-            ]], unit = units[units.length - 1], // default unit is years
-        interval = timeUnits[unit[0]], multiples = unit[1], count, i;
+            'millisecond',
+            [1, 2, 5, 10, 20, 25, 50, 100, 200, 500] // allowed multiples
+        ], [
+            'second',
+            [1, 2, 5, 10, 15, 30]
+        ], [
+            'minute',
+            [1, 2, 5, 10, 15, 30]
+        ], [
+            'hour',
+            [1, 2, 3, 4, 6, 8, 12]
+        ], [
+            'day',
+            [1, 2]
+        ], [
+            'week',
+            [1, 2]
+        ], [
+            'month',
+            [1, 2, 3, 4, 6]
+        ], [
+            'year',
+            null
+        ]], unit = units[units.length - 1], // default unit is years
+            interval = timeUnits[unit[0]], multiples = unit[1], count, i;
         // loop through the units to find the one that best fits the
         // tickInterval
         for (i = 0; i < units.length; i++) {

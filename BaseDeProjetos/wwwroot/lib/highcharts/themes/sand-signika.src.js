@@ -137,10 +137,7 @@
         };
         // Apply the theme
         setOptions(Highcharts.theme);
-
     });
     _registerModule(_modules, 'masters/themes/sand-signika.src.js', [], function () {
-
-
     });
 }));

@@ -133,10 +133,7 @@
         SVGRenderer.prototype.symbols.rect = function (x, y, w, h, options) {
             return SVGRenderer.prototype.symbols.callout(x, y, w, h, options);
         };
-
     });
     _registerModule(_modules, 'masters/modules/dotplot.src.js', [], function () {
-
-
     });
 }));

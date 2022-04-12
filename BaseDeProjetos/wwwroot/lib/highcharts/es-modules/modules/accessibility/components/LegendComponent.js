@@ -199,10 +199,10 @@ extend(LegendComponent.prototype, /** @lends Highcharts.LegendComponent */ {
             tabindex: -1,
             'aria-pressed': !item.visible,
             'aria-label': itemLabel
-        }, 
-        // Considers useHTML
-        proxyPositioningElement = item.legendGroup.div ?
-            item.legendItem : item.legendGroup;
+        },
+            // Considers useHTML
+            proxyPositioningElement = item.legendGroup.div ?
+                item.legendItem : item.legendGroup;
         item.a11yProxyElement = this.createProxyButton(item.legendItem, this.legendProxyGroup, attribs, proxyPositioningElement);
         this.proxyElementsList.push({
             item: item,

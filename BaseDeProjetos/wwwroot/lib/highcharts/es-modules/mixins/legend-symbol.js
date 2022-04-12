@@ -33,11 +33,11 @@ H.LegendSymbolMixin = {
     drawRectangle: function (legend, item) {
         var options = legend.options, symbolHeight = legend.symbolHeight, square = options.squareSymbol, symbolWidth = square ? symbolHeight : legend.symbolWidth;
         item.legendSymbol = this.chart.renderer.rect(square ? (legend.symbolWidth - symbolHeight) / 2 : 0, legend.baseline - symbolHeight + 1, // #3988
-        symbolWidth, symbolHeight, pick(legend.options.symbolRadius, symbolHeight / 2))
+            symbolWidth, symbolHeight, pick(legend.options.symbolRadius, symbolHeight / 2))
             .addClass('highcharts-point')
             .attr({
-            zIndex: 3
-        }).add(item.legendGroup);
+                zIndex: 3
+            }).add(item.legendGroup);
     },
     /**
      * Get the series' symbol in the legend. This method should be overridable
@@ -64,13 +64,13 @@ H.LegendSymbolMixin = {
         }
         this.legendLine = renderer
             .path([
-            'M',
-            0,
-            verticalCenter,
-            'L',
-            symbolWidth,
-            verticalCenter
-        ])
+                'M',
+                0,
+                verticalCenter,
+                'L',
+                symbolWidth,
+                verticalCenter
+            ])
             .addClass('highcharts-graph')
             .attr(attr)
             .add(legendItemGroup);

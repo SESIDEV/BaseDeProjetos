@@ -89,84 +89,84 @@ var addEvent = U.addEvent, css = U.css, createElement = U.createElement, discard
 var userAgent = win.navigator.userAgent, symbols = H.Renderer.prototype.symbols, isMSBrowser = /Edge\/|Trident\/|MSIE /.test(userAgent), isFirefoxBrowser = /firefox/i.test(userAgent);
 // Add language
 extend(defaultOptions.lang
-/**
- * @optionparent lang
- */
-, {
     /**
-     * Exporting module only. The text for the menu item to view the chart
-     * in full screen.
-     *
-     * @since 8.0.1
-     *
-     * @private
+     * @optionparent lang
      */
-    viewFullscreen: 'View in full screen',
-    /**
-     * Exporting module only. The text for the menu item to exit the chart
-     * from full screen.
-     *
-     * @since 8.0.1
-     *
-     * @private
-     */
-    exitFullscreen: 'Exit from full screen',
-    /**
-     * Exporting module only. The text for the menu item to print the chart.
-     *
-     * @since    3.0.1
-     * @requires modules/exporting
-     *
-     * @private
-     */
-    printChart: 'Print chart',
-    /**
-     * Exporting module only. The text for the PNG download menu item.
-     *
-     * @since    2.0
-     * @requires modules/exporting
-     *
-     * @private
-     */
-    downloadPNG: 'Download PNG image',
-    /**
-     * Exporting module only. The text for the JPEG download menu item.
-     *
-     * @since    2.0
-     * @requires modules/exporting
-     *
-     * @private
-     */
-    downloadJPEG: 'Download JPEG image',
-    /**
-     * Exporting module only. The text for the PDF download menu item.
-     *
-     * @since    2.0
-     * @requires modules/exporting
-     *
-     * @private
-     */
-    downloadPDF: 'Download PDF document',
-    /**
-     * Exporting module only. The text for the SVG download menu item.
-     *
-     * @since    2.0
-     * @requires modules/exporting
-     *
-     * @private
-     */
-    downloadSVG: 'Download SVG vector image',
-    /**
-     * Exporting module menu. The tooltip title for the context menu holding
-     * print and export menu items.
-     *
-     * @since    3.0
-     * @requires modules/exporting
-     *
-     * @private
-     */
-    contextButtonTitle: 'Chart context menu'
-});
+    , {
+        /**
+         * Exporting module only. The text for the menu item to view the chart
+         * in full screen.
+         *
+         * @since 8.0.1
+         *
+         * @private
+         */
+        viewFullscreen: 'View in full screen',
+        /**
+         * Exporting module only. The text for the menu item to exit the chart
+         * from full screen.
+         *
+         * @since 8.0.1
+         *
+         * @private
+         */
+        exitFullscreen: 'Exit from full screen',
+        /**
+         * Exporting module only. The text for the menu item to print the chart.
+         *
+         * @since    3.0.1
+         * @requires modules/exporting
+         *
+         * @private
+         */
+        printChart: 'Print chart',
+        /**
+         * Exporting module only. The text for the PNG download menu item.
+         *
+         * @since    2.0
+         * @requires modules/exporting
+         *
+         * @private
+         */
+        downloadPNG: 'Download PNG image',
+        /**
+         * Exporting module only. The text for the JPEG download menu item.
+         *
+         * @since    2.0
+         * @requires modules/exporting
+         *
+         * @private
+         */
+        downloadJPEG: 'Download JPEG image',
+        /**
+         * Exporting module only. The text for the PDF download menu item.
+         *
+         * @since    2.0
+         * @requires modules/exporting
+         *
+         * @private
+         */
+        downloadPDF: 'Download PDF document',
+        /**
+         * Exporting module only. The text for the SVG download menu item.
+         *
+         * @since    2.0
+         * @requires modules/exporting
+         *
+         * @private
+         */
+        downloadSVG: 'Download SVG vector image',
+        /**
+         * Exporting module menu. The tooltip title for the context menu holding
+         * print and export menu items.
+         *
+         * @since    3.0
+         * @requires modules/exporting
+         *
+         * @private
+         */
+        contextButtonTitle: 'Chart context menu'
+    });
 if (!defaultOptions.navigation) {
     // Buttons and menus are collected in a separate config option set called
     // 'navigation'. This can be extended later to add control buttons like
@@ -300,165 +300,165 @@ merge(true, defaultOptions.navigation, {
 });
 // Presentational attributes
 merge(true, defaultOptions.navigation
-/**
- * A collection of options for buttons and menus appearing in the exporting
- * module.
- *
- * @optionparent navigation
- */
-, {
     /**
-     * CSS styles for the popup menu appearing by default when the export
-     * icon is clicked. This menu is rendered in HTML.
-     *
-     * @see In styled mode, the menu is styled with the `.highcharts-menu`
-     *      class.
-     *
-     * @sample highcharts/navigation/menustyle/
-     *         Light gray menu background
-     *
-     * @type    {Highcharts.CSSObject}
-     * @default {"border": "1px solid #999999", "background": "#ffffff", "padding": "5px 0"}
-     * @since   2.0
-     *
-     * @private
-     */
-    menuStyle: {
-        /** @ignore-option */
-        border: '1px solid #999999',
-        /** @ignore-option */
-        background: '#ffffff',
-        /** @ignore-option */
-        padding: '5px 0'
-    },
-    /**
-     * CSS styles for the individual items within the popup menu appearing
-     * by default when the export icon is clicked. The menu items are
-     * rendered in HTML. Font size defaults to `11px` on desktop and `14px`
-     * on touch devices.
-     *
-     * @see In styled mode, the menu items are styled with the
-     *      `.highcharts-menu-item` class.
-     *
-     * @sample {highcharts} highcharts/navigation/menuitemstyle/
-     *         Add a grey stripe to the left
-     *
-     * @type    {Highcharts.CSSObject}
-     * @default {"padding": "0.5em 1em", "color": "#333333", "background": "none", "fontSize": "11px/14px", "transition": "background 250ms, color 250ms"}
-     * @since   2.0
-     *
-     * @private
-     */
-    menuItemStyle: {
-        /** @ignore-option */
-        padding: '0.5em 1em',
-        /** @ignore-option */
-        color: '#333333',
-        /** @ignore-option */
-        background: 'none',
-        /** @ignore-option */
-        fontSize: isTouchDevice ? '14px' : '11px',
-        /** @ignore-option */
-        transition: 'background 250ms, color 250ms'
-    },
-    /**
-     * CSS styles for the hover state of the individual items within the
-     * popup menu appearing by default when the export icon is clicked. The
-     * menu items are rendered in HTML.
-     *
-     * @see In styled mode, the menu items are styled with the
-     *      `.highcharts-menu-item` class.
-     *
-     * @sample highcharts/navigation/menuitemhoverstyle/
-     *         Bold text on hover
-     *
-     * @type    {Highcharts.CSSObject}
-     * @default {"background": "#335cad", "color": "#ffffff"}
-     * @since   2.0
-     *
-     * @private
-     */
-    menuItemHoverStyle: {
-        /** @ignore-option */
-        background: '#335cad',
-        /** @ignore-option */
-        color: '#ffffff'
-    },
-    /**
-     * A collection of options for buttons appearing in the exporting
+     * A collection of options for buttons and menus appearing in the exporting
      * module.
      *
-     * In styled mode, the buttons are styled with the
-     * `.highcharts-contextbutton` and `.highcharts-button-symbol` classes.
-     *
-     * @requires modules/exporting
-     *
-     * @private
+     * @optionparent navigation
      */
-    buttonOptions: {
+    , {
         /**
-         * Fill color for the symbol within the button.
+         * CSS styles for the popup menu appearing by default when the export
+         * icon is clicked. This menu is rendered in HTML.
          *
-         * @sample highcharts/navigation/buttonoptions-symbolfill/
-         *         Blue symbol stroke for one of the buttons
+         * @see In styled mode, the menu is styled with the `.highcharts-menu`
+         *      class.
          *
-         * @type  {Highcharts.ColorString|Highcharts.GradientColorObject|Highcharts.PatternObject}
-         * @since 2.0
+         * @sample highcharts/navigation/menustyle/
+         *         Light gray menu background
+         *
+         * @type    {Highcharts.CSSObject}
+         * @default {"border": "1px solid #999999", "background": "#ffffff", "padding": "5px 0"}
+         * @since   2.0
+         *
+         * @private
          */
-        symbolFill: '#666666',
+        menuStyle: {
+            /** @ignore-option */
+            border: '1px solid #999999',
+            /** @ignore-option */
+            background: '#ffffff',
+            /** @ignore-option */
+            padding: '5px 0'
+        },
         /**
-         * The color of the symbol's stroke or line.
+         * CSS styles for the individual items within the popup menu appearing
+         * by default when the export icon is clicked. The menu items are
+         * rendered in HTML. Font size defaults to `11px` on desktop and `14px`
+         * on touch devices.
          *
-         * @sample highcharts/navigation/buttonoptions-symbolstroke/
-         *         Blue symbol stroke
+         * @see In styled mode, the menu items are styled with the
+         *      `.highcharts-menu-item` class.
          *
-         * @type  {Highcharts.ColorString}
-         * @since 2.0
+         * @sample {highcharts} highcharts/navigation/menuitemstyle/
+         *         Add a grey stripe to the left
+         *
+         * @type    {Highcharts.CSSObject}
+         * @default {"padding": "0.5em 1em", "color": "#333333", "background": "none", "fontSize": "11px/14px", "transition": "background 250ms, color 250ms"}
+         * @since   2.0
+         *
+         * @private
          */
-        symbolStroke: '#666666',
+        menuItemStyle: {
+            /** @ignore-option */
+            padding: '0.5em 1em',
+            /** @ignore-option */
+            color: '#333333',
+            /** @ignore-option */
+            background: 'none',
+            /** @ignore-option */
+            fontSize: isTouchDevice ? '14px' : '11px',
+            /** @ignore-option */
+            transition: 'background 250ms, color 250ms'
+        },
         /**
-         * The pixel stroke width of the symbol on the button.
+         * CSS styles for the hover state of the individual items within the
+         * popup menu appearing by default when the export icon is clicked. The
+         * menu items are rendered in HTML.
          *
-         * @sample highcharts/navigation/buttonoptions-height/
-         *         Bigger buttons
+         * @see In styled mode, the menu items are styled with the
+         *      `.highcharts-menu-item` class.
          *
-         * @since 2.0
+         * @sample highcharts/navigation/menuitemhoverstyle/
+         *         Bold text on hover
+         *
+         * @type    {Highcharts.CSSObject}
+         * @default {"background": "#335cad", "color": "#ffffff"}
+         * @since   2.0
+         *
+         * @private
          */
-        symbolStrokeWidth: 3,
+        menuItemHoverStyle: {
+            /** @ignore-option */
+            background: '#335cad',
+            /** @ignore-option */
+            color: '#ffffff'
+        },
         /**
-         * A configuration object for the button theme. The object accepts
-         * SVG properties like `stroke-width`, `stroke` and `fill`.
-         * Tri-state button styles are supported by the `states.hover` and
-         * `states.select` objects.
+         * A collection of options for buttons appearing in the exporting
+         * module.
          *
-         * @sample highcharts/navigation/buttonoptions-theme/
-         *         Theming the buttons
+         * In styled mode, the buttons are styled with the
+         * `.highcharts-contextbutton` and `.highcharts-button-symbol` classes.
          *
          * @requires modules/exporting
          *
-         * @since 3.0
+         * @private
          */
-        theme: {
+        buttonOptions: {
             /**
-             * The default fill exists only to capture hover events.
+             * Fill color for the symbol within the button.
              *
-             * @type      {Highcharts.ColorString|Highcharts.GradientColorObject|Highcharts.PatternObject}
-             * @default   #ffffff
-             * @apioption navigation.buttonOptions.theme.fill
+             * @sample highcharts/navigation/buttonoptions-symbolfill/
+             *         Blue symbol stroke for one of the buttons
+             *
+             * @type  {Highcharts.ColorString|Highcharts.GradientColorObject|Highcharts.PatternObject}
+             * @since 2.0
              */
+            symbolFill: '#666666',
             /**
-             * Default stroke for the buttons.
-             * @type      {Highcharts.ColorString}
-             * @default   none
-             * @apioption navigation.buttonOptions.theme.stroke
+             * The color of the symbol's stroke or line.
+             *
+             * @sample highcharts/navigation/buttonoptions-symbolstroke/
+             *         Blue symbol stroke
+             *
+             * @type  {Highcharts.ColorString}
+             * @since 2.0
              */
+            symbolStroke: '#666666',
             /**
-             * Padding for the button.
+             * The pixel stroke width of the symbol on the button.
+             *
+             * @sample highcharts/navigation/buttonoptions-height/
+             *         Bigger buttons
+             *
+             * @since 2.0
              */
-            padding: 5
+            symbolStrokeWidth: 3,
+            /**
+             * A configuration object for the button theme. The object accepts
+             * SVG properties like `stroke-width`, `stroke` and `fill`.
+             * Tri-state button styles are supported by the `states.hover` and
+             * `states.select` objects.
+             *
+             * @sample highcharts/navigation/buttonoptions-theme/
+             *         Theming the buttons
+             *
+             * @requires modules/exporting
+             *
+             * @since 3.0
+             */
+            theme: {
+                /**
+                 * The default fill exists only to capture hover events.
+                 *
+                 * @type      {Highcharts.ColorString|Highcharts.GradientColorObject|Highcharts.PatternObject}
+                 * @default   #ffffff
+                 * @apioption navigation.buttonOptions.theme.fill
+                 */
+                /**
+                 * Default stroke for the buttons.
+                 * @type      {Highcharts.ColorString}
+                 * @default   none
+                 * @apioption navigation.buttonOptions.theme.stroke
+                 */
+                /**
+                 * Padding for the button.
+                 */
+                padding: 5
+            }
         }
-    }
-});
+    });
 // Add the export related options
 /**
  * Options for the exporting module. For an overview on the matter, see
@@ -1007,7 +1007,7 @@ extend(Chart.prototype, /** @lends Highcharts.Chart.prototype */ {
             .replace(/\n/, ' ')
             // Batik doesn't support rgba fills and strokes (#3095)
             .replace(/(fill|stroke)="rgba\(([ 0-9]+,[ 0-9]+,[ 0-9]+),([ 0-9\.]+)\)"/g, // eslint-disable-line max-len
-        '$1="rgb($2)" $1-opacity="$3"')
+                '$1="rgb($2)" $1-opacity="$3"')
             // Replace HTML entities, issue #347
             .replace(/&nbsp;/g, '\u00A0') // no-break space
             .replace(/&shy;/g, '\u00AD'); // soft hyphen
@@ -1058,9 +1058,9 @@ extend(Chart.prototype, /** @lends Highcharts.Chart.prototype */ {
      * @requires modules/exporting
      */
     getSVG: function (chartOptions) {
-        var chart = this, chartCopy, sandbox, svg, seriesOptions, sourceWidth, sourceHeight, cssWidth, cssHeight, 
-        // Copy the options and add extra options
-        options = merge(chart.options, chartOptions);
+        var chart = this, chartCopy, sandbox, svg, seriesOptions, sourceWidth, sourceHeight, cssWidth, cssHeight,
+            // Copy the options and add extra options
+            options = merge(chart.options, chartOptions);
         // Use userOptions to make the options chain in series right (#3881)
         options.plotOptions = merge(chart.userOptions.plotOptions, chartOptions && chartOptions.plotOptions);
         // ... and likewise with time, avoid that undefined time properties are
@@ -1136,7 +1136,7 @@ extend(Chart.prototype, /** @lends Highcharts.Chart.prototype */ {
             if (axisCopy &&
                 ((typeof userMin !== 'undefined' &&
                     userMin !== axisCopy.min) || (typeof userMax !== 'undefined' &&
-                    userMax !== axisCopy.max))) {
+                        userMax !== axisCopy.max))) {
                 axisCopy.setExtremes(userMin, userMax, true, false);
             }
         });
@@ -1258,8 +1258,8 @@ extend(Chart.prototype, /** @lends Highcharts.Chart.prototype */ {
         (chart.fixedDiv ? // When scrollablePlotArea is active (#9533)
             [chart.fixedDiv, chart.scrollingContainer] :
             [chart.container]).forEach(function (div) {
-            moveTo.appendChild(div);
-        });
+                moveTo.appendChild(div);
+            });
     },
     /**
     * Prepare chart and document before printing a chart.
@@ -1402,7 +1402,7 @@ extend(Chart.prototype, /** @lends Highcharts.Chart.prototype */ {
      */
     contextMenu: function (className, items, x, y, width, height, button) {
         var chart = this, navOptions = chart.options.navigation, chartWidth = chart.chartWidth, chartHeight = chart.chartHeight, cacheName = 'cache-' + className, menu = chart[cacheName], menuPadding = Math.max(width, height), // for mouse leave detection
-        innerMenu, menuStyle;
+            innerMenu, menuStyle;
         // create the menu only the first time
         if (!menu) {
             // create a HTML element above the SVG
@@ -1444,18 +1444,18 @@ extend(Chart.prototype, /** @lends Highcharts.Chart.prototype */ {
                 menu.hideTimer = win.setTimeout(menu.hideMenu, 500);
             }), addEvent(menu, 'mouseenter', function () {
                 U.clearTimeout(menu.hideTimer);
-            }), 
-            // Hide it on clicking or touching outside the menu (#2258,
-            // #2335, #2407)
-            addEvent(doc, 'mouseup', function (e) {
-                if (!chart.pointer.inClass(e.target, className)) {
-                    menu.hideMenu();
-                }
-            }), addEvent(menu, 'click', function () {
-                if (chart.openMenu) {
-                    menu.hideMenu();
-                }
-            }));
+            }),
+                // Hide it on clicking or touching outside the menu (#2258,
+                // #2335, #2407)
+                addEvent(doc, 'mouseup', function (e) {
+                    if (!chart.pointer.inClass(e.target, className)) {
+                        menu.hideMenu();
+                    }
+                }), addEvent(menu, 'click', function () {
+                    if (chart.openMenu) {
+                        menu.hideMenu();
+                    }
+                }));
             // create the items
             items.forEach(function (item) {
                 if (typeof item === 'string') {
@@ -1591,22 +1591,22 @@ extend(Chart.prototype, /** @lends Highcharts.Chart.prototype */ {
             .button(btnOptions.text, 0, 0, callback, attr, hover, select)
             .addClass(options.className)
             .attr({
-            title: pick(chart.options.lang[btnOptions._titleKey || btnOptions.titleKey], '')
-        });
+                title: pick(chart.options.lang[btnOptions._titleKey || btnOptions.titleKey], '')
+            });
         button.menuClassName = (options.menuClassName ||
             'highcharts-menu-' + chart.btnCount++);
         if (btnOptions.symbol) {
             symbol = renderer
                 .symbol(btnOptions.symbol, btnOptions.symbolX - (symbolSize / 2), btnOptions.symbolY - (symbolSize / 2), symbolSize, symbolSize
-            // If symbol is an image, scale it (#7957)
-            , {
-                width: symbolSize,
-                height: symbolSize
-            })
+                    // If symbol is an image, scale it (#7957)
+                    , {
+                        width: symbolSize,
+                        height: symbolSize
+                    })
                 .addClass('highcharts-button-symbol')
                 .attr({
-                zIndex: 1
-            })
+                    zIndex: 1
+                })
                 .add(button);
             if (!chart.styledMode) {
                 symbol.attr({
@@ -1619,9 +1619,9 @@ extend(Chart.prototype, /** @lends Highcharts.Chart.prototype */ {
         button
             .add(chart.exportingGroup)
             .align(extend(btnOptions, {
-            width: button.width,
-            x: pick(btnOptions.x, chart.buttonOffset) // #1654
-        }), true, 'spacingBox');
+                width: button.width,
+                x: pick(btnOptions.x, chart.buttonOffset) // #1654
+            }), true, 'spacingBox');
         chart.buttonOffset += ((button.width + btnOptions.buttonSpacing) *
             (btnOptions.align === 'right' ? -1 : 1));
         chart.exportSVGElements.push(button, symbol);
@@ -1665,9 +1665,9 @@ extend(Chart.prototype, /** @lends Highcharts.Chart.prototype */ {
                 // Remove inline events
                 chart.exportDivElements[i] =
                     elem.onmouseout =
-                        elem.onmouseover =
-                            elem.ontouchstart =
-                                elem.onclick = null;
+                    elem.onmouseover =
+                    elem.ontouchstart =
+                    elem.onclick = null;
                 // Destroy the div by moving to garbage bin
                 discardElement(elem);
             });
@@ -1725,7 +1725,7 @@ SVGRenderer.prototype.unstyledElements = [
  */
 Chart.prototype.inlineStyles = function () {
     var renderer = this.renderer, inlineToAttributes = renderer.inlineToAttributes, blacklist = renderer.inlineBlacklist, whitelist = renderer.inlineWhitelist, // For IE
-    unstyledElements = renderer.unstyledElements, defaultStyles = {}, dummySVG, iframe, iframeDoc;
+        unstyledElements = renderer.unstyledElements, defaultStyles = {}, dummySVG, iframe, iframeDoc;
     // Create an iframe where we read default styles without pollution from this
     // body
     iframe = doc.createElement('iframe');

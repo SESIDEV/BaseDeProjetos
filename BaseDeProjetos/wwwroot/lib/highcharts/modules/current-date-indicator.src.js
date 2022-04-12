@@ -123,10 +123,7 @@
             }
             return defaultMethod.call(this, defaultLabelOptions);
         });
-
     });
     _registerModule(_modules, 'masters/modules/current-date-indicator.src.js', [], function () {
-
-
     });
 }));

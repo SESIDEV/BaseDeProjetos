@@ -90,12 +90,12 @@ H.CenteredSeriesMixin = {
      */
     getStartAndEndRadians: function (start, end) {
         var startAngle = isNumber(start) ? start : 0, // must be a number
-        endAngle = ((isNumber(end) && // must be a number
-            end > startAngle && // must be larger than the start angle
-            // difference must be less than 360 degrees
-            (end - startAngle) < 360) ?
-            end :
-            startAngle + 360), correction = -90;
+            endAngle = ((isNumber(end) && // must be a number
+                end > startAngle && // must be larger than the start angle
+                // difference must be less than 360 degrees
+                (end - startAngle) < 360) ?
+                end :
+                startAngle + 360), correction = -90;
         return {
             start: deg2rad * (startAngle + correction),
             end: deg2rad * (endAngle + correction)

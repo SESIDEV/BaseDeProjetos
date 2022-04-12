@@ -99,14 +99,14 @@
                 var evt = doc.createEvent('MouseEvent');
                 if (evt.initMouseEvent) {
                     evt.initMouseEvent(type, true, // Bubble
-                    true, // Cancel
-                    win, // View
-                    type === 'click' ? 1 : 0, // Detail
-                    // Coords
-                    0, 0, 0, 0, 
-                    // Pressed keys
-                    false, false, false, false, 0, // button
-                    null // related target
+                        true, // Cancel
+                        win, // View
+                        type === 'click' ? 1 : 0, // Detail
+                        // Coords
+                        0, 0, 0, 0,
+                        // Pressed keys
+                        false, false, false, false, 0, // button
+                        null // related target
                     );
                     return evt;
                 }
@@ -407,12 +407,12 @@
          *
          * @interface Highcharts.KeyboardNavigationHandlerOptionsObject
          */ /**
-        * An array containing pairs of an array of keycodes, mapped to a handler
-        * function. When the keycode is received, the handler is called with the
-        * keycode as parameter.
-        * @name Highcharts.KeyboardNavigationHandlerOptionsObject#keyCodeMap
-        * @type {Array<Array<Array<number>, Function>>}
-        */ /**
+       * An array containing pairs of an array of keycodes, mapped to a handler
+       * function. When the keycode is received, the handler is called with the
+       * keycode as parameter.
+       * @name Highcharts.KeyboardNavigationHandlerOptionsObject#keyCodeMap
+       * @type {Array<Array<Array<number>, Function>>}
+       */ /**
         * Function to run on initialization of module.
         * @name Highcharts.KeyboardNavigationHandlerOptionsObject#init
         * @type {Function}
@@ -898,7 +898,7 @@
                     var evt = doc.createEvent('MouseEvent');
                     if (evt.initMouseEvent) {
                         evt.initMouseEvent(e.type, e.bubbles, // #10561, #12161
-                        e.cancelable, e.view || win, e.detail, e.screenX, e.screenY, e.clientX, e.clientY, e.ctrlKey, e.altKey, e.shiftKey, e.metaKey, e.button, e.relatedTarget);
+                            e.cancelable, e.view || win, e.detail, e.screenX, e.screenY, e.clientX, e.clientY, e.ctrlKey, e.altKey, e.shiftKey, e.metaKey, e.button, e.relatedTarget);
                         return evt;
                     }
                 }
@@ -1514,10 +1514,10 @@
                     tabindex: -1,
                     'aria-pressed': !item.visible,
                     'aria-label': itemLabel
-                }, 
-                // Considers useHTML
-                proxyPositioningElement = item.legendGroup.div ?
-                    item.legendItem : item.legendGroup;
+                },
+                    // Considers useHTML
+                    proxyPositioningElement = item.legendGroup.div ?
+                        item.legendItem : item.legendGroup;
                 item.a11yProxyElement = this.createProxyButton(item.legendItem, this.legendProxyGroup, attribs, proxyPositioningElement);
                 this.proxyElementsList.push({
                     item: item,
@@ -1809,11 +1809,11 @@
                 if (exportingShouldHaveA11y(chart)) {
                     // Proxy button and group
                     this.exportProxyGroup = this.addProxyGroup(
-                    // Wrap in a region div if verbosity is high
-                    a11yOptions.landmarkVerbosity === 'all' ? {
-                        'aria-label': chart.langFormat('accessibility.exporting.exportRegionLabel', { chart: chart }),
-                        'role': 'region'
-                    } : {});
+                        // Wrap in a region div if verbosity is high
+                        a11yOptions.landmarkVerbosity === 'all' ? {
+                            'aria-label': chart.langFormat('accessibility.exporting.exportRegionLabel', { chart: chart }),
+                            'role': 'region'
+                        } : {});
                     var button = getExportMenuButtonElement(this.chart);
                     this.exportButtonProxy = this.createProxyButton(button, this.exportProxyGroup, {
                         'aria-label': chart.langFormat('accessibility.exporting.menuButtonLabel', { chart: chart }),
@@ -1880,7 +1880,7 @@
                         return chart.exportChart &&
                             chart.options.exporting.enabled !== false &&
                             chart.options.exporting.accessibility.enabled !==
-                                false;
+                            false;
                     },
                     // Focus export menu button
                     init: function () {
@@ -2031,7 +2031,7 @@
                 // reached
                 (seriesNavOptions.pointNavigationEnabledThreshold &&
                     seriesNavOptions.pointNavigationEnabledThreshold <=
-                        series.points.length);
+                    series.points.length);
         }
         /**
          * Determine if navigation for a point should be skipped
@@ -2080,8 +2080,8 @@
                     (point.plotX - dPoint.plotX) *
                     (xWeight || 1) +
                     (point.plotY - dPoint.plotY) *
-                        (point.plotY - dPoint.plotY) *
-                        (yWeight || 1);
+                    (point.plotY - dPoint.plotY) *
+                    (yWeight || 1);
                 if (distance < minDistance) {
                     minDistance = distance;
                     minIx = i;
@@ -2399,17 +2399,17 @@
                 return new KeyboardNavigationHandler(chart, {
                     keyCodeMap: [
                         [inverted ? [keys.up, keys.down] : [keys.left, keys.right], function (keyCode) {
-                                return keyboardNavigation.onKbdSideways(this, keyCode);
-                            }],
+                            return keyboardNavigation.onKbdSideways(this, keyCode);
+                        }],
                         [inverted ? [keys.left, keys.right] : [keys.up, keys.down], function (keyCode) {
-                                return keyboardNavigation.onKbdVertical(this, keyCode);
-                            }],
+                            return keyboardNavigation.onKbdVertical(this, keyCode);
+                        }],
                         [[keys.enter, keys.space], function () {
-                                if (chart.highlightedPoint) {
-                                    chart.highlightedPoint.firePointEvent('click');
-                                }
-                                return this.response.success;
-                            }]
+                            if (chart.highlightedPoint) {
+                                chart.highlightedPoint.firePointEvent('click');
+                            }
+                            return this.response.success;
+                        }]
                     ],
                     init: function (dir) {
                         return keyboardNavigation.onHandlerInit(this, dir);
@@ -2723,12 +2723,12 @@
             var series = point.series, firstPointWithGraphic = findFirstPointWithGraphic(point), firstGraphic = firstPointWithGraphic && firstPointWithGraphic.graphic, parentGroup = firstGraphic ?
                 firstGraphic.parentGroup :
                 series.graph || series.group, dummyPos = firstPointWithGraphic ? {
-                x: pick(point.plotX, firstPointWithGraphic.plotX, 0),
-                y: pick(point.plotY, firstPointWithGraphic.plotY, 0)
-            } : {
-                x: pick(point.plotX, 0),
-                y: pick(point.plotY, 0)
-            }, dummyElement = makeDummyElement(point, dummyPos);
+                    x: pick(point.plotX, firstPointWithGraphic.plotX, 0),
+                    y: pick(point.plotY, firstPointWithGraphic.plotY, 0)
+                } : {
+                    x: pick(point.plotX, 0),
+                    y: pick(point.plotY, 0)
+                }, dummyElement = makeDummyElement(point, dummyPos);
             if (parentGroup && parentGroup.element) {
                 point.graphic = dummyElement;
                 point.hasDummyGraphic = true;
@@ -2877,9 +2877,9 @@
         function getPointValue(point) {
             var series = point.series, a11yPointOpts = series.chart.options.accessibility.point || {}, tooltipOptions = series.tooltipOptions || {}, valuePrefix = a11yPointOpts.valuePrefix ||
                 tooltipOptions.valuePrefix || '', valueSuffix = a11yPointOpts.valueSuffix ||
-                tooltipOptions.valueSuffix || '', fallbackKey = (typeof point.value !==
-                'undefined' ?
-                'value' : 'y'), fallbackDesc = pointNumberToString(point, point[fallbackKey]);
+                    tooltipOptions.valueSuffix || '', fallbackKey = (typeof point.value !==
+                        'undefined' ?
+                        'value' : 'y'), fallbackDesc = pointNumberToString(point, point[fallbackKey]);
             if (point.isNull) {
                 return series.chart.langFormat('accessibility.series.nullPointValue', {
                     point: point
@@ -2913,14 +2913,14 @@
         function getPointValueDescription(point) {
             var series = point.series, chart = series.chart, pointValueDescriptionFormat = chart.options.accessibility
                 .point.valueDescriptionFormat, showXDescription = pick(series.xAxis &&
-                series.xAxis.options.accessibility &&
-                series.xAxis.options.accessibility.enabled, !chart.angular), xDesc = showXDescription ? getPointXDescription(point) : '', context = {
-                point: point,
-                index: defined(point.index) ? (point.index + 1) : '',
-                xDescription: xDesc,
-                value: getPointValue(point),
-                separator: showXDescription ? ', ' : ''
-            };
+                    series.xAxis.options.accessibility &&
+                    series.xAxis.options.accessibility.enabled, !chart.angular), xDesc = showXDescription ? getPointXDescription(point) : '', context = {
+                        point: point,
+                        index: defined(point.index) ? (point.index + 1) : '',
+                        xDescription: xDesc,
+                        value: getPointValue(point),
+                        separator: showXDescription ? ', ' : ''
+                    };
             return format(pointValueDescriptionFormat, context, chart);
         }
         /**
@@ -2931,7 +2931,7 @@
         function defaultPointDescriptionFormatter(point) {
             var series = point.series, chart = series.chart, valText = getPointValueDescription(point), description = point.options && point.options.accessibility &&
                 point.options.accessibility.description, userDescText = description ? ' ' + description : '', seriesNameText = chart.series.length > 1 && series.name ?
-                ' ' + series.name + '.' : '', annotationsDesc = getPointAnnotationDescription(point), pointAnnotationsText = annotationsDesc ? ' ' + annotationsDesc : '';
+                    ' ' + series.name + '.' : '', annotationsDesc = getPointAnnotationDescription(point), pointAnnotationsText = annotationsDesc ? ' ' + annotationsDesc : '';
             point.accessibility = point.accessibility || {};
             point.accessibility.valueDescription = valText;
             return valText + userDescText + seriesNameText + pointAnnotationsText;
@@ -2946,7 +2946,7 @@
             var series = point.series, a11yPointOptions = series.chart.options.accessibility.point || {}, seriesA11yOptions = series.options.accessibility || {}, label = escapeStringForHTML(stripHTMLTags(seriesA11yOptions.pointDescriptionFormatter &&
                 seriesA11yOptions.pointDescriptionFormatter(point) ||
                 a11yPointOptions.descriptionFormatter &&
-                    a11yPointOptions.descriptionFormatter(point) ||
+                a11yPointOptions.descriptionFormatter(point) ||
                 defaultPointDescriptionFormatter(point)));
             pointElement.setAttribute('role', 'img');
             pointElement.setAttribute('aria-label', label);
@@ -3118,7 +3118,7 @@
         var getChartTitle = ChartUtilities.getChartTitle;
         var defaultPointDescriptionFormatter = SeriesDescriber
             .defaultPointDescriptionFormatter, defaultSeriesDescriptionFormatter = SeriesDescriber
-            .defaultSeriesDescriptionFormatter;
+                .defaultSeriesDescriptionFormatter;
         /* eslint-disable no-invalid-this, valid-jsdoc */
         /**
          * @private
@@ -3142,9 +3142,9 @@
         function getUniqueSeries(arrayA, arrayB) {
             var uniqueSeries = (arrayA || []).concat(arrayB || [])
                 .reduce(function (acc, cur) {
-                acc[cur.name + cur.index] = cur;
-                return acc;
-            }, {});
+                    acc[cur.name + cur.index] = cur;
+                    return acc;
+                }, {});
             return Object.keys(uniqueSeries).map(function (ix) {
                 return uniqueSeries[ix];
             });
@@ -3802,7 +3802,7 @@
             onMapKbdArrow: function (keyboardNavigationHandler, keyCode) {
                 var keys = this.keyCodes, panAxis = (keyCode === keys.up || keyCode === keys.down) ?
                     'yAxis' : 'xAxis', stepDirection = (keyCode === keys.left || keyCode === keys.up) ?
-                    -1 : 1;
+                        -1 : 1;
                 this.chart[panAxis][0].panStep(stepDirection);
                 return keyboardNavigationHandler.response.success;
             },
@@ -4423,21 +4423,21 @@
                 var _a;
                 var chart = this.chart, format = chart.options.accessibility
                     .screenReaderSection.beforeChartFormat, axesDesc = this.getAxesDescription(), shouldHaveSonifyBtn = chart.sonify && ((_a = chart.options.sonification) === null || _a === void 0 ? void 0 : _a.enabled), sonifyButtonId = 'highcharts-a11y-sonify-data-btn-' +
-                    chart.index, dataTableButtonId = 'hc-linkto-highcharts-data-table-' +
-                    chart.index, annotationsList = getAnnotationsInfoHTML(chart), annotationsTitleStr = chart.langFormat('accessibility.screenReaderSection.annotations.heading', { chart: chart }), context = {
-                    chartTitle: getChartTitle(chart),
-                    typeDescription: this.getTypeDescriptionText(),
-                    chartSubtitle: this.getSubtitleText(),
-                    chartLongdesc: this.getLongdescText(),
-                    xAxisDescription: axesDesc.xAxis,
-                    yAxisDescription: axesDesc.yAxis,
-                    playAsSoundButton: shouldHaveSonifyBtn ?
-                        this.getSonifyButtonText(sonifyButtonId) : '',
-                    viewTableButton: chart.getCSV ?
-                        this.getDataTableButtonText(dataTableButtonId) : '',
-                    annotationsTitle: annotationsList ? annotationsTitleStr : '',
-                    annotationsList: annotationsList
-                }, formattedString = H.i18nFormat(format, context, chart);
+                        chart.index, dataTableButtonId = 'hc-linkto-highcharts-data-table-' +
+                            chart.index, annotationsList = getAnnotationsInfoHTML(chart), annotationsTitleStr = chart.langFormat('accessibility.screenReaderSection.annotations.heading', { chart: chart }), context = {
+                                chartTitle: getChartTitle(chart),
+                                typeDescription: this.getTypeDescriptionText(),
+                                chartSubtitle: this.getSubtitleText(),
+                                chartLongdesc: this.getLongdescText(),
+                                xAxisDescription: axesDesc.xAxis,
+                                yAxisDescription: axesDesc.yAxis,
+                                playAsSoundButton: shouldHaveSonifyBtn ?
+                                    this.getSonifyButtonText(sonifyButtonId) : '',
+                                viewTableButton: chart.getCSV ?
+                                    this.getDataTableButtonText(dataTableButtonId) : '',
+                                annotationsTitle: annotationsList ? annotationsTitleStr : '',
+                                annotationsList: annotationsList
+                            }, formattedString = H.i18nFormat(format, context, chart);
                 this.dataTableButtonId = dataTableButtonId;
                 this.sonifyButtonId = sonifyButtonId;
                 return stringToSimpleHTML(formattedString);
@@ -4449,8 +4449,8 @@
             defaultAfterChartFormatter: function () {
                 var chart = this.chart, format = chart.options.accessibility
                     .screenReaderSection.afterChartFormat, context = {
-                    endOfChartMarker: this.getEndOfChartMarkerText()
-                }, formattedString = H.i18nFormat(format, context, chart);
+                        endOfChartMarker: this.getEndOfChartMarkerText()
+                    }, formattedString = H.i18nFormat(format, context, chart);
                 return stringToSimpleHTML(formattedString);
             },
             /**
@@ -4480,7 +4480,7 @@
                 var chart = this.chart;
                 return chart.types ?
                     chart.options.accessibility.typeDescription ||
-                        chart.getTypeDescription(chart.types) : '';
+                    chart.getTypeDescription(chart.types) : '';
             },
             /**
              * @private
@@ -4711,8 +4711,8 @@
             getAxisFromToDescription: function (axis) {
                 var chart = this.chart, dateRangeFormat = chart.options.accessibility
                     .screenReaderSection.axisRangeDateFormat, format = function (axisKey) {
-                    return axis.dateTime ? chart.time.dateFormat(dateRangeFormat, axis[axisKey]) : axis[axisKey];
-                };
+                        return axis.dateTime ? chart.time.dateFormat(dateRangeFormat, axis[axisKey]) : axis[axisKey];
+                    };
                 return chart.langFormat('accessibility.axis.rangeFromTo', {
                     chart: chart,
                     axis: axis,
@@ -5179,20 +5179,20 @@
         /**
          * @interface Highcharts.PointAccessibilityOptionsObject
          */ /**
-        * Provide a description of the data point, announced to screen readers.
-        * @name Highcharts.PointAccessibilityOptionsObject#description
-        * @type {string|undefined}
-        * @requires modules/accessibility
-        * @since 7.1.0
-        */
+       * Provide a description of the data point, announced to screen readers.
+       * @name Highcharts.PointAccessibilityOptionsObject#description
+       * @type {string|undefined}
+       * @requires modules/accessibility
+       * @since 7.1.0
+       */
         /* *
          * @interface Highcharts.PointOptionsObject in parts/Point.ts
          */ /**
-        * @name Highcharts.PointOptionsObject#accessibility
-        * @type {Highcharts.PointAccessibilityOptionsObject|undefined}
-        * @requires modules/accessibility
-        * @since 7.1.0
-        */
+       * @name Highcharts.PointOptionsObject#accessibility
+       * @type {Highcharts.PointAccessibilityOptionsObject|undefined}
+       * @requires modules/accessibility
+       * @since 7.1.0
+       */
         /**
          * @callback Highcharts.ScreenReaderClickCallbackFunction
          *
@@ -6428,11 +6428,11 @@
                     var optionVal = series.options[oldOption];
                     if (typeof optionVal !== 'undefined') {
                         // Set the new option
-                        traverseSetOption(series.options, oldToNewSeriesOptions[oldOption], 
-                        // Note that skipKeyboardNavigation has inverted option
-                        // value, since we set enabled rather than disabled
-                        oldOption === 'skipKeyboardNavigation' ?
-                            !optionVal : optionVal);
+                        traverseSetOption(series.options, oldToNewSeriesOptions[oldOption],
+                            // Note that skipKeyboardNavigation has inverted option
+                            // value, since we set enabled rather than disabled
+                            oldOption === 'skipKeyboardNavigation' ?
+                                !optionVal : optionVal);
                         error(32, false, chart, (_a = {}, _a["series." + oldOption] = "series." + oldToNewSeriesOptions[oldOption].join('.'), _a));
                     }
                 });
@@ -6758,7 +6758,6 @@
             return typeof formatString === 'string' ?
                 H.i18nFormat(formatString, context, this) : '';
         };
-
     });
     _registerModule(_modules, 'modules/accessibility/focusBorder.js', [_modules['parts/Globals.js'], _modules['parts/SVGElement.js'], _modules['parts/SVGLabel.js'], _modules['parts/Utilities.js']], function (H, SVGElement, SVGLabel, U) {
         /* *
@@ -6926,8 +6925,8 @@
                 this.focusBorder = this.renderer.rect(borderPosX, borderPosY, borderWidth, borderHeight, parseInt((style && style.borderRadius || 0).toString(), 10))
                     .addClass('highcharts-focus-border')
                     .attr({
-                    zIndex: 99
-                })
+                        zIndex: 99
+                    })
                     .add(this.parentGroup);
                 if (!this.renderer.styledMode) {
                     this.focusBorder.attr({
@@ -7007,7 +7006,6 @@
             this.focusElement = svgElement;
             this.renderFocusBorder();
         };
-
     });
     _registerModule(_modules, 'modules/accessibility/accessibility.js', [_modules['modules/accessibility/utils/chartUtilities.js'], _modules['parts/Globals.js'], _modules['modules/accessibility/KeyboardNavigationHandler.js'], _modules['parts/Options.js'], _modules['parts/Point.js'], _modules['parts/Utilities.js'], _modules['modules/accessibility/AccessibilityComponent.js'], _modules['modules/accessibility/KeyboardNavigation.js'], _modules['modules/accessibility/components/LegendComponent.js'], _modules['modules/accessibility/components/MenuComponent.js'], _modules['modules/accessibility/components/SeriesComponent/SeriesComponent.js'], _modules['modules/accessibility/components/ZoomComponent.js'], _modules['modules/accessibility/components/RangeSelectorComponent.js'], _modules['modules/accessibility/components/InfoRegionsComponent.js'], _modules['modules/accessibility/components/ContainerComponent.js'], _modules['modules/accessibility/high-contrast-mode.js'], _modules['modules/accessibility/high-contrast-theme.js'], _modules['modules/accessibility/options/options.js'], _modules['modules/accessibility/options/langOptions.js'], _modules['modules/accessibility/options/deprecatedOptions.js']], function (ChartUtilities, H, KeyboardNavigationHandler, O, Point, U, AccessibilityComponent, KeyboardNavigation, LegendComponent, MenuComponent, SeriesComponent, ZoomComponent, RangeSelectorComponent, InfoRegionsComponent, ContainerComponent, whcm, highContrastTheme, defaultOptionsA11Y, defaultLangOptions, copyDeprecatedOptions) {
         /* *
@@ -7269,11 +7267,7 @@
                 this.accessibility.destroy();
             }
         });
-
     });
     _registerModule(_modules, 'masters/modules/accessibility.src.js', [], function () {
-
-
-
     });
 }));

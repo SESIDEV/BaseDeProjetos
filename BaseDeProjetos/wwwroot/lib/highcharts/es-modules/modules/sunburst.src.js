@@ -131,8 +131,8 @@ var layoutAlgorithm = function layoutAlgorithm(parent, children, options) {
         isNumber(options.levelSize.value)) ?
         options.levelSize.value :
         0), innerRadius = parent.r, outerRadius = innerRadius + radius, slicedOffset = options && isNumber(options.slicedOffset) ?
-        options.slicedOffset :
-        0;
+            options.slicedOffset :
+            0;
     return (children || []).reduce(function (arr, child) {
         var percentage = (1 / total) * child.val, radians = percentage * range, radiansCenter = startAngle + (radians / 2), offsetPosition = getEndPoint(x, y, radiansCenter, slicedOffset), values = {
             x: child.sliced ? offsetPosition.x : x,
@@ -152,14 +152,14 @@ var getDlOptions = function getDlOptions(params) {
     // Set options to new object to avoid problems with scope
     var point = params.point, shape = isObject(params.shapeArgs) ? params.shapeArgs : {}, optionsPoint = (isObject(params.optionsPoint) ?
         params.optionsPoint.dataLabels :
-        {}), 
-    // The splat was used because levels dataLabels
-    // options doesn't work as an array
-    optionsLevel = splat(isObject(params.level) ?
-        params.level.dataLabels :
-        {})[0], options = merge({
-        style: {}
-    }, optionsLevel, optionsPoint), rotationRad, rotation, rotationMode = options.rotationMode;
+        {}),
+        // The splat was used because levels dataLabels
+        // options doesn't work as an array
+        optionsLevel = splat(isObject(params.level) ?
+            params.level.dataLabels :
+            {})[0], options = merge({
+                style: {}
+            }, optionsLevel, optionsPoint), rotationRad, rotation, rotationMode = options.rotationMode;
     if (!isNumber(options.rotation)) {
         if (rotationMode === 'auto' || rotationMode === 'circular') {
             if (point.innerArcLength < 1 &&
@@ -309,11 +309,11 @@ var getAnimation = function getAnimation(shape, params) {
                         start: radians.end,
                         end: radians.end
                     } : {
-                    innerR: innerR,
-                    r: innerR,
-                    start: radians.start,
-                    end: radians.start
-                };
+                        innerR: innerR,
+                        r: innerR,
+                        start: radians.start,
+                        end: radians.start
+                    };
             }
         }
     }
@@ -603,12 +603,12 @@ var sunburstSeries = {
         var series = this, mapOptionsToLevel = series.mapOptionsToLevel, shapeRoot = series.shapeRoot, group = series.group, hasRendered = series.hasRendered, idRoot = series.rootNode, idPreviousRoot = series.idPreviousRoot, nodeMap = series.nodeMap, nodePreviousRoot = nodeMap[idPreviousRoot], shapePreviousRoot = nodePreviousRoot && nodePreviousRoot.shapeArgs, points = series.points, radians = series.startAndEndRadians, chart = series.chart, optionsChart = chart && chart.options && chart.options.chart || {}, animation = (isBoolean(optionsChart.animation) ?
             optionsChart.animation :
             true), positions = series.center, center = {
-            x: positions[0],
-            y: positions[1]
-        }, innerR = positions[3] / 2, renderer = series.chart.renderer, animateLabels, animateLabelsCalled = false, addedHack = false, hackDataLabelAnimation = !!(animation &&
-            hasRendered &&
-            idRoot !== idPreviousRoot &&
-            series.dataLabelsGroup);
+                x: positions[0],
+                y: positions[1]
+            }, innerR = positions[3] / 2, renderer = series.chart.renderer, animateLabels, animateLabelsCalled = false, addedHack = false, hackDataLabelAnimation = !!(animation &&
+                hasRendered &&
+                idRoot !== idPreviousRoot &&
+                series.dataLabelsGroup);
         if (hackDataLabelAnimation) {
             series.dataLabelsGroup.attr({ opacity: 0 });
             animateLabels = function () {
@@ -697,20 +697,20 @@ var sunburstSeries = {
     layoutAlgorithm: layoutAlgorithm,
     // Set the shape arguments on the nodes. Recursive from root down.
     setShapeArgs: function (parent, parentValues, mapOptionsToLevel) {
-        var childrenValues = [], level = parent.level + 1, options = mapOptionsToLevel[level], 
-        // Collect all children which should be included
-        children = parent.children.filter(function (n) {
-            return n.visible;
-        }), twoPi = 6.28; // Two times Pi.
+        var childrenValues = [], level = parent.level + 1, options = mapOptionsToLevel[level],
+            // Collect all children which should be included
+            children = parent.children.filter(function (n) {
+                return n.visible;
+            }), twoPi = 6.28; // Two times Pi.
         childrenValues = this.layoutAlgorithm(parentValues, children, options);
         children.forEach(function (child, index) {
             var values = childrenValues[index], angle = values.start + ((values.end - values.start) / 2), radius = values.innerR + ((values.r - values.innerR) / 2), radians = (values.end - values.start), isCircle = (values.innerR === 0 && radians > twoPi), center = (isCircle ?
                 { x: values.x, y: values.y } :
                 getEndPoint(values.x, values.y, angle, radius)), val = (child.val ?
-                (child.childrenTotal > child.val ?
-                    child.childrenTotal :
-                    child.val) :
-                child.childrenTotal);
+                    (child.childrenTotal > child.val ?
+                        child.childrenTotal :
+                        child.val) :
+                    child.childrenTotal);
             // The inner arc length is a convenience for data label filters.
             if (this.points[child.i]) {
                 this.points[child.i].innerArcLength = radians * values.innerR;
@@ -730,9 +730,9 @@ var sunburstSeries = {
         }, this);
     },
     translate: function translate() {
-        var series = this, options = series.options, positions = series.center = getCenter.call(series), radians = series.startAndEndRadians = getStartAndEndRadians(options.startAngle, options.endAngle), innerRadius = positions[3] / 2, outerRadius = positions[2] / 2, diffRadius = outerRadius - innerRadius, 
-        // NOTE: updateRootId modifies series.
-        rootId = updateRootId(series), mapIdToNode = series.nodeMap, mapOptionsToLevel, idTop, nodeRoot = mapIdToNode && mapIdToNode[rootId], nodeTop, tree, values, nodeIds = {};
+        var series = this, options = series.options, positions = series.center = getCenter.call(series), radians = series.startAndEndRadians = getStartAndEndRadians(options.startAngle, options.endAngle), innerRadius = positions[3] / 2, outerRadius = positions[2] / 2, diffRadius = outerRadius - innerRadius,
+            // NOTE: updateRootId modifies series.
+            rootId = updateRootId(series), mapIdToNode = series.nodeMap, mapOptionsToLevel, idTop, nodeRoot = mapIdToNode && mapIdToNode[rootId], nodeTop, tree, values, nodeIds = {};
         series.shapeRoot = nodeRoot && nodeRoot.shapeArgs;
         // Call prototype function
         Series.prototype.translate.call(series);
@@ -853,9 +853,9 @@ var sunburstPoint = {
     },
     getDataLabelPath: function (label) {
         var renderer = this.series.chart.renderer, shapeArgs = this.shapeExisting, start = shapeArgs.start, end = shapeArgs.end, angle = start + (end - start) / 2, // arc middle value
-        upperHalf = angle < 0 &&
-            angle > -Math.PI ||
-            angle > Math.PI, r = (shapeArgs.r + (label.options.distance || 0)), moreThanHalf;
+            upperHalf = angle < 0 &&
+                angle > -Math.PI ||
+                angle > Math.PI, r = (shapeArgs.r + (label.options.distance || 0)), moreThanHalf;
         // Check if point is a full circle
         if (start === -Math.PI / 2 &&
             correctFloat(end) === correctFloat(Math.PI * 1.5)) {
@@ -874,9 +874,9 @@ var sunburstPoint = {
         }
         this.dataLabelPath = renderer
             .arc({
-            open: true,
-            longArc: moreThanHalf ? 1 : 0
-        })
+                open: true,
+                longArc: moreThanHalf ? 1 : 0
+            })
             // Add it inside the data label group so it gets destroyed
             // with the label
             .add(label);

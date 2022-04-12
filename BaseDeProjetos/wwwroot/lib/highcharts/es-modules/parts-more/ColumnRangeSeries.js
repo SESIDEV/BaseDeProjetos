@@ -109,16 +109,16 @@ seriesType('columnrange', 'arearange', merge(defaultOptions.plotOptions.column, 
                 point.tooltipPos = chart.inverted ?
                     [
                         yAxis.len + yAxis.pos - chart.plotLeft - y -
-                            height / 2,
+                        height / 2,
                         xAxis.len + xAxis.pos - chart.plotTop -
-                            shapeArgs.x - shapeArgs.width / 2,
+                        shapeArgs.x - shapeArgs.width / 2,
                         height
                     ] : [
-                    xAxis.left - chart.plotLeft + shapeArgs.x +
+                        xAxis.left - chart.plotLeft + shapeArgs.x +
                         shapeArgs.width / 2,
-                    yAxis.pos - chart.plotTop + y + height / 2,
-                    height
-                ]; // don't inherit from column tooltip position - #3372
+                        yAxis.pos - chart.plotTop + y + height / 2,
+                        height
+                    ]; // don't inherit from column tooltip position - #3372
             }
         });
     },

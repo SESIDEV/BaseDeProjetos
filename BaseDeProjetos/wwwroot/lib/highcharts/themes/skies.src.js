@@ -127,10 +127,7 @@
         };
         // Apply the theme
         setOptions(Highcharts.theme);
-
     });
     _registerModule(_modules, 'masters/themes/skies.src.js', [], function () {
-
-
     });
 }));

@@ -269,15 +269,15 @@ function getPlayingField(targetWidth, targetHeight, data) {
         maxHeight: 0,
         maxWidth: 0,
         area: 0
-    }), 
-    /**
-     * Use largest width, largest height, or root of total area to give size
-     * to the playing field.
-     */
-    x = Math.max(info.maxHeight, // Have enough space for the tallest word
-    info.maxWidth, // Have enough space for the broadest word
-    // Adjust 15% to account for close packing of words
-    Math.sqrt(info.area) * 0.85), ratioX = targetWidth > targetHeight ? targetWidth / targetHeight : 1, ratioY = targetHeight > targetWidth ? targetHeight / targetWidth : 1;
+    }),
+        /**
+         * Use largest width, largest height, or root of total area to give size
+         * to the playing field.
+         */
+        x = Math.max(info.maxHeight, // Have enough space for the tallest word
+            info.maxWidth, // Have enough space for the broadest word
+            // Adjust 15% to account for close packing of words
+            Math.sqrt(info.area) * 0.85), ratioX = targetWidth > targetHeight ? targetWidth / targetHeight : 1, ratioY = targetHeight > targetWidth ? targetHeight / targetWidth : 1;
     return {
         width: x * ratioX,
         height: x * ratioY,
@@ -310,7 +310,7 @@ function getPlayingField(targetWidth, targetHeight, data) {
  */
 function getRotation(orientations, index, from, to) {
     var result = false, // Default to false
-    range, intervals, orientation;
+        range, intervals, orientation;
     // Check if we have valid input parameters.
     if (isNumber(orientations) &&
         isNumber(index) &&
@@ -399,9 +399,9 @@ function intersectionTesting(point, options) {
     var placed = options.placed, field = options.field, rectangle = options.rectangle, polygon = options.polygon, spiral = options.spiral, attempt = 1, delta = {
         x: 0,
         y: 0
-    }, 
-    // Make a copy to update values during intersection testing.
-    rect = point.rect = extend({}, rectangle);
+    },
+        // Make a copy to update values during intersection testing.
+        rect = point.rect = extend({}, rectangle);
     point.polygon = polygon;
     point.rotation = options.rotation;
     /* while w intersects any previously placed words:
@@ -667,11 +667,11 @@ var wordCloudSeries = {
     drawPoints: function () {
         var series = this, hasRendered = series.hasRendered, xAxis = series.xAxis, yAxis = series.yAxis, chart = series.chart, group = series.group, options = series.options, animation = options.animation, allowExtendPlayingField = options.allowExtendPlayingField, renderer = chart.renderer, testElement = renderer.text().add(group), placed = [], placementStrategy = series.placementStrategy[options.placementStrategy], spiral, rotation = options.rotation, scale, weights = series.points.map(function (p) {
             return p.weight;
-        }), maxWeight = Math.max.apply(null, weights), 
-        // concat() prevents from sorting the original array.
-        data = series.points.concat().sort(function (a, b) {
-            return b.weight - a.weight; // Sort descending
-        }), field;
+        }), maxWeight = Math.max.apply(null, weights),
+            // concat() prevents from sorting the original array.
+            data = series.points.concat().sort(function (a, b) {
+                return b.weight - a.weight; // Sort descending
+            }), field;
         // Reset the scale before finding the dimensions (#11993).
         // SVGGRaphicsElement.getBBox() (used in SVGElement.getBBox(boolean))
         // returns slightly different values for the same element depending on
@@ -838,9 +838,9 @@ var wordCloudSeries = {
         rotate2DToPoint: polygon.rotate2DToPoint
     },
     getPlotBox: function () {
-        var series = this, chart = series.chart, inverted = chart.inverted, 
-        // Swap axes for inverted (#2339)
-        xAxis = series[(inverted ? 'yAxis' : 'xAxis')], yAxis = series[(inverted ? 'xAxis' : 'yAxis')], width = xAxis ? xAxis.len : chart.plotWidth, height = yAxis ? yAxis.len : chart.plotHeight, x = xAxis ? xAxis.left : chart.plotLeft, y = yAxis ? yAxis.top : chart.plotTop;
+        var series = this, chart = series.chart, inverted = chart.inverted,
+            // Swap axes for inverted (#2339)
+            xAxis = series[(inverted ? 'yAxis' : 'xAxis')], yAxis = series[(inverted ? 'xAxis' : 'yAxis')], width = xAxis ? xAxis.len : chart.plotWidth, height = yAxis ? yAxis.len : chart.plotHeight, x = xAxis ? xAxis.left : chart.plotLeft, y = yAxis ? yAxis.top : chart.plotTop;
         return {
             translateX: x + (width / 2),
             translateY: y + (height / 2),

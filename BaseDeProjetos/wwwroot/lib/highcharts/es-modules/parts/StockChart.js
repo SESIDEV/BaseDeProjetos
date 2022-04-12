@@ -117,12 +117,12 @@ var Series = H.Series, seriesProto = Series.prototype, seriesInit = seriesProto.
  *         The chart object.
  */
 H.StockChart = H.stockChart = function (a, b, c) {
-    var hasRenderToArg = isString(a) || a.nodeName, options = arguments[hasRenderToArg ? 1 : 0], userOptions = options, 
-    // to increase performance, don't merge the data
-    seriesOptions = options.series, defaultOptions = getOptions(), opposite, 
-    // Always disable startOnTick:true on the main axis when the navigator
-    // is enabled (#1090)
-    navigatorEnabled = pick(options.navigator && options.navigator.enabled, defaultOptions.navigator.enabled, true);
+    var hasRenderToArg = isString(a) || a.nodeName, options = arguments[hasRenderToArg ? 1 : 0], userOptions = options,
+        // to increase performance, don't merge the data
+        seriesOptions = options.series, defaultOptions = getOptions(), opposite,
+        // Always disable startOnTick:true on the main axis when the navigator
+        // is enabled (#1090)
+        navigatorEnabled = pick(options.navigator && options.navigator.enabled, defaultOptions.navigator.enabled, true);
     // apply X axis options to both single and multi y axes
     options.xAxis = splat(options.xAxis || {}).map(function (xAxisOptions, i) {
         return merge({
@@ -138,15 +138,15 @@ H.StockChart = H.stockChart = function (a, b, c) {
             },
             showLastLabel: true
         }, defaultOptions.xAxis, // #3802
-        defaultOptions.xAxis && defaultOptions.xAxis[i], // #7690
-        xAxisOptions, // user options
-        {
-            type: 'datetime',
-            categories: null
-        }, (navigatorEnabled ? {
-            startOnTick: false,
-            endOnTick: false
-        } : null));
+            defaultOptions.xAxis && defaultOptions.xAxis[i], // #7690
+            xAxisOptions, // user options
+            {
+                type: 'datetime',
+                categories: null
+            }, (navigatorEnabled ? {
+                startOnTick: false,
+                endOnTick: false
+            } : null));
     });
     // apply Y axis options to both single and multi y axes
     options.yAxis = splat(options.yAxis || {}).map(function (yAxisOptions, i) {
@@ -164,15 +164,15 @@ H.StockChart = H.stockChart = function (a, b, c) {
              * @private
              */
             showLastLabel: !!(
-            // #6104, show last label by default for category axes
-            yAxisOptions.categories ||
+                // #6104, show last label by default for category axes
+                yAxisOptions.categories ||
                 yAxisOptions.type === 'category'),
             title: {
                 text: null
             }
         }, defaultOptions.yAxis, // #3802
-        defaultOptions.yAxis && defaultOptions.yAxis[i], // #7690
-        yAxisOptions // user options
+            defaultOptions.yAxis && defaultOptions.yAxis[i], // #7690
+            yAxisOptions // user options
         );
     });
     options.series = null;
@@ -206,9 +206,9 @@ H.StockChart = H.stockChart = function (a, b, c) {
             enabled: false
         }
     }, options, // user's options
-    {
-        isStock: true // internal flag
-    });
+        {
+            isStock: true // internal flag
+        });
     options.series = userOptions.series = seriesOptions;
     return hasRenderToArg ?
         new Chart(a, options, c) :
@@ -270,7 +270,7 @@ addEvent(Axis, 'getPlotLinePath', function (e) {
     var axis = this, series = (this.isLinked && !this.series ?
         this.linkedParent.series :
         this.series), chart = axis.chart, renderer = chart.renderer, axisLeft = axis.left, axisTop = axis.top, x1, y1, x2, y2, result = [], axes = [], // #3416 need a default array
-    axes2, uniqueAxes, translatedValue = e.translatedValue, value = e.value, force = e.force, transVal;
+        axes2, uniqueAxes, translatedValue = e.translatedValue, value = e.value, force = e.force, transVal;
     /**
      * Return the other axis based on either the axis option or on related
      * series.
@@ -292,8 +292,8 @@ addEvent(Axis, 'getPlotLinePath', function (e) {
         });
     }
     if ( // For stock chart, by default render paths across the panes
-    // except the case when `acrossPanes` is disabled by user (#6644)
-    (chart.options.isStock && e.acrossPanes !== false) &&
+        // except the case when `acrossPanes` is disabled by user (#6644)
+        (chart.options.isStock && e.acrossPanes !== false) &&
         // Ignore in case of colorAxis or zAxis. #3360, #3524, #6720
         axis.coll === 'xAxis' || axis.coll === 'yAxis') {
         e.preventDefault();
@@ -421,14 +421,14 @@ addEvent(Axis, 'afterDrawCrosshair', function (event) {
         return;
     }
     var chart = this.chart, log = this.logarithmic, options = this.options.crosshair.label, // the label's options
-    horiz = this.horiz, // axis orientation
-    opposite = this.opposite, // axis position
-    left = this.left, // left position
-    top = this.top, // top position
-    crossLabel = this.crossLabel, // the svgElement
-    posx, posy, crossBox, formatOption = options.format, formatFormat = '', limit, align, tickInside = this.options.tickPosition === 'inside', snap = this.crosshair.snap !== false, value, offset = 0, 
-    // Use last available event (#5287)
-    e = event.e || (this.cross && this.cross.e), point = event.point, min = this.min, max = this.max;
+        horiz = this.horiz, // axis orientation
+        opposite = this.opposite, // axis position
+        left = this.left, // left position
+        top = this.top, // top position
+        crossLabel = this.crossLabel, // the svgElement
+        posx, posy, crossBox, formatOption = options.format, formatFormat = '', limit, align, tickInside = this.options.tickPosition === 'inside', snap = this.crosshair.snap !== false, value, offset = 0,
+        // Use last available event (#5287)
+        e = event.e || (this.cross && this.cross.e), point = event.point, min = this.min, max = this.max;
     if (log) {
         min = log.lin2log(min);
         max = log.lin2log(max);
@@ -441,30 +441,30 @@ addEvent(Axis, 'afterDrawCrosshair', function (event) {
         crossLabel = this.crossLabel = chart.renderer
             .label(null, null, null, options.shape || 'callout')
             .addClass('highcharts-crosshair-label' + (this.series[0] &&
-            ' highcharts-color-' + this.series[0].colorIndex))
+                ' highcharts-color-' + this.series[0].colorIndex))
             .attr({
-            align: options.align || align,
-            padding: pick(options.padding, 8),
-            r: pick(options.borderRadius, 3),
-            zIndex: 2
-        })
+                align: options.align || align,
+                padding: pick(options.padding, 8),
+                r: pick(options.borderRadius, 3),
+                zIndex: 2
+            })
             .add(this.labelGroup);
         // Presentational
         if (!chart.styledMode) {
             crossLabel
                 .attr({
-                fill: options.backgroundColor ||
-                    (this.series[0] && this.series[0].color) ||
-                    '#666666',
-                stroke: options.borderColor || '',
-                'stroke-width': options.borderWidth || 0
-            })
+                    fill: options.backgroundColor ||
+                        (this.series[0] && this.series[0].color) ||
+                        '#666666',
+                    stroke: options.borderColor || '',
+                    'stroke-width': options.borderWidth || 0
+                })
                 .css(extend({
-                color: '#ffffff',
-                fontWeight: 'normal',
-                fontSize: '11px',
-                textAlign: 'center'
-            }, options.style));
+                    color: '#ffffff',
+                    fontWeight: 'normal',
+                    fontSize: '11px',
+                    textAlign: 'center'
+                }, options.style));
         }
     }
     if (horiz) {
@@ -634,7 +634,7 @@ seriesProto.processData = function (force) {
                 processedYData[i];
             if (isNumber(compareValue) &&
                 processedXData[i + compareStart] >=
-                    series.xAxis.min &&
+                series.xAxis.min &&
                 compareValue !== 0) {
                 series.compareValue = compareValue;
                 break;

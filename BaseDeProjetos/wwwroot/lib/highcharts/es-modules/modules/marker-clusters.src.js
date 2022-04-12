@@ -35,10 +35,10 @@ var addEvent = U.addEvent, animObject = U.animObject, defined = U.defined, error
 /* eslint-disable no-invalid-this */
 import '../parts/Axis.js';
 import '../parts/Series.js';
-var Series = H.Series, Scatter = H.seriesTypes.scatter, baseGeneratePoints = Series.prototype.generatePoints, stateIdCounter = 0, 
-// Points that ids are included in the oldPointsStateId array
-// are hidden before animation. Other ones are destroyed.
-oldPointsStateId = [];
+var Series = H.Series, Scatter = H.seriesTypes.scatter, baseGeneratePoints = Series.prototype.generatePoints, stateIdCounter = 0,
+    // Points that ids are included in the oldPointsStateId array
+    // are hidden before animation. Other ones are destroyed.
+    oldPointsStateId = [];
 /**
  * Options for marker clusters, the concept of sampling the data
  * values into larger blocks in order to ease readability and
@@ -379,11 +379,11 @@ function getDataState(clusteredData, stateDataLen) {
 function fadeInElement(elem, opacity, animation) {
     elem
         .attr({
-        opacity: opacity
-    })
+            opacity: opacity
+        })
         .animate({
-        opacity: 1
-    }, animation);
+            opacity: 1
+        }, animation);
 }
 function fadeInStatePoint(stateObj, opacity, animation, fadeinGraphic, fadeinDataLabel) {
     if (stateObj.point) {
@@ -708,7 +708,7 @@ Scatter.prototype.getRealExtremes = function () {
     var _a, _b;
     var series = this, chart = series.chart, xAxis = series.xAxis, yAxis = series.yAxis, realMinX = xAxis ? xAxis.toValue(chart.plotLeft) : 0, realMaxX = xAxis ?
         xAxis.toValue(chart.plotLeft + chart.plotWidth) : 0, realMinY = yAxis ? yAxis.toValue(chart.plotTop) : 0, realMaxY = yAxis ?
-        yAxis.toValue(chart.plotTop + chart.plotHeight) : 0;
+            yAxis.toValue(chart.plotTop + chart.plotHeight) : 0;
     if (realMinX > realMaxX) {
         _a = [realMinX, realMaxX], realMaxX = _a[0], realMinX = _a[1];
     }
@@ -752,15 +752,15 @@ Scatter.prototype.onDrillToCluster = function (event) {
             chart.zoom({
                 originalEvent: e,
                 xAxis: [{
-                        axis: xAxis,
-                        min: minX - offsetX,
-                        max: maxX + offsetX
-                    }],
+                    axis: xAxis,
+                    min: minX - offsetX,
+                    max: maxX + offsetX
+                }],
                 yAxis: [{
-                        axis: yAxis,
-                        min: minY - offsetY,
-                        max: maxY + offsetY
-                    }]
+                    axis: yAxis,
+                    min: minY - offsetY,
+                    max: maxY + offsetY
+                }]
             });
         }
     });
@@ -847,9 +847,9 @@ Scatter.prototype.markerClusterAlgorithms = {
     },
     kmeans: function (dataX, dataY, dataIndexes, options) {
         var series = this, clusters = [], noise = [], group = {}, pointMaxDistance = options.processedDistance ||
-            clusterDefaultOptions.layoutAlgorithm.distance, iterations = options.iterations, 
-        // Max pixel difference beetwen new and old cluster position.
-        maxClusterShift = 1, currentIteration = 0, repeat = true, pointX = 0, pointY = 0, tempPos, pointClusterDistance = [], groupedData, key, i, j;
+            clusterDefaultOptions.layoutAlgorithm.distance, iterations = options.iterations,
+            // Max pixel difference beetwen new and old cluster position.
+            maxClusterShift = 1, currentIteration = 0, repeat = true, pointX = 0, pointY = 0, tempPos, pointClusterDistance = [], groupedData, key, i, j;
         options.processedGridSize = options.processedDistance;
         // Use grid method to get groupedData object.
         groupedData = series.markerClusterAlgorithms ?
@@ -1116,10 +1116,10 @@ Scatter.prototype.isValidGroupedDataObject = function (groupedData) {
 };
 Scatter.prototype.getClusteredData = function (groupedData, options) {
     var series = this, groupedXData = [], groupedYData = [], clusters = [], // Container for clusters.
-    noise = [], // Container for points not belonging to any cluster.
-    groupMap = [], index = 0, 
-    // Prevent minimumClusterSize lower than 2.
-    minimumClusterSize = Math.max(2, options.minimumClusterSize || 2), stateId, point, points, pointUserOptions, pointsLen, marker, clusterPos, pointOptions, clusterTempPos, zoneOptions, clusterZone, clusterZoneClassName, i, k;
+        noise = [], // Container for points not belonging to any cluster.
+        groupMap = [], index = 0,
+        // Prevent minimumClusterSize lower than 2.
+        minimumClusterSize = Math.max(2, options.minimumClusterSize || 2), stateId, point, points, pointUserOptions, pointsLen, marker, clusterPos, pointOptions, clusterTempPos, zoneOptions, clusterZone, clusterZoneClassName, i, k;
     // Check if groupedData is valid when user uses a custom algorithm.
     if (isFunction(options.layoutAlgorithm.type) &&
         !series.isValidGroupedDataObject(groupedData)) {
@@ -1158,7 +1158,7 @@ Scatter.prototype.getClusteredData = function (groupedData, options) {
                     clusterRadius: (zoneOptions && zoneOptions.radius) ?
                         zoneOptions.radius :
                         (options.marker || {}).radius ||
-                            clusterDefaultOptions.marker.radius
+                        clusterDefaultOptions.marker.radius
                 });
             }
             else {
@@ -1327,9 +1327,9 @@ Scatter.prototype.generatePoints = function () {
             if (series.xData[i] >= (realExtremes.minX - cropDataOffsetX) &&
                 series.xData[i] <= (realExtremes.maxX + cropDataOffsetX) &&
                 (series.yData[i] || realExtremes.minY) >=
-                    (realExtremes.minY - cropDataOffsetY) &&
+                (realExtremes.minY - cropDataOffsetY) &&
                 (series.yData[i] || realExtremes.maxY) <=
-                    (realExtremes.maxY + cropDataOffsetY)) {
+                (realExtremes.maxY + cropDataOffsetY)) {
                 visibleXData.push(series.xData[i]);
                 visibleYData.push(series.yData[i]);
                 visibleDataIndexes.push(i);
@@ -1480,7 +1480,7 @@ addEvent(Series, 'afterRender', function () {
                 if (defined(cluster.clusterZone)) {
                     cluster.point.graphic.addClass(cluster.clusterZoneClassName ||
                         'highcharts-cluster-zone-' +
-                            cluster.clusterZone.zoneIndex);
+                        cluster.clusterZone.zoneIndex);
                 }
             }
         });

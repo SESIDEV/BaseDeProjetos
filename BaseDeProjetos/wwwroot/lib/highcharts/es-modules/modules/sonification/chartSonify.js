@@ -227,38 +227,38 @@ function makeInstrumentCopies(instruments) {
 function buildTimelinePathFromSeries(series, options) {
     // options.timeExtremes is internal and used so that the calculations from
     // chart.sonify can be reused.
-    var timeExtremes = options.timeExtremes || getTimeExtremes(series, options.pointPlayTime), 
-    // Get time offset for a point, relative to duration
-    pointToTime = function (point) {
-        return utilities.virtualAxisTranslate(getPointTimeValue(point, options.pointPlayTime), timeExtremes, { min: 0, max: options.duration });
-    }, 
-    // Compute any data extremes that aren't defined yet
-    dataExtremes = getExtremesForInstrumentProps(series.chart, options.instruments, options.dataExtremes), 
-    // Make copies of the instruments used for this series, to allow
-    // multiple series with the same instrument to play together
-    instruments = makeInstrumentCopies(options.instruments), 
-    // Go through the points, convert to events, optionally add Earcons
-    timelineEvents = series.points.reduce(function (events, point) {
-        var earcons = getPointEarcons(point, options.earcons || []), time = pointToTime(point);
-        return events.concat(
-        // Event object for point
-        new H.sonification.TimelineEvent({
-            eventObject: point,
-            time: time,
-            id: point.id,
-            playOptions: {
-                instruments: instruments,
-                dataExtremes: dataExtremes
-            }
-        }), 
-        // Earcons
-        earcons.map(function (earcon) {
-            return new H.sonification.TimelineEvent({
-                eventObject: earcon,
-                time: time
-            });
-        }));
-    }, []);
+    var timeExtremes = options.timeExtremes || getTimeExtremes(series, options.pointPlayTime),
+        // Get time offset for a point, relative to duration
+        pointToTime = function (point) {
+            return utilities.virtualAxisTranslate(getPointTimeValue(point, options.pointPlayTime), timeExtremes, { min: 0, max: options.duration });
+        },
+        // Compute any data extremes that aren't defined yet
+        dataExtremes = getExtremesForInstrumentProps(series.chart, options.instruments, options.dataExtremes),
+        // Make copies of the instruments used for this series, to allow
+        // multiple series with the same instrument to play together
+        instruments = makeInstrumentCopies(options.instruments),
+        // Go through the points, convert to events, optionally add Earcons
+        timelineEvents = series.points.reduce(function (events, point) {
+            var earcons = getPointEarcons(point, options.earcons || []), time = pointToTime(point);
+            return events.concat(
+                // Event object for point
+                new H.sonification.TimelineEvent({
+                    eventObject: point,
+                    time: time,
+                    id: point.id,
+                    playOptions: {
+                        instruments: instruments,
+                        dataExtremes: dataExtremes
+                    }
+                }),
+                // Earcons
+                earcons.map(function (earcon) {
+                    return new H.sonification.TimelineEvent({
+                        eventObject: earcon,
+                        time: time
+                    });
+                }));
+        }, []);
     // Build the timeline path
     return new H.sonification.TimelinePath({
         events: timelineEvents,
@@ -364,11 +364,11 @@ function buildSeriesOptions(series, dataExtremes, chartSonifyOptions) {
         onStart: chartSonifyOptions.onSeriesStart,
         onEnd: chartSonifyOptions.onSeriesEnd,
         earcons: chartSonifyOptions.earcons
-    }, 
-    // Merge in the specific series options by ID
-    isArray(seriesOptions) ? (find(seriesOptions, function (optEntry) {
-        return optEntry.id === pick(series.id, series.options.id);
-    }) || {}) : seriesOptions, {
+    },
+        // Merge in the specific series options by ID
+        isArray(seriesOptions) ? (find(seriesOptions, function (optEntry) {
+            return optEntry.id === pick(series.id, series.options.id);
+        }) || {}) : seriesOptions, {
         // Forced options
         pointPlayTime: chartSonifyOptions.pointPlayTime
     });
@@ -429,8 +429,8 @@ function buildPathOrder(orderOptions, chart, seriesOptionsCallback) {
                     // Path with a single event
                     itemObject = new H.sonification.TimelinePath({
                         events: [new H.sonification.TimelineEvent({
-                                eventObject: item
-                            })]
+                            eventObject: item
+                        })]
                     });
                 }
                 // Is this item a silent wait? If so, just create the path.
@@ -584,10 +584,10 @@ function getSeriesDurationMs(seriesValueDuration, totalValueDuration, totalDurat
 function buildPathsFromOrder(order, duration) {
     // Find time used for waits (custom or after series), and subtract it from
     // available duration.
-    var totalAvailableDurationMs = Math.max(duration - getWaitTime(order), 0), 
-    // Add up simultaneous path durations to find total value span duration
-    // of everything
-    totalUsedDuration = getSimulPathDurationTotal(order);
+    var totalAvailableDurationMs = Math.max(duration - getWaitTime(order), 0),
+        // Add up simultaneous path durations to find total value span duration
+        // of everything
+        totalUsedDuration = getSimulPathDurationTotal(order);
     // Go through the order list and convert the items
     return order.reduce(function (allPaths, orderDef) {
         var simultaneousPaths = splat(orderDef).reduce(function (simulPaths, item) {

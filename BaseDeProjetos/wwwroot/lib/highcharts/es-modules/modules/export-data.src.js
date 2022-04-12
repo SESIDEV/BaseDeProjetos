@@ -312,70 +312,70 @@ Chart.prototype.setUpKeyToAxis = function () {
  * @fires Highcharts.Chart#event:exportData
  */
 Chart.prototype.getDataRows = function (multiLevelHeaders) {
-    var hasParallelCoords = this.hasParallelCoordinates, time = this.time, csvOptions = ((this.options.exporting && this.options.exporting.csv) || {}), xAxis, xAxes = this.xAxis, rows = {}, rowArr = [], dataRows, topLevelColumnTitles = [], columnTitles = [], columnTitleObj, i, x, xTitle, langOptions = this.options.lang, exportDataOptions = langOptions.exportData, categoryHeader = exportDataOptions.categoryHeader, categoryDatetimeHeader = exportDataOptions.categoryDatetimeHeader, 
-    // Options
-    columnHeaderFormatter = function (item, key, keyLength) {
-        if (csvOptions.columnHeaderFormatter) {
-            var s = csvOptions.columnHeaderFormatter(item, key, keyLength);
-            if (s !== false) {
-                return s;
-            }
-        }
-        if (!item) {
-            return categoryHeader;
-        }
-        if (item instanceof Axis) {
-            return (item.options.title && item.options.title.text) ||
-                (item.dateTime ? categoryDatetimeHeader : categoryHeader);
-        }
-        if (multiLevelHeaders) {
-            return {
-                columnTitle: keyLength > 1 ?
-                    key :
-                    item.name,
-                topLevelColumnTitle: item.name
-            };
-        }
-        return item.name + (keyLength > 1 ? ' (' + key + ')' : '');
-    }, 
-    // Map the categories for value axes
-    getCategoryAndDateTimeMap = function (series, pointArrayMap, pIdx) {
-        var categoryMap = {}, dateTimeValueAxisMap = {};
-        pointArrayMap.forEach(function (prop) {
-            var axisName = ((series.keyToAxis && series.keyToAxis[prop]) ||
-                prop) + 'Axis', 
-            // Points in parallel coordinates refers to all yAxis
-            // not only `series.yAxis`
-            axis = isNumber(pIdx) ?
-                series.chart[axisName][pIdx] :
-                series[axisName];
-            categoryMap[prop] = (axis && axis.categories) || [];
-            dateTimeValueAxisMap[prop] = (axis && axis.dateTime);
-        });
-        return {
-            categoryMap: categoryMap,
-            dateTimeValueAxisMap: dateTimeValueAxisMap
-        };
-    }, 
-    // Create point array depends if xAxis is category
-    // or point.name is defined #13293
-    getPointArray = function (series, xAxis) {
-        var namedPoints = series.data.filter(function (d) { return d.name; });
-        if (namedPoints.length &&
-            xAxis &&
-            !xAxis.categories &&
-            !series.keyToAxis) {
-            if (series.pointArrayMap) {
-                var pointArrayMapCheck = series.pointArrayMap.filter(function (p) { return p === 'x'; });
-                if (pointArrayMapCheck.length) {
-                    series.pointArrayMap.unshift('x');
-                    return series.pointArrayMap;
+    var hasParallelCoords = this.hasParallelCoordinates, time = this.time, csvOptions = ((this.options.exporting && this.options.exporting.csv) || {}), xAxis, xAxes = this.xAxis, rows = {}, rowArr = [], dataRows, topLevelColumnTitles = [], columnTitles = [], columnTitleObj, i, x, xTitle, langOptions = this.options.lang, exportDataOptions = langOptions.exportData, categoryHeader = exportDataOptions.categoryHeader, categoryDatetimeHeader = exportDataOptions.categoryDatetimeHeader,
+        // Options
+        columnHeaderFormatter = function (item, key, keyLength) {
+            if (csvOptions.columnHeaderFormatter) {
+                var s = csvOptions.columnHeaderFormatter(item, key, keyLength);
+                if (s !== false) {
+                    return s;
                 }
             }
-            return ['x', 'y'];
-        }
-        return series.pointArrayMap || ['y'];
-    }, xAxisIndices = [];
+            if (!item) {
+                return categoryHeader;
+            }
+            if (item instanceof Axis) {
+                return (item.options.title && item.options.title.text) ||
+                    (item.dateTime ? categoryDatetimeHeader : categoryHeader);
+            }
+            if (multiLevelHeaders) {
+                return {
+                    columnTitle: keyLength > 1 ?
+                        key :
+                        item.name,
+                    topLevelColumnTitle: item.name
+                };
+            }
+            return item.name + (keyLength > 1 ? ' (' + key + ')' : '');
+        },
+        // Map the categories for value axes
+        getCategoryAndDateTimeMap = function (series, pointArrayMap, pIdx) {
+            var categoryMap = {}, dateTimeValueAxisMap = {};
+            pointArrayMap.forEach(function (prop) {
+                var axisName = ((series.keyToAxis && series.keyToAxis[prop]) ||
+                    prop) + 'Axis',
+                    // Points in parallel coordinates refers to all yAxis
+                    // not only `series.yAxis`
+                    axis = isNumber(pIdx) ?
+                        series.chart[axisName][pIdx] :
+                        series[axisName];
+                categoryMap[prop] = (axis && axis.categories) || [];
+                dateTimeValueAxisMap[prop] = (axis && axis.dateTime);
+            });
+            return {
+                categoryMap: categoryMap,
+                dateTimeValueAxisMap: dateTimeValueAxisMap
+            };
+        },
+        // Create point array depends if xAxis is category
+        // or point.name is defined #13293
+        getPointArray = function (series, xAxis) {
+            var namedPoints = series.data.filter(function (d) { return d.name; });
+            if (namedPoints.length &&
+                xAxis &&
+                !xAxis.categories &&
+                !series.keyToAxis) {
+                if (series.pointArrayMap) {
+                    var pointArrayMapCheck = series.pointArrayMap.filter(function (p) { return p === 'x'; });
+                    if (pointArrayMapCheck.length) {
+                        series.pointArrayMap.unshift('x');
+                        return series.pointArrayMap;
+                    }
+                }
+                return ['x', 'y'];
+            }
+            return series.pointArrayMap || ['y'];
+        }, xAxisIndices = [];
     // Loop the series and index values
     i = 0;
     this.setUpKeyToAxis();
@@ -450,14 +450,14 @@ Chart.prototype.getDataRows = function (multiLevelHeaders) {
                     prop = pointArrayMap[j]; // y, z etc
                     val = point[prop];
                     rows[key][i + j] = pick(
-                    // Y axis category if present
-                    categoryAndDatetimeMap.categoryMap[prop][val], 
-                    // datetime yAxis
-                    categoryAndDatetimeMap.dateTimeValueAxisMap[prop] ?
-                        time.dateFormat(csvOptions.dateFormat, val) :
-                        null, 
-                    // linear/log yAxis
-                    val);
+                        // Y axis category if present
+                        categoryAndDatetimeMap.categoryMap[prop][val],
+                        // datetime yAxis
+                        categoryAndDatetimeMap.dateTimeValueAxisMap[prop] ?
+                            time.dateFormat(csvOptions.dateFormat, val) :
+                            null,
+                        // linear/log yAxis
+                        val);
                     j++;
                 }
             });
@@ -481,7 +481,7 @@ Chart.prototype.getDataRows = function (multiLevelHeaders) {
         xAxis = xAxes[xAxisIndex];
         // Sort it by X values
         rowArr.sort(function (// eslint-disable-line no-loop-func
-        a, b) {
+            a, b) {
             return a.xValues[xAxisIndex] - b.xValues[xAxisIndex];
         });
         // Add header row
@@ -494,7 +494,7 @@ Chart.prototype.getDataRows = function (multiLevelHeaders) {
         }
         // Add the category column
         rowArr.forEach(function (// eslint-disable-line no-loop-func
-        row) {
+            row) {
             var category = row.name;
             if (xAxis && !defined(category)) {
                 if (xAxis.dateTime) {
@@ -534,11 +534,11 @@ Chart.prototype.getDataRows = function (multiLevelHeaders) {
 Chart.prototype.getCSV = function (useLocalDecimalPoint) {
     var csv = '', rows = this.getDataRows(), csvOptions = this.options.exporting.csv, decimalPoint = pick(csvOptions.decimalPoint, csvOptions.itemDelimiter !== ',' && useLocalDecimalPoint ?
         (1.1).toLocaleString()[1] :
-        '.'), 
-    // use ';' for direct to Excel
-    itemDelimiter = pick(csvOptions.itemDelimiter, decimalPoint === ',' ? ';' : ','), 
-    // '\n' isn't working with the js csv data extraction
-    lineDelimiter = csvOptions.lineDelimiter;
+        '.'),
+        // use ';' for direct to Excel
+        itemDelimiter = pick(csvOptions.itemDelimiter, decimalPoint === ',' ? ';' : ','),
+        // '\n' isn't working with the js csv data extraction
+        lineDelimiter = csvOptions.lineDelimiter;
     // Transform the rows to CSV
     rows.forEach(function (row, i) {
         var val = '', j = row.length;
@@ -583,102 +583,102 @@ Chart.prototype.getCSV = function (useLocalDecimalPoint) {
  * @fires Highcharts.Chart#event:afterGetTable
  */
 Chart.prototype.getTable = function (useLocalDecimalPoint) {
-    var html = '<table id="highcharts-data-table-' + this.index + '">', options = this.options, decimalPoint = useLocalDecimalPoint ? (1.1).toLocaleString()[1] : '.', useMultiLevelHeaders = pick(options.exporting.useMultiLevelHeaders, true), rows = this.getDataRows(useMultiLevelHeaders), rowLength = 0, topHeaders = useMultiLevelHeaders ? rows.shift() : null, subHeaders = rows.shift(), 
-    // Compare two rows for equality
-    isRowEqual = function (row1, row2) {
-        var i = row1.length;
-        if (row2.length === i) {
-            while (i--) {
-                if (row1[i] !== row2[i]) {
-                    return false;
+    var html = '<table id="highcharts-data-table-' + this.index + '">', options = this.options, decimalPoint = useLocalDecimalPoint ? (1.1).toLocaleString()[1] : '.', useMultiLevelHeaders = pick(options.exporting.useMultiLevelHeaders, true), rows = this.getDataRows(useMultiLevelHeaders), rowLength = 0, topHeaders = useMultiLevelHeaders ? rows.shift() : null, subHeaders = rows.shift(),
+        // Compare two rows for equality
+        isRowEqual = function (row1, row2) {
+            var i = row1.length;
+            if (row2.length === i) {
+                while (i--) {
+                    if (row1[i] !== row2[i]) {
+                        return false;
+                    }
                 }
             }
-        }
-        else {
-            return false;
-        }
-        return true;
-    }, 
-    // Get table cell HTML from value
-    getCellHTMLFromValue = function (tag, classes, attrs, value) {
-        var val = pick(value, ''), className = 'text' + (classes ? ' ' + classes : '');
-        // Convert to string if number
-        if (typeof val === 'number') {
-            val = val.toString();
-            if (decimalPoint === ',') {
-                val = val.replace('.', decimalPoint);
+            else {
+                return false;
             }
-            className = 'number';
-        }
-        else if (!value) {
-            className = 'empty';
-        }
-        return '<' + tag + (attrs ? ' ' + attrs : '') +
-            ' class="' + className + '">' +
-            val + '</' + tag + '>';
-    }, 
-    // Get table header markup from row data
-    getTableHeaderHTML = function (topheaders, subheaders, rowLength) {
-        var html = '<thead>', i = 0, len = rowLength || subheaders && subheaders.length, next, cur, curColspan = 0, rowspan;
-        // Clean up multiple table headers. Chart.getDataRows() returns two
-        // levels of headers when using multilevel, not merged. We need to
-        // merge identical headers, remove redundant headers, and keep it
-        // all marked up nicely.
-        if (useMultiLevelHeaders &&
-            topheaders &&
-            subheaders &&
-            !isRowEqual(topheaders, subheaders)) {
-            html += '<tr>';
-            for (; i < len; ++i) {
-                cur = topheaders[i];
-                next = topheaders[i + 1];
-                if (cur === next) {
-                    ++curColspan;
+            return true;
+        },
+        // Get table cell HTML from value
+        getCellHTMLFromValue = function (tag, classes, attrs, value) {
+            var val = pick(value, ''), className = 'text' + (classes ? ' ' + classes : '');
+            // Convert to string if number
+            if (typeof val === 'number') {
+                val = val.toString();
+                if (decimalPoint === ',') {
+                    val = val.replace('.', decimalPoint);
                 }
-                else if (curColspan) {
-                    // Ended colspan
-                    // Add cur to HTML with colspan.
-                    html += getCellHTMLFromValue('th', 'highcharts-table-topheading', 'scope="col" ' +
-                        'colspan="' + (curColspan + 1) + '"', cur);
-                    curColspan = 0;
-                }
-                else {
-                    // Cur is standalone. If it is same as sublevel,
-                    // remove sublevel and add just toplevel.
-                    if (cur === subheaders[i]) {
-                        if (options.exporting.useRowspanHeaders) {
-                            rowspan = 2;
-                            delete subheaders[i];
+                className = 'number';
+            }
+            else if (!value) {
+                className = 'empty';
+            }
+            return '<' + tag + (attrs ? ' ' + attrs : '') +
+                ' class="' + className + '">' +
+                val + '</' + tag + '>';
+        },
+        // Get table header markup from row data
+        getTableHeaderHTML = function (topheaders, subheaders, rowLength) {
+            var html = '<thead>', i = 0, len = rowLength || subheaders && subheaders.length, next, cur, curColspan = 0, rowspan;
+            // Clean up multiple table headers. Chart.getDataRows() returns two
+            // levels of headers when using multilevel, not merged. We need to
+            // merge identical headers, remove redundant headers, and keep it
+            // all marked up nicely.
+            if (useMultiLevelHeaders &&
+                topheaders &&
+                subheaders &&
+                !isRowEqual(topheaders, subheaders)) {
+                html += '<tr>';
+                for (; i < len; ++i) {
+                    cur = topheaders[i];
+                    next = topheaders[i + 1];
+                    if (cur === next) {
+                        ++curColspan;
+                    }
+                    else if (curColspan) {
+                        // Ended colspan
+                        // Add cur to HTML with colspan.
+                        html += getCellHTMLFromValue('th', 'highcharts-table-topheading', 'scope="col" ' +
+                            'colspan="' + (curColspan + 1) + '"', cur);
+                        curColspan = 0;
+                    }
+                    else {
+                        // Cur is standalone. If it is same as sublevel,
+                        // remove sublevel and add just toplevel.
+                        if (cur === subheaders[i]) {
+                            if (options.exporting.useRowspanHeaders) {
+                                rowspan = 2;
+                                delete subheaders[i];
+                            }
+                            else {
+                                rowspan = 1;
+                                subheaders[i] = '';
+                            }
                         }
                         else {
                             rowspan = 1;
-                            subheaders[i] = '';
                         }
+                        html += getCellHTMLFromValue('th', 'highcharts-table-topheading', 'scope="col"' +
+                            (rowspan > 1 ?
+                                ' valign="top" rowspan="' + rowspan + '"' :
+                                ''), cur);
                     }
-                    else {
-                        rowspan = 1;
+                }
+                html += '</tr>';
+            }
+            // Add the subheaders (the only headers if not using multilevels)
+            if (subheaders) {
+                html += '<tr>';
+                for (i = 0, len = subheaders.length; i < len; ++i) {
+                    if (typeof subheaders[i] !== 'undefined') {
+                        html += getCellHTMLFromValue('th', null, 'scope="col"', subheaders[i]);
                     }
-                    html += getCellHTMLFromValue('th', 'highcharts-table-topheading', 'scope="col"' +
-                        (rowspan > 1 ?
-                            ' valign="top" rowspan="' + rowspan + '"' :
-                            ''), cur);
                 }
+                html += '</tr>';
             }
-            html += '</tr>';
-        }
-        // Add the subheaders (the only headers if not using multilevels)
-        if (subheaders) {
-            html += '<tr>';
-            for (i = 0, len = subheaders.length; i < len; ++i) {
-                if (typeof subheaders[i] !== 'undefined') {
-                    html += getCellHTMLFromValue('th', null, 'scope="col"', subheaders[i]);
-                }
-            }
-            html += '</tr>';
-        }
-        html += '</thead>';
-        return html;
-    };
+            html += '</thead>';
+            return html;
+        };
     // Add table caption
     if (options.exporting.tableCaption !== false) {
         html += '<caption class="highcharts-table-caption">' + pick(options.exporting.tableCaption, (options.title.text ?
@@ -735,7 +735,7 @@ function getBlobFromContent(content, type) {
         // URLs.
         if (!webKit) {
             return domurl.createObjectURL(new win.Blob(['\uFEFF' + content], // #7084
-            { type: type }));
+                { type: type }));
         }
     }
     catch (e) {
@@ -785,8 +785,8 @@ Chart.prototype.downloadXLS = function () {
         '</head><body>' +
         this.getTable(true) +
         '</body></html>', base64 = function (s) {
-        return win.btoa(unescape(encodeURIComponent(s))); // #50
-    };
+            return win.btoa(unescape(encodeURIComponent(s))); // #50
+        };
     downloadURL(getBlobFromContent(template, 'application/vnd.ms-excel') ||
         uri + base64(template), this.getFilename() + '.xls');
 };

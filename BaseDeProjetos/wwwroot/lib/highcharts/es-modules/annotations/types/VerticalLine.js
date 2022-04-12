@@ -65,53 +65,53 @@ H.extendAnnotation(VerticalLine, null, {
         }));
         typeOptions.label = label.options;
     }
-}, 
-/**
- * A vertical line annotation.
- *
- * @sample highcharts/annotations-advanced/vertical-line/
- *         Vertical line
- *
- * @extends      annotations.crookedLine
- * @excluding    labels, shapes, controlPointOptions
- * @product      highstock
- * @optionparent annotations.verticalLine
- */
-{
-    typeOptions: {
-        /**
-         * @ignore
-         */
-        yOffset: 10,
-        /**
-         * Label options.
-         *
-         * @extends annotations.crookedLine.labelOptions
-         */
-        label: {
-            offset: -40,
-            point: function (target) {
-                return target.annotation.points[0];
+},
+    /**
+     * A vertical line annotation.
+     *
+     * @sample highcharts/annotations-advanced/vertical-line/
+     *         Vertical line
+     *
+     * @extends      annotations.crookedLine
+     * @excluding    labels, shapes, controlPointOptions
+     * @product      highstock
+     * @optionparent annotations.verticalLine
+     */
+    {
+        typeOptions: {
+            /**
+             * @ignore
+             */
+            yOffset: 10,
+            /**
+             * Label options.
+             *
+             * @extends annotations.crookedLine.labelOptions
+             */
+            label: {
+                offset: -40,
+                point: function (target) {
+                    return target.annotation.points[0];
+                },
+                allowOverlap: true,
+                backgroundColor: 'none',
+                borderWidth: 0,
+                crop: true,
+                overflow: 'none',
+                shape: 'rect',
+                text: '{y:.2f}'
             },
-            allowOverlap: true,
-            backgroundColor: 'none',
-            borderWidth: 0,
-            crop: true,
-            overflow: 'none',
-            shape: 'rect',
-            text: '{y:.2f}'
-        },
-        /**
-         * Connector options.
-         *
-         * @extends   annotations.crookedLine.shapeOptions
-         * @excluding height, r, type, width
-         */
-        connector: {
-            strokeWidth: 1,
-            markerEnd: 'arrow'
+            /**
+             * Connector options.
+             *
+             * @extends   annotations.crookedLine.shapeOptions
+             * @excluding height, r, type, width
+             */
+            connector: {
+                strokeWidth: 1,
+                markerEnd: 'arrow'
+            }
         }
-    }
-});
+    });
 Annotation.types.verticalLine = VerticalLine;
 export default VerticalLine;

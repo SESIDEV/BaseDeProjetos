@@ -17,6 +17,6 @@ namespace BaseDeProjetos
                 {
                     webBuilder.UseStartup<Startup>();
                 });
-            }
+        }
     }
 }

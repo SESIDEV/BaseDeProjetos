@@ -1,6 +1,6 @@
 ﻿@model BaseDeProjetos.Models.Prospeccao
 @using Microsoft.AspNetCore.Http
- 
+
 @{
     ViewData["Title"] = "Detalhes";
     if (!(Context.Session.GetString("_Casa") is null))
@@ -54,7 +54,7 @@
     <hr />
     <h5> Histórico de Atualizações </h5>
     <hr />
-    @foreach (var followup in Model.Status.OrderBy(s=>s.Data).ToList())
+    @foreach (var followup in Model.Status.OrderBy(s => s.Data).ToList())
     {
         <div class="card m-1">
             <div class="card-body">
@@ -78,7 +78,7 @@
 <div class="row">
     <h5 class="col-12">Ações</h5>
     <hr />
-    <a class="col btn btn-primary" asp-action="Atualizar" asp-route-id="@Model.Id">Atualizar Prospecção</a> 
-    <a class="col btn btn-primary" asp-action="Edit" asp-route-id="@Model.Id">Editar Prospecção</a> 
+    <a class="col btn btn-primary" asp-action="Atualizar" asp-route-id="@Model.Id">Atualizar Prospecção</a>
+    <a class="col btn btn-primary" asp-action="Edit" asp-route-id="@Model.Id">Editar Prospecção</a>
     <a class="col btn btn-primary" asp-action="Index" asp-route-casa="@ViewData["Area"]">Voltar</a>
 </div>

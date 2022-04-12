@@ -49,38 +49,38 @@
          *
          * @augments Highcharts.seriesTypes.sankey
          */
-        seriesType('dependencywheel', 'sankey', 
-        /**
-         * A dependency wheel chart is a type of flow diagram, where all nodes are
-         * laid out in a circle, and the flow between the are drawn as link bands.
-         *
-         * @sample highcharts/demo/dependency-wheel/
-         *         Dependency wheel
-         *
-         * @extends      plotOptions.sankey
-         * @exclude      dataSorting
-         * @since        7.1.0
-         * @product      highcharts
-         * @requires     modules/dependencywheel
-         * @optionparent plotOptions.dependencywheel
-         */
-        {
+        seriesType('dependencywheel', 'sankey',
             /**
-             * The center of the wheel relative to the plot area. Can be
-             * percentages or pixel values. The default behaviour is to
-             * center the wheel inside the plot area.
+             * A dependency wheel chart is a type of flow diagram, where all nodes are
+             * laid out in a circle, and the flow between the are drawn as link bands.
              *
-             * @type    {Array<number|string|null>}
-             * @default [null, null]
-             * @product highcharts
+             * @sample highcharts/demo/dependency-wheel/
+             *         Dependency wheel
+             *
+             * @extends      plotOptions.sankey
+             * @exclude      dataSorting
+             * @since        7.1.0
+             * @product      highcharts
+             * @requires     modules/dependencywheel
+             * @optionparent plotOptions.dependencywheel
              */
-            center: [null, null],
-            curveFactor: 0.6,
-            /**
-             * The start angle of the dependency wheel, in degrees where 0 is up.
-             */
-            startAngle: 0
-        }, {
+            {
+                /**
+                 * The center of the wheel relative to the plot area. Can be
+                 * percentages or pixel values. The default behaviour is to
+                 * center the wheel inside the plot area.
+                 *
+                 * @type    {Array<number|string|null>}
+                 * @default [null, null]
+                 * @product highcharts
+                 */
+                center: [null, null],
+                curveFactor: 0.6,
+                /**
+                 * The start angle of the dependency wheel, in degrees where 0 is up.
+                 */
+                startAngle: 0
+            }, {
             orderNodes: false,
             getCenter: H.seriesTypes.pie.prototype.getCenter,
             /* eslint-disable valid-jsdoc */
@@ -114,8 +114,8 @@
                     return node.linksFrom
                         .concat(node.linksTo)
                         .reduce(function (acc, link) {
-                        return acc + link.weight;
-                    }, 0);
+                            return acc + link.weight;
+                        }, 0);
                 };
                 /**
                  * Get the offset in weight values of a point/link.
@@ -214,33 +214,33 @@
                                 });
                                 point.shapeArgs = {
                                     d: [[
-                                            'M',
-                                            corners[0].x, corners[0].y
-                                        ], [
-                                            'A',
-                                            innerR, innerR,
-                                            0,
-                                            0,
-                                            1,
-                                            corners[1].x, corners[1].y
-                                        ], [
-                                            'C',
-                                            corners[1].cpX, corners[1].cpY,
-                                            corners[2].cpX, corners[2].cpY,
-                                            corners[2].x, corners[2].y
-                                        ], [
-                                            'A',
-                                            innerR, innerR,
-                                            0,
-                                            0,
-                                            1,
-                                            corners[3].x, corners[3].y
-                                        ], [
-                                            'C',
-                                            corners[3].cpX, corners[3].cpY,
-                                            corners[0].cpX, corners[0].cpY,
-                                            corners[0].x, corners[0].y
-                                        ]]
+                                        'M',
+                                        corners[0].x, corners[0].y
+                                    ], [
+                                        'A',
+                                        innerR, innerR,
+                                        0,
+                                        0,
+                                        1,
+                                        corners[1].x, corners[1].y
+                                    ], [
+                                        'C',
+                                        corners[1].cpX, corners[1].cpY,
+                                        corners[2].cpX, corners[2].cpY,
+                                        corners[2].x, corners[2].y
+                                    ], [
+                                        'A',
+                                        innerR, innerR,
+                                        0,
+                                        0,
+                                        1,
+                                        corners[3].x, corners[3].y
+                                    ], [
+                                        'C',
+                                        corners[3].cpX, corners[3].cpY,
+                                        corners[0].cpX, corners[0].cpY,
+                                        corners[0].x, corners[0].y
+                                    ]]
                                 };
                             }
                         });
@@ -264,48 +264,48 @@
                         if (!point.isNode && graphic) {
                             graphic.attr({ opacity: 0 })
                                 .animate({
-                                opacity: 1
-                            }, this.options.animation);
+                                    opacity: 1
+                                }, this.options.animation);
                         }
                     }, this);
                 }
             }
             /* eslint-enable valid-jsdoc */
-        }, 
-        // Point class
-        {
-            setState: H.NodesMixin.setNodeState,
-            /* eslint-disable valid-jsdoc */
-            /**
-             * Return a text path that the data label uses.
-             * @private
-             */
-            getDataLabelPath: function (label) {
-                var renderer = this.series.chart.renderer, shapeArgs = this.shapeArgs, upperHalf = this.angle < 0 || this.angle > Math.PI, start = shapeArgs.start, end = shapeArgs.end;
-                if (!this.dataLabelPath) {
-                    this.dataLabelPath = renderer
-                        .arc({ open: true })
-                        // Add it inside the data label group so it gets destroyed
-                        // with the label
-                        .add(label);
+        },
+            // Point class
+            {
+                setState: H.NodesMixin.setNodeState,
+                /* eslint-disable valid-jsdoc */
+                /**
+                 * Return a text path that the data label uses.
+                 * @private
+                 */
+                getDataLabelPath: function (label) {
+                    var renderer = this.series.chart.renderer, shapeArgs = this.shapeArgs, upperHalf = this.angle < 0 || this.angle > Math.PI, start = shapeArgs.start, end = shapeArgs.end;
+                    if (!this.dataLabelPath) {
+                        this.dataLabelPath = renderer
+                            .arc({ open: true })
+                            // Add it inside the data label group so it gets destroyed
+                            // with the label
+                            .add(label);
+                    }
+                    this.dataLabelPath.attr({
+                        x: shapeArgs.x,
+                        y: shapeArgs.y,
+                        r: (shapeArgs.r +
+                            (this.dataLabel.options.distance || 0)),
+                        start: (upperHalf ? start : end),
+                        end: (upperHalf ? end : start),
+                        clockwise: +upperHalf
+                    });
+                    return this.dataLabelPath;
+                },
+                isValid: function () {
+                    // No null points here
+                    return true;
                 }
-                this.dataLabelPath.attr({
-                    x: shapeArgs.x,
-                    y: shapeArgs.y,
-                    r: (shapeArgs.r +
-                        (this.dataLabel.options.distance || 0)),
-                    start: (upperHalf ? start : end),
-                    end: (upperHalf ? end : start),
-                    clockwise: +upperHalf
-                });
-                return this.dataLabelPath;
-            },
-            isValid: function () {
-                // No null points here
-                return true;
-            }
-            /* eslint-enable valid-jsdoc */
-        });
+                /* eslint-enable valid-jsdoc */
+            });
         /**
          * A `dependencywheel` series. If the [type](#series.dependencywheel.type)
          * option is not specified, it is inherited from [chart.type](#chart.type).
@@ -361,10 +361,7 @@
          * @apioption series.dependencywheel.nodes.dataLabels
          */
         ''; // adds doclets above to the transpiled file
-
     });
     _registerModule(_modules, 'masters/modules/dependency-wheel.src.js', [], function () {
-
-
     });
 }));

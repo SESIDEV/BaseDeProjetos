@@ -152,11 +152,11 @@ function copyDeprecatedSeriesOptions(chart) {
             var optionVal = series.options[oldOption];
             if (typeof optionVal !== 'undefined') {
                 // Set the new option
-                traverseSetOption(series.options, oldToNewSeriesOptions[oldOption], 
-                // Note that skipKeyboardNavigation has inverted option
-                // value, since we set enabled rather than disabled
-                oldOption === 'skipKeyboardNavigation' ?
-                    !optionVal : optionVal);
+                traverseSetOption(series.options, oldToNewSeriesOptions[oldOption],
+                    // Note that skipKeyboardNavigation has inverted option
+                    // value, since we set enabled rather than disabled
+                    oldOption === 'skipKeyboardNavigation' ?
+                        !optionVal : optionVal);
                 error(32, false, chart, (_a = {}, _a["series." + oldOption] = "series." + oldToNewSeriesOptions[oldOption].join('.'), _a));
             }
         });

@@ -127,23 +127,23 @@ var Fullscreen = /** @class */ (function () {
         // Handle exitFullscreen() method when user clicks 'Escape' button.
         if (fullscreen.browserProps) {
             fullscreen.unbindFullscreenEvent = addEvent(chart.container.ownerDocument, // chart's document
-            fullscreen.browserProps.fullscreenChange, function () {
-                // Handle lack of async of browser's fullScreenChange event.
-                if (fullscreen.isOpen) {
-                    fullscreen.isOpen = false;
-                    fullscreen.close();
-                }
-                else {
-                    fullscreen.isOpen = true;
-                    fullscreen.setButtonText();
-                }
-            });
+                fullscreen.browserProps.fullscreenChange, function () {
+                    // Handle lack of async of browser's fullScreenChange event.
+                    if (fullscreen.isOpen) {
+                        fullscreen.isOpen = false;
+                        fullscreen.close();
+                    }
+                    else {
+                        fullscreen.isOpen = true;
+                        fullscreen.setButtonText();
+                    }
+                });
             var promise = chart.renderTo[fullscreen.browserProps.requestFullscreen]();
             if (promise) {
                 // No dot notation because of IE8 compatibility
                 promise['catch'](function () {
                     alert(// eslint-disable-line no-alert
-                    'Full screen is not supported inside a frame.');
+                        'Full screen is not supported inside a frame.');
                 });
             }
             addEvent(chart, 'destroy', fullscreen.unbindFullscreenEvent);
@@ -170,8 +170,8 @@ var Fullscreen = /** @class */ (function () {
             exportDivElements.length) {
             exportDivElements[menuItems.indexOf('viewFullscreen')]
                 .innerHTML = !this.isOpen ?
-                (exportingOptions.menuItemDefinitions.viewFullscreen.text ||
-                    lang.viewFullscreen) : lang.exitFullscreen;
+                    (exportingOptions.menuItemDefinitions.viewFullscreen.text ||
+                        lang.viewFullscreen) : lang.exitFullscreen;
         }
     };
     /**

@@ -119,8 +119,8 @@ var TreeGridAxis;
                 var data = isObject(node.data, true) ? node.data : {}, name = isString(data.name) ? data.name : '', parentNode = mapOfIdToNode[node.parent], parentGridNode = (isObject(parentNode, true) ?
                     mapOfPosToGridNode[parentNode.pos] :
                     null), hasSameName = function (x) {
-                    return x.name === name;
-                }, gridNode, pos;
+                        return x.name === name;
+                    }, gridNode, pos;
                 // If not unique names, look for sibling node with the same name
                 if (uniqueNamesEnabled &&
                     isObject(parentGridNode, true) &&
@@ -416,31 +416,31 @@ var TreeGridAxis;
                     * @private
                     */
                     levels: [{
-                            /**
-                            * Specify the level which the options within this object
-                            * applies to.
-                            *
-                            * @type      {number}
-                            * @product   gantt
-                            * @apioption yAxis.labels.levels.level
-                            *
-                            * @private
-                            */
-                            level: void 0
-                        }, {
-                            level: 1,
-                            /**
-                             * @type      {Highcharts.CSSObject}
-                             * @product   gantt
-                             * @apioption yAxis.labels.levels.style
-                             *
-                             * @private
-                             */
-                            style: {
-                                /** @ignore-option */
-                                fontWeight: 'bold'
-                            }
-                        }],
+                        /**
+                        * Specify the level which the options within this object
+                        * applies to.
+                        *
+                        * @type      {number}
+                        * @product   gantt
+                        * @apioption yAxis.labels.levels.level
+                        *
+                        * @private
+                        */
+                        level: void 0
+                    }, {
+                        level: 1,
+                        /**
+                         * @type      {Highcharts.CSSObject}
+                         * @product   gantt
+                         * @apioption yAxis.labels.levels.style
+                         *
+                         * @private
+                         */
+                        style: {
+                            /** @ignore-option */
+                            fontWeight: 'bold'
+                        }
+                    }],
                     /**
                      * The symbol for the collapse and expand icon in a
                      * treegrid.
