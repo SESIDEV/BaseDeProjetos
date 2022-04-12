@@ -128,65 +128,65 @@
 
 @foreach (var item in Model)
 {
-<div class="card-container container-fluid">
-    <div class="card">
-        <div class="empresa-preview">
-            @if (item.Empresa.Logo != null)
-            {
-<img style="background-color:white" id="logoEmpresa" src="@item.Empresa.Logo" alt="Logo da Empresa" /> }
+    <div class="card-container container-fluid">
+        <div class="card">
+            <div class="empresa-preview">
+                @if (item.Empresa.Logo != null)
+                {
+                    <img style="background-color:white" id="logoEmpresa" src="@item.Empresa.Logo" alt="Logo da Empresa" /> }
                 else
                 {
-<h5 id="logo_alt">Sem Logo</h5>                }
-        </div>
-        <div class="card-info">
-
-            <div class="content-left">
-                <p class="description-info"><strong>Empresa: </strong>@item.Empresa.Nome</p>
-                <p class="description-info"><strong>Projeto: </strong>@item.NomeProspeccao</p>
-                <p class="description-info"><strong>Linha: </strong>@item.LinhaPequisa.GetDisplayName()</p>
+                    <h5 id="logo_alt">Sem Logo</h5>}
             </div>
+            <div class="card-info">
 
-            <div class="content-right">
-                <p class="description-info"><strong>Tipo Contratação: </strong>@item.TipoContratacao.GetDisplayName()</p>
-                @if (item.Usuario != null)
-                {
-<p class="description-info"><strong>Lider: </strong>@item.Usuario.UserName.ToUpper()</p> }
-                else
-                {
-<p class="description-info"><strong>Lider: </strong>Não Informado</p>}
-
-                @if (item.ValorProposta != 0)
-                {
-<p class="description-info"><strong>Valor da Proposta: </strong>@item.ValorProposta.ToString("C2")</p> }
-                else
-                {
-
-<p class="description-info"><strong>Status: </strong>@item.Status.Last().Status.GetDisplayName()</p>}
-            </div>
-        </div>
-    </div>
-    <button id="btn-collapse" class="btn btn-outline-secondary container-fluid" type="button" data-toggle="collapse" data-target="#@item.Id" aria-expanded="false" aria-controls="collapseExample">
-        Ver mais detalhes
-    </button>
-    <div class="collapse" id="@item.Id">
-        <div class="card card-body" id="card-body">
-            <div id="content">
-                <div id="title-status">
-                    <h4>Último Status:</h4>
+                <div class="content-left">
+                    <p class="description-info"><strong>Empresa: </strong>@item.Empresa.Nome</p>
+                    <p class="description-info"><strong>Projeto: </strong>@item.NomeProspeccao</p>
+                    <p class="description-info"><strong>Linha: </strong>@item.LinhaPequisa.GetDisplayName()</p>
                 </div>
-                <div>
-                    <p>@item.Status.Last().Anotacoes</p>
-                </div>
-                <div>
-                    Data: @item.Status.Last().Data.ToShortDateString()
+
+                <div class="content-right">
+                    <p class="description-info"><strong>Tipo Contratação: </strong>@item.TipoContratacao.GetDisplayName()</p>
+                    @if (item.Usuario != null)
+                    {
+                        <p class="description-info"><strong>Lider: </strong>@item.Usuario.UserName.ToUpper()</p> }
+                    else
+                    {
+                        <p class="description-info"><strong>Lider: </strong>Não Informado</p>}
+
+                    @if (item.ValorProposta != 0)
+                    {
+                        <p class="description-info"><strong>Valor da Proposta: </strong>@item.ValorProposta.ToString("C2")</p> }
+                    else
+                    {
+
+                        <p class="description-info"><strong>Status: </strong>@item.Status.Last().Status.GetDisplayName()</p>}
                 </div>
             </div>
-            <div id="box-btn-actions">
-                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
-                <a asp-action="Details" asp-route-id="@item.Id">Histórico</a>
-                <a asp-action="Atualizar" asp-route-id="@item.Id">Atualizar</a>
-                <a asp-action="Delete" asp-route-id="@item.Id">Remover</a>
+        </div>
+        <button id="btn-collapse" class="btn btn-outline-secondary container-fluid" type="button" data-toggle="collapse" data-target="#@item.Id" aria-expanded="false" aria-controls="collapseExample">
+            Ver mais detalhes
+        </button>
+        <div class="collapse" id="@item.Id">
+            <div class="card card-body" id="card-body">
+                <div id="content">
+                    <div id="title-status">
+                        <h4>Último Status:</h4>
+                    </div>
+                    <div>
+                        <p>@item.Status.Last().Anotacoes</p>
+                    </div>
+                    <div>
+                        Data: @item.Status.Last().Data.ToShortDateString()
+                    </div>
+                </div>
+                <div id="box-btn-actions">
+                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">Histórico</a>
+                    <a asp-action="Atualizar" asp-route-id="@item.Id">Atualizar</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Remover</a>
+                </div>
             </div>
         </div>
-    </div>
-</div>}
+    </div>}
