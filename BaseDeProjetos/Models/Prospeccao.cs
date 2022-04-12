@@ -29,6 +29,7 @@ namespace BaseDeProjetos.Models
 
         public virtual List<FollowUp> Status { get; set; } = new List<FollowUp>();
         public virtual Instituto Casa { get; set; }
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "R{0:C2}")]
         public virtual decimal ValorProposta { get; set; }
 
         public bool Equals([AllowNull] Prospeccao other)
