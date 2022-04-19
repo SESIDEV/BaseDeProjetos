@@ -1,11 +1,15 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<Usuario> SignInManager
 @inject UserManager<Usuario> UserManager
-@{ ViewData["Title"] = "Página Inicial"; }
+@{
+    ViewData["Title"] = "Página Inicial";
+}
 
 @if (SignInManager.IsSignedIn(User))
 {
-<partial name="LoggedInHome" view-data="@ViewData" /> }
-            else
-            {
-<partial name="LogoutHome" />}
+    <partial name="LoggedInHome" view-data="@ViewData" />
+}
+else
+{
+    <partial name="LogoutHome" />
+}
