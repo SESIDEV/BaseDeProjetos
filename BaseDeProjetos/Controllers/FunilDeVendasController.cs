@@ -354,7 +354,18 @@ namespace BaseDeProjetos.Controllers
         {
             if (ModelState.IsValid)
             {
-                ValidarEmpresa(prospeccao);
+                try
+                {
+                    ValidarEmpresa(prospeccao);
+                }
+                catch(Exception e)
+                {
+                    ErrorViewModel erro = new ErrorViewModel
+                    {
+                        Mensagem = e.Message
+                    };
+                    return View("Error", erro);
+                }
                 prospeccao.Contato.empresa = prospeccao.Empresa;
                 await VincularUsuario(prospeccao);
 
@@ -383,15 +394,15 @@ namespace BaseDeProjetos.Controllers
                 if (_context.Empresa.Where(e => e.Id == prospeccao.Empresa.Id).Count() > 0)
                     prospeccao.Empresa = _context.Empresa.First(e => e.EmpresaUnique == prospeccao.Empresa.EmpresaUnique);
                 else
-                    throw new Exception("Ocorreu um erro no registro da empresa. Contacte um administrador do sistema");
+                    throw new Exception("Ocorreu um erro no registro da empresa. \n A empresa selecionada não foi encontrada. \n Contacte um administrador do sistema");
             }
             else
             {
                 Empresa atual = new Empresa { Estado = prospeccao.Empresa.Estado, CNPJ = prospeccao.Empresa.CNPJ, Nome = prospeccao.Empresa.Nome, Segmento = prospeccao.Empresa.Segmento };
-                if (atual.EmpresaUnique != "- []")
+                if (atual.Nome != "" && atual.CNPJ != "")
                     prospeccao.Empresa = atual;
                 else
-                    throw new Exception("Ocorreu um erro no registro da empresa. Contacte um administrador do sistema");
+                    throw new Exception("Ocorreu um erro no registro da empresa. \n As informações da empresa não foram submetidas ao banco. \n Contacte um administrador do sistema");
             }
         }
 
