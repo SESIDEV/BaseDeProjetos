@@ -399,9 +399,12 @@ namespace BaseDeProjetos.Controllers
             }
             else
             {
-                int existe_empresa = _context.Empresa.Where(e => e.Id == prospeccao.Empresa.Id).Count();
-                if (existe_empresa > 0)
-                    prospeccao.Empresa = _context.Empresa.First(e => e.EmpresaUnique == prospeccao.Empresa.EmpresaUnique);
+                int existe_empresa = _context.Empresa.Where(e => e.EmpresaUnique == prospeccao.Empresa.EmpresaUnique).Count();
+
+                if (existe_empresa >= 1) {
+                    Empresa e = _context.Empresa.FirstOrDefault(e => e.EmpresaUnique == prospeccao.Empresa.EmpresaUnique);
+                    prospeccao.Empresa = e;
+                }
                 else
                     throw new Exception("Ocorreu um erro no registro da empresa. \n A empresa selecionada não foi encontrada. \n Contacte um administrador do sistema");
             }
