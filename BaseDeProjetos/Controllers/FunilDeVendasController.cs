@@ -412,8 +412,7 @@ namespace BaseDeProjetos.Controllers
           prospeccao.Empresa = e;
         }
         else
-        {
-          
+        {          
           throw new Exception("Ocorreu um erro no registro da empresa. \n A empresa selecionada não foi encontrada. \n Contacte um administrador do sistema");
         }
       }
