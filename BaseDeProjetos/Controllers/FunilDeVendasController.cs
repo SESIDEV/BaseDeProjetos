@@ -389,7 +389,7 @@ namespace BaseDeProjetos.Controllers
 
     public void ValidarEmpresa(Prospeccao prospeccao)
     {
-      if (prospeccao.Empresa.Nome != "" && prospeccao.Empresa.CNPJ != "" && prospeccao.Empresa.Id > 0)
+      if (prospeccao.Empresa.Nome != "" && prospeccao.Empresa.CNPJ != "" && prospeccao.Empresa.Id == -1)
       {
         Empresa atual = new Empresa { Estado = prospeccao.Empresa.Estado, CNPJ = prospeccao.Empresa.CNPJ, Nome = prospeccao.Empresa.Nome, Segmento = prospeccao.Empresa.Segmento };
         if (atual.Nome != "" && atual.CNPJ != "")
