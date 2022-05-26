@@ -389,7 +389,7 @@ namespace BaseDeProjetos.Controllers
 
     public void ValidarEmpresa(Prospeccao prospeccao)
     {
-      if (prospeccao.Empresa.Nome != "" && prospeccao.Empresa.Id > 0)
+      if (prospeccao.Empresa.Nome != "" && prospeccao.Empresa.CNPJ != "" && prospeccao.Empresa.Id > 0)
       {
         Empresa atual = new Empresa { Estado = prospeccao.Empresa.Estado, CNPJ = prospeccao.Empresa.CNPJ, Nome = prospeccao.Empresa.Nome, Segmento = prospeccao.Empresa.Segmento };
         if (atual.Nome != "" && atual.CNPJ != "")
@@ -404,11 +404,11 @@ namespace BaseDeProjetos.Controllers
       }
       else
       {
-        int existe_empresa = _context.Empresa.Where(e => e.EmpresaUnique == prospeccao.Empresa.EmpresaUnique).Count();
+        int existe_empresa = _context.Empresa.Where(e => e.Nome == prospeccao.Empresa.Nome).Count();
 
         if (existe_empresa > 0)
         {
-          Empresa e = _context.Empresa.FirstOrDefault(e => e.EmpresaUnique == prospeccao.Empresa.EmpresaUnique);
+          Empresa e = _context.Empresa.FirstOrDefault(e => e.Nome == prospeccao.Empresa.Nome);
           prospeccao.Empresa = e;
         }
         else
