@@ -401,7 +401,7 @@ namespace BaseDeProjetos.Controllers
             {
                 int existe_empresa = _context.Empresa.Where(e => e.EmpresaUnique == prospeccao.Empresa.EmpresaUnique).Count();
 
-                if (existe_empresa >= 1) {
+                if (existe_empresa >= 0) {
                     Empresa e = _context.Empresa.FirstOrDefault(e => e.EmpresaUnique == prospeccao.Empresa.EmpresaUnique);
                     prospeccao.Empresa = e;
                 }
