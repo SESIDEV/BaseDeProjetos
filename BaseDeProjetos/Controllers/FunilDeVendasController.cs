@@ -1,12 +1,12 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
-using MailSenderApp.Services;
+//using MailSenderApp.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using SmartTesting.Controllers;
+//using SmartTesting.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
