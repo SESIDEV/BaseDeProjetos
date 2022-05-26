@@ -387,9 +387,9 @@ namespace BaseDeProjetos.Controllers
             prospeccao.Usuario = user;
         }
 
-        private void ValidarEmpresa(Prospeccao prospeccao)
+        public void ValidarEmpresa(Prospeccao prospeccao)
         {
-            if (prospeccao.Empresa.Nome != "" && prospeccao.Empresa.Id == -1)
+            if (prospeccao.Empresa.Nome != "" && prospeccao.Empresa.Id > 0)
             {
                 Empresa atual = new Empresa { Estado = prospeccao.Empresa.Estado, CNPJ = prospeccao.Empresa.CNPJ, Nome = prospeccao.Empresa.Nome, Segmento = prospeccao.Empresa.Segmento };
                 if (atual.Nome != "" && atual.CNPJ != "")
