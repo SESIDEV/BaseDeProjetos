@@ -394,8 +394,9 @@ namespace BaseDeProjetos.Controllers
                 Empresa atual = new Empresa { Estado = prospeccao.Empresa.Estado, CNPJ = prospeccao.Empresa.CNPJ, Nome = prospeccao.Empresa.Nome, Segmento = prospeccao.Empresa.Segmento };
                 if (atual.Nome != "" && atual.CNPJ != "")
                     prospeccao.Empresa = atual;
-                else
+                else{
                     throw new Exception("Ocorreu um erro no registro da empresa. \n As informações da empresa não foram submetidas ao banco. \n Contacte um administrador do sistema");
+                }
             }
             else
             {
@@ -405,8 +406,9 @@ namespace BaseDeProjetos.Controllers
                     Empresa e = _context.Empresa.FirstOrDefault(e => e.EmpresaUnique == prospeccao.Empresa.EmpresaUnique);
                     prospeccao.Empresa = e;
                 }
-                else
+                else{
                     throw new Exception("Ocorreu um erro no registro da empresa. \n A empresa selecionada não foi encontrada. \n Contacte um administrador do sistema");
+                }
             }
         }
 
