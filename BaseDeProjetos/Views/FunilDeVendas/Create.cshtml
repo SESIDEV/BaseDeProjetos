@@ -1,23 +1,27 @@
 ﻿@model BaseDeProjetos.Models.Prospeccao
 @using Microsoft.AspNetCore.Http
-@{ ViewData["Title"] = "Adicionar Prospecção";
+@{
+    ViewData["Title"] = "Adicionar Prospecção";
     if (!(Context.Session.GetString("_Casa") is null))
     {
         ViewData["Area"] = Context.Session.GetString("_Casa");
-    } }
+    } 
+}
 
 <h1>Criar</h1>
 <h4>Prospecção</h4>
 <hr />
 <div class="row">
     <div class="col-md-12">
-        <form asp-action="Create" class="row">
+        <form asp-action="Create" class="row" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <fieldset class="col-4">
                 <legend> Dados da prospecção </legend>
                 <div class="form-group">
                     <label asp-for="Id" class="control-label"></label>
-                    @{ var unique_id = $"prosp_{DateTime.Now.Ticks}";}
+                    @{
+                        var unique_id = $"prosp_{DateTime.Now.Ticks}";
+                    }
                     <input asp-for="Id" class="form-control" value="@unique_id" readonly />
                     <span asp-validation-for="Id" class="text-danger"></span>
                 </div>
@@ -26,46 +30,58 @@
                     @if (!(Context.Session.GetString("_Casa") is null))
                     {
                         <select asp-for="Casa" class="form-control">
-                            @{ var enum_v = (int)Enum.Parse(typeof(Instituto), Context.Session.GetString("_Casa"), true);}
+                            @{
+                                var enum_v = (int)Enum.Parse(typeof(Instituto), Context.Session.GetString("_Casa"), true);
+                            }
                             <option value="@enum_v" selected="selected">@Context.Session.GetString("_Casa")</option>
-                        </select> }
+                        </select>
+                    }
                     else
                     {
-                        <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Instituto>().OrderBy(p=>p.Text)"></select>}
+                        <select asp-for="Casa" class="form-control"
+                        asp-items="Html.GetEnumSelectList<Instituto>().OrderBy(p=>p.Text)"></select>
+                    }
 
                     <span asp-validation-for="Casa" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label asp-for="NomeProspeccao" class="control-label"></label>
-                    <input asp-for="NomeProspeccao" class="form-control" placeholder="Um nome amigável para a prospecção. Ex.: Proposta dos biossurfactantes" />
+                    <input asp-for="NomeProspeccao" class="form-control"
+                        placeholder="Um nome amigável para a prospecção. Ex.: Proposta dos biossurfactantes" />
                     <span asp-validation-for="NomeProspeccao" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="TipoContratacao" class="control-label"></label>
-                    <select asp-for="TipoContratacao" class="form-control" asp-items="Html.GetEnumSelectList<TipoContratacao>().OrderBy(p=>p.Text)"></select>
+                    <select asp-for="TipoContratacao" class="form-control"
+                        asp-items="Html.GetEnumSelectList<TipoContratacao>().OrderBy(p=>p.Text)"></select>
                     <span asp-validation-for="TipoContratacao" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="LinhaPequisa" class="control-label"></label>
-                    <select asp-for="LinhaPequisa" class="form-control" asp-items="Html.GetEnumSelectList<LinhaPesquisa>().OrderBy(p=>p.Text)"></select>
+                    <select asp-for="LinhaPequisa" class="form-control"
+                        asp-items="Html.GetEnumSelectList<LinhaPesquisa>().OrderBy(p=>p.Text)"></select>
                     <span asp-validation-for="LinhaPequisa" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="PotenciaisParceiros" class="control-label"></label>
-                    <input asp-for="PotenciaisParceiros" class="form-control" placeholder="Uma lista de potenciais parceiros, separados por PONTO E VIRGULA. Ex.: Pepsico; Coca-cola" />
+                    <input asp-for="PotenciaisParceiros" class="form-control"
+                        placeholder="Uma lista de potenciais parceiros, separados por PONTO E VIRGULA. Ex.: Pepsico; Coca-cola" />
                     <span asp-validation-for="PotenciaisParceiros" class="text-danger"></span>
                 </div>
             </fieldset>
 
             <div class="col-4">
-                <fieldset id="group" >
+                <fieldset id="group">
                     <div class="col-md-12">
                         <div class="form-group row">
-                            <button class="col-12 btn btn-primary" data-parent="#group" data-toggle="collapse" data-target="#existente" aria-expanded="true" aria-controls="existente" type="button">
+                            <button class="col-12 btn btn-primary" data-parent="#group" data-toggle="collapse"
+                                data-target="#existente" aria-expanded="true" aria-controls="existente" type="button">
                                 A empresa já foi cadastrada
                             </button>
-                            <button class="col-12 btn btn-primary" data-parent="#group" data-toggle="collapse" data-target="#inexistente" aria-expanded="true" aria-controls="inexistente" type="button">
+                            <button class="col-12 btn btn-primary" data-parent="#group" data-toggle="collapse"
+                                data-target="#inexistente" aria-expanded="true" aria-controls="inexistente"
+                                type="button">
                                 É o primeiro registro da empresa
                             </button>
                         </div>
@@ -78,7 +94,8 @@
                         <!-- Empresa existente -->
                         <div class="form-group collapse" data-parent="#group" id="existente">
                             <label asp-for="Empresa" class="control-label"></label>
-                            <select asp-for="Empresa.Id" class="form-control" asp-items="@(ViewData["Empresas"] as SelectList).OrderBy(p=>p.Text)">
+                            <select asp-for="Empresa.Id" class="form-control"
+                                asp-items="@(ViewData["Empresas"] as SelectList).OrderBy(p=>p.Text)">
                                 <option value="-1" selected disabled hidden>Selecione a empresa</option>
                             </select>
                             <span asp-validation-for="Empresa.Id" class="text-danger"></span>
@@ -93,7 +110,8 @@
                             </div>
                             <div class="form-group">
                                 <label asp-for="Empresa.CNPJ" class="control-label"></label>
-                                <input asp-for="Empresa.CNPJ" class="form-control" onkeypress="$(this).mask('00.000.000/0000-00', {reverse: true})" />
+                                <input asp-for="Empresa.CNPJ" class="form-control"
+                                    onkeypress="$(this).mask('00.000.000/0000-00', {reverse: true})" />
                                 <span asp-validation-for="Empresa.CNPJ" class="text-danger"></span>
                             </div>
                             <div class="form-group">
@@ -103,7 +121,8 @@
                             </div>
                             <div class="form-group">
                                 <label asp-for="Empresa.Estado" class="control-label"></label>
-                                <select asp-for="Empresa.Estado" class="form-control" asp-items="Html.GetEnumSelectList<Estado>().OrderBy(p=>p.Text)"></select>
+                                <select asp-for="Empresa.Estado" class="form-control"
+                                    asp-items="Html.GetEnumSelectList<Estado>().OrderBy(p=>p.Text)"></select>
                                 <span asp-validation-for="Empresa.Estado" class="text-danger"></span>
                             </div>
                         </div>
@@ -124,7 +143,8 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="Contato.Telefone" class="control-label"></label>
-                        <input asp-for="Contato.Telefone" class="form-control" onkeypress="$(this).mask('(00) 0000-00009')" />
+                        <input asp-for="Contato.Telefone" class="form-control"
+                            onkeypress="$(this).mask('(00) 0000-00009')" />
                         <span asp-validation-for="Contato.Telefone" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -173,5 +193,5 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
