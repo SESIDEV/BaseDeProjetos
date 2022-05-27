@@ -1,4 +1,4 @@
-﻿/*using BaseDeProjetos.Models;
+﻿using BaseDeProjetos.Models;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using System.Collections.Generic;
@@ -505,4 +505,4 @@ namespace SmartTesting.Controllers
             return header + texto + footer;
         }
     }
-}*/
+}

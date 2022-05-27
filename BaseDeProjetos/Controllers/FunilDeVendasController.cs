@@ -1,12 +1,12 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
-//using MailSenderApp.Services;
+using MailSenderApp.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-//using SmartTesting.Controllers;
+using SmartTesting.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -280,7 +280,7 @@ namespace BaseDeProjetos.Controllers
       }
     }
 
-    /* private static Notificacao GerarNotificacao(FollowUp followup)
+    private static Notificacao GerarNotificacao(FollowUp followup)
      {
        Notificacao notificacao;
        switch (followup.Status)
@@ -343,7 +343,7 @@ namespace BaseDeProjetos.Controllers
 
        notificacao.Status = followup.Status;
        return notificacao;
-     }*/
+     }
 
     // POST: FunilDeVendas/Create
     // To protect from overposting attacks, enable the specific properties you want to bind to, for
@@ -389,10 +389,10 @@ namespace BaseDeProjetos.Controllers
 
     public void ValidarEmpresa(Prospeccao prospeccao)
     {
-      if (prospeccao.Empresa.Nome != "" && prospeccao.Empresa.CNPJ != "" && prospeccao.Empresa.Id != -1)
+      if (prospeccao.Empresa.Nome != null && prospeccao.Empresa.CNPJ != null && prospeccao.Empresa.Id == -1)
       {
         Empresa atual = new Empresa { Estado = prospeccao.Empresa.Estado, CNPJ = prospeccao.Empresa.CNPJ, Nome = prospeccao.Empresa.Nome, Segmento = prospeccao.Empresa.Segmento };
-        if (atual.Nome != "" && atual.CNPJ != "")
+        if (atual.Nome != " " && atual.CNPJ != " ")
         {
           prospeccao.Empresa = atual;
 
@@ -405,6 +405,7 @@ namespace BaseDeProjetos.Controllers
       else
       {
         int existe_empresa = _context.Empresa.Where(e => e.EmpresaUnique == prospeccao.Empresa.EmpresaUnique).Count();
+        
 
         if (existe_empresa > 0)
         {
