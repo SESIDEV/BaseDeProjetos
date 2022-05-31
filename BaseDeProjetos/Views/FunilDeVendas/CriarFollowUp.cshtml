@@ -56,7 +56,6 @@
     <hr />
     <div class="col-md-8">
         <form asp-controller="FunilDeVendas" asp-action="Atualizar" method="POST">
-
             <input asp-for="OrigemID" type="hidden" value="@ViewData["origem"]" />
 
             <div class="form-group">
@@ -66,8 +65,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" onchange="avaliarStatus(this)" class="form-control" asp-items="Html.GetEnumSelectList<StatusProspeccao>().
-                                                                                                               Where(p => Int32.Parse(p.Value) > 4 || Int32.Parse(p.Value) < 1)"></select>
+                <select asp-for="Status" onchange="avaliarStatus(this)" class="form-control" asp-items="Html.GetEnumSelectList<StatusProspeccao>().  Where(p => Int32.Parse(p.Value) >= 4 || Int32.Parse(p.Value) < 1)"></select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="form-group">
