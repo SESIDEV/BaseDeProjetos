@@ -12,7 +12,10 @@
     }
 </style>
 
-<h1>@ViewData["Title"]</h1>
+<p>
+    <a asp-action="Create">Criar Novo</a>
+</p>
+
 <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item">
         <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Gráfico Power BI</a>
@@ -23,6 +26,59 @@
     <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
         <div>
             <iframe title="Indicador de Gestao" src=https://app.powerbi.com/view?r=eyJrIjoiNjYwMWQyZTctYTM4Ni00MDU2LWEyMmItNmMxNDg5ODM2MWMyIiwidCI6ImQwYzY5OGQ0LWU0ZWEtNGVlOS1hNzlkLWYyZDdhNzgzOTljOCJ9&pageName=ReportSection9e596cb1c4d92861bc23 frameborder="0" allowFullScreen="true"></iframe>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="fraun" role="tabpanel" aria-labelledby="fraun-tab">
+        <div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Data)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Receita)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Despesa)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Investimento)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Casa)
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Data)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Receita)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Despesa)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Investimento)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Casa)
+                            </td>
+
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                                <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
+                                <a asp-action="Delete" asp-route-id="@item.Id">Deletar</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

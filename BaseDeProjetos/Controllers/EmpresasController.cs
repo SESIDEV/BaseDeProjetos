@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -84,6 +85,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (ModelState.IsValid)
             {
+                empresa.CNPJ = Regex.Replace(empresa.CNPJ, "[^0-9]", "");
                 _context.Add(empresa);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
@@ -123,6 +125,7 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {
+                    empresa.CNPJ = Regex.Replace(empresa.CNPJ, "[^0-9]", "");
                     _context.Update(empresa);
                     await _context.SaveChangesAsync();
                 }

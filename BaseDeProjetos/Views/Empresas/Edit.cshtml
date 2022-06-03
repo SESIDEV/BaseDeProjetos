@@ -1,8 +1,6 @@
 ﻿@model BaseDeProjetos.Models.Empresa
 
-@{
-    ViewData["Title"] = "Edit";
-}
+@{ ViewData["Title"] = "Editar"; }
 
 <h1>Editar</h1>
 
@@ -19,8 +17,8 @@
                 <span asp-validation-for="Nome" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CNPJ" class="control-label"></label>
-                <input asp-for="CNPJ" class="form-control" />
+                <label asp-for="CNPJ" class="control-label"></label><span>   (Apenas números)</span>
+                <input asp-for="CNPJ" class="form-control" data-mask="00.000.000/0000-00" pattern=".{18}" title="Digite todos os 14 números do CNPJ"/>
                 <span asp-validation-for="CNPJ" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -29,9 +27,11 @@
                 <span asp-validation-for="Segmento" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Estado" class="control-label"></label>
                 <select asp-for="Estado" class="form-control" asp-items="Html.GetEnumSelectList<Estado>().OrderBy(p=>p.Text)"></select>
             </div>
-            <div class="form-group">
+            
+            <div class="form-group mt-4">
                 <label asp-for="Logo" class="control-label"></label>
                 <input asp-for="Logo" class="form-control" />
                 <span asp-validation-for="Logo" class="text-danger"></span>
@@ -44,7 +44,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Voltar para lista</a>
+    <a asp-action="Index">Voltar para Lista</a>
 </div>
 
 @section Scripts {
