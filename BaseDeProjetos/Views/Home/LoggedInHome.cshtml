@@ -35,6 +35,12 @@
         background-repeat: no-repeat;
         background-size: cover;
     }
+
+    a{
+        text-decoration: none;
+        font-size: 20px;
+        padding: 10px;
+    }
 </style>
 <div class="row">
 
@@ -50,16 +56,16 @@
                             <small>@ViewBag.Data.ToString("dd/MM/yyyy")</small>
                         </li>
                         <li class="list-group-item">
-                            <span class="font-weight-bold"> Receita:</span>
-                            <a href="#" class="badge badge-success">@receita.ToString("C2")</a>
+                            <span class="font-weight-bold">Receita: </span>
+                            <a href="#" class="badge text-bg-success">@receita.ToString("C2")</a>
                         </li>
                         <li class="list-group-item">
-                            <span class="font-weight-bold"> Investimento:</span>
-                            <a href="#" class="badge badge-light">@investimento.ToString("C2")</a>
+                            <span class="font-weight-bold">Investimento: </span>
+                            <a href="#" class="badge text-bg-success">@investimento.ToString("C2")</a>
                         </li>
                         <li class="list-group-item">
-                            <span class="font-weight-bold"> Despesas:</span>
-                            <a href="#" class="badge badge-danger">@despesas.ToString("C2")</a>
+                            <span class="font-weight-bold">Despesas: </span>
+                            <a href="#" class="badge text-bg-success">@despesas.ToString("C2")</a>
                         </li>
                     </ul>
                     <div class="col row">
@@ -149,7 +155,8 @@
                             <span class="text-uppercase">Indice de Segurança e Qualidade</span>
                             <hr />
                             <h3 class="font-weight-bolder">
-                                @{string iss = quali.ToString();
+                                @{
+                                    string iss = quali.ToString();
                                 }
                                 @iss
                             </h3>

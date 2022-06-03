@@ -108,39 +108,6 @@ namespace BaseDeProjetos.Controllers
             return lista;
         }
 
-        [HttpGet]
-        public IActionResult IncluirEntrega(string id)
-        {
-            if (!ValidarProjetoId(id))
-            {
-                return NotFound();
-            }
-
-            Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == id);
-            ViewData["Projeto"] = projeto;
-
-            return View("IncluirEntrega");
-        }
-
-        [HttpPost]
-        public IActionResult IncluirEntrega(string id, [Bind("Id,NomeEntrega,DescricaoEntrega,DataFim,DataInicioEntrega,ProjetoId")] Entrega entrega)
-        {
-            if (!ValidarProjetoId(entrega.ProjetoId))
-            {
-                return NotFound();
-            }
-
-            Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == entrega.ProjetoId);
-
-            if (ModelState.IsValid)
-            {
-                _context.Entrega.Add(entrega);
-                _context.SaveChanges();
-            }
-
-            return RedirectToAction(nameof(Index), new { casa = projeto.Casa });
-        }
-
         private bool ValidarProjetoId(string id)
         {
             if (id == null)
@@ -158,34 +125,6 @@ namespace BaseDeProjetos.Controllers
             return true;
         }
 
-        public async Task<IActionResult> EditarEntrega(string? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditarFollowUp(string id, [Bind()] Entrega entrega)
-        {
-            if (id != entrega.Id)
-            {
-                return NotFound();
-            }
-            if (ModelState.IsValid)
-            {
-                _context.Update(entrega);
-                await _context.SaveChangesAsync();
-            }
-
-            // return RedirectToAction("Details", new { id = entrega.OrigemID }); ;
-            return View();
-        }
-
         // GET: Projetos/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -201,7 +140,6 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
-            ViewData["Entregas"] = _context.Entrega.Where(e => e.ProjetoId == id).ToList();
             return View(projeto);
         }
 
@@ -355,11 +293,6 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
-        public IActionResult IncluirEntregas(string projetoId)
-        {
-            ViewBag.ProjetoId = projetoId;
-            return View();
-        }
 
         [HttpPost]
         public IActionResult CarregarProjetos(List<IFormFile> files)
