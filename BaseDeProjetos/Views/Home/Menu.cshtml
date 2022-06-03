@@ -2,6 +2,13 @@
 @model BaseDeProjetos.Views.Home.MenuModel
 @{
 }
+<style>
+    a{
+        text-decoration: none;
+        font-size: 20px;
+        padding: 10px;
+    }
+</style>
 <div class="col-md-2">
     <div class="row">
         <button class="col-12 card" data-toggle="collapse" data-target="#collapse_ISIQV" aria-expanded="true" aria-controls="collapse_ISIQV">
@@ -12,12 +19,12 @@
         <div class="col-12 collapse" id="collapse_ISIQV">
             <div class="list-group-flush">
                 <div class="list-group-item list-group-item-light">
-                    <a asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="ISIQV">
+                    <a asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="ISIQV" class="badge text-bg-success">
                         Funil de Vendas
                     </a>
                 </div>
                 <div class="list-group-item list-group-item-light">
-                    <a asp-action="Index" asp-controller="Projetos" asp-route-casa="ISIQV">
+                    <a asp-action="Index" asp-controller="Projetos" asp-route-casa="ISIQV" class="badge text-bg-success">
                         Base de Projetos
                     </a>
                 </div>
@@ -37,12 +44,12 @@
         <div class="col-12 collapse" id="collapse_ISIII">
             <div class="list-group-flush">
                 <div class="list-group-item list-group-item-light">
-                    <a asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="ISIII">
+                    <a asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="ISIII" class="badge text-bg-success">
                         Funil de Vendas
                     </a>
                 </div>
                 <div class="list-group-item list-group-item-light">
-                    <a asp-action="Index" asp-controller="Projetos" asp-route-casa="ISIII">
+                    <a asp-action="Index" asp-controller="Projetos" asp-route-casa="ISIII" class="badge text-bg-success">
                         Base de Projetos
                     </a>
                 </div>
@@ -62,12 +69,12 @@
         <div class="col-12 collapse" id="collapse_CISHO">
             <div class="list-group-flush">
                 <div class="list-group-item list-group-item-light">
-                    <a asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="CISHO">
+                    <a asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="CISHO" class="badge text-bg-success">
                         Funil de Vendas
                     </a>
                 </div>
                 <div class="list-group-item list-group-item-light">
-                    <a asp-action="Index" asp-controller="Projetos" asp-route-casa="CISHO">
+                    <a asp-action="Index" asp-controller="Projetos" asp-route-casa="CISHO" class="badge text-bg-success">
                         Base de Projetos
                     </a>
                 </div>
