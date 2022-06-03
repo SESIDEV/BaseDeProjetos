@@ -125,6 +125,7 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {
+                    empresa.CNPJ = Regex.Replace(empresa.CNPJ, "[^0-9]", "");
                     _context.Update(empresa);
                     await _context.SaveChangesAsync();
                 }
