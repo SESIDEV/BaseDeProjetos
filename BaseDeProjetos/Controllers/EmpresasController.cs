@@ -44,8 +44,8 @@ namespace BaseDeProjetos.Controllers
             if (!string.IsNullOrEmpty(searchString))
             {
                 lista = lista.Where(j => j.Segmento != null).
-                              Where(s => s.Nome.Contains(searchString)
-                                      || s.Segmento.Contains(searchString)).ToList();
+                              Where(s => s.Nome.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+                                      || s.Segmento.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
             return lista;
