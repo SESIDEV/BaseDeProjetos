@@ -7,9 +7,8 @@
         ViewData["Area"] = Context.Session.GetString("_Casa");
     }
 
+    var prosp = ViewData["prosp"] as Prospeccao; 
 }
-
-@{ var prosp = ViewData["prosp"] as Prospeccao; }
 <h1>Atualizar</h1>
 <h4>Prospecção</h4>
 <hr />
@@ -116,3 +115,4 @@
     @section Scripts {
         @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     }
+</div>
