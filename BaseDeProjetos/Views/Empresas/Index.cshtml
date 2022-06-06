@@ -103,95 +103,105 @@
         padding: 5px;
     }
 </style>
-@{ ViewData["Title"] = "Empresas";
-    List<Pessoa> contatos = ViewBag.Contatos as List<Pessoa>; }
+@{
+    ViewData["Title"] = "Empresas";
+    List<Pessoa> contatos = ViewBag.Contatos as List<Pessoa>;
+}
 
-<h1>Lista de Empresas</h1>
-
-<p style="text-align: right">
-    <a asp-action="Create">Adicionar Empresa</a>
-</p>
-<div class="col-12">
-    <form asp-action="Index" method="get">
-        <div class="form-actions">
-            <small>
-                Buscar empresa por <strong>nome</strong> ou <strong>segmento: </strong><input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
-                <input type="hidden" name="ano" value="Todos" />
-                <input type="submit" value="Procurar" class="btn btn-default" /> |
-                <a asp-action="Index">Exibir Lista Completa</a>>
-            </small>
-        </div>
-    </form>
-</div>
-<hr />
-
-
-<div class="row">
-
-    @foreach (var item in Model)
-    {
-        <div class="empresa-container col-6">
-            <div class="empresa">
-                <div class="empresa-preview">
-                    @if (item.Logo != null)
-                    {
-                        <img style="background-color:white" id="logoEmpresa" src="@item.Logo" alt="Logo da Empresa" /> }
-                    else
-                    {
-                        <h2 id="logo_alt">Sem Logo</h2>}
+<div class="container">
+    <div class="row align-items-start">
+        <div class="col-12">
+            <h1>Lista de Empresas</h1>
+            <form asp-action="Index" method="get">
+                <div class="input-group">
+                    <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" class="form-control" aria-label="Text input with segmented dropdown button" placeholder="Digíte o nome da Empresa">
+                    <button type="submit" value="Procurar" class="btn btn-outline-secondary">Pesquisar</button>
+                    <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="visually-hidden">Mais Opções</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a asp-action="Index" class="dropdown-item">Exibir Lista Completa</a></li>
+                        <li><a asp-action="Create" class="dropdown-item">Adicionar Empresa</a></li>
+                    </ul>
                 </div>
-                <div class="empresa-info">
+            </form>
+        </div>
+    </div>
+    <hr />
 
-                    <div class="dados-container">
-                    </div>
 
-                    <p><strong>Nome Empresa:</strong> @item.Nome</p>
-                    <p><strong>CNPJ:</strong> @item.CNPJ</p>
-                    <p><strong>Setor:</strong> @item.Segmento</p>
-                    <button type="button" class="btn-empresa" data-toggle="collapse" data-target="#e_@item.Id">Ver ações</button>
-                    <button type="button" class="btn-empresa" data-toggle="collapse" data-target="#ce_@item.Id">Ver contatos</button>
+    <div class="row">
 
-                    <div id="e_@item.Id" class="collapse">
-                        <hr />
-                        <h6>Ações</h6>
-                        <small>
-                            <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                            <a asp-action="Details" asp-route-id="@item.Id">Ver Detalhes</a> |
-                            <a asp-action="Delete" asp-route-id="@item.Id">Deletar</a>
-                        </small>
-                        <br />
-                    </div>
-
-                    <div id="ce_@item.Id" class="collapse">
-                        <hr />
-                        <h6>Contatos Registrados</h6>
-                        @if (contatos != null)
+        @foreach (var item in Model)
+        {
+            <div class="empresa-container col-6">
+                <div class="empresa">
+                    <div class="empresa-preview">
+                        @if (item.Logo != null)
                         {
-                            <small>
-                                <table>
-                                    <tr>
-                                        <th> Nome</th>
-                                        <th> E-mail</th>
-                                        <th> Telefone</th>
-                                    </tr>
-
-                                    @foreach (Pessoa contato in contatos.Where(c => c.empresa != null).Where(c2 => c2.empresa.Id == item.Id))
-                                    {
-                                        <tr>
-                                            <td>@contato.Nome</td>
-                                            <td>@contato.Cargo</td>
-                                            <td>@contato.Email</td>
-                                            <td>@contato.Telefone</td>
-                                        </tr>
-                                    }
-                                </table>
-                            </small> }
+                            <img style="background-color:white" id="logoEmpresa" src="@item.Logo" alt="Logo da Empresa" />
+                        }
                         else
                         {
-                            <p>Sem contatos registrados</p>}
-                        <br />
+                            <h2 id="logo_alt">Sem Logo</h2>
+                        }
+                    </div>
+                    <div class="empresa-info">
+
+                        <div class="dados-container">
+                        </div>
+
+                        <p><strong>Nome Empresa:</strong> @item.Nome</p>
+                        <p><strong>CNPJ:</strong> @item.CNPJ</p>
+                        <p><strong>Setor:</strong> @item.Segmento</p>
+                        <button type="button" class="btn-empresa" data-toggle="collapse" data-target="#e_@item.Id">Ver ações</button>
+                        <button type="button" class="btn-empresa" data-toggle="collapse" data-target="#ce_@item.Id">Ver contatos</button>
+
+                        <div id="e_@item.Id" class="collapse">
+                            <hr />
+                            <h6>Ações</h6>
+                            <small>
+                                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                                <a asp-action="Details" asp-route-id="@item.Id">Ver Detalhes</a> |
+                                <a asp-action="Delete" asp-route-id="@item.Id">Deletar</a>
+                            </small>
+                            <br />
+                        </div>
+
+                        <div id="ce_@item.Id" class="collapse">
+                            <hr />
+                            <h6>Contatos Registrados</h6>
+                            @if (contatos != null)
+                            {
+                                <small>
+                                    <table>
+                                        <tr>
+                                            <th> Nome</th>
+                                            <th> E-mail</th>
+                                            <th> Telefone</th>
+                                        </tr>
+
+                                        @foreach (Pessoa contato in contatos.Where(c => c.empresa != null).Where(c2 => c2.empresa.Id == item.Id))
+                                        {
+                                            <tr>
+                                                <td>@contato.Nome</td>
+                                                <td>@contato.Cargo</td>
+                                                <td>@contato.Email</td>
+                                                <td>@contato.Telefone</td>
+                                            </tr>
+                                        }
+                                    </table>
+                                </small>
+                            }
+                            else
+                            {
+                                <p>Sem contatos registrados</p>
+                            }
+                            <br />
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>}
+        }
+    </div>
 </div>
