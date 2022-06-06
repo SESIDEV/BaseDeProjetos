@@ -1,23 +1,31 @@
 ﻿@page
 @model BaseDeProjetos.Views.Home.MenuModel
+@using System.Collections
 @{
+    List<Instituto> institutos = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto))).Where(c=>c!= Instituto.Super).ToList();
 }
 <div class="col-md-2">
+
+    
+    @foreach(Instituto casa in institutos){
+    string casa_nome = Enum.GetName(typeof(Instituto), casa);
+    string id_casa = "collapse_" + casa_nome;
+
     <div class="row">
-        <button class="col-12 card" data-toggle="collapse" data-target="#collapse_ISIQV" aria-expanded="true" aria-controls="collapse_ISIQV">
-            <div class="card-body">
-                <h5 class="text-center card-text text-info">ISI-QV</h5>
-            </div>
-        </button>
-        <div class="col-12 collapse" id="collapse_ISIQV">
+            <button class="col-12 card" data-toggle="collapse" data-target="#@id_casa" aria-expanded="true" aria-controls="@id_casa">
+                <div class="card-body">
+                    <h6 class="card-text text-info">@casa.GetDisplayName()</h6>
+                </div>
+            </button>
+        <div class="col-12 collapse" id="@id_casa">
             <div class="list-group-flush">
                 <div class="list-group-item list-group-item-light">
-                    <a asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="ISIQV">
+                    <a asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa_nome">
                         Funil de Vendas
                     </a>
                 </div>
                 <div class="list-group-item list-group-item-light">
-                    <a asp-action="Index" asp-controller="Projetos" asp-route-casa="ISIQV">
+                    <a asp-action="Index" asp-controller="Projetos" asp-route-casa="@casa_nome">
                         Base de Projetos
                     </a>
                 </div>
@@ -28,54 +36,5 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <button class="col-12 card " data-toggle="collapse" data-target="#collapse_ISIII" aria-expanded="true" aria-controls="collapse_ISIII">
-            <div class="card-body">
-                <h5 class="text-center card-title text-info">ISI-II</h5>
-            </div>
-        </button>
-        <div class="col-12 collapse" id="collapse_ISIII">
-            <div class="list-group-flush">
-                <div class="list-group-item list-group-item-light">
-                    <a asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="ISIII">
-                        Funil de Vendas
-                    </a>
-                </div>
-                <div class="list-group-item list-group-item-light">
-                    <a asp-action="Index" asp-controller="Projetos" asp-route-casa="ISIII">
-                        Base de Projetos
-                    </a>
-                </div>
-                <div class="list-group-item disabled">
-                    Segurança e Qualidade
-                    <span class="badge badge-warning badge-pill">!</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <button class="col-12 card " data-toggle="collapse" data-target="#collapse_CISHO" aria-expanded="true" aria-controls="collapse_CISHO">
-            <div class=" card-body">
-                <h5 class="text-center text-info">CIS-HO</h5>
-            </div>
-        </button>
-        <div class="col-12 collapse" id="collapse_CISHO">
-            <div class="list-group-flush">
-                <div class="list-group-item list-group-item-light">
-                    <a asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="CISHO">
-                        Funil de Vendas
-                    </a>
-                </div>
-                <div class="list-group-item list-group-item-light">
-                    <a asp-action="Index" asp-controller="Projetos" asp-route-casa="CISHO">
-                        Base de Projetos
-                    </a>
-                </div>
-                <div class="list-group-item disabled">
-                    Segurança e Qualidade
-                    <span class="badge badge-warning badge-pill">!</span>
-                </div>
-            </div>
-        </div>
-    </div>
+}
 </div>

@@ -68,44 +68,45 @@ namespace BaseDeProjetos.Models
 
     public enum LinhaPesquisa
     {
-        [Display(Name = "Química e Sustentabilidade")]
+        [Display(Name = "QV - Química e Sustentabilidade")]
         QuimicaESustentabilidade,
-
-        [Display(Name = "Tecnologia para Solos e Efluentes")]
+        [Display(Name = "QV - Tecnologia para Solos e Efluentes")]
         TecnologiasSolosEfluentes,
-
-        [Display(Name = "Extração de Matérias Primas Renováveis")]
+        [Display(Name = "QV - Extração de Matérias Primas Renováveis")]
         ExtracaoMateriasPrimasRenovaveis,
-
-        [Display(Name = "Química Analítica Verde")]
+        [Display(Name = "QV - Química Analítica Verde")]
         QuimicaAnaliticaVerde,
-
-        [Display(Name = "Petróleo e Petroquímica")]
+        [Display(Name = "QV - Petróleo e Petroquímica")]
         PetroleoEPetroQuimica,
-
-        [Display(Name = "Saúde e Segurança do Trabalho")]
+        [Display(Name = "CIS - Saúde e Segurança do Trabalho")]
         SST,
-
-        [Display(Name = "Indústria 4.0")]
+        [Display(Name = "II - Indústria 4.0")]
         Industria40,
-
-        [Display(Name = "Novos Materiais")]
+        [Display(Name = "II - Novos Materiais")]
         Materiais,
-
-        [Display(Name = "Otimização de parâmetros de Inspeção não destrutiva em materiais")]
+        [Display(Name = "II - Otimização de parâmetros de Inspeção não destrutiva em materiais")]
         OtPam,
-
-        [Display(Name = "Sistemas computacionais de Inspeção não destrutiva")]
+        [Display(Name = "II - Sistemas computacionais de Inspeção não destrutiva")]
         SisCompNaoDestrutivas,
-
-        [Display(Name = "Pesquisa na área de corrosão")]
+        [Display(Name = "II - Pesquisa na área de corrosão")]
         Corrosao,
-
-        [Display(Name = "Biotecnologia e Biologia Molecular")]
+        [Display(Name = "QV - Biotecnologia e Biologia Molecular")]
         Biotec,
-
         [Display(Name = "A definir")]
-        Indefinida
+        Indefinida,
+        [Display(Name = "SVP - Sistemas interativos inteligentes em realidade estendida")]
+        SistemasInterativosRealidadeEstendida,
+        [Display(Name = "SVP - Modelagem matemática para realidade estendida")]
+        ModelagemMatematicaRealidadeEstendida,
+        [Display(Name = "SVP - Simuladores híbridos")]
+        SimuladoresHibridos,
+        [Display(Name = "QV - Química 4.0")]
+        Quimica40,
+        [Display(Name = "CIS - Biotecnologia Aplicada")]
+        BiotecCIS,
+        [Display(Name = "CIS - Suporte Científico para Processos e Produtos em Saúde")]
+        SuporteProcessosSaude,
+
     }
 
     public enum StatusProspeccao
@@ -305,7 +306,9 @@ namespace BaseDeProjetos.Models
         CISHO,
 
         [Display(Name = "Supervisão")]
-        Super
+        Super,
+        [Display(Name = "ISI - Sistemas Virtuais de Produção")]
+        ISISVP,
     }
 
     public enum Atividades
