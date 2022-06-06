@@ -3,17 +3,12 @@
 
 @{
     ViewData["Title"] = "Criar Projeto";
-}
-@using Microsoft.AspNetCore.Http
-@{
-
     ViewData["Title"] = "Adicionar Prospecção";
     if (!(Context.Session.GetString("_Casa") is null))
     {
         ViewData["Area"] = Context.Session.GetString("_Casa");
     }
 }
-
 <h1>Criar</h1>
 
 <h4>Projeto</h4>
@@ -26,7 +21,9 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <label asp-for="Id" class="control-label"></label>
-                    @{ var unique_id = $"proj_{DateTime.Now.Ticks}";}
+                    @{
+                        var unique_id = $"proj_{DateTime.Now.Ticks}";
+                    }
                     <input asp-for="Id" class="form-control" value="@unique_id" readonly />
                     <span asp-validation-for="Id" class="text-danger"></span>
                 </div>
@@ -35,7 +32,9 @@
                     @if (!(Context.Session.GetString("_Casa") is null))
                     {
                         <select asp-for="Casa" class="form-control">
-                            @{ var enum_v = (int)Enum.Parse(typeof(Instituto), Context.Session.GetString("_Casa"), true);}
+                            @{
+                                var enum_v = (int)Enum.Parse(typeof(Instituto), Context.Session.GetString("_Casa"), true);
+                            }
                             <option value="@enum_v" selected="selected">@Context.Session.GetString("_Casa")</option>
                         </select>
                     }
@@ -118,5 +117,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

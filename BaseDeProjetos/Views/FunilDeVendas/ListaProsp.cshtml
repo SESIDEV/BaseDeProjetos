@@ -1,6 +1,8 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
 @using System.Globalization
-@{ var ptbr = new CultureInfo("pt-BR"); }
+@{
+    var ptbr = new CultureInfo("pt-BR");
+}
 
 <style>
 
@@ -104,7 +106,7 @@
         object-fit: contain;
         padding: 20px;
     }
-        
+
     /*** Alteração de layout lista de empresas e prospecções / Funil de Vendas ***/
 </style>
 
@@ -115,10 +117,12 @@
             <div class="empresa-preview">
                 @if (item.Empresa.Logo != null)
                 {
-                    <img style="background-color:white" id="logoEmpresa" src="@item.Empresa.Logo" alt="Logo da Empresa" /> }
+                    <img style="background-color:white" id="logoEmpresa" src="@item.Empresa.Logo" alt="Logo da Empresa" />
+                }
                 else
                 {
-                    <h5 id="logo_alt">Sem Logo</h5>}
+                    <h5 id="logo_alt">Sem Logo</h5>
+                }
             </div>
             <div class="card-info">
 
@@ -132,18 +136,22 @@
                     <p class="description-info"><strong>Tipo Contratação: </strong>@item.TipoContratacao.GetDisplayName()</p>
                     @if (item.Usuario != null)
                     {
-                        <p class="description-info"><strong>Lider: </strong>@item.Usuario.UserName.ToUpper()</p> }
+                        <p class="description-info"><strong>Lider: </strong>@item.Usuario.UserName.ToUpper()</p>
+                    }
                     else
                     {
-                        <p class="description-info"><strong>Lider: </strong>Não Informado</p>}
+                        <p class="description-info"><strong>Lider: </strong>Não Informado</p>
+                    }
 
                     @if (item.ValorProposta != 0)
                     {
-                        <p class="description-info"><strong>Valor da Proposta: </strong>@item.ValorProposta.ToString("C2")</p> }
+                        <p class="description-info"><strong>Valor da Proposta: </strong>@item.ValorProposta.ToString("C2")</p>
+                    }
                     else
                     {
 
-                        <p class="description-info"><strong>Status: </strong>@item.Status.Last().Status.GetDisplayName()</p>}
+                        <p class="description-info"><strong>Status: </strong>@item.Status.Last().Status.GetDisplayName()</p>
+                    }
                 </div>
             </div>
         </div>
@@ -171,4 +179,5 @@
                 </div>
             </div>
         </div>
-    </div>}
+    </div>
+}

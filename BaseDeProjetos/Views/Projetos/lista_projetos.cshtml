@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Projeto>
+@using System.Collections
 
 <style>
 
@@ -67,7 +68,7 @@
     <div class="container">
         <div class="caixa-projetos">
             <div class="caixa-logo">
-                @if (item.Empresa.Logo != null)
+                @if (item.Empresa != null)
                 {
                     <img style="background-color:white" id="logoEmpresa" src="@item.Empresa.Logo" alt="Logo da Empresa" />
                 }
