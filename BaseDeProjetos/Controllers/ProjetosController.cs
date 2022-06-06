@@ -41,9 +41,8 @@ namespace BaseDeProjetos.Controllers
             projetos = PeriodizarProjetos(ano, projetos);
             CategorizarStatusProjetos(projetos);
             GerarIndicadores(casa, _context);
-            return View(projetos.ToList());
+            return View(projetos.ToList());            
         }
-
         private void CategorizarStatusProjetos(IQueryable<Projeto> projetos)
         {
             ViewBag.Ativos = projetos.Where(p => p.status == StatusProjeto.EmExecucao || p.status == StatusProjeto.Contratado).ToList();

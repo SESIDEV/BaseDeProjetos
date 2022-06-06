@@ -1,5 +1,5 @@
-﻿@model IEnumerable<BaseDeProjetos.Models.Projeto>
-@using System.Collections
+﻿@using System.Collections
+@model IEnumerable<BaseDeProjetos.Models.Projeto>
 
 <style>
 
@@ -63,58 +63,81 @@
 
 </style>
 
-@foreach (var item in Model)
-{
-    <div class="container">
-        <div class="caixa-projetos">
-            <div class="caixa-logo">
-                @if (item.Empresa != null)
-                {
-                    <img style="background-color:white" id="logoEmpresa" src="@item.Empresa.Logo" alt="Logo da Empresa" />
-                }
-                else
-                {
-                    <h5 id="logo_alt">Sem Logo</h5>
-                }
-            </div>
-            <div class="caixa-descricao">
-                <div class="descricao">
-                    <p class="titulo-descricao">@Html.DisplayNameFor(model => model.Empresa.Nome)</p>
-                    <p class="titulo-descricao">@Html.DisplayNameFor(model => model.NomeProjeto)</p>
-                    <p class="titulo-descricao">@Html.DisplayNameFor(model => model.Lider)</p>
-                    <p class="titulo-descricao">@Html.DisplayNameFor(model => model.FonteFomento)</p>
-                    <p class="titulo-descricao">@Html.DisplayNameFor(model => model.status)</p>
+<div class="container">
+    <div class="row align-items-start">
+        <div class"col-12">
+            <form asp-action="lista_projetos" method="get">
+                <div class="input-group col-12">
+                    <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" class="form-control" aria-label="Text input with segmented dropdown button" placeholder="Digite o nome do Líder ou Projeto">
+                    <button disabled="disabled" type="button" value="Procurar" class="btn btn-outline-secondary">Pesquisar</button>
+                    <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="visually-hidden">Mais Opções</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a asp-action="" class="dropdown-item">Exibir Lista Completa</a></li>
+                        <li><a asp-action="Create" class="dropdown-item">Adicionar Projeto</a></li>
+                    </ul>
                 </div>
-                <div class="caixa-conteudo">
-                    <p class="conteudo-descricao">@Html.DisplayFor(modelItem => item.Empresa.Nome)</p>
-                    <p class="conteudo-descricao">@Html.DisplayFor(modelItem => item.NomeProjeto)</p>
-                    <p class="conteudo-descricao">
-                        @try
-                        {
-                            @Html.DisplayFor(modelItem => item.NomeLider)
-                        }
-                        catch
-                        {
-                            <span class="text-secondary">A preencher</span>
-                        }
-                    </p>
-                    <p class="conteudo-descricao">@Html.DisplayFor(modelItem => item.FonteFomento)</p>
-                    <p class="conteudo-descricao">@Html.DisplayFor(modelItem => item.status)</p>
-                </div>
-            </div>
-        </div>
-        <button id="btn-collapse" class="btn btn-outline-secondary container-fluid" type="button" data-toggle="collapse" data-target="#@item.Id" aria-expanded="false" aria-controls="collapseExample">
-            Ver mais detalhes
-        </button>
-        <div class="collapse" id="@item.Id">
-            <div class="card card-body" id="card-body">
-                <div id="box-btn-actions">
-                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
-                    <a asp-action="IncluirEntrega" asp-route-id="@item.Id">Inserir Entregas</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Remover</a>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
-}
+
+    <br />
+
+
+    @foreach (var item in Model)
+    {
+        <div class="container">
+            <div class="caixa-projetos">
+                <div class="caixa-logo">
+                    @if (item.Empresa != null)
+                    {
+                        <img style="background-color:white" id="logoEmpresa" src="@item.Empresa.Logo" alt="Logo da Empresa" />
+                    }
+                    else
+                    {
+                        <h5 id="logo_alt">Sem Logo</h5>
+                    }
+                </div>
+                <div class="caixa-descricao">
+                    <div class="descricao">
+                        <p class="titulo-descricao">@Html.DisplayNameFor(model => model.Empresa.Nome)</p>
+                        <p class="titulo-descricao">@Html.DisplayNameFor(model => model.NomeProjeto)</p>
+                        <p class="titulo-descricao">@Html.DisplayNameFor(model => model.Lider)</p>
+                        <p class="titulo-descricao">@Html.DisplayNameFor(model => model.FonteFomento)</p>
+                        <p class="titulo-descricao">@Html.DisplayNameFor(model => model.status)</p>
+                    </div>
+                    <div class="caixa-conteudo">
+                        <p class="conteudo-descricao">@Html.DisplayFor(modelItem => item.Empresa.Nome)</p>
+                        <p class="conteudo-descricao">@Html.DisplayFor(modelItem => item.NomeProjeto)</p>
+                        <p class="conteudo-descricao">
+                            @try
+                            {
+                                @Html.DisplayFor(modelItem => item.NomeLider)
+                            }
+                            catch
+                            {
+                                <span class="text-secondary">A preencher</span>
+                            }
+                        </p>
+                        <p class="conteudo-descricao">@Html.DisplayFor(modelItem => item.FonteFomento)</p>
+                        <p class="conteudo-descricao">@Html.DisplayFor(modelItem => item.status)</p>
+                    </div>
+                </div>
+            </div>
+            <button id="btn-collapse" class="btn btn-outline-secondary container-fluid" type="button" data-toggle="collapse" data-target="#@item.Id" aria-expanded="false" aria-controls="collapseExample">
+                Ver mais detalhes
+            </button>
+            <div class="collapse" id="@item.Id">
+                <div class="card card-body" id="card-body">
+                    <div id="box-btn-actions">
+                        <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
+                        <a asp-action="IncluirEntrega" asp-route-id="@item.Id">Inserir Entregas</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Remover</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
