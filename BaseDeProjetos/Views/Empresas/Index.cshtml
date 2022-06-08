@@ -8,14 +8,19 @@
     List<Pessoa> contatos = ViewBag.Contatos as List<Pessoa>;
 }
 <style>
-    th {
-  margin-right: 10px;
+    .efeito-hover:hover {
+        background-color: gray;
+        transition: 500ms ease-in-out;
+        border-radius: 10px;
+        outline: none;
+        border: none;
+        color: white;
     }
+
     .empresa {
         border-radius: 10px;
         box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
         display: flex;
-        max-width: 100%;
         margin: 0 20px 20px 0;
         overflow: hidden;
         width: 100%;
@@ -83,16 +88,16 @@
         width: 100%;
     }
 
-        .dados::after {
-            border-radius: 3px;
-            background-color: #2A265F;
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 5px;
-            width: 66%;
-        }
+    .dados::after {
+       border-radius: 3px;
+       background-color: #2A265F;
+       content: '';
+       position: absolute;
+       top: 0;
+       left: 0;
+       height: 5px;
+       width: 66%;
+    }
 
     .dados-text {
         font-size: 10px;
@@ -101,13 +106,13 @@
     }
 
     .btn-empresa {
-        background-color: #2A265F;
+        background-color: #0d6efd;
         border: none;
         border-radius: 5px;
         color: white;
         text-decoration: none;
         font-size: 14px;
-        padding: 5px;
+        padding: 10px;
     }
 </style>
 <div class="container">
@@ -117,13 +122,13 @@
             <form asp-action="Index" method="get">
                 <div class="input-group">
                     <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" class="form-control" aria-label="Text input with segmented dropdown button" placeholder="Digite o nome da Empresa">
-                    <button type="submit" value="Procurar" class="btn btn-outline-secondary">Pesquisar</button>
+                    <button type="submit" value="Procurar" class="btn btn-outline-secondary efeito-hover">Pesquisar</button>
                     <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="visually-hidden">Mais Opções</span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a asp-action="Index" class="dropdown-item">Exibir Lista Completa</a></li>
-                        <li><a asp-action="Create" class="dropdown-item">Adicionar Empresa</a></li>
+                        <li><a asp-action="Index" class="dropdown-item efeito-hover">Exibir Lista Completa</a></li>
+                        <li><a asp-action="Create" class="dropdown-item efeito-hover">Adicionar Empresa</a></li>
                     </ul>
                 </div>
             </form>
@@ -156,17 +161,16 @@
                         <p><strong>Nome Empresa:</strong> @item.Nome</p>
                         <p><strong>CNPJ:</strong> @item.CNPJ</p>
                         <p><strong>Setor:</strong> @item.Segmento</p>
-                        <button type="button" class="btn-empresa" data-toggle="collapse" data-target="#e_@item.Id">Ver ações</button>
-                        <button type="button" class="btn-empresa" data-toggle="collapse" data-target="#ce_@item.Id">Ver contatos</button>
+                        <button type="button" class="btn-empresa efeito-hover" data-toggle="collapse" data-target="#e_@item.Id">Ações</button>
+                        <button type="button" class="btn-empresa efeito-hover" data-toggle="collapse" data-target="#ce_@item.Id">Contatos</button>
 
                         <div id="e_@item.Id" class="collapse">
-                            <hr />
                             <h6>Ações</h6>
-                            <small>
-                                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                                <a asp-action="Details" asp-route-id="@item.Id">Ver Detalhes</a> |
-                                <a asp-action="Delete" asp-route-id="@item.Id">Deletar</a>
-                            </small>
+                            <div>
+                                <a asp-action="Edit" asp-route-id="@item.Id"><button class="btn-empresa efeito-hover">Editar</button></a>
+                                <a asp-action="Details" asp-route-id="@item.Id"><button class="btn-empresa efeito-hover">Ver Detalhes</button></a>
+                                <a asp-action="Delete" asp-route-id="@item.Id"><button class="btn-empresa efeito-hover">Deletar</button></a>
+                            </div>
                             <br />
                         </div>
 
