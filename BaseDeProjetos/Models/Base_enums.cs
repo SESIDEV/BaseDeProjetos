@@ -4,6 +4,31 @@ using System.Reflection;
 
 namespace BaseDeProjetos.Models
 {
+    public enum GrupoPublicacao
+    {
+        [Display(Name = "Trabalho em Eventos", GroupName = "Produção Bibliográfica")]
+        Trabalho,
+
+        [Display(Name = "Artigo Publicado", GroupName = "Produção Bibliográfica")]
+        Artigo,
+
+        [Display(Name = "Livro Publicado ou Organizado", GroupName = "Produção Bibliográfica")]
+        Livro,
+
+        [Display(Name = "Capitulo de Livro Publicado", GroupName = "Produção Bibliográfica")]
+        Capitulo,
+
+        [Display(Name = "Texto em Jornal ou Revista", GroupName = "Produção Bibliográfica")]
+        JornalRevista,
+
+        [Display(Name = "Prefácio/Posfácio", GroupName = "Produção Bibliográfica")]
+        PrefacioPosfacio,
+
+        [Display(Name = "...", GroupName = "Produção Técnica")]
+        Tecnica,
+
+    }
+
     public enum Titulacao
     {
         [Display(Name = "Nível Médio")]
@@ -68,43 +93,43 @@ namespace BaseDeProjetos.Models
 
     public enum LinhaPesquisa
     {
-        [Display(Name = "QV - Química e Sustentabilidade")]
+        [Display(Name = "QV - Química e Sustentabilidade", GroupName = "Quimica Verde")]
         QuimicaESustentabilidade,
-        [Display(Name = "QV - Tecnologia para Solos e Efluentes")]
+        [Display(Name = "QV - Tecnologia para Solos e Efluentes", GroupName = "Quimica Verde")]
         TecnologiasSolosEfluentes,
-        [Display(Name = "QV - Extração de Matérias Primas Renováveis")]
+        [Display(Name = "QV - Extração de Matérias Primas Renováveis", GroupName = "Quimica Verde")]
         ExtracaoMateriasPrimasRenovaveis,
-        [Display(Name = "QV - Química Analítica Verde")]
+        [Display(Name = "QV - Química Analítica Verde", GroupName = "Quimica Verde")]
         QuimicaAnaliticaVerde,
-        [Display(Name = "QV - Petróleo e Petroquímica")]
+        [Display(Name = "QV - Petróleo e Petroquímica", GroupName = "Quimica Verde")]
         PetroleoEPetroQuimica,
-        [Display(Name = "CIS - Saúde e Segurança do Trabalho")]
+        [Display(Name = "CIS - Saúde e Segurança do Trabalho", GroupName = "Centro de Inovação Sesi - Saúde Ocupacional")]
         SST,
-        [Display(Name = "II - Indústria 4.0")]
+        [Display(Name = "II - Indústria 4.0", GroupName = "Inspeção e Integridade")]
         Industria40,
-        [Display(Name = "II - Novos Materiais")]
+        [Display(Name = "II - Novos Materiais", GroupName = "Inspeção e Integridade")]
         Materiais,
-        [Display(Name = "II - Otimização de parâmetros de Inspeção não destrutiva em materiais")]
+        [Display(Name = "II - Otimização de parâmetros de Inspeção não destrutiva em materiais", GroupName = "Inspeção e Integridade")]
         OtPam,
-        [Display(Name = "II - Sistemas computacionais de Inspeção não destrutiva")]
+        [Display(Name = "II - Sistemas computacionais de Inspeção não destrutiva", GroupName = "Inspeção e Integridade")]
         SisCompNaoDestrutivas,
-        [Display(Name = "II - Pesquisa na área de corrosão")]
+        [Display(Name = "II - Pesquisa na área de corrosão", GroupName = "Inspeção e Integridade")]
         Corrosao,
-        [Display(Name = "QV - Biotecnologia e Biologia Molecular")]
+        [Display(Name = "QV - Biotecnologia e Biologia Molecular", GroupName = "Quimica Verde")]
         Biotec,
         [Display(Name = "A definir")]
         Indefinida,
-        [Display(Name = "SVP - Sistemas interativos inteligentes em realidade estendida")]
+        [Display(Name = "SVP - Sistemas interativos inteligentes em realidade estendida", GroupName = "Sistemas Virtuais de Produção")]
         SistemasInterativosRealidadeEstendida,
-        [Display(Name = "SVP - Modelagem matemática para realidade estendida")]
+        [Display(Name = "SVP - Modelagem matemática para realidade estendida", GroupName = "Sistemas Virtuais de Produção")]
         ModelagemMatematicaRealidadeEstendida,
-        [Display(Name = "SVP - Simuladores híbridos")]
+        [Display(Name = "SVP - Simuladores híbridos", GroupName = "Sistemas Virtuais de Produção")]
         SimuladoresHibridos,
-        [Display(Name = "QV - Química 4.0")]
+        [Display(Name = "QV - Química 4.0", GroupName = "Quimica Verde")]
         Quimica40,
-        [Display(Name = "CIS - Biotecnologia Aplicada")]
+        [Display(Name = "CIS - Biotecnologia Aplicada", GroupName = "Centro de Inovação Sesi - Saúde Ocupacional")]
         BiotecCIS,
-        [Display(Name = "CIS - Suporte Científico para Processos e Produtos em Saúde")]
+        [Display(Name = "CIS - Suporte Científico para Processos e Produtos em Saúde", GroupName = "Centro de Inovação Sesi - Saúde Ocupacional")]
         SuporteProcessosSaude,
 
     }
