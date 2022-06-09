@@ -52,7 +52,8 @@
                 @Html.DisplayFor(modelItem => item.Autores)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Data)
+                @{string dataPublic = $"{item.Data.Month}/{item.Data.Year}";}
+                @dataPublic
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Local)
