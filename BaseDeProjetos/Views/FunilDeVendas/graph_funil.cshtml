@@ -94,6 +94,8 @@
         infrutiferas = 0;
     } }
 
+    @if (Model.Count() > 1)
+    {
 <div class="row">
     <figure class="highcharts-figure col-12">
         <div id="funil"></div>
@@ -160,8 +162,8 @@
                 @if (valor > 0)
                 {
     <h4>@valor.ToString("C2")</h4> }
-else
-{
+                else
+                {
 <h4> R$ ---</h4>}
                 <small>
                     Ticket médio das prospecções
@@ -384,3 +386,8 @@ Highcharts.chart('pizza_desistencia', {
         }
     }
 </script>
+    }
+    else
+    {
+        <h3> Ainda não existem dados cadastrados. Esta aba aparecerá quando você tiver mais dados cadastrados.</h3>
+    }
