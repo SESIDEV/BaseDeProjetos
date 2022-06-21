@@ -4,6 +4,16 @@
     ViewData["Title"] = "Gestão do Conhecimento";
 }
 
+<style>
+
+    td, th {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    }
+
+</style>
+
 <h1>Gestão do Conhecimento</h1>
 
 <p>
@@ -39,16 +49,16 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
+            <td style="max-width: 190px;">
                 @Html.DisplayFor(modelItem => item.Grupo)
             </td>
-            <td>
+            <td style="max-width: 150px;">
                 @Html.DisplayFor(modelItem => item.Titulo)
             </td>
-            <td>
+            <td style="max-width: 150px;">
                 @Html.DisplayFor(modelItem => item.Descricao)
             </td>
-            <td>
+            <td style="max-width: 150px;">
                 @Html.DisplayFor(modelItem => item.Autores)
             </td>
             <td>
@@ -58,7 +68,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Local)
             </td>
-            <td>
+            <td style="max-width: 100px;">
                 @Html.DisplayFor(modelItem => item.DOI)
             </td>
             <td>
