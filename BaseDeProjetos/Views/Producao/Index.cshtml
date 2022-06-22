@@ -1,18 +1,6 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Producao>
 
-@{
-    ViewData["Title"] = "Gestão do Conhecimento";
-}
-
-<style>
-
-    td, th {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    }
-
-</style>
+@{ViewData["Title"] = "Gestão do Conhecimento";}
 
 <h1>Gestão do Conhecimento</h1>
 
@@ -22,7 +10,7 @@
     <div class="row">
         @foreach (var item in Model) {
             <div class="col-md-3">
-                <div class="card" style="width: 18rem;">
+                <div class="card mt-3" style="width: 18rem;">
                     <div style="height:200px; overflow:hidden;">
                         <img class="card-img-top" src="@Html.DisplayFor(modelItem => item.Imagem)" alt="imagem">
                     </div>
@@ -38,4 +26,3 @@
         }
     </div>
 </div>
-
