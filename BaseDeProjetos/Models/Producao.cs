@@ -28,5 +28,8 @@ namespace BaseDeProjetos.Models
         [Display(Name = "DOI")]
         public virtual string DOI { get; set; }
 
+        [Display(Name = "Imagem")]
+        public virtual string Imagem { get; set; }
+
     }
 }

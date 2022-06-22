@@ -16,67 +16,24 @@
 
 <h1>Gestão do Conhecimento</h1>
 
-<p>
-    <a asp-action="Create">Adicionar Produção</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Grupo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Titulo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Descricao)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Autores)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Data)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Local)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DOI)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td style="max-width: 190px;">
-                @Html.DisplayFor(modelItem => item.Grupo)
-            </td>
-            <td style="max-width: 150px;">
-                @Html.DisplayFor(modelItem => item.Titulo)
-            </td>
-            <td style="max-width: 150px;">
-                @Html.DisplayFor(modelItem => item.Descricao)
-            </td>
-            <td style="max-width: 150px;">
-                @Html.DisplayFor(modelItem => item.Autores)
-            </td>
-            <td>
-                @{string dataPublic = $"{item.Data.Month}/{item.Data.Year}";}
-                @dataPublic
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Local)
-            </td>
-            <td style="max-width: 100px;">
-                @Html.DisplayFor(modelItem => item.DOI)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Deletar</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<p><a asp-action="Create">Adicionar Produção</a></p>
+
+<div class="container">
+    <div class="row">
+        @foreach (var item in Model) {
+            <div class="col-md-3">
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="@Html.DisplayFor(modelItem => item.Imagem)" alt="imagem">
+                    <div class="card-body">
+                        <h5 class="card-title" style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">@Html.DisplayFor(modelItem => item.Titulo)</h5>
+                        <p class="card-text" style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical;">@Html.DisplayFor(modelItem => item.Descricao)</p>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Detalhes</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Editar</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Deletar</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
