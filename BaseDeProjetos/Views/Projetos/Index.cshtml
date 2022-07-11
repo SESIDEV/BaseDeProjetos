@@ -7,7 +7,7 @@
 
 <div class="row card">
     <div class=" col-12 card-body">
-        <h1 class="card-title">Projetos - @ViewData["Area"]</h1>
+        <h1 class="card-title">Projetos @ViewData["Area"]</h1>
         <div>
             <label>Selecione o ano:</label>
             <select class="form-select" id="ano" onchange="updateLink()">
@@ -19,25 +19,34 @@
             </select>
         </div>
 
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <ul class="nav nav-tabs justify-content-between" id="myTab" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Gráfico</a>
             </li>
+            @* KPIS desativados nesta área. Os mesmos estão sendo exibidos na área de indicadores
             <li class="nav-item">
                 <a class="nav-link" id="fraun-tab" data-toggle="tab" href="#fraun" role="tab" aria-controls="profile" aria-selected="false">KPIs Fraunhofer</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="embrapii-tab" data-toggle="tab" href="#embrapii" role="tab" aria-controls="profile" aria-selected="false">KPIs Embrapii</a>
             </li>
+            *@
             <li class="nav-item">
-                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Lista de Projetos Ativos</a>
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Lista de Projetos</a>
             </li>
+            @*
             <li class="nav-item">
                 <a class="nav-link" id="profile-tab" data-toggle="tab" href="#encerrados" role="tab" aria-controls="encerrados" aria-selected="false">Lista de Projetos Encerrados</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Importar</a>
             </li>
+            *@
+             <li class="nav-item">
+                <a asp-action="Create">
+                  <button class="btn btn-outline-primary" col-12">Adicionar Novo Projeto</button>
+                </a>
+             </li>          
         </ul>
         
         <br />
@@ -84,12 +93,5 @@
                 </div>
             </div>
         </div>
-        <hr />
-        <div>
-            <button class="btn btn-outline-primary col-12">
-                <a asp-action="Create">Adicionar Novo Projeto</a>
-            </button>
-        </div>
-        <hr />
     </div>
 </div>

@@ -69,13 +69,14 @@
             <form asp-action="lista_projetos" method="get">
                 <div class="input-group col-12">
                     <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" class="form-control" aria-label="Text input with segmented dropdown button" placeholder="Digite o nome do Líder ou Projeto">
-                    <button disabled="disabled" type="button" value="Procurar" class="btn btn-outline-secondary">Pesquisar</button>
+                    <button type="button" value="Procurar" class="btn btn-outline-secondary">Pesquisar</button>
                     <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="visually-hidden">Mais Opções</span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a asp-action="" class="dropdown-item">Exibir Lista Completa</a></li>
-                        <li><a asp-action="Create" class="dropdown-item">Adicionar Projeto</a></li>
+                        <li><a asp-action="" class="dropdown-item">Projetos Ativos</a></li>
+                        <li><a asp-action="" class="dropdown-item">Projetos Encerrados</a></li>
                     </ul>
                 </div>
             </form>
