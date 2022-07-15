@@ -42,6 +42,7 @@
     decimal n_canceladas = Model.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.Suspensa)).Count();
     decimal n_prospeccoes_andamento = Model.Count() - n_convertidas - n_nao_convertidas - n_canceladas;
     decimal n_empresas = Model.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();
+    decimal n_planejadas = Model.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.Planejada)).Count();
 
     //Novo Filtro:
     decimal filtro_ativas = Model.Where(p => p.Status.All(k => k.Status <= StatusProspeccao.ComProposta)).Count();

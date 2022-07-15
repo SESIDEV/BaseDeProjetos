@@ -1,9 +1,10 @@
 ﻿@model BaseDeProjetos.Models.Empresa
 
-@{ ViewData["Title"] = "Criar"; }
+@{
+    ViewData["Title"] = "Criar";
 
+ }
 <h1>Criar</h1>
-
 <h4>Empresa</h4>
 <hr />
 <div class="row">
@@ -11,31 +12,33 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Nome" class="control-label"></label>
-                <input asp-for="Nome" class="form-control" />
-                <span asp-validation-for="Nome" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="CNPJ" class="control-label"></label><span>   (Apenas números)</span>
-                <input asp-for="CNPJ" class="form-control" data-mask="00.000.000/0000-00" pattern=".{18}" title="Digite todos os 14 números do CNPJ"/>
-                <span asp-validation-for="CNPJ" class="text-danger"></span>
+                <input asp-for="CNPJ" id="valor_cnpj" class="form-control" maxlength="14" required/>
+                <button onclick="validarCNPJ()" type="button">Buscar</button>
             </div>
+            <hr />
+            <h6 id="TipoEmpresaStatus">Tipo: </h6>
+            <h6 id="SituacaoEmpresaStatus">Situação: </h6>
             <div class="form-group">
-                <label asp-for="Segmento" class="control-label"></label>
-                <input asp-for="Segmento" class="form-control" />
-                <span asp-validation-for="Segmento" class="text-danger"></span>
+                <label asp-for="Nome" class="control-label"></label>
+                <input asp-for="Nome" id="NomeEmpresaCadastro" class="form-control" value="" disabled/>
             </div>
             <div>
                 <label asp-for="Estado" class="control-label"></label>
-                <select asp-for="Estado" class="form-control" asp-items="Html.GetEnumSelectList<Estado>().OrderBy(p=>p.Text)"></select>
+                <input asp-for="Estado" id="EstadoEmpresaCadastro" class="form-control" value="" disabled/>
             </div>
-
-            <div class="form-group mt-4">
+            <hr/>
+            <div class="form-group">
+                <label asp-for="Segmento" class="control-label"></label>
+                <select asp-for="Segmento" class="form-control" asp-items="Html.GetEnumSelectList<SegmentoEmpresa>().OrderBy(p=>p.Text)"></select>
+            </div>
+            <div class="form-group">
                 <label asp-for="Logo" class="control-label"></label>
-                <input asp-for="Logo" class="form-control" />
-                <span asp-validation-for="Logo" class="text-danger"></span>
+                <input type="file" class="form-control" id="logo_imagem" onchange="Base64()"/>
+                <input asp-for="Logo" id="logo_b64" class="control-label" value="" disabled>
             </div>
-            <br />
+            <img id="logo_img_preview" src="" width="300">
+            <hr />
             <div class="form-group">
                 <input type="submit" value="Criar" class="btn btn-primary" />
             </div>

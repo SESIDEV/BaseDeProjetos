@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Net.Http;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -23,6 +24,10 @@ namespace BaseDeProjetos.Controllers
         // GET: Empresas
         public IActionResult Index(string searchString = "")
         {
+            ViewBag.Prospeccoes = _context.Prospeccao.Where(P => P.Status.All(S => S.Status != StatusProspeccao.NaoConvertida &&
+                                                                                    S.Status != StatusProspeccao.Convertida &&
+                                                                                    S.Status != StatusProspeccao.Suspensa)).ToList();
+            
             ViewBag.Contatos = _context.Pessoa.ToList();
             //Filtros e ordenadores
             if (string.IsNullOrEmpty(searchString) && HttpContext.Session.Keys.Contains("_CurrentFilter"))
@@ -38,6 +43,12 @@ namespace BaseDeProjetos.Controllers
             var empresas = FiltrarEmpresas(searchString, _context.Empresa.OrderBy(e=> e.Nome).ToList());
 
             return View(empresas);
+        }
+        public async Task<string> DadosAPI(string query){
+            HttpClient client = new HttpClient{BaseAddress = new Uri("https://receitaws.com.br/v1/cnpj/")};
+            var response = await client.GetAsync(query);
+            var data = await response.Content.ReadAsStringAsync();
+            return data;
         }
         private static List<Empresa> FiltrarEmpresas(string searchString, List<Empresa> lista)
         {
@@ -85,6 +96,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (ModelState.IsValid)
             {
+                // O CONTROLLER PRECISA RECEBER O CAMPO 'ESTADO' E VERIFICAR A QUAL CAPO [Name] ELE PERTENCE NA BASE ENUM #########################################
                 empresa.CNPJ = Regex.Replace(empresa.CNPJ, "[^0-9]", "");
                 _context.Add(empresa);
                 await _context.SaveChangesAsync();
@@ -124,7 +136,7 @@ namespace BaseDeProjetos.Controllers
             if (ModelState.IsValid)
             {
                 try
-                {
+                {   // O CONTROLLER PRECISA RECEBER O CAMPO 'ESTADO' E VERIFICAR A QUAL [Name] ELE PERTENCE NA BASE ENUM #########################################
                     empresa.CNPJ = Regex.Replace(empresa.CNPJ, "[^0-9]", "");
                     _context.Update(empresa);
                     await _context.SaveChangesAsync();

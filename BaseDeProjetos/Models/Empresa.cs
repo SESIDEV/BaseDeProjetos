@@ -9,7 +9,7 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Nome da Empresa")]
         public virtual string Nome { get; set; }
 
-        [Display(Name = "Logo da Empresa (Link URL)")]
+        [Display(Name = "Logo da Empresa")]
         public virtual string Logo { get; set; }
 
         [Display(Name = "CNPJ da Empresa")]

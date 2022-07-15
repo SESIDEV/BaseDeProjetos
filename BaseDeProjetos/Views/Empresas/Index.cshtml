@@ -6,6 +6,7 @@
 }
 @{
     List<Pessoa> contatos = ViewBag.Contatos as List<Pessoa>;
+    List<Prospeccao> prosps = ViewBag.Prospeccoes as List<Prospeccao>;
 }
 <style>
     .efeito-hover:hover{
@@ -124,7 +125,7 @@
                     <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" class="form-control" aria-label="Text input with segmented dropdown button" placeholder="Digite o nome da Empresa">
                     <button type="submit" value="Procurar" class="btn btn-outline-secondary efeito-hover">Pesquisar</button>
                     <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span class="visually-hidden">Mais Opções</span>
+                    <span class="visually-hidden">Mais Opções</span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a asp-action="Index" class="dropdown-item efeito-hover">Exibir Lista Completa</a></li>
@@ -159,10 +160,12 @@
                         </div>
 
                         <p><strong>Nome Empresa:</strong> @item.Nome</p>
+                        <p><strong>Prospeccoes Ativas: </strong>@prosps.Where(P => P.Empresa.Id == @item.Id).Count()</p>
                         <p><strong>CNPJ:</strong> @item.CNPJ</p>
                         <p><strong>Setor:</strong> @item.Segmento</p>
                         <button type="button" class="btn-empresa efeito-hover" data-toggle="collapse" data-target="#e_@item.Id">Ações</button>
                         <button type="button" class="btn-empresa efeito-hover" data-toggle="collapse" data-target="#ce_@item.Id">Contatos</button>
+                        <a asp-controller="FunilDeVendas" asp-action="Planejar" asp-route-id="@item.Id"><button type="button" class="btn-empresa efeito-hover" data-target="#ce_@item.Id">Planejar</button></a>
 
                         <div id="e_@item.Id" class="collapse">
                             <h6>Ações</h6>

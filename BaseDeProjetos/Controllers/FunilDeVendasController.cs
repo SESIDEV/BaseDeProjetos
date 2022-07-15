@@ -56,9 +56,13 @@ namespace BaseDeProjetos.Controllers
                                                         f.Status != StatusProspeccao.ComProposta &&
                                                         f.Status != StatusProspeccao.NaoConvertida));
 
+      IQueryable<Prospeccao> planejados = lista.Where(p => p.Status.All(f => f.Status == StatusProspeccao.Planejada));
+
       ViewBag.Concluidas = concluidos.ToList<Prospeccao>();
       ViewBag.Ativas = ativos.ToList<Prospeccao>();
       ViewBag.EmProposta = emProposta.ToList();
+      ViewBag.EmProposta = emProposta.ToList();
+      ViewBag.Planejadas = planejados.ToList();
     }
 
     private void SetarFiltros(string sortOrder = "", string searchString = "")
@@ -172,11 +176,33 @@ namespace BaseDeProjetos.Controllers
     }
 
     // GET: FunilDeVendas/Create
-    public IActionResult Create()
+    public IActionResult Create(int id)
     {
       List<Empresa> empresas = _context.Empresa.ToList();
       ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
       return View();
+    }
+
+    public IActionResult Planejar(int id, string userId) {
+
+      Prospeccao prosp = new Prospeccao();
+      prosp.Empresa = _context.Empresa.FirstOrDefault(E => E.Id == id);
+      prosp.Usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
+      prosp.Casa = prosp.Usuario.Casa;
+      prosp.Status = new List<FollowUp>();
+      prosp.Status.Add(new FollowUp{
+
+        OrigemID = prosp.Id,
+        Data = DateTime.Today,
+        Anotacoes = "Incluído no plano de prospecção de" + User.Identity.Name,
+        Status = StatusProspeccao.Planejada
+
+      });
+
+      _context.Add(prosp);
+      _context.SaveChanges();
+      return RedirectToAction("Index", "Empresas");
+
     }
 
     [HttpGet]
