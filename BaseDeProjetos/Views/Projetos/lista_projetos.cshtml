@@ -69,13 +69,13 @@
             <form asp-action="lista_projetos" method="get">
                 <div class="input-group col-12">
                     <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" class="form-control" aria-label="Text input with segmented dropdown button" placeholder="Digite o nome do Líder ou Projeto">
-                    <button type="button" value="Procurar" class="btn btn-outline-secondary">Pesquisar</button>
+                    <button type="button" value="Procurar" class="btn btn-outline-primary">Pesquisar</button>
                     <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="visually-hidden">Mais Opções</span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a asp-action="" class="dropdown-item">Exibir Lista Completa</a></li>
-                        <li><a asp-action="" class="dropdown-item">Projetos Ativos</a></li>
+                        <li><a asp-action="lista_projetos" class="dropdown-item">Exibir Lista Completa</a></li>
+                        <li><a asp-action="lista_projetos_ativos" class="dropdown-item">Projetos Ativos</a></li>
                         <li><a asp-action="" class="dropdown-item">Projetos Encerrados</a></li>
                     </ul>
                 </div>
@@ -106,7 +106,7 @@
                         <p class="titulo-descricao">@Html.DisplayNameFor(model => model.NomeProjeto)</p>
                         <p class="titulo-descricao">@Html.DisplayNameFor(model => model.Lider)</p>
                         <p class="titulo-descricao">@Html.DisplayNameFor(model => model.FonteFomento)</p>
-                        <p class="titulo-descricao">@Html.DisplayNameFor(model => model.status)</p>
+                        <p class="titulo-descricao">@Html.DisplayNameFor(model => model.Status)</p>
                     </div>
                     <div class="caixa-conteudo">
                         <p class="conteudo-descricao">@Html.DisplayFor(modelItem => item.Empresa.Nome)</p>
@@ -122,7 +122,7 @@
                             }
                         </p>
                         <p class="conteudo-descricao">@Html.DisplayFor(modelItem => item.FonteFomento)</p>
-                        <p class="conteudo-descricao">@Html.DisplayFor(modelItem => item.status)</p>
+                        <p class="conteudo-descricao">@Html.DisplayFor(modelItem => item.Status)</p>
                     </div>
                 </div>
             </div>

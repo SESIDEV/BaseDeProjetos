@@ -228,12 +228,13 @@ namespace BaseDeProjetos.Controllers
         string texto = $"\n Em {followup.Data} : {followup.Anotacoes} ";
         fp.Anotacoes += texto;
         fp.Data = followup.Data;
-        _context.Update(fp);
+        _context.Add(fp);
       }
       else
       {
         _context.Add(followup);
       }
+      _context.SaveChanges();
     }
 
     private async Task AtualizarStatusAsync(FollowUp followup)
@@ -257,7 +258,7 @@ namespace BaseDeProjetos.Controllers
           Casa = followup.Origem.Casa,
           AreaPesquisa = followup.Origem.LinhaPequisa,
           Empresa = followup.Origem.Empresa,
-          status = StatusProjeto.EmExecucao,
+          Status = StatusProjeto.EmExecucao,
           Id = $"proj_{DateTime.Now.Ticks}",
           Equipe = new List<Usuario>() { user }
         };
@@ -515,7 +516,7 @@ namespace BaseDeProjetos.Controllers
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> EditarFollowUp(int id, [Bind("Id", "OrigemID", "Status", "Anotacoes", "Data", "Vencimento")] FollowUp followup, double valorProposta = 0)
+    public async Task<IActionResult> EditarFollowUp(int id, [Bind("Id", "OrigemID", "Status", "Anotacoes", "Data", "Vencimento")] FollowUp followup, double valorProposta)
     {
       if (id != followup.Id)
       {

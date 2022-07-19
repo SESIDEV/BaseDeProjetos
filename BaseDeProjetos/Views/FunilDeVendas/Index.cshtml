@@ -34,17 +34,7 @@
                 <a class="nav-link" id="concluidas-tab" data-toggle="tab" href="#concluidas" role="tab" aria-controls="concluidas" aria-selected="false">Concluídas</a>
             </li>
         </ul>
-
-        <form asp-action="Index" method="get">
-            <div class="form-actions">
-                <small>
-                    Achar por empresa ou líder: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
-                    <input type="hidden" name="ano" value="Todos" />
-                    <input type="submit" value="Procurar" class="btn btn-default" /> |
-                    <a asp-action="Index">Exibir Lista Completa</a>>
-                </small>
-            </div>
-        </form>
+        
 
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -68,10 +58,5 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div>
-        <button class="btn btn-outline-primary col-12">
-            <a asp-action="Create">Adicionar Novo Projeto</a>
-        </button>
     </div>
 </div>

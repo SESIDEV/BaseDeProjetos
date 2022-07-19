@@ -45,8 +45,8 @@ namespace BaseDeProjetos.Controllers
         }
         private void CategorizarStatusProjetos(IQueryable<Projeto> projetos)
         {
-            ViewBag.Ativos = projetos.Where(p => p.status == StatusProjeto.EmExecucao || p.status == StatusProjeto.Contratado).ToList();
-            ViewBag.Encerrados = projetos.Where(p => p.status != StatusProjeto.EmExecucao && p.status != StatusProjeto.Contratado).ToList();
+            ViewBag.Ativos = projetos.Where(p => p.Status == StatusProjeto.EmExecucao || p.Status == StatusProjeto.Contratado).ToList();
+            ViewBag.Encerrados = projetos.Where(p => p.Status != StatusProjeto.EmExecucao && p.Status != StatusProjeto.Contratado).ToList();
         }
 
         private IQueryable<Projeto> PeriodizarProjetos(string ano, IQueryable<Projeto> lista)
@@ -62,10 +62,10 @@ namespace BaseDeProjetos.Controllers
 
         private void GerarIndicadores(string casa, ApplicationDbContext _context)
         {
-            ViewBag.n_projs = _context.Projeto.Where(p => p.status == StatusProjeto.EmExecucao).Count();
+            ViewBag.n_projs = _context.Projeto.Where(p => p.Status == StatusProjeto.EmExecucao).Count();
             ViewBag.n_empresas = _context.Projeto.Count();
             ViewBag.n_revenue = _context.Projeto.
-                Where(p => p.status == StatusProjeto.EmExecucao).
+                Where(p => p.Status == StatusProjeto.EmExecucao).
                 Select(p => p.ValorAporteRecursos).
                 Sum();
             ViewBag.n_pesquisadores = _context.Users.Count();
@@ -336,7 +336,7 @@ namespace BaseDeProjetos.Controllers
                     ValorAporteRecursos = valorAporte > 0 ? valorAporte : valorTotal,
                     ValorTotalProjeto = valorTotal,
                     Inovacao = Enum.IsDefined(typeof(TipoInovacao), dados[8]) ? Enum.Parse<TipoInovacao>(dados[8]) : TipoInovacao.Processo,
-                    status = Enum.IsDefined(typeof(StatusProjeto), dados[15]) ? Enum.Parse<StatusProjeto>(dados[15]) : StatusProjeto.EmExecucao,
+                    Status = Enum.IsDefined(typeof(StatusProjeto), dados[15]) ? Enum.Parse<StatusProjeto>(dados[15]) : StatusProjeto.EmExecucao,
                     FonteFomento = Enum.IsDefined(typeof(TipoContratacao), dados[7]) ? Enum.Parse<TipoContratacao>(dados[7]) : TipoContratacao.Indefinida,
                     DuracaoProjetoEmMeses = Convert.ToInt32(dados[17])
                 };

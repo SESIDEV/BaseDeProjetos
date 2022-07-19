@@ -175,6 +175,7 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Em execução")]
         EmExecucao,
 
+        [Display(Name = "Concluído")]
         Concluido,
 
         [Display(Name = "Cancelado/Suspenso")]
