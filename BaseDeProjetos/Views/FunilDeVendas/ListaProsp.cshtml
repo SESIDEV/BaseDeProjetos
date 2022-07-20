@@ -111,13 +111,13 @@
 </style>
 
 <div class="container">
-    <form asp-action="Index" method="get">
+    <form asp-controller="FunilDeVendas" asp-action="Index" method="get">
   <div class="form-actions">
       <label>Achar por empresa ou líder:</label>
       <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
       <input type="hidden" name="ano" value="Todos" />
-      <button type="button" class="btn btn-outline-primary">Procurar</button>
-      <a asp-action="Index"><button class="btn btn-outline-primary">Exibir Lista Completa</button></a>
+      <button id="bt" type="submit" class="btn btn-outline-primary">Procurar</button>
+      <button type="submit" class="btn btn-outline-primary">Exibir Lista Completa</button>
   </div>
 </form>
 </div>
@@ -161,23 +161,17 @@
                         <p class="description-info"><strong>Status: </strong>@item.Status.Last().Status.GetDisplayName()</p>
 
                         @if(item.ValorProposta != 0){
-
                             <p class="description-info"><strong>Valor da Proposta: </strong>@item.ValorProposta.ToString("C2")</p>
-                        }else
+                        }
+                        else
                         {
                             <p class="description-info"><strong>Valor da Proposta:</strong> Valor não informado</p>
-                        }
-                        
+                        }                        
                     }
                     else
                     {
                         <p class="description-info"><strong>Status: </strong>@item.Status.Last().Status.GetDisplayName()</p>
-                    }
-
-
-                    
-
-                    
+                    }                    
                 </div>
             </div>
         </div>
@@ -196,17 +190,24 @@
                     <div>
                         Data: @item.Status.Last().Data.ToShortDateString()
                     </div>
-                </div>
-                <div id="box-btn-actions">
-                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
-                    <a asp-action="Details" asp-route-id="@item.Id">Histórico</a>
-                    <a asp-action="Atualizar" asp-route-id="@item.Id">Atualizar</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id">Remover</a>
-                </div>
+                </div>                
             </div>
-        </div>
+            <div style="display:flex; justify-content: center; gap: 5px;">
+            <a asp-action="Edit" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Editar</button></a>
+            <a asp-action="Details" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Histórico</button></a>
+            <a asp-action="Atualizar" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Atualizar</button></a>
+            <a asp-action="Delete" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Remover</button></a>
+            </div>
+        </div>        
     </div>
+
 }   <script>
+        var bt = document.querySelector('#bt')
+
+        bt.addEventListener('click', e => {
+            e.preventDefault();
+        })
+
         $(function(){
             $('[data-toggle="popover"]').popover()
         })
