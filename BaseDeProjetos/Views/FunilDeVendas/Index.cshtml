@@ -10,43 +10,14 @@
     <div class=" col-12 card-body">
         <h1 class="card-title">Prospecções @ViewData["Area"]</h1>
         <div>
-            <div class="collapse" id="navbarToggleExternalContent">
-                <div class="bg-secondary p-4">
-                    <h5 class="text-white h4">Menu</h5>
-                    <div class="row g-3">
-                        <div class="col-2">
-                            <select class="form-select" id="ano" onchange="updateLink()">
-                                <option value="Todos">Selecione o ano:</option>
-                                <option value="2019">2019</option>
-                                <option value="2020">2020</option>
-                                <option value="2021">2021</option>
-                                <option value="2022">2022</option>
-                            </select>
-                        </div>
-                        <div class="col-6">
-                            <form asp-controller="FunilDeVendas">
-                                <input class="input-group" name="ano" value="Todos" id="inputLiderOuEmpresa" style="display: none; padding: 0px; margin: 0px;"/>
-                                @*<label class="form-label" for="inputLiderOuEmpresa">Pesquise pelo líder ou empresa</label>  *@                              
-                                <div class="input-group mb-3">
-                                    <input class="form-control" type="text" name="SearchString" value="@ViewData["CurrentFilter"]" placeholder="Pesquise pelo líder ou empresa"/>
-                                    <button type="submit" class="btn btn-outline-primary">Procurar</button>
-                                </div>                                
-                            </form>
-                        </div>
-                        <div class="col-4">
-                            <button type="submit" class="btn btn-outline-primary">Lista Completa</button>
-                            <a asp-action="Create" style="text-decoration:none;" class="btn btn-outline-primary">Nova Prospecção</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <nav class="navbar navbar-light bg-light">
-                <div class="container-fluid justify-content-end">
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-                        menu<span class="spinner-grow spinner-grow-sm ms-2" role="status" aria-hidden="true"></span>
-                    </button>
-                </div>
-            </nav>
+            <label>Selecione o ano:</label>
+            <select class="form-select" id="ano" onchange="updateLink()">
+                <option value="Todos">Todos</option>
+                <option value="2019">2019</option>
+                <option value="2020">2020</option>
+                <option value="2021">2021</option>
+                <option value="2022">2022</option>
+            </select>
         </div>
 
         <ul class="nav nav-tabs" id="myTab" role="tablist">

@@ -109,13 +109,20 @@
 
     /*** Alteração de layout lista de empresas e prospecções / Funil de Vendas ***/
 </style>
-  @*
+
+<div class="container">
+  <form asp-controller="FunilDeVendas">
     <div class="form-actions">
-      
-           
-      
+      <label>Achar por empresa ou líder:</label>
+      <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+      <input type="hidden" name="ano" value="Todos" />
+      <button type="submit" class="btn btn-outline-primary">Procurar</button>      
+      <button type="submit" class="btn btn-outline-primary">Exibir Lista Completa</button>
+      <a asp-action="Create" style="text-decoration:none;" class="btn btn-outline-primary">Adicionar Nova Prospecção</a>
     </div>
-    *@
+  </form>
+  
+</div>
 @foreach (var item in Model)
 {
     <div class="card-container container-fluid">
