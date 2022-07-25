@@ -116,9 +116,41 @@
     }
 </style>
 <div class="container">
-    <div class="row align-items-start">
+    <div class="row">
         <div class="col-12">
             <h1>Lista de Empresas</h1>
+            <div>
+            <div class="collapse" id="navbarToggleExternalContent">
+                <div class="bg-secondary p-4">
+                    <h5 class="text-white h4">Menu</h5>
+                    <div class="row g-3">
+                        <div class="col-8">
+                            <form asp-controller="Empresas" asp-action="Index" method="get">
+                                <input class="input-group" name="ano" value="Todos" id="inputLiderOuEmpresa" style="display: none; padding: 0px; margin: 0px;"/>                         
+                                <div class="input-group mb-3">
+                                    <input class="form-control" type="text" name="SearchString" value="@ViewData["CurrentFilter"]" placeholder="Digite o nome da Empresa"/>
+                                    <button type="submit" class="btn btn-primary">Procurar</button>
+                                    <a asp-action="Index" class="btn btn-primary" style="margin-left: 15px;">Lista Completa</a>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-4">                            
+                            <a asp-action="Create" style="text-decoration:none;" class="btn btn-primary">Adicionar Empresa</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <nav class="navbar navbar-light bg-light">
+                <div class="container-fluid justify-content-end">
+                    <button class="navbar-toggler btn btn-outline-primary bg-primary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">                        
+                            menu<span class="spinner-grow spinner-grow-sm ms-2" role="status" aria-hidden="true"></span>                                              
+                    </button>
+                </div>
+            </nav>
+        </div>
+
+
+            @*
             <form asp-action="Index" method="get">
                 <div class="input-group">
                     <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" class="form-control" aria-label="Text input with segmented dropdown button" placeholder="Digite o nome da Empresa">
@@ -132,6 +164,7 @@
                     </ul>
                 </div>
             </form>
+            *@
         </div>
     </div>
     <hr />
