@@ -22,6 +22,9 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Autores")]
         public virtual string Autores { get; set; }
 
+        [Display(Name = "Status")]
+        public virtual StatusPub StatusPub { get; set; }
+
         [Display(Name = "Publicado em")]
         public virtual DateTime Data { get; set; }
 

@@ -24,24 +24,26 @@ function updateLink() {
     }
 }
 
-function validarCNPJ(lista){
+function validarCNPJ(){
     
-    // RECEBER DO C SHARP LISTA COM TODOS OS CNPJotas DO MODEL EMPRESAS #########################################
     let cnpj = document.getElementById("valor_cnpj").value;
-//    if (!lista.includes(cnpj)){
-        
-        if (isNaN(cnpj) || cnpj.length < 14) {
-            alert("CNPJ inválido");
-        } else {
-            AplicarDadosAPI();
-        }
-//    } else {
-//        alert("CNPJ já cadastrado");
-//    }
-    
-    
+    if (isNaN(cnpj) || cnpj.length < 14) {
+        alert("CNPJ inválido");
+    } else {
+        AplicarDadosAPI();
+    }    
 }
 
+function CorStatusGC(lista_status){    
+    Array.from(lista_status).forEach((status) => 
+    {
+        switch(status.outerText) {
+            case 'Recebido': status.className = "btn btn-secondary status_gc"; break;
+            case 'Aceito': status.className = "btn btn-info status_gc"; break;
+            case 'Publicado': status.className = "btn btn-success status_gc"; break;
+        }
+    })
+}
 
 function AplicarDadosAPI() {
 
@@ -57,13 +59,10 @@ function AplicarDadosAPI() {
 
     // TUDO DAQUI PRA BAIXO FOI FEITO EXCLUSIVAMENTE PARA CONVERTER A SIGLA DE CADA ESTADO PARA O NOME COMPLETO
     function Dicionario(){
-
         this.add = add;
         this.dataStore = [];
         this.find = find;
-
     }
-
     function add(key, value){this.dataStore[key] = value;}
     function find(key){return this.dataStore[key];}
 
@@ -96,8 +95,51 @@ function AplicarDadosAPI() {
     siglas.add('CE', 'Ceará')
     siglas.add('AL', 'Alagoas')
 
-    // ESSA LINHA BUSCA O NOME A PARTIR DA SIGLA DEVOLVIDA PELA API --------\/
+    // ESSA LINHA BUSCA O ÍNDICE A PARTIR DA SIGLA DEVOLVIDA PELA API --------\/
     document.getElementById("EstadoEmpresaCadastro").value = siglas.find(dados.uf);
+
+
+
+    // CONVERTER A SIGLA DE CADA ESTADO PARA O ÍNDICE DO ENUM
+    function Dicionario2(){
+        this.add = add;
+        this.dataStore = [];
+        this.find = find;
+    }
+    function add(key, value){this.dataStore[key] = value;}
+    function find(key){return this.dataStore[key];}
+
+    var indices = new Dicionario2();
+    
+    indices.add('RJ', 0)
+    indices.add('SP', 1)
+    indices.add('MG', 2)
+    indices.add('ES', 3)
+    indices.add('PR', 4)
+    indices.add('SC', 5)
+    indices.add('RS', 6)
+    indices.add('MT', 7)
+    indices.add('MS', 8)
+    indices.add('GO', 9)
+    indices.add('DF', 10)
+    indices.add('AM', 11)
+    indices.add('PA', 12)
+    indices.add('RR', 13)
+    indices.add('RO', 14)
+    indices.add('MA', 15)
+    indices.add('PI', 16)
+    indices.add('RN', 17)
+    indices.add('SE', 18)
+    indices.add('PE', 19)
+    indices.add('PB', 20)
+    indices.add('BA', 21)
+    indices.add('TO', 22)
+    indices.add('AP', 23)
+    indices.add('CE', 24)
+    indices.add('AL', 25)
+
+    // ESSA LINHA BUSCA O NOME A PARTIR DA SIGLA DEVOLVIDA PELA API --------\/
+    document.getElementById("EstadoEmpresaCadastroINT").value = indices.find(dados.uf);
 
     })}) 
 }

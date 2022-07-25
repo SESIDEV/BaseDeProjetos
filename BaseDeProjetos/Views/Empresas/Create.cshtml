@@ -1,31 +1,50 @@
 ﻿@model BaseDeProjetos.Models.Empresa
-
 @{
     ViewData["Title"] = "Criar";
-
  }
 <h1>Criar</h1>
 <h4>Empresa</h4>
 <hr />
+<script>
+    function ChecarUsuario() {
+        $("#StatusCNPJ").html("Checando...");
+        $.post("@Url.Action("SeExisteCnpj", "Empresas")",
+            {
+                cnpj: $("#valor_cnpj").val()
+            },
+        function (data) {
+            if (data == 0) {
+                $("#StatusCNPJ").html('');
+                $("#valor_cnpj").css("border-color", "");
+                validarCNPJ();
+            } else {
+                $("#StatusCNPJ").html('<font color="Red">CNPJ já cadastrado.</font>');
+                $("#valor_cnpj").css("border-color", "Red");
+            }
+        });
+    }
+</script>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="CNPJ" class="control-label"></label><span>   (Apenas números)</span>
-                <input asp-for="CNPJ" id="valor_cnpj" class="form-control" maxlength="14" required/>
-                <button onclick="validarCNPJ()" type="button">Buscar</button>
+                <input asp-for="CNPJ" id="valor_cnpj" class="form-control" maxlength="14"/>
+                <button onclick="ChecarUsuario()" type="button">Buscar</button>
+                <p id="StatusCNPJ"></p>
             </div>
             <hr />
             <h6 id="TipoEmpresaStatus">Tipo: </h6>
             <h6 id="SituacaoEmpresaStatus">Situação: </h6>
             <div class="form-group">
                 <label asp-for="Nome" class="control-label"></label>
-                <input asp-for="Nome" id="NomeEmpresaCadastro" class="form-control" value="" disabled/>
+                <input asp-for="Nome" id="NomeEmpresaCadastro" class="form-control" value="" readonly/>
             </div>
             <div>
                 <label asp-for="Estado" class="control-label"></label>
-                <input asp-for="Estado" id="EstadoEmpresaCadastro" class="form-control" value="" disabled/>
+                <input id="EstadoEmpresaCadastro" class="form-control" value="" readonly/>
+                <input asp-for="Estado" id="EstadoEmpresaCadastroINT" value="" style="display: none;" readonly/>
             </div>
             <hr/>
             <div class="form-group">
@@ -35,7 +54,7 @@
             <div class="form-group">
                 <label asp-for="Logo" class="control-label"></label>
                 <input type="file" class="form-control" id="logo_imagem" onchange="Base64()"/>
-                <input asp-for="Logo" id="logo_b64" class="control-label" value="" disabled>
+                <input asp-for="Logo" id="logo_b64" class="control-label" style="display: none;" value="" readonly>
             </div>
             <img id="logo_img_preview" src="" width="300">
             <hr />

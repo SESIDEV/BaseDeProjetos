@@ -44,6 +44,14 @@ namespace BaseDeProjetos.Controllers
 
             return View(empresas);
         }
+
+        public JsonResult SeExisteCnpj(string cnpj)
+        {
+            
+            var procurar_dado = _context.Empresa.Where(x => x.CNPJ == cnpj).FirstOrDefault();
+            if (procurar_dado != null) { return Json(1); } else { return Json(0); }
+
+        }
         public async Task<string> DadosAPI(string query){
             HttpClient client = new HttpClient{BaseAddress = new Uri("https://receitaws.com.br/v1/cnpj/")};
             var response = await client.GetAsync(query);
@@ -52,12 +60,12 @@ namespace BaseDeProjetos.Controllers
         }
         private static List<Empresa> FiltrarEmpresas(string searchString, List<Empresa> lista)
         {
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                lista = lista.Where(j => j.Segmento != null).
-                              Where(s => s.Nome.Contains(searchString, StringComparison.CurrentCultureIgnoreCase)
-                                      || s.Segmento.Contains(searchString, StringComparison.CurrentCultureIgnoreCase)).ToList();
-            }
+            //if (!string.IsNullOrEmpty(searchString))
+            //{
+                //lista = lista.Where(j => j.Segmento != null).
+                              //Where(s => s.Nome.Contains(searchString, StringComparison.CurrentCultureIgnoreCase)
+                                      //|| s.Segmento.Contains(searchString, StringComparison.CurrentCultureIgnoreCase)).ToList();
+            //}
 
             return lista;
         }
@@ -96,8 +104,6 @@ namespace BaseDeProjetos.Controllers
         {
             if (ModelState.IsValid)
             {
-                // O CONTROLLER PRECISA RECEBER O CAMPO 'ESTADO' E VERIFICAR A QUAL CAPO [Name] ELE PERTENCE NA BASE ENUM #########################################
-                empresa.CNPJ = Regex.Replace(empresa.CNPJ, "[^0-9]", "");
                 _context.Add(empresa);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });

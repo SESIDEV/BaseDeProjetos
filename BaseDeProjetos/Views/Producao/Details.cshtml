@@ -37,6 +37,12 @@
                 @Html.DisplayFor(model => model.Autores)
             </dd>
             <dt>
+                @Html.DisplayNameFor(model => model.StatusPub)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.StatusPub)
+            </dd>
+            <dt>
                 @Html.DisplayNameFor(model => model.Data)
             </dt>
             <dd>
@@ -52,7 +58,7 @@
                 @Html.DisplayNameFor(model => model.DOI)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.DOI)            
+                <a href="@Html.DisplayFor(model => model.DOI)">@Html.DisplayFor(model => model.DOI)</a>            
             </dd>
         </div>
     </dl>

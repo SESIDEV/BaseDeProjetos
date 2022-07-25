@@ -451,6 +451,15 @@ namespace BaseDeProjetos.Models
         Estrangeiro
     }
 
+    public enum StatusPub
+    {
+        [Display(Name = "Recebido")]
+        Recebido,
+        [Display(Name = "Aceito")]
+        Aceito,
+        [Display(Name = "Publicado")]
+        Publicado,
+    }
     public enum Instituto
     {
         [Display(Name = "ISI - Química Verde")]
