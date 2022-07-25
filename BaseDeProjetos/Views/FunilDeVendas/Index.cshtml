@@ -8,18 +8,8 @@
 
 <div class="row card">
     <div class=" col-12 card-body">
-        <h1 class="card-title">Prospecções - @ViewData["Area"]</h1>
+        <h1 class="card-title">Prospecções @ViewData["Area"]</h1>
         <div>
-<<<<<<< Updated upstream
-            <label>Selecione o ano:</label>
-            <select class="form-select" id="ano" onchange="updateLink()">
-                <option value="Todos">Todos</option>
-                <option value="2019">2019</option>
-                <option value="2020">2020</option>
-                <option value="2021">2021</option>
-                <option value="2022">2022</option>
-            </select>
-=======
             <div class="collapse" id="navbarToggleExternalContent">
                 <div class="bg-secondary p-4">
                     <h5 class="text-white h4">Menu</h5>
@@ -34,16 +24,16 @@
                             </select>
                         </div>
                         <div class="col-6">
-                            <form asp-controller="FunilDeVendas">
+                            <form asp-controller="FunilDeVendas" asp-action="Index">
                                 <input class="input-group" name="ano" value="Todos" id="inputLiderOuEmpresa" style="display: none; padding: 0px; margin: 0px;"/>                         
                                 <div class="input-group mb-3">
                                     <input class="form-control" type="text" name="SearchString" value="@ViewData["CurrentFilter"]" placeholder="Pesquise pelo líder ou empresa"/>
                                     <button type="submit" class="btn btn-primary">Procurar</button>
-                                </div>                                
+                                    <button type="submit" class="btn btn-primary" style="margin-left: 15px;">Lista Completa</button>
+                                </div>
                             </form>
                         </div>
-                        <div class="col-4">
-                            <button type="submit" class="btn btn-primary">Lista Completa</button>
+                        <div class="col-4">                            
                             <a asp-action="Create" style="text-decoration:none;" class="btn btn-primary">Nova Prospecção</a>
                         </div>
                     </div>
@@ -56,7 +46,6 @@
                     </button>
                 </div>
             </nav>
->>>>>>> Stashed changes
         </div>
 
         <ul class="nav nav-tabs" id="myTab" role="tablist">
