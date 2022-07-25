@@ -107,7 +107,7 @@ namespace BaseDeProjetos.Controllers
       return lista;
     }
 
-    private IQueryable<Prospeccao> DefinirCasa(string? casa)
+    private IQueryable<Prospeccao> DefinirCasa(string casa)
     {
       Instituto enum_casa;
 
@@ -282,69 +282,69 @@ namespace BaseDeProjetos.Controllers
     }
 
     private static Notificacao GerarNotificacao(FollowUp followup)
-     {
-       Notificacao notificacao;
-       switch (followup.Status)
-       {
-         case StatusProspeccao.ComProposta:
+    {
+      Notificacao notificacao;
+      switch (followup.Status)
+      {
+        case StatusProspeccao.ComProposta:
 
-           notificacao = new Notificacao
-           {
-             Titulo = "SGI - Uma proposta comercial foi enviada!",
-             TextoBase = EmailTemplate.MontarTemplate($"<h1>Olá,</h1> <br> A prospecção com  a empresa {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo usuário {followup.Origem.Usuario} teve uma proposta enviada. " +
-                $"<hr>" +
-                $"Mais detalhes do contato: {followup.Anotacoes} <hr>")
-           };
-           break;
+          notificacao = new Notificacao
+          {
+            Titulo = "SGI - Uma proposta comercial foi enviada!",
+            TextoBase = EmailTemplate.MontarTemplate($"<h1>Olá,</h1> <br> A prospecção com  a empresa {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo usuário {followup.Origem.Usuario} teve uma proposta enviada. " +
+               $"<hr>" +
+               $"Mais detalhes do contato: {followup.Anotacoes} <hr>")
+          };
+          break;
 
-         case StatusProspeccao.Convertida:
-           notificacao = new Notificacao
-           {
-             Titulo = "SGI - Uma proposta comercial foi convertida!",
-             TextoBase = EmailTemplate.MontarTemplate($"<h1>Olá,</h1>, <br>A proposta com  a empresa {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo usuário {followup.Origem.Usuario} foi convertida." +
-                $"<hr>" +
-                $"Mais detalhes da conversão: {followup.Anotacoes}<hr>")
-           };
-           break;
+        case StatusProspeccao.Convertida:
+          notificacao = new Notificacao
+          {
+            Titulo = "SGI - Uma proposta comercial foi convertida!",
+            TextoBase = EmailTemplate.MontarTemplate($"<h1>Olá,</h1>, <br>A proposta com  a empresa {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo usuário {followup.Origem.Usuario} foi convertida." +
+               $"<hr>" +
+               $"Mais detalhes da conversão: {followup.Anotacoes}<hr>")
+          };
+          break;
 
-         case StatusProspeccao.NaoConvertida:
-           notificacao = new Notificacao
-           {
-             Titulo = "SGI - Uma proposta comercial não foi convertida",
-             TextoBase = EmailTemplate.MontarTemplate($"<h1>Olá,</h1><br> A proposta com  a empresa {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo usuário {followup.Origem.Usuario} não foi convertida." +
-                $"<hr>" +
-                $"Mais detalhes: {followup.Anotacoes}<hr>")
-           };
-           break;
+        case StatusProspeccao.NaoConvertida:
+          notificacao = new Notificacao
+          {
+            Titulo = "SGI - Uma proposta comercial não foi convertida",
+            TextoBase = EmailTemplate.MontarTemplate($"<h1>Olá,</h1><br> A proposta com  a empresa {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo usuário {followup.Origem.Usuario} não foi convertida." +
+               $"<hr>" +
+               $"Mais detalhes: {followup.Anotacoes}<hr>")
+          };
+          break;
 
-         case StatusProspeccao.ContatoInicial:
-           notificacao = new Notificacao
-           {
-             Titulo = "SGI - Uma nova prospecção foi inicializada!",
-             TextoBase = EmailTemplate.MontarTemplate($"<h1>Olá,</h1><br> A prospecção com a empresa {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo usuário {followup.Origem.Usuario} foi iniciada." +
-                $"<hr>" +
-                $"Mais detalhes: {followup.Anotacoes}<hr>")
-           };
-           break;
+        case StatusProspeccao.ContatoInicial:
+          notificacao = new Notificacao
+          {
+            Titulo = "SGI - Uma nova prospecção foi inicializada!",
+            TextoBase = EmailTemplate.MontarTemplate($"<h1>Olá,</h1><br> A prospecção com a empresa {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo usuário {followup.Origem.Usuario} foi iniciada." +
+               $"<hr>" +
+               $"Mais detalhes: {followup.Anotacoes}<hr>")
+          };
+          break;
 
-         case StatusProspeccao.Discussao_EsbocoProjeto:
-           notificacao = new Notificacao
-           {
-             Titulo = "SGI - Uma prospecção está avançando!",
-             TextoBase = EmailTemplate.MontarTemplate($"<h1>Olá,</h1><br> A prospecção com a empresa {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo usuário {followup.Origem.Usuario} foi chegou à etapa do esboço de projeto. A proposta deverá ser enviada até o dia {DateTime.Today.AddDays(14)}." +
-                $"<hr>" +
-                $"Mais detalhes: {followup.Anotacoes}<hr>")
-           };
+        case StatusProspeccao.Discussao_EsbocoProjeto:
+          notificacao = new Notificacao
+          {
+            Titulo = "SGI - Uma prospecção está avançando!",
+            TextoBase = EmailTemplate.MontarTemplate($"<h1>Olá,</h1><br> A prospecção com a empresa {followup.Origem.Empresa.Nome} - {followup.Origem.Empresa.CNPJ} na linha {followup.Origem.LinhaPequisa}, iniciada pelo usuário {followup.Origem.Usuario} foi chegou à etapa do esboço de projeto. A proposta deverá ser enviada até o dia {DateTime.Today.AddDays(14)}." +
+               $"<hr>" +
+               $"Mais detalhes: {followup.Anotacoes}<hr>")
+          };
 
-           break;
+          break;
 
-         default:
-           throw new ArgumentException("Status não notificável");
-       }
+        default:
+          throw new ArgumentException("Status não notificável");
+      }
 
-       notificacao.Status = followup.Status;
-       return notificacao;
-     }
+      notificacao.Status = followup.Status;
+      return notificacao;
+    }
 
     // POST: FunilDeVendas/Create
     // To protect from overposting attacks, enable the specific properties you want to bind to, for
@@ -405,15 +405,15 @@ namespace BaseDeProjetos.Controllers
       }
       else
       {
-                var existe_empresa = _context.Empresa.FirstOrDefault(e => e.Id == prospeccao.Empresa.Id);
-                /*int existe_empresa = _context.Empresa.Where(e => e.Id == prospeccao.Empresa.Id).Count();*/       
+        var existe_empresa = _context.Empresa.FirstOrDefault(e => e.Id == prospeccao.Empresa.Id);
+        /*int existe_empresa = _context.Empresa.Where(e => e.Id == prospeccao.Empresa.Id).Count();*/
 
         if (existe_empresa != null)
         {
-         prospeccao.Empresa = existe_empresa;
-         }
+          prospeccao.Empresa = existe_empresa;
+        }
         else
-        {          
+        {
           throw new Exception("Ocorreu um erro no registro da empresa. \n A empresa selecionada não foi encontrada. \n Contacte um administrador do sistema");
         }
       }

@@ -181,7 +181,7 @@ namespace BaseDeProjetos.Controllers
             return _context.Empresa.Any(e => e.Id == id);
         }
 
-        public async Task<IActionResult> RetornarKPIsEmbrapii()
+        /*public async Task<IActionResult> RetornarKPIsEmbrapii()
         {
             throw new NotImplementedException();
         }
@@ -199,6 +199,6 @@ namespace BaseDeProjetos.Controllers
         public async Task<IActionResult> AtualizarCronograma()
         {
             throw new NotImplementedException();
-        }
+        }*/
     }
 }
