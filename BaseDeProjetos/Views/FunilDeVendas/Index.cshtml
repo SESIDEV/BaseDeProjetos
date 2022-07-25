@@ -7,7 +7,7 @@
     List<Prospeccao> planejadas = ViewBag.Planejadas as List<Prospeccao>;
     List<Instituto> institutos = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto))).Where(c=>c!= Instituto.Super).ToList();
 }
-
+@**@
 <div class="row card">
     <div style="margin-left: 37%;padding: 10px;">
         <form>
@@ -23,7 +23,7 @@
         </form>
     </div>
     <div class=" col-12 card-body">
-        <h1 class="card-title">Prospecções - @ViewData["Area"]</h1>
+        <h1 class="card-title">Prospecções @ViewData["Area"]</h1>
         <div>
             <label>Selecione o ano:</label>
             <select class="form-select" id="ano" onchange="updateLink()">
@@ -53,16 +53,6 @@
             </li>
         </ul>
 
-        <form asp-action="Index" method="get">
-            <div class="form-actions">
-                <small>
-                    Achar por empresa ou líder: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
-                    <input type="hidden" name="ano" value="Todos" />
-                    <input type="submit" value="Procurar" class="btn btn-default" /> |
-                    <a asp-action="Index">Exibir Lista Completa</a>>
-                </small>
-            </div>
-        </form>
 
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -91,10 +81,5 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div>
-        <button class="btn btn-outline-primary col-12">
-            <a asp-action="Create">Adicionar Novo Projeto</a>
-        </button>
     </div>
 </div>

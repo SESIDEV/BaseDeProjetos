@@ -38,7 +38,7 @@
             </div>
             <div class="form-group">
                 <label> Status </label>
-                <input type="text" class="form-control" value="@prosp.Status.Last().Status" readonly />
+                <input type="text" class="form-control" value="@prosp.Status.Last().Status.ToString()" readonly />
             </div>
 
             <div class="form-group">
@@ -64,8 +64,8 @@
                 <span asp-validation-for="Data" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" onchange="avaliarStatus(this)" class="form-control" asp-items="Html.GetEnumSelectList<StatusProspeccao>().  Where(p => Int32.Parse(p.Value) >= 4 || Int32.Parse(p.Value) < 1)"></select>
+                <label asp-for="@prosp.Status.Last().Status" class="control-label"></label>
+                <select asp-for="@prosp.Status.Last().Status" onchange="avaliarStatus(this)" class="form-control" asp-items="Html.GetEnumSelectList<StatusProspeccao>().  Where(p => Int32.Parse(p.Value) >= 4 || Int32.Parse(p.Value) < 1)"></select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="form-group">

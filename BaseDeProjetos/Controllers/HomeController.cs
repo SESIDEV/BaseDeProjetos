@@ -44,7 +44,7 @@ namespace BaseDeProjetos.Controllers
                 ViewData["Data"] = DateTime.Today;
             }
             ViewData["n_prosp"] = _context.Prospeccao.ToList().Where(p => prospeccaoAtiva(p) == true).ToList().Count;
-            ViewData["n_proj"] = _context.Projeto.Where(p => p.status != StatusProjeto.Concluido).ToList().Count;
+            ViewData["n_proj"] = _context.Projeto.Where(p => p.Status != StatusProjeto.Concluido).ToList().Count;
             ViewData["n_empresas"] = _context.Empresa.ToList().Count;
             ViewData["satisfacao"] = 0.8872;
             return View();
@@ -71,7 +71,7 @@ namespace BaseDeProjetos.Controllers
         private decimal ReceitaCasa(Instituto casa)
         {
             IQueryable<decimal> valores = _context.Projeto.
-                Where(p => p.Casa == casa && p.status == StatusProjeto.EmExecucao).
+                Where(p => p.Casa == casa && p.Status == StatusProjeto.EmExecucao).
                 Select(p => CalcularReceita(p));
 
             decimal sum = 0;

@@ -141,8 +141,8 @@
                     <legend> Dados da proposta</legend>
                     <div class="form-group">
                         <label asp-for="ValorProposta" class="control-label"></label>
-                        <input asp-for="ValorProposta" type="number" class="form-control" />
-                        <span asp-validation-for="ValorProposta" class="text-danger" placeholder="Insira o valor da proposta"></span>
+                        <input asp-for="ValorProposta" type="number" class="form-control" placeholder="@Model.ValorProposta.ToString("C2") - Insira um novo valor para alterar o existente!"/>
+                        <span asp-validation-for="ValorProposta" class="text-danger"></span>
                     </div>
                 </fieldset>
             }
@@ -167,7 +167,7 @@
                 <div class="form-group">
                     <label asp-for="Status[0].Status" class="control-label"></label>
                     <select asp-for="Status[0].Status" class="form-control" disabled>
-                        <option value="@StatusProspeccao.ContatoInicial"> @StatusProspeccao.ContatoInicial</option>
+                        <option value="@StatusProspeccao.ContatoInicial">@StatusProspeccao.ContatoInicial</option>
                     </select>
                     <span asp-validation-for="Status[0].Status" class="text-danger"></span>
                 </div>

@@ -191,11 +191,3 @@ function getSelected() {
         }
     }
 }
-getSelected();
-
-function mostreAno() {
-    var ano = getSelected();
-
-    document.querySelector('#ano').value = ano;
-}
-mostreAno();
