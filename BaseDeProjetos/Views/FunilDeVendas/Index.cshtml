@@ -7,7 +7,7 @@
     List<Prospeccao> planejadas = ViewBag.Planejadas as List<Prospeccao>;
     List<Instituto> institutos = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto))).Where(c=>c!= Instituto.Super).ToList();
 }
-@**@
+
 <div class="row card">
     <div style="margin-left: 37%;padding: 10px;">
         <form>
