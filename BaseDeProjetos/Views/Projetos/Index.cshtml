@@ -9,19 +9,49 @@
     <div class=" col-12 card-body">
         <h1 class="card-title">Projetos @ViewData["Area"]</h1>
         <div>
-            <label>Selecione o ano:</label>
-            <select class="form-select" id="ano" onchange="updateLink()">
-                <option value="Todos">Todos</option>
-                <option value="2019">2019</option>
-                <option value="2020">2020</option>
-                <option value="2021">2021</option>
-                <option value="2022">2022</option>
-            </select>
+            <div class="collapse" id="navbarToggleExternalContent">
+                <div class="bg-secondary p-4">
+                    <h5 class="text-white h4">Menu</h5>
+                    <div class="row g-3">
+                        <div class="col-2">
+                            <select class="form-select" id="ano" onchange="updateLink()">
+                                <option value="Todos">Selecione o ano:</option>
+                                <option value="2019">2019</option>
+                                <option value="2020">2020</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <form asp-controller="ProjetosController">
+                                <input class="input-group" name="ano" value="Todos" id="inputLiderOuEmpresa" style="display: none; padding: 0px; margin: 0px;"/>                         
+                                <div class="input-group mb-3">
+                                    <input class="form-control" type="text" name="SearchString" value="@ViewData["CurrentFilter"]" placeholder="Pesquise pelo líder ou empresa"/>
+                                    <button type="submit" class="btn btn-primary">Procurar</button>
+                                </div>                                
+                            </form>
+                        </div>
+                        <div class="col-4">
+                            <a asp-action="Create" style="text-decoration:none;" class="btn btn-primary">Novo Projeto</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <nav class="navbar navbar-light bg-light">
+                <div class="container-fluid justify-content-end">
+                    <button class="navbar-toggler btn btn-outline-primary bg-primary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">                        
+                            menu<span class="spinner-grow spinner-grow-sm ms-2" role="status" aria-hidden="true"></span>                                              
+                    </button>
+                </div>
+            </nav>
         </div>
 
-        <ul class="nav nav-tabs justify-content-between" id="myTab" role="tablist">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Gráfico</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Lista de Projetos</a>
             </li>
             @* KPIS desativados nesta área. Os mesmos estão sendo exibidos na área de indicadores
             <li class="nav-item">
@@ -30,22 +60,13 @@
             <li class="nav-item">
                 <a class="nav-link" id="embrapii-tab" data-toggle="tab" href="#embrapii" role="tab" aria-controls="profile" aria-selected="false">KPIs Embrapii</a>
             </li>
-            *@
-            <li class="nav-item">
-                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Lista de Projetos</a>
-            </li>@*
             <li class="nav-item">
                 <a class="nav-link" id="profile-tab" data-toggle="tab" href="#encerrados" role="tab" aria-controls="encerrados" aria-selected="false">Lista de Projetos Encerrados</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Importar</a>
             </li>
-            *@
-             <li class="nav-item">
-                <a asp-action="Create">
-                  <button class="btn btn-outline-primary" col-12">Adicionar Novo Projeto</button>
-                </a>
-             </li>          
+            *@        
         </ul>
         
         <br />
@@ -71,25 +92,7 @@
             </div>
             <div class="tab-pane fade container-fluid" id="encerrados" role="tabpanel" aria-labelledby="encerrados-tab">
                 <partial name="lista_projetos" view-data="@ViewData" model="@encerradas"/>
-            </div> 
-            @*
-            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                <div class="card card-body">
-                    <h5 class="card-title">Carregar lista de Projetos </h5>
-                    <form class="card-text" enctype="multipart/form-data" action="Projetos/CarregarProjetos" method="POST">
-                        <div>
-                            <span>
-                                <label>Upload de arquivo</label>
-                            </span>
-                            <div>
-                                <input type="file" name="files">
-                            </div>
-                        </div>
-                        <input class="btn btn-dark" type="submit" value="Upload" />
-                    </form>
-                </div>
             </div>
-            *@
         </div>
     </div>
 </div>
