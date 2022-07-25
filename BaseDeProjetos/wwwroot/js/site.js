@@ -10,6 +10,28 @@
  *
  * */
 
+function CasasFunil() {
+
+    let caixa1 = document.getElementById("caixaISIQV")
+    let caixa2 = document.getElementById("caixaCISHO")
+    let caixa3 = document.getElementById("caixaISIII")
+    let caixa4 = document.getElementById("caixaISISVP")
+
+    const lista_caixas = [caixa1, caixa2, caixa3, caixa4];
+    let caixas_ativas = []
+
+    lista_caixas.forEach(elemento => {if (elemento.checked == true){caixas_ativas.push(elemento)}});
+
+    let outras_casas = ""
+
+    for (let i = 1; i < caixas_ativas.length; i++){
+        outras_casas += "-" + caixas_ativas[i]?.value
+    }
+
+    let url_final = window.location.pathname + '?casa=' + caixas_ativas[0].value + outras_casas
+    window.location.assign(url_final);
+}
+
 function updateLink() {
     var path = location.pathname;
     var baseUrl = location.href.split("?")[0];
