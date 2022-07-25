@@ -3,14 +3,16 @@ using System;
 using BaseDeProjetos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BaseDeProjetos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220628151027_CampoInstituto")]
+    partial class CampoInstituto
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,8 +68,8 @@ namespace BaseDeProjetos.Migrations
                     b.Property<string>("EmpresaUnique")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("Estado")
-                        .HasColumnType("int");
+                    b.Property<string>("Estado")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Logo")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -75,8 +77,8 @@ namespace BaseDeProjetos.Migrations
                     b.Property<string>("Nome")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("Segmento")
-                        .HasColumnType("int");
+                    b.Property<string>("Segmento")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
@@ -206,9 +208,6 @@ namespace BaseDeProjetos.Migrations
 
                     b.Property<string>("Local")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<int>("StatusPub")
-                        .HasColumnType("int");
 
                     b.Property<string>("Titulo")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
