@@ -10,6 +10,7 @@
  *
  * */
 
+/*
 function updateLink() {
     var path = location.pathname;
     var baseUrl = location.href.split("?")[0];
@@ -169,11 +170,6 @@ function getSelected() {
         }
     }
 }
-getSelected();
+*/
 
-function mostreAno() {
-    var ano = getSelected();
 
-    document.querySelector('#ano').value = ano;
-}
-mostreAno();

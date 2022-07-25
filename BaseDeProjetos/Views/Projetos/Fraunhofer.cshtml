@@ -54,17 +54,11 @@
             break;
     }
 
-    try
-    {
-        ticket_medio = (Decimal)(ViewBag.n_revenue / ViewBag.n_empresas);
-        sti_revenue = (Decimal)ViewBag.n_revenue;
-        receita_pesquisador = (Decimal)(ViewBag.n_revenue / ViewBag.n_pesquisadores);
-    }
-    catch (Exception e)
-    {
-
-    }
-
+    
+    ticket_medio = (Decimal)(ViewBag.n_revenue / ViewBag.n_empresas);
+    sti_revenue = (Decimal)ViewBag.n_revenue;
+    receita_pesquisador = (Decimal)(ViewBag.n_revenue / ViewBag.n_pesquisadores);
+    
     decimal sti_cost_cover = sti_revenue / (sti_cost + 0.001M);
 
 }

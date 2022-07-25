@@ -4,19 +4,46 @@
     List<Projeto> ativas = ViewBag.Ativos as List<Projeto>;
     List<Projeto> encerradas = ViewBag.Encerrados as List<Projeto>;
 }
-
+@**@
 <div class="row card">
     <div class=" col-12 card-body">
-        <h1 class="card-title">Projetos - @ViewData["Area"]</h1>
+        <h1 class="card-title">Projetos @ViewData["Area"]</h1>
         <div>
-            <label>Selecione o ano:</label>
-            <select class="form-select" id="ano" onchange="updateLink()">
-                <option value="Todos">Todos</option>
-                <option value="2019">2019</option>
-                <option value="2020">2020</option>
-                <option value="2021">2021</option>
-                <option value="2022">2022</option>
-            </select>
+            <div class="collapse" id="navbarToggleExternalContent">
+                <div class="bg-secondary p-4">
+                    <h5 class="text-white h4">Menu</h5>
+                    <div class="row g-3">
+                        <div class="col-2">
+                            <select class="form-select" id="ano" onchange="updateLink()">
+                                <option value="Todos">Selecione o ano:</option>
+                                <option value="2019">2019</option>
+                                <option value="2020">2020</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <form asp-controller="ProjetosController">
+                                <input class="input-group" name="ano" value="Todos" id="inputLiderOuEmpresa" style="display: none; padding: 0px; margin: 0px;"/>                         
+                                <div class="input-group mb-3">
+                                    <input class="form-control" type="text" name="SearchString" value="@ViewData["CurrentFilter"]" placeholder="Pesquise pelo líder ou empresa"/>
+                                    <button type="submit" class="btn btn-primary">Procurar</button>
+                                </div>                                
+                            </form>
+                        </div>
+                        <div class="col-4">
+                            <a asp-action="Create" style="text-decoration:none;" class="btn btn-primary">Novo Projeto</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <nav class="navbar navbar-light bg-light">
+                <div class="container-fluid justify-content-end">
+                    <button class="navbar-toggler btn btn-outline-primary bg-primary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">                        
+                            menu<span class="spinner-grow spinner-grow-sm ms-2" role="status" aria-hidden="true"></span>                                              
+                    </button>
+                </div>
+            </nav>
         </div>
 
         <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -24,13 +51,14 @@
                 <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Gráfico</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Lista de Projetos</a>
+            </li>
+            @* KPIS desativados nesta área. Os mesmos estão sendo exibidos na área de indicadores
+            <li class="nav-item">
                 <a class="nav-link" id="fraun-tab" data-toggle="tab" href="#fraun" role="tab" aria-controls="profile" aria-selected="false">KPIs Fraunhofer</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="embrapii-tab" data-toggle="tab" href="#embrapii" role="tab" aria-controls="profile" aria-selected="false">KPIs Embrapii</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Lista de Projetos Ativos</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="profile-tab" data-toggle="tab" href="#encerrados" role="tab" aria-controls="encerrados" aria-selected="false">Lista de Projetos Encerrados</a>
@@ -38,6 +66,7 @@
             <li class="nav-item">
                 <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Importar</a>
             </li>
+            *@        
         </ul>
         
         <br />
@@ -58,38 +87,12 @@
                     <partial name="Embrapii" view-data="@ViewData" model="@Model" />
                 </div>
             </div>
-
             <div class="tab-pane fade container-fluid" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                 <partial name="lista_projetos" view-data="@ViewData" model="@ativas"/>
             </div>
-
             <div class="tab-pane fade container-fluid" id="encerrados" role="tabpanel" aria-labelledby="encerrados-tab">
                 <partial name="lista_projetos" view-data="@ViewData" model="@encerradas"/>
             </div>
-
-            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                <div class="card card-body">
-                    <h5 class="card-title">Carregar lista de Projetos </h5>
-                    <form class="card-text" enctype="multipart/form-data" action="Projetos/CarregarProjetos" method="POST">
-                        <div>
-                            <span>
-                                <label>Upload de arquivo</label>
-                            </span>
-                            <div>
-                                <input type="file" name="files">
-                            </div>
-                        </div>
-                        <input class="btn btn-dark" type="submit" value="Upload" />
-                    </form>
-                </div>
-            </div>
         </div>
-        <hr />
-        <div>
-            <button class="btn btn-outline-primary col-12">
-                <a asp-action="Create">Adicionar Novo Projeto</a>
-            </button>
-        </div>
-        <hr />
     </div>
 </div>
