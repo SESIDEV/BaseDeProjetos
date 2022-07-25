@@ -30,7 +30,7 @@ namespace BaseDeProjetos.Controllers
     {
       SetarFiltros(sortOrder, searchString);
 
-      IQueryable<Prospeccao> lista = DefinirCasa(casa);
+      List<Prospeccao> lista = DefinirCasa(casa);
       lista = PeriodizarProspecções(ano, lista);
       lista = FiltrarProspecções(searchString, lista);
       lista = OrdenarProspecções(sortOrder, lista);
@@ -40,25 +40,29 @@ namespace BaseDeProjetos.Controllers
       return View(lista.ToList<Prospeccao>());
     }
 
-    private void CategorizarProspecções(IQueryable<Prospeccao> lista)
+    private void CategorizarProspecções(List<Prospeccao> lista)
     {
       var concluidos = lista.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida ||
                                                         f.Status == StatusProspeccao.Suspensa ||
                                                         f.Status == StatusProspeccao.NaoConvertida));
 
-      IQueryable<Prospeccao> emProposta = lista.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.ComProposta) &&
+      List<Prospeccao> emProposta = lista.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.ComProposta) &&
                                                            p.Status.All(f2 => f2.Status != StatusProspeccao.Suspensa &&
                                                                         f2.Status != StatusProspeccao.Convertida &&
-                                                                        f2.Status != StatusProspeccao.NaoConvertida));
+                                                                        f2.Status != StatusProspeccao.NaoConvertida)).ToList();
 
-      IQueryable<Prospeccao> ativos = lista.Where(p => p.Status.All(f => f.Status != StatusProspeccao.Convertida &&
+      List<Prospeccao> ativos = lista.Where(p => p.Status.All(f => f.Status != StatusProspeccao.Convertida &&
                                                         f.Status != StatusProspeccao.Suspensa &&
                                                         f.Status != StatusProspeccao.ComProposta &&
-                                                        f.Status != StatusProspeccao.NaoConvertida));
+                                                        f.Status != StatusProspeccao.NaoConvertida)).ToList();
+
+      List<Prospeccao> planejados = lista.Where(p => p.Status.All(f => f.Status == StatusProspeccao.Planejada)).ToList();
 
       ViewBag.Concluidas = concluidos.ToList<Prospeccao>();
       ViewBag.Ativas = ativos.ToList<Prospeccao>();
       ViewBag.EmProposta = emProposta.ToList();
+      ViewBag.EmProposta = emProposta.ToList();
+      ViewBag.Planejadas = planejados.ToList();
     }
 
     private void SetarFiltros(string sortOrder = "", string searchString = "")
@@ -86,30 +90,32 @@ namespace BaseDeProjetos.Controllers
       }
     }
 
-    private IQueryable<Prospeccao> PeriodizarProspecções(string ano, IQueryable<Prospeccao> lista)
+    private List<Prospeccao> PeriodizarProspecções(string ano, List<Prospeccao> lista)
     {
       if (ano.Equals("Todos") || string.IsNullOrEmpty(ano))
       {
         return lista;
       }
 
-      return lista.Where(s => s.Status.Any(k => k.Data.Year == Convert.ToInt32(ano)));
+      return lista.Where(s => s.Status.Any(k => k.Data.Year == Convert.ToInt32(ano))).ToList();
     }
 
-    private static IQueryable<Prospeccao> FiltrarProspecções(string searchString, IQueryable<Prospeccao> lista)
+    private static List<Prospeccao> FiltrarProspecções(string searchString, List<Prospeccao> lista)
     {
       if (!string.IsNullOrEmpty(searchString))
       {
         lista = lista.Where(s => s.Empresa.Nome.Contains(searchString)
-                               || s.Usuario.UserName.Contains(searchString));
+                               || s.Usuario.UserName.Contains(searchString)).ToList();
       }
 
       return lista;
     }
 
-    private IQueryable<Prospeccao> DefinirCasa(string casa)
+    private List<Prospeccao> DefinirCasa(string? casa)
     {
       Instituto enum_casa;
+
+      List<Prospeccao> prospeccoes = new List<Prospeccao>();
 
       if (string.IsNullOrEmpty(casa))
       {
@@ -117,40 +123,59 @@ namespace BaseDeProjetos.Controllers
         {
           enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
         }
-        else { enum_casa = Instituto.Super; }
+        else { return _context.Prospeccao.ToList(); }
       }
       else
       {
-        if (Enum.IsDefined(typeof(Instituto), casa))
-        {
-          HttpContext.Session.SetString("_Casa", casa);
-          enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
+        List<string> casas = ProcessarCasa(casa);
+        if (casas.Count() == 0){
+
+          DefinirCasa(null);
+
         }
-        else
-        {
-          enum_casa = Instituto.Super;
+        foreach(string c in casas){
+            
+          if (Enum.IsDefined(typeof(Instituto), c))
+          {
+            HttpContext.Session.SetString("_Casa", c);
+            enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
+          }
+          else
+          {
+            enum_casa = Instituto.Super;
+          }
+          
+          List<Prospeccao> lista = enum_casa == Instituto.Super ?
+          _context.Prospeccao.ToList() :
+          _context.Prospeccao.Where(p => p.Casa.Equals(enum_casa)).ToList();
+
+          prospeccoes.AddRange(lista);
         }
       }
 
       ViewData["Area"] = casa;
 
-      IQueryable<Prospeccao> lista = enum_casa == Instituto.Super ?
-          _context.Prospeccao :
-          _context.Prospeccao.Where(p => p.Casa.Equals(enum_casa));
-
-      return lista;
+      return prospeccoes.ToList();
     }
 
-    private static IQueryable<Prospeccao> OrdenarProspecções(string sortOrder, IQueryable<Prospeccao> lista)
+    private List<string> ProcessarCasa(string? casa){
+
+
+      return casa.Split("-").ToList();
+
+    }
+
+    private static List<Prospeccao> OrdenarProspecções(string sortOrder, List<Prospeccao> lista)
     {
-      lista = sortOrder switch
+      var prosps = lista.AsQueryable<Prospeccao>();
+      prosps = sortOrder switch
       {
-        "name_desc" => lista.OrderByDescending(s => s.Empresa.Nome),
-        "TipoContratacao" => lista.OrderBy(s => s.TipoContratacao),
-        "tipo_desc" => lista.OrderByDescending(s => s.TipoContratacao),
-        _ => lista.OrderBy(s => s.Empresa.Nome),
+        "name_desc" => prosps.OrderByDescending(s => s.Empresa.Nome),
+        "TipoContratacao" => prosps.OrderBy(s => s.TipoContratacao),
+        "tipo_desc" => prosps.OrderByDescending(s => s.TipoContratacao),
+        _ => prosps.OrderBy(s => s.Empresa.Nome),
       };
-      return lista;
+      return prosps.ToList();
     }
 
     // GET: FunilDeVendas/Details/5
@@ -172,11 +197,33 @@ namespace BaseDeProjetos.Controllers
     }
 
     // GET: FunilDeVendas/Create
-    public IActionResult Create()
+    public IActionResult Create(int id)
     {
       List<Empresa> empresas = _context.Empresa.ToList();
       ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
       return View();
+    }
+
+    public IActionResult Planejar(int id, string userId) {
+
+      Prospeccao prosp = new Prospeccao();
+      prosp.Empresa = _context.Empresa.FirstOrDefault(E => E.Id == id);
+      prosp.Usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
+      prosp.Casa = prosp.Usuario.Casa;
+      prosp.Status = new List<FollowUp>();
+      prosp.Status.Add(new FollowUp{
+
+        OrigemID = prosp.Id,
+        Data = DateTime.Today,
+        Anotacoes = "Incluído no plano de prospecção de" + User.Identity.Name,
+        Status = StatusProspeccao.Planejada
+
+      });
+
+      _context.Add(prosp);
+      _context.SaveChanges();
+      return RedirectToAction("Index", "Empresas");
+
     }
 
     [HttpGet]

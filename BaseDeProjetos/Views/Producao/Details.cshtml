@@ -19,6 +19,12 @@
                 @Html.DisplayFor(model => model.Grupo)
             </dd>
             <dt>
+                @Html.DisplayNameFor(model => model.Casa)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Casa)
+            </dd>
+            <dt>
                 @Html.DisplayNameFor(model => model.Descricao)
             </dt>
             <dd>
@@ -29,6 +35,12 @@
             </dt>
             <dd>
                 @Html.DisplayFor(model => model.Autores)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.StatusPub)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.StatusPub)
             </dd>
             <dt>
                 @Html.DisplayNameFor(model => model.Data)
@@ -46,7 +58,7 @@
                 @Html.DisplayNameFor(model => model.DOI)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.DOI)            
+                <a href="@Html.DisplayFor(model => model.DOI)">@Html.DisplayFor(model => model.DOI)</a>            
             </dd>
         </div>
     </dl>

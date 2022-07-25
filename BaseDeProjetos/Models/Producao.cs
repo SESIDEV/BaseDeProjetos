@@ -10,6 +10,9 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Tipo de Publicação")]
         public virtual GrupoPublicacao Grupo { get; set; }
 
+        [Display(Name = "Casa")]
+        public virtual Instituto Casa { get; set; }
+
         [Display(Name = "Título")]
         public virtual string Titulo { get; set; }
 
@@ -18,6 +21,9 @@ namespace BaseDeProjetos.Models
 
         [Display(Name = "Autores")]
         public virtual string Autores { get; set; }
+
+        [Display(Name = "Status")]
+        public virtual StatusPub StatusPub { get; set; }
 
         [Display(Name = "Publicado em")]
         public virtual DateTime Data { get; set; }
