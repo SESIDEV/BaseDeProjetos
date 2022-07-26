@@ -30,7 +30,7 @@ namespace BaseDeProjetos
             if (System.Environment.GetEnvironmentVariable("Ambiente") == "Web")
             {
                 string ConStr = Configuration.GetConnectionString("localdb");
-                string ConStr2 = System.Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb");
+                string ConStr2 = System.Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb").ToString();
                 ConStr = ConStr2.Replace("Database", "database");
                 ConStr = ConStr2.Replace("Data Source", "server");
                 ConStr = ConStr2.Replace("User Id", "user");
@@ -48,9 +48,10 @@ namespace BaseDeProjetos
             }
             else
             {
+                string conn = Configuration.GetConnectionString("DefaultConnection");
+                System.Console.WriteLine(conn);
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseMySql(
-                Configuration.GetConnectionString("DefaultConnection")).UseLazyLoadingProxies());
+                    options.UseMySql(conn).UseLazyLoadingProxies());
             }
             services.AddDefaultIdentity<Usuario>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
