@@ -30,15 +30,17 @@ namespace BaseDeProjetos
             if (System.Environment.GetEnvironmentVariable("Ambiente") == "Web")
             {
                 string ConStr = Configuration.GetConnectionString("localdb");
-                ConStr = ConStr.Replace("Database", "database");
-                ConStr = ConStr.Replace("Data Source", "server");
-                ConStr = ConStr.Replace("User Id", "user");
-                ConStr = ConStr.Replace("Password", "password");
-                ConStr = ConStr.Replace("127.0.0.1", "localhost");
+                string ConStr2 = System.Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb");
+                ConStr = ConStr2.Replace("Database", "database");
+                ConStr = ConStr2.Replace("Data Source", "server");
+                ConStr = ConStr2.Replace("User Id", "user");
+                ConStr = ConStr2.Replace("Password", "password");
+                ConStr = ConStr2.Replace("127.0.0.1", "localhost");
 
                 // This line split "server=localhost:[port]" in "server=localhost;port=[port]
-                ConStr = ConStr.Replace(":", ";port=");
-                System.Console.WriteLine(ConStr);
+                ConStr = ConStr2.Replace(":", ";port=");
+
+                System.Console.WriteLine(ConStr2);
 
 
                 services.AddDbContext<ApplicationDbContext>(options =>
