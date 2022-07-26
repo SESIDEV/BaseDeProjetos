@@ -29,6 +29,7 @@ namespace BaseDeProjetos
     {
       if (System.Environment.GetEnvironmentVariable("Ambiente") == "Web")
       {
+                throw new System.Exception(System.Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb").ToString());
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseMySql(
          System.Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb").ToString()).UseLazyLoadingProxies());
