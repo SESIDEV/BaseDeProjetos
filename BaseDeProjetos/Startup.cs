@@ -30,7 +30,6 @@ namespace BaseDeProjetos
             if (System.Environment.GetEnvironmentVariable("Ambiente") == "Web")
             {
                 string ConStr = Configuration.GetConnectionString("localdb");
-                string ConStr2 = System.Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb").ToString();
                 ConStr = ConStr.Replace("Database", "database");
                 ConStr = ConStr.Replace("Data Source", "server");
                 ConStr = ConStr.Replace("User Id", "user");
