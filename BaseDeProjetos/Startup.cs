@@ -49,6 +49,12 @@ namespace BaseDeProjetos
             else
             {
                 string conn = Configuration.GetConnectionString("DefaultConnection");
+                conn = conn.Replace("Database", "database");
+                conn = conn.Replace("Data Source", "server");
+                conn = conn.Replace("User Id", "user");
+                conn = conn.Replace("Password", "password");
+                conn = conn.Replace("127.0.0.1", "localhost");
+
                 System.Console.WriteLine(conn);
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseMySql(conn).UseLazyLoadingProxies());
@@ -78,8 +84,8 @@ namespace BaseDeProjetos
 
             services.Configure<CookiePolicyOptions>(options =>
             {
-          // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-          options.CheckConsentNeeded = context => true;
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
         }
