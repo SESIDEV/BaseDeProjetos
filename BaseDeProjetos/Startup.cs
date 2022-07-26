@@ -45,7 +45,7 @@ namespace BaseDeProjetos
 
 
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseMySql(ConStr).UseLazyLoadingProxies());
+                    options.UseMySql(ConStr, mysqlOptions =>{ mysqlOptions.ServerVersion(new Version(5, 7, 9), ServerType.MySql); }).UseLazyLoadingProxies());
             }
             else
             {
