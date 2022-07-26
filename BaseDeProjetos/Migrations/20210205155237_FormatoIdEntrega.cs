@@ -8,11 +8,7 @@ namespace BaseDeProjetos.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Entrega_Projeto_projetoId",
-                table: "Entrega");
-
-            migrationBuilder.DropColumn(
+          migrationBuilder.DropColumn(
                 name: "DataInicio",
                 table: "Entrega");
 
@@ -51,10 +47,6 @@ namespace BaseDeProjetos.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Entrega_Projeto_ProjetoId",
-                table: "Entrega");
-
             migrationBuilder.DropColumn(
                 name: "DataEntrega",
                 table: "Entrega");

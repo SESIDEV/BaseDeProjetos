@@ -8,7 +8,10 @@ namespace BaseDeProjetos.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-     
+            migrationBuilder.DropForeignKey(
+                name: "FK_AspNetUsers_Producao_ProducaoId",
+                table: "AspNetUsers");
+
             migrationBuilder.DropTable(
                 name: "Entrega");
 
