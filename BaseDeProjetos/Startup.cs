@@ -31,7 +31,7 @@ namespace BaseDeProjetos
       {
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseMySql(
-          Configuration.GetConnectionString("Database")).UseLazyLoadingProxies());
+         System.Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb").ToString()).UseLazyLoadingProxies());
       }
       else
       {
