@@ -40,7 +40,7 @@ namespace BaseDeProjetos
                 // This line split "server=localhost:[port]" in "server=localhost;port=[port]
                 ConStr = ConStr2.Replace(":", ";port=");
 
-                System.Console.WriteLine(ConStr2);
+                System.Console.WriteLine(ConStr);
 
 
                 services.AddDbContext<ApplicationDbContext>(options =>
