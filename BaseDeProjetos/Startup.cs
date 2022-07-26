@@ -38,8 +38,8 @@ namespace BaseDeProjetos
 
                 // This line split "server=localhost:[port]" in "server=localhost;port=[port]
                 ConStr = ConStr.Replace(":", ";port=");
+                System.Console.WriteLine("ConStr");
 
-                throw new System.Exception(ConStr);
 
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseMySql(ConStr).UseLazyLoadingProxies());
