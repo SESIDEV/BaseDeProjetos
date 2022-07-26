@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -50,7 +52,7 @@ namespace BaseDeProjetos
                 string conn = Configuration.GetConnectionString("DefaultConnection");
                 System.Console.WriteLine(conn);
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseMySql(conn).UseLazyLoadingProxies());
+                    options.UseMySql(conn, mysqlOptions =>{ mysqlOptions.ServerVersion(new Version(5, 7, 22), ServerType.MySql); }).UseLazyLoadingProxies());
             }
             services.AddDefaultIdentity<Usuario>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
