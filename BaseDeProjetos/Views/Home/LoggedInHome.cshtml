@@ -1,23 +1,33 @@
 ﻿@page
 @model BaseDeProjetos.Views.Home.LoggedInHomeModel
 @{
-    //decimal receita = (decimal)ViewBag.receita_isiqv + (decimal)ViewBag.receita_isiii + (decimal)ViewBag.receita_cisho;
-    decimal receita = (decimal)ViewBag.receita_total;
-    decimal investimento = (decimal)ViewBag.invest_total;
-    decimal despesas = (decimal)ViewBag.despesa_total;
-    float quali = (float)ViewBag.quali;
-    decimal sustentabilidade;
-
-    if (despesas > 0)
+    try
     {
+        //decimal receita = (decimal)ViewBag.receita_isiqv + (decimal)ViewBag.receita_isiii + (decimal)ViewBag.receita_cisho;
+        decimal receita = (decimal)ViewBag.receita_total;
+        decimal investimento = (decimal)ViewBag.invest_total;
+        decimal despesas = (decimal)ViewBag.despesa_total;
+        float quali = (float)ViewBag.quali;
+        decimal sustentabilidade;
 
-        sustentabilidade = receita / despesas;
+        if (despesas > 0)
+        {
+
+            sustentabilidade = receita / despesas;
+        }
+        else
+        {
+            sustentabilidade = 1;
+        }
     }
-    else
+
+    catch(Exception e)
     {
-        sustentabilidade = 1;
+        decimal receita = 1;
+        decimal despesas = 1;
+        decimal investimento = 1;
+        decimal sustentabilidade = 1;
     }
-
 }
 <style>
     #sustentabilidade {
