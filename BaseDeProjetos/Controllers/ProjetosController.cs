@@ -35,13 +35,39 @@ namespace BaseDeProjetos.Controllers
     }
 
     // GET: Projetos
-    public IActionResult Index(string casa, string ano = "")
+    public IActionResult Index(string casa, string sortOrder = "", string searchString = "", string ano = "")
     {
+      SetarFiltros(sortOrder, searchString);
       IQueryable<Projeto> projetos = DefinirCasa(casa);
       projetos = PeriodizarProjetos(ano, projetos);
       CategorizarStatusProjetos(projetos);
       GerarIndicadores(casa, _context);
       return View(projetos.ToList());
+    }
+   
+    private void SetarFiltros(string sortOrder = "", string searchString = "")
+    {
+        //Filtros e ordenadores
+        if (string.IsNullOrEmpty(searchString) && HttpContext.Session.Keys.Contains("_CurrentFilter"))
+        {
+            ViewData["CurrentFilter"] = HttpContext.Session.GetString("_CurrentFilter");
+        }
+        else
+        {
+            ViewData["CurrentFilter"] = searchString;
+            HttpContext.Session.SetString("_CurrentFilter", searchString);
+        }
+
+        if (string.IsNullOrEmpty(sortOrder) && HttpContext.Session.Keys.Contains("_asdas"))
+        {
+            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "TipoContratacao" ? "tipo_desc" : "TipoContratacao";
+        }
+        else
+        {
+            ViewData["CurrentFilter"] = sortOrder;
+            HttpContext.Session.SetString("____", sortOrder);
+        }
     }
 
     private void CategorizarStatusProjetos(IQueryable<Projeto> projetos)

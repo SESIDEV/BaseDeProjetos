@@ -4,7 +4,7 @@
     List<Projeto> ativas = ViewBag.Ativos as List<Projeto>;
     List<Projeto> encerradas = ViewBag.Encerrados as List<Projeto>;
 }
-@**@
+
 <div class="row card">
     <div class=" col-12 card-body">
         <h1 class="card-title">Projetos @ViewData["Area"]</h1>
@@ -12,29 +12,36 @@
             <div class="collapse" id="navbarToggleExternalContent">
                 <div class="bg-secondary p-4">
                     <h5 class="text-white h4">Menu</h5>
+                    <form asp-controller="Projetos" asp-action="Index" method="post">
                     <div class="row g-3">
                         <div class="col-2">
-                            <select class="form-select" id="ano" onchange="updateLink()">
-                                <option value="Todos">Selecione o ano:</option>
+                            <select autofocus class="form-select" name="ano">
+                                <option value="Todos" selected>Selecione o ano:</option>
                                 <option value="2019">2019</option>
                                 <option value="2020">2020</option>
                                 <option value="2021">2021</option>
                                 <option value="2022">2022</option>
                             </select>
                         </div>
-                        <div class="col-6">
-                            <form asp-controller="ProjetosController">
-                                <input class="input-group" name="ano" value="Todos" id="inputLiderOuEmpresa" style="display: none; padding: 0px; margin: 0px;"/>                         
-                                <div class="input-group mb-3">
-                                    <input class="form-control" type="text" name="SearchString" value="@ViewData["CurrentFilter"]" placeholder="Pesquise pelo líder ou empresa"/>
-                                    <button type="submit" class="btn btn-primary">Procurar</button>
-                                </div>                                
-                            </form>
+                        <div class="col-2">
+                            <select class="form-select">
+                                <option value="">Selecione Status</option>
+                                <option value="Contratado">Contratado</option>
+                                <option value="EmExecucao">Em Execucao</option>
+                                <option value="Concluido">Concluido</option>
+                            </select>
                         </div>
-                        <div class="col-4">
-                            <a asp-action="Create" style="text-decoration:none;" class="btn btn-primary">Novo Projeto</a>
+                        <div class="col-6">                    
+                            <div class="input-group mb-3">
+                                <input class="form-control" type="text" name="SearchString" value="@ViewData["CurrentFilter"]" placeholder="Pesquise pelo líder ou empresa"/>
+                                <button type="submit" class="btn btn-primary">Procurar</button>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <a asp-action="Create" style="text-decoration:none;" class="btn btn-primary">Adicionar Novo Projeto</a>
                         </div>
                     </div>
+                    </form>
                 </div>
             </div>
             <nav class="navbar navbar-light bg-light">
@@ -52,21 +59,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Lista de Projetos</a>
-            </li>
-            @* KPIS desativados nesta área. Os mesmos estão sendo exibidos na área de indicadores
-            <li class="nav-item">
-                <a class="nav-link" id="fraun-tab" data-toggle="tab" href="#fraun" role="tab" aria-controls="profile" aria-selected="false">KPIs Fraunhofer</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="embrapii-tab" data-toggle="tab" href="#embrapii" role="tab" aria-controls="profile" aria-selected="false">KPIs Embrapii</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#encerrados" role="tab" aria-controls="encerrados" aria-selected="false">Lista de Projetos Encerrados</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Importar</a>
-            </li>
-            *@        
+            </li>      
         </ul>
         
         <br />
