@@ -37,7 +37,7 @@ namespace BaseDeProjetos.Controllers
 
       CategorizarProspecções(lista);
 
-      return View(lista.ToList<Prospeccao>());
+      return View(lista.ToList());
     }
 
     private void CategorizarProspecções(List<Prospeccao> lista)
