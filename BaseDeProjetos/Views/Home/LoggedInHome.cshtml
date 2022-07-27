@@ -1,14 +1,19 @@
 ﻿@page
 @model BaseDeProjetos.Views.Home.LoggedInHomeModel
 @{
+    decimal receita = 1;
+    decimal despesas = 1;
+    decimal investimento = 1;
+    decimal sustentabilidade = 1;
+    float quali = 1;
+
     try
     {
         //decimal receita = (decimal)ViewBag.receita_isiqv + (decimal)ViewBag.receita_isiii + (decimal)ViewBag.receita_cisho;
-        decimal receita = (decimal)ViewBag.receita_total;
-        decimal investimento = (decimal)ViewBag.invest_total;
-        decimal despesas = (decimal)ViewBag.despesa_total;
-        float quali = (float)ViewBag.quali;
-        decimal sustentabilidade;
+        receita = (decimal)ViewBag.receita_total;
+        investimento = (decimal)ViewBag.invest_total;
+        despesas = (decimal)ViewBag.despesa_total;
+        quali = (float)ViewBag.quali;
 
         if (despesas > 0)
         {
@@ -23,10 +28,7 @@
 
     catch(Exception e)
     {
-        decimal receita = 1;
-        decimal despesas = 1;
-        decimal investimento = 1;
-        decimal sustentabilidade = 1;
+        
     }
 }
 <style>
