@@ -4,9 +4,22 @@
     List<Prospeccao> ativas = ViewBag.Ativas as List<Prospeccao>;
     List<Prospeccao> propostas = ViewBag.EmProposta as List<Prospeccao>;
     List<Prospeccao> concluidas = ViewBag.Concluidas as List<Prospeccao>;
+    List<Prospeccao> planejadas = ViewBag.Planejadas as List<Prospeccao>;
+    List<Instituto> institutos = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto))).Where(c=>c!= Instituto.Super).ToList();
 }
 @**@
 <div class="row card">
+    <div style="margin-left: 37%;padding: 10px;">
+        <form>
+                @foreach(Instituto casa in institutos){
+                    string casa_nome = Enum.GetName(typeof(Instituto), casa);
+                    string id_casa = "caixa" + casa_nome;
+                    <label class="form-check-label" for="@id_casa">@casa_nome</label>
+                    <input class="form-check-input" type="checkbox" id="@id_casa" style="margin-right: 30px;" name="casa" value="@casa_nome">
+                }
+                <input type="submit" value="Carregar">
+        </form>
+    </div>
     <div class=" col-12 card-body">
         <h1 class="card-title">Prospecções @ViewData["Area"]</h1>
         <div>
@@ -61,6 +74,9 @@
             <li class="nav-item">
                 <a class="nav-link" id="concluidas-tab" data-toggle="tab" href="#concluidas" role="tab" aria-controls="concluidas" aria-selected="false">Concluídas</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" id="planejadas-tab" data-toggle="tab" href="#planejadas" role="tab" aria-controls="planejadas" aria-selected="true">Planejadas</a>
+            </li>
         </ul>
         
 
@@ -83,6 +99,11 @@
             <div class="tab-pane fade" id="concluidas" role="tabpanel" aria-labelledby="concluidas-tab">
                 <div>
                     <partial name="ListaProsp" view-data="@ViewData" model="@concluidas" />
+                </div>
+            </div>
+            <div class="tab-pane fade" id="planejadas" role="tabpanel" aria-labelledby="planejadas-tab">
+                <div>
+                    <partial name="ListaProsp" view-data="@ViewData" model="@planejadas" />
                 </div>
             </div>
         </div>
