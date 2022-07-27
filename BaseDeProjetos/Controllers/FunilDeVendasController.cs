@@ -29,7 +29,6 @@ namespace BaseDeProjetos.Controllers
     public IActionResult Index(string casa, string sortOrder = "", string searchString = "", string ano = "")
     {
       SetarFiltros(sortOrder, searchString);
-
       IQueryable<Prospeccao> lista = DefinirCasa(casa);
       lista = PeriodizarProspecções(ano, lista);
       lista = FiltrarProspecções(searchString, lista);
