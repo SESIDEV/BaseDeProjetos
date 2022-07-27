@@ -61,7 +61,6 @@ namespace BaseDeProjetos.Controllers
       ViewBag.Concluidas = concluidos.ToList<Prospeccao>();
       ViewBag.Ativas = ativos.ToList<Prospeccao>();
       ViewBag.EmProposta = emProposta.ToList();
-      ViewBag.EmProposta = emProposta.ToList();
       ViewBag.Planejadas = planejados.ToList();
     }
 
