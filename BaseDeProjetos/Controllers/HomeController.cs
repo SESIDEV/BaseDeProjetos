@@ -22,11 +22,11 @@ namespace BaseDeProjetos.Controllers
 
         public IActionResult Index()
         {
-            /* Implementar quando base tiver atualizada
+            //Implementar quando base tiver atualizada
             ViewData["receita_isiqv"] = ReceitaCasa(Instituto.ISIQV);
             ViewData["receita_isiii"] = ReceitaCasa(Instituto.ISIII);
             ViewData["receita_cisho"] = ReceitaCasa(Instituto.CISHO);
-            */
+            
             try
             {
                 ViewData["receita_total"] = _context.IndicadoresFinanceiros.ToList().LastOrDefault().Receita;
