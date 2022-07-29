@@ -207,6 +207,7 @@ namespace BaseDeProjetos.Controllers
     public IActionResult Planejar(int id, string userId) {
 
       Prospeccao prosp = new Prospeccao();
+      prosp.Id = $"proj_{DateTime.Now.Ticks}";
       prosp.Empresa = _context.Empresa.FirstOrDefault(E => E.Id == id);
       prosp.Usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
       prosp.Casa = prosp.Usuario.Casa;
