@@ -267,20 +267,7 @@ namespace BaseDeProjetos.Controllers
 
     private void CriarFollowUp(FollowUp followup)
     {
-      List<FollowUp> followups = _context.FollowUp.Where(f => f.OrigemID == followup.OrigemID).ToList();
-
-      if (followups.Any(f => f.Status == followup.Status))
-      {
-        FollowUp fp = followups.First(f => f.Status == followup.Status);
-        string texto = $"\n Em {followup.Data} : {followup.Anotacoes} ";
-        fp.Anotacoes += texto;
-        fp.Data = followup.Data;
-        _context.Add(fp);
-      }
-      else
-      {
-        _context.Add(followup);
-      }
+      _context.Add(followup);
       _context.SaveChanges();
     }
 
