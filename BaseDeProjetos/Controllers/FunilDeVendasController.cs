@@ -37,7 +37,7 @@ namespace BaseDeProjetos.Controllers
 
       CategorizarProspecções(lista);
 
-      return View(lista.ToList<Prospeccao>());
+      return View(lista.ToList());
     }
 
     private void CategorizarProspecções(List<Prospeccao> lista)
@@ -60,7 +60,6 @@ namespace BaseDeProjetos.Controllers
 
       ViewBag.Concluidas = concluidos.ToList<Prospeccao>();
       ViewBag.Ativas = ativos.ToList<Prospeccao>();
-      ViewBag.EmProposta = emProposta.ToList();
       ViewBag.EmProposta = emProposta.ToList();
       ViewBag.Planejadas = planejados.ToList();
     }
