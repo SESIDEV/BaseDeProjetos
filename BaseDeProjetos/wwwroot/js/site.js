@@ -10,6 +10,36 @@
  *
  * */
 
+function TesteJS(){
+
+    let checkBox = document.getElementById("empresa_estrangeira_check");
+    let cnpj = document.getElementById("valor_cnpj");
+    let campo1 = document.getElementById("cadastro_campo1");
+    let campo2 = document.getElementById("cadastro_campo2");
+    let nome = document.getElementById("NomeEmpresaCadastro");
+    let estado_int = document.getElementById("EstadoEmpresaCadastroINT");
+    
+  
+    if (checkBox.checked == true){
+    
+        cnpj.value = 00000000000000;
+        campo1.style.display = "none"
+        estado_int.value = 26;
+        campo2.style.display = "none"
+        nome.removeAttribute('readonly')
+
+    } else {
+
+        cnpj.value = "";
+        campo1.style.display = "block"
+        estado_int.value = 0;
+        campo2.style.display = "block"
+        nome.setAttribute('readonly')
+
+    }
+    
+}
+
 function CasasFunil() {
 
     let caixa1 = document.getElementById("caixaISIQV")
