@@ -11,13 +11,15 @@
 <div class="row card">
     <div style="margin-left: 37%;padding: 10px;">
         <form>
-                @foreach(Instituto casa in institutos){
-                    string casa_nome = Enum.GetName(typeof(Instituto), casa);
-                    string id_casa = "caixa" + casa_nome;
-                    <label class="form-check-label" for="@id_casa">@casa_nome</label>
-                    <input class="form-check-input" type="checkbox" id="@id_casa" style="margin-right: 30px;" name="casa" value="@casa_nome">
-                }
-                <input type="submit" value="Carregar">
+            @foreach(Instituto casa in institutos){
+            string casa_nome = Enum.GetName(typeof(Instituto), casa);
+            string id_casa = "caixa" + casa_nome;
+
+            <label class="form-check-label" for="@id_casa">@casa_nome</label>
+            <input class="form-check-input" type="checkbox" id="@id_casa" style="margin-right: 30px;" name="casa" value="@casa_nome">
+
+        }
+        <button type="button" onclick="CasasFunil()">Carregar</button>
         </form>
     </div>
     <div class=" col-12 card-body">
