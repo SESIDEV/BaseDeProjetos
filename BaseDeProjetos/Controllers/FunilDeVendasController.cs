@@ -412,6 +412,7 @@ namespace BaseDeProjetos.Controllers
         await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
       }
+      var errors = ModelState.Values.SelectMany(v => v.Errors);
       return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
     }
 
