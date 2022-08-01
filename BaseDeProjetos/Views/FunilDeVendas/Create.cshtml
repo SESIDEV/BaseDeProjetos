@@ -135,7 +135,7 @@
                             <div>
                                 <label asp-for="Empresa.Estado" class="control-label"></label>
                                 <input id="EstadoEmpresaCadastro" class="form-control" value="" readonly/> <!--VISUAL APENAS-->
-                                <select asp-for="Empresa.Estado" id="EstadoEmpresaCadastroINT" style="display: none;" asp-items="Html.GetEnumSelectList<SegmentoEmpresa>().OrderBy(p=>p.Text)"></select>
+                                <select asp-for="Empresa.Estado" id="EstadoEmpresaCadastroINT" style="display: none;" asp-items="Html.GetEnumSelectList<Estado>()"></select>
                             </div>
                             <div class="form-group">
                                 <label asp-for="Empresa.Segmento" class="control-label"></label>

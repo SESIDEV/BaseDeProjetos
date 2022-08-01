@@ -1,6 +1,6 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
-using MailSenderApp.Services;
+//using MailSenderApp.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -245,7 +245,7 @@ namespace BaseDeProjetos.Controllers
         CriarFollowUp(followup);
         AcertarCasosEspeciais(followup);
 
-        NotificarProspecção(followup);
+      //  NotificarProspecção(followup);
         await _context.SaveChangesAsync();
       }
 
@@ -300,7 +300,7 @@ namespace BaseDeProjetos.Controllers
         _context.SaveChanges();
       }
     }
-
+/*
     private void NotificarProspecção(FollowUp followup)
     {
       try
@@ -379,7 +379,7 @@ namespace BaseDeProjetos.Controllers
       notificacao.Status = followup.Status;
       return notificacao;
     }
-
+    */
     // POST: FunilDeVendas/Create
     // To protect from overposting attacks, enable the specific properties you want to bind to, for
     // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -406,7 +406,7 @@ namespace BaseDeProjetos.Controllers
 
         prospeccao.Status[0].Origem = prospeccao;
 
-        NotificarProspecção(prospeccao.Status[0]);
+      //  NotificarProspecção(prospeccao.Status[0]);
 
         _context.Add(prospeccao);
         await _context.SaveChangesAsync();
