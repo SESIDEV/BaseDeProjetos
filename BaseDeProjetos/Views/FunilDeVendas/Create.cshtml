@@ -90,59 +90,9 @@
 
             <div class="col-4">
                 <fieldset id="group">
-                    <div class="col-md-12">
-                        <div class="form-group row">
-                            <button class="col-12 btn btn-primary" data-parent="#group" data-toggle="collapse"
-                                data-target="#existente" aria-expanded="true" aria-controls="existente" type="button">
-                                A empresa já foi cadastrada
-                            </button>
-                            <button class="col-12 btn btn-primary" data-parent="#group" data-toggle="collapse"
-                                data-target="#inexistente" aria-expanded="true" aria-controls="inexistente"
-                                type="button">
-                                É o primeiro registro da empresa
-                            </button>
-                        </div>
-                    </div>
-
-                    <legend> Informações da Empresa</legend>
-
-                    <div class="accordion-group">
-
-                        <!-- Empresa existente -->
-                        <div class="form-group collapse" data-parent="#group" id="existente">
-                            <label asp-for="Empresa" class="control-label"></label>
-                            <select asp-for="Empresa.Id" class="form-control"
-                                asp-items="@(ViewData["Empresas"] as SelectList).OrderBy(p=>p.Text)">
-                                <option value="-1">Selecione a empresa</option>
-                            </select>
-                            <span asp-validation-for="Empresa.Id" class="text-danger"></span>
-                        </div>
-
-                        <!-- Empresa nova -->
-                        <div class="collapse" data-parent="#group" id="inexistente">
-                             <div class="form-group">
-                                <label asp-for="Empresa.CNPJ" class="control-label"></label><span>   (Apenas números)</span>
-                                <input asp-for="Empresa.CNPJ" id="valor_cnpj" class="form-control" maxlength="14"/>
-                                <button onclick="ChecarUsuario()" type="button">Buscar</button>
-                                <p id="StatusCNPJ"></p>
-                            </div>
-                            <h6 id="TipoEmpresaStatus">Tipo: </h6>
-                            <h6 id="SituacaoEmpresaStatus">Situação: </h6>
-                            <div class="form-group">
-                                <label asp-for="Empresa.Nome" class="control-label"></label>
-                                <input asp-for="Empresa.Nome" id="NomeEmpresaCadastro" class="form-control" value="" readonly/>
-                            </div>
-                            <div>
-                                <label asp-for="Empresa.Estado" class="control-label"></label>
-                                <input id="EstadoEmpresaCadastro" class="form-control" value="" readonly/> <!--VISUAL APENAS-->
-                                <select asp-for="Empresa.Estado" id="EstadoEmpresaCadastroINT" style="display: none;" asp-items="Html.GetEnumSelectList<Estado>()"></select>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Empresa.Segmento" class="control-label"></label>
-                                <select asp-for="Empresa.Segmento" class="form-control" asp-items="Html.GetEnumSelectList<SegmentoEmpresa>().OrderBy(p=>p.Text)"></select>
-                            </div>
-                        </div>
-                    </div>
+                    <label asp-for="Empresa" class="control-label"></label>
+                    <select asp-for="Empresa.Id" class="form-control" asp-items="@(ViewData["Empresas"] as SelectList).OrderBy(p=>p.Text)"></select>
+                    <span asp-validation-for="Empresa.Id" class="text-danger"></span>
                 </fieldset>
                 <hr />
                 <fieldset>

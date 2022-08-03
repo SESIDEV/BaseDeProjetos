@@ -159,7 +159,6 @@ namespace BaseDeProjetos.Controllers
 
     private List<string> ProcessarCasa(string? casa){
 
-
       return casa.Split("-").ToList();
 
     }
@@ -235,7 +234,7 @@ namespace BaseDeProjetos.Controllers
     }
 
     [HttpPost]
-    public async Task<IActionResult> Atualizar(string id, [Bind("OrigemID, Data, Status, Anotacoes, MotivoNaoConversao")] FollowUp followup, decimal valorProposta = 0)
+    public async Task<IActionResult> Atualizar(string id, [Bind("OrigemID, Data, Status, Anotacoes, MotivoNaoConversao, ValorProposta")] FollowUp followup, decimal valorProposta = 0)
     {
       if (ModelState.IsValid)
       {
@@ -385,7 +384,7 @@ namespace BaseDeProjetos.Controllers
     // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, Empresa, Contato, Casa")] Prospeccao prospeccao)
+    public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, Empresa, Contato, Casa")] Prospeccao prospeccao)
     {
       if (ModelState.IsValid)
       {
@@ -485,7 +484,7 @@ namespace BaseDeProjetos.Controllers
         return NotFound();
       }
 
-      if (ModelState.IsValid)
+      if (ModelState.IsValid) //APAGAR EXCESSO DE CÓDIGO
       {
         try
         {
