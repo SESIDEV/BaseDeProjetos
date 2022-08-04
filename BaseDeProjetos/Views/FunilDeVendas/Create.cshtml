@@ -91,7 +91,9 @@
             <div class="col-4">
                 <fieldset id="group">
                     <label asp-for="Empresa" class="control-label"></label>
-                    <select asp-for="Empresa.Id" class="form-control" asp-items="@(ViewData["Empresas"] as SelectList).OrderBy(p=>p.Text)"></select>
+                    <select asp-for="Empresa.Id" class="form-control" asp-items="@(ViewData["Empresas"] as SelectList).OrderBy(p=>p.Text)">
+                        <option value="-1">Selecione a empresa</option>
+                    </select>
                     <span asp-validation-for="Empresa.Id" class="text-danger"></span>
                 </fieldset>
                 <hr />

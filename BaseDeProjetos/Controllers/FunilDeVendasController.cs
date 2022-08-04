@@ -496,17 +496,7 @@ namespace BaseDeProjetos.Controllers
           }
           else
           {
-            if (prospeccao.Empresa.Nome != Empresa_antigo.Nome
-                || prospeccao.Empresa.CNPJ != Empresa_antigo.CNPJ) //Nova empresa inexistente
-            {
-              prospeccao.Empresa = new Empresa
-              {
-                Estado = prospeccao.Empresa.Estado,
-                CNPJ = prospeccao.Empresa.CNPJ,
-                Nome = prospeccao.Empresa.Nome,
-                Segmento = prospeccao.Empresa.Segmento
-              };
-            }
+            prospeccao.Empresa = Empresa_antigo;
           }
 
           Usuario lider = _context.Users.First(p => p.Id == prospeccao.Usuario.Id);
