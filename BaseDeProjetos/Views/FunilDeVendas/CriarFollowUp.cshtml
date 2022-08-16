@@ -81,20 +81,20 @@
                     <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<MotivosNaoConversao>()"></select>
                 </div>
             </div>
-
+            @*
             <div id="valorproposta" style="display:none">
                 <div class="form-group">
                     <label class="control-label"> Valor da proposta submetida</label>
                     <input type="number" min=0 name="valorProposta" value="@prosp.ValorProposta" class="form-control" /> <!--TENTEI BOTAR ASP FOR AQUI MAS NÃO DEU CERTO-->
                 </div>
             </div>
-
+            *@
             <div class="form-group">
                 <input type="submit" value="Incluir" class="btn btn-primary" />
             </div>
         </form>
     </div>
-
+    @*
     <script>
         function avaliarStatus(valor) {
             var NaoConvertida = 7;
@@ -116,7 +116,7 @@
 
         }
     </script>
-
+        *@
     <div>
         <a asp-action="Index" asp-route-casa="@ViewData["Area"]">Voltar</a>
     </div>
