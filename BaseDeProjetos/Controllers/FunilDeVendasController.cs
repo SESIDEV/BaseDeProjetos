@@ -234,7 +234,7 @@ namespace BaseDeProjetos.Controllers
     }
 
     [HttpPost]
-    public async Task<IActionResult> Atualizar(string id, [Bind("OrigemID, Data, Status, Anotacoes, MotivoNaoConversao, ValorProposta")] FollowUp followup, decimal valorProposta = 0)
+    public async Task<IActionResult> Atualizar(string id, [Bind("OrigemID, Data, Status, Anotacoes, MotivoNaoConversao")] FollowUp followup)
     {
       if (ModelState.IsValid)
       {
@@ -253,10 +253,6 @@ namespace BaseDeProjetos.Controllers
 
     private void AcertarCasosEspeciais(FollowUp followup)
     {
-      if (followup.Status == StatusProspeccao.ComProposta)
-      {
-        followup.Origem.ValorProposta = 0;
-      }
 
       if (followup.Status == StatusProspeccao.Convertida)
       {
