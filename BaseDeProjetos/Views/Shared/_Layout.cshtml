@@ -45,6 +45,37 @@
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2020 - SGI-GGI - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacidade</a>
+            <button type="button" class="btn-btn-primary" data-bs-toggle="modal" data-bs-target="#myModal" style="border-radius:5px;margin-left:900px;">Relatar Problema ou Sugestão</button>
+            <a asp-controller="Troubleshoots" asp-action="Create" class="btn-btn-primary" style="border-radius:5px;margin-left:10px;">Temporario</a>
+            <div class="modal" id="myModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Relatar Problema ou Sugestão</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form asp-action="Create" asp-controller="Troubleshoot">
+                                <div class="mb-3">
+                                    <label class="form-label">Categoria</label>
+                                    <select class="form-control"></select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Titulo</label>
+                                    <input class="form-control"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="control-label">Descrição</label>
+                                    <textarea class="form-control"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Enviar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </footer>
     @RenderSection("Scripts", required: false)

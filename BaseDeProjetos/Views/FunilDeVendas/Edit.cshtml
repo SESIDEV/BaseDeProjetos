@@ -96,7 +96,7 @@
                     <legend> Dados da proposta</legend>
                     <div class="form-group">
                         <label asp-for="ValorProposta" class="control-label"></label>
-                        <input asp-for="ValorProposta" type="number" class="form-control" placeholder="@Model.ValorProposta.ToString("C2") - Insira um novo valor para alterar o existente!"/>
+                        <input asp-for="ValorProposta" type="number" class="form-control" value='@Model.ValorProposta.ToString("C2")' placeholder='@Model.ValorProposta.ToString("C2") - Insira um novo valor para alterar o existente!'/>
                         <span asp-validation-for="ValorProposta" class="text-danger"></span>
                     </div>
                 </fieldset>

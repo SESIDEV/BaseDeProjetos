@@ -220,6 +220,26 @@ namespace BaseDeProjetos.Models
         FirjanSENAI,
     }
 
+    public enum CategoriaTroubleshoot
+    {
+
+        [Display(Name = "Problema")]
+        Problema,
+
+        [Display(Name = "Sugestão")]
+        Sugestao,
+    }
+
+    public enum StatusTroubleshoot
+    {
+
+        [Display(Name = "Aberto")]
+        Problema,
+
+        [Display(Name = "Fechado")]
+        Sugestao,
+    }
+
     public enum LinhaPesquisa
     {
         [Display(Name = "QV - Química e Sustentabilidade", GroupName = "Quimica Verde")]
