@@ -19,6 +19,7 @@
         else {
         location.href = baseUrl + params + select;
         }
+        
     }
     function getSelected() {
         var year = location.href.split('?')[1].split('&');
@@ -37,7 +38,7 @@
     function inserirAnoAtual() {
         setInterval(() => {
             document.querySelector("#ano").value = getSelected();
-        }, 500)             
+        }, 200)             
     }
     inserirAnoAtual();
 
