@@ -9,9 +9,8 @@
     <div class=" col-12 card-body">
         <h1 class="card-title">Projetos @ViewData["Area"]</h1>
         <div>
-            <div class="collapse" id="navbarToggleExternalContent">
-                <div class="bg-secondary p-4">
-                    <h5 class="text-white h4">Menu</h5>
+            <div>
+                <div>
                     <form asp-controller="Projetos" asp-action="Index" method="post">
                     <div class="row g-3">
                         <div class="col-2">
@@ -38,7 +37,7 @@
                             </div>
                         </div>
                         <div class="col-2">
-                            <a asp-action="Create" style="text-decoration:none;" class="btn btn-primary">Adicionar Novo Projeto</a>
+                            <a asp-action="Create" style="text-decoration:none;" class="btn btn-primary">Novo Projeto</a>
                         </div>
                     </div>
                     </form>
@@ -46,9 +45,6 @@
             </div>
             <nav class="navbar navbar-light bg-light">
                 <div class="container-fluid justify-content-end">
-                    <button class="navbar-toggler btn btn-outline-primary bg-primary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">                        
-                            menu<span class="spinner-grow spinner-grow-sm ms-2" role="status" aria-hidden="true"></span>                                              
-                    </button>
                 </div>
             </nav>
         </div>
