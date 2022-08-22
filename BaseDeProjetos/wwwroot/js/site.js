@@ -62,19 +62,7 @@ function CasasFunil() {
     window.location.assign(url_final);
 }
 
-function updateLink() {
-    var path = location.pathname;
-    var baseUrl = location.href.split("?")[0];
-    var params = "?ano=";
-    var select = document.getElementById('ano').value;
 
-    if (location.href == baseUrl) {
-        location.href = baseUrl + params + select;
-    }
-    else {
-        location.href = baseUrl + params + select;
-    }
-}
 
 function validarCNPJ(){
     
@@ -208,16 +196,3 @@ function Base64() {
 
 }
 
-function getSelected() {
-    var year = location.href.split('?')[1].split('&');
-
-    for (let i = 0; i < year.length; i++) {
-        if (year[i].includes('ano')) {
-            var ano = year[i].split('=')[1];
-            return ano;
-        }
-        else {
-            return document.getElementById('ano').value;
-        }
-    }
-}

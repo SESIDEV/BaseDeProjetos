@@ -7,7 +7,41 @@
     List<Prospeccao> planejadas = ViewBag.Planejadas as List<Prospeccao>;
     List<Instituto> institutos = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto))).Where(c=>c!= Instituto.Super).ToList();
 }
-@**@
+<script>
+    function updateLink() {
+        var baseUrl = location.href.split("?")[0];
+        var params = "?ano=";
+        var select = document.getElementById('ano').value;
+
+        if (location.href == baseUrl) {
+            location.href = baseUrl + params + select;
+        }
+        else {
+        location.href = baseUrl + params + select;
+        }
+    }
+    function getSelected() {
+        var year = location.href.split('?')[1].split('&');
+
+        for (let i = 0; i < year.length; i++) {
+            if (year[i].includes('ano')) {
+                var ano = year[i].split('=')[1];
+                return ano;
+            }
+            else {
+                return document.getElementById('ano').value;
+            }
+        }
+    }
+
+    function inserirAnoAtual() {
+        setInterval(() => {
+            document.querySelector("#ano").value = getSelected();
+        }, 500)             
+    }
+    inserirAnoAtual();
+
+</script>
 <div class="row card">
     <div class=" col-12 card-body">
         <h1 class="card-title">Prospecções @ViewData["Area"]</h1>
@@ -33,8 +67,8 @@
                     <div class="row g-3">
                         <div class="col-2">
                             <span>Selecione o ano:</span>
-                            <select class="form-select" id="ano">                                
-                                <option value="Todos" selected>Todos</option>
+                            <select class="form-select" id="ano" name="ano" onchange="updateLink()">                                
+                                <option value="Todos">Todos</option>
                                 <option value="2022">2022</option>
                                 <option value="2021">2021</option>
                                 <option value="2020">2020</option>
