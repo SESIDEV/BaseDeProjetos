@@ -12,7 +12,7 @@ namespace SmartTesting.Controllers
 
         public Mailer()
         {
-            From = new EmailAddress("l.nasc@live.com", "Leon Nascimento");
+            From = new EmailAddress("sgi_ggi_isi@outlook.com", "Mailer SGI (Não responda)");
         }
 
         public async Task<Response> Enviar(EmailAddress destinatario, string titulo, string texto_plain, string texto_html)

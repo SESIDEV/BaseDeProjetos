@@ -45,19 +45,20 @@ namespace BaseDeProjetos
 
 
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseMySql(ConStr, mysqlOptions =>{ mysqlOptions.ServerVersion(new Version(5, 7, 9), ServerType.MySql); }).UseLazyLoadingProxies());
+                    options.UseMySql(ConStr, mysqlOptions => { mysqlOptions.ServerVersion(new Version(5, 7, 9), ServerType.MySql); }).UseLazyLoadingProxies());
             }
             else
             {
                 string conn = Configuration.GetConnectionString("DefaultConnection");
                 System.Console.WriteLine(conn);
                 services.AddDbContext<ApplicationDbContext>(options =>
-                        options.UseMySql(conn, mysqlOptions =>{ mysqlOptions.ServerVersion(new Version(5, 7, 9), ServerType.MySql); }).UseLazyLoadingProxies());
+                        options.UseMySql(conn, mysqlOptions => { mysqlOptions.ServerVersion(new Version(5, 7, 9), ServerType.MySql); }).UseLazyLoadingProxies());
             }
             services.AddDefaultIdentity<Usuario>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddDistributedMemoryCache();
             services.AddLocalization(options => options.ResourcesPath = "Resources");
+
             services.Configure<RequestLocalizationOptions>(
                 options =>
                     {
@@ -79,8 +80,8 @@ namespace BaseDeProjetos
 
             services.Configure<CookiePolicyOptions>(options =>
             {
-          // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-          options.CheckConsentNeeded = context => true;
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
         }
