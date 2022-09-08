@@ -2,6 +2,12 @@
 @model ConfirmEmailModel
 @{
     ViewData["Title"] = "Confirme seu e-mail";
+    ViewData["Mensagem"] = "Verifique sua caixa de entrada para ver se recebeu o e-mail de confirmação de conta.";
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="jumbotron">
+    <h1>@ViewData["Title"]</h1>
+    <p>
+        @ViewData["Mensagem"]
+    </p>
+</div>

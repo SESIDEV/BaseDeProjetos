@@ -9,19 +9,20 @@ namespace SmartTesting.Controllers
     public class Mailer
     {
         private EmailAddress From { get; set; }
+        private string APIKey {get;set;}
 
         public Mailer()
         {
-            From = new EmailAddress("sgi_ggi_isi@outlook.com", "Mailer SGI (Não responda)");
+            this.From = new EmailAddress("sgi_ggi_isi@outlook.com", "Mailer SGI (Não responda)");
+            this.APIKey = System.Environment.GetEnvironmentVariable("SENDGRID_APIKEY");
         }
 
         public async Task<Response> Enviar(EmailAddress destinatario, string titulo, string texto_plain, string texto_html)
         {
-            string apiKey = System.Environment.GetEnvironmentVariable("SENDGRID_APIKEY");
-            SendGridClient client = new SendGridClient(apiKey);
+            SendGridClient client = new SendGridClient(this.APIKey);
             SendGridMessage msg = new SendGridMessage()
             {
-                From = From,
+                From = this.From,
                 Subject = titulo,
                 PlainTextContent = texto_plain,
                 HtmlContent = texto_html is null ? texto_plain : texto_html
