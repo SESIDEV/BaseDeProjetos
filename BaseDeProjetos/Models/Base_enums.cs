@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace BaseDeProjetos.Models
 {
-        public enum SegmentoEmpresa
+    public enum SegmentoEmpresa
     {
 
         [Display(Name = "Abastecimento de água")]
@@ -51,7 +51,7 @@ namespace BaseDeProjetos.Models
 
         [Display(Name = "Farmacêutica")]
         Farmaceutica,
-        
+
         [Display(Name = "Formulações")]
         Formulacoes,
 
@@ -123,7 +123,7 @@ namespace BaseDeProjetos.Models
 
         [Display(Name = "Tecnologia")]
         Tecnologia,
-        
+
         [Display(Name = "Tintas")]
         Tintas,
 
@@ -474,8 +474,9 @@ namespace BaseDeProjetos.Models
 
         [Display(Name = "Supervisão")]
         Super,
+
         [Display(Name = "ISI - Sistemas Virtuais de Produção")]
-        ISISVP,
+        ISISVP
     }
 
     public enum Atividades
