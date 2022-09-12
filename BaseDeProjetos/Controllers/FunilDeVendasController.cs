@@ -44,7 +44,7 @@ namespace BaseDeProjetos.Controllers
             
             if (usuario.Casa == Instituto.Super || usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO)
             {
-                return listaProsp.Where(p => (p.Casa == Instituto.ISIQV) && (p.Casa == Instituto.ISIQV)).ToList();
+                return listaProsp.Where(p => p.Casa == Instituto.ISIQV || p.Casa == Instituto.CISHO).ToList();
 
             }
             else
@@ -52,7 +52,6 @@ namespace BaseDeProjetos.Controllers
                 return listaProsp.Where(p => p.Casa == usuario.Casa).ToList();
             }
 
-            
         }
 
         private void CategorizarProspecções(List<Prospeccao> lista)
@@ -90,7 +89,7 @@ namespace BaseDeProjetos.Controllers
                 HttpContext.Session.SetString("_CurrentFilter", searchString);
             }
 
-            if (string.IsNullOrEmpty(sortOrder) && HttpContext.Session.Keys.Contains("_asdas"))
+            if (string.IsNullOrEmpty(sortOrder) && HttpContext.Session.Keys.Contains("_CurrentFilter"))
             {
                 ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
                 ViewData["DateSortParm"] = sortOrder == "TipoContratacao" ? "tipo_desc" : "TipoContratacao";
@@ -113,11 +112,14 @@ namespace BaseDeProjetos.Controllers
         }
 
         private static List<Prospeccao> FiltrarProspecções(string searchString, List<Prospeccao> lista)
-        {
+        {   
+
             if (!string.IsNullOrEmpty(searchString))
             {
-                lista = lista.Where(s => s.Empresa.Nome.Contains(searchString)
-                                       || s.Usuario.UserName.Contains(searchString)).ToList();
+                searchString = searchString.ToLower();
+                
+                lista = lista.Where(s => s.Empresa.Nome.ToLower().Contains(searchString)
+                                       || s.Usuario.UserName.ToLower().Contains(searchString)).ToList();
             }
 
             return lista;
