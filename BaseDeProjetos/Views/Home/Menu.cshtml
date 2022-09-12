@@ -1,7 +1,24 @@
 ﻿@page
 @model BaseDeProjetos.Views.Home.MenuModel
+@using Microsoft.AspNetCore.Http
 @{
-    List<Instituto> institutos = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto))).Where(c=>c!= Instituto.Super).ToList();
+    List<Instituto> institutos = new List<Instituto>(); 
+
+    Instituto casaUsuario = ViewBag.usuarioCasa;
+    if (casaUsuario == Instituto.Super)
+    {
+        institutos = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto))).Where(c => c != Instituto.Super).ToList();
+    }
+    //Todo: remover se o CIS ganhar novo coordenador
+    else if (casaUsuario == Instituto.ISIQV || casaUsuario == Instituto.CISHO)
+    {
+        institutos = new List<Instituto>() { Instituto.ISIQV, Instituto.CISHO };
+    }
+    else
+    {
+        institutos = new List<Instituto>() { casaUsuario };
+    }
+
 }
 <style>
     #a-success{

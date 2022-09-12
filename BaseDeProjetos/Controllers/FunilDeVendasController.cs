@@ -41,7 +41,8 @@ namespace BaseDeProjetos.Controllers
 
         public static List<Prospeccao> VincularCasaProspeccao(Usuario usuario, List<Prospeccao> listaProsp)
         {
-            if(usuario.Casa == Instituto.Super || usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO)
+            
+            if (usuario.Casa == Instituto.Super || usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO)
             {
                 return listaProsp.Where(p => (p.Casa == Instituto.ISIQV) && (p.Casa == Instituto.ISIQV)).ToList();
 
@@ -50,6 +51,8 @@ namespace BaseDeProjetos.Controllers
             {
                 return listaProsp.Where(p => p.Casa == usuario.Casa).ToList();
             }
+
+            
         }
 
         private void CategorizarProspecções(List<Prospeccao> lista)

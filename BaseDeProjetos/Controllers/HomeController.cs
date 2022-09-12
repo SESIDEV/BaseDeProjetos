@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -22,6 +23,9 @@ namespace BaseDeProjetos.Controllers
 
         public IActionResult Index()
         {
+            Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
+            ViewBag.usuarioCasa = usuario.Casa;
+
             //Implementar quando base tiver atualizada
             ViewData["receita_isiqv"] = ReceitaCasa(Instituto.ISIQV);
             ViewData["receita_isiii"] = ReceitaCasa(Instituto.ISIII);
