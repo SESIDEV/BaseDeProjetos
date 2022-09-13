@@ -5,12 +5,8 @@
     List<Instituto> institutos = new List<Instituto>(); 
 
     Instituto casaUsuario = ViewBag.usuarioCasa;
-    if (casaUsuario == Instituto.Super)
-    {
-        institutos = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto))).Where(c => c != Instituto.Super).ToList();
-    }
     //Todo: remover se o CIS ganhar novo coordenador
-    else if (casaUsuario == Instituto.ISIQV || casaUsuario == Instituto.CISHO)
+    if (casaUsuario == Instituto.ISIQV || casaUsuario == Instituto.CISHO || casaUsuario == Instituto.Super)
     {
         institutos = new List<Instituto>() { Instituto.ISIQV, Instituto.CISHO };
     }
