@@ -29,9 +29,38 @@ namespace BaseDeProjetos.Controllers
                 Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
 
                 ViewBag.usuarioCasa = usuario.Casa;
+
+                ObterDadosReceita();
+
+
+                //PARA FINS DE DEBUG
+                if(usuario.Casa == Instituto.Super)
+                {
+                    ViewData["Volume_Negocios"] = _context.Prospeccao.Where(p => p.Casa == Instituto.ISIQV).ToList().Where(p => prospeccaoAtiva(p) == true).Sum(p => p.ValorEstimado);
+                }
+
+                ViewData["n_prosp"] = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).ToList().Where(p => prospeccaoAtiva(p) == true).ToList().Count;
+                ViewData["Volume_Negocios"] = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).ToList().Where(p => prospeccaoAtiva(p) == true).Sum(p => p.ValorEstimado);
+                ViewData["n_proj"] = _context.Projeto.Where(p => p.Casa == usuario.Casa).Where(p => p.Status == StatusProjeto.EmExecucao).ToList().Count;
+                ViewData["n_empresas"] = _context.Empresa.ToList().Count;
+                ViewData["satisfacao"] = 0.8872;
+                ViewBag.Usuarios = _context.Users.AsEnumerable().Where(u => ValidarCasa(u, usuario)).ToList().Count;
+
             }
+            return View();
 
 
+        }
+        private static bool ValidarCasa(Usuario u, Usuario usuario)
+        {
+            if ((usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO))
+                return usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO;
+
+            return u.Casa == usuario.Casa;
+        }
+
+        private void ObterDadosReceita()
+        {
             //Implementar quando base tiver atualizada
             ViewData["receita_isiqv"] = ReceitaCasa(Instituto.ISIQV);
             ViewData["receita_isiii"] = ReceitaCasa(Instituto.ISIII);
@@ -53,11 +82,6 @@ namespace BaseDeProjetos.Controllers
                 ViewData["quali"] = 0;
                 ViewData["Data"] = DateTime.Today;
             }
-            ViewData["n_prosp"] = _context.Prospeccao.ToList().Where(p => prospeccaoAtiva(p) == true).ToList().Count;
-            ViewData["n_proj"] = _context.Projeto.Where(p => p.Status != StatusProjeto.Concluido).ToList().Count;
-            ViewData["n_empresas"] = _context.Empresa.ToList().Count;
-            ViewData["satisfacao"] = 0.8872;
-            return View();
         }
 
         private bool prospeccaoAtiva(Prospeccao p)
@@ -67,15 +91,8 @@ namespace BaseDeProjetos.Controllers
                 return false;
             }
 
-            DateTime hoje = DateTime.Today;
-
-            //Prospecções sem movimentação a mais de 30 dias
-            if (p.Status.OrderBy(k => k.Data).First().Data > hoje.AddDays(-30))
-            {
-                return false;
-            }
-
-            return true;
+            return p.Status.LastOrDefault().Status <= StatusProspeccao.ComProposta;
+;
         }
 
         private decimal ReceitaCasa(Instituto casa)

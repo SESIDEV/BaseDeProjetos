@@ -1,4 +1,5 @@
 ﻿@page
+@using System.Globalization
 @model BaseDeProjetos.Views.Home.LoggedInHomeModel
 @{
     decimal receita = 1;
@@ -40,14 +41,6 @@
         background-size: cover;
     }
 
-    #seguranca {
-        background-image: url("https://conect.online/wp-content/uploads/2018/10/243181-conheca-o-campo-de-trabalho-para-tecnico-em-seguranca-do-trabalho.jpg");
-        background-image: linear-gradient(to bottom, rgba(255,255,255,0.5) 0%,rgba(255,255,255,0.4) 100%), url("https://conect.online/wp-content/uploads/2018/10/243181-conheca-o-campo-de-trabalho-para-tecnico-em-seguranca-do-trabalho.jpg");
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
-    }
-
     a{
         text-decoration: none;
         font-size: 20px;
@@ -61,6 +54,7 @@
         <div class="card">
             <div class="card-header text-center"> <h5>Bem vindo ao sistema de Gestão de Inovação - SGI</h5></div>
             <div class="card-body row">
+
                 <div class="col-8">
                     <ul class="col-12 list-group-flush">
                         <li class="list-group-item">
@@ -69,17 +63,18 @@
                         </li>
                         <li class="list-group-item mt-3">
                             <span class="font-weight-bold">Receita: </span>
-                            <a href="#" class="badge text-bg-success">@receita.ToString("C2")</a>
+                            <a href="#" class="badge text-bg-success">@receita.ToString("C2", CultureInfo.CreateSpecificCulture("pt-BR"))</a>
                         </li>
                         <li class="list-group-item mt-3">
                             <span class="font-weight-bold">Investimento: </span>
-                            <a href="#" class="badge text-bg-success">@investimento.ToString("C2")</a>
+                            <a href="#" class="badge text-bg-success">@investimento.ToString("C2", CultureInfo.CreateSpecificCulture("pt-BR"))</a>
                         </li>
                         <li class="list-group-item mt-3">
                             <span class="font-weight-bold">Despesas: </span>
-                            <a href="#" class="badge text-bg-danger">@despesas.ToString("C2")</a>
+                            <a href="#" class="badge text-bg-danger">@despesas.ToString("C2", CultureInfo.CreateSpecificCulture("pt-BR"))</a>
                         </li>
                     </ul>
+
                     <div class="col row">
                         <div class="col-md-4 card">
                             <div class="card-body">
@@ -130,7 +125,7 @@
                                     <hr />
                                     <div class="card-text">
 
-                                        <h2> 48 </h2>
+                                        <h2> @ViewBag.Usuarios </h2>
                                         colaboradores
                                     </div>
                                 </center>
@@ -148,32 +143,32 @@
                                 </center>
                             </div>
                         </div>
+                        <div class="col-md-4 card">
+                            <div class="card-body">
+                                <center>
+                                    <span class="text-uppercase">Volume de Negócios</span>
+                                    <hr />
+                                    <div class="card-text">
+
+                                        <h6>@ViewBag.Volume_Negocios.ToString("C2", CultureInfo.CreateSpecificCulture("pt-BR"))</h6>
+                                    </div>
+                                <small>Nas prospecções ativas no momento</small>
+                                </center>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
                 <div class="col-4 row">
                     <div id="sustentabilidade" class="jumbotron col-12">
                         <center>
                             <span class="text-uppercase">Sustentabilidade</span>
                             <hr />
-                            <h3 class="font-weight-bolder">
+                            <h1 class="font-weight-bolder">
                                 @sustentabilidade.ToString("P2")
-                            </h3>
+                            </h1>
 
                             <span class="font-weight-lighter">das despesas são cobertas por receita</span>
-                        </center>
-                    </div>
-                    <div id="seguranca" class="jumbotron col-12">
-                        <center>
-                            <span class="text-uppercase">Indice de Segurança e Qualidade</span>
-                            <hr />
-                            <h3 class="font-weight-bolder">
-                                @{
-                                    string iss = quali.ToString();
-                                }
-                                @iss
-                            </h3>
-
-                            <span class="font-weight-lighter">de um total de 100 pontos</span>
                         </center>
                     </div>
                 </div>
