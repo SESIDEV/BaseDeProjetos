@@ -33,7 +33,7 @@
     <div class="col-md-12">
         <form asp-action="Create" class="row" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <fieldset class="col-4">
+            <fieldset class="col-4 card">
                 <legend> Dados da prospecção </legend>
                 <div class="form-group">
                     <label asp-for="Id" class="control-label"></label>
@@ -88,8 +88,10 @@
                 </div>
             </fieldset>
 
-            <div class="col-4">
+            <div class="col-4 card">
                 <fieldset id="group">
+                <legend>Informações da Empresa</legend>
+
                     <label asp-for="Empresa" class="control-label"></label>
                     <select asp-for="Empresa.Id" class="form-control" asp-items="@(ViewData["Empresas"] as SelectList).OrderBy(p=>p.Text)">
                         <option value="-1">Selecione a empresa</option>
@@ -124,7 +126,7 @@
             </div>
 
 
-            <fieldset class="col-4">
+            <fieldset class="col-4 card">
                 <legend>Informações do Contato Inicial</legend>
                 <div class="form-group">
                     <label asp-for="Status[0].Data" class="control-label"></label>
