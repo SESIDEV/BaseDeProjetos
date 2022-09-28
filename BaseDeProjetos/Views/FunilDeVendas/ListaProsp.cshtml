@@ -4,12 +4,12 @@
     var ptbr = new CultureInfo("pt-BR");
 }
 <style>
-
     * {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
     }
+
     /*** Alteração de layout lista de empresas e prospecções / Funil de Vendas ***/
 
     .card-container {
@@ -31,18 +31,18 @@
         width: 20%;
     }
 
-        .card-preview a {
-            display: inline-block;
-            font-size: 12px;
-            opacity: 0.6;
-            margin-top: 30px;
-            text-decoration: none;
-        }
+    .card-preview a {
+        display: inline-block;
+        font-size: 12px;
+        opacity: 0.6;
+        margin-top: 30px;
+        text-decoration: none;
+    }
 
-        .card-preview h2 {
-            letter-spacing: 1px;
-            text-align: center;
-        }
+    .card-preview h2 {
+        letter-spacing: 1px;
+        text-align: center;
+    }
 
     .card-info {
         width: 80%;
@@ -50,7 +50,8 @@
         justify-content: flex-start;
     }
 
-    .content-left, .content-right {
+    .content-left,
+    .content-right {
         width: 50%;
         display: flex;
         flex-direction: column;
@@ -62,7 +63,8 @@
         margin-left: 5px;
     }
 
-    #card-body, #content {
+    #card-body,
+    #content {
         display: flex;
         flex-direction: row;
     }
@@ -131,13 +133,16 @@
                 </div>
 
                 <div class="content-right">
-                    <p class="description-info"><strong>Tipo Contratação: </strong>@item.TipoContratacao.GetDisplayName()</p>
+                    <p class="description-info"><strong>Tipo Contratação: </strong>@item.TipoContratacao.GetDisplayName()
+                    </p>
                     @if (item.Usuario != null)
                     {
-                       <div style="display:flex; align-items: center; gap: 3px;">
-                           <strong>Líder:</strong><button type="button" id="info" class="btn btn-secondary" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="Right popover">@item.Usuario.UserName</button>
-                       </div>
-                        
+                        <div style="display:flex; align-items: center; gap: 3px;">
+                            <strong>Líder:</strong><button type="button" id="info" class="btn btn-secondary"
+                        data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right"
+                        data-bs-content="Right popover">@item.Usuario.UserName</button>
+                        </div>
+
                     }
                     else
                     {
@@ -147,14 +152,18 @@
                     {
                         <p class="description-info"><strong>Status: </strong>@item.Status.Last().Status.GetDisplayName()</p>
 
-                        @if(item.ValorProposta != 0){
-                            <p class="description-info"><strong>Valor da Proposta: </strong>@item.ValorProposta.ToString("C2",CultureInfo.CreateSpecificCulture("pt-BR"))</p>
+                        @if (item.ValorProposta != 0)
+                        {
+                            <p class="description-info"><strong>Valor da Proposta:
+                                </strong>@item.ValorProposta.ToString("C2",CultureInfo.CreateSpecificCulture("pt-BR"))</p>
                         }
                         else if (item.ValorEstimado != 0)
                         {
-                            <p class="description-info"><strong>Valor da Estimado:</strong> @item.ValorEstimado.ToString("C2", CultureInfo.CreateSpecificCulture("pt-BR"))</p>
-                        }                        
-                        else{
+                            <p class="description-info"><strong>Valor da Estimado:</strong> @item.ValorEstimado.ToString("C2",
+                    CultureInfo.CreateSpecificCulture("pt-BR"))</p>
+                        }
+                        else
+                        {
                             <p class="description-info"><strong>Valor da Estimado:</strong> Valor não informado</p>
                         }
                     }
@@ -164,15 +173,17 @@
                         @if (item.ValorEstimado != 0)
                         {
                             <p class="description-info"><strong>Valor da Estimado:</strong> @item.ValorEstimado.ToString("C2")</p>
-                        }                        
-                        else{
+                        }
+                        else
+                        {
                             <p class="description-info"><strong>Valor da Estimado:</strong> Valor não informado</p>
                         }
-                    }                    
+                    }
                 </div>
             </div>
         </div>
-        <button id="btn-collapse" class="btn btn-outline-secondary container-fluid" type="button" data-toggle="collapse" data-target="#@item.Id" aria-expanded="false" aria-controls="collapseExample">
+        <button id="btn-collapse" class="btn btn-outline-secondary container-fluid" type="button" data-toggle="collapse"
+        data-target="#@item.Id" aria-expanded="false" aria-controls="collapseExample">
             Ver mais detalhes
         </button>
         <div class="collapse" id="@item.Id">
@@ -187,25 +198,28 @@
                     <div>
                         Data: @item.Status.Last().Data.ToShortDateString()
                     </div>
-                </div>                
+                </div>
             </div>
             <div style="display:flex; justify-content: center; gap: 5px;">
-            <a asp-action="Edit" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Editar</button></a>
-            <a asp-action="Details" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Histórico</button></a>
-            <a asp-action="Atualizar" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Atualizar</button></a>
-            <a asp-action="Delete" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Remover</button></a>
+                <a asp-action="Edit" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Editar</button></a>
+                <a asp-action="Details" asp-route-id="@item.Id"><button
+                    class="btn btn-outline-primary">Histórico</button></a>
+                <a asp-action="Atualizar" asp-route-id="@item.Id"><button
+                    class="btn btn-outline-primary">Atualizar</button></a>
+                <a asp-action="Delete" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Remover</button></a>
             </div>
-        </div>        
+        </div>
     </div>
 
-}   <script>
-        var bt = document.querySelector('#bt')
+}
+<script>
+    var bt = document.querySelector('#bt')
 
-        bt.addEventListener('click', e => {
-            e.preventDefault();
-        })
+    bt.addEventListener('click', e => {
+        e.preventDefault();
+    })
 
-        $(function(){
-            $('[data-toggle="popover"]').popover()
-        })
-    </script>
+    $(function () {
+        $('[data-toggle="popover"]').popover()
+    })
+</script>
