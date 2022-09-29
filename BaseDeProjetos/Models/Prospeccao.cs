@@ -30,7 +30,11 @@ namespace BaseDeProjetos.Models
         public virtual List<FollowUp> Status { get; set; } = new List<FollowUp>();
         public virtual Instituto Casa { get; set; }
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "R{0:C2}")]
-        public virtual decimal ValorProposta { get; set; }
+        [Display(Name = "Valor da Proposta (R$)")]
+        public virtual decimal ValorProposta { get; set; } = 0;
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "R{0:C2}")]
+        [Display(Name = "Valor Estimado da Prospecção (R$)")]
+        public virtual decimal ValorEstimado { get; set; } = 0;
 
         public bool Equals([AllowNull] Prospeccao other)
         {

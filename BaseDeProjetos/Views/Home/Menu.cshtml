@@ -2,7 +2,7 @@
 @model BaseDeProjetos.Views.Home.MenuModel
 @using Microsoft.AspNetCore.Http
 @{
-    List<Instituto> institutos = new List<Instituto>(); 
+    List<Instituto> institutos = new List<Instituto>();
 
     Instituto casaUsuario = ViewBag.usuarioCasa;
     //Todo: remover se o CIS ganhar novo coordenador
@@ -17,45 +17,42 @@
 
 }
 <style>
-    #a-success{
-        text-decoration: none;
-        font-size: 15px;
-        padding: 5px;
-        border-radius: 5px;
-    }
-</style>
-<div class="col-md-2">
-
-    
-    @foreach(Instituto casa in institutos){
-    string casa_nome = Enum.GetName(typeof(Instituto), casa);
-    string id_casa = "collapse_" + casa_nome;
-
-    <div class="row">
-            <button class="col-12 card" data-toggle="collapse" data-target="#@id_casa" aria-expanded="true" aria-controls="@id_casa">
-                <div class="card-body">
-                    <h6 class="card-text text-info">@casa.GetDisplayName()</h6>
-                </div>
-            </button>
-        <div class="col-12 collapse" id="@id_casa">
-            <div class="list-group-flush">
-                <div class="list-group-item list-group-item-light mt-3">
-                    <a asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa_nome" class="text-bg-success" id="a-success">
-                        Funil de Vendas
-                    </a>
-                </div>
-                <div class="list-group-item list-group-item-light mt-3">
-                    <a asp-action="Index" asp-controller="Projetos" asp-route-casa="@casa_nome" class="text-bg-success" id="a-success">
-                        Base de Projetos
-                    </a>
-                </div>
-                <div class="list-group-item list-group-item-light mt-3">
-                    <a asp-action="Index" asp-controller="Producao" asp-route-casa="@casa_nome" class="text-bg-success" id="a-success">
-                        Produções
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+.btn{
+white-space:normal !important;
+word-wrap: break-word; 
 }
+</style>
+<div class="col-12" style="margin-bottom:1em">
+
+
+    @foreach (Instituto casa in institutos)
+    {
+        string casa_nome = Enum.GetName(typeof(Instituto), casa);
+        string id_casa = "collapse_" + casa_nome;
+
+        <div class="btn-group" role="group">
+            <button id="btnGroupDrop1" type="button" class="btn btn-outline-dark btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <small>@casa.GetDisplayName()</small>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                <li>
+                        <a class="dropdown-item" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa_nome" id="a-success">
+                            Funil de Vendas
+                        </a>
+                </li>
+                <li>
+
+                        <a class="dropdown-item" asp-action="Index" asp-controller="Projetos" asp-route-casa="@casa_nome" id="a-success">
+                            Base de Projetos
+                        </a>
+                </li>
+                <li>
+
+                        <a class="dropdown-item" asp-action="Index" asp-controller="Producao" asp-route-casa="@casa_nome" id="a-success">
+                            Produções
+                        </a>
+                </li>
+            </ul>
+        </div>
+    }
 </div>
