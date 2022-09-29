@@ -223,14 +223,14 @@
                 else
                 {
     <h4> R$ ---</h4>}
-                <small>
+                <small id="CheckboxProspAtivas8">
                     Ticket médio das prospecções
                 </small>
             </div>
 
             <div class="col-4">
                 <h4 id="CheckboxProspAtivas6"> @n_propostas</h4>
-                <small>
+                <small id="CheckboxProspAtivas9">
                     Propostas comerciais enviadas
                 </small>
             </div>
@@ -471,6 +471,8 @@
             document.getElementById("CheckboxProspAtivas5").textContent = "@valor_ativas";
             document.getElementById("CheckboxProspAtivas6").textContent = @n_propostas_ativas;
             document.getElementById("CheckboxProspAtivas7").textContent = "@DiferencaAtivas dias";
+            document.getElementById("CheckboxProspAtivas8").textContent = "Ticket médio das prospecções (Ativas)";
+            document.getElementById("CheckboxProspAtivas9").textContent = "Propostas comerciais enviadas (Ativas)";
             chart1.update({series: seriesativas}, false);
             chart1.redraw();
 
@@ -482,6 +484,8 @@
             document.getElementById("CheckboxProspAtivas5").textContent = "@valor2";
             document.getElementById("CheckboxProspAtivas6").textContent = @n_propostas;
             document.getElementById("CheckboxProspAtivas7").textContent = "@DiferencaTodas dias";
+            document.getElementById("CheckboxProspAtivas8").textContent = "Ticket médio das prospecções";
+            document.getElementById("CheckboxProspAtivas9").textContent = "Propostas comerciais enviadas (Ativas)";
             chart1.update({series: seriespadrao}, false);
             chart1.redraw();
 
