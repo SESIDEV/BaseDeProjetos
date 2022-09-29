@@ -117,7 +117,7 @@ namespace BaseDeProjetos.Controllers
 
       if (!string.IsNullOrEmpty(searchString))
       {
-        searchString.ToLower();
+        searchString = searchString.ToLower();
 
         lista = lista.Where(s => s.Empresa.Nome.ToLower().Contains(searchString) || s.Usuario.UserName.ToLower().Contains(searchString)).ToList();
       }

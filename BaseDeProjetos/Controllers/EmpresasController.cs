@@ -64,7 +64,7 @@ namespace BaseDeProjetos.Controllers
 
       if (!string.IsNullOrEmpty(searchString))
       {
-        searchString.ToLower();
+        searchString = searchString.ToLower();
 
         lista = lista.Where(e => e.Nome.ToLower().Contains(searchString)).ToList();
       }
