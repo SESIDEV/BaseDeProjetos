@@ -48,21 +48,6 @@
         <h1 class="card-title">Prospecções @ViewData["Area"]</h1>
         <div>
             <div>
-                @*
-                <form>
-                    <span style="font-weight: bold;">Selecione a casa: </span><br />
-                    @foreach(Instituto casa in institutos)
-                    {
-                        string casa_nome = Enum.GetName(typeof(Instituto), casa);
-                        string id_casa = "caixa" + casa_nome;
-
-                        <label class="form-check-label" for="@id_casa">@casa_nome</label>
-                        <input class="form-check-input" type="checkbox" id="@id_casa" style="margin-right: 30px;" name="casa" value="@casa_nome">
-
-                    }
-                    <button class="btn btn-primary" type="button" onclick="CasasFunil()">Carregar</button>
-                </form>
-                *@
                 <div>
                     <h5 class="text-white h4">Menu</h5>
                     <div class="row g-3">
