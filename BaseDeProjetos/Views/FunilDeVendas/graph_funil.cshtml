@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
+@using System
 <style>
     .center {
         display: flex;
@@ -84,16 +85,18 @@
     decimal n_planejadas = Model.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.Planejada)).Count();
 
     //Novo Filtro:
-    decimal filtro_ativas = Model.Where(p => p.Status.All(k => k.Status <= StatusProspeccao.ComProposta)).Count();
-
-    var avancadas = Model.Where(p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)). // lista de prospecção (selecionar com proposta)
-                                            Where(p => p.Status.First().Data - p.Status.FirstOrDefault(s => s.Status == StatusProspeccao.ComProposta).Data > TimeSpan.Zero); // filtrar lista para obter datas positivas (maior que zero)
+    List<Prospeccao> ativas = Model.Where(p => p.Status.All(k => k.Status <= StatusProspeccao.ComProposta)).ToList();
+    decimal filtro_ativas = ativas.Count();
+    decimal n_empresas_ativas = ativas.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();
+    var avancadas = Model.Where(p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)
+                                && p.Status.Any(k => k.Status > StatusProspeccao.ComProposta)). // lista de prospecção (selecionar com proposta)
+                                Where(p => p.Status.First().Data - p.Status.FirstOrDefault(s => s.Status == StatusProspeccao.ComProposta).Data > TimeSpan.Zero); // filtrar lista para obter datas positivas (maior que zero)
 
     decimal valor_ativas2 = 0;
     foreach (Prospeccao prosp in prospec_ativas)
     {valor_ativas2 += prosp.ValorProposta;}
     
-    if (n_propostas > 0)
+    if (n_propostas_ativas > 0)
     {valor_ativas2 = valor_ativas2 / n_propostas_ativas;}
 
     decimal valor = 0;
@@ -115,7 +118,7 @@
         if (prosps.Count() > 0)
         {
             diff = prosps.Aggregate(new TimeSpan(0),
-                (inicial, prospeccao) => prospeccao.Status.First().Data - prospeccao.Status.FirstOrDefault(s => s.Status == StatusProspeccao.ComProposta).Data,
+                (inicial, prospeccao) => prospeccao.Status.FirstOrDefault(s => s.Status == StatusProspeccao.ComProposta).Data - prospeccao.Status.First().Data,
                 diff => diff);
 
             diff = new TimeSpan(diff.Ticks / prosps.Count());
@@ -172,15 +175,13 @@
 
             <div class="col-12 bg-light bg-gradient">
                 <!--[Iury] IDs da checkbox \/ -->
-                <h1 id="CheckboxProspAtivas1" class="display-3"> @n_empresas</h1>
+                <h1 id="CheckboxProspAtivas1" class="display-3">@n_empresas</h1>
                 <small id="CheckboxProspAtivas2"> Número de empresas prospectadas </small> <hr />
             </div>
 
             <div class="col-4 bg-light bg-gradient">
-                <h4 id="CheckboxProspAtivas7"></h4>
-                <small>
-                    Tempo médio entre o primeiro contato e a emissão da proposta.
-                </small>
+                <h4 id="CheckboxProspAtivas7">@Math.Abs(DiferencaTodas.Days) dias</h4>
+                <small id="CheckboxProspAtivas10">  Tempo médio entre o primeiro contato e a emissão da proposta </small>
             </div>
 
             <div class="col-4 bg-light bg-gradient">
@@ -464,15 +465,16 @@
 <script type="text/javascript">
     function marcada() {
         if (document.getElementById("caixaSelecaoAtivas").checked) {
-            document.getElementById("CheckboxProspAtivas1").innerHTML = @n_prospeccoes_andamento;
+            document.getElementById("CheckboxProspAtivas1").innerHTML = @n_empresas_ativas;
             document.getElementById("CheckboxProspAtivas2").textContent = "Número de empresas prospectadas (Ativas)";
             document.getElementById("CheckboxProspAtivas3").textContent = "Contatos iniciais de prospecção (Ativas)";
             document.getElementById("CheckboxProspAtivas4").textContent = @filtro_ativas;
             document.getElementById("CheckboxProspAtivas5").textContent = "@valor_ativas";
             document.getElementById("CheckboxProspAtivas6").textContent = @n_propostas_ativas;
-            document.getElementById("CheckboxProspAtivas7").textContent = "@DiferencaAtivas dias";
+            document.getElementById("CheckboxProspAtivas7").textContent = "@Math.Abs(DiferencaAtivas.Days) dias";
             document.getElementById("CheckboxProspAtivas8").textContent = "Ticket médio das prospecções (Ativas)";
             document.getElementById("CheckboxProspAtivas9").textContent = "Propostas comerciais enviadas (Ativas)";
+            document.getElementById("CheckboxProspAtivas10").textContent = "Tempo médio entre o primeiro contato e a emissão da proposta (Ativas)";
             chart1.update({series: seriesativas}, false);
             chart1.redraw();
 
@@ -483,9 +485,10 @@
             document.getElementById("CheckboxProspAtivas4").textContent = @Model.Count();
             document.getElementById("CheckboxProspAtivas5").textContent = "@valor2";
             document.getElementById("CheckboxProspAtivas6").textContent = @n_propostas;
-            document.getElementById("CheckboxProspAtivas7").textContent = "@DiferencaTodas dias";
+            document.getElementById("CheckboxProspAtivas7").textContent = "@Math.Abs(DiferencaTodas.Days) dias";
             document.getElementById("CheckboxProspAtivas8").textContent = "Ticket médio das prospecções";
-            document.getElementById("CheckboxProspAtivas9").textContent = "Propostas comerciais enviadas (Ativas)";
+            document.getElementById("CheckboxProspAtivas9").textContent = "Propostas comerciais enviadas";
+            document.getElementById("CheckboxProspAtivas10").textContent = "Tempo médio entre o primeiro contato e a emissão da proposta";
             chart1.update({series: seriespadrao}, false);
             chart1.redraw();
 
