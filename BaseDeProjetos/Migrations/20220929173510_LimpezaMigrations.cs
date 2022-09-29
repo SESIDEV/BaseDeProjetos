@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System;
 
 namespace BaseDeProjetos.Migrations
 {
-    public partial class MySQL : Migration
+    public partial class LimpezaMigrations : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -29,13 +29,55 @@ namespace BaseDeProjetos.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Nome = table.Column<string>(nullable: true),
+                    Logo = table.Column<string>(nullable: true),
                     CNPJ = table.Column<string>(nullable: true),
-                    Segmento = table.Column<string>(nullable: true),
-                    Estado = table.Column<string>(nullable: true)
+                    Segmento = table.Column<int>(nullable: false),
+                    Estado = table.Column<int>(nullable: false),
+                    EmpresaUnique = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Empresa", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "IndicadoresFinanceiros",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Data = table.Column<DateTime>(nullable: false),
+                    Receita = table.Column<decimal>(nullable: false),
+                    Despesa = table.Column<decimal>(nullable: false),
+                    Investimento = table.Column<decimal>(nullable: false),
+                    QualiSeguranca = table.Column<float>(nullable: false),
+                    Casa = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_IndicadoresFinanceiros", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Producao",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Grupo = table.Column<int>(nullable: false),
+                    Casa = table.Column<int>(nullable: false),
+                    Titulo = table.Column<string>(nullable: true),
+                    Descricao = table.Column<string>(nullable: true),
+                    Autores = table.Column<string>(nullable: true),
+                    StatusPub = table.Column<int>(nullable: false),
+                    Data = table.Column<DateTime>(nullable: false),
+                    Local = table.Column<string>(nullable: true),
+                    DOI = table.Column<string>(nullable: true),
+                    Imagem = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Producao", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -68,7 +110,8 @@ namespace BaseDeProjetos.Migrations
                     Nome = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: true),
                     Telefone = table.Column<string>(nullable: true),
-                    empresaId = table.Column<int>(nullable: true)
+                    empresaId = table.Column<int>(nullable: true),
+                    Cargo = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -95,7 +138,7 @@ namespace BaseDeProjetos.Migrations
                     Estado = table.Column<int>(nullable: false),
                     FonteFomento = table.Column<int>(nullable: false),
                     Inovacao = table.Column<int>(nullable: false),
-                    status = table.Column<int>(nullable: false),
+                    Status = table.Column<int>(nullable: false),
                     DuracaoProjetoEmMeses = table.Column<int>(nullable: false),
                     ValorTotalProjeto = table.Column<double>(nullable: false),
                     ValorAporteRecursos = table.Column<double>(nullable: false),
@@ -138,6 +181,10 @@ namespace BaseDeProjetos.Migrations
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
                     Casa = table.Column<int>(nullable: false),
+                    Nivel = table.Column<int>(nullable: false),
+                    Matricula = table.Column<int>(nullable: false),
+                    Titulacao = table.Column<int>(nullable: false),
+                    Vinculo = table.Column<int>(nullable: false),
                     ProjetoId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -237,16 +284,46 @@ namespace BaseDeProjetos.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AtividadesProdutivas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Atividade = table.Column<int>(nullable: false),
+                    AreaAtividade = table.Column<int>(nullable: false),
+                    FonteFomento = table.Column<int>(nullable: false),
+                    ProjetoId = table.Column<string>(nullable: true),
+                    UsuarioId = table.Column<string>(nullable: true),
+                    DescricaoAtividade = table.Column<string>(nullable: true),
+                    CargaHoraria = table.Column<double>(nullable: false),
+                    Data = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AtividadesProdutivas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AtividadesProdutivas_AspNetUsers_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Prospeccao",
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
+                    NomeProspeccao = table.Column<string>(nullable: true),
+                    PotenciaisParceiros = table.Column<string>(nullable: true),
                     EmpresaId = table.Column<int>(nullable: true),
                     Contatoid = table.Column<int>(nullable: true),
                     UsuarioId = table.Column<string>(nullable: true),
                     TipoContratacao = table.Column<int>(nullable: false),
                     LinhaPequisa = table.Column<int>(nullable: false),
-                    Casa = table.Column<int>(nullable: false)
+                    Casa = table.Column<int>(nullable: false),
+                    ValorProposta = table.Column<decimal>(nullable: false),
+                    ValorEstimado = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -282,6 +359,7 @@ namespace BaseDeProjetos.Migrations
                     Data = table.Column<DateTime>(nullable: false),
                     AnoFiscal = table.Column<int>(nullable: false),
                     Status = table.Column<int>(nullable: false),
+                    MotivoNaoConversao = table.Column<int>(nullable: false),
                     Vencimento = table.Column<DateTime>(nullable: false),
                     isTratado = table.Column<bool>(nullable: false)
                 },
@@ -339,6 +417,11 @@ namespace BaseDeProjetos.Migrations
                 column: "ProjetoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AtividadesProdutivas_UsuarioId",
+                table: "AtividadesProdutivas",
+                column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FollowUp_OrigemID",
                 table: "FollowUp",
                 column: "OrigemID");
@@ -392,7 +475,16 @@ namespace BaseDeProjetos.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "AtividadesProdutivas");
+
+            migrationBuilder.DropTable(
                 name: "FollowUp");
+
+            migrationBuilder.DropTable(
+                name: "IndicadoresFinanceiros");
+
+            migrationBuilder.DropTable(
+                name: "Producao");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

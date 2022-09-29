@@ -9,14 +9,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaseDeProjetos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211110181242_RegistroEPIs")]
-    partial class RegistroEPIs
+    [Migration("20220929173510_LimpezaMigrations")]
+    partial class LimpezaMigrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.13")
+                .HasAnnotation("ProductVersion", "3.1.25")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("BaseDeProjetos.Models.AtividadesProdutivas", b =>
@@ -68,48 +68,21 @@ namespace BaseDeProjetos.Migrations
                     b.Property<string>("EmpresaUnique")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Estado")
+                    b.Property<int>("Estado")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Logo")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Nome")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Segmento")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                    b.Property<int>("Segmento")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.ToTable("Empresa");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.Entrega", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
-
-                    b.Property<bool>("Concluida")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime>("DataFim")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("DataInicioEntrega")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("DescricaoEntrega")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("NomeEntrega")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("ProjetoId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProjetoId");
-
-                    b.ToTable("Entrega");
                 });
 
             modelBuilder.Entity("BaseDeProjetos.Models.FollowUp", b =>
@@ -155,14 +128,20 @@ namespace BaseDeProjetos.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int>("Casa")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Data")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<decimal>("Despeita")
+                    b.Property<decimal>("Despesa")
                         .HasColumnType("decimal(65,30)");
 
                     b.Property<decimal>("Investimento")
                         .HasColumnType("decimal(65,30)");
+
+                    b.Property<float>("QualiSeguranca")
+                        .HasColumnType("float");
 
                     b.Property<decimal>("Receita")
                         .HasColumnType("decimal(65,30)");
@@ -177,6 +156,9 @@ namespace BaseDeProjetos.Migrations
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<string>("Cargo")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Email")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -203,29 +185,35 @@ namespace BaseDeProjetos.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("Autores")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
                     b.Property<int>("Casa")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DataDaRealizacao")
+                    b.Property<string>("DOI")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<DateTime>("Data")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Descricao")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Link")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("Pessoa")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("RealizadoEm")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<int>("Tipo")
+                    b.Property<int>("Grupo")
                         .HasColumnType("int");
 
-                    b.Property<int?>("publico")
+                    b.Property<string>("Imagem")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Local")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<int>("StatusPub")
                         .HasColumnType("int");
+
+                    b.Property<string>("Titulo")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
@@ -270,14 +258,14 @@ namespace BaseDeProjetos.Migrations
                     b.Property<int?>("ProponenteId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<double>("ValorAporteRecursos")
                         .HasColumnType("double");
 
                     b.Property<double>("ValorTotalProjeto")
                         .HasColumnType("double");
-
-                    b.Property<int>("status")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -316,6 +304,9 @@ namespace BaseDeProjetos.Migrations
 
                     b.Property<string>("UsuarioId")
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<decimal>("ValorEstimado")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<decimal>("ValorProposta")
                         .HasColumnType("decimal(65,30)");
@@ -552,13 +543,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasOne("BaseDeProjetos.Models.Usuario", "Usuario")
                         .WithMany()
                         .HasForeignKey("UsuarioId");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.Entrega", b =>
-                {
-                    b.HasOne("BaseDeProjetos.Models.Projeto", "Projeto")
-                        .WithMany()
-                        .HasForeignKey("ProjetoId");
                 });
 
             modelBuilder.Entity("BaseDeProjetos.Models.FollowUp", b =>
