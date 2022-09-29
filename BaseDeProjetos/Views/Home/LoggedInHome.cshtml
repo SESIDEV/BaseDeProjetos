@@ -5,7 +5,7 @@
     decimal receita = 1;
     decimal despesas = 1;
     decimal investimento = 1;
-    decimal sustentabilidade = 1;
+    decimal sustentabilidade = 100;
     float quali = 1;
 
     try
@@ -23,7 +23,7 @@
         }
         else
         {
-            sustentabilidade = 1;
+            sustentabilidade = 100;
         }
     }
 
@@ -57,119 +57,180 @@
             </div>
             <div class="card-body row">
 
-                <div class="col-8">
-                    <ul class="col-12 list-group-flush">
-                        <li class="list-group-item">
+                <div class="col-12">
+
+                    <div class="row">
+                        <div class="list-group-item">
                             <h5> Status Financeiro </h5>
                             <small>@ViewBag.Data.ToString("dd/MM/yyyy")</small>
-                        </li>
-                        <li class="list-group-item mt-3">
-                            <span class="font-weight-bold">Receita Competência:</span>
-                            <span style="font-size: 1.2rem; color: blue;">@receita.ToString("C2",
-                                CultureInfo.CreateSpecificCulture("pt-BR"))</span>
-                        </li>
-                        <li class="list-group-item mt-3">
-                            <span class="font-weight-bold">Caixa: </span>
-                            <span style="font-size: 1.2rem; color: blue;">@investimento.ToString("C2",
-                                CultureInfo.CreateSpecificCulture("pt-BR"))</span>
-                        </li>
-                        <li class="list-group-item mt-3">
-                            <span class="font-weight-bold">Despesa: </span>
-                            <span style="font-size: 1.2rem; color: red;">@despesas.ToString("C2",
-                                CultureInfo.CreateSpecificCulture("pt-BR"))</span>
-                        </li>
-                    </ul>
-
-                    <div class="col row">
-                        <div class="col-md-4 card">
-                            <div class="card-body">
-                                <center>
-                                    <span class="text-uppercase">PROJETOS</span>
-                                    <hr />
-                                    <div class="card-text">
-                                        <h2>
-                                            @ViewBag.n_proj
-                                        </h2>
-                                        projetos ativos
-                                    </div>
-                                </center>
-                            </div>
                         </div>
-                        <div class="col-md-4 card">
-                            <div class="card-body">
-                                <center>
-                                    <span class="text-uppercase">Empresas</span>
-                                    <hr />
-                                    <div class="card-text">
-                                        <h2>@ViewBag.n_empresas </h2>
-                                        empresas com relacionamento conosco
-                                    </div>
-                                </center>
+                        <div class="col-5 mt-3">
+                            <div class="card text-bg-success mb-3" style="max-width: 35rem;">
+                                <div class="card-header text-center">Volume de negócios</div>
+                                <div class="card-body">
+                                    <h5 class="card-title text-center">@ViewBag.Volume_Negocios.ToString("C2",
+                                        CultureInfo.CreateSpecificCulture("pt-BR"))</h5>
+                                    <p class="card-text"></p>
+                                </div>
                             </div>
+
+                            <div class="card text-bg-success mb-3" style="max-width: 35rem;">
+                                <div class="card-header text-center">Receita Competência</div>
+                                <div class="card-body">
+                                    <h5 class="card-title text-center">@receita.ToString("C2",
+                                        CultureInfo.CreateSpecificCulture("pt-BR"))</h5>
+                                    <p class="card-text"></p>
+                                </div>
+                            </div>
+
                         </div>
 
-                        <div class="col-md-4 card">
-                            <div class="card-body">
-                                <center>
-                                    <span class="text-uppercase">funil de vendas</span>
-                                    <hr />
-                                    <div class="card-text">
-                                        <h2>@ViewBag.n_prosp </h2>
-                                        prospecções ativas
-                                    </div>
-                                </center>
+                        <div class="col-5 mt-3">
+
+                            <div class="card text-bg-success mb-3" style="max-width: 35rem;">
+                                <div class="card-header text-center">Receita Caixa</div>
+                                <div class="card-body">
+                                    <h5 class="card-title text-center">@investimento.ToString("C2",
+                                        CultureInfo.CreateSpecificCulture("pt-BR"))</h5>
+                                    <p class="card-text"></p>
+                                </div>
                             </div>
+
+                            <div class="card text-bg-success mb-3" style="max-width: 35rem;">
+                                <div class="card-header text-center">Despesa</div>
+                                <div class="card-body">
+                                    <h5 class="card-title text-center">@despesas.ToString("C2",
+                                        CultureInfo.CreateSpecificCulture("pt-BR"))</h5>
+                                    <p class="card-text"></p>
+                                </div>
+                            </div>
+
                         </div>
-                        <div class="col-md-4 card">
-                            <div class="card-body">
-                                <center>
-                                    <span class="text-uppercase">Equipe</span>
-                                    <hr />
-                                    <div class="card-text">
-                                        <h2> @ViewBag.Usuarios </h2>
-                                        colaboradores
-                                    </div>
-                                </center>
-                            </div>
-                        </div>
-                        <div class="col-md-4 card">
-                            <div class="card-body">
-                                <center>
-                                    <span class="text-uppercase">Satisfação do cliente</span>
-                                    <hr />
-                                    <div class="card-text">
-                                        <h2>@ViewBag.satisfacao.ToString("P1") </h2>
-                                    </div>
-                                </center>
-                            </div>
-                        </div>
-                        <div class="col-md-4 card">
-                            <div class="card-body">
-                                <center>
-                                    <span class="text-uppercase">Volume de Negócios</span>
-                                    <hr />
-                                    <div class="card-text">
-                                        <h2>@ViewBag.Volume_Negocios.ToString("C2",
-                                            CultureInfo.CreateSpecificCulture("pt-BR"))</h2>
-                                    </div>
-                                    Nas prospecções ativas no momento
-                                </center>
-                            </div>
+
+                        <div class="col-2 mt-3 text-center" style="height: 100px;">
+                            <h1>100%</h1>
                         </div>
                     </div>
-                </div>
 
-                <div class="col-4 row">
-                    <div id="sustentabilidade" class="jumbotron col-12">
-                        <center>
+                    <div class="row">
+                        <div class="list-group-item">
+                            <h5> Status Operacional</h5>
+                        </div>
+                        <div class="col-4 mt-3">
+
+                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">
+                                <h3 class="card-header text-center">@ViewBag.n_proj</h3>
+                                <div class="card-body">
+                                    <p class="card-title text-center">Projetos ativos</p>
+                                    <p class="card-text"></p>
+                                </div>
+                            </div>
+
+                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">
+                                <h3 class="card-header text-center">@ViewBag.n_empresas</h3>
+                                <div class="card-body">
+                                    <p class="card-title text-center">Empresas com relacionamento conosco</p>
+                                    <p class="card-text"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-4 mt-3">
+
+                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">
+                                <h3 class="card-header text-center">@ViewBag.n_proj</h3>
+                                <div class="card-body">
+                                    <p class="card-title text-center">Projetos ativos</p>
+                                    <p class="card-text"></p>
+                                </div>
+                            </div>
+
+                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">
+                                <h3 class="card-header text-center">@ViewBag.n_empresas</h3>
+                                <div class="card-body">
+                                    <p class="card-title text-center">Empresas com relacionamento conosco</p>
+                                    <p class="card-text"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-4 mt-3">
+
+                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">
+                                <h3 class="card-header text-center">@ViewBag.n_proj</h3>
+                                <div class="card-body">
+                                    <p class="card-title text-center">Projetos ativos</p>
+                                    <p class="card-text"></p>
+                                </div>
+                            </div>
+
+                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">
+                                <h3 class="card-header text-center">@ViewBag.n_empresas</h3>
+                                <div class="card-body">
+                                    <p class="card-title text-center">Empresas com relacionamento conosco</p>
+                                    <p class="card-text"></p>
+                                </div>
+                            </div>
+                        </div>
+                        @*
+                            <div class="col-md-4 card">
+                            <div class="card-body">
+                            <center>
+                            <div class="card-text">
+                            <h2>@ViewBag.n_prosp </h2>
+                            Prospecções ativas
+                            </div>
+                            </center>
+                            </div>
+                            </div>
+                            <div class="col-md-4 card">
+                            <div class="card-body">
+                            <center>
+                            <div class="card-text">
+                            <h2> @ViewBag.Usuarios </h2>
+                            Colaboradores
+                            </div>
+                            </center>
+                            </div>
+                            </div>
+                            <div class="col-md-4 card">
+                            <div class="card-body">
+                            <center>
+                            <div class="card-text">
+                            <h2>@ViewBag.satisfacao.ToString("P1") </h2>
+                            Satisfação do cliente
+                            </div>
+                            </center>
+                            </div>
+                            </div>
+                            @*
+                            <div class="col-md-4 card">
+                            <div class="card-body">
+                            <center>
+                            <div class="card-text">
+                            <h2>@ViewBag.Volume_Negocios.ToString("C2",
+                            CultureInfo.CreateSpecificCulture("pt-BR"))</h2>
+                            </div>
+                            Nas prospecções ativas no momento
+                            </center>
+                            </div>
+                            </div>
+                            </div>
+                            </div>
+
+                            @*<div class="col-4 row">
+                            <div id="sustentabilidade" class="jumbotron col-12">
+                            <center>
                             <span class="text-uppercase">Sustentabilidade</span>
                             <hr />
                             <h1 class="font-weight-bolder">
-                                @sustentabilidade.ToString("P2")
+                            @sustentabilidade.ToString("P2")
                             </h1>
 
                             <span class="font-weight-lighter">das despesas são cobertas por receita</span>
-                        </center>
+                            </center>
+                            </div>
+                            </div>*@
                     </div>
                 </div>
             </div>
