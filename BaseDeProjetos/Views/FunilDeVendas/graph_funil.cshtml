@@ -249,26 +249,10 @@
 <script type="text/javascript">
 
     var chart1 = Highcharts.chart('funil', {
-        chart: {
-            type: 'column'
-        },
-        title: {
-            text: 'Funil de Vendas'
-        },
-        xAxis: {
-            categories: [
-                "Contato inicial",
-                "Em discussão",
-                "Com Proposta",
-                "Convertida",
-            ],
-        },
-        yAxis: {
-            min: 0,
-            title: {
-                text: 'Ocorrências'
-            }
-        },
+        chart: {type: 'column'},
+        title: {text: 'Funil de Vendas'},
+        xAxis: {categories: ["Contato inicial","Em discussão","Com Proposta","Convertida",],},
+        yAxis: {min: 0,title: {text: 'Ocorrências'}},
         tooltip: {
             headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
             pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
@@ -277,12 +261,7 @@
             shared: true,
             useHTML: true
         },
-        plotOptions: {
-            column: {
-                pointPadding: 0.2,
-                borderWidth: 0
-            }
-        },
+        plotOptions: {column: {pointPadding: 0.2,borderWidth: 0}},
         series: [
         {name: 'Contratação Direta',data: [@cd_CI,@cd_ED,@cd_CP]},
         {name: 'Editais de Inovação SESI/SENAI',data: [@ei_CI,@ei_ED,@ei_CP]},
@@ -291,7 +270,7 @@
         {name: 'A definir',data: [@ou_CI,@ou_ED,@ou_CP]},
         {name: 'Parceiros de Edital',data: [@par_CI,@par_ED,@par_CP]},
         {name: 'ANP/ANEEL',data: [@anp_CI,@anp_ED,@anp_CP]}]
-        })
+    })
 
     var seriespadrao = [
         {name: 'Contratação Direta',data: [@cd_CI,@cd_ED,@cd_CP]},
