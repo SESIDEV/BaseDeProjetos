@@ -247,65 +247,6 @@
 
 <!-- Gráfico de Fomentos por status-->
 <script type="text/javascript">
-    var seriespadrao = [{
-            name: 'Contratação Direta',
-            data: [@cd_CI,@cd_ED,@cd_CP]
-
-        }, {
-            name: 'Editais de Inovação SESI/SENAI',
-            data: [@ei_CI,@ei_ED,@ei_CP]
-
-        }, {
-            name: 'Agências de Fomento',
-            data: [@af_CI,@af_ED,@af_CP]
-
-        }, {
-            name: 'Embrapii',
-            data: [@emb_CI,@emb_ED,@emb_CP]
-
-        }, {
-            name: 'A definir',
-            data: [@ou_CI,@ou_ED,@ou_CP]
-
-        }, {
-            name: 'Parceiros de Edital',
-            data: [@par_CI,@par_ED,@par_CP]
-
-        }, {
-            name: 'ANP/ANEEL',
-            data: [@anp_CI,@anp_ED,@anp_CP]
-
-        }];
-
-    var seriesativas = [{
-            name: 'Contratação Direta',
-            data: [@cd_CI_a,@cd_ED_a,@cd_CP_a]
-
-        }, {
-            name: 'Editais de Inovação SESI/SENAI',
-            data: [@ei_CI_a,@ei_ED_a,@ei_CP_a]
-
-        }, {
-            name: 'Agências de Fomento',
-            data: [@af_CI_a,@af_ED_a,@af_CP_a]
-
-        }, {
-            name: 'Embrapii',
-            data: [@emb_CI_a,@emb_ED_a,@emb_CP_a]
-
-        }, {
-            name: 'A definir',
-            data: [@ou_CI_a,@ou_ED_a,@ou_CP_a]
-
-        }, {
-            name: 'Parceiros de Edital',
-            data: [@par_CI_a,@par_ED_a,@par_CP_a]
-
-        }, {
-            name: 'ANP/ANEEL',
-            data: [@anp_CI_a,@anp_ED_a,@anp_CP_a]
-
-        }];      
 
     var chart1 = Highcharts.chart('funil', {
         chart: {
@@ -342,8 +283,34 @@
                 borderWidth: 0
             }
         },
-        series: seriespadrao
+        series: [
+        {name: 'Contratação Direta',data: [@cd_CI,@cd_ED,@cd_CP]},
+        {name: 'Editais de Inovação SESI/SENAI',data: [@ei_CI,@ei_ED,@ei_CP]},
+        {name: 'Agências de Fomento',data: [@af_CI,@af_ED,@af_CP]},
+        {name: 'Embrapii',data: [@emb_CI,@emb_ED,@emb_CP]},
+        {name: 'A definir',data: [@ou_CI,@ou_ED,@ou_CP]},
+        {name: 'Parceiros de Edital',data: [@par_CI,@par_ED,@par_CP]},
+        {name: 'ANP/ANEEL',data: [@anp_CI,@anp_ED,@anp_CP]}]
         })
+
+    var seriespadrao = [
+        {name: 'Contratação Direta',data: [@cd_CI,@cd_ED,@cd_CP]},
+        {name: 'Editais de Inovação SESI/SENAI',data: [@ei_CI,@ei_ED,@ei_CP]},
+        {name: 'Agências de Fomento',data: [@af_CI,@af_ED,@af_CP]},
+        {name: 'Embrapii',data: [@emb_CI,@emb_ED,@emb_CP]},
+        {name: 'A definir',data: [@ou_CI,@ou_ED,@ou_CP]},
+        {name: 'Parceiros de Edital',data: [@par_CI,@par_ED,@par_CP]},
+        {name: 'ANP/ANEEL',data: [@anp_CI,@anp_ED,@anp_CP]}];
+
+    var seriesativas = [
+        {name: 'Contratação Direta',data: [@cd_CI_a,@cd_ED_a,@cd_CP_a]},
+        {name: 'Editais de Inovação SESI/SENAI',data: [@ei_CI_a,@ei_ED_a,@ei_CP_a]},
+        {name: 'Agências de Fomento',data: [@af_CI_a,@af_ED_a,@af_CP_a]},
+        {name: 'Embrapii',data: [@emb_CI_a,@emb_ED_a,@emb_CP_a]},
+        {name: 'A definir',data: [@ou_CI_a,@ou_ED_a,@ou_CP_a]},
+        {name: 'Parceiros de Edital',data: [@par_CI_a,@par_ED_a,@par_CP_a]},
+        {name: 'ANP/ANEEL',data: [@anp_CI_a,@anp_ED_a,@anp_CP_a]}];  
+
 </script>
 <!-- Pizzas -->
 <script>
@@ -475,9 +442,7 @@
             document.getElementById("CheckboxProspAtivas8").textContent = "Ticket médio das prospecções (Ativas)";
             document.getElementById("CheckboxProspAtivas9").textContent = "Propostas comerciais enviadas (Ativas)";
             document.getElementById("CheckboxProspAtivas10").textContent = "Tempo médio entre o primeiro contato e a emissão da proposta (Ativas)";
-            chart1.update({series: seriesativas}, false);
-            chart1.redraw();
-
+            chart1.update({series: seriesativas});
         } else {
             document.getElementById("CheckboxProspAtivas1").innerHTML = @n_empresas
             document.getElementById("CheckboxProspAtivas2").textContent = "Número de empresas prospectadas";
@@ -489,9 +454,7 @@
             document.getElementById("CheckboxProspAtivas8").textContent = "Ticket médio das prospecções";
             document.getElementById("CheckboxProspAtivas9").textContent = "Propostas comerciais enviadas";
             document.getElementById("CheckboxProspAtivas10").textContent = "Tempo médio entre o primeiro contato e a emissão da proposta";
-            chart1.update({series: seriespadrao}, false);
-            chart1.redraw();
-
+            chart1.update({series: seriespadrao});
         }
     }
 </script>
