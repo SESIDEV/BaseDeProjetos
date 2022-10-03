@@ -100,10 +100,10 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="planejadas-tab" data-toggle="tab" href="#planejadas" role="tab" aria-controls="planejadas" aria-selected="true">Planejadas (@planejadas.Count())</a>
-            </li>
+            </li>@*
             <li class="nav-item">
                 <a class="nav-link" id="erradas-tab" data-toggle="tab" href="#erradas" role="tab" aria-controls="erradas" aria-selected="true">Erradas (@erradas.Count())</a>
-            </li>
+            </li>*@
         </ul>
         
 
@@ -132,12 +132,12 @@
                 <div>
                     <partial name="ListaProsp" view-data="@ViewData" model="@planejadas" />
                 </div>
-            </div>
+            </div>@*
             <div class="tab-pane fade" id="erradas" role="tabpanel" aria-labelledby="erradas-tab">
                 <div>
                     <partial name="ListaProsp" view-data="@ViewData" model="@erradas" />
                 </div>
-            </div>
+            </div>*@
         </div>
     </div>
 </div>
