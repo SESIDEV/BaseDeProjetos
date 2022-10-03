@@ -61,13 +61,9 @@ namespace BaseDeProjetos.Controllers
                                                         f.Status == StatusProspeccao.Suspensa ||
                                                         f.Status == StatusProspeccao.NaoConvertida));
 
-      List<Prospeccao> emProposta = lista.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.ComProposta) &&
-                                                           p.Status.All(f2 => f2.Status != StatusProspeccao.Suspensa &&
-                                                                        f2.Status != StatusProspeccao.Convertida &&
-                                                                        f2.Status != StatusProspeccao.NaoConvertida)).ToList();
+      List<Prospeccao> emProposta = lista.Where(p => p.Status.LastOrDefault().Status == StatusProspeccao.ComProposta).ToList();
 
-      List<Prospeccao> ativos = lista.Where(p => p.Status.All(f => f.Status == StatusProspeccao.ContatoInicial ||
-                                                        f.Status == StatusProspeccao.Discussao_EsbocoProjeto)).ToList();
+      List<Prospeccao> ativos = lista.Where(p => p.Status.All(f => f.Status < StatusProspeccao.ComProposta)).ToList();
 
       List<Prospeccao> planejados = lista.Where(p => p.Status.All(f => f.Status == StatusProspeccao.Planejada)).ToList();
 
