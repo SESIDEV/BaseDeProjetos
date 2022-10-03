@@ -44,6 +44,7 @@ namespace BaseDeProjetos.Controllers
                 ViewData["n_proj"] = _context.Projeto.Where(p => p.Casa == usuario.Casa).Where(p => p.Status == StatusProjeto.EmExecucao).ToList().Count;
                 ViewData["n_empresas"] = _context.Empresa.ToList().Count;
                 ViewData["satisfacao"] = 0.8872;
+                ViewData["Valor_Prosp_Proposta"] = _context.Prospeccao.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.ComProposta)).Sum(p => p.ValorProposta);
                 ViewBag.Usuarios = _context.Users.AsEnumerable().Where(u => ValidarCasa(u, usuario)).ToList().Count;
 
             }
@@ -93,7 +94,7 @@ namespace BaseDeProjetos.Controllers
 
             return p.Status.LastOrDefault().Status <= StatusProspeccao.ComProposta;
 ;
-        }
+        }      
 
         private decimal ReceitaCasa(Instituto casa)
         {

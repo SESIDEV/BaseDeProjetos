@@ -66,20 +66,24 @@
                         </div>
                         <div class="col-5 mt-3">
                             <div class="card text-bg-success mb-3" style="max-width: 35rem;">
-                                <div class="card-header text-center">Volume de negócios</div>
+                                <div class="card-header text-center">
+                                    <h3>Volume de negócios</h3>
+                                </div>
                                 <div class="card-body">
-                                    <h5 class="card-title text-center">@ViewBag.Volume_Negocios.ToString("C2",
-                                        CultureInfo.CreateSpecificCulture("pt-BR"))</h5>
-                                    <p class="card-text"></p>
+                                    <h5 class="card-title text-center display-4">@ViewBag.Volume_Negocios.ToString("C2",
+                                        CultureInfo.CreateSpecificCulture("pt-BR"))
+                                    </h5>
                                 </div>
                             </div>
 
                             <div class="card text-bg-success mb-3" style="max-width: 35rem;">
-                                <div class="card-header text-center">Receita Competência</div>
+                                <div class="card-header text-center">
+                                    <h3>Receita Competência</h3>
+                                </div>
                                 <div class="card-body">
-                                    <h5 class="card-title text-center">@receita.ToString("C2",
-                                        CultureInfo.CreateSpecificCulture("pt-BR"))</h5>
-                                    <p class="card-text"></p>
+                                    <h5 class="card-title text-center display-4">@receita.ToString("C2",
+                                        CultureInfo.CreateSpecificCulture("pt-BR"))
+                                        </h5>
                                 </div>
                             </div>
 
@@ -88,18 +92,20 @@
                         <div class="col-5 mt-3">
 
                             <div class="card text-bg-success mb-3" style="max-width: 35rem;">
-                                <div class="card-header text-center">Receita Caixa</div>
+                                <div class="card-header text-center">
+                                    <h3>Receita Caixa</h3>
+                                </div>
                                 <div class="card-body">
-                                    <h5 class="card-title text-center">@investimento.ToString("C2",
-                                        CultureInfo.CreateSpecificCulture("pt-BR"))</h5>
-                                    <p class="card-text"></p>
+                                    <h5 class="card-title text-center display-4">@investimento.ToString("C2",
+                                        CultureInfo.CreateSpecificCulture("pt-BR"))
+                                        </h5>
                                 </div>
                             </div>
 
                             <div class="card text-bg-success mb-3" style="max-width: 35rem;">
-                                <div class="card-header text-center">Despesa</div>
+                                <div class="card-header text-center"><h3>Despesa</h3></div>
                                 <div class="card-body">
-                                    <h5 class="card-title text-center">@despesas.ToString("C2",
+                                    <h5 class="card-title text-center display-4">@despesas.ToString("C2",
                                         CultureInfo.CreateSpecificCulture("pt-BR"))</h5>
                                     <p class="card-text"></p>
                                 </div>
@@ -107,70 +113,68 @@
 
                         </div>
 
-                        <div class="col-2 mt-3 text-center" style="height: 100px;">
-                            <h1>100%</h1>
+                        <div class="col-2 text-center d-flex align-items-center justify-content-center flex-column" style="height: 200px; width: 200px; border-radius: 50%; border: solid 1px black; margin-top: 100px;">
+                            <p style="margin: 0; padding: 0;">Sustentabilidade</p>
+                            <h1 class="display-4" style="margin: 0; padding: 0;">100%</h1>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="list-group-item">
-                            <h5> Status Operacional</h5>
+                            <h5>Status Operacional</h5>
                         </div>
                         <div class="col-4 mt-3">
 
-                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">
-                                <h3 class="card-header text-center">@ViewBag.n_proj</h3>
-                                <div class="card-body">
-                                    <p class="card-title text-center">Projetos ativos</p>
-                                    <p class="card-text"></p>
+                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">                                
+                                <div>
+                                    <h3 class="card-title text-center mt-2 display-4">@ViewBag.n_prosp</h3>
+                                    <h3 class="card-title text-center">Prospecções ativas</h3>
                                 </div>
                             </div>
 
-                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">
-                                <h3 class="card-header text-center">@ViewBag.n_empresas</h3>
-                                <div class="card-body">
-                                    <p class="card-title text-center">Empresas com relacionamento conosco</p>
-                                    <p class="card-text"></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-4 mt-3">
-
-                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">
-                                <h3 class="card-header text-center">@ViewBag.n_proj</h3>
-                                <div class="card-body">
-                                    <p class="card-title text-center">Projetos ativos</p>
-                                    <p class="card-text"></p>
+                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">                                
+                                <div>
+                                    <h3 class="card-title text-center mt-2 display-4">@ViewBag.Usuarios</h3>
+                                    <h3 class="card-title text-center">Colaboradores</h3>
                                 </div>
                             </div>
 
-                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">
-                                <h3 class="card-header text-center">@ViewBag.n_empresas</h3>
-                                <div class="card-body">
-                                    <p class="card-title text-center">Empresas com relacionamento conosco</p>
-                                    <p class="card-text"></p>
-                                </div>
-                            </div>
                         </div>
 
                         <div class="col-4 mt-3">
 
-                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">
-                                <h3 class="card-header text-center">@ViewBag.n_proj</h3>
-                                <div class="card-body">
-                                    <p class="card-title text-center">Projetos ativos</p>
-                                    <p class="card-text"></p>
+                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">                                
+                                <div>
+                                    <h3 class="card-title text-center mt-2 display-4">@ViewBag.n_proj</h3>
+                                    <h3 class="card-title text-center">Projetos ativos</h3>
                                 </div>
                             </div>
 
-                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">
-                                <h3 class="card-header text-center">@ViewBag.n_empresas</h3>
-                                <div class="card-body">
-                                    <p class="card-title text-center">Empresas com relacionamento conosco</p>
-                                    <p class="card-text"></p>
+                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">                                
+                                <div>
+                                    <h3 class="card-title text-center mt-2 display-4">@ViewBag.n_empresas</h3>
+                                    <h3 class="card-title text-center">Empresas com relacionamento conosco</h3>
                                 </div>
                             </div>
+
+                        </div>
+
+                        <div class="col-4 mt-3">                           
+
+                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">                                
+                                <div>
+                                    <h3 class="card-title text-center mt-2 display-4">@ViewBag.satisfacao.ToString("P1")</h3>
+                                    <h3 class="card-title text-center">Satisfação do cliente</h3>
+                                </div>
+                            </div>
+
+                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">                                
+                                <div>
+                                    <h3 class="card-title text-center mt-2 display-4">R$ 0</h3>
+                                    <h3 class="card-title text-center">Valor de Prospecções Com Proposta</h3>
+                                </div>
+                            </div>
+                            @*@ViewBag.Valor_Prosp_Proposta.ToString("C2", CultureInfo.CreateSpecificCulture("pt-BR"))*@
                         </div>
                         @*
                             <div class="col-md-4 card">

@@ -28,10 +28,16 @@ namespace BaseDeProjetos.Controllers
     // GET: FunilDeVendas
     public IActionResult Index(string casa, string sortOrder = "", string searchString = "", string ano = "")
     {
+
       Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
-      casa = usuario.Casa.ToString();
+
+     if(string.IsNullOrEmpty(casa)){
+        casa = usuario.Casa.ToString();
+        
+     }
       List<Prospeccao> lista = DefinirCasa(casa);
       lista = VincularCasaProspeccao(usuario, lista);
+      
       lista = PeriodizarProspecções(ano, lista);
       lista = OrdenarProspecções(sortOrder, lista);
       lista = FiltrarProspecções(searchString, lista);
@@ -129,34 +135,9 @@ namespace BaseDeProjetos.Controllers
     {
       Instituto enum_casa;
 
-      List<Prospeccao> prospeccoes = new List<Prospeccao>();
-
-      if (string.IsNullOrEmpty(casa))
-      {
-        if (!string.IsNullOrEmpty(HttpContext.Session.GetString("_Casa")))
-        {
-          enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
-        }
-        else
-        {
-          return _context.Prospeccao.ToList();
-        }
-      }
-      else
-      {
-        List<string> casas = ProcessarCasa(casa);
-        if (casas.Count() == 0)
-        {
-
-          DefinirCasa(null);
-
-        }
-        foreach (string c in casas)
-        {
-
-          if (Enum.IsDefined(typeof(Instituto), c))
+      if (Enum.IsDefined(typeof(Instituto), casa))
           {
-            HttpContext.Session.SetString("_Casa", c);
+            HttpContext.Session.SetString("_Casa", casa);
             enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
           }
           else
@@ -164,13 +145,16 @@ namespace BaseDeProjetos.Controllers
             enum_casa = Instituto.Super;
           }
 
+
+          List<Prospeccao> prospeccoes = new List<Prospeccao>();
+
           List<Prospeccao> lista = enum_casa == Instituto.Super ?
           _context.Prospeccao.ToList() :
           _context.Prospeccao.Where(p => p.Casa.Equals(enum_casa)).ToList();
 
           prospeccoes.AddRange(lista);
-        }
-      }
+        
+      
 
       ViewData["Area"] = casa;
 
@@ -571,7 +555,7 @@ namespace BaseDeProjetos.Controllers
         await _context.SaveChangesAsync();
       }
 
-      return RedirectToAction("Details", new { id = followup.OrigemID }); ;
+      return RedirectToAction("Details", new { id = followup.OrigemID });
     }
 
     // GET: FunilDeVendas/Delete/5
@@ -612,7 +596,7 @@ namespace BaseDeProjetos.Controllers
       {
         _context.FollowUp.Remove(followup);
         await _context.SaveChangesAsync();
-        return RedirectToAction("Details", new { id = followup.OrigemID }); ;
+        return RedirectToAction("Details", new { id = followup.OrigemID });
       }
       else
       {

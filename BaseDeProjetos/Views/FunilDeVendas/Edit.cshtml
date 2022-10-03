@@ -109,7 +109,7 @@
                 {
                 <div class="form-group">
                     <label asp-for="ValorProposta" class="control-label"></label>
-                    <input asp-for="ValorProposta" type="number" class="form-control" value="@Model.ValorProposta.ToString("F2",CultureInfo.CreateSpecificCulture("en-US"))" />
+                    <input asp-for="ValorProposta" type="number" class="form-control" value='@Model.ValorProposta.ToString("F2",CultureInfo.CreateSpecificCulture("en-US"))'/>
                     <span asp-validation-for="ValorProposta" class="text-danger"></span>
                 </div>
                 }
