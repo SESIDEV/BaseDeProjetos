@@ -1,5 +1,6 @@
 ﻿@model BaseDeProjetos.Models.Prospeccao
 @using Microsoft.AspNetCore.Http
+@using System.Globalization
 
 @{
     ViewData["Title"] = "Detalhes";
@@ -59,14 +60,14 @@
         <div class="card m-1">
             <div class="card-body">
                 <h6 class="card-title">
-                    @followup.Data - @(followup.Status.GetDisplayName())
+                    @followup.Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR")) - @(followup.Status.GetDisplayName())
                 </h6>
                 <div class="card-text">
                     @followup.Anotacoes - @(followup.Anotacoes)
                 </div>
             </div>
             <div class="card-footer">
-                Vence em: @followup.Vencimento
+                Vence em: @followup.Vencimento.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))
                 <hr />
                 <a href="../RemoverFollowUp/@followup.Id">Remover</a> |
                 <a href="../EditarFollowUp/@followup.Id">Editar</a>
@@ -80,5 +81,5 @@
     <hr />
     <a class="col btn btn-primary" asp-action="Atualizar" asp-route-id="@Model.Id">Atualizar Prospecção</a>
     <a class="col btn btn-primary" asp-action="Edit" asp-route-id="@Model.Id">Editar Prospecção</a>
-    <a class="col btn btn-primary" asp-action="Index" asp-route-casa="@ViewData["Area"]">Voltar</a>
+    <a class="col btn btn-primary" asp-action="Index" asp-route-casa='@ViewData["Area"]'>Voltar</a>
 </div>

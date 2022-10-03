@@ -1,12 +1,13 @@
 ﻿@model BaseDeProjetos.Models.FollowUp
 @using Microsoft.AspNetCore.Http
+@using System
 @{
     ViewData["Title"] = "Atualizar Prospecção";
     if (!(Context.Session.GetString("_Casa") is null))
     {
         ViewData["Area"] = Context.Session.GetString("_Casa");
     }
-
+    string valor_contato;
 }
 
 @{ var prosp = ViewData["prosp"] as Prospeccao; }
@@ -43,7 +44,12 @@
 
             <div class="form-group">
                 <label> Contato da prospecção</label>
-                <input type="text" class="form-control" value="@prosp.Contato.Nome" readonly />
+                @if (prosp.Contato == null){
+                    valor_contato = "SemNome";
+                } else {
+                    valor_contato = prosp.Contato.Nome;
+                }
+                <input type="text" class="form-control" value="@valor_contato" readonly />
             </div>
 
             <div class="form-group">

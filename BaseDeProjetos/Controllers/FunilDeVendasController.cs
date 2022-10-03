@@ -65,7 +65,7 @@ namespace BaseDeProjetos.Controllers
 
       List<Prospeccao> emProposta = lista.Where(p => p.Status.LastOrDefault().Status == StatusProspeccao.ComProposta).ToList();
 
-      List<Prospeccao> ativos = lista.Where(p => p.Status.All(f => f.Status < StatusProspeccao.ComProposta)).ToList();
+      List<Prospeccao> ativos = lista.Where(p => p.Status.LastOrDefault().Status < StatusProspeccao.ComProposta).ToList();
 
       List<Prospeccao> planejados = lista.Where(p => p.Status.All(f => f.Status == StatusProspeccao.Planejada)).ToList();
 
