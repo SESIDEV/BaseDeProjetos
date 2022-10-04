@@ -4,7 +4,7 @@ using SendGrid.Helpers.Mail;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SmartTesting.Controllers
+namespace MailSenderHelpers
 {
     public class Mailer
     {

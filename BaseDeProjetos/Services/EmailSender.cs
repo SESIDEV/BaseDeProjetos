@@ -1,7 +1,7 @@
 ﻿using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using SendGrid.Helpers.Mail;
-using SmartTesting.Controllers;
+using MailSenderHelpers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,11 +12,11 @@ namespace MailSenderApp.Services
     {
         public List<Usuario> Destinatarios { get; set; } = new List<Usuario>();
 
-        private readonly Mailer mailer;
+        private readonly MailSenderHelpers.Mailer mailer;
 
         public EmailSender()
         {
-            mailer = new Mailer();
+            mailer = new MailSenderHelpers.Mailer();
             
             Destinatarios.Add(new Usuario { UserName = "Leon Nascimento", Email = "lednascimento@firjan.com.br", Nivel = Nivel.Dev });
             Destinatarios.Add(new Usuario { UserName = "Rafael Magno", Email = "istqmat04@firjan.com.br", Nivel = Nivel.Dev });
