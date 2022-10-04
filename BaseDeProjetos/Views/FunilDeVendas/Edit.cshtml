@@ -101,7 +101,7 @@
             <legend> Dados Financeiros</legend>
             <div class="form-group">
                 <label asp-for="ValorEstimado" class="control-label"></label>
-                <input asp-for="ValorEstimado" type="number" class="form-control" value="@Model.ValorEstimado.ToString("F2",CultureInfo.CreateSpecificCulture("en-US"))" />
+                <input asp-for="ValorEstimado" type="number" class="form-control" value='@Model.ValorEstimado.ToString("F2",CultureInfo.CreateSpecificCulture("en-US"))' />
                 <span asp-validation-for="ValorEstimado" class="text-danger"></span>
             </div>
 
@@ -109,7 +109,7 @@
                 {
                 <div class="form-group">
                     <label asp-for="ValorProposta" class="control-label"></label>
-                    <input asp-for="ValorProposta" type="number" class="form-control" value="@Model.ValorProposta.ToString("F2",CultureInfo.CreateSpecificCulture("en-US"))" />
+                    <input asp-for="ValorProposta" type="number" class="form-control" value='@Model.ValorProposta.ToString("F2",CultureInfo.CreateSpecificCulture("en-US"))' />
                     <span asp-validation-for="ValorProposta" class="text-danger"></span>
                 </div>
                 }
@@ -146,6 +146,7 @@
         </div>
     </form>
 </div>
+<br>
 <div>
     <a asp-action="Index" asp-route-casa="@ViewData["Area"]">Voltar</a>
 </div>
