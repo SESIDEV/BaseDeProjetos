@@ -67,7 +67,8 @@ namespace BaseDeProjetos.Controllers
                                                         f.Status == StatusProspeccao.Suspensa ||
                                                         f.Status == StatusProspeccao.NaoConvertida)).ToList();
                                                         
-      List<Prospeccao> errados = lista.Where(p => p.Status.FirstOrDefault().Status != StatusProspeccao.ContatoInicial).ToList();
+      List<Prospeccao> errados = lista.Where(p => p.Status.OrderBy(k => k.Data).FirstOrDefault().Status != StatusProspeccao.ContatoInicial
+       && p.Status.OrderBy(k => k.Data).FirstOrDefault().Status != StatusProspeccao.Planejada).ToList();
       
       List<Prospeccao> emProposta = lista.Where(p => p.Status.LastOrDefault().Status == StatusProspeccao.ComProposta).ToList();
 
