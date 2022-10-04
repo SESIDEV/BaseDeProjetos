@@ -7,25 +7,6 @@
         ViewData["Area"] = Context.Session.GetString("_Casa");
     } 
 }
-<script>
-    function ChecarUsuario() {
-        $("#StatusCNPJ").html("Checando...");
-        $.post("@Url.Action("SeExisteCnpj", "Empresas")",
-            {
-                cnpj: $("#valor_cnpj").val()
-            },
-        function (data) {
-            if (data == 0) {
-                $("#StatusCNPJ").html('');
-                $("#valor_cnpj").css("border-color", "");
-                validarCNPJ();
-            } else {
-                $("#StatusCNPJ").html('<font color="Red">CNPJ já cadastrado.</font>');
-                $("#valor_cnpj").css("border-color", "Red");
-            }
-        });
-    }
-</script>
 <h1>Criar</h1>
 <h4>Prospecção</h4>
 <hr />
@@ -93,7 +74,7 @@
                 <legend>Informações da Empresa</legend>
 
                     <label asp-for="Empresa" class="control-label"></label>
-                    <select asp-for="Empresa.Id" class="form-control" asp-items="@(ViewData["Empresas"] as SelectList).OrderBy(p=>p.Text)">
+                    <select asp-for="Empresa.Id" class="form-control" asp-items='@(ViewData["Empresas"] as SelectList).OrderBy(p=>p.Text)'>
                         <option value="-1">Selecione a empresa</option>
                     </select>
                     <span asp-validation-for="Empresa.Id" class="text-danger"></span>
@@ -160,7 +141,7 @@
     </div>
 </div>
 <div>
-    <a asp-action="Index" asp-route-casa="@ViewData["Area"]">Voltar</a>
+    <a asp-action="Index" asp-route-casa='@ViewData["Area"]'>Voltar</a>
 </div>
 
 @section Scripts {

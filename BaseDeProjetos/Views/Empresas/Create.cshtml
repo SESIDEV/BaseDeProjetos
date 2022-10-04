@@ -10,12 +10,10 @@
 </div>
 <hr />
 <script>
-    function ChecarUsuario() {
+    function ChecarCNPJ() {
+        $("#valor_cnpj").replace(/[^0-9]/g, '');
         $("#StatusCNPJ").html("Checando...");
-        $.post("@Url.Action("SeExisteCnpj", "Empresas")",
-            {
-                cnpj: $("#valor_cnpj").val()
-            },
+        $.post("@Url.Action("SeExisteCnpj", "Empresas")",{cnpj: $("#valor_cnpj").val()},
         function (data) {
             if (data == 0) {
                 $("#StatusCNPJ").html('');
@@ -35,7 +33,7 @@
             <div class="form-group" id="cadastro_campo1">
                 <label asp-for="CNPJ" class="control-label"></label><span>   (Apenas números)</span>
                 <input asp-for="CNPJ" id="valor_cnpj" class="form-control" maxlength="14"/>
-                <button onclick="ChecarUsuario()" type="button">Buscar</button>
+                <button onclick="ChecarCNPJ()" type="button">Buscar</button>
                 <p id="StatusCNPJ"></p>
                 <hr/>
                 <h6 id="TipoEmpresaStatus">Tipo: </h6>
