@@ -1,5 +1,6 @@
 ﻿@model BaseDeProjetos.Models.FollowUp
 @using Microsoft.AspNetCore.Http
+@using System.Globalization
 @{
     ViewData["Title"] = "Atualizar Prospecção";
     if (!(Context.Session.GetString("_Casa") is null))
@@ -51,7 +52,7 @@
             </div>
         </fieldset>
     </div>
-
+    <br />
     <hr />
     <div class="col-md-8">
         <form asp-controller="FunilDeVendas" asp-action="EditarFollowUp" asp-route-id="@Model.Id" method="POST">
@@ -61,8 +62,8 @@
 
             <div class="form-group">
                 <label asp-for="Data" class="control-label"></label>
-                <input asp-for="Data" class="form-control" />
-                <span asp-validation-for="Data" class="text-danger" value="@Model.Data"></span>
+                <input asp-for="Data" type="date" class="form-control" />
+                <span asp-validation-for="Data" class="text-danger" value='@Model.Data.ToString("F2",CultureInfo.CreateSpecificCulture("en-US"))'></span>
             </div>
             <div class="form-group">
                 <label asp-for="@prosp.Status.Last().Status" class="control-label"></label>
@@ -86,9 +87,10 @@
             <div class="form-group">
                 <input type="submit" value="Incluir" class="btn btn-primary" />
             </div>
+            <br />
         </form>
     </div>
-
+    <br/>
     <div>
         <a asp-action="Index" asp-route-casa="@ViewData["Area"]">Voltar</a>
     </div>
