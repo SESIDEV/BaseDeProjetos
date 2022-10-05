@@ -73,7 +73,7 @@ namespace BaseDeProjetos.Controllers
     private void CategorizarStatusProjetos(IQueryable<Projeto> projetos)
     {
       ViewBag.Ativos = projetos.Where(p => p.Status == StatusProjeto.EmExecucao || p.Status == StatusProjeto.Contratado).ToList();
-      ViewBag.Encerrados = projetos.Where(p => p.Status != StatusProjeto.EmExecucao && p.Status != StatusProjeto.Contratado).ToList();
+      ViewBag.Encerrados = projetos.Where(p => p.Status == StatusProjeto.Concluido || p.Status == StatusProjeto.Cancelado).ToList();
     }
 
     private IQueryable<Projeto> PeriodizarProjetos(string ano, IQueryable<Projeto> lista)
@@ -180,7 +180,7 @@ namespace BaseDeProjetos.Controllers
     // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,NomeProjeto,Casa, AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos")] Projeto projeto)
+    public async Task<IActionResult> Create([Bind("Id,NomeProjeto,Casa,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos")] Projeto projeto)
     {
       if (ModelState.IsValid)
       {
@@ -233,7 +233,7 @@ namespace BaseDeProjetos.Controllers
     // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(string id, [Bind("Id,Casa,NomeProjeto,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos, Equipe")] Projeto projeto)
+    public async Task<IActionResult> Edit(string id, [Bind("Id,Casa,NomeProjeto,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos, Equipe")] Projeto projeto)
     {
       if (id != projeto.Id)
       {
@@ -244,7 +244,6 @@ namespace BaseDeProjetos.Controllers
       {
         try
         {
-          projeto.Equipe = ObterUsuarios(projeto);
           _context.Projeto.Update(projeto);
           await _context.SaveChangesAsync();
         }

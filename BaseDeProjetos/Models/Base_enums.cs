@@ -312,6 +312,9 @@ namespace BaseDeProjetos.Models
 
         [Display(Name = "Cancelado/Suspenso")]
         Cancelado,
+
+        [Display(Name = "Atrasado")]
+        Atrasado,
     }
 
     public enum TipoContratacao
