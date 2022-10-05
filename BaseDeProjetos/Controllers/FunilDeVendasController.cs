@@ -52,11 +52,12 @@ namespace BaseDeProjetos.Controllers
                                                               f.Status == StatusProspeccao.Suspensa ||
                                                               f.Status == StatusProspeccao.NaoConvertida)).ToList();
 
-            List<Prospeccao> errados = lista.Where(p => p.Status.FirstOrDefault().Status != StatusProspeccao.ContatoInicial).ToList();
+            List<Prospeccao> errados = lista.Where(p => p.Status.OrderBy(k => k.Data).FirstOrDefault().Status != StatusProspeccao.ContatoInicial
+            && p.Status.OrderBy(k => k.Data).FirstOrDefault().Status != StatusProspeccao.Planejada).ToList();
 
-            List<Prospeccao> emProposta = lista.Where(p => p.Status.LastOrDefault().Status == StatusProspeccao.ComProposta).ToList();
+            List<Prospeccao> emProposta = lista.Where(p => p.Status.OrderBy(k => k.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList();
 
-            List<Prospeccao> ativos = lista.Where(p => p.Status.LastOrDefault().Status < StatusProspeccao.ComProposta).ToList();
+            List<Prospeccao> ativos = lista.Where(p => p.Status.OrderBy(k => k.Data).LastOrDefault().Status < StatusProspeccao.ComProposta).ToList();
 
             List<Prospeccao> planejados = lista.Where(p => p.Status.All(f => f.Status == StatusProspeccao.Planejada)).ToList();
 
