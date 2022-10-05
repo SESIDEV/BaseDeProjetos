@@ -65,7 +65,7 @@ function CasasFunil() {
 
 
 function validarCNPJ(){
-    
+    document.getElementById("valor_cnpj").value = document.getElementById("valor_cnpj").value.replace(/[^0-9]/g, '');
     let cnpj = document.getElementById("valor_cnpj").value;
     if (isNaN(cnpj) || cnpj.length < 14) {
         alert("CNPJ inválido");
