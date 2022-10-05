@@ -10,7 +10,7 @@
  *
  * */
 
-function TesteJS(){
+function FiltroEmpresaEstrangeira(){
 
     let checkBox = document.getElementById("empresa_estrangeira_check");
     let cnpj = document.getElementById("valor_cnpj");
@@ -94,6 +94,7 @@ function AplicarDadosAPI() {
 
     res.json().then(dados => {
     document.getElementById("NomeEmpresaCadastro").value = dados.nome;
+    document.getElementById("NomeFantasiaEmpresa").value = dados.fantasia;
     document.getElementById("TipoEmpresaStatus").innerHTML = "Tipo: " + dados.tipo;
     document.getElementById("SituacaoEmpresaStatus").innerHTML = "Situação: " + dados.situacao;
 
