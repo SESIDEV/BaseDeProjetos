@@ -1,15 +1,7 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Projeto>
 <style>
 
-    .caixa-projetos {
-        width: 100%;
-        height: 200px;
-        border: solid 1px black;
-        border-radius: 5px;
-        display: flex;
-    }
-
-    .caixa-logo {
+     .caixa-logo {
         max-width: 180px;
         height: 100%;
         display: flex;
@@ -17,35 +9,7 @@
         align-items: center;
         padding: 20px;
     }
-
-    .caixa-descricao {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-    }
-
-    .titulo-descricao, .conteudo-descricao {
-        font-weight: bold;
-        font-size: 13px;
-        width: 20%;
-        text-align: center;
-    }
-
-    .descricao, .caixa-conteudo {
-        height: 50%;
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        padding: 5px;
-    }
-
-    .caixa-conteudo {
-        height: 50%;
-        align-items: flex-start;
-    }
-
-    #logoEmpresa {
+      #logoEmpresa {
         object-fit: contain;
         max-width: 180px;
         max-height: 180px;
@@ -59,54 +23,96 @@
         gap: 10px;
     }
 
+    span{
+        text-align:center;
+    }
+
 </style>
 
 
     @foreach (var item in Model)
     {
+    if (item.DataEncerramento < DateTime.Today && (item.Status == StatusProjeto.EmExecucao)){
+        item.Status = StatusProjeto.Atrasado;
+    }
         <div class="container">
-            <div class="caixa-projetos">
-                <div class="caixa-logo">
-                    @if (item.Empresa != null)
-                    {
-                        <img style="background-color:white" id="logoEmpresa" src="@item.Empresa.Logo" alt="Logo da Empresa" />
-                    }
-                    else
-                    {
-                        <h5 id="logo_alt">Sem Logo</h5>
-                    }
-                </div>
-                <div class="caixa-descricao">
-                    <div class="descricao">
-                        <p class="titulo-descricao">@Html.DisplayNameFor(model => model.Empresa.Nome)</p>
-                        <p class="titulo-descricao">@Html.DisplayNameFor(model => model.NomeProjeto)</p>
-                        <p class="titulo-descricao">@Html.DisplayNameFor(model => model.Lider)</p>
-                        <p class="titulo-descricao">@Html.DisplayNameFor(model => model.FonteFomento)</p>
-                        <p class="titulo-descricao">@Html.DisplayNameFor(model => model.Status)</p>
+            <div class="card mb-2 mt-1">
+
+            @switch(item.Status){
+                case StatusProjeto.EmExecucao:
+                    <div class="card-header bg-primary" style="color:white">
+                        @Html.DisplayFor(modelItem => item.Status)
                     </div>
-                    <div class="caixa-conteudo">
-                        <p class="conteudo-descricao">@Html.DisplayFor(modelItem => item.Empresa.Nome)</p>
-                        <p class="conteudo-descricao">@Html.DisplayFor(modelItem => item.NomeProjeto)</p>
-                        <p class="conteudo-descricao">
-                            @try
-                            {
-                                @Html.DisplayFor(modelItem => item.NomeLider)
-                            }
-                            catch
-                            {
-                                <span class="text-secondary">A preencher</span>
-                            }
-                        </p>
-                        <p class="conteudo-descricao">@Html.DisplayFor(modelItem => item.FonteFomento)</p>
-                        <p class="conteudo-descricao">@Html.DisplayFor(modelItem => item.Status)</p>
+                    break;
+                case StatusProjeto.Concluido:
+                    <div class="card-header bg-success" style="color:white">
+                        @Html.DisplayFor(modelItem => item.Status)
                     </div>
-                </div>
-            </div>
-            <button id="btn-collapse" class="btn btn-outline-secondary container-fluid" type="button" data-toggle="collapse" data-target="#@item.Id" aria-expanded="false" aria-controls="collapseExample">
-                Ver mais detalhes
-            </button>
-            <div class="collapse" id="@item.Id">
-                <div class="card card-body" id="card-body">
+                break;
+                case StatusProjeto.Contratado:
+                    <div class="card-header bg-light">
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </div>
+                break;
+                case StatusProjeto.Atrasado:
+                    <div class="card-header bg-danger" style="color:white">
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </div>
+                break;
+                default:
+                    <div class="card-header bg-warning" style="color:white">
+                    Projeto desatualizado. Contate o PMO Operacional
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </div>
+                break;
+            }
+                <div class="card-body">
+                    <div class="card-text row">
+                        <div class="col-2">
+                            @if (item.Empresa != null)
+                            {
+                                <img style="background-color:white" id="logoEmpresa" src="@item.Empresa.Logo" alt="Logo da Empresa" />
+                            }
+                            else
+                            {
+                                <h5 id="logo_alt">Sem Logo</h5>
+                            }
+                        </div>
+
+
+                        <div class="col-10 row">
+                            <div class="col-12 row">
+                                <span class="col"><strong>@Html.DisplayNameFor(model => model.Empresa.Nome)</strong></span>
+                                <span class="col"><strong>@Html.DisplayNameFor(model => model.NomeProjeto)</strong></span>
+                                <span class="col"><strong>@Html.DisplayNameFor(model => model.Lider)</strong></span>
+                                <span class="col"><strong>@Html.DisplayNameFor(model => model.FonteFomento)</strong></span>
+                                <span class="col"><strong>@Html.DisplayNameFor(model => model.DataEncerramento)</strong></span>
+                            </div>
+                            <hr>
+                            <div class="col-12 row">
+                                <span class="col">@Html.DisplayFor(modelItem => item.Empresa.Nome)</span>
+                                <span class="col">@Html.DisplayFor(modelItem => item.NomeProjeto)</span>
+                                <span class="col">
+                                    @try
+                                    {
+                                        @Html.DisplayFor(modelItem => item.NomeLider)
+                                    }
+                                    catch
+                                    {
+                                            <span class="col" >A preencher</span>
+                                    }
+                                </span class="col">
+                                <span class="col">@Html.DisplayFor(modelItem => item.FonteFomento)</span>
+                                <span class="col">
+                                    @item.DataEncerramento.ToString("dd/MM/yyy")
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+              <div class="collapse" id="@item.Id">
+                           <hr>
+                <div >
                     <div style="display:flex; justify-content: center; gap: 5px;">
                         <a asp-action="Edit" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Editar</button></a>
                         <a asp-action="Details" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Detalhes</button></a>
@@ -114,7 +120,17 @@
                         <a asp-action="Delete" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Remover</button></a>
                     </div>
                 </div>
-            </div>
+
+                </div>
+                 </div>
+                 <button id="btn-collapse" class="btn btn-outline-secondary container-fluid" type="button" data-toggle="collapse" data-target="#@item.Id" aria-expanded="false" aria-controls="collapseExample">
+                    Ver mais detalhes
+                </button>
+
+             </div>
+           
         </div>
+
+
     }
 </div>

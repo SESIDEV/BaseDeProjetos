@@ -35,25 +35,25 @@
             data-bs-toggle="dropdown" aria-expanded="false">
                 <small>@casa.GetDisplayName()</small>
             </button>
-            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" >
                 <li>
                     <a class="dropdown-item" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa_nome"
                     id="a-success">
-                        Funil de Vendas
+                        <small>Funil de Vendas</small>
                     </a>
                 </li>
 
                 <li>
                     <a class="dropdown-item" asp-action="Index" asp-controller="Projetos" asp-route-casa="@casa_nome"
                     id="a-success">
-                        Base de Projetos
+                        <small>Base de Projetos</small>
                     </a>
                 </li>
 
                 <li>
                     <a class="dropdown-item" asp-action="Index" asp-controller="Producao" asp-route-casa="@casa_nome"
                     id="a-success">
-                        Gestão do Conhecimento
+                        <small>Gestão do Conhecimento</small>
                     </a>
                 </li>
             </ul>
