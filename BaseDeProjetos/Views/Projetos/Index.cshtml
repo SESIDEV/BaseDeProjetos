@@ -12,34 +12,34 @@
             <div>
                 <div>
                     <form asp-controller="Projetos" asp-action="Index">
-                    <div class="row g-3">
-                        <div class="col-2">
-                            <select autofocus class="form-select" name="ano">
-                                <option value="Todos" selected>Selecione o ano:</option>
-                                <option value="2019">2019</option>
-                                <option value="2020">2020</option>
-                                <option value="2021">2021</option>
-                                <option value="2022">2022</option>
-                            </select>
-                        </div>
-                        <div class="col-2">
-                            <select class="form-select">
-                                <option value="">Selecione Status</option>
-                                <option value="Contratado">Contratado</option>
-                                <option value="EmExecucao">Em Execucao</option>
-                                <option value="Concluido">Concluido</option>
-                            </select>
-                        </div>
-                        <div class="col-6">                    
-                            <div class="input-group mb-3">
-                                <input class="form-control" type="text" name="SearchString" value="@ViewData["CurrentFilter"]" placeholder="Pesquise pela empresa"/>
-                                <button type="submit" class="btn btn-primary">Procurar</button>
+                        <div class="row g-3">
+                            <div class="col-2">
+                                <select autofocus class="form-select" name="ano">
+                                    <option value="Todos" selected>Selecione o ano:</option>
+                                    <option value="2019">2019</option>
+                                    <option value="2020">2020</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2022">2022</option>
+                                </select>
+                            </div>
+                            <div class="col-2">
+                                <select class="form-select">
+                                    <option value="">Selecione Status</option>
+                                    <option value="Contratado">Contratado</option>
+                                    <option value="EmExecucao">Em Execucao</option>
+                                    <option value="Concluido">Concluido</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <div class="input-group mb-3">
+                                    <input class="form-control" type="text" name="SearchString" value="@ViewData["CurrentFilter"]" placeholder="Pesquise pela empresa" />
+                                    <button type="submit" class="btn btn-primary">Procurar</button>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <a asp-action="Create" style="text-decoration:none;" class="btn btn-primary">Novo Projeto</a>
                             </div>
                         </div>
-                        <div class="col-2">
-                            <a asp-action="Create" style="text-decoration:none;" class="btn btn-primary">Novo Projeto</a>
-                        </div>
-                    </div>
                     </form>
                 </div>
             </div>
@@ -49,32 +49,29 @@
             </nav>
         </div>
 
-      <nav>
-  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-    <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Gráficos</button>
-    <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Ativas</button>
-    <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Concluídas</button>
-  </div>
-</nav>
-<div class="tab-content" id="nav-tabContent">
-  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
- <div>
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Gráficos</button>
+                <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Ativas</button>
+                <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Concluídas</button>
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade active show" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                <div>
                     <partial name="graph_projetos" view-data="@ViewData" model="@Model" />
                 </div>
-
-  </div>
-  <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
-        <div>
-            <partial name="lista_projetos" view-data="@ViewData" model="@ativas"/>
-        </div>
-  </div>
-  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-          <div>
-                    <partial name="lista_projetos" view-data="@ViewData" model="@encerrados"/>
+            </div>
+            <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                <div>
+                    <partial name="lista_projetos" view-data="@ViewData" model="@ativas" />
                 </div>
-
-      </div>
-
-</div>
+            </div>
+            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <div>
+                    <partial name="lista_projetos" view-data="@ViewData" model="@encerrados" />
+                </div>
+            </div>
+        </div>
     </div>
 </div>
