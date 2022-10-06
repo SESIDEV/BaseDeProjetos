@@ -47,7 +47,7 @@
 
     //ATIVAS \/ \/ \/ \/ \/ \/
 
-    var prospec_ativas = Model.Where(p => p.Status.LastOrDefault().Status <= StatusProspeccao.ComProposta);
+    var prospec_ativas = Model.Where(p => p.Status.OrderBy(k => k.Data).LastOrDefault().Status <= StatusProspeccao.ComProposta);
     
     cd_CI_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoDireta(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
     cd_ED_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoDireta(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();

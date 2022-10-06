@@ -90,7 +90,7 @@
                                 <span class="col">@Html.DisplayFor(modelItem => item.Empresa.Nome)</span>
                                 <span class="col">@Html.DisplayFor(modelItem => item.NomeProjeto)</span>
                                 <span class="col">
-                                    @if(item.ValorAporteRecursos != null && item.ValorAporteRecursos > 0)
+                                    @if(item.ValorAporteRecursos != 0 && item.ValorAporteRecursos > 0)
                                     {
                                         <span> R$ @Helpers.FormatarValoresDashboards((decimal)item.ValorAporteRecursos)</span>
                                     }
