@@ -32,21 +32,180 @@
 
     }
 }
-<style>
-    #sustentabilidade {
-        background-image: url("https://ogimg.infoglobo.com.br/sociedade/24483206-8b9-2d9/FT1086A/652/IC_Multiplex-Covid-19.jpg");
-        background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.4) 100%), url("https://ogimg.infoglobo.com.br/sociedade/24483206-8b9-2d9/FT1086A/652/IC_Multiplex-Covid-19.jpg");
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
-    }
+<style>      
+  .center{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
 
-    a {
-        text-decoration: none;
-        font-size: 20px;
-        padding: 10px;
-    }
+  .border-shadow{
+    box-shadow: 5px 5px 2px rgb(199, 199, 199);
+    border-radius: 10px;
+  }
+
+  .content-page{
+    margin: 0 auto;
+    display: grid;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+    grid-template-areas:
+    "card-1 card-2 card-3 card-4 card-5"
+    "lista lista grafico grafico grafico"
+    "lista lista grafico-2 grafico-2 grafico-2";
+    grid-template-rows: 20% 50% 30%;
+  }
+
+  .card-financeiro{
+    min-width: 200px;
+    height: 150px;
+  }
+
+  .card-operacional{
+    min-width: 200px;
+    height: 120px;
+  }
+
+  .card-operacional > div > p{
+    margin-top: 10px;
+  }
+
+  .card-financeiro > p, div > h1{
+    display: block;
+    font-size: 1rem;
+    padding: 10px;
+  }
+
+  .card-financeiro > p{
+    height: 20%;
+  }
+
+  .card-financeiro > div{
+    height: 80%;
+  }
+
+  .card-grafico{
+    padding: 10px;
+  }
+
+  .card-lista{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  #volume-negocio{
+    grid-area: card-1;
+  }
+  #receita-competencia{
+    grid-area: card-2;
+  }
+  #volume-caixa{
+    grid-area: card-3;
+  }
+  #despesa{
+    grid-area: card-4;
+  }
+  #sustentabilidade{
+    grid-area: card-5;
+  }
+  #prospeccoes{
+    grid-area: lista;
+  }
+  #grafico-barras{
+    grid-area: grafico-2;    
+  }
+  #grafico-mapa{
+    grid-area: grafico;
+  }
+  .gradient {
+    background-image: linear-gradient(to bottom, black, black, blue);
+    color: black;
+    background-clip: text;
+    -webkit-background-clip: text;
+    /* Adicionado: */
+    -webkit-text-fill-color: transparent;
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+  .status-operacional{
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+
+  p{
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+
+  .highcharts-data-table table {
+    font-family: Verdana, sans-serif;
+    border-collapse: collapse;
+    border: 1px solid #ebebeb;
+    margin: 10px auto;
+    text-align: center;
+  }
+
+  .highcharts-data-table caption {
+    padding: 1em 0;
+    font-size: 1.2em;
+    color: #555;    
+  }
+
+  .highcharts-data-table th {
+    font-weight: 600;
+    padding: 0.5em;
+  }
+
+  .highcharts-data-table td,
+  .highcharts-data-table th,
+  .highcharts-data-table caption {
+    padding: 0.5em;
+  }
+  .highcharts-data-table thead tr,
+  .highcharts-data-table tr:nth-child(even) {
+    background: #f8f8f8;
+  }
+
+  .highcharts-data-table tr:hover {
+    background: #f1f7ff;
+  }
+
+  .highcharts-yaxis .highcharts-axis-line {
+    stroke-width: 2px;
+  }
+
+    /* Link the series colors to axis colors */
+  .highcharts-color-0 {
+    fill: rebeccapurple;
+    stroke: rebeccapurple;
+  }
+  .highcharts-axis.highcharts-color-0 .highcharts-axis-line {
+    stroke: rebeccapurple;
+  }
+
+  .highcharts-axis.highcharts-color-0 text {
+    fill: rebeccapurple;
+  }
+
+  .highcharts-color-1 {
+    fill: turquoise;
+    stroke: turquoise;
+  }
+
+  .highcharts-axis.highcharts-color-1 .highcharts-axis-line {
+    stroke: turquoise;
+  }
+
+  .highcharts-axis.highcharts-color-1 text {
+    fill: turquoise;
+  } 
+
 </style>
+
+@*
 <div class="row">
 
     <partial name="Menu" view-data="@ViewData" />
@@ -174,9 +333,9 @@
                                     <h3 class="card-title text-center">Valor de Prospecções Com Proposta</h3>
                                 </div>
                             </div>
-                            @*@ViewBag.Valor_Prosp_Proposta.ToString("C2", CultureInfo.CreateSpecificCulture("pt-BR"))*@
+                            @ViewBag.Valor_Prosp_Proposta.ToString("C2", CultureInfo.CreateSpecificCulture("pt-BR"))
                         </div>
-                        @*
+                        
                             <div class="col-md-4 card">
                             <div class="card-body">
                             <center>
@@ -234,10 +393,349 @@
                             <span class="font-weight-lighter">das despesas são cobertas por receita</span>
                             </center>
                             </div>
-                            </div>*@
+                            </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</div> 
+*@  
+    <partial name="Menu" view-data="@ViewData" />
+    <div class="card-header text-center">
+      <h5>Bem vindo ao sistema de Gestão de Inovação - SGI</h5>
+    </div>
+    <div class="list-group-item">
+      <h5> Status Financeiro </h5>
+      <small>@ViewBag.Data.ToString("dd/MM/yyyy")</small>
+    </div>
+    <div class="content-page">
+      <div class="card-financeiro border-shadow" id="volume-negocio">
+        <p>Volume de Negócio</p>
+        <div class="center">
+          <p class="gradient">@ViewBag.Volume_Negocios.ToString("C2",CultureInfo.CreateSpecificCulture("pt-BR"))</p>
+        </div>
+      </div>
+      <div class="card-financeiro border-shadow" id="receita-competencia">
+        <p>Receita Por Competência</p>
+        <div class="center">
+          <p class="gradient">@receita.ToString("C2",CultureInfo.CreateSpecificCulture("pt-BR"))</p>
+        </div>
+      </div>
+      <div class="card-financeiro border-shadow" id="receita-caixa">
+        <p>Receita Por Caixa</p>
+        <div class="center">
+          <p class="gradient">@investimento.ToString("C2",CultureInfo.CreateSpecificCulture("pt-BR"))</p>
+        </div>
+      </div>
+      <div class="card-financeiro border-shadow" id="despesa">
+        <p>Despesa</p>
+        <div class="center">
+          <p class="gradient">@despesas.ToString("C2",CultureInfo.CreateSpecificCulture("pt-BR"))</p>
+        </div>
+      </div>
+      <div class="card-financeiro border-shadow" id="sustentabilidade">
+        <p>Sustentabilidade</p>
+        <div class="center">
+          <p class="gradient">@sustentabilidade.ToString("P2")</p>
+        </div>
+      </div>
+      <div class="card-lista border-shadow" id="prospeccoes">
+        <h5>Status Operacional</h5>
+        <div class="card-operacional border-shadow">
+          <div class="center">
+            <p>Prospecções Ativas</p>
+            <p class="status-operacional">@ViewBag.n_prosp</p>
+          </div>
+        </div>
+        <div class="card-operacional border-shadow">
+          <div class="center">
+            <p>Projetos Ativos</p>
+            <p class="status-operacional">@ViewBag.n_proj</p>
+          </div>
+        </div>
+        <div class="card-operacional border-shadow">
+          <div class="center">
+            <p>Colaboradores</p>
+            <p class="status-operacional">@ViewBag.Usuarios</p>
+          </div>
+        </div>
+        <div class="card-operacional border-shadow">
+          <div class="center">
+            <p>Empresas Com Relacionamento</p>
+            <p class="status-operacional">@ViewBag.n_empresas</p>
+          </div>
+        </div>
+        <div class="card-operacional border-shadow">
+          <div class="center">
+            <p>Satisfação do Cliente</p>
+            <p class="status-operacional">@ViewBag.satisfacao.ToString("P1")</p>
+          </div>
+        </div>
+      </div>      
+      <div class="card-grafico border-shadow" id="grafico-mapa"></div>
+      <div class="card-grafico border-shadow" id="grafico-barras"></div>
+    </div>
+    <!--Gráfico Mapa-->
+    <script type="module">
+      (async () => {
+        const topology = await fetch(
+          "https://code.highcharts.com/mapdata/countries/br/br-all.topo.json"
+        ).then((response) => response.json());
+
+        // Prepare demo data. The data is joined to map using value of 'hc-key'
+        // property by default. See API docs for 'joinBy' for more info on linking
+        // data and map.
+        const data = [
+          ["br-sp", 10],
+          ["br-ma", 11],
+          ["br-pa", 12],
+          ["br-sc", 13],
+          ["br-ba", 14],
+          ["br-ap", 15],
+          ["br-ms", 16],
+          ["br-mg", 17],
+          ["br-go", 18],
+          ["br-rs", 19],
+          ["br-to", 20],
+          ["br-pi", 21],
+          ["br-al", 22],
+          ["br-pb", 23],
+          ["br-ce", 24],
+          ["br-se", 25],
+          ["br-rr", 26],
+          ["br-pe", 27],
+          ["br-pr", 28],
+          ["br-es", 29],
+          ["br-rj", 30],
+          ["br-rn", 31],
+          ["br-am", 32],
+          ["br-mt", 33],
+          ["br-df", 34],
+          ["br-ac", 35],
+          ["br-ro", 36],
+        ];
+
+        // Create the chart
+        Highcharts.mapChart("grafico-mapa", {
+          chart: {
+            map: topology,
+          },
+
+          title: {
+            align: "left",
+            text: "Prospecções por Região",
+          },
+
+          subtitle: {
+            align: "left",
+            text: `Brasil = total Prospecções<br>Exterior = total Prospecções<br>`,
+          },
+
+          mapNavigation: {
+            enabled: true,
+            buttonOptions: {
+              verticalAlign: "bottom",
+            },
+          },
+
+          colorAxis: {
+            min: 0,
+          },
+
+          series: [
+            {
+              data: data,
+              name: "Random data",
+              states: {
+                hover: {
+                  color: "#BADA55",
+                },
+              },
+              dataLabels: {
+                enabled: true,
+                format: "{point.name}",
+              },
+            },
+          ],
+        });
+      })();
+    </script>
+
+    <!--Gráfico Barras-->
+    <script type="text/javascript">
+      Highcharts.chart("grafico-barras", {
+        chart: {
+          type: "column",
+        },
+        title: {
+          align: "left",
+          text: "Prospecções Por Linha De Pesquisa",
+        },
+        accessibility: {
+          announceNewData: {
+            enabled: true,
+          },
+        },
+        xAxis: {
+          type: "category",
+        },
+        yAxis: {
+          title: {
+            text: "Total percent market share",
+          },
+        },
+        legend: {
+          enabled: false,
+        },
+        plotOptions: {
+          series: {
+            borderWidth: 0,
+            dataLabels: {
+              enabled: true,
+              format: "{point.y:.1f}%",
+            },
+          },
+        },
+
+        tooltip: {
+          headerFormat:'<span style="font-size:11px">{series.name}</span><br>',
+          pointFormat:
+            '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>',
+        },
+
+        series: [
+          {
+            name: "ISI QV",
+            colorByPoint: true,
+            data: [
+              {
+                name: "Química e Sustentabilidade",
+                y: 63.06,
+                drilldown: "QV - Química e Sustentabilidade",
+              },
+              {
+                name: "Tecnologia para Solos e Efluentes",
+                y: 19.84,
+                drilldown: "QV - Tecnologia para Solos e Efluentes",
+              },
+              {
+                name: "Extração de Matérias Primas Renováveis",
+                y: 4.18,
+                drilldown: "QV - Extração de Matérias Primas Renováveis",
+              },
+              {
+                name: "Química Analítica Verde",
+                y: 4.12,
+                drilldown: "QV - Química Analítica Verde",
+              },
+              {
+                name: "Petróleo e Petroquímica",
+                y: 2.33,
+                drilldown: "QV - Petróleo e Petroquímica",
+              },
+              {
+                name: "Biotecnologia e Biologia Molecular",
+                y: 0.45,
+                drilldown: "QV - Biotecnologia e Biologia Molecular",
+              },
+              {
+                name: "Química 4.0",
+                y: 1.582,
+                drilldown: "QV - Química 4.0",
+              },
+            ],
+          },
+        ],
+        drilldown: {
+          breadcrumbs: {
+            position: {
+              align: "right",
+            },
+          },
+          series: [
+            {
+              name: "Chrome",
+              id: "Chrome",
+              data: [
+                ["v65.0", 0.1],
+                ["v64.0", 1.3],
+                ["v63.0", 53.02],
+                ["v62.0", 1.4],
+                ["v61.0", 0.88],
+                ["v60.0", 0.56],
+                ["v59.0", 0.45],
+                ["v58.0", 0.49],
+                ["v57.0", 0.32],
+                ["v56.0", 0.29],
+                ["v55.0", 0.79],
+                ["v54.0", 0.18],
+                ["v51.0", 0.13],
+                ["v49.0", 2.16],
+                ["v48.0", 0.13],
+                ["v47.0", 0.11],
+                ["v43.0", 0.17],
+                ["v29.0", 0.26],
+              ],
+            },
+            {
+              name: "Firefox",
+              id: "Firefox",
+              data: [
+                ["v58.0", 1.02],
+                ["v57.0", 7.36],
+                ["v56.0", 0.35],
+                ["v55.0", 0.11],
+                ["v54.0", 0.1],
+                ["v52.0", 0.95],
+                ["v51.0", 0.15],
+                ["v50.0", 0.1],
+                ["v48.0", 0.31],
+                ["v47.0", 0.12],
+              ],
+            },
+            {
+              name: "Internet Explorer",
+              id: "Internet Explorer",
+              data: [
+                ["v11.0", 6.2],
+                ["v10.0", 0.29],
+                ["v9.0", 0.27],
+                ["v8.0", 0.47],
+              ],
+            },
+            {
+              name: "Safari",
+              id: "Safari",
+              data: [
+                ["v11.0", 3.39],
+                ["v10.1", 0.96],
+                ["v10.0", 0.36],
+                ["v9.1", 0.54],
+                ["v9.0", 0.13],
+                ["v5.1", 0.2],
+              ],
+            },
+            {
+              name: "Edge",
+              id: "Edge",
+              data: [
+                ["v16", 2.6],
+                ["v15", 0.92],
+                ["v14", 0.4],
+                ["v13", 0.1],
+              ],
+            },
+            {
+              name: "Opera",
+              id: "Opera",
+              data: [
+                ["v50.0", 0.96],
+                ["v49.0", 0.82],
+                ["v12.1", 0.14],
+              ],
+            },
+          ],
+        },
+      });
+    </script>
