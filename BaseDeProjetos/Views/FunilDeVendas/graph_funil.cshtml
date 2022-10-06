@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
+@using System
 <style>
     .center {
         display: flex;
@@ -8,73 +9,116 @@
         border: 3px solid;
     }
 </style>
-@{ var prospec_ativas = Model.Where(p => p.Status.All(k => k.Status <= StatusProspeccao.ComProposta));
+@{ 
+    
 
     int cd_CI,cd_ED,cd_CP,ei_CI,ei_ED,ei_CP,af_CI,af_ED,af_CP,emb_CI,emb_ED,emb_CP,ou_CI,ou_ED,ou_CP,par_CI,par_ED,par_CP,anp_CI,anp_ED,anp_CP = 0;
     int cd_CI_a,cd_ED_a,cd_CP_a,ei_CI_a,ei_ED_a,ei_CP_a,af_CI_a,af_ED_a,af_CP_a,emb_CI_a,emb_ED_a,emb_CP_a,ou_CI_a,ou_ED_a,ou_CP_a,par_CI_a,par_ED_a,par_CP_a,anp_CI_a,anp_ED_a,anp_CP_a = 0;
 
-    cd_CI = Model.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
-    cd_ED = Model.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Any(k => k.Status < StatusProspeccao.ComProposta && k.Status > StatusProspeccao.ContatoInicial)).Count();
-    cd_CP = Model.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
+    bool VerificarContratacaoDireta(Prospeccao p){
+        return p.TipoContratacao == TipoContratacao.ContratacaoDireta;
+    }
+    bool VerificarContratacaoEditalInovacao(Prospeccao p){
+        return p.TipoContratacao == TipoContratacao.EditalInovacao;
+    }
+    bool VerificarContratacaoAgenciaFomento(Prospeccao p){
+        return p.TipoContratacao == TipoContratacao.AgenciaFomento;
+    }
+    bool VerificarContratacaoEmbrapii(Prospeccao p){
+        return p.TipoContratacao == TipoContratacao.Embrapii;
+    }
+    bool VerificarContratacaoIndefinida(Prospeccao p){
+        return p.TipoContratacao == TipoContratacao.Indefinida;
+    }
+    bool VerificarContratacaoParceiro(Prospeccao p){
+        return p.TipoContratacao == TipoContratacao.Parceiro;
+    }
+    bool VerificarContratacaoANP(Prospeccao p){
+        return p.TipoContratacao == TipoContratacao.ANP;
+    }
+    bool VerificarStatusContatoInicial(Prospeccao p){
+        if (p.Status.Count == 0){
+            return false;
+        }
+        return p.Status.Any(s => s.Status == StatusProspeccao.ContatoInicial);
+    }
+    bool VerificarStatusEmDiscussao(Prospeccao p){
+        if (p.Status.Count == 0){
+            return false;
+        }
+        return p.Status.Any(k => k.Status < StatusProspeccao.ComProposta && k.Status > StatusProspeccao.ContatoInicial);
+    }
+    bool VerificarStatusComProposta(Prospeccao p){
+        if (p.Status.Count == 0){
+            return false;
+        }
+        return p.Status.Any(s => s.Status == StatusProspeccao.ComProposta);
+    }
 
-    ei_CI = Model.Where(p => p.TipoContratacao == TipoContratacao.EditalInovacao && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
-    ei_ED = Model.Where(p => p.TipoContratacao == TipoContratacao.EditalInovacao && p.Status.Any(k => k.Status < StatusProspeccao.ComProposta && k.Status > StatusProspeccao.ContatoInicial)).Count();
-    ei_CP = Model.Where(p => p.TipoContratacao == TipoContratacao.EditalInovacao && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
+    cd_CI = Model.Where(p => VerificarContratacaoDireta(p) && VerificarStatusContatoInicial(p)).ToList().Count();
+    cd_ED = Model.Where(p => VerificarContratacaoDireta(p) && VerificarStatusEmDiscussao(p)).Count();
+    cd_CP = Model.Where(p => VerificarContratacaoDireta(p) && VerificarStatusComProposta(p)).ToList().Count();
 
-    af_CI = Model.Where(p => p.TipoContratacao == TipoContratacao.AgenciaFomento && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
-    af_ED = Model.Where(p => p.TipoContratacao == TipoContratacao.AgenciaFomento && p.Status.Any(k => k.Status < StatusProspeccao.ComProposta && k.Status > StatusProspeccao.ContatoInicial)).Count();
-    af_CP = Model.Where(p => p.TipoContratacao == TipoContratacao.AgenciaFomento && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
+    ei_CI = Model.Where(p => VerificarContratacaoEditalInovacao(p) && VerificarStatusContatoInicial(p)).ToList().Count();
+    ei_ED = Model.Where(p => VerificarContratacaoEditalInovacao(p) && VerificarStatusEmDiscussao(p)).Count();
+    ei_CP = Model.Where(p => VerificarContratacaoEditalInovacao(p) && VerificarStatusComProposta(p)).ToList().Count();
 
-    emb_CI = Model.Where(p => p.TipoContratacao == TipoContratacao.Embrapii && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
-    emb_ED = Model.Where(p => p.TipoContratacao == TipoContratacao.Embrapii && p.Status.Any(k => k.Status < StatusProspeccao.ComProposta && k.Status > StatusProspeccao.ContatoInicial)).Count();
-    emb_CP = Model.Where(p => p.TipoContratacao == TipoContratacao.Embrapii && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
+    af_CI = Model.Where(p => VerificarContratacaoAgenciaFomento(p) && VerificarStatusContatoInicial(p)).ToList().Count();
+    af_ED = Model.Where(p => VerificarContratacaoAgenciaFomento(p) && VerificarStatusEmDiscussao(p)).Count();
+    af_CP = Model.Where(p => VerificarContratacaoAgenciaFomento(p) && VerificarStatusComProposta(p)).ToList().Count();
 
-    ou_CI = Model.Where(p => p.TipoContratacao == TipoContratacao.Indefinida && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
-    ou_ED = Model.Where(p => p.TipoContratacao == TipoContratacao.Indefinida && p.Status.Any(k => k.Status < StatusProspeccao.ComProposta && k.Status > StatusProspeccao.ContatoInicial)).Count();
-    ou_CP = Model.Where(p => p.TipoContratacao == TipoContratacao.Indefinida && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
+    emb_CI = Model.Where(p => VerificarContratacaoEmbrapii(p) && VerificarStatusContatoInicial(p)).ToList().Count();
+    emb_ED = Model.Where(p => VerificarContratacaoEmbrapii(p) && VerificarStatusEmDiscussao(p)).Count();
+    emb_CP = Model.Where(p => VerificarContratacaoEmbrapii(p) && VerificarStatusComProposta(p)).ToList().Count();
 
-    par_CI = Model.Where(p => p.TipoContratacao == TipoContratacao.Parceiro && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
-    par_ED = Model.Where(p => p.TipoContratacao == TipoContratacao.Parceiro && p.Status.Any(k => k.Status < StatusProspeccao.ComProposta && k.Status > StatusProspeccao.ContatoInicial)).Count();
-    par_CP = Model.Where(p => p.TipoContratacao == TipoContratacao.Parceiro && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
+    ou_CI = Model.Where(p => VerificarContratacaoIndefinida(p) && VerificarStatusContatoInicial(p)).ToList().Count();
+    ou_ED = Model.Where(p => VerificarContratacaoIndefinida(p) && VerificarStatusEmDiscussao(p)).Count();
+    ou_CP = Model.Where(p => VerificarContratacaoIndefinida(p) && VerificarStatusComProposta(p)).ToList().Count();
 
-    anp_CI = Model.Where(p => p.TipoContratacao == TipoContratacao.ANP && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
-    anp_ED = Model.Where(p => p.TipoContratacao == TipoContratacao.ANP && p.Status.Any(k => k.Status < StatusProspeccao.ComProposta && k.Status > StatusProspeccao.ContatoInicial)).Count();
-    anp_CP = Model.Where(p => p.TipoContratacao == TipoContratacao.ANP && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
+    par_CI = Model.Where(p => VerificarContratacaoParceiro(p) && VerificarStatusContatoInicial(p)).ToList().Count();
+    par_ED = Model.Where(p => VerificarContratacaoParceiro(p) && VerificarStatusEmDiscussao(p)).Count();
+    par_CP = Model.Where(p => VerificarContratacaoParceiro(p) && VerificarStatusComProposta(p)).ToList().Count();
+
+    anp_CI = Model.Where(p => VerificarContratacaoANP(p) && VerificarStatusContatoInicial(p)).ToList().Count();
+    anp_ED = Model.Where(p => VerificarContratacaoANP(p) && VerificarStatusEmDiscussao(p)).Count();
+    anp_CP = Model.Where(p => VerificarContratacaoANP(p) && VerificarStatusComProposta(p)).ToList().Count();
 
     //ATIVAS \/ \/ \/ \/ \/ \/
 
-    cd_CI_a = prospec_ativas.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
-    cd_ED_a = prospec_ativas.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Any(k => k.Status < StatusProspeccao.ComProposta && k.Status > StatusProspeccao.ContatoInicial)).Count();
-    cd_CP_a = prospec_ativas.Where(p => p.TipoContratacao == TipoContratacao.ContratacaoDireta && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
+    var prospec_ativas = Model.Where(p => p.Status.LastOrDefault().Status <= StatusProspeccao.ComProposta);
+    
+    cd_CI_a = prospec_ativas.Where(p => VerificarContratacaoDireta(p) && VerificarStatusContatoInicial(p)).ToList().Count();
+    cd_ED_a = prospec_ativas.Where(p => VerificarContratacaoDireta(p) && VerificarStatusEmDiscussao(p)).Count();
+    cd_CP_a = prospec_ativas.Where(p => VerificarContratacaoDireta(p) && VerificarStatusComProposta(p)).ToList().Count();
 
-    ei_CI_a = prospec_ativas.Where(p => p.TipoContratacao == TipoContratacao.EditalInovacao && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
-    ei_ED_a = prospec_ativas.Where(p => p.TipoContratacao == TipoContratacao.EditalInovacao && p.Status.Any(k => k.Status < StatusProspeccao.ComProposta && k.Status > StatusProspeccao.ContatoInicial)).Count();
-    ei_CP_a = prospec_ativas.Where(p => p.TipoContratacao == TipoContratacao.EditalInovacao && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
+    ei_CI_a = prospec_ativas.Where(p => VerificarContratacaoEditalInovacao(p) && VerificarStatusContatoInicial(p)).ToList().Count();
+    ei_ED_a = prospec_ativas.Where(p => VerificarContratacaoEditalInovacao(p) && VerificarStatusEmDiscussao(p)).Count();
+    ei_CP_a = prospec_ativas.Where(p => VerificarContratacaoEditalInovacao(p) && VerificarStatusComProposta(p)).ToList().Count();
 
-    af_CI_a = prospec_ativas.Where(p => p.TipoContratacao == TipoContratacao.AgenciaFomento && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
-    af_ED_a = prospec_ativas.Where(p => p.TipoContratacao == TipoContratacao.AgenciaFomento && p.Status.Any(k => k.Status < StatusProspeccao.ComProposta && k.Status > StatusProspeccao.ContatoInicial)).Count();
-    af_CP_a = prospec_ativas.Where(p => p.TipoContratacao == TipoContratacao.AgenciaFomento && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
+    af_CI_a = prospec_ativas.Where(p => VerificarContratacaoAgenciaFomento(p) && VerificarStatusContatoInicial(p)).ToList().Count();
+    af_ED_a = prospec_ativas.Where(p => VerificarContratacaoAgenciaFomento(p) && VerificarStatusEmDiscussao(p)).Count();
+    af_CP_a = prospec_ativas.Where(p => VerificarContratacaoAgenciaFomento(p) && VerificarStatusComProposta(p)).ToList().Count();
 
-    emb_CI_a = prospec_ativas.Where(p => p.TipoContratacao == TipoContratacao.Embrapii && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
-    emb_ED_a = prospec_ativas.Where(p => p.TipoContratacao == TipoContratacao.Embrapii && p.Status.Any(k => k.Status < StatusProspeccao.ComProposta && k.Status > StatusProspeccao.ContatoInicial)).Count();
-    emb_CP_a = prospec_ativas.Where(p => p.TipoContratacao == TipoContratacao.Embrapii && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
+    emb_CI_a = prospec_ativas.Where(p => VerificarContratacaoEmbrapii(p) && VerificarStatusContatoInicial(p)).ToList().Count();
+    emb_ED_a = prospec_ativas.Where(p => VerificarContratacaoEmbrapii(p) && VerificarStatusEmDiscussao(p)).Count();
+    emb_CP_a = prospec_ativas.Where(p => VerificarContratacaoEmbrapii(p) && VerificarStatusComProposta(p)).ToList().Count();
 
-    ou_CI_a = prospec_ativas.Where(p => p.TipoContratacao == TipoContratacao.Indefinida && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
-    ou_ED_a = prospec_ativas.Where(p => p.TipoContratacao == TipoContratacao.Indefinida && p.Status.Any(k => k.Status < StatusProspeccao.ComProposta && k.Status > StatusProspeccao.ContatoInicial)).Count();
-    ou_CP_a = prospec_ativas.Where(p => p.TipoContratacao == TipoContratacao.Indefinida && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
+    ou_CI_a = prospec_ativas.Where(p => VerificarContratacaoIndefinida(p) && VerificarStatusContatoInicial(p)).ToList().Count();
+    ou_ED_a = prospec_ativas.Where(p => VerificarContratacaoIndefinida(p) && VerificarStatusEmDiscussao(p)).Count();
+    ou_CP_a = prospec_ativas.Where(p => VerificarContratacaoIndefinida(p) && VerificarStatusComProposta(p)).ToList().Count();
 
-    par_CI_a = prospec_ativas.Where(p => p.TipoContratacao == TipoContratacao.Parceiro && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
-    par_ED_a = prospec_ativas.Where(p => p.TipoContratacao == TipoContratacao.Parceiro && p.Status.Any(k => k.Status < StatusProspeccao.ComProposta && k.Status > StatusProspeccao.ContatoInicial)).Count();
-    par_CP_a = prospec_ativas.Where(p => p.TipoContratacao == TipoContratacao.Parceiro && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
+    par_CI_a = prospec_ativas.Where(p => VerificarContratacaoParceiro(p) && VerificarStatusContatoInicial(p)).ToList().Count();
+    par_ED_a = prospec_ativas.Where(p => VerificarContratacaoParceiro(p) && VerificarStatusEmDiscussao(p)).Count();
+    par_CP_a = prospec_ativas.Where(p => VerificarContratacaoParceiro(p) && VerificarStatusComProposta(p)).ToList().Count();
 
-    anp_CI_a = prospec_ativas.Where(p => p.TipoContratacao == TipoContratacao.ANP && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ContatoInicial).Count() > 0).ToList().Count();
-    anp_ED_a = prospec_ativas.Where(p => p.TipoContratacao == TipoContratacao.ANP && p.Status.Any(k => k.Status < StatusProspeccao.ComProposta && k.Status > StatusProspeccao.ContatoInicial)).Count();
-    anp_CP_a = prospec_ativas.Where(p => p.TipoContratacao == TipoContratacao.ANP && p.Status.Count > 0 && p.Status.Where(s => s.Status == StatusProspeccao.ComProposta).Count() > 0).ToList().Count();
+    anp_CI_a = prospec_ativas.Where(p => VerificarContratacaoANP(p) && VerificarStatusContatoInicial(p)).ToList().Count();
+    anp_ED_a = prospec_ativas.Where(p => VerificarContratacaoANP(p) && VerificarStatusEmDiscussao(p)).Count();
+    anp_CP_a = prospec_ativas.Where(p => VerificarContratacaoANP(p) && VerificarStatusComProposta(p)).ToList().Count();
 
 
 
-    decimal n_propostas = Model.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.ComProposta)).Count();
-    decimal n_propostas_ativas = Model.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.ComProposta) && p.Status.All(s => s.Status < StatusProspeccao.Convertida)).Count();
+    decimal n_propostas = Model.Where(p => VerificarStatusComProposta(p)).Count();
+    decimal n_propostas_ativas = Model.Where(p => VerificarStatusComProposta(p) && p.Status.All(s => s.Status < StatusProspeccao.Convertida)).Count();
 
     decimal n_convertidas = Model.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.Convertida)).Count();
     decimal n_nao_convertidas = Model.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.NaoConvertida)).Count();
@@ -84,16 +128,16 @@
     decimal n_planejadas = Model.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.Planejada)).Count();
 
     //Novo Filtro:
-    decimal filtro_ativas = Model.Where(p => p.Status.All(k => k.Status <= StatusProspeccao.ComProposta)).Count();
-
-    var avancadas = Model.Where(p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)). // lista de prospecção (selecionar com proposta)
-                                            Where(p => p.Status.First().Data - p.Status.FirstOrDefault(s => s.Status == StatusProspeccao.ComProposta).Data > TimeSpan.Zero); // filtrar lista para obter datas positivas (maior que zero)
+    decimal n_empresas_ativas = prospec_ativas.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();
+    var avancadas = Model.Where(p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)).
+        Where(p => p.Status.Any(k => k.Status > StatusProspeccao.ComProposta)). // lista de prospecção (selecionar com proposta)
+        Where(p => (p.Status.First().Data - p.Status.FirstOrDefault(s => s.Status == StatusProspeccao.ComProposta).Data) > TimeSpan.Zero); // filtrar lista para obter datas positivas (maior que zero)
 
     decimal valor_ativas2 = 0;
     foreach (Prospeccao prosp in prospec_ativas)
     {valor_ativas2 += prosp.ValorProposta;}
     
-    if (n_propostas > 0)
+    if (n_propostas_ativas > 0)
     {valor_ativas2 = valor_ativas2 / n_propostas_ativas;}
 
     decimal valor = 0;
@@ -115,7 +159,7 @@
         if (prosps.Count() > 0)
         {
             diff = prosps.Aggregate(new TimeSpan(0),
-                (inicial, prospeccao) => prospeccao.Status.First().Data - prospeccao.Status.FirstOrDefault(s => s.Status == StatusProspeccao.ComProposta).Data,
+                (inicial, prospeccao) => prospeccao.Status.FirstOrDefault(s => s.Status == StatusProspeccao.ComProposta).Data - prospeccao.Status.First().Data,
                 diff => diff);
 
             diff = new TimeSpan(diff.Ticks / prosps.Count());
@@ -172,20 +216,18 @@
 
             <div class="col-12 bg-light bg-gradient">
                 <!--[Iury] IDs da checkbox \/ -->
-                <h1 id="CheckboxProspAtivas1" class="display-3"> @n_empresas</h1>
+                <h1 id="CheckboxProspAtivas1" class="display-3">@n_empresas</h1>
                 <small id="CheckboxProspAtivas2"> Número de empresas prospectadas </small> <hr />
             </div>
 
             <div class="col-4 bg-light bg-gradient">
-                <h4 id="CheckboxProspAtivas7"></h4>
-                <small>
-                    Tempo médio entre o primeiro contato e a emissão da proposta.
-                </small>
+                <h4 id="CheckboxProspAtivas7">@Math.Abs(DiferencaTodas.Days) dias</h4>
+                <small id="CheckboxProspAtivas10">  Tempo médio entre o primeiro contato e a emissão da proposta </small>
             </div>
 
             <div class="col-4 bg-light bg-gradient">
                 <!--[Iury] IDs da checkbox \/ -->
-                <h4 id="CheckboxProspAtivas4"> @Model.Count()</h4>
+                <h4 id="CheckboxProspAtivas4"> @(prospec_ativas.Count())</h4>
                 <small id="CheckboxProspAtivas3"> Contatos iniciais de prospecção </small>
             </div>
 
@@ -222,15 +264,15 @@
     <h4 id="CheckboxProspAtivas5">@valor.ToString("C2")</h4> }
                 else
                 {
-    <h4> R$ ---</h4>}
-                <small>
+    <h4 id="CheckboxProspAtivas5"> R$ ---</h4>}
+                <small id="CheckboxProspAtivas8">
                     Ticket médio das prospecções
                 </small>
             </div>
 
             <div class="col-4">
                 <h4 id="CheckboxProspAtivas6"> @n_propostas</h4>
-                <small>
+                <small id="CheckboxProspAtivas9">
                     Propostas comerciais enviadas
                 </small>
             </div>
@@ -246,87 +288,12 @@
 
 <!-- Gráfico de Fomentos por status-->
 <script type="text/javascript">
-    var seriespadrao = [{
-            name: 'Contratação Direta',
-            data: [@cd_CI,@cd_ED,@cd_CP]
-
-        }, {
-            name: 'Editais de Inovação SESI/SENAI',
-            data: [@ei_CI,@ei_ED,@ei_CP]
-
-        }, {
-            name: 'Agências de Fomento',
-            data: [@af_CI,@af_ED,@af_CP]
-
-        }, {
-            name: 'Embrapii',
-            data: [@emb_CI,@emb_ED,@emb_CP]
-
-        }, {
-            name: 'A definir',
-            data: [@ou_CI,@ou_ED,@ou_CP]
-
-        }, {
-            name: 'Parceiros de Edital',
-            data: [@par_CI,@par_ED,@par_CP]
-
-        }, {
-            name: 'ANP/ANEEL',
-            data: [@anp_CI,@anp_ED,@anp_CP]
-
-        }];
-
-    var seriesativas = [{
-            name: 'Contratação Direta',
-            data: [@cd_CI_a,@cd_ED_a,@cd_CP_a]
-
-        }, {
-            name: 'Editais de Inovação SESI/SENAI',
-            data: [@ei_CI_a,@ei_ED_a,@ei_CP_a]
-
-        }, {
-            name: 'Agências de Fomento',
-            data: [@af_CI_a,@af_ED_a,@af_CP_a]
-
-        }, {
-            name: 'Embrapii',
-            data: [@emb_CI_a,@emb_ED_a,@emb_CP_a]
-
-        }, {
-            name: 'A definir',
-            data: [@ou_CI_a,@ou_ED_a,@ou_CP_a]
-
-        }, {
-            name: 'Parceiros de Edital',
-            data: [@par_CI_a,@par_ED_a,@par_CP_a]
-
-        }, {
-            name: 'ANP/ANEEL',
-            data: [@anp_CI_a,@anp_ED_a,@anp_CP_a]
-
-        }];      
 
     var chart1 = Highcharts.chart('funil', {
-        chart: {
-            type: 'column'
-        },
-        title: {
-            text: 'Funil de Vendas'
-        },
-        xAxis: {
-            categories: [
-                "Contato inicial",
-                "Em discussão",
-                "Com Proposta",
-                "Convertida",
-            ],
-        },
-        yAxis: {
-            min: 0,
-            title: {
-                text: 'Ocorrências'
-            }
-        },
+        chart: {type: 'column'},
+        title: {text: 'Funil de Vendas'},
+        xAxis: {categories: ["Contato inicial","Em discussão","Com Proposta","Convertida",],},
+        yAxis: {min: 0,title: {text: 'Ocorrências'}},
         tooltip: {
             headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
             pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
@@ -335,14 +302,35 @@
             shared: true,
             useHTML: true
         },
-        plotOptions: {
-            column: {
-                pointPadding: 0.2,
-                borderWidth: 0
-            }
-        },
-        series: seriespadrao
-        })
+        plotOptions: {column: {pointPadding: 0.2,borderWidth: 0}},
+        series: [
+        {name: 'Contratação Direta',data: [@cd_CI,@cd_ED,@cd_CP]},
+        {name: 'Editais de Inovação SESI/SENAI',data: [@ei_CI,@ei_ED,@ei_CP]},
+        {name: 'Agências de Fomento',data: [@af_CI,@af_ED,@af_CP]},
+        {name: 'Embrapii',data: [@emb_CI,@emb_ED,@emb_CP]},
+        {name: 'A definir',data: [@ou_CI,@ou_ED,@ou_CP]},
+        {name: 'Parceiros de Edital',data: [@par_CI,@par_ED,@par_CP]},
+        {name: 'ANP/ANEEL',data: [@anp_CI,@anp_ED,@anp_CP]}]
+    })
+
+    var seriespadrao = [
+        {name: 'Contratação Direta',data: [@cd_CI,@cd_ED,@cd_CP]},
+        {name: 'Editais de Inovação SESI/SENAI',data: [@ei_CI,@ei_ED,@ei_CP]},
+        {name: 'Agências de Fomento',data: [@af_CI,@af_ED,@af_CP]},
+        {name: 'Embrapii',data: [@emb_CI,@emb_ED,@emb_CP]},
+        {name: 'A definir',data: [@ou_CI,@ou_ED,@ou_CP]},
+        {name: 'Parceiros de Edital',data: [@par_CI,@par_ED,@par_CP]},
+        {name: 'ANP/ANEEL',data: [@anp_CI,@anp_ED,@anp_CP]}];
+
+    var seriesativas = [
+        {name: 'Contratação Direta',data: [@cd_CI_a,@cd_ED_a,@cd_CP_a]},
+        {name: 'Editais de Inovação SESI/SENAI',data: [@ei_CI_a,@ei_ED_a,@ei_CP_a]},
+        {name: 'Agências de Fomento',data: [@af_CI_a,@af_ED_a,@af_CP_a]},
+        {name: 'Embrapii',data: [@emb_CI_a,@emb_ED_a,@emb_CP_a]},
+        {name: 'A definir',data: [@ou_CI_a,@ou_ED_a,@ou_CP_a]},
+        {name: 'Parceiros de Edital',data: [@par_CI_a,@par_ED_a,@par_CP_a]},
+        {name: 'ANP/ANEEL',data: [@anp_CI_a,@anp_ED_a,@anp_CP_a]}];  
+
 </script>
 <!-- Pizzas -->
 <script>
@@ -462,29 +450,43 @@
 </script>
 
 <script type="text/javascript">
-    function marcada() {
-        if (document.getElementById("caixaSelecaoAtivas").checked) {
-            document.getElementById("CheckboxProspAtivas1").innerHTML = @n_prospeccoes_andamento;
-            document.getElementById("CheckboxProspAtivas2").textContent = "Número de empresas prospectadas (Ativas)";
-            document.getElementById("CheckboxProspAtivas3").textContent = "Contatos iniciais de prospecção (Ativas)";
-            document.getElementById("CheckboxProspAtivas4").textContent = @filtro_ativas;
-            document.getElementById("CheckboxProspAtivas5").textContent = "@valor_ativas";
-            document.getElementById("CheckboxProspAtivas6").textContent = @n_propostas_ativas;
-            document.getElementById("CheckboxProspAtivas7").textContent = "@DiferencaAtivas dias";
-            chart1.update({series: seriesativas}, false);
-            chart1.redraw();
-
-        } else {
-            document.getElementById("CheckboxProspAtivas1").innerHTML = @n_empresas
+    function alterarTextos(statusfiltro){
+        if (!statusfiltro) {
             document.getElementById("CheckboxProspAtivas2").textContent = "Número de empresas prospectadas";
             document.getElementById("CheckboxProspAtivas3").textContent = "Contatos iniciais de prospecção";
+            document.getElementById("CheckboxProspAtivas8").textContent = "Ticket médio das prospecções";
+            document.getElementById("CheckboxProspAtivas9").textContent = "Propostas comerciais enviadas";
+            document.getElementById("CheckboxProspAtivas10").textContent = "Tempo médio entre o primeiro contato e a emissão da proposta";
+        }
+        else {
+            document.getElementById("CheckboxProspAtivas2").textContent += " (Ativas)";
+            document.getElementById("CheckboxProspAtivas3").textContent += " (Ativas)";
+            document.getElementById("CheckboxProspAtivas8").textContent += " (Ativas)";
+            document.getElementById("CheckboxProspAtivas9").textContent += " (Ativas)";
+            document.getElementById("CheckboxProspAtivas10").textContent += " (Ativas)";
+        }
+    }
+    
+
+    function marcada() {
+        if (document.getElementById("caixaSelecaoAtivas").checked) {
+            document.getElementById("CheckboxProspAtivas1").innerHTML = @n_empresas_ativas;
+            document.getElementById("CheckboxProspAtivas4").textContent = @prospec_ativas.Count();
+            document.getElementById("CheckboxProspAtivas5").textContent = "@valor_ativas";
+            document.getElementById("CheckboxProspAtivas6").textContent = @n_propostas_ativas;
+            document.getElementById("CheckboxProspAtivas7").textContent = "@Math.Abs(DiferencaAtivas.Days) dias";
+            alterarTextos(true)
+            chart1.update({series: seriesativas});
+            console.log(seriesativas)
+        } else {
+            document.getElementById("CheckboxProspAtivas1").innerHTML = @n_empresas
             document.getElementById("CheckboxProspAtivas4").textContent = @Model.Count();
             document.getElementById("CheckboxProspAtivas5").textContent = "@valor2";
             document.getElementById("CheckboxProspAtivas6").textContent = @n_propostas;
-            document.getElementById("CheckboxProspAtivas7").textContent = "@DiferencaTodas dias";
-            chart1.update({series: seriespadrao}, false);
-            chart1.redraw();
-
+            document.getElementById("CheckboxProspAtivas7").textContent = "@Math.Abs(DiferencaTodas.Days) dias";
+            alterarTextos(false)
+            chart1.update({series: seriespadrao});
+            console.log(seriespadrao)
         }
     }
 </script>

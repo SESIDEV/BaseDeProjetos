@@ -17,10 +17,10 @@
 
 }
 <style>
-.btn{
-white-space:normal !important;
-word-wrap: break-word; 
-}
+    .btn {
+        white-space: normal !important;
+        word-wrap: break-word;
+    }
 </style>
 <div class="col-12" style="margin-bottom:1em">
 
@@ -31,26 +31,30 @@ word-wrap: break-word;
         string id_casa = "collapse_" + casa_nome;
 
         <div class="btn-group" role="group">
-            <button id="btnGroupDrop1" type="button" class="btn btn-outline-dark btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    <small>@casa.GetDisplayName()</small>
+            <button id="btnGroupDrop1" type="button" class="btn btn-outline-dark btn-light dropdown-toggle"
+            data-bs-toggle="dropdown" aria-expanded="false">
+                <small>@casa.GetDisplayName()</small>
             </button>
             <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                 <li>
-                        <a class="dropdown-item" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa_nome" id="a-success">
-                            Funil de Vendas
-                        </a>
+                    <a class="dropdown-item" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa_nome"
+                    id="a-success">
+                        Funil de Vendas
+                    </a>
                 </li>
-                <li>
 
-                        <a class="dropdown-item" asp-action="Index" asp-controller="Projetos" asp-route-casa="@casa_nome" id="a-success">
-                            Base de Projetos
-                        </a>
+                <li>
+                    <a class="dropdown-item" asp-action="Index" asp-controller="Projetos" asp-route-casa="@casa_nome"
+                    id="a-success">
+                        Base de Projetos
+                    </a>
                 </li>
-                <li>
 
-                        <a class="dropdown-item" asp-action="Index" asp-controller="Producao" asp-route-casa="@casa_nome" id="a-success">
-                            Produções
-                        </a>
+                <li>
+                    <a class="dropdown-item" asp-action="Index" asp-controller="Producao" asp-route-casa="@casa_nome"
+                    id="a-success">
+                        Gestão do Conhecimento
+                    </a>
                 </li>
             </ul>
         </div>

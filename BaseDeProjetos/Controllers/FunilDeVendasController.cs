@@ -65,22 +65,21 @@ namespace BaseDeProjetos.Controllers
     {
       var concluidos = lista.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida ||
                                                         f.Status == StatusProspeccao.Suspensa ||
-                                                        f.Status == StatusProspeccao.NaoConvertida));
+                                                        f.Status == StatusProspeccao.NaoConvertida)).ToList();
+                                                        
+      List<Prospeccao> errados = lista.Where(p => p.Status.FirstOrDefault().Status != StatusProspeccao.ContatoInicial).ToList();
+      
+      List<Prospeccao> emProposta = lista.Where(p => p.Status.LastOrDefault().Status == StatusProspeccao.ComProposta).ToList();
 
-      List<Prospeccao> emProposta = lista.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.ComProposta) &&
-                                                           p.Status.All(f2 => f2.Status != StatusProspeccao.Suspensa &&
-                                                                        f2.Status != StatusProspeccao.Convertida &&
-                                                                        f2.Status != StatusProspeccao.NaoConvertida)).ToList();
-
-      List<Prospeccao> ativos = lista.Where(p => p.Status.All(f => f.Status == StatusProspeccao.ContatoInicial ||
-                                                        f.Status == StatusProspeccao.Discussao_EsbocoProjeto)).ToList();
+      List<Prospeccao> ativos = lista.Where(p => p.Status.LastOrDefault().Status < StatusProspeccao.ComProposta).ToList();
 
       List<Prospeccao> planejados = lista.Where(p => p.Status.All(f => f.Status == StatusProspeccao.Planejada)).ToList();
 
-      ViewBag.Concluidas = concluidos.ToList<Prospeccao>();
-      ViewBag.Ativas = ativos.ToList<Prospeccao>();
-      ViewBag.EmProposta = emProposta.ToList();
-      ViewBag.Planejadas = planejados.ToList();
+      ViewBag.Erradas = errados;
+      ViewBag.Concluidas = concluidos;
+      ViewBag.Ativas = ativos;
+      ViewBag.EmProposta = emProposta;
+      ViewBag.Planejadas = planejados;
     }
 
     private void SetarFiltros(string sortOrder = "", string searchString = "")

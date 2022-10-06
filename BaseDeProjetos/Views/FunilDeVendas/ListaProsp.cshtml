@@ -195,7 +195,7 @@
                         <p>@item.Status.Last().Anotacoes</p>
                     </div>
                     <div>
-                        Data: @item.Status.Last().Data.ToShortDateString()
+                        Data: @item.Status.Last().Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))
                     </div>
                 </div>
             </div>
