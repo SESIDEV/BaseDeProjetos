@@ -39,7 +39,7 @@
             <div class="form-group">
                 <label asp-for="Logo" class="control-label"></label>
                 <input type="file" class="form-control" id="logo_imagem" onchange="Base64()"/>
-                <input asp-for="Logo" id="logo_b64" class="control-label" style="display: none;" value="@Model.Logo" readonly>
+                <input asp-for="Logo" id="logo_b64" class="control-label" style="display: none;" value="@Model.Logo" onchange="MostrarLogo()" readonly>
             </div>
             <img id="logo_img_preview" src="" width="300">
             <hr />
@@ -53,7 +53,12 @@
 <div>
     <a asp-action="Index">Voltar para Lista</a>
 </div>
-<script>document.getElementById("logo_img_preview").src = document.getElementById('logo_b64').value</script>
+<script>
+    function MostrarLogo(){
+        document.getElementById("logo_img_preview").src = document.getElementById('logo_b64').value
+    }
+    MostrarLogo()
+</script>
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
