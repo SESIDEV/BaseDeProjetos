@@ -1,32 +1,27 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Projeto>
+@using BaseDeProjetos.Helpers
 <style>
-
-     .caixa-logo {
+    .caixa-logo {
         max-width: 180px;
         height: 100%;
-        display: flex;
         justify-content: center;
         align-items: center;
         padding: 20px;
     }
-      #logoEmpresa {
+    #logoEmpresa {
         object-fit: contain;
         max-width: 180px;
         max-height: 180px;
         padding: 20px;
     }
-
     #box-btn-actions {
         width: 100%;
-        display: flex;
         justify-content: center;
         gap: 10px;
     }
-
     span{
         text-align:center;
     }
-
 </style>
 
 
@@ -84,22 +79,24 @@
                             <div class="col-12 row">
                                 <span class="col"><strong>@Html.DisplayNameFor(model => model.Empresa.Nome)</strong></span>
                                 <span class="col"><strong>@Html.DisplayNameFor(model => model.NomeProjeto)</strong></span>
-                                <span class="col"><strong>@Html.DisplayNameFor(model => model.Lider)</strong></span>
+                                <span class="col"><strong>@Html.DisplayNameFor(model => model.ValorAporteRecursos)</strong></span>
                                 <span class="col"><strong>@Html.DisplayNameFor(model => model.FonteFomento)</strong></span>
                                 <span class="col"><strong>@Html.DisplayNameFor(model => model.DataEncerramento)</strong></span>
                             </div>
+
                             <hr>
+
                             <div class="col-12 row">
                                 <span class="col">@Html.DisplayFor(modelItem => item.Empresa.Nome)</span>
                                 <span class="col">@Html.DisplayFor(modelItem => item.NomeProjeto)</span>
                                 <span class="col">
-                                    @try
+                                    @if(item.ValorAporteRecursos != null && item.ValorAporteRecursos > 0)
                                     {
-                                        @Html.DisplayFor(modelItem => item.NomeLider)
+                                        <span> R$ @Helpers.FormatarValoresDashboards((decimal)item.ValorAporteRecursos)</span>
                                     }
-                                    catch
+                                    else
                                     {
-                                            <span class="col" >A preencher</span>
+                                        <span>A preencher</span>
                                     }
                                 </span class="col">
                                 <span class="col">@Html.DisplayFor(modelItem => item.FonteFomento)</span>
@@ -107,6 +104,9 @@
                                     @item.DataEncerramento.ToString("dd/MM/yyy")
                                 </span>
                             </div>
+
+
+
                         </div>
                     </div>
 
@@ -133,4 +133,3 @@
 
 
     }
-</div>

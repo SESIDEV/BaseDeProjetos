@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
 @using System.Globalization
+@using BaseDeProjetos.Helpers
 @{
     var ptbr = new CultureInfo("pt-BR");
 }
@@ -154,17 +155,15 @@
 
                         @if (item.ValorProposta != 0)
                         {
-                            <p class="description-info"><strong>Valor da Proposta:
-                                </strong>@item.ValorProposta.ToString("C2",CultureInfo.CreateSpecificCulture("pt-BR"))</p>
+                            <p class="description-info"><strong>Valor da Proposta:</strong> R$ @Helpers.FormatarValoresDashboards((decimal)item.ValorProposta)</p>
                         }
                         else if (item.ValorEstimado != 0)
                         {
-                            <p class="description-info"><strong>Valor da Estimado:</strong> @item.ValorEstimado.ToString("C2",
-                    CultureInfo.CreateSpecificCulture("pt-BR"))</p>
+                            <p class="description-info"><strong>Valor Estimado:</strong> R$ @Helpers.FormatarValoresDashboards((decimal)item.ValorEstimado)</p>
                         }
                         else
                         {
-                            <p class="description-info"><strong>Valor da Estimado:</strong> Valor não informado</p>
+                            <p class="description-info"><strong>Valor estimado:</strong> Valor não informado</p>
                         }
                     }
                     else
@@ -172,11 +171,11 @@
                         <p class="description-info"><strong>Status: </strong>@item.Status.Last().Status.GetDisplayName()</p>
                         @if (item.ValorEstimado != 0)
                         {
-                            <p class="description-info"><strong>Valor da Estimado:</strong> @item.ValorEstimado.ToString("C2")</p>
+                            <p class="description-info"><strong>Valor Estimado:</strong> R$ @Helpers.FormatarValoresDashboards((decimal)item.ValorEstimado)</p>
                         }
                         else
                         {
-                            <p class="description-info"><strong>Valor da Estimado:</strong> Valor não informado</p>
+                            <p class="description-info"><strong>Valor Estimado:</strong> Valor não informado</p>
                         }
                     }
                 </div>
