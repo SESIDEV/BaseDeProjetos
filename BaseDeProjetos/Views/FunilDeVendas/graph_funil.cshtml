@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
 @using System
+@using BaseDeProjetos.Helpers
+
 <style>
     .center {
         display: flex;
@@ -15,110 +17,70 @@
     int cd_CI,cd_ED,cd_CP,ei_CI,ei_ED,ei_CP,af_CI,af_ED,af_CP,emb_CI,emb_ED,emb_CP,ou_CI,ou_ED,ou_CP,par_CI,par_ED,par_CP,anp_CI,anp_ED,anp_CP = 0;
     int cd_CI_a,cd_ED_a,cd_CP_a,ei_CI_a,ei_ED_a,ei_CP_a,af_CI_a,af_ED_a,af_CP_a,emb_CI_a,emb_ED_a,emb_CP_a,ou_CI_a,ou_ED_a,ou_CP_a,par_CI_a,par_ED_a,par_CP_a,anp_CI_a,anp_ED_a,anp_CP_a = 0;
 
-    bool VerificarContratacaoDireta(Prospeccao p){
-        return p.TipoContratacao == TipoContratacao.ContratacaoDireta;
-    }
-    bool VerificarContratacaoEditalInovacao(Prospeccao p){
-        return p.TipoContratacao == TipoContratacao.EditalInovacao;
-    }
-    bool VerificarContratacaoAgenciaFomento(Prospeccao p){
-        return p.TipoContratacao == TipoContratacao.AgenciaFomento;
-    }
-    bool VerificarContratacaoEmbrapii(Prospeccao p){
-        return p.TipoContratacao == TipoContratacao.Embrapii;
-    }
-    bool VerificarContratacaoIndefinida(Prospeccao p){
-        return p.TipoContratacao == TipoContratacao.Indefinida;
-    }
-    bool VerificarContratacaoParceiro(Prospeccao p){
-        return p.TipoContratacao == TipoContratacao.Parceiro;
-    }
-    bool VerificarContratacaoANP(Prospeccao p){
-        return p.TipoContratacao == TipoContratacao.ANP;
-    }
-    bool VerificarStatusContatoInicial(Prospeccao p){
-        if (p.Status.Count == 0){
-            return false;
-        }
-        return p.Status.Any(s => s.Status == StatusProspeccao.ContatoInicial);
-    }
-    bool VerificarStatusEmDiscussao(Prospeccao p){
-        if (p.Status.Count == 0){
-            return false;
-        }
-        return p.Status.Any(k => k.Status < StatusProspeccao.ComProposta && k.Status > StatusProspeccao.ContatoInicial);
-    }
-    bool VerificarStatusComProposta(Prospeccao p){
-        if (p.Status.Count == 0){
-            return false;
-        }
-        return p.Status.Any(s => s.Status == StatusProspeccao.ComProposta);
-    }
+    cd_CI = Model.Where(p => FunilHelpers.VerificarContratacaoDireta(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
+    cd_ED = Model.Where(p => FunilHelpers.VerificarContratacaoDireta(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
+    cd_CP = Model.Where(p => FunilHelpers.VerificarContratacaoDireta(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
 
-    cd_CI = Model.Where(p => VerificarContratacaoDireta(p) && VerificarStatusContatoInicial(p)).ToList().Count();
-    cd_ED = Model.Where(p => VerificarContratacaoDireta(p) && VerificarStatusEmDiscussao(p)).Count();
-    cd_CP = Model.Where(p => VerificarContratacaoDireta(p) && VerificarStatusComProposta(p)).ToList().Count();
+    ei_CI = Model.Where(p => FunilHelpers.VerificarContratacaoEditalInovacao(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
+    ei_ED = Model.Where(p => FunilHelpers.VerificarContratacaoEditalInovacao(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
+    ei_CP = Model.Where(p => FunilHelpers.VerificarContratacaoEditalInovacao(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
 
-    ei_CI = Model.Where(p => VerificarContratacaoEditalInovacao(p) && VerificarStatusContatoInicial(p)).ToList().Count();
-    ei_ED = Model.Where(p => VerificarContratacaoEditalInovacao(p) && VerificarStatusEmDiscussao(p)).Count();
-    ei_CP = Model.Where(p => VerificarContratacaoEditalInovacao(p) && VerificarStatusComProposta(p)).ToList().Count();
+    af_CI = Model.Where(p => FunilHelpers.VerificarContratacaoAgenciaFomento(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
+    af_ED = Model.Where(p => FunilHelpers.VerificarContratacaoAgenciaFomento(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
+    af_CP = Model.Where(p => FunilHelpers.VerificarContratacaoAgenciaFomento(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
 
-    af_CI = Model.Where(p => VerificarContratacaoAgenciaFomento(p) && VerificarStatusContatoInicial(p)).ToList().Count();
-    af_ED = Model.Where(p => VerificarContratacaoAgenciaFomento(p) && VerificarStatusEmDiscussao(p)).Count();
-    af_CP = Model.Where(p => VerificarContratacaoAgenciaFomento(p) && VerificarStatusComProposta(p)).ToList().Count();
+    emb_CI = Model.Where(p => FunilHelpers.VerificarContratacaoEmbrapii(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
+    emb_ED = Model.Where(p => FunilHelpers.VerificarContratacaoEmbrapii(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
+    emb_CP = Model.Where(p => FunilHelpers.VerificarContratacaoEmbrapii(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
 
-    emb_CI = Model.Where(p => VerificarContratacaoEmbrapii(p) && VerificarStatusContatoInicial(p)).ToList().Count();
-    emb_ED = Model.Where(p => VerificarContratacaoEmbrapii(p) && VerificarStatusEmDiscussao(p)).Count();
-    emb_CP = Model.Where(p => VerificarContratacaoEmbrapii(p) && VerificarStatusComProposta(p)).ToList().Count();
+    ou_CI = Model.Where(p => FunilHelpers.VerificarContratacaoIndefinida(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
+    ou_ED = Model.Where(p => FunilHelpers.VerificarContratacaoIndefinida(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
+    ou_CP = Model.Where(p => FunilHelpers.VerificarContratacaoIndefinida(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
 
-    ou_CI = Model.Where(p => VerificarContratacaoIndefinida(p) && VerificarStatusContatoInicial(p)).ToList().Count();
-    ou_ED = Model.Where(p => VerificarContratacaoIndefinida(p) && VerificarStatusEmDiscussao(p)).Count();
-    ou_CP = Model.Where(p => VerificarContratacaoIndefinida(p) && VerificarStatusComProposta(p)).ToList().Count();
+    par_CI = Model.Where(p => FunilHelpers.VerificarContratacaoParceiro(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
+    par_ED = Model.Where(p => FunilHelpers.VerificarContratacaoParceiro(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
+    par_CP = Model.Where(p => FunilHelpers.VerificarContratacaoParceiro(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
 
-    par_CI = Model.Where(p => VerificarContratacaoParceiro(p) && VerificarStatusContatoInicial(p)).ToList().Count();
-    par_ED = Model.Where(p => VerificarContratacaoParceiro(p) && VerificarStatusEmDiscussao(p)).Count();
-    par_CP = Model.Where(p => VerificarContratacaoParceiro(p) && VerificarStatusComProposta(p)).ToList().Count();
-
-    anp_CI = Model.Where(p => VerificarContratacaoANP(p) && VerificarStatusContatoInicial(p)).ToList().Count();
-    anp_ED = Model.Where(p => VerificarContratacaoANP(p) && VerificarStatusEmDiscussao(p)).Count();
-    anp_CP = Model.Where(p => VerificarContratacaoANP(p) && VerificarStatusComProposta(p)).ToList().Count();
+    anp_CI = Model.Where(p => FunilHelpers.VerificarContratacaoANP(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
+    anp_ED = Model.Where(p => FunilHelpers.VerificarContratacaoANP(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
+    anp_CP = Model.Where(p => FunilHelpers.VerificarContratacaoANP(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
 
     //ATIVAS \/ \/ \/ \/ \/ \/
 
-    var prospec_ativas = Model.Where(p => p.Status.LastOrDefault().Status <= StatusProspeccao.ComProposta);
+    var prospec_ativas = Model.Where(p => p.Status.OrderBy(k => k.Data).LastOrDefault().Status <= StatusProspeccao.ComProposta);
     
-    cd_CI_a = prospec_ativas.Where(p => VerificarContratacaoDireta(p) && VerificarStatusContatoInicial(p)).ToList().Count();
-    cd_ED_a = prospec_ativas.Where(p => VerificarContratacaoDireta(p) && VerificarStatusEmDiscussao(p)).Count();
-    cd_CP_a = prospec_ativas.Where(p => VerificarContratacaoDireta(p) && VerificarStatusComProposta(p)).ToList().Count();
+    cd_CI_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoDireta(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
+    cd_ED_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoDireta(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
+    cd_CP_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoDireta(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
 
-    ei_CI_a = prospec_ativas.Where(p => VerificarContratacaoEditalInovacao(p) && VerificarStatusContatoInicial(p)).ToList().Count();
-    ei_ED_a = prospec_ativas.Where(p => VerificarContratacaoEditalInovacao(p) && VerificarStatusEmDiscussao(p)).Count();
-    ei_CP_a = prospec_ativas.Where(p => VerificarContratacaoEditalInovacao(p) && VerificarStatusComProposta(p)).ToList().Count();
+    ei_CI_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoEditalInovacao(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
+    ei_ED_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoEditalInovacao(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
+    ei_CP_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoEditalInovacao(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
 
-    af_CI_a = prospec_ativas.Where(p => VerificarContratacaoAgenciaFomento(p) && VerificarStatusContatoInicial(p)).ToList().Count();
-    af_ED_a = prospec_ativas.Where(p => VerificarContratacaoAgenciaFomento(p) && VerificarStatusEmDiscussao(p)).Count();
-    af_CP_a = prospec_ativas.Where(p => VerificarContratacaoAgenciaFomento(p) && VerificarStatusComProposta(p)).ToList().Count();
+    af_CI_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoAgenciaFomento(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
+    af_ED_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoAgenciaFomento(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
+    af_CP_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoAgenciaFomento(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
 
-    emb_CI_a = prospec_ativas.Where(p => VerificarContratacaoEmbrapii(p) && VerificarStatusContatoInicial(p)).ToList().Count();
-    emb_ED_a = prospec_ativas.Where(p => VerificarContratacaoEmbrapii(p) && VerificarStatusEmDiscussao(p)).Count();
-    emb_CP_a = prospec_ativas.Where(p => VerificarContratacaoEmbrapii(p) && VerificarStatusComProposta(p)).ToList().Count();
+    emb_CI_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoEmbrapii(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
+    emb_ED_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoEmbrapii(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
+    emb_CP_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoEmbrapii(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
 
-    ou_CI_a = prospec_ativas.Where(p => VerificarContratacaoIndefinida(p) && VerificarStatusContatoInicial(p)).ToList().Count();
-    ou_ED_a = prospec_ativas.Where(p => VerificarContratacaoIndefinida(p) && VerificarStatusEmDiscussao(p)).Count();
-    ou_CP_a = prospec_ativas.Where(p => VerificarContratacaoIndefinida(p) && VerificarStatusComProposta(p)).ToList().Count();
+    ou_CI_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoIndefinida(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
+    ou_ED_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoIndefinida(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
+    ou_CP_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoIndefinida(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
 
-    par_CI_a = prospec_ativas.Where(p => VerificarContratacaoParceiro(p) && VerificarStatusContatoInicial(p)).ToList().Count();
-    par_ED_a = prospec_ativas.Where(p => VerificarContratacaoParceiro(p) && VerificarStatusEmDiscussao(p)).Count();
-    par_CP_a = prospec_ativas.Where(p => VerificarContratacaoParceiro(p) && VerificarStatusComProposta(p)).ToList().Count();
+    par_CI_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoParceiro(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
+    par_ED_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoParceiro(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
+    par_CP_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoParceiro(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
 
-    anp_CI_a = prospec_ativas.Where(p => VerificarContratacaoANP(p) && VerificarStatusContatoInicial(p)).ToList().Count();
-    anp_ED_a = prospec_ativas.Where(p => VerificarContratacaoANP(p) && VerificarStatusEmDiscussao(p)).Count();
-    anp_CP_a = prospec_ativas.Where(p => VerificarContratacaoANP(p) && VerificarStatusComProposta(p)).ToList().Count();
+    anp_CI_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoANP(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
+    anp_ED_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoANP(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
+    anp_CP_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoANP(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
 
 
 
-    decimal n_propostas = Model.Where(p => VerificarStatusComProposta(p)).Count();
-    decimal n_propostas_ativas = Model.Where(p => VerificarStatusComProposta(p) && p.Status.All(s => s.Status < StatusProspeccao.Convertida)).Count();
+    decimal n_propostas = Model.Where(p => FunilHelpers.VerificarStatusComProposta(p)).Count();
+    decimal n_propostas_ativas = Model.Where(p => FunilHelpers.VerificarStatusComProposta(p) && p.Status.All(s => s.Status < StatusProspeccao.Convertida)).Count();
 
     decimal n_convertidas = Model.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.Convertida)).Count();
     decimal n_nao_convertidas = Model.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.NaoConvertida)).Count();
@@ -227,7 +189,7 @@
 
             <div class="col-4 bg-light bg-gradient">
                 <!--[Iury] IDs da checkbox \/ -->
-                <h4 id="CheckboxProspAtivas4"> @(prospec_ativas.Count())</h4>
+                <h4 id="CheckboxProspAtivas4"> @(Model.Count())</h4>
                 <small id="CheckboxProspAtivas3"> Contatos iniciais de prospecção </small>
             </div>
 
@@ -477,7 +439,6 @@
             document.getElementById("CheckboxProspAtivas7").textContent = "@Math.Abs(DiferencaAtivas.Days) dias";
             alterarTextos(true)
             chart1.update({series: seriesativas});
-            console.log(seriesativas)
         } else {
             document.getElementById("CheckboxProspAtivas1").innerHTML = @n_empresas
             document.getElementById("CheckboxProspAtivas4").textContent = @Model.Count();
@@ -486,7 +447,6 @@
             document.getElementById("CheckboxProspAtivas7").textContent = "@Math.Abs(DiferencaTodas.Days) dias";
             alterarTextos(false)
             chart1.update({series: seriespadrao});
-            console.log(seriespadrao)
         }
     }
 </script>

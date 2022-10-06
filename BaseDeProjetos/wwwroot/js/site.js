@@ -10,7 +10,7 @@
  *
  * */
 
-function TesteJS(){
+function FiltroEmpresaEstrangeira(){
 
     let checkBox = document.getElementById("empresa_estrangeira_check");
     let cnpj = document.getElementById("valor_cnpj");
@@ -65,7 +65,7 @@ function CasasFunil() {
 
 
 function validarCNPJ(){
-    
+    document.getElementById("valor_cnpj").value = document.getElementById("valor_cnpj").value.replace(/[^0-9]/g, '');
     let cnpj = document.getElementById("valor_cnpj").value;
     if (isNaN(cnpj) || cnpj.length < 14) {
         alert("CNPJ inválido");
@@ -94,6 +94,7 @@ function AplicarDadosAPI() {
 
     res.json().then(dados => {
     document.getElementById("NomeEmpresaCadastro").value = dados.nome;
+    document.getElementById("NomeFantasiaEmpresa").value = dados.fantasia;
     document.getElementById("TipoEmpresaStatus").innerHTML = "Tipo: " + dados.tipo;
     document.getElementById("SituacaoEmpresaStatus").innerHTML = "Situação: " + dados.situacao;
 
@@ -190,9 +191,12 @@ function Base64() {
     r = new FileReader();
     r.readAsDataURL(imagem);
     r.onload = function(){
-        document.getElementById('logo_b64').value = r.result;
-        document.getElementById("logo_img_preview").src = r.result;
+        document.getElementById("logo_img_preview").src = r.result
+        document.getElementById('logo_b64').value = r.result
     }
 
 }
 
+function MostrarLogo(){
+        document.getElementById("logo_img_preview").src = document.getElementById('logo_b64').value
+}

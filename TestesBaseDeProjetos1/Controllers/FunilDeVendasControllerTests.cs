@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using BaseDeProjetos.Models;
+using BaseDeProjetos.Helpers;
 
 namespace BaseDeProjetos.Controllers.Tests
 {
@@ -22,7 +23,7 @@ namespace BaseDeProjetos.Controllers.Tests
             var listaProsp = CriarListaDeProspeccaoComBaseEmInstitutos(new List<Instituto> { Instituto.ISIQV, Instituto.ISIII, Instituto.CISHO, Instituto.ISISVP });
 
             //Etapa de processamento
-            List<Prospeccao> prosp = FunilDeVendasController.VincularCasaProspeccao(usuario, listaProsp);
+            List<Prospeccao> prosp = FunilHelpers.VincularCasaProspeccao(usuario, listaProsp);
             
             //Etapa de testes
             Assert.IsNotNull(prosp);

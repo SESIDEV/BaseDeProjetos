@@ -87,12 +87,12 @@ namespace BaseDeProjetos.Controllers
 
         private bool prospeccaoAtiva(Prospeccao p)
         {
-            if (p.Status.Count < 0)
+            if (p.Status.Count <= 0)
             {
                 return false;
             }
 
-            return p.Status.LastOrDefault().Status <= StatusProspeccao.ComProposta;
+            return p.Status.OrderBy(k=>k.Data).LastOrDefault().Status <= StatusProspeccao.ComProposta;
 ;
         }      
 

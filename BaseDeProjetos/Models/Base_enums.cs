@@ -268,18 +268,6 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Contato inicial")]
         ContatoInicial = 0,
 
-        [Obsolete("Do not use this", true)]
-        [Display(Name = "Em discussão")]
-        Discussao_BuscaLiteratura,
-
-        [Obsolete("Do not use this", true)]
-        [Display(Name = "Em discussão")]
-        Discussao_DraftIdeias,
-
-        [Obsolete("Do not use this", true)]
-        [Display(Name = "Em discussão")]
-        Discussao_DesenhoExperimental,
-
         [Display(Name = "Em discussão")]
         Discussao_EsbocoProjeto = 4,
 
@@ -312,6 +300,9 @@ namespace BaseDeProjetos.Models
 
         [Display(Name = "Cancelado/Suspenso")]
         Cancelado,
+
+        [Display(Name = "Atrasado")]
+        Atrasado,
     }
 
     public enum TipoContratacao
