@@ -11,8 +11,8 @@
 }
 
 @{ var prosp = ViewData["prosp"] as Prospeccao; }
-<h1>Atualizar</h1>
-<h4>Prospecção</h4>
+<h1>Adicionar</h1>
+<h4>>Status Prospecção</h4>
 <hr />
 
 <div class="row">
@@ -56,13 +56,13 @@
                 <label>Informações da prospecção (primeiro contato)</label>
                 <input type="text" class="form-control" value="@prosp.Status.First().Anotacoes" readonly />
             </div>
+            <br />
         </fieldset>
     </div>
-    <br />
     <hr />
     <div class="col-md-8">
         <form asp-controller="FunilDeVendas" asp-action="Atualizar" method="POST">
-            <input asp-for="OrigemID" type="hidden" value="@ViewData["origem"]" />
+            <input asp-for="OrigemID" type="hidden" value='@ViewData["origem"]' />
 
             <div class="form-group">
                 <label asp-for="Data" class="control-label"></label>
