@@ -202,7 +202,7 @@ namespace BaseDeProjetos.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
+            return RedirectToAction(nameof(Details), new { id = id });
         }
 
         private void AcertarCasosEspeciais(FollowUp followup)
