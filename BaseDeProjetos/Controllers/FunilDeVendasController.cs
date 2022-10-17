@@ -93,8 +93,6 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
-
-
         private List<Prospeccao> DefinirCasaParaVisualizar(string? casa)
         {
             Instituto enum_casa;
@@ -187,7 +185,7 @@ namespace BaseDeProjetos.Controllers
             return View("CriarFollowUp");
         }
 
-        [HttpPost]
+        /*[HttpPost]
         public async Task<IActionResult> Atualizar(string id, [Bind("OrigemID, Data, Status, Anotacoes, MotivoNaoConversao")] FollowUp followup)
         {
             if (ModelState.IsValid)
@@ -203,16 +201,16 @@ namespace BaseDeProjetos.Controllers
             }
 
             return RedirectToAction(nameof(Details), new { id = id });
-        }
+        }*/
 
-        private void CriarProjetoQuandoConvertido(FollowUp followup)
+        /*private void CriarProjetoQuandoConvertido(FollowUp followup)
         {
 
             if (followup.Status == StatusProspeccao.Convertida)
             {
                 CriarProjetoConvertido(followup);
             }
-        }
+        }*/
 
         private void CriarFollowUp(FollowUp followup)
         {
@@ -220,13 +218,13 @@ namespace BaseDeProjetos.Controllers
             _context.SaveChanges();
         }
 
-        private async Task AtualizarStatusAsync(FollowUp followup)
+        /*private async Task AtualizarStatusAsync(FollowUp followup) /////////////// NÃO ESTÁ SENDO USADO
         {
             _context.Update(followup);
             await _context.SaveChangesAsync();
-        }
+        }*/
 
-        private void CriarProjetoConvertido(FollowUp followup)
+        /*private void CriarProjetoConvertido(FollowUp followup)
         {
             if (followup.Data.Year != 2020)
             {
@@ -244,6 +242,7 @@ namespace BaseDeProjetos.Controllers
                 _context.SaveChanges();
             }
         }
+       */ 
                // POST: FunilDeVendas/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -385,7 +384,7 @@ namespace BaseDeProjetos.Controllers
             return View(prospeccao);
         }
 
-        public async Task<IActionResult> EditarFollowUp(int? id)
+        public async Task<IActionResult> EditarFollowUp(int? id) // RETONAR VIEW
         {
             if (id == null)
             {
@@ -438,7 +437,7 @@ namespace BaseDeProjetos.Controllers
             return View(prospeccao);
         }
 
-        /*public async Task<IActionResult> RemoverFollowUp(int? id)
+        public async Task<IActionResult> RemoverFollowUp(int? id)
         {
             if (id is null)
             {
@@ -464,7 +463,7 @@ namespace BaseDeProjetos.Controllers
             {
                 throw new InvalidOperationException("Não é possível remover todas os followups de uma prospecção");
             }
-        }*/
+        }
 
         // POST: FunilDeVendas/Delete/5
         [HttpPost, ActionName("Delete")]
