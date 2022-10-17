@@ -196,7 +196,7 @@ namespace BaseDeProjetos.Controllers
                 followup.Origem = prospeccao_origem;
 
                 CriarFollowUp(followup);
-                AcertarCasosEspeciais(followup);
+                CriarProjetoQuandoConvertido(followup);
 
                 bool enviou = MailHelper.NotificarProspecção(followup,_mailer);
                 await _context.SaveChangesAsync();
@@ -205,7 +205,7 @@ namespace BaseDeProjetos.Controllers
             return RedirectToAction(nameof(Details), new { id = id });
         }
 
-        private void AcertarCasosEspeciais(FollowUp followup)
+        private void CriarProjetoQuandoConvertido(FollowUp followup)
         {
 
             if (followup.Status == StatusProspeccao.Convertida)
@@ -222,10 +222,6 @@ namespace BaseDeProjetos.Controllers
 
         private async Task AtualizarStatusAsync(FollowUp followup)
         {
-            foreach (FollowUp status in followup.Origem.Status)
-            {
-                status.isTratado = true;
-            }
             _context.Update(followup);
             await _context.SaveChangesAsync();
         }
@@ -442,7 +438,7 @@ namespace BaseDeProjetos.Controllers
             return View(prospeccao);
         }
 
-        public async Task<IActionResult> RemoverFollowUp(int? id)
+        /*public async Task<IActionResult> RemoverFollowUp(int? id)
         {
             if (id is null)
             {
@@ -468,7 +464,7 @@ namespace BaseDeProjetos.Controllers
             {
                 throw new InvalidOperationException("Não é possível remover todas os followups de uma prospecção");
             }
-        }
+        }*/
 
         // POST: FunilDeVendas/Delete/5
         [HttpPost, ActionName("Delete")]
