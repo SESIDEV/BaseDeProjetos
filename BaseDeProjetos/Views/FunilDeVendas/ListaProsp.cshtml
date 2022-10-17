@@ -151,7 +151,7 @@
                     }
                     @if (item.Status.Last().Status == StatusProspeccao.ComProposta)
                     {
-                        <p class="description-info"><strong>Status: </strong>@item.Status.Last().Status.GetDisplayName()</p>
+                        <p class="description-info"><strong>Status: </strong>@item.Status.OrderBy(p => p.Data).Last().Status.GetDisplayName()</p>
 
                         @if (item.ValorProposta != 0)
                         {
@@ -168,7 +168,7 @@
                     }
                     else
                     {
-                        <p class="description-info"><strong>Status: </strong>@item.Status.Last().Status.GetDisplayName()</p>
+                        <p class="description-info"><strong>Status: </strong>@item.Status.OrderBy(p => p.Data).Last().Status.GetDisplayName()</p>
                         @if (item.ValorEstimado != 0)
                         {
                             <p class="description-info"><strong>Valor Estimado:</strong> R$ @Helpers.FormatarValoresDashboards((decimal)item.ValorEstimado)</p>
