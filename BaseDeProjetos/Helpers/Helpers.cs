@@ -8,11 +8,11 @@ namespace BaseDeProjetos.Helpers
         {
             if (valor >= 100000000)
             {
-                return (valor / 1000000).ToString("0.# milhões");
+                return (valor / 1000000).ToString("0.# MI");
             }
             if (valor >= 1000000)
             {
-                return (valor / 1000000).ToString("0.## milhões");
+                return (valor / 1000000).ToString("0.## MI");
             }
             if (valor >= 100000)
             {
