@@ -1,12 +1,46 @@
 ﻿@page
 @using System.Globalization
 @model BaseDeProjetos.Views.Home.LoggedInHomeModel
+@using BaseDeProjetos.Helpers
 @{
+
+    int n_prosp_ativas = 0;
     decimal receita = 1;
     decimal despesas = 1;
     decimal investimento = 1;
-    decimal sustentabilidade = 1;
+    decimal sustentabilidade = 100;
     float quali = 1;
+    List<LinhaPesquisa> linhaDePesquisa = new List<LinhaPesquisa>();
+    List<string> linhaDePesquisaUnica = new List<string>();
+
+    List<Estado> estados = new List<Estado>();
+    int prosp_ro = 0;
+    int prosp_ac = 0;
+    int prosp_am = 0;
+    int prosp_rr = 0;
+    int prosp_pa = 0;
+    int prosp_ap = 0;
+    int prosp_to = 0;
+    int prosp_ma = 0;
+    int prosp_pi = 0;
+    int prosp_ce = 0;
+    int prosp_rn = 0;
+    int prosp_pb = 0;
+    int prosp_pe = 0;
+    int prosp_al = 0;
+    int prosp_se = 0;
+    int prosp_ba = 0;
+    int prosp_mg = 0;
+    int prosp_es = 0;
+    int prosp_rj = 0;
+    int prosp_sp = 0;
+    int prosp_pr = 0;
+    int prosp_sc = 0;
+    int prosp_rs = 0;
+    int prosp_ms = 0;
+    int prosp_mt = 0;
+    int prosp_go = 0;
+    int prosp_df = 0;
 
     try
     {
@@ -15,15 +49,50 @@
         investimento = (decimal)ViewBag.invest_total;
         despesas = (decimal)ViewBag.despesa_total;
         quali = (float)ViewBag.quali;
+        n_prosp_ativas = (int)ViewBag.n_prosp;
+        
+        estados = ViewBag.Estados as List<Estado>;
+        prosp_ro = estados.Where(e => e == Estado.Rondonia).Count();
+        prosp_ac = estados.Where(e => e == Estado.Acre).Count();
+        prosp_am = estados.Where(e => e == Estado.Amazonas).Count();
+        prosp_rr = estados.Where(e => e == Estado.Roraima).Count();
+        prosp_pa = estados.Where(e => e == Estado.Para).Count();
+        prosp_ap = estados.Where(e => e == Estado.Amapa).Count();
+        prosp_to = estados.Where(e => e == Estado.Tocantins).Count();
+        prosp_ma = estados.Where(e => e == Estado.Maranhao).Count();
+        prosp_pi = estados.Where(e => e == Estado.Piaui).Count();
+        prosp_ce = estados.Where(e => e == Estado.Ceara).Count();
+        prosp_rn = estados.Where(e => e == Estado.RioGrandeDoNorte).Count();
+        prosp_pb = estados.Where(e => e == Estado.Paraiba).Count();
+        prosp_pe = estados.Where(e => e == Estado.Pernambuco).Count();
+        prosp_al = estados.Where(e => e == Estado.Alagoas).Count();
+        prosp_se = estados.Where(e => e == Estado.Sergipe).Count();
+        prosp_ba = estados.Where(e => e == Estado.Bahia).Count();
+        prosp_mg = estados.Where(e => e == Estado.MinasGerais).Count();
+        prosp_es = estados.Where(e => e == Estado.EspiritoSanto).Count();
+        prosp_rj = estados.Where(e => e == Estado.RioDeJaneiro).Count();
+        prosp_sp = estados.Where(e => e == Estado.SaoPaulo).Count();
+        prosp_pr = estados.Where(e => e == Estado.Parana).Count();
+        prosp_sc = estados.Where(e => e == Estado.SantaCatarina).Count();
+        prosp_rs = estados.Where(e => e == Estado.RioGrandeDoSul).Count();
+        prosp_ms = estados.Where(e => e == Estado.MatoGrossoDoSul).Count();
+        prosp_mt = estados.Where(e => e == Estado.MatoGrosso).Count();
+        prosp_go = estados.Where(e => e == Estado.Goias).Count();
+        prosp_df = estados.Where(e => e == Estado.DistritoFederal).Count();
 
-        if (despesas > 0)
+
+        linhaDePesquisa = ViewBag.LinhaDePesquisa as List<LinhaPesquisa>;
+
+        linhaDePesquisaUnica = linhaDePesquisa.OrderByDescending(p => linhaDePesquisa.Where(k=> k == p).Count()).Distinct().Select(p=> $"{{name: `{p.GetDisplayName().ToUpperInvariant()}`, y: {linhaDePesquisa.Where(k=> k == p).Count()}}},").ToList();
+
+               if (despesas > 0)
         {
 
-            sustentabilidade = receita / despesas;
+            sustentabilidade = despesas / receita;
         }
         else
         {
-            sustentabilidade = 1;
+            sustentabilidade = 100;
         }
     }
 
@@ -32,147 +101,243 @@
         Console.WriteLine(erro);
     }
 }
-<style>
-    #sustentabilidade {
-        background-image: url("https://ogimg.infoglobo.com.br/sociedade/24483206-8b9-2d9/FT1086A/652/IC_Multiplex-Covid-19.jpg");
-        background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.4) 100%), url("https://ogimg.infoglobo.com.br/sociedade/24483206-8b9-2d9/FT1086A/652/IC_Multiplex-Covid-19.jpg");
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
-    }
+<style>      
+  .center{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
 
-    a {
-        text-decoration: none;
-        font-size: 20px;
-        padding: 10px;
-    }
+  .border-shadow{
+    box-shadow: 3px 3px 1px rgb(220, 220, 220);
+    border-radius: 10px;
+  }
+
+  .content-page{
+    margin: 0 auto;
+    display: grid;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+    grid-template-areas:
+    "card-1 card-2 card-3 card-4 card-5"
+    "lista lista grafico grafico grafico"
+    "lista lista grafico grafico grafico";
+    grid-template-rows: 20% 50% 30%;
+  }
+
+  .card-financeiro{
+    min-width: 200px;
+    height: 150px;
+  }
+
+  .card-operacional{
+    min-width: 200px;
+    height: 120px;
+  }
+
+  .card-operacional > div > p{
+    margin-top: 10px;
+  }
+
+  .card-financeiro > p, div > h1{
+    display: block;
+    font-size: 1rem;
+    padding: 10px;
+  }
+
+  .card-financeiro > p{
+    height: 20%;
+  }
+  .card-financeiro > div{
+    height: 80%;
+  }
+
+  .card-grafico{
+    padding: 10px;
+  }
+
+  .card-lista{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  #volume-negocio{
+    grid-area: card-1;
+  }
+  #receita-competencia{
+    grid-area: card-2;
+  }
+  #volume-caixa{
+    grid-area: card-3;
+  }
+  #despesa{
+    grid-area: card-4;
+  }
+  #sustentabilidade{
+    grid-area: card-5;
+  }
+  #prospeccoes{
+    grid-area: lista;
+  }
+  #grafico-barras{
+    grid-area: grafico;
+  }
+  .gradient {
+    background-image: linear-gradient(to bottom, black, black, blue);
+    color: black;
+    background-clip: text;
+    -webkit-background-clip: text;
+    /* Adicionado: */
+    -webkit-text-fill-color: transparent;
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+  .status-operacional{
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+
+  p{
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+
 </style>
-<div class="row">
 
-    <partial name="Menu" view-data="@ViewData" />
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header text-center">
-                <h5>Bem vindo ao sistema de Gestão de Inovação - SGI</h5>
-            </div>
-            <div class="card-body row">
-
-                <div class="col-8">
-                    <ul class="col-12 list-group-flush">
-                        <li class="list-group-item">
-                            <h5> Status Financeiro </h5>
-                            <small>@ViewBag.Data.ToString("dd/MM/yyyy")</small>
-                        </li>
-                        <li class="list-group-item mt-3">
-                            <span class="font-weight-bold">Receita Competência:</span>
-                            <span style="font-size: 1.2rem; color: blue;">@receita.ToString("C2",
-                                CultureInfo.CreateSpecificCulture("pt-BR"))</span>
-                        </li>
-                        <li class="list-group-item mt-3">
-                            <span class="font-weight-bold">Caixa: </span>
-                            <span style="font-size: 1.2rem; color: blue;">@investimento.ToString("C2",
-                                CultureInfo.CreateSpecificCulture("pt-BR"))</span>
-                        </li>
-                        <li class="list-group-item mt-3">
-                            <span class="font-weight-bold">Despesa: </span>
-                            <span style="font-size: 1.2rem; color: red;">@despesas.ToString("C2",
-                                CultureInfo.CreateSpecificCulture("pt-BR"))</span>
-                        </li>
-                    </ul>
-
-                    <div class="col row">
-                        <div class="col-md-4 card">
-                            <div class="card-body">
-                                <center>
-                                    <span class="text-uppercase">PROJETOS</span>
-                                    <hr />
-                                    <div class="card-text">
-                                        <h2>
-                                            @ViewBag.n_proj
-                                        </h2>
-                                        projetos ativos
-                                    </div>
-                                </center>
-                            </div>
-                        </div>
-                        <div class="col-md-4 card">
-                            <div class="card-body">
-                                <center>
-                                    <span class="text-uppercase">Empresas</span>
-                                    <hr />
-                                    <div class="card-text">
-                                        <h2>@ViewBag.n_empresas </h2>
-                                        empresas com relacionamento conosco
-                                    </div>
-                                </center>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4 card">
-                            <div class="card-body">
-                                <center>
-                                    <span class="text-uppercase">funil de vendas</span>
-                                    <hr />
-                                    <div class="card-text">
-                                        <h2>@ViewBag.n_prosp </h2>
-                                        prospecções ativas
-                                    </div>
-                                </center>
-                            </div>
-                        </div>
-                        <div class="col-md-4 card">
-                            <div class="card-body">
-                                <center>
-                                    <span class="text-uppercase">Equipe</span>
-                                    <hr />
-                                    <div class="card-text">
-                                        <h2> @ViewBag.Usuarios </h2>
-                                        colaboradores
-                                    </div>
-                                </center>
-                            </div>
-                        </div>
-                        <div class="col-md-4 card">
-                            <div class="card-body">
-                                <center>
-                                    <span class="text-uppercase">Satisfação do cliente</span>
-                                    <hr />
-                                    <div class="card-text">
-                                        <h2>@ViewBag.satisfacao.ToString("P1") </h2>
-                                    </div>
-                                </center>
-                            </div>
-                        </div>
-                        <div class="col-md-4 card">
-                            <div class="card-body">
-                                <center>
-                                    <span class="text-uppercase">Volume de Negócios</span>
-                                    <hr />
-                                    <div class="card-text">
-                                        <h2>@ViewBag.Volume_Negocios.ToString("C2",
-                                            CultureInfo.CreateSpecificCulture("pt-BR"))</h2>
-                                    </div>
-                                    Nas prospecções ativas no momento
-                                </center>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-4 row">
-                    <div id="sustentabilidade" class="jumbotron col-12">
-                        <center>
-                            <span class="text-uppercase">Sustentabilidade</span>
-                            <hr />
-                            <h1 class="font-weight-bolder">
-                                @sustentabilidade.ToString("P2")
-                            </h1>
-
-                            <span class="font-weight-lighter">das despesas são cobertas por receita</span>
-                        </center>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<partial name="Menu" view-data="@ViewData" />
+<div class="card-header text-center">
+  <h5>Bem vindo ao sistema de Gestão de Inovação - SGI</h5>
 </div>
+<div class="list-group-item">
+  <h5> Status Financeiro </h5>
+  <small>@ViewBag.Data.ToString("dd/MM/yyyy")</small>
+</div>
+<div class="content-page">
+  <div class="card-financeiro border-shadow" id="volume-negocio">
+    <p>Volume de Negócio</p>
+    <div class="center">
+      <p class="gradient">R$ @Helpers.FormatarValoresDashboards((decimal)@ViewBag.Volume_Negocios)</p>
+    </div>
+  </div>
+  <div class="card-financeiro border-shadow" id="receita-competencia">
+    <p>Receita Por Competência</p>
+    <div class="center">
+      <p class="gradient">R$ @Helpers.FormatarValoresDashboards(@receita)</p>
+    </div>
+  </div>
+  <div class="card-financeiro border-shadow" id="receita-caixa">
+    <p>Receita Por Caixa</p>
+    <div class="center">
+      <p class="gradient">R$ @Helpers.FormatarValoresDashboards(@investimento)</p>
+    </div>
+  </div>
+  <div class="card-financeiro border-shadow" id="despesa">
+    <p>Despesa</p>
+    <div class="center">
+      <p class="gradient">R$ @Helpers.FormatarValoresDashboards(@despesas)</p>
+    </div>
+  </div>
+  <div class="card-financeiro border-shadow" id="sustentabilidade">
+    <p>Sustentabilidade</p>
+    <div class="center">
+      <p class="gradient">@sustentabilidade.ToString()%</p>
+    </div>
+  </div>
+  <div class="card-lista border-shadow" id="prospeccoes">
+    <h5>Status Operacional</h5>
+    <div class="card-operacional border-shadow">
+      <div class="center">
+        <p>Prospecções Ativas</p>
+        <p class="status-operacional">@ViewBag.n_prosp</p>
+      </div>
+    </div>
+    <div class="card-operacional border-shadow">
+      <div class="center">
+        <p>Projetos Ativos</p>
+        <p class="status-operacional">@ViewBag.n_proj</p>
+      </div>
+    </div>
+    <div class="card-operacional border-shadow">
+      <div class="center">
+        <p>Colaboradores</p>
+        <p class="status-operacional">@ViewBag.Usuarios</p>
+      </div>
+    </div>
+    <div class="card-operacional border-shadow">
+      <div class="center">
+        <p>Empresas Com Relacionamento</p>
+        <p class="status-operacional">@ViewBag.n_empresas</p>
+      </div>
+    </div>
+    <div class="card-operacional border-shadow">
+      <div class="center">
+        <p>Satisfação do Cliente</p>
+        <p class="status-operacional">@ViewBag.satisfacao.ToString("P1")</p>
+      </div>
+    </div>
+  </div>
+  <div class="card-grafico border-shadow" id="grafico-barras"></div>
+</div>
+<!--Gráfico Barras-->
+<script type="text/javascript">
+      Highcharts.chart("grafico-barras", {
+        chart: {
+          type: "column",
+        },
+        title: {
+          align: "left",
+          text: "Prospecções Por Linha De Pesquisa",
+        },
+        accessibility: {
+          announceNewData: {
+            enabled: true,
+          },
+        },
+        xAxis: {
+          type: "category",
+        },
+        yAxis: {
+          title: {
+            text: "",
+          },
+        },
+        legend: {
+          enabled: false,
+        },
+        plotOptions: {
+          series: {
+            borderWidth: 0,
+            dataLabels: {
+              enabled: true,
+              format: "{point.y}",
+            },
+          },
+        },
+
+        tooltip: {
+          headerFormat:'<span style="font-size:11px">{series.name}</span><br>',
+          pointFormat:
+            '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>',
+        },
+
+        series: [
+          {
+            name: "ISI QV",
+            colorByPoint: true,
+            data: [
+        
+              @foreach (var conteudo in linhaDePesquisaUnica)
+              {
+                @conteudo;
+              }
+              
+            ],
+          },
+        ],
+      });
+</script>
+
+   
