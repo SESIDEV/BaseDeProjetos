@@ -28,7 +28,7 @@ namespace BaseDeProjetos.Controllers
         public IActionResult Index(string casa, string sortOrder = "", string searchString = "", string ano = "")
         {
 
-            Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
+            Usuario usuario = ObterUsuarioAtivo();
 
             if (string.IsNullOrEmpty(casa))
             {
@@ -194,23 +194,13 @@ namespace BaseDeProjetos.Controllers
                 followup.Origem = prospeccao_origem;
 
                 CriarFollowUp(followup);
-                //CriarProjetoQuandoConvertido(followup);
 
-                bool enviou = MailHelper.NotificarProspecção(followup,_mailer);
+                bool enviou = MailHelper.NotificarProspecção(followup, _mailer);
                 await _context.SaveChangesAsync();
             }
 
             return RedirectToAction(nameof(Details), new { id = id });
         }
-
-        /*private void CriarProjetoQuandoConvertido(FollowUp followup)
-        {
-
-            if (followup.Status == StatusProspeccao.Convertida)
-            {
-                CriarProjetoConvertido(followup);
-            }
-        }*/
 
         private void CriarFollowUp(FollowUp followup)
         {
@@ -218,32 +208,7 @@ namespace BaseDeProjetos.Controllers
             _context.SaveChanges();
         }
 
-        /*private async Task AtualizarStatusAsync(FollowUp followup) /////////////// NÃO ESTÁ SENDO USADO
-        {
-            _context.Update(followup);
-            await _context.SaveChangesAsync();
-        }*/
-
-        /*private void CriarProjetoConvertido(FollowUp followup)
-        {
-            if (followup.Data.Year != 2020)
-            {
-                Usuario user = _context.Prospeccao.Find(followup.OrigemID).Usuario;
-                Projeto novo_projeto = new Projeto()
-                {
-                    Casa = followup.Origem.Casa,
-                    AreaPesquisa = followup.Origem.LinhaPequisa,
-                    Empresa = followup.Origem.Empresa,
-                    Status = StatusProjeto.EmExecucao,
-                    Id = $"proj_{DateTime.Now.Ticks}",
-                    Equipe = new List<Usuario>() { user }
-                };
-                _context.Add(novo_projeto);
-                _context.SaveChanges();
-            }
-        }
-       */ 
-               // POST: FunilDeVendas/Create
+        // POST: FunilDeVendas/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -254,15 +219,11 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {
-                    ValidarEmpresa(prospeccao);
+                    prospeccao = ValidarEmpresa(prospeccao);
                 }
                 catch (Exception e)
                 {
-                    ErrorViewModel erro = new ErrorViewModel
-                    {
-                        Mensagem = e.Message
-                    };
-                    return View("Error", erro);
+                    return CapturarErro(e);
                 }
                 prospeccao.Contato.empresa = prospeccao.Empresa;
                 await VincularUsuario(prospeccao);
@@ -279,6 +240,7 @@ namespace BaseDeProjetos.Controllers
             return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
         }
 
+
         private async Task VincularUsuario(Prospeccao prospeccao)
         {
             string userId = HttpContext.User.Identity.Name;
@@ -286,7 +248,7 @@ namespace BaseDeProjetos.Controllers
             prospeccao.Usuario = user;
         }
 
-        public void ValidarEmpresa(Prospeccao prospeccao)
+        public Prospeccao ValidarEmpresa(Prospeccao prospeccao)
         {
             if (prospeccao.Empresa.Nome != null && prospeccao.Empresa.CNPJ != null && prospeccao.Empresa.Id == -1)
             {
@@ -304,24 +266,24 @@ namespace BaseDeProjetos.Controllers
             else
             {
                 var existe_empresa = _context.Empresa.FirstOrDefault(e => e.Id == prospeccao.Empresa.Id);
-                /*int existe_empresa = _context.Empresa.Where(e => e.Id == prospeccao.Empresa.Id).Count();*/
 
-                if (existe_empresa != null)
-                {
-                    prospeccao.Empresa = existe_empresa;
-                }
-                else
+                if (existe_empresa == null)
                 {
                     throw new Exception("Ocorreu um erro no registro da empresa. \n A empresa selecionada não foi encontrada. \n Contacte um administrador do sistema");
                 }
+                else
+                {
+                    prospeccao.Empresa = existe_empresa;
+                }
             }
+
+            return prospeccao;
         }
 
         // GET: FunilDeVendas/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-            ViewData["Empresas"] = new SelectList(_context.Empresa.ToList(), "Id", "EmpresaUnique");
-            ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
+            CriarSelectListsDaView();
 
             if (id == null)
             {
@@ -336,35 +298,33 @@ namespace BaseDeProjetos.Controllers
             return View(prospeccao);
         }
 
+        private void CriarSelectListsDaView()
+        {
+            ViewData["Empresas"] = new SelectList(_context.Empresa.ToList(), "Id", "EmpresaUnique");
+            ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
+        }
+
         // POST: FunilDeVendas/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Empresa, Contato, Casa, Usuario, ValorProposta, ValorEstimado")] Prospeccao prospeccao)
+        public async Task<IActionResult> Edit(string id, [Bind("Id," +
+                                                                "TipoContratacao, " +
+                                                                 "NomeProspeccao, " +
+                                                                 "PotenciaisParceiros, " +
+                                                                 "LinhaPequisa, Empresa, Contato, Casa, Usuario, ValorProposta, ValorEstimado, Status")] Prospeccao prospeccao)
         {
             if (id != prospeccao.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid) //APAGAR EXCESSO DE CÓDIGO
+            if (ModelState.IsValid) 
             {
                 try
                 {
-                    Empresa Empresa_antigo = _context.Prospeccao.Include("Empresa").AsNoTracking().First(p => string.Equals(p.Id, id)).Empresa;
-                    if (prospeccao.Empresa.Id != Empresa_antigo.Id) // Nova empresa existente
-                    {
-                        Empresa empresa = _context.Empresa.First(e => e.Id == prospeccao.Empresa.Id);
-                        prospeccao.Empresa = empresa;
-                    }
-                    else
-                    {
-                        prospeccao.Empresa = Empresa_antigo;
-                    }
-
-                    Usuario lider = _context.Users.First(p => p.Id == prospeccao.Usuario.Id);
-                    prospeccao.Usuario = lider;
+                    prospeccao = EditarDadosDaProspecção(id, prospeccao);
                     _context.Update(prospeccao);
                     await _context.SaveChangesAsync();
                 }
@@ -376,12 +336,31 @@ namespace BaseDeProjetos.Controllers
                     }
                     else
                     {
-                        throw;
+                        throw; // Outro erro de banco, lançar para depuração
                     }
                 }
                 return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
             }
             return View(prospeccao);
+        }
+
+        private Prospeccao EditarDadosDaProspecção(string id, Prospeccao prospeccao)
+        {
+            Empresa Empresa_antigo = _context.Prospeccao.FirstOrDefault(p => string.Equals(p.Id, id)).Empresa;
+            Usuario lider = _context.Users.First(p => p.Id == prospeccao.Usuario.Id);
+            prospeccao.Usuario = lider;
+
+            if (prospeccao.Empresa.Id != Empresa_antigo.Id) // Empresa existente
+            {
+                Empresa empresa = _context.Empresa.FirstOrDefault(e => e.Id == prospeccao.Empresa.Id);
+                if (empresa != null)
+                {
+                    prospeccao.Empresa = empresa;
+                }
+            }
+            prospeccao.Empresa = Empresa_antigo;
+
+            return prospeccao;
         }
 
         public async Task<IActionResult> EditarFollowUp(int? id) // RETONAR VIEW
@@ -443,6 +422,7 @@ namespace BaseDeProjetos.Controllers
             {
                 return NotFound();
             }
+
             FollowUp followup = await _context.FollowUp
                 .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -451,9 +431,15 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
-            //TODO: Somente líder ou Super pode remover
+            return await RemoverFollowupAutenticado(followup);
+        }
+        private async Task<IActionResult> RemoverFollowupAutenticado(FollowUp followup)
+        {
+            //Verifica se o usuário está apto para remover o followup
+            Usuario usuario = ObterUsuarioAtivo();
             Prospeccao prospeccao = _context.Prospeccao.FirstOrDefault(p => p.Id == followup.OrigemID);
-            if (prospeccao.Status.Count() > 1)
+
+            if (prospeccao.Status.Count() > 1 && followup.Origem.Usuario == usuario)
             {
                 _context.FollowUp.Remove(followup);
                 await _context.SaveChangesAsync();
@@ -463,6 +449,11 @@ namespace BaseDeProjetos.Controllers
             {
                 throw new InvalidOperationException("Não é possível remover todas os followups de uma prospecção");
             }
+        }
+
+        private Usuario ObterUsuarioAtivo()
+        {
+            return _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
         }
 
         // POST: FunilDeVendas/Delete/5
@@ -482,6 +473,15 @@ namespace BaseDeProjetos.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
         }
+        private IActionResult CapturarErro(Exception e)
+        {
+            ErrorViewModel erro = new ErrorViewModel
+            {
+                Mensagem = e.Message
+            };
+            return View("Error", erro);
+        }
 
     }
- }
+
+}
