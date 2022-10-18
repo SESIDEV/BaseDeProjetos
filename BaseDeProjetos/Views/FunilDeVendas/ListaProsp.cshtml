@@ -13,6 +13,26 @@
 
     /*** Alteração de layout lista de empresas e prospecções / Funil de Vendas ***/
 
+    .badge-esfriando {
+        background-color: #fff462;
+    }
+
+    .badge-funil {
+        width: 20%;
+    }
+
+    .badge-frio {
+        background-color: #beffff;
+    }
+
+    .badge-morno {
+        background-color: #ff8f50;
+    }
+
+    .badge-quente {
+        background-color: #ff5c50;
+    }    
+
     .card-container {
         background-color: #fff;
         border-radius: 10px;
@@ -131,6 +151,35 @@
                     <p class="description-info"><strong>Empresa: </strong>@item.Empresa.Nome</p>
                     <p class="description-info"><strong>Projeto: </strong>@item.NomeProspeccao</p>
                     <p class="description-info"><strong>Linha: </strong>@item.LinhaPequisa.GetDisplayName()</p>
+
+                    @{var subtracaoUltimoStatus = @DateTime.Now.Subtract(@item.Status.Last().Data).Days;}
+
+                    @if (subtracaoUltimoStatus < 7)
+                    {
+                        <p class="description-info">
+                            <strong>Temperatura: </strong>
+                            <span class="badge badge-funil badge-quente text-dark">Quente</span>
+                        </p>
+                    }
+                    else if (subtracaoUltimoStatus >= 7 && subtracaoUltimoStatus <= 15)
+                    {
+                        <p class="description-info">
+                            <strong>Temperatura: </strong>
+                            <span class="badge badge-funil badge-morno text-dark">Morno</span>
+                        </p>
+                    }
+                    else if (subtracaoUltimoStatus >= 16 && subtracaoUltimoStatus <= 30)
+                    {
+                        <p class="description-info">
+                            <strong>Temperatura: </strong>
+                            <span class="badge badge-funil badge-esfriando text-dark">Esfriando</span>
+                        </p>
+                    } else {
+                        <p class="description-info">
+                            <strong>Temperatura: </strong>
+                            <span class="badge badge-funil badge-frio text-dark">Frio</span>
+                        </p>
+                    }
                 </div>
 
                 <div class="content-right">
@@ -138,12 +187,11 @@
                     </p>
                     @if (item.Usuario != null)
                     {
-                        <div style="display:flex; align-items: center; gap: 3px;">
-                            <strong>Líder:</strong><button type="button" id="info" class="btn btn-secondary"
+                        <div class="description-info" style="display:flex; align-items: center; gap: 3px;">
+                            <strong>Líder:</strong><button type="button" id="info" class="badge text-bg-secondary"
                         data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right"
                         data-bs-content="Right popover">@item.Usuario.UserName</button>
                         </div>
-
                     }
                     else
                     {
@@ -163,7 +211,7 @@
                         }
                         else
                         {
-                            <p class="description-info"><strong>Valor estimado:</strong> Valor não informado</p>
+                            <p class="description-info"><strong>Valor Estimado:</strong> Valor não informado</p>
                         }
                     }
                     else
