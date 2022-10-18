@@ -1,12 +1,46 @@
 ﻿@page
 @using System.Globalization
 @model BaseDeProjetos.Views.Home.LoggedInHomeModel
+@using BaseDeProjetos.Helpers
 @{
+
+    int n_prosp_ativas = 0;
     decimal receita = 1;
     decimal despesas = 1;
     decimal investimento = 1;
     decimal sustentabilidade = 100;
     float quali = 1;
+    List<LinhaPesquisa> linhaDePesquisa = new List<LinhaPesquisa>();
+    List<string> linhaDePesquisaUnica = new List<string>();
+
+    List<Estado> estados = new List<Estado>();
+    int prosp_ro = 0;
+    int prosp_ac = 0;
+    int prosp_am = 0;
+    int prosp_rr = 0;
+    int prosp_pa = 0;
+    int prosp_ap = 0;
+    int prosp_to = 0;
+    int prosp_ma = 0;
+    int prosp_pi = 0;
+    int prosp_ce = 0;
+    int prosp_rn = 0;
+    int prosp_pb = 0;
+    int prosp_pe = 0;
+    int prosp_al = 0;
+    int prosp_se = 0;
+    int prosp_ba = 0;
+    int prosp_mg = 0;
+    int prosp_es = 0;
+    int prosp_rj = 0;
+    int prosp_sp = 0;
+    int prosp_pr = 0;
+    int prosp_sc = 0;
+    int prosp_rs = 0;
+    int prosp_ms = 0;
+    int prosp_mt = 0;
+    int prosp_go = 0;
+    int prosp_df = 0;
 
     try
     {
@@ -15,11 +49,46 @@
         investimento = (decimal)ViewBag.invest_total;
         despesas = (decimal)ViewBag.despesa_total;
         quali = (float)ViewBag.quali;
+        n_prosp_ativas = (int)ViewBag.n_prosp;
+        
+        estados = ViewBag.Estados as List<Estado>;
+        prosp_ro = estados.Where(e => e == Estado.Rondonia).Count();
+        prosp_ac = estados.Where(e => e == Estado.Acre).Count();
+        prosp_am = estados.Where(e => e == Estado.Amazonas).Count();
+        prosp_rr = estados.Where(e => e == Estado.Roraima).Count();
+        prosp_pa = estados.Where(e => e == Estado.Para).Count();
+        prosp_ap = estados.Where(e => e == Estado.Amapa).Count();
+        prosp_to = estados.Where(e => e == Estado.Tocantins).Count();
+        prosp_ma = estados.Where(e => e == Estado.Maranhao).Count();
+        prosp_pi = estados.Where(e => e == Estado.Piaui).Count();
+        prosp_ce = estados.Where(e => e == Estado.Ceara).Count();
+        prosp_rn = estados.Where(e => e == Estado.RioGrandeDoNorte).Count();
+        prosp_pb = estados.Where(e => e == Estado.Paraiba).Count();
+        prosp_pe = estados.Where(e => e == Estado.Pernambuco).Count();
+        prosp_al = estados.Where(e => e == Estado.Alagoas).Count();
+        prosp_se = estados.Where(e => e == Estado.Sergipe).Count();
+        prosp_ba = estados.Where(e => e == Estado.Bahia).Count();
+        prosp_mg = estados.Where(e => e == Estado.MinasGerais).Count();
+        prosp_es = estados.Where(e => e == Estado.EspiritoSanto).Count();
+        prosp_rj = estados.Where(e => e == Estado.RioDeJaneiro).Count();
+        prosp_sp = estados.Where(e => e == Estado.SaoPaulo).Count();
+        prosp_pr = estados.Where(e => e == Estado.Parana).Count();
+        prosp_sc = estados.Where(e => e == Estado.SantaCatarina).Count();
+        prosp_rs = estados.Where(e => e == Estado.RioGrandeDoSul).Count();
+        prosp_ms = estados.Where(e => e == Estado.MatoGrossoDoSul).Count();
+        prosp_mt = estados.Where(e => e == Estado.MatoGrosso).Count();
+        prosp_go = estados.Where(e => e == Estado.Goias).Count();
+        prosp_df = estados.Where(e => e == Estado.DistritoFederal).Count();
 
-        if (despesas > 0)
+
+        linhaDePesquisa = ViewBag.LinhaDePesquisa as List<LinhaPesquisa>;
+
+        linhaDePesquisaUnica = linhaDePesquisa.OrderByDescending(p => linhaDePesquisa.Where(k=> k == p).Count()).Distinct().Select(p=> $"{{name: `{p.GetDisplayName().ToUpperInvariant()}`, y: {linhaDePesquisa.Where(k=> k == p).Count()}}},").ToList();
+
+               if (despesas > 0)
         {
 
-            sustentabilidade = receita / despesas;
+            sustentabilidade = despesas / receita;
         }
         else
         {
@@ -41,7 +110,7 @@
   }
 
   .border-shadow{
-    box-shadow: 5px 5px 2px rgb(199, 199, 199);
+    box-shadow: 3px 3px 1px rgb(220, 220, 220);
     border-radius: 10px;
   }
 
@@ -54,7 +123,7 @@
     grid-template-areas:
     "card-1 card-2 card-3 card-4 card-5"
     "lista lista grafico grafico grafico"
-    "lista lista grafico-2 grafico-2 grafico-2";
+    "lista lista grafico grafico grafico";
     grid-template-rows: 20% 50% 30%;
   }
 
@@ -81,7 +150,6 @@
   .card-financeiro > p{
     height: 20%;
   }
-
   .card-financeiro > div{
     height: 80%;
   }
@@ -115,9 +183,6 @@
     grid-area: lista;
   }
   #grafico-barras{
-    grid-area: grafico-2;    
-  }
-  #grafico-mapa{
     grid-area: grafico;
   }
   .gradient {
@@ -140,430 +205,84 @@
     font-size: 1.2rem;
   }
 
-  .highcharts-data-table table {
-    font-family: Verdana, sans-serif;
-    border-collapse: collapse;
-    border: 1px solid #ebebeb;
-    margin: 10px auto;
-    text-align: center;
-  }
-
-  .highcharts-data-table caption {
-    padding: 1em 0;
-    font-size: 1.2em;
-    color: #555;    
-  }
-
-  .highcharts-data-table th {
-    font-weight: 600;
-    padding: 0.5em;
-  }
-
-  .highcharts-data-table td,
-  .highcharts-data-table th,
-  .highcharts-data-table caption {
-    padding: 0.5em;
-  }
-  .highcharts-data-table thead tr,
-  .highcharts-data-table tr:nth-child(even) {
-    background: #f8f8f8;
-  }
-
-  .highcharts-data-table tr:hover {
-    background: #f1f7ff;
-  }
-
-  .highcharts-yaxis .highcharts-axis-line {
-    stroke-width: 2px;
-  }
-
-    /* Link the series colors to axis colors */
-  .highcharts-color-0 {
-    fill: rebeccapurple;
-    stroke: rebeccapurple;
-  }
-  .highcharts-axis.highcharts-color-0 .highcharts-axis-line {
-    stroke: rebeccapurple;
-  }
-
-  .highcharts-axis.highcharts-color-0 text {
-    fill: rebeccapurple;
-  }
-
-  .highcharts-color-1 {
-    fill: turquoise;
-    stroke: turquoise;
-  }
-
-  .highcharts-axis.highcharts-color-1 .highcharts-axis-line {
-    stroke: turquoise;
-  }
-
-  .highcharts-axis.highcharts-color-1 text {
-    fill: turquoise;
-  } 
-
 </style>
 
-@*
-<div class="row">
-
-    <partial name="Menu" view-data="@ViewData" />
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header text-center">
-                <h5>Bem vindo ao sistema de Gestão de Inovação - SGI</h5>
-            </div>
-            <div class="card-body row">
-
-                <div class="col-12">
-
-                    <div class="row">
-                        <div class="list-group-item">
-                            <h5> Status Financeiro </h5>
-                            <small>@ViewBag.Data.ToString("dd/MM/yyyy")</small>
-                        </div>
-                        <div class="col-5 mt-3">
-                            <div class="card text-bg-success mb-3" style="max-width: 35rem;">
-                                <div class="card-header text-center">
-                                    <h3>Volume de negócios</h3>
-                                </div>
-                                <div class="card-body">
-                                    <h5 class="card-title text-center display-4">@ViewBag.Volume_Negocios.ToString("C2",
-                                        CultureInfo.CreateSpecificCulture("pt-BR"))
-                                    </h5>
-                                </div>
-                            </div>
-
-                            <div class="card text-bg-success mb-3" style="max-width: 35rem;">
-                                <div class="card-header text-center">
-                                    <h3>Receita Competência</h3>
-                                </div>
-                                <div class="card-body">
-                                    <h5 class="card-title text-center display-4">@receita.ToString("C2",
-                                        CultureInfo.CreateSpecificCulture("pt-BR"))
-                                        </h5>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="col-5 mt-3">
-
-                            <div class="card text-bg-success mb-3" style="max-width: 35rem;">
-                                <div class="card-header text-center">
-                                    <h3>Receita Caixa</h3>
-                                </div>
-                                <div class="card-body">
-                                    <h5 class="card-title text-center display-4">@investimento.ToString("C2",
-                                        CultureInfo.CreateSpecificCulture("pt-BR"))
-                                        </h5>
-                                </div>
-                            </div>
-
-                            <div class="card text-bg-success mb-3" style="max-width: 35rem;">
-                                <div class="card-header text-center"><h3>Despesa</h3></div>
-                                <div class="card-body">
-                                    <h5 class="card-title text-center display-4">@despesas.ToString("C2",
-                                        CultureInfo.CreateSpecificCulture("pt-BR"))</h5>
-                                    <p class="card-text"></p>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="col-2 text-center d-flex align-items-center justify-content-center flex-column" style="height: 200px; width: 200px; border-radius: 50%; border: solid 1px black; margin-top: 100px;">
-                            <p style="margin: 0; padding: 0;">Sustentabilidade</p>
-                            <h1 class="display-4" style="margin: 0; padding: 0;">100%</h1>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="list-group-item">
-                            <h5>Status Operacional</h5>
-                        </div>
-                        <div class="col-4 mt-3">
-
-                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">                                
-                                <div>
-                                    <h3 class="card-title text-center mt-2 display-4">@ViewBag.n_prosp</h3>
-                                    <h3 class="card-title text-center">Prospecções ativas</h3>
-                                </div>
-                            </div>
-
-                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">                                
-                                <div>
-                                    <h3 class="card-title text-center mt-2 display-4">@ViewBag.Usuarios</h3>
-                                    <h3 class="card-title text-center">Colaboradores</h3>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="col-4 mt-3">
-
-                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">                                
-                                <div>
-                                    <h3 class="card-title text-center mt-2 display-4">@ViewBag.n_proj</h3>
-                                    <h3 class="card-title text-center">Projetos ativos</h3>
-                                </div>
-                            </div>
-
-                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">                                
-                                <div>
-                                    <h3 class="card-title text-center mt-2 display-4">@ViewBag.n_empresas</h3>
-                                    <h3 class="card-title text-center">Empresas com relacionamento conosco</h3>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="col-4 mt-3">                           
-
-                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">                                
-                                <div>
-                                    <h3 class="card-title text-center mt-2 display-4">@ViewBag.satisfacao.ToString("P1")</h3>
-                                    <h3 class="card-title text-center">Satisfação do cliente</h3>
-                                </div>
-                            </div>
-
-                            <div class="card text-bg-light mb-3" style="max-width: 25rem;">                                
-                                <div>
-                                    <h3 class="card-title text-center mt-2 display-4">R$ 0</h3>
-                                    <h3 class="card-title text-center">Valor de Prospecções Com Proposta</h3>
-                                </div>
-                            </div>
-                            @ViewBag.Valor_Prosp_Proposta.ToString("C2", CultureInfo.CreateSpecificCulture("pt-BR"))
-                        </div>
-                        
-                            <div class="col-md-4 card">
-                            <div class="card-body">
-                            <center>
-                            <div class="card-text">
-                            <h2>@ViewBag.n_prosp </h2>
-                            Prospecções ativas
-                            </div>
-                            </center>
-                            </div>
-                            </div>
-                            <div class="col-md-4 card">
-                            <div class="card-body">
-                            <center>
-                            <div class="card-text">
-                            <h2> @ViewBag.Usuarios </h2>
-                            Colaboradores
-                            </div>
-                            </center>
-                            </div>
-                            </div>
-                            <div class="col-md-4 card">
-                            <div class="card-body">
-                            <center>
-                            <div class="card-text">
-                            <h2>@ViewBag.satisfacao.ToString("P1") </h2>
-                            Satisfação do cliente
-                            </div>
-                            </center>
-                            </div>
-                            </div>
-                            @*
-                            <div class="col-md-4 card">
-                            <div class="card-body">
-                            <center>
-                            <div class="card-text">
-                            <h2>@ViewBag.Volume_Negocios.ToString("C2",
-                            CultureInfo.CreateSpecificCulture("pt-BR"))</h2>
-                            </div>
-                            Nas prospecções ativas no momento
-                            </center>
-                            </div>
-                            </div>
-                            </div>
-                            </div>
-
-                            @*<div class="col-4 row">
-                            <div id="sustentabilidade" class="jumbotron col-12">
-                            <center>
-                            <span class="text-uppercase">Sustentabilidade</span>
-                            <hr />
-                            <h1 class="font-weight-bolder">
-                            @sustentabilidade.ToString("P2")
-                            </h1>
-
-                            <span class="font-weight-lighter">das despesas são cobertas por receita</span>
-                            </center>
-                            </div>
-                            </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<partial name="Menu" view-data="@ViewData" />
+<div class="card-header text-center">
+  <h5>Bem vindo ao sistema de Gestão de Inovação - SGI</h5>
+</div>
+<div class="list-group-item">
+  <h5> Status Financeiro </h5>
+  <small>@ViewBag.Data.ToString("dd/MM/yyyy")</small>
+</div>
+<div class="content-page">
+  <div class="card-financeiro border-shadow" id="volume-negocio">
+    <p>Volume de Negócio</p>
+    <div class="center">
+      <p class="gradient">R$ @Helpers.FormatarValoresDashboards((decimal)@ViewBag.Volume_Negocios)</p>
     </div>
-</div> 
-*@  
-    <partial name="Menu" view-data="@ViewData" />
-    <div class="card-header text-center">
-      <h5>Bem vindo ao sistema de Gestão de Inovação - SGI</h5>
+  </div>
+  <div class="card-financeiro border-shadow" id="receita-competencia">
+    <p>Receita Por Competência</p>
+    <div class="center">
+      <p class="gradient">R$ @Helpers.FormatarValoresDashboards(@receita)</p>
     </div>
-    <div class="list-group-item">
-      <h5> Status Financeiro </h5>
-      <small>@ViewBag.Data.ToString("dd/MM/yyyy")</small>
+  </div>
+  <div class="card-financeiro border-shadow" id="receita-caixa">
+    <p>Receita Por Caixa</p>
+    <div class="center">
+      <p class="gradient">R$ @Helpers.FormatarValoresDashboards(@investimento)</p>
     </div>
-    <div class="content-page">
-      <div class="card-financeiro border-shadow" id="volume-negocio">
-        <p>Volume de Negócio</p>
-        <div class="center">
-          <p class="gradient">@ViewBag.Volume_Negocios.ToString("C2",CultureInfo.CreateSpecificCulture("pt-BR"))</p>
-        </div>
-      </div>
-      <div class="card-financeiro border-shadow" id="receita-competencia">
-        <p>Receita Por Competência</p>
-        <div class="center">
-          <p class="gradient">@receita.ToString("C2",CultureInfo.CreateSpecificCulture("pt-BR"))</p>
-        </div>
-      </div>
-      <div class="card-financeiro border-shadow" id="receita-caixa">
-        <p>Receita Por Caixa</p>
-        <div class="center">
-          <p class="gradient">@investimento.ToString("C2",CultureInfo.CreateSpecificCulture("pt-BR"))</p>
-        </div>
-      </div>
-      <div class="card-financeiro border-shadow" id="despesa">
-        <p>Despesa</p>
-        <div class="center">
-          <p class="gradient">@despesas.ToString("C2",CultureInfo.CreateSpecificCulture("pt-BR"))</p>
-        </div>
-      </div>
-      <div class="card-financeiro border-shadow" id="sustentabilidade">
-        <p>Sustentabilidade</p>
-        <div class="center">
-          <p class="gradient">@sustentabilidade.ToString("P2")</p>
-        </div>
-      </div>
-      <div class="card-lista border-shadow" id="prospeccoes">
-        <h5>Status Operacional</h5>
-        <div class="card-operacional border-shadow">
-          <div class="center">
-            <p>Prospecções Ativas</p>
-            <p class="status-operacional">@ViewBag.n_prosp</p>
-          </div>
-        </div>
-        <div class="card-operacional border-shadow">
-          <div class="center">
-            <p>Projetos Ativos</p>
-            <p class="status-operacional">@ViewBag.n_proj</p>
-          </div>
-        </div>
-        <div class="card-operacional border-shadow">
-          <div class="center">
-            <p>Colaboradores</p>
-            <p class="status-operacional">@ViewBag.Usuarios</p>
-          </div>
-        </div>
-        <div class="card-operacional border-shadow">
-          <div class="center">
-            <p>Empresas Com Relacionamento</p>
-            <p class="status-operacional">@ViewBag.n_empresas</p>
-          </div>
-        </div>
-        <div class="card-operacional border-shadow">
-          <div class="center">
-            <p>Satisfação do Cliente</p>
-            <p class="status-operacional">@ViewBag.satisfacao.ToString("P1")</p>
-          </div>
-        </div>
-      </div>      
-      <div class="card-grafico border-shadow" id="grafico-mapa"></div>
-      <div class="card-grafico border-shadow" id="grafico-barras"></div>
+  </div>
+  <div class="card-financeiro border-shadow" id="despesa">
+    <p>Despesa</p>
+    <div class="center">
+      <p class="gradient">R$ @Helpers.FormatarValoresDashboards(@despesas)</p>
     </div>
-    <!--Gráfico Mapa-->
-    <script type="module">
-      (async () => {
-        const topology = await fetch(
-          "https://code.highcharts.com/mapdata/countries/br/br-all.topo.json"
-        ).then((response) => response.json());
-
-        // Prepare demo data. The data is joined to map using value of 'hc-key'
-        // property by default. See API docs for 'joinBy' for more info on linking
-        // data and map.
-        const data = [
-          ["br-sp", 10],
-          ["br-ma", 11],
-          ["br-pa", 12],
-          ["br-sc", 13],
-          ["br-ba", 14],
-          ["br-ap", 15],
-          ["br-ms", 16],
-          ["br-mg", 17],
-          ["br-go", 18],
-          ["br-rs", 19],
-          ["br-to", 20],
-          ["br-pi", 21],
-          ["br-al", 22],
-          ["br-pb", 23],
-          ["br-ce", 24],
-          ["br-se", 25],
-          ["br-rr", 26],
-          ["br-pe", 27],
-          ["br-pr", 28],
-          ["br-es", 29],
-          ["br-rj", 30],
-          ["br-rn", 31],
-          ["br-am", 32],
-          ["br-mt", 33],
-          ["br-df", 34],
-          ["br-ac", 35],
-          ["br-ro", 36],
-        ];
-
-        // Create the chart
-        Highcharts.mapChart("grafico-mapa", {
-          chart: {
-            map: topology,
-          },
-
-          title: {
-            align: "left",
-            text: "Prospecções por Região",
-          },
-
-          subtitle: {
-            align: "left",
-            text: `Brasil = total Prospecções<br>Exterior = total Prospecções<br>`,
-          },
-
-          mapNavigation: {
-            enabled: true,
-            buttonOptions: {
-              verticalAlign: "bottom",
-            },
-          },
-
-          colorAxis: {
-            min: 0,
-          },
-
-          series: [
-            {
-              data: data,
-              name: "Random data",
-              states: {
-                hover: {
-                  color: "#BADA55",
-                },
-              },
-              dataLabels: {
-                enabled: true,
-                format: "{point.name}",
-              },
-            },
-          ],
-        });
-      })();
-    </script>
-
-    <!--Gráfico Barras-->
-    <script type="text/javascript">
+  </div>
+  <div class="card-financeiro border-shadow" id="sustentabilidade">
+    <p>Sustentabilidade</p>
+    <div class="center">
+      <p class="gradient">@sustentabilidade.ToString()%</p>
+    </div>
+  </div>
+  <div class="card-lista border-shadow" id="prospeccoes">
+    <h5>Status Operacional</h5>
+    <div class="card-operacional border-shadow">
+      <div class="center">
+        <p>Prospecções Ativas</p>
+        <p class="status-operacional">@ViewBag.n_prosp</p>
+      </div>
+    </div>
+    <div class="card-operacional border-shadow">
+      <div class="center">
+        <p>Projetos Ativos</p>
+        <p class="status-operacional">@ViewBag.n_proj</p>
+      </div>
+    </div>
+    <div class="card-operacional border-shadow">
+      <div class="center">
+        <p>Colaboradores</p>
+        <p class="status-operacional">@ViewBag.Usuarios</p>
+      </div>
+    </div>
+    <div class="card-operacional border-shadow">
+      <div class="center">
+        <p>Empresas Com Relacionamento</p>
+        <p class="status-operacional">@ViewBag.n_empresas</p>
+      </div>
+    </div>
+    <div class="card-operacional border-shadow">
+      <div class="center">
+        <p>Satisfação do Cliente</p>
+        <p class="status-operacional">@ViewBag.satisfacao.ToString("P1")</p>
+      </div>
+    </div>
+  </div>
+  <div class="card-grafico border-shadow" id="grafico-barras"></div>
+</div>
+<!--Gráfico Barras-->
+<script type="text/javascript">
       Highcharts.chart("grafico-barras", {
         chart: {
           type: "column",
@@ -582,7 +301,7 @@
         },
         yAxis: {
           title: {
-            text: "Total percent market share",
+            text: "",
           },
         },
         legend: {
@@ -593,7 +312,7 @@
             borderWidth: 0,
             dataLabels: {
               enabled: true,
-              format: "{point.y:.1f}%",
+              format: "{point.y}",
             },
           },
         },
@@ -601,7 +320,7 @@
         tooltip: {
           headerFormat:'<span style="font-size:11px">{series.name}</span><br>',
           pointFormat:
-            '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>',
+            '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>',
         },
 
         series: [
@@ -609,133 +328,16 @@
             name: "ISI QV",
             colorByPoint: true,
             data: [
+        
+              @foreach (var conteudo in linhaDePesquisaUnica)
               {
-                name: "Química e Sustentabilidade",
-                y: 63.06,
-                drilldown: "QV - Química e Sustentabilidade",
-              },
-              {
-                name: "Tecnologia para Solos e Efluentes",
-                y: 19.84,
-                drilldown: "QV - Tecnologia para Solos e Efluentes",
-              },
-              {
-                name: "Extração de Matérias Primas Renováveis",
-                y: 4.18,
-                drilldown: "QV - Extração de Matérias Primas Renováveis",
-              },
-              {
-                name: "Química Analítica Verde",
-                y: 4.12,
-                drilldown: "QV - Química Analítica Verde",
-              },
-              {
-                name: "Petróleo e Petroquímica",
-                y: 2.33,
-                drilldown: "QV - Petróleo e Petroquímica",
-              },
-              {
-                name: "Biotecnologia e Biologia Molecular",
-                y: 0.45,
-                drilldown: "QV - Biotecnologia e Biologia Molecular",
-              },
-              {
-                name: "Química 4.0",
-                y: 1.582,
-                drilldown: "QV - Química 4.0",
-              },
+                @conteudo;
+              }
+              
             ],
           },
         ],
-        drilldown: {
-          breadcrumbs: {
-            position: {
-              align: "right",
-            },
-          },
-          series: [
-            {
-              name: "Chrome",
-              id: "Chrome",
-              data: [
-                ["v65.0", 0.1],
-                ["v64.0", 1.3],
-                ["v63.0", 53.02],
-                ["v62.0", 1.4],
-                ["v61.0", 0.88],
-                ["v60.0", 0.56],
-                ["v59.0", 0.45],
-                ["v58.0", 0.49],
-                ["v57.0", 0.32],
-                ["v56.0", 0.29],
-                ["v55.0", 0.79],
-                ["v54.0", 0.18],
-                ["v51.0", 0.13],
-                ["v49.0", 2.16],
-                ["v48.0", 0.13],
-                ["v47.0", 0.11],
-                ["v43.0", 0.17],
-                ["v29.0", 0.26],
-              ],
-            },
-            {
-              name: "Firefox",
-              id: "Firefox",
-              data: [
-                ["v58.0", 1.02],
-                ["v57.0", 7.36],
-                ["v56.0", 0.35],
-                ["v55.0", 0.11],
-                ["v54.0", 0.1],
-                ["v52.0", 0.95],
-                ["v51.0", 0.15],
-                ["v50.0", 0.1],
-                ["v48.0", 0.31],
-                ["v47.0", 0.12],
-              ],
-            },
-            {
-              name: "Internet Explorer",
-              id: "Internet Explorer",
-              data: [
-                ["v11.0", 6.2],
-                ["v10.0", 0.29],
-                ["v9.0", 0.27],
-                ["v8.0", 0.47],
-              ],
-            },
-            {
-              name: "Safari",
-              id: "Safari",
-              data: [
-                ["v11.0", 3.39],
-                ["v10.1", 0.96],
-                ["v10.0", 0.36],
-                ["v9.1", 0.54],
-                ["v9.0", 0.13],
-                ["v5.1", 0.2],
-              ],
-            },
-            {
-              name: "Edge",
-              id: "Edge",
-              data: [
-                ["v16", 2.6],
-                ["v15", 0.92],
-                ["v14", 0.4],
-                ["v13", 0.1],
-              ],
-            },
-            {
-              name: "Opera",
-              id: "Opera",
-              data: [
-                ["v50.0", 0.96],
-                ["v49.0", 0.82],
-                ["v12.1", 0.14],
-              ],
-            },
-          ],
-        },
       });
-    </script>
+</script>
+
+   
