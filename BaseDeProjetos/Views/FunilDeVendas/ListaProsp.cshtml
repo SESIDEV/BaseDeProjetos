@@ -18,7 +18,7 @@
     }
 
     .badge-funil {
-        width: 20%;
+        width: 50%;
     }
 
     .badge-frio {
@@ -158,26 +158,26 @@
                     {
                         <p class="description-info">
                             <strong>Temperatura: </strong>
-                            <span class="badge badge-funil badge-quente text-dark">Quente</span>
+                            <span class="badge badge-funil badge-quente text-dark">Quente (@subtracaoUltimoStatus Dias)</span>
                         </p>
                     }
                     else if (subtracaoUltimoStatus >= 7 && subtracaoUltimoStatus <= 15)
                     {
                         <p class="description-info">
                             <strong>Temperatura: </strong>
-                            <span class="badge badge-funil badge-morno text-dark">Morno</span>
+                            <span class="badge badge-funil badge-morno text-dark">Morno (@subtracaoUltimoStatus Dias)</span>
                         </p>
                     }
                     else if (subtracaoUltimoStatus >= 16 && subtracaoUltimoStatus <= 30)
                     {
                         <p class="description-info">
                             <strong>Temperatura: </strong>
-                            <span class="badge badge-funil badge-esfriando text-dark">Esfriando</span>
+                            <span class="badge badge-funil badge-esfriando text-dark">Esfriando (@subtracaoUltimoStatus Dias)</span>
                         </p>
                     } else {
                         <p class="description-info">
                             <strong>Temperatura: </strong>
-                            <span class="badge badge-funil badge-frio text-dark">Frio</span>
+                            <span class="badge badge-funil badge-frio text-dark">Frio (@subtracaoUltimoStatus Dias)</span>
                         </p>
                     }
                 </div>
