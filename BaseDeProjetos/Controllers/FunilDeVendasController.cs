@@ -185,7 +185,7 @@ namespace BaseDeProjetos.Controllers
             return View("CriarFollowUp");
         }
 
-        /*[HttpPost]
+        [HttpPost]
         public async Task<IActionResult> Atualizar(string id, [Bind("OrigemID, Data, Status, Anotacoes, MotivoNaoConversao")] FollowUp followup)
         {
             if (ModelState.IsValid)
@@ -194,14 +194,14 @@ namespace BaseDeProjetos.Controllers
                 followup.Origem = prospeccao_origem;
 
                 CriarFollowUp(followup);
-                CriarProjetoQuandoConvertido(followup);
+                //CriarProjetoQuandoConvertido(followup);
 
                 bool enviou = MailHelper.NotificarProspecção(followup,_mailer);
                 await _context.SaveChangesAsync();
             }
 
             return RedirectToAction(nameof(Details), new { id = id });
-        }*/
+        }
 
         /*private void CriarProjetoQuandoConvertido(FollowUp followup)
         {
