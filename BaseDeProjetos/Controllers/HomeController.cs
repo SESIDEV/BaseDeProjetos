@@ -27,30 +27,39 @@ namespace BaseDeProjetos.Controllers
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
-
                 ViewBag.usuarioCasa = usuario.Casa;
-
                 ObterDadosReceita();
-
-
-                //PARA FINS DE DEBUG
-                if(usuario.Casa == Instituto.Super)
-                {
-                    ViewData["Volume_Negocios"] = _context.Prospeccao.Where(p => p.Casa == Instituto.ISIQV).ToList().Where(p => prospeccaoAtiva(p) == true).Sum(p => p.ValorEstimado);
-                }
+                SetarVolumeDeNegocios(usuario);
 
                 ViewData["n_prosp"] = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).ToList().Where(p => prospeccaoAtiva(p) == true).ToList().Count;
-                ViewData["Volume_Negocios"] = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).ToList().Where(p => prospeccaoAtiva(p) == true).Sum(p => p.ValorEstimado);
                 ViewData["n_proj"] = _context.Projeto.Where(p => p.Casa == usuario.Casa).Where(p => p.Status == StatusProjeto.EmExecucao).ToList().Count;
                 ViewData["n_empresas"] = _context.Empresa.ToList().Count;
                 ViewData["satisfacao"] = 0.8872;
-                ViewBag.Usuarios = _context.Users.AsEnumerable().Where(u => ValidarCasa(u, usuario)).ToList().Count;
+                ViewData["Valor_Prosp_Proposta"] = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).Where(p => p.Status.Any(s => s.Status == StatusProspeccao.ComProposta)).Sum(p => p.ValorProposta);
+                ViewBag.Usuarios = _context.Users.AsEnumerable().Where(p => p.Casa == usuario.Casa).Where(u => ValidarCasa(u, usuario)).ToList().Count;
+                ViewBag.Estados = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).Select(p => p.Empresa.Estado).ToList();
+                ViewBag.LinhaDePesquisa = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).Select(p => p.LinhaPequisa).ToList();                
 
             }
             return View();
 
 
         }
+
+        private void SetarVolumeDeNegocios(Usuario usuario)
+        {
+            //PARA FINS DE DEBUG
+            if (System.Environment.GetEnvironmentVariable("Ambiente") == "Web")
+            {
+                ViewData["Volume_Negocios"] = _context.Prospeccao.Where(p => p.Casa == Instituto.ISIQV).ToList().Where(p => prospeccaoAtiva(p) == true).Sum(p => p.ValorEstimado);
+            }
+            else
+            {
+
+                ViewData["Volume_Negocios"] = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).ToList().Where(p => prospeccaoAtiva(p) == true).Sum(p => p.ValorEstimado);
+            }
+        }
+
         private static bool ValidarCasa(Usuario u, Usuario usuario)
         {
             if ((usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO))
@@ -93,7 +102,7 @@ namespace BaseDeProjetos.Controllers
 
             return p.Status.OrderBy(k=>k.Data).LastOrDefault().Status <= StatusProspeccao.ComProposta;
 ;
-        }
+        }      
 
         private decimal ReceitaCasa(Instituto casa)
         {
