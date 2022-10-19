@@ -146,40 +146,16 @@
                 }
             </div>
             <div class="card-info">
-
                 <div class="content-left">
                     <p class="description-info"><strong>Empresa: </strong>@item.Empresa.Nome</p>
                     <p class="description-info"><strong>Projeto: </strong>@item.NomeProspeccao</p>
                     <p class="description-info"><strong>Linha: </strong>@item.LinhaPequisa.GetDisplayName()</p>
-
+                    
                     @{var subtracaoUltimoStatus = @DateTime.Now.Subtract(@item.Status.Last().Data).Days;}
-
-                    @if (subtracaoUltimoStatus < 7)
-                    {
-                        <p class="description-info">
-                            <strong>Temperatura: </strong>
-                            <span class="badge badge-funil badge-quente text-dark">Quente (@subtracaoUltimoStatus Dias)</span>
-                        </p>
-                    }
-                    else if (subtracaoUltimoStatus >= 7 && subtracaoUltimoStatus <= 15)
-                    {
-                        <p class="description-info">
-                            <strong>Temperatura: </strong>
-                            <span class="badge badge-funil badge-morno text-dark">Morno (@subtracaoUltimoStatus Dias)</span>
-                        </p>
-                    }
-                    else if (subtracaoUltimoStatus >= 16 && subtracaoUltimoStatus <= 30)
-                    {
-                        <p class="description-info">
-                            <strong>Temperatura: </strong>
-                            <span class="badge badge-funil badge-esfriando text-dark">Esfriando (@subtracaoUltimoStatus Dias)</span>
-                        </p>
-                    } else {
-                        <p class="description-info">
-                            <strong>Temperatura: </strong>
-                            <span class="badge badge-funil badge-frio text-dark">Frio (@subtracaoUltimoStatus Dias)</span>
-                        </p>
-                    }
+                                        
+                    <p class="description-info">
+                        <strong>Temperatura:@FunilHelpers.VerificarTemperatura(subtracaoUltimoStatus)</strong>                        
+                    </p>                    
                 </div>
 
                 <div class="content-right">
