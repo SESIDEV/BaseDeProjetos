@@ -325,7 +325,6 @@ namespace BaseDeProjetos.Controllers
                 try
                 {
                     prospeccao = EditarDadosDaProspecção(id, prospeccao);
-                    _context.Update(prospeccao);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -346,7 +345,7 @@ namespace BaseDeProjetos.Controllers
 
         private Prospeccao EditarDadosDaProspecção(string id, Prospeccao prospeccao)
         {
-            Empresa Empresa_antigo = _context.Prospeccao.FirstOrDefault(p => string.Equals(p.Id, id)).Empresa;
+            Empresa Empresa_antigo = _context.Empresa.FirstOrDefault(e => e.Id == prospeccao.Empresa.Id);
             Usuario lider = _context.Users.First(p => p.Id == prospeccao.Usuario.Id);
             prospeccao.Usuario = lider;
 
@@ -359,7 +358,7 @@ namespace BaseDeProjetos.Controllers
                 }
             }
             prospeccao.Empresa = Empresa_antigo;
-
+            _context.Update(prospeccao);
             return prospeccao;
         }
 
