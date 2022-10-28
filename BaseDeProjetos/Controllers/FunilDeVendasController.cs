@@ -438,7 +438,7 @@ namespace BaseDeProjetos.Controllers
             Usuario usuario = ObterUsuarioAtivo();
             Prospeccao prospeccao = _context.Prospeccao.FirstOrDefault(p => p.Id == followup.OrigemID);
 
-            if (prospeccao.Status.Count() > 1 && followup.Origem.Usuario == usuario)
+            if (verificarCondicoesRemocao(prospeccao, usuario, followup.Origem.Usuario) || usuario.Casa == Instituto.Super)
             {
                 _context.FollowUp.Remove(followup);
                 await _context.SaveChangesAsync();
@@ -448,6 +448,13 @@ namespace BaseDeProjetos.Controllers
             {
                 throw new InvalidOperationException("Não é possível remover todas os followups de uma prospecção");
             }
+        }
+
+        private bool verificarCondicoesRemocao(Prospeccao prospeccao, Usuario dono, Usuario ativo) {
+
+            return prospeccao.Status.Count() > 1 && dono == ativo;
+            
+
         }
 
         private Usuario ObterUsuarioAtivo()
