@@ -10,7 +10,9 @@
     string valor_contato;
 }
 
-@{ var prosp = ViewData["prosp"] as Prospeccao; }
+@{
+    var prosp = ViewData["prosp"] as Prospeccao;
+}
 <h1>Adicionar</h1>
 <h4>Status Prospecção</h4>
 <hr />
@@ -39,14 +41,17 @@
             </div>
             <div class="form-group">
                 <label> Status </label>
-                <input type="text" class="form-control" value="@prosp.Status.Last().Status.ToString()" readonly />
+                <input type="text" class="form-control" value="@prosp.Status.OrderBy(p=> p.Data).Last().Status.ToString()" readonly />
             </div>
 
             <div class="form-group">
                 <label> Contato da prospecção</label>
-                @if (prosp.Contato == null){
+                @if (prosp.Contato == null)
+                {
                     valor_contato = "SemNome";
-                } else {
+                }
+                else
+                {
                     valor_contato = prosp.Contato.Nome;
                 }
                 <input type="text" class="form-control" value="@valor_contato" readonly />
@@ -54,7 +59,7 @@
 
             <div class="form-group">
                 <label>Informações da prospecção (primeiro contato)</label>
-                <input type="text" class="form-control" value="@prosp.Status.First().Anotacoes" readonly />
+                <input type="text" class="form-control" value="@prosp.Status.OrderBy(p=>p.Data).First().Anotacoes" readonly />
             </div>
             <br />
         </fieldset>
@@ -70,8 +75,8 @@
                 <span asp-validation-for="Data" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="@prosp.Status.Last().Status" class="control-label"></label>
-                <select asp-for="@prosp.Status.Last().Status" onchange="avaliarStatus(this)" class="form-control" asp-items="Html.GetEnumSelectList<StatusProspeccao>().  Where(p => Int32.Parse(p.Value) >= 4 || Int32.Parse(p.Value) < 1)"></select>
+                <label asp-for="@Model.Status" class="control-label"></label>
+                <select asp-for="@Model.Status" class="form-control" asp-items="Html.GetEnumSelectList<StatusProspeccao>().Where(p => Int32.Parse(p.Value) >= (int)prosp.Status.OrderBy(p=> p.Data).Last().Status)"></select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -87,43 +92,12 @@
                     <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<MotivosNaoConversao>()"></select>
                 </div>
             </div>
-            @*
-            <div id="valorproposta" style="display:none">
-                <div class="form-group">
-                    <label class="control-label"> Valor da proposta submetida</label>
-                    <input type="number" min=0 name="valorProposta" value="@prosp.ValorProposta" class="form-control" /> <!--TENTEI BOTAR ASP FOR AQUI MAS NÃO DEU CERTO-->
-                </div>
-            </div>
-            *@
             <div class="form-group">
                 <input type="submit" value="Incluir" class="btn btn-primary" />
             </div>
             <br />
         </form>
     </div>
-    @*
-    <script>
-        function avaliarStatus(valor) {
-            var NaoConvertida = 7;
-            var ComProposta = 5;
-
-            if (valor.value == NaoConvertida) {
-                document.querySelector("#naoconversao").style.display = "block";
-            }
-            else {
-                document.querySelector("#naoconversao").style.display = "none";
-            }
-
-            if (valor.value == ComProposta) {
-                document.querySelector("#valorproposta").style.display = "block";
-            }
-            else {
-                document.querySelector("#valorproposta").style.display = "none";
-            }
-
-        }
-    </script>
-        *@
     <br>
     <div>
         <a asp-action="Details" asp-route-id='@prosp.Id'>Voltar</a>
@@ -131,5 +105,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }
