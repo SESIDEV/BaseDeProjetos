@@ -46,7 +46,7 @@ namespace BaseDeProjetos.Helpers
                 "name_desc" => prosps.OrderByDescending(s => s.Empresa.Nome),
                 "TipoContratacao" => prosps.OrderBy(s => s.TipoContratacao),
                 "tipo_desc" => prosps.OrderByDescending(s => s.TipoContratacao),
-                _ => prosps.OrderBy(s => s.Empresa.Nome),
+                _ => prosps.OrderBy(s => s.Status.OrderBy(k => k.Data).Last().Data),
             };
             return prosps.ToList();
         }

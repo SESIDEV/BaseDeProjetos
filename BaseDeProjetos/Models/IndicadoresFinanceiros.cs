@@ -10,13 +10,18 @@ namespace BaseDeProjetos.Models
         public int Id { get; set; }
 
         public DateTime Data { get; set; }
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "R{0:C2}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C2}")]
+
+        [Display(Name = "Receita Por Competência")]
         public decimal Receita { get; set; }
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "R{0:C2}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C2}")]
         public decimal Despesa { get; set; }
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "R{0:C2}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C2}")]
+
+        [Display(Name = "Receita Por Caixa")]
         public decimal Investimento { get; set; }
-        public float QualiSeguranca { get; set; }
+
+        public float QualiSeguranca {  get; set; }
         public Instituto Casa { get; set; }
     }
 }

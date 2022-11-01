@@ -2,6 +2,7 @@
 @model BaseDeProjetos.Views.Home.MenuModel
 @using Microsoft.AspNetCore.Http
 @{
+    var usuarioNivel = ViewBag.usuarioNivel;
     List<Instituto> institutos = new List<Instituto>();
 
     Instituto casaUsuario = ViewBag.usuarioCasa;
@@ -56,6 +57,15 @@
                         <small>Gestão do Conhecimento</small>
                     </a>
                 </li>
+                @if(usuarioNivel.ToString() == "PMO"){
+                    <li>
+                    <a class="dropdown-item" asp-action="Index" asp-controller="Indicadores" asp-route-casa="@casa_nome"
+                   id="a-success">
+                        <small>Indicadores</small>
+                    </a>
+                </li>
+                }
+                
             </ul>
         </div>
     }
