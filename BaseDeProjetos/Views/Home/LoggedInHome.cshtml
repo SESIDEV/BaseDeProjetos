@@ -13,35 +13,6 @@
     List<LinhaPesquisa> linhaDePesquisa = new List<LinhaPesquisa>();
     List<string> linhaDePesquisaUnica = new List<string>();
 
-    List<Estado> estados = new List<Estado>();
-    int prosp_ro = 0;
-    int prosp_ac = 0;
-    int prosp_am = 0;
-    int prosp_rr = 0;
-    int prosp_pa = 0;
-    int prosp_ap = 0;
-    int prosp_to = 0;
-    int prosp_ma = 0;
-    int prosp_pi = 0;
-    int prosp_ce = 0;
-    int prosp_rn = 0;
-    int prosp_pb = 0;
-    int prosp_pe = 0;
-    int prosp_al = 0;
-    int prosp_se = 0;
-    int prosp_ba = 0;
-    int prosp_mg = 0;
-    int prosp_es = 0;
-    int prosp_rj = 0;
-    int prosp_sp = 0;
-    int prosp_pr = 0;
-    int prosp_sc = 0;
-    int prosp_rs = 0;
-    int prosp_ms = 0;
-    int prosp_mt = 0;
-    int prosp_go = 0;
-    int prosp_df = 0;
-
     try
     {
         //decimal receita = (decimal)ViewBag.receita_isiqv + (decimal)ViewBag.receita_isiii + (decimal)ViewBag.receita_cisho;
@@ -50,45 +21,15 @@
         despesas = (decimal)ViewBag.despesa_total;
         quali = (float)ViewBag.quali;
         n_prosp_ativas = (int)ViewBag.n_prosp;
-        
-        estados = ViewBag.Estados as List<Estado>;
-        prosp_ro = estados.Where(e => e == Estado.Rondonia).Count();
-        prosp_ac = estados.Where(e => e == Estado.Acre).Count();
-        prosp_am = estados.Where(e => e == Estado.Amazonas).Count();
-        prosp_rr = estados.Where(e => e == Estado.Roraima).Count();
-        prosp_pa = estados.Where(e => e == Estado.Para).Count();
-        prosp_ap = estados.Where(e => e == Estado.Amapa).Count();
-        prosp_to = estados.Where(e => e == Estado.Tocantins).Count();
-        prosp_ma = estados.Where(e => e == Estado.Maranhao).Count();
-        prosp_pi = estados.Where(e => e == Estado.Piaui).Count();
-        prosp_ce = estados.Where(e => e == Estado.Ceara).Count();
-        prosp_rn = estados.Where(e => e == Estado.RioGrandeDoNorte).Count();
-        prosp_pb = estados.Where(e => e == Estado.Paraiba).Count();
-        prosp_pe = estados.Where(e => e == Estado.Pernambuco).Count();
-        prosp_al = estados.Where(e => e == Estado.Alagoas).Count();
-        prosp_se = estados.Where(e => e == Estado.Sergipe).Count();
-        prosp_ba = estados.Where(e => e == Estado.Bahia).Count();
-        prosp_mg = estados.Where(e => e == Estado.MinasGerais).Count();
-        prosp_es = estados.Where(e => e == Estado.EspiritoSanto).Count();
-        prosp_rj = estados.Where(e => e == Estado.RioDeJaneiro).Count();
-        prosp_sp = estados.Where(e => e == Estado.SaoPaulo).Count();
-        prosp_pr = estados.Where(e => e == Estado.Parana).Count();
-        prosp_sc = estados.Where(e => e == Estado.SantaCatarina).Count();
-        prosp_rs = estados.Where(e => e == Estado.RioGrandeDoSul).Count();
-        prosp_ms = estados.Where(e => e == Estado.MatoGrossoDoSul).Count();
-        prosp_mt = estados.Where(e => e == Estado.MatoGrosso).Count();
-        prosp_go = estados.Where(e => e == Estado.Goias).Count();
-        prosp_df = estados.Where(e => e == Estado.DistritoFederal).Count();
-
 
         linhaDePesquisa = ViewBag.LinhaDePesquisa as List<LinhaPesquisa>;
 
         linhaDePesquisaUnica = linhaDePesquisa.OrderByDescending(p => linhaDePesquisa.Where(k=> k == p).Count()).Distinct().Select(p=> $"{{name: `{p.GetDisplayName().ToUpperInvariant()}`, y: {linhaDePesquisa.Where(k=> k == p).Count()}}},").ToList();
 
-               if (despesas > 0)
+        if (despesas > 0)
         {
 
-            sustentabilidade = despesas / receita;
+            sustentabilidade = (receita / despesas) * 100;
         }
         else
         {
@@ -243,7 +184,7 @@
   <div class="card-financeiro border-shadow" id="sustentabilidade">
     <p>Sustentabilidade</p>
     <div class="center">
-      <p class="gradient">@sustentabilidade.ToString()%</p>
+      <p class="gradient">@sustentabilidade.ToString("F2")%</p>
     </div>
   </div>
   <div class="card-lista border-shadow" id="prospeccoes">

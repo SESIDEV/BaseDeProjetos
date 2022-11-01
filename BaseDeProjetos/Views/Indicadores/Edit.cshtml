@@ -1,0 +1,68 @@
+﻿@using BaseDeProjetos.Helpers
+@using Microsoft.AspNetCore.Http
+@model BaseDeProjetos.Models.IndicadoresFinanceiros
+
+@{
+    ViewData["Title"] = "Indicadores";
+}
+
+<h4>IndicadoresFinanceiros</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Data" class="control-label"></label>
+                <input asp-for="Data" class="form-control"/>
+                <span asp-validation-for="Data" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Receita" class="control-label">Receita Por Competência</label>
+                <input asp-for="Receita" class="form-control"/>
+                <span asp-validation-for="Receita" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Despesa" class="control-label">Despesa</label>
+                <input asp-for="Despesa" class="form-control"/>
+                <span asp-validation-for="Despesa" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Investimento" class="control-label">Receita Por Caixa</label>
+                <input asp-for="Investimento" class="form-control"/>
+                <span asp-validation-for="Investimento" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="QualiSeguranca" class="control-label"></label>
+                <input asp-for="QualiSeguranca" class="form-control" />
+                <span asp-validation-for="QualiSeguranca" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Casa" class="control-label"></label>
+                @if (!(Context.Session.GetString("_Casa") is null))
+                {
+                    <select asp-for="Casa" class="form-control">
+                        @{
+                            var enum_v = (int)Enum.Parse(typeof(Instituto), Context.Session.GetString("_Casa"), true);
+                        }
+                        <option value="@enum_v" selected="selected">@Context.Session.GetString("_Casa")</option>
+                    </select>
+                }
+                else
+                {
+                    <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Instituto>().OrderBy(p=>p.Text)"></select>
+                }
+                <span asp-validation-for="Casa" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-3">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-primary">Back to List</a>
+</div>
+
