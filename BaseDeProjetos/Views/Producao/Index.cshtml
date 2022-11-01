@@ -2,9 +2,6 @@
 
 @{ViewData["Title"] = "Gestão do Conhecimento";}
 
-<script>
-addEventListener("load", () => {CorStatusGC(document.getElementsByClassName("status_gc"));});
-</script>
 <div class="d-flex" style="justify-content:space-between">
 <h1>Gestão do Conhecimento</h1>
 <p><a asp-action="Create" style="margin-top:10px">Adicionar Produção</a></p>
@@ -16,7 +13,7 @@ addEventListener("load", () => {CorStatusGC(document.getElementsByClassName("sta
             <div class="col-md-3">
                 <div class="card mt-3" style="width: 18rem;">
                     <div style="height:200px; overflow:hidden;">
-                        <img class="card-img-top" src="@Html.DisplayFor(modelItem => item.Imagem)" alt="imagem">
+                        <img class="card-img-top" src="@Html.DisplayFor(modelItem => item.Imagem)" alt="imagem" onload="CorStatusGC()">
                     </div>
                     <div class="card-body">
                         <div class="d-flex" style="justify-content:space-between">

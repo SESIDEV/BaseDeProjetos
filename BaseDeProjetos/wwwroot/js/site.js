@@ -74,8 +74,8 @@ function validarCNPJ(){
     }    
 }
 
-function CorStatusGC(lista_status){    
-    Array.from(lista_status).forEach((status) => 
+function CorStatusGC(){
+    Array.from(document.getElementsByClassName("status_gc")).forEach((status) => 
     {
         switch(status.outerText) {
             case 'Recebido': status.className = "btn btn-secondary status_gc"; break;
