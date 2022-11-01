@@ -445,8 +445,8 @@ namespace BaseDeProjetos.Models
 
     public enum StatusPub
     {
-        [Display(Name = "Recebido")]
-        Recebido,
+        [Display(Name = "Submetido")]
+        Submetido,
         [Display(Name = "Aceito")]
         Aceito,
         [Display(Name = "Publicado")]
