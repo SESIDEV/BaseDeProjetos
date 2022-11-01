@@ -191,12 +191,12 @@ function Base64() {
     r = new FileReader();
     r.readAsDataURL(imagem);
     r.onload = function(){
-        document.getElementById("logo_img_preview").src = r.result
-        document.getElementById('logo_b64').value = r.result
+        document.getElementById("img_preview").src = r.result
+        document.getElementById('img_b64').value = r.result
     }
 
 }
 
-function MostrarLogo(){
-        document.getElementById("logo_img_preview").src = document.getElementById('logo_b64').value
+function MostrarImagem(){
+    document.getElementById("img_preview").src = document.getElementById('img_b64').value
 }

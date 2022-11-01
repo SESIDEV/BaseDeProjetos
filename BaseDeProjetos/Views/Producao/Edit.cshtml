@@ -5,7 +5,9 @@
 }
 
 <h1>Editar</h1>
-
+<script>
+addEventListener("load", () => {MostrarImagem();});
+</script>
 <h4>Produção</h4>
 <hr />
 <div class="row">
@@ -60,17 +62,19 @@
             </div>
             <div class="form-group">
                 <label asp-for="Imagem" class="control-label"></label>
-                <input asp-for="Imagem" class="form-control" />
+                <input type="file" class="form-control" id="logo_imagem" onchange="Base64()"/>
+                <input asp-for="Imagem" id="img_b64" class="control-label" style="display: none;" value="@Model.Imagem" onchange="MostrarImagem()" readonly>
                 <span asp-validation-for="Imagem" class="text-danger"></span>
             </div>
-            <br />
+            <img id="img_preview" src="" width="300" style="margin-top:5px;">
+            <hr />
             <div class="form-group">
                 <input type="submit" value="Salvar" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
-<br />
+<br>
 <div>
     <a asp-action="Index">Voltar para Lista</a>
 </div>
