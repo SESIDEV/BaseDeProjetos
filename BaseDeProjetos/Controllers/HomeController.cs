@@ -42,6 +42,8 @@ namespace BaseDeProjetos.Controllers
                     ViewData["Volume_Negocios"] = _context.Prospeccao.Where(p => p.Casa == Instituto.ISIQV).ToList().Where(p => prospeccaoAtiva(p) == true).Sum(p => p.ValorEstimado);
                 }
 
+                ViewData["Volume_Negocios"] = _context.Prospeccao.Where(p => p.Casa == Instituto.ISIQV).ToList().Where(p => prospeccaoAtiva(p) == true).Sum(p => p.ValorEstimado);
+
                 ViewData["n_prosp"] = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).ToList().Where(p => prospeccaoAtiva(p) == true).ToList().Count;
                 //Volume de negocios é o somatório de todos os valores de prospecções
                 ViewData["Volume_Negocios"] = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).ToList().Where(p => prospeccaoAtiva(p) == true).Sum(p => p.ValorEstimado);

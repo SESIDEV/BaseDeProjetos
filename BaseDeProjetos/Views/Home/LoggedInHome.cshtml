@@ -9,7 +9,6 @@
     decimal despesas = 1;
     decimal investimento = 1;
     decimal sustentabilidade = 100;
-    decimal saldo = 0;
     float quali = 1;
     List<LinhaPesquisa> linhaDePesquisa = new List<LinhaPesquisa>();
     List<string> linhaDePesquisaUnica = new List<string>();
@@ -30,8 +29,7 @@
         if (despesas > 0)
         {
 
-            saldo = receita - despesas;
-            sustentabilidade = saldo / receita * 100;
+            sustentabilidade = (receita / despesas) * 100;
         }
         else
         {
@@ -186,7 +184,7 @@
   <div class="card-financeiro border-shadow" id="sustentabilidade">
     <p>Sustentabilidade</p>
     <div class="center">
-      <p class="gradient">@sustentabilidade%</p>
+      <p class="gradient">@sustentabilidade.ToString("F2")%</p>
     </div>
   </div>
   <div class="card-lista border-shadow" id="prospeccoes">
