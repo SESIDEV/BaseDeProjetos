@@ -78,7 +78,7 @@ function CorStatusGC(){
     Array.from(document.getElementsByClassName("status_gc")).forEach((status) => 
     {
         switch(status.outerText) {
-            case 'Recebido': status.className = "btn btn-secondary status_gc"; break;
+            case 'Submetido': status.className = "btn btn-secondary status_gc"; break;
             case 'Aceito': status.className = "btn btn-info status_gc"; break;
             case 'Publicado': status.className = "btn btn-success status_gc"; break;
         }
