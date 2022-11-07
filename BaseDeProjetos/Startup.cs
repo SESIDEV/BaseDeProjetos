@@ -111,14 +111,11 @@ namespace BaseDeProjetos
 
             app.UseEndpoints(endpoints =>
             {
+
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=FunilDeVendas}/{action=Index}/{casa?}/{ano?}");
-                endpoints.MapControllerRoute(
-                    name: "convencional",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 
-
                 endpoints.MapRazorPages();
             });
 
