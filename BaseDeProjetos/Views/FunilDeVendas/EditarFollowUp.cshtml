@@ -95,6 +95,11 @@
         <a asp-action="Details" asp-route-id='@prosp.Id'>Voltar</a>
     </div>
 
+    <script>
+        var dateControl = document.querySelector('input[type="date"]');
+        dateControl.max = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+    </script>
+
     @section Scripts {
         @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     }

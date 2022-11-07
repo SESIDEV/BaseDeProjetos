@@ -2,7 +2,8 @@
 @using System.Globalization
 @using BaseDeProjetos.Helpers
 @{
-    var ptbr = new CultureInfo("pt-BR");
+    var ptbr = new CultureInfo("pt-BR");    
+    
 }
 <style>
     * {
@@ -219,7 +220,7 @@
                         <p>@item.Status.Last().Anotacoes</p>
                     </div>
                     <div>
-                        Data: @item.Status.Last().Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))
+                        Data: @item.Status.Last().Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"));
                     </div>
                 </div>
             </div>
