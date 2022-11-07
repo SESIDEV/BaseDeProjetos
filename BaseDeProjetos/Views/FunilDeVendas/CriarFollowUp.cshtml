@@ -71,7 +71,7 @@
 
             <div class="form-group">
                 <label asp-for="Data" class="control-label"></label>
-                <input type="date" asp-for="Data" class="form-control" />
+                <input type="date"  class="form-control" />
                 <span asp-validation-for="Data" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -100,12 +100,10 @@
     </div>
     <br>
     <div>
-        <a asp-action="Details" asp-route-id='@prosp.Id'>Voltar</a>
+        <a asp-action="Details" asp-route-id='@prosp.Id' class="btn btn-primary">Voltar</a>
     </div>
 </div>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-    }
+<script>
+    var dateControl = document.querySelector('input[type="date"]');
+    dateControl.max = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+</script>
