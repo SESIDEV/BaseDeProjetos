@@ -19,14 +19,14 @@ namespace BaseDeProjetos.Helpers
             {
                 return new HtmlString($"<span class='badge badge-funil badge-morno text-dark'>Morno ({qtdDias} Dias)</span>");
             }
-            else if (qtdDias <= 16 && qtdDias >= 30)
+            else if (qtdDias >= 16 && qtdDias <= 30)
             {
                 return new HtmlString($"<span class='badge badge-funil badge-esfriando text-dark'>Esfriando ({qtdDias} Dias)</span>");
-            } 
-            else 
+            }
+            else
             {
                 return new HtmlString($"<span class='badge badge-funil badge-frio text-dark'>Frio ({qtdDias} Dias)</span>");
-            }                       
+            }
         }
 
         public static bool ProspeccaoExists(string id, ApplicationDbContext _context)
