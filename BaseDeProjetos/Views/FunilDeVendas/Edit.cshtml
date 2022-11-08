@@ -99,7 +99,7 @@
 
         <fieldset class="card col-6">
             <legend> Dados Financeiros</legend>
-            <div class="form-group">
+            <div class="form-group p-3">
                 <label asp-for="ValorEstimado" class="control-label"></label>
                 <input asp-for="ValorEstimado" type="number" class="form-control" value='@Model.ValorEstimado.ToString("F2",CultureInfo.CreateSpecificCulture("en-US"))' />
                 <span asp-validation-for="ValorEstimado" class="text-danger"></span>
@@ -109,52 +109,49 @@
                 {
                 <div class="form-group">
                     <label asp-for="ValorProposta" class="control-label"></label>
-=======
                     <input asp-for="ValorProposta" type="number" class="form-control" value='@Model.ValorProposta.ToString("F2",CultureInfo.CreateSpecificCulture("en-US"))' />
->>>>>>> master
                     <span asp-validation-for="ValorProposta" class="text-danger"></span>
                 </div>
                 }
-        </fieldset>
-
-        <fieldset class="card col-6">
-            <legend>Informações do Contato Inicial</legend>
-            <div class="form-group">
-                <label asp-for="Status[0].Data" class="control-label"></label>
-                <input class="form-control" type="date" asp-for="Status[0].Data" readonly />
-                <span asp-validation-for="Status[0].Data" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status[0].OrigemID" class="control-label"></label>
-                <input class="form-control" asp-for="Status[0].OrigemID" disabled />
-                <span asp-validation-for="Status[0].OrigemID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status[0].Anotacoes" class="control-label"></label>
-                <textarea class="form-control" asp-for=" Status[0].Anotacoes" rows="3" readonly></textarea>
-                <span asp-validation-for="Status[0].Anotacoes" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status[0].Status" class="control-label"></label>
-                <select asp-for="Status[0].Status" class="form-control" disabled>
-                    <option value="@StatusProspeccao.ContatoInicial">@StatusProspeccao.ContatoInicial</option>
-                </select>
-                <span asp-validation-for="Status[0].Status" class="text-danger"></span>
-            </div>
-        </fieldset>
+        </fieldset>        
 
         <div class="form-group">
-            <input type="submit" value="Salvar" class="btn btn-primary" />
+            <input type="submit" value="Salvar" class="btn btn-primary mt-4" />
         </div>
     </form>
+    <fieldset class="card col-6">
+        <legend>Informações do Contato Inicial</legend>
+        <div class="form-group">
+            <label asp-for="Status[0].Data" class="control-label"></label>
+            <input class="form-control" type="date" asp-for="Status[0].Data" readonly />
+            <span asp-validation-for="Status[0].Data" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Status[0].OrigemID" class="control-label"></label>
+            <input class="form-control" asp-for="Status[0].OrigemID" disabled />
+            <span asp-validation-for="Status[0].OrigemID" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Status[0].Anotacoes" class="control-label"></label>
+            <textarea class="form-control" asp-for=" Status[0].Anotacoes" rows="3" readonly></textarea>
+            <span asp-validation-for="Status[0].Anotacoes" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Status[0].Status" class="control-label"></label>
+            <select asp-for="Status[0].Status" class="form-control" disabled>
+                <option value="@StatusProspeccao.ContatoInicial">@StatusProspeccao.ContatoInicial</option>
+            </select>
+            <span asp-validation-for="Status[0].Status" class="text-danger"></span>
+        </div>
+    </fieldset>
 </div>
 <br>
 <div>
-    <a asp-action="Index" asp-route-casa='@ViewData["Area"]'>Voltar</a>
+    <a asp-action="Index" asp-route-casa='@ViewData["Area"]' class="btn btn-primary">Voltar</a>
 </div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    }
+}

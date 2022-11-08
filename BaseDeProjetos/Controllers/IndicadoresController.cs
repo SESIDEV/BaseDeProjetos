@@ -1,7 +1,10 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,11 +20,62 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: IndicadoresFinanceiros
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string casa)
         {
-            return View(await _context.IndicadoresFinanceiros.ToListAsync());
+
+            Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
+            List<IndicadoresFinanceiros> listaIndicadoresFinanceiros = await _context.IndicadoresFinanceiros.ToListAsync();
+            if (string.IsNullOrEmpty(casa))
+            {
+                casa = usuario.Casa.ToString();
+
+            }
+            List<IndicadoresFinanceiros> lista = DefinirCasaParaVisualizar(casa);
+            lista = VincularCasaAosIndicadoresFinanceiros(usuario, listaIndicadoresFinanceiros);
+            return View(lista.ToList());
         }
 
+        public static List<IndicadoresFinanceiros> VincularCasaAosIndicadoresFinanceiros(Usuario usuario, List<IndicadoresFinanceiros> listaIndicadoresFinanceiros)
+        {
+           
+            if (usuario.Casa == Instituto.Super || usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO)
+            {
+                return listaIndicadoresFinanceiros.Where(lista => lista.Casa == Instituto.ISIQV).ToList();
+
+            }
+            else
+            {
+                return listaIndicadoresFinanceiros.Where(lista => lista.Casa == usuario.Casa).ToList();
+            }            
+
+        }
+
+
+        private List<IndicadoresFinanceiros> DefinirCasaParaVisualizar(string? casa)
+        {
+            Instituto enum_casa;
+
+            if (Enum.IsDefined(typeof(Instituto), casa))
+            {
+                HttpContext.Session.SetString("_Casa", casa);
+                enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
+            }
+            else
+            {
+                enum_casa = Instituto.Super;
+            }
+
+
+            List<IndicadoresFinanceiros> listaIndicadores = new List<IndicadoresFinanceiros>();
+
+            List<IndicadoresFinanceiros> lista = enum_casa == Instituto.Super ?
+            _context.IndicadoresFinanceiros.ToList() :
+            _context.IndicadoresFinanceiros.Where(p => p.Casa.Equals(enum_casa)).ToList();
+
+            listaIndicadores.AddRange(lista);
+
+            return listaIndicadores.ToList();
+        }
         // GET: IndicadoresFinanceiros/Details/5
         public async Task<IActionResult> Details(int? id)
         {

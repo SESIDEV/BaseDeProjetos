@@ -5,7 +5,6 @@
 }
 
 <h1>Adicionar</h1>
-
 <h4>Produção</h4>
 <hr />
 <div class="row">
@@ -18,8 +17,8 @@
                 <span asp-validation-for="Grupo" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Grupo" class="control-label"></label>
-                <select asp-for="Grupo" class="form-control" asp-items="Html.GetEnumSelectList<Instituto>()"></select>
+                <label asp-for="Casa" class="control-label"></label>
+                <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Instituto>()"></select>
                 <span asp-validation-for="Grupo" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -59,10 +58,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="Imagem" class="control-label"></label>
-                <input asp-for="Imagem" class="form-control" />
+                <input type="file" class="form-control" id="logo_imagem" onchange="Base64()"/>
+                <input asp-for="Imagem" id="img_b64" class="control-label" style="display: none;" value="" readonly>
                 <span asp-validation-for="Imagem" class="text-danger"></span>
             </div>
-            <br />
+            <img id="img_preview" src="" width="300" style="margin-top:5px;">
+            <hr />
             <div class="form-group">
                 <input type="submit" value="Adicionar" class="btn btn-primary" />
             </div>

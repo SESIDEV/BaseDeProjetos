@@ -2,15 +2,12 @@
 
 @{ViewData["Title"] = "Gestão do Conhecimento";}
 
-<script>
-addEventListener("load", () => {CorStatusGC(document.getElementsByClassName("status_gc"));});
-</script>
 <div class="d-flex" style="justify-content:space-between">
 <h1>Gestão do Conhecimento</h1>
 <p><a asp-action="Create" style="margin-top:10px">Adicionar Produção</a></p>
 </div>
 
-<div class="container">
+<div class="container" onload="CorStatusGC()">
     <div class="row">
         @foreach (var item in Model) {
             <div class="col-md-3">

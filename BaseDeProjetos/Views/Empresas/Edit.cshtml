@@ -3,6 +3,9 @@
 @{ ViewData["Title"] = "Editar"; }
 
 <h1>Editar</h1>
+<script>
+addEventListener("load", () => {MostrarImagem();});
+</script>
 <h4>Empresa</h4>
 <hr />
 <div class="row">
@@ -39,12 +42,12 @@
             <div class="form-group">
                 <label asp-for="Logo" class="control-label"></label>
                 <input type="file" class="form-control" id="logo_imagem" onchange="Base64()"/>
-                <input asp-for="Logo" id="logo_b64" class="control-label" style="display: none;" value="@Model.Logo" onchange="MostrarLogo()" readonly>
+                <input asp-for="Logo" id="img_b64" class="control-label" style="display: none;" value="@Model.Logo" onchange="MostrarImagem()" readonly>
             </div>
-            <img id="logo_img_preview" src="" width="300" style="margin-top:5px;">
+            <img id="img_preview" src="" width="300" style="margin-top:5px;">
             <hr />
             <div class="form-group">
-                <input type="submit" value="Salvar" class="btn btn-primary" /><br>
+                <input type="submit" value="Salvar" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -53,14 +56,7 @@
 <div>
     <a asp-action="Index">Voltar para Lista</a>
 </div>
-<script>
-    function MostrarLogo(){
-        document.getElementById("logo_img_preview").src = document.getElementById('logo_b64').value
-    }
-    MostrarLogo()
-</script>
+
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -25,6 +25,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: FunilDeVendas
+        [Route("FunilDeVendas/Index/{casa?}/{ano?}")]
         public IActionResult Index(string casa, string sortOrder = "", string searchString = "", string ano = "")
         {
 
@@ -309,11 +310,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id," +
-                                                                "TipoContratacao, " +
-                                                                 "NomeProspeccao, " +
-                                                                 "PotenciaisParceiros, " +
-                                                                 "LinhaPequisa, Empresa, Contato, Casa, Usuario, ValorProposta, ValorEstimado, Status")] Prospeccao prospeccao)
+        public async Task<IActionResult> Edit(string id, [Bind("Id," + "TipoContratacao, " + "NomeProspeccao, " + "PotenciaisParceiros, " + "LinhaPequisa, Empresa, Contato, Casa, Usuario, ValorProposta, ValorEstimado, Status")] Prospeccao prospeccao)
         {
             if (id != prospeccao.Id)
             {
@@ -342,7 +339,7 @@ namespace BaseDeProjetos.Controllers
             }
             return View(prospeccao);
         }
-
+        
         private Prospeccao EditarDadosDaProspecção(string id, Prospeccao prospeccao)
         {
             Empresa Empresa_antigo = _context.Empresa.FirstOrDefault(e => e.Id == prospeccao.Empresa.Id);
@@ -438,7 +435,7 @@ namespace BaseDeProjetos.Controllers
             Usuario usuario = ObterUsuarioAtivo();
             Prospeccao prospeccao = _context.Prospeccao.FirstOrDefault(p => p.Id == followup.OrigemID);
 
-            if (prospeccao.Status.Count() > 1 && followup.Origem.Usuario == usuario)
+            if (verificarCondicoesRemocao(prospeccao, usuario, followup.Origem.Usuario) || usuario.Casa == Instituto.Super)
             {
                 _context.FollowUp.Remove(followup);
                 await _context.SaveChangesAsync();
@@ -448,6 +445,13 @@ namespace BaseDeProjetos.Controllers
             {
                 throw new InvalidOperationException("Não é possível remover todas os followups de uma prospecção");
             }
+        }
+
+        private bool verificarCondicoesRemocao(Prospeccao prospeccao, Usuario dono, Usuario ativo) {
+
+            return prospeccao.Status.Count() > 1 && dono == ativo;
+            
+
         }
 
         private Usuario ObterUsuarioAtivo()

@@ -10,7 +10,7 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Tipo de Publicação")]
         public virtual GrupoPublicacao Grupo { get; set; }
 
-        [Display(Name = "Casa")]
+        [Display(Name = "Instituto")]
         public virtual Instituto Casa { get; set; }
 
         [Display(Name = "Título")]

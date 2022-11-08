@@ -74,11 +74,11 @@ function validarCNPJ(){
     }    
 }
 
-function CorStatusGC(lista_status){    
-    Array.from(lista_status).forEach((status) => 
+function CorStatusGC(){
+    Array.from(document.getElementsByClassName("status_gc")).forEach((status) => 
     {
         switch(status.outerText) {
-            case 'Recebido': status.className = "btn btn-secondary status_gc"; break;
+            case 'Submetido': status.className = "btn btn-secondary status_gc"; break;
             case 'Aceito': status.className = "btn btn-info status_gc"; break;
             case 'Publicado': status.className = "btn btn-success status_gc"; break;
         }
@@ -191,12 +191,12 @@ function Base64() {
     r = new FileReader();
     r.readAsDataURL(imagem);
     r.onload = function(){
-        document.getElementById("logo_img_preview").src = r.result
-        document.getElementById('logo_b64').value = r.result
+        document.getElementById("img_preview").src = r.result
+        document.getElementById('img_b64').value = r.result
     }
 
 }
 
-function MostrarLogo(){
-        document.getElementById("logo_img_preview").src = document.getElementById('logo_b64').value
+function MostrarImagem(){
+    document.getElementById("img_preview").src = document.getElementById('img_b64').value
 }
