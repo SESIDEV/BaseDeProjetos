@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
-@using System.Globalization
-@using BaseDeProjetos.Helpers
+@using System.Globalization;
+@using BaseDeProjetos.Helpers;
+@using System.Web;
 @{
     var ptbr = new CultureInfo("pt-BR");
 }
@@ -216,10 +217,19 @@
                         <h4>Último Status:</h4>
                     </div>
                     <div>
-                        <p>@item.Status.Last().Anotacoes</p>
+                        @{FollowUp ultimo= item.Status.OrderBy(p => p.Data).Last();}
+                        <p>
+                            @if (@ultimo.Anotacoes != null){
+                                <br> @Html.Raw(ultimo.Anotacoes.Replace("\n", "<br><br>"));
+                            }
+                            else{
+                                <span> Sem informações preenchidas</span>
+                            }
+                            
+                        </p>
                     </div>
                     <div>
-                        Data: @item.Status.Last().Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))
+                        Data: @ultimo.Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))
                     </div>
                 </div>
             </div>
