@@ -19,5 +19,6 @@ namespace BaseDeProjetos.Data
         public DbSet<BaseDeProjetos.Models.AtividadesProdutivas> AtividadesProdutivas { get; set; }
         public DbSet<BaseDeProjetos.Models.IndicadoresFinanceiros> IndicadoresFinanceiros { get; set; }
         public DbSet<BaseDeProjetos.Models.Producao> Producao { get; set; }
+        public DbSet<BaseDeProjetos.Models.Editais> Editais { get; set; }
     }
 }
