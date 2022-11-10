@@ -671,6 +671,41 @@ namespace BaseDeProjetos.Models
         IMPRESSO, WEB, MEIO_MAGNETICO, MEIO_DIGITAL, FILME, HIPERTEXTO, OUTRO, VARIOS, NAO_INFORMADO
     }
 
+    public enum StatusSubmissaoEdital
+    {
+        [Display(Name = "Edital Submetido")]
+        submetido,
+        [Display(Name = "Submissão em análise")]
+        emAnalise,
+        [Display(Name = "Deferido")]
+        deferido,
+        [Display(Name = "Indeferido")]
+        indeferido,
+        [Display(Name = "Cancelado")]
+        cancelado
+    }
+
+    public enum StatusEdital
+    {
+        [Display(Name = "Em aberto")]
+        aberto,
+        [Display(Name = "Edital Encerrado")]
+        encerrado
+    }
+
+    public enum AgenciaDeFomento
+    {
+        [Display(Name = "Finep")]
+        finep,
+        [Display(Name = "Faperj")]
+        faperj,
+        [Display(Name = "Cnpq")]
+        cnpq,
+        [Display(Name = "Sesi/Senai de Inovação")]
+        sesi_senai_inovacao,
+        [Display(Name = "Outros")]
+        outros
+    }
     public static class EnumExtensions
     {
         public static string GetDisplayName(this Enum enu)
