@@ -25,6 +25,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: FunilDeVendas
+        [Route("FunilDeVendas/Index/{casa?}/{ano?}")]
         public IActionResult Index(string casa, string sortOrder = "", string searchString = "", string ano = "")
         {
 
