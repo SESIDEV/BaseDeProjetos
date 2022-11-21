@@ -19,21 +19,19 @@ namespace BaseDeProjetos.Helpers
             {
                 return new HtmlString($"<span class='badge badge-funil badge-morno text-dark'>Morno ({qtdDias} Dias)</span>");
             }
-            else if (qtdDias <= 16 && qtdDias >= 30)
+            else if (qtdDias >= 16 && qtdDias <= 30)
             {
                 return new HtmlString($"<span class='badge badge-funil badge-esfriando text-dark'>Esfriando ({qtdDias} Dias)</span>");
-            } 
-            else 
+            }
+            else
             {
                 return new HtmlString($"<span class='badge badge-funil badge-frio text-dark'>Frio ({qtdDias} Dias)</span>");
-            }                       
+            }
         }
-
         public static bool ProspeccaoExists(string id, ApplicationDbContext _context)
         {
             return _context.Prospeccao.Any(e => e.Id == id);
         }
-
         public static List<Prospeccao> VincularCasaProspeccao(Usuario usuario, List<Prospeccao> listaProsp)
         {
 
@@ -57,7 +55,6 @@ namespace BaseDeProjetos.Helpers
 
             return lista.Where(s => s.Status.Any(k => k.Data.Year == Convert.ToInt32(ano))).ToList();
         }
-
         public static List<Prospeccao> OrdenarProspecções(string sortOrder, List<Prospeccao> lista)
         {
             var prosps = lista.AsQueryable<Prospeccao>();

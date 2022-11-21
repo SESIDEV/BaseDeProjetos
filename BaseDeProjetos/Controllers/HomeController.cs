@@ -24,6 +24,10 @@ namespace BaseDeProjetos.Controllers
             _logger = logger;
         }
 
+        [Route("")]
+        [Route("Home")]
+        [Route("Home/Index")]
+        [Route("Home/Index/{id?}")]
         public IActionResult Index()
         {
             if (HttpContext.User.Identity.IsAuthenticated)
