@@ -154,23 +154,29 @@ namespace BaseDeProjetos.Controllers
         public IActionResult Planejar(int id, string userId)
         {
 
+            userId = HttpContext.User.Identity.Name;
+            Instituto usuarioCasa = _context.Users.FirstOrDefault(u => u.UserName == userId).Casa;
+
             Prospeccao prosp = new Prospeccao
             {
                 Id = $"proj_{DateTime.Now.Ticks}",
                 Empresa = _context.Empresa.FirstOrDefault(E => E.Id == id),
-                Usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name),
+                Usuario = _context.Users.FirstOrDefault(u => u.UserName == userId),
+                Casa = usuarioCasa,
+                LinhaPequisa = LinhaPesquisa.Indefinida
             };
-            prosp.Casa = prosp.Usuario.Casa;
-            prosp.Status = new List<FollowUp>();
-            prosp.Status.Add(new FollowUp
+            prosp.Status = new List<FollowUp>
             {
+                new FollowUp
+                {
 
-                OrigemID = prosp.Id,
-                Data = DateTime.Today,
-                Anotacoes = "Incluído no plano de prospecção de" + User.Identity.Name,
-                Status = StatusProspeccao.Planejada
+                    OrigemID = prosp.Id,
+                    Data = DateTime.Today,
+                    Anotacoes = $"Incluído no plano de prospecção de {User.Identity.Name}",
+                    Status = StatusProspeccao.Planejada
 
-            });
+                }
+            };
 
             _context.Add(prosp);
             _context.SaveChanges();
