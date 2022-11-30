@@ -13,7 +13,7 @@
     }
 }
 
-<h1>Details</h1>
+<h1>Detalhes</h1>
 
 <div class="row">
     <hr />
@@ -90,9 +90,8 @@
     </div>
    </div>
 
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <div>
-        <a asp-action="Index" asp-route-casa="@ViewData["Area"]">Voltar</a>
-    </div>
+<div> 
+    <br />
+    <a asp-action="Edit" class="btn btn-primary" asp-route-id="@Model.Id">Editar</a> |
+    <a asp-action="Index" class="btn btn-outline-dark"  asp-route-casa="@ViewData["Area"]">Voltar</a>
 </div>

@@ -7,7 +7,8 @@
         ViewData["Area"] = Context.Session.GetString("_Casa");
     } 
 }
-<h1>Criar</h1>
+<h1>Criar</h1> 
+<br />
 <h4>Prospecção</h4>
 <hr />
 <div class="row">
@@ -134,15 +135,15 @@
             </fieldset>
 
             <div class="form-group">
-                <input type="submit" value="Incluir" class="btn btn-primary" />
+                <br />
+                <input type="submit" value="Incluir" class="btn btn-primary" /> |
+                <a asp-action="Index" class="btn btn-outline-dark" asp-route-casa='@ViewData["Area"]'>Voltar</a>
                 <br>
             </div>
         </form>
     </div>
 </div>
-<div>
-    <a asp-action="Index" asp-route-casa='@ViewData["Area"]'>Voltar</a>
-</div>
+
 <script>
     var dateControl = document.querySelector('input[type="date"]');
     dateControl.max = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];

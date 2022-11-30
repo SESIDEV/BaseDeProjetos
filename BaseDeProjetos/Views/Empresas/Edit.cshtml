@@ -5,7 +5,8 @@
 <h1>Editar</h1>
 <script>
 addEventListener("load", () => {MostrarImagem();});
-</script>
+</script> 
+<br />
 <h4>Empresa</h4>
 <hr />
 <div class="row">
@@ -47,15 +48,14 @@ addEventListener("load", () => {MostrarImagem();});
             <img id="img_preview" src="" width="300" style="margin-top:5px;">
             <hr />
             <div class="form-group">
-                <input type="submit" value="Salvar" class="btn btn-primary" />
+                <input type="submit" value="Salvar" class="btn btn-primary" /> | 
+                <a class="btn btn-outline-dark" asp-action="Index">Voltar</a>
             </div>
         </form>
     </div>
 </div>
 <br>
-<div>
-    <a asp-action="Index">Voltar para Lista</a>
-</div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

@@ -9,16 +9,15 @@
 
 <div class="row">
     <div class="col-md-6">
-        <p>Sua conta contém dados pessoais que você nos cedeu. Esta página permite que vocês os baixe ou os remova</p>
+        <p>Essa conta contém seus respectivos dados pessoais, esta página permite que você baixe ou remova seus dados</p>
         <p>
-            <strong>Remover esses dados vai remover sua conta permanentemente e isso não pode ser desfeito</strong>
+            <strong>Remover esses dados irá remover sua conta permanentemente e isso não poderá ser desfeito</strong>
         </p>
         <form id="download-data" asp-page="DownloadPersonalData" method="post" class="form-group">
-            <button class="btn btn-primary" type="submit">Baixar dados</button>
+            <button class="btn btn-primary" type="submit">Baixar dados</button> 
+            <a id="delete" asp-page="DeletePersonalData" class="btn btn-danger">Excluir</a>
         </form>
-        <p>
-            <a id="delete" asp-page="DeletePersonalData" class="btn btn-primary">Excluir</a>
-        </p>
+        
     </div>
 </div>
 

@@ -8,7 +8,8 @@
 
 <partial name="_StatusMessage" model="Model.StatusMessage" />
 
-<h4 class="card-title">@ViewData["Title"]</h4>
+<h4 class="card-title">@ViewData["Title"]</h4> 
+<br />
 <div class="row card">
     <div class="card-body">
         <div>
@@ -98,7 +99,7 @@
                     <input asp-for="Input.PhoneNumber" class="form-control" />
                     <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
                 </div>
-
+                <br />
                 <button id="update-profile-button" type="submit" class="btn btn-primary">Salvar</button>
             </fieldset>
         </form>
@@ -107,6 +108,7 @@
 </div>
 
 <a asp-controller="FunilDeVendas" asp-action="RelatorioProspeccoes">
+    <br />
     <button class="btn btn-primary"> Obter Prospecções da semana</button>
 </a>
 

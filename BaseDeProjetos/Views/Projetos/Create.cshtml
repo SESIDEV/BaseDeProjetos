@@ -116,14 +116,12 @@
             </fieldset>
 
             <div class="form-group col-12">
-                <input type="submit" value="Criar" class="btn btn-primary" />
+                <br />
+                <input type="submit" value="Criar" class="btn btn-primary" /> |
+                <a asp-action="Index" class="btn btn-outline-dark" asp-route-casa="@ViewData["Area"]">Voltar</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index" asp-route-casa="@ViewData["Area"]">Voltar</a>
 </div>
 
 @section Scripts {

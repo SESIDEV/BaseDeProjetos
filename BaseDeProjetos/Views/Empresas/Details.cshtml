@@ -5,7 +5,7 @@
 }
 
 <h1>Detalhes</h1>
-
+<br />
 <div>
     <h4>Empresa</h4>
     <hr />
@@ -43,6 +43,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Editar</a> |
-    <a asp-action="Index">Voltar para Lista</a>
+    <a asp-action="Editar" class="btn btn-primary" asp-route-id="@Model.Id">Editar</a> |
+    <a class="btn btn-outline-dark"  asp-action="Index">Voltar</a>
 </div>

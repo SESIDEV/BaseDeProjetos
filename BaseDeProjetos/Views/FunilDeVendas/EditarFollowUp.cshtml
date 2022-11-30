@@ -79,21 +79,19 @@
             <hr />
             <div id="naoconversao" style="display:none">
                 <div class="form-group">
-                    <label class="control-label"> Motivo de não conversão:</label>
+                    <label class="control-label">Motivo de não conversão:</label>
                     <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<MotivosNaoConversao>()"></select>
                 </div>
             </div>
 
             <div class="form-group">
-                <input type="submit" value="Editar" class="btn btn-primary" />
+                <input type="submit" value="Editar" class="btn btn-primary" /> |
+                <a asp-action="Details" class="btn btn-outline-dark" asp-route-id='@prosp.Id'>Voltar</a>
             </div>
             <br />
         </form>
     </div>
-    <br/>
-    <div>
-        <a asp-action="Details" asp-route-id='@prosp.Id'>Voltar</a>
-    </div>    
+    <br/>   
 </div>
 <script>
     var dateControl = document.querySelector('input[type="date"]');
