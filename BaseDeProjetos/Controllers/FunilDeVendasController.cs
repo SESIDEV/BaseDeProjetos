@@ -49,6 +49,7 @@ namespace BaseDeProjetos.Controllers
 
         private void CategorizarProspecçõesNaView(List<Prospeccao> lista)
         {
+
             var concluidos = lista.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida ||
                                                               f.Status == StatusProspeccao.Suspensa ||
                                                               f.Status == StatusProspeccao.NaoConvertida)).ToList();
@@ -60,7 +61,7 @@ namespace BaseDeProjetos.Controllers
 
             List<Prospeccao> ativos = lista.Where(p => p.Status.OrderBy(k => k.Data).LastOrDefault().Status < StatusProspeccao.ComProposta).ToList();
 
-            List<Prospeccao> planejados = lista.Where(p => p.Status.All(f => f.Status == StatusProspeccao.Planejada)).ToList();
+            List<Prospeccao> planejados = lista.Where(p => p.Status.All(f => f.Status == StatusProspeccao.Planejada)).Where(u => u.Usuario.ToString() == HttpContext.User.Identity.Name).ToList();
 
             ViewBag.Erradas = errados;
             ViewBag.Concluidas = concluidos;

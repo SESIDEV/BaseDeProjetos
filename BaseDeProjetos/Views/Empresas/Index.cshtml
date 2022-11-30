@@ -5,6 +5,8 @@
     ViewData["Title"] = "Empresas";
     List<Pessoa> contatos = ViewBag.Contatos as List<Pessoa>;
     List<Prospeccao> prosps = ViewBag.Prospeccoes as List<Prospeccao>;
+    List<Prospeccao> prospsPlanejadas = ViewBag.ProspeccoesPlanejadas as List<Prospeccao>;
+    List<Prospeccao> prospsAtivas = ViewBag.ProspeccoesAtivas as List<Prospeccao>;
 }
 <style>
     .efeito-hover:hover{
@@ -171,7 +173,7 @@
                         </div>
 
                         <p><strong>Nome Empresa:</strong> @item.Nome</p>
-                        <p><strong>Prospeccoes Ativas: </strong>@prosps.Where(P => P.Empresa.Id == @item.Id).Count()</p>
+                        <p><strong>Prospeccoes Totais: </strong>@prosps.Where(P => P.Empresa.Id == @item.Id).Count()</p>
                         <p><strong>CNPJ:</strong> @item.CNPJ</p>
                         <p><strong>Setor:</strong> @item.Segmento</p>
                         <button type="button" class="btn-empresa efeito-hover" data-toggle="collapse" data-target="#e_@item.Id">Ações</button>
@@ -179,6 +181,7 @@
                         <a asp-controller="FunilDeVendas" asp-action="Planejar" asp-route-id="@item.Id">
                             <button type="button" class="btn-empresa efeito-hover" data-target="#ce_@item.Id">Planejar</button>
                         </a>
+                            <button type="button" class="btn-empresa efeito-hover" data-toggle="collapse" data-target="#pe_@item.Id">Prospecções</button>
 
                         <div id="e_@item.Id" class="collapse">
                             <h6>Ações</h6>
@@ -221,7 +224,63 @@
                                 <p>Sem contatos registrados</p>
                             }
                             <br />
+
+                                
                         </div>
+                            <div id="pe_@item.Id" class="collapse">
+                                <br />
+                                <h6>Prospecções da empresa:</h6>
+
+                                Planejadas:
+                                @if (prospsPlanejadas.Where(P => P.Empresa.Id == @item.Id).Count() > 0)
+                                {                                
+                                    <small>
+                                        <table>
+                                            <tr>
+                                                <th>Id</th>
+                                                <th>Líder</th>
+                                            </tr>
+
+                                            @foreach (Prospeccao pro in prospsPlanejadas)
+                                            {
+                                                <tr>
+                                                    <td>@pro.Id</td>
+                                                    <td>@pro.Usuario</td>
+                                                </tr>
+                                            }
+                                        </table>
+                                    </small>
+                                }
+                                else
+                                {
+                                    <p>Não há prospecções planejadas para esta empresa</p>
+                                }
+                                <br/>
+                                Ativas:
+                                @if (prospsAtivas.Where(P => P.Empresa.Id == @item.Id).Count() > 0)
+                                {
+                                    <small>
+                                        <table>                                            
+                                            <tr>
+                                                <th>Id</th>
+                                                <th>Líder</th>
+                                            </tr>
+
+                                            @foreach (Prospeccao pro in prospsAtivas)
+                                            {
+                                                <tr>
+                                                    <td>@pro.Id</td>
+                                                    <td>@pro.Usuario</td>
+                                                </tr>
+                                            }
+                                        </table>
+                                    </small>
+                                }
+                                else
+                                {
+                                    <p>Não há prospecções ativas para esta empresa</p>
+                                }
+                            </div>
                     </div>
                 </div>
             </div>
