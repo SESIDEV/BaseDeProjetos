@@ -181,43 +181,36 @@
                             <p><strong>Setor:</strong> @item.Segmento</p>
                             <button class="btn-empresa efeito-hover" data-toggle="collapse" data-target="#e_@item.Id">Ações</button>
                             <button class="btn-empresa efeito-hover" data-toggle="collapse" data-target="#ce_@item.Id">Contatos</button>
-                            <button class="btn-empresa efeito-hover" data-toggle="collapse" data-target="#pe_@item.Id">Prospecções</button>
                             <button class="btn-empresa efeito-hover" data-target="#ce_@item.Id"><a asp-controller="FunilDeVendas" asp-action="Planejar" asp-route-id="@item.Id">Planejar</a></button>
+                            <button class="btn-empresa efeito-hover" data-toggle="collapse" data-target="#pe_@item.Id">Prospecções</button>
 
                             <div id="e_@item.Id" class="collapse">
-                                <h6 class="mt-3">Ações</h6>
-                                <div class="mt-3">
-                                    <button class="btn-empresa efeito-hover"><a asp-action="Edit" asp-route-id="@item.Id">Editar</a></button>
-                                    <button class="btn-empresa efeito-hover"><a asp-action="Details" asp-route-id="@item.Id">Ver Detalhes</a></button>
-                                    <button class="btn-empresa efeito-hover"><a asp-action="Delete" asp-route-id="@item.Id">Deletar</a></button>
+                                <h6>Ações</h6>
+                                <div>
+                                    <a asp-action="Edit" asp-route-id="@item.Id"><button class="btn-empresa efeito-hover">Editar</button></a>
+                                    <a asp-action="Details" asp-route-id="@item.Id"><button class="btn-empresa efeito-hover">Ver Detalhes</button></a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id"><button class="btn-empresa efeito-hover">Deletar</button></a>
                                 </div>
+                                <br />
                             </div>
 
                             <div id="ce_@item.Id" class="collapse">
                                 <br />
+                                <h6>Contatos Registrados</h6>
 
                                 @if (contatos != null)
                                 {
                                     <div>
-                                        <h6>Contatos Registrados</h6>
                                         <br />
                                         @foreach (Pessoa contato in contatos.Where(c => c.empresa != null).Where(c2 => c2.empresa.Id == item.Id))
                                         {
-
-                                            @if (contato.Nome != null && contato.Email != null && contato.Telefone != null)
+                                            if (contato.Nome != null && contato.Email != null && contato.Telefone != null && contato.Cargo != null)
                                             {
                                                 <div>
                                                     <p><strong>Nome</strong>: @contato.Nome</p>
                                                     <p><strong>E-mail</strong>: @contato.Email</p>
                                                     <p><strong>Telefone</strong>: @contato.Telefone</p>
-                                                    @if (@contato.Cargo != null)
-                                                    {
-                                                        <p><strong>Cargo</strong>: @contato.Cargo</p>
-                                                    }
-                                                    else
-                                                    {
-                                                        <p><strong>Cargo</strong>: Não informado</p>
-                                                    }
+                                                    <p><strong>Cargo</strong>: @contato.Cargo</p>
                                                 </div>
                                             }
 
@@ -226,39 +219,17 @@
                                 }
                                 else
                                 {
-                                    <p>Nenhum contato registrado</p>
+                                    <p>Sem contatos registrados</p>
                                 }
+                                <br />
 
 
                             </div>
                             <div id="pe_@item.Id" class="collapse">
                                 <br />
-                                <h6>Prospecções da empresa</h6>
+                                <h6>Prospecções da empresa:</h6>
                                 <br />
-                                <h6>Ativas</h6>
-                                @if (prospsAtivas.Where(P => P.Empresa.Id == @item.Id).Count() > 0)
-                                {
-                                    <table>
-                                        <tr>
-                                            <th>Id</th>
-                                            <th>Líder</th>
-                                        </tr>
-
-                                        @foreach (Prospeccao pro in prospsAtivas.Where(P => P.Empresa.Id == @item.Id))
-                                        {
-                                            <tr>
-                                                <td><a asp-controller="FunilDeVendas" asp-action="Details" asp-route-id="@pro.Id">@pro.Id</a></td>
-                                                <td>@pro.Usuario</td>
-                                            </tr>
-                                        }
-                                    </table>
-                                }
-                                else
-                                {
-                                    <p>Não há prospecções ativas para esta empresa</p>
-                                }
-                                <br />
-                                <h6>Planejadas</h6>
+                                <h6>Planejadas:</h6>
                                 @if (prospsPlanejadas.Where(P => P.Empresa.Id == @item.Id).Count() > 0)
                                 {
                                     <table>
@@ -270,7 +241,7 @@
                                         @foreach (Prospeccao pro in prospsPlanejadas.Where(P => P.Empresa.Id == @item.Id))
                                         {
                                             <tr>
-                                                <td><a asp-controller="FunilDeVendas" asp-action="Details" asp-route-id="@pro.Id">@pro.Id</a></td>
+                                                <td>@pro.Id</td>
                                                 <td>@pro.Usuario</td>
                                             </tr>
                                         }
@@ -279,6 +250,29 @@
                                 else
                                 {
                                     <p>Não há prospecções planejadas para esta empresa</p>
+                                }
+                                <br />
+                                <h6>Ativas:</h6>
+                                @if (prospsAtivas.Where(P => P.Empresa.Id == @item.Id).Count() > 0)
+                                {
+                                    <table>
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Líder</th>
+                                        </tr>
+
+                                        @foreach (Prospeccao pro in prospsAtivas.Where(P => P.Empresa.Id == @item.Id))
+                                        {
+                                            <tr>
+                                                <td>@pro.Id</td>
+                                                <td>@pro.Usuario</td>
+                                            </tr>
+                                        }
+                                    </table>
+                                }
+                                else
+                                {
+                                    <p>Não há prospecções ativas para esta empresa</p>
                                 }
                             </div>
                         </div>
