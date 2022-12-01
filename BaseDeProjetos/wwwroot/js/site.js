@@ -49,8 +49,6 @@ function ChecarPatente(){
     else{
         document.querySelector('#campos-patente').style = 'display:none'
     }
-
-
 }
 
 function CasasFunil() {

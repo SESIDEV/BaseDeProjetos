@@ -12,6 +12,7 @@
         @foreach (var item in Model) {
             <div class="col-md-3">
                 <div class="card mt-3" style="width: 18rem;">
+                    <h5 class="text-center card-header">@Html.DisplayFor(modelItem => item.Grupo)</h5>
                     <div style="height:200px; overflow:hidden;">
                         <img class="card-img-top" src="@Html.DisplayFor(modelItem => item.Imagem)" alt="imagem">
                     </div>

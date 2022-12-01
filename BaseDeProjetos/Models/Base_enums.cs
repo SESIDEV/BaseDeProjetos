@@ -160,7 +160,7 @@ namespace BaseDeProjetos.Models
         Relatorio,
 
         [Display(Name = "Patente", GroupName = "Produção Técnica, Patentes e Registros")]
-        Patente,
+        Patente = 8,
 
     }
 
