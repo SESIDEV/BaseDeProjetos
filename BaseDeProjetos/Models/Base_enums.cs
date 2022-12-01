@@ -153,8 +153,14 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Prefácio/Posfácio", GroupName = "Produção Bibliográfica")]
         PrefacioPosfacio,
 
-        [Display(Name = "...", GroupName = "Produção Técnica")]
-        Tecnica,
+        [Display(Name = "Palestras em Eventos", GroupName = "Produção Bibliográfica")]
+        Palestra,
+
+        [Display(Name = "Relatório Técnico", GroupName = "Produção Técnica, Patentes e Registros")]
+        Relatorio,
+
+        [Display(Name = "Patente", GroupName = "Produção Técnica, Patentes e Registros")]
+        Patente,
 
     }
 
@@ -445,12 +451,18 @@ namespace BaseDeProjetos.Models
 
     public enum StatusPub
     {
-        [Display(Name = "Submetido")]
+        [Display(Name = "Submetido", GroupName = "Artigo")]
         Submetido,
-        [Display(Name = "Aceito")]
+        [Display(Name = "Aceito", GroupName = "Artigo")]
         Aceito,
-        [Display(Name = "Publicado")]
+        [Display(Name = "Publicado", GroupName = "Artigo")]
         Publicado,
+
+        [Display(Name = "Em Depósito", GroupName = "Patente")]
+        EmDeposito,
+
+        [Display(Name = "Depositada", GroupName = "Patente")]
+        Depositada,
     }
     public enum Instituto
     {

@@ -19,7 +19,7 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Resumo")]
         public virtual string Descricao { get; set; }
 
-        [Display(Name = "Autores")]
+        [Display(Name = "Autores/Inventores")]
         public virtual string Autores { get; set; }
 
         [Display(Name = "Status")]
@@ -36,6 +36,18 @@ namespace BaseDeProjetos.Models
 
         [Display(Name = "Imagem")]
         public virtual string Imagem { get; set; }
+
+        [Display(Name = "Projeto Associado")]
+        public virtual string Projeto { get; set; }
+        
+        [Display(Name = "Empresa Associada")]
+        public virtual string Empresa { get; set; }
+
+        [Display(Name = "Escritório/Responsável")]
+        public virtual string Responsavel { get; set; }
+
+        [Display(Name = "Num Patente")]
+        public virtual string NumPatente { get; set; }
 
     }
 }

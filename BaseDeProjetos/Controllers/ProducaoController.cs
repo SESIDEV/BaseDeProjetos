@@ -46,6 +46,10 @@ namespace BaseDeProjetos.Controllers
         // GET: Producao/Create
         public IActionResult Create()
         {
+            List<Empresa> empresas = _context.Empresa.ToList();
+            List<Projeto> projetos = _context.Projeto.ToList();
+            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+            ViewData["Projetos"] = new SelectList(projetos, "Id", "NomeProjeto");
             return View();
         }
 
@@ -54,7 +58,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Grupo,Casa,Titulo,Descricao,Autores,StatusPub,Data,Local,DOI,Imagem")] Producao producao)
+        public async Task<IActionResult> Create([Bind("Id,Grupo,Casa,Titulo,Descricao,Autores,StatusPub,Data,Local,DOI,Imagem,Projeto,Empresa,Responsavel,NumPatente")] Producao producao)
         {
             if (ModelState.IsValid)
             {
@@ -78,6 +82,10 @@ namespace BaseDeProjetos.Controllers
             {
                 return NotFound();
             }
+            List<Empresa> empresas = _context.Empresa.ToList();
+            List<Projeto> projetos = _context.Projeto.ToList();
+            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+            ViewData["Projetos"] = new SelectList(projetos, "Id", "NomeProjeto");
             return View(producao);
         }
 
@@ -86,7 +94,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Grupo,Casa,Titulo,Descricao,Autores,StatusPub,Data,Local,DOI,Imagem")] Producao producao)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Grupo,Casa,Titulo,Descricao,Autores,StatusPub,Data,Local,DOI,Imagem,Projeto,Empresa,Responsavel,NumPatente")] Producao producao)
         {
             if (id != producao.Id)
             {

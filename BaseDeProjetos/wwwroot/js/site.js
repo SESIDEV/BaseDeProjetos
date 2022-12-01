@@ -40,6 +40,19 @@ function FiltroEmpresaEstrangeira(){
     
 }
 
+function ChecarPatente(){
+
+    let valor = document.querySelector('#select_tipo').value
+    if (valor == 8){
+        document.querySelector('#campos-patente').style = 'display:block'
+    }
+    else{
+        document.querySelector('#campos-patente').style = 'display:none'
+    }
+
+
+}
+
 function CasasFunil() {
 
     let caixa1 = document.getElementById("caixaISIQV")
