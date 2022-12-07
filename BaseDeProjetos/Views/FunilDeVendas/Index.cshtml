@@ -9,19 +9,6 @@
     List<Instituto> institutos = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto))).Where(c=>c!= Instituto.Super).ToList();
 }
 <script>
-    function updateLink() {
-        var baseUrl = location.href.split("?")[0];
-        var params = "?ano=";
-        var select = document.getElementById('ano').value;
-
-        if (location.href == baseUrl) {
-            location.href = baseUrl + params + select;
-        }
-        else {
-        location.href = baseUrl + params + select;
-        }
-        
-    }
     function getSelected() {
         var year = location.href.split('?')[1].split('&');
 

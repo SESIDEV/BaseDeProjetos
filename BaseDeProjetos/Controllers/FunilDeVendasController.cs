@@ -29,7 +29,7 @@ namespace BaseDeProjetos.Controllers
         public IActionResult Index(string casa, string sortOrder = "", string searchString = "", string ano = "")
         {
 
-            Usuario usuario = ObterUsuarioAtivo();
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
             if (string.IsNullOrEmpty(casa))
             {
@@ -117,8 +117,6 @@ namespace BaseDeProjetos.Controllers
             _context.Prospeccao.Where(p => p.Casa.Equals(enum_casa)).ToList();
 
             prospeccoes.AddRange(lista);
-
-
 
             ViewData["Area"] = casa;
 
@@ -439,7 +437,7 @@ namespace BaseDeProjetos.Controllers
         private async Task<IActionResult> RemoverFollowupAutenticado(FollowUp followup)
         {
             //Verifica se o usuário está apto para remover o followup
-            Usuario usuario = ObterUsuarioAtivo();
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
             Prospeccao prospeccao = _context.Prospeccao.FirstOrDefault(p => p.Id == followup.OrigemID);
 
             if (verificarCondicoesRemocao(prospeccao, usuario, followup.Origem.Usuario) || usuario.Casa == Instituto.Super)
@@ -459,11 +457,6 @@ namespace BaseDeProjetos.Controllers
             return prospeccao.Status.Count() > 1 && dono == ativo;
             
 
-        }
-
-        private Usuario ObterUsuarioAtivo()
-        {
-            return _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
         }
 
         // POST: FunilDeVendas/Delete/5

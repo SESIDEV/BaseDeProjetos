@@ -73,6 +73,20 @@ function CasasFunil() {
     window.location.assign(url_final);
 }
 
+function updateLink() {
+    var baseUrl = location.href.split("?")[0];
+    var params = "?ano=";
+    var select = document.getElementById('ano').value;
+
+    if (location.href == baseUrl) {
+        location.href = baseUrl + params + select;
+    }
+    else {
+    location.href = baseUrl + params + select;
+    }
+    
+}
+
 function statusPatente(){
 
     let status = document.querySelector("#StatusPub").value

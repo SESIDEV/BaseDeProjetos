@@ -1,5 +1,6 @@
 ﻿using BaseDeProjetos.Data;
 using System;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Linq;
 using BaseDeProjetos.Models;
@@ -32,6 +33,20 @@ namespace BaseDeProjetos.Helpers
         {
             return _context.Prospeccao.Any(e => e.Id == id);
         }
+        public static List<Producao> VincularCasaProducao(Usuario usuario, List<Producao> listaProd)
+        {
+
+            if (usuario.Casa == Instituto.Super || usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO)
+            {
+                return listaProd.Where(p => p.Casa == Instituto.ISIQV || p.Casa == Instituto.CISHO).ToList();
+
+            }
+            else
+            {
+                return listaProd.Where(p => p.Casa == usuario.Casa).ToList();
+            }
+
+        }
         public static List<Prospeccao> VincularCasaProspeccao(Usuario usuario, List<Prospeccao> listaProsp)
         {
 
@@ -46,6 +61,12 @@ namespace BaseDeProjetos.Helpers
             }
 
         }
+
+        public static Usuario ObterUsuarioAtivo(ApplicationDbContext _context, HttpContext HttpContext)
+        {
+            return _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
+        }
+
         public static List<Prospeccao> PeriodizarProspecções(string ano, List<Prospeccao> lista)
         {
             if (ano.Equals("Todos") || string.IsNullOrEmpty(ano))
@@ -55,6 +76,17 @@ namespace BaseDeProjetos.Helpers
 
             return lista.Where(s => s.Status.Any(k => k.Data.Year == Convert.ToInt32(ano))).ToList();
         }
+
+        public static List<Producao> PeriodizarProduções(string ano, List<Producao> lista)
+        {
+            if (ano.Equals("Todos") || string.IsNullOrEmpty(ano))
+            {
+                return lista;
+            }
+
+            return lista.Where(k => k.Data.Year == Convert.ToInt32(ano)).ToList();
+        }
+
         public static List<Prospeccao> OrdenarProspecções(string sortOrder, List<Prospeccao> lista)
         {
             var prosps = lista.AsQueryable<Prospeccao>();
@@ -75,6 +107,31 @@ namespace BaseDeProjetos.Helpers
                 searchString = searchString.ToLower();
 
                 lista = lista.Where(s => s.Empresa.Nome.ToLower().Contains(searchString) || s.Usuario.UserName.ToLower().Contains(searchString)).ToList();
+            }
+
+            return lista;
+        }
+        public static List<Producao> FiltrarProduções(string searchString, List<Producao> lista)
+        {
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.ToLower();
+
+                if (lista[0].Empresa != null){
+
+                    lista = lista.Where(s => 
+                        s.Autores.ToLower().Contains(searchString) ||
+                        s.Titulo.ToLower().Contains(searchString) ||
+                        s.Empresa.Nome.ToLower().Contains(searchString) ||
+                        s.Projeto.NomeProjeto.ToLower().Contains(searchString)
+                        ).ToList();
+                } else {
+                    lista = lista.Where(s => 
+                        s.Autores.ToLower().Contains(searchString) ||
+                        s.Titulo.ToLower().Contains(searchString)
+                        ).ToList();
+                }               
             }
 
             return lista;
