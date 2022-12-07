@@ -14,9 +14,32 @@
     }
 </style>
 
-<div class="d-flex" style="justify-content:space-between">
-<h1>Gestão do Conhecimento</h1>
-<p><a asp-action="Create" style="margin-top:10px">Adicionar Produção</a></p>
+<div>
+    <h1>Gestão do Conhecimento</h1>
+    <div class="row g-3" style="justify-content:space-between">
+        <div class="col-2">
+            <select class="form-select" id="ano" name="ano" onchange="updateLink()">                                
+                <option value="Todos">Selecione o Ano</option>
+                <option value="2022">2022</option>
+                <option value="2021">2021</option>
+                <option value="2020">2020</option>
+                <option value="2019">2019</option>
+                <option value="2018">2018</option>
+            </select>
+        </div>
+        <div class="col-6">
+            <form asp-controller="Producao" asp-action="Index" method="get">
+                <div class="input-group mb-3">
+                    <input class="form-control" type="text" name="SearchString" value='@ViewData["CurrentFilter"]' placeholder="Digite o nome da Publicação" />
+                    <button type="submit" class="btn btn-primary">Procurar</button>
+                    <a asp-action="Index" class="btn btn-primary" style="margin-left: 15px;">Lista Completa</a>
+                </div>
+            </form>
+        </div>
+        <div class="col-4">
+            <a asp-action="Create" class="btn btn-primary">Adicionar Produção</a>
+        </div>
+    </div>
 </div>
 
 <div class="container">

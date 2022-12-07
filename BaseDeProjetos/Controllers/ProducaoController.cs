@@ -1,7 +1,9 @@
-﻿using System;
+﻿using BaseDeProjetos.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -18,11 +20,49 @@ namespace BaseDeProjetos.Controllers
         {
             _context = context;
         }
+        private List<Producao> DefinirCasaParaVisualizar(string? casa)
+        {
+            Instituto enum_casa;
+
+            if (Enum.IsDefined(typeof(Instituto), casa))
+            {
+                HttpContext.Session.SetString("_Casa", casa);
+                enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
+            }
+            else
+            {
+                enum_casa = Instituto.Super;
+            }
+
+
+            List<Producao> publicacoes = new List<Producao>();
+
+            List<Producao> lista = enum_casa == Instituto.Super ?
+            _context.Producao.ToList() :
+            _context.Producao.Where(p => p.Casa.Equals(enum_casa)).ToList();
+
+            publicacoes.AddRange(lista);
+
+            ViewData["Area"] = casa;
+
+            return publicacoes.ToList();
+        }
 
         // GET: Producao
-        public async Task<IActionResult> Index()
+        public IActionResult Index(string casa, string searchString = "", string ano = "")
         {
-            return View(await _context.Producao.ToListAsync());
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+            if (string.IsNullOrEmpty(casa))
+            {
+                casa = usuario.Casa.ToString();
+
+            }
+            List<Producao> lista = DefinirCasaParaVisualizar(casa);
+            lista = FunilHelpers.VincularCasaProducao(usuario, lista);
+            lista = FunilHelpers.PeriodizarProduções(ano, lista);
+            lista = FunilHelpers.FiltrarProduções(searchString, lista);
+            return View(lista.ToList());
         }
 
         // GET: Producao/Details/5
