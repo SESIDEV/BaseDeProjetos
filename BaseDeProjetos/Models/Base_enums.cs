@@ -457,6 +457,9 @@ namespace BaseDeProjetos.Models
         Aceito,
         [Display(Name = "Publicado", GroupName = "Artigo")]
         Publicado,
+        
+        [Display(Name = "Busca de Anterioridade", GroupName = "Patente")]
+        BuscaAnterioridade,
 
         [Display(Name = "Em Depósito", GroupName = "Patente")]
         EmDeposito,
