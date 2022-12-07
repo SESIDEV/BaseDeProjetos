@@ -31,13 +31,14 @@
                     <div class="card-body">
                         <div class="d-flex" style="justify-content:space-between">
                             <h5 class="card-title titulo-do-card">@Html.DisplayFor(modelItem => item.Titulo)</h5>
-                            @if(item.StatusPub == StatusPub.Aceito){
-                                <p class="btn btn-info status-do-card">@Html.DisplayFor(modelItem => item.StatusPub)</p>
-                            } else if(item.StatusPub == StatusPub.Publicado) {
-                                <p class="btn btn-success status-do-card">@Html.DisplayFor(modelItem => item.StatusPub)</p>
-                            } else {
-                                <p class="btn btn-secondary status-do-card">@Html.DisplayFor(modelItem => item.StatusPub)</p>
-                            }
+                            
+                            @if(item.StatusPub == StatusPub.Aceito)
+                                {<p class="btn btn-info status-do-card">@Html.DisplayFor(modelItem => item.StatusPub)</p>}
+                            else if(item.StatusPub == StatusPub.Publicado)
+                                {<p class="btn btn-success status-do-card">@Html.DisplayFor(modelItem => item.StatusPub)</p>}
+                            else
+                                {<p class="btn btn-secondary status-do-card">@Html.DisplayFor(modelItem => item.StatusPub)</p>}
+
                         </div>
                         <p class="card-text descricao-do-card">@Html.DisplayFor(modelItem => item.Descricao)</p>
                         <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Detalhes</a>

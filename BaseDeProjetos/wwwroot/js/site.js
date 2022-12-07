@@ -73,7 +73,16 @@ function CasasFunil() {
     window.location.assign(url_final);
 }
 
+function statusPatente(){
 
+    let status = document.querySelector("#StatusPub").value
+    if (status != 5){
+        document.querySelector("#NumPatente").readOnly = true;
+    } else {
+        document.querySelector("#NumPatente").readOnly = false;
+    }
+
+}
 
 function validarCNPJ(){
     document.getElementById("valor_cnpj").value = document.getElementById("valor_cnpj").value.replace(/[^0-9]/g, '');

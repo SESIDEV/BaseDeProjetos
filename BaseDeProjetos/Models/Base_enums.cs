@@ -463,6 +463,11 @@ namespace BaseDeProjetos.Models
 
         [Display(Name = "Depositada", GroupName = "Patente")]
         Depositada,
+
+        [Display(Name = "Concedida", GroupName = "Patente")]
+        Concedida = 5,
+
+        
     }
     public enum Instituto
     {
