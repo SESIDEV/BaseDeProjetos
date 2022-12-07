@@ -69,7 +69,7 @@ addEventListener("load", () => {MostrarImagem();});
                 <span asp-validation-for="Imagem" class="text-danger"></span>
             </div>
             <img id="img_preview" src="" width="300" style="margin-top:5px;">
-            @if (!string.IsNullOrEmpty(Model.Projeto)){
+            @if (Model.Projeto != null){
             <div id='campos-patente'>
                 <hr>
                 <div class="form-group">

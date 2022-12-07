@@ -38,10 +38,10 @@ namespace BaseDeProjetos.Models
         public virtual string Imagem { get; set; }
 
         [Display(Name = "Projeto Associado")]
-        public virtual string Projeto { get; set; }
+        public virtual Projeto Projeto { get; set; }
         
         [Display(Name = "Empresa Associada")]
-        public virtual string Empresa { get; set; }
+        public virtual Empresa Empresa { get; set; }
 
         [Display(Name = "Escritório/Responsável")]
         public virtual string Responsavel { get; set; }
