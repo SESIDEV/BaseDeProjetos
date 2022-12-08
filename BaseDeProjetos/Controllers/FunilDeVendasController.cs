@@ -59,7 +59,7 @@ namespace BaseDeProjetos.Controllers
 
             List<Prospeccao> emProposta = lista.Where(p => p.Status.OrderBy(k => k.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList();
 
-            List<Prospeccao> ativos = lista.Where(p => p.Status.OrderBy(k => k.Data).LastOrDefault().Status < StatusProspeccao.ComProposta).ToList();
+            List<Prospeccao> ativos = lista.Where(p => p.Status.OrderBy(k => k.Data).All(pa => pa.Status == StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto)).ToList();
 
             List<Prospeccao> planejados = lista.Where(p => p.Status.All(f => f.Status == StatusProspeccao.Planejada)).Where(u => u.Usuario.ToString() == HttpContext.User.Identity.Name).ToList();
 
@@ -322,7 +322,7 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid) 
+            if (ModelState.IsValid)
             {
                 try
                 {
@@ -344,7 +344,7 @@ namespace BaseDeProjetos.Controllers
             }
             return View(prospeccao);
         }
-        
+
         private Prospeccao EditarDadosDaProspecção(string id, Prospeccao prospeccao)
         {
             Empresa Empresa_antigo = _context.Empresa.FirstOrDefault(e => e.Id == prospeccao.Empresa.Id);
@@ -452,10 +452,11 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
-        private bool verificarCondicoesRemocao(Prospeccao prospeccao, Usuario dono, Usuario ativo) {
+        private bool verificarCondicoesRemocao(Prospeccao prospeccao, Usuario dono, Usuario ativo)
+        {
 
             return prospeccao.Status.Count() > 1 && dono == ativo;
-            
+
 
         }
 
