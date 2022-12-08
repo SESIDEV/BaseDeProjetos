@@ -44,7 +44,7 @@
 
     //ATIVAS \/ \/ \/ \/ \/ \/
 
-    var prospec_ativas = Model.Where(p => p.Status.OrderBy(k => k.Data).All(pa => pa.Status == StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto));
+    var prospec_ativas = Model.Where(p => p.Status.OrderBy(k => k.Data).All(pa => pa.Status == StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto || pa.Status == StatusProspeccao.ComProposta));
     var prospec_totais = Model.Where(p => p.Status.OrderBy(k => k.Data).Any(pa => pa.Status != StatusProspeccao.Planejada));
 
     cd_CI_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoDireta(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
