@@ -55,13 +55,6 @@ namespace BaseDeProjetos.Helpers
                 return listaProsp.Where(p => p.Casa == Instituto.ISIQV || p.Casa == Instituto.CISHO).ToList();
 
             }
-            else if (usuario.Casa == Instituto.Super) {
-                return listaProsp.Where(p => 
-                p.Casa == Instituto.ISIQV || 
-                p.Casa == Instituto.CISHO ||
-                p.Casa ==Instituto.ISIII ||
-                p.Casa ==Instituto.ISISVP).ToList();
-            }
             else
             {
                 return listaProsp.Where(p => p.Casa == usuario.Casa).ToList();
