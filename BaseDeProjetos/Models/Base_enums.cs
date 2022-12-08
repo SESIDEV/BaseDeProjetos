@@ -570,8 +570,8 @@ namespace BaseDeProjetos.Models
 
     public enum Nivel
     {
-        [Display(Name = "Desenvolvedor")]
-        Dev,
+        [Display(Name = "Usuário")]
+        Usuario,
 
         [Display(Name = "Supervisor")]
         Supervisor,
@@ -579,8 +579,8 @@ namespace BaseDeProjetos.Models
         [Display(Name = "PMO")]
         PMO,
 
-        [Display(Name = "Usuario")]
-        Usuario
+        [Display(Name = "Desenvolvedor")]
+        Dev
     }
 
     public enum SetoresDeAtividade

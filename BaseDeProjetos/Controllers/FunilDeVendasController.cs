@@ -36,93 +36,16 @@ namespace BaseDeProjetos.Controllers
                 casa = usuario.Casa.ToString();
 
             }
-            List<Prospeccao> lista = DefinirCasaParaVisualizar(casa);
+            List<Prospeccao> lista = new List<Prospeccao>();
+            lista = FunilHelpers.DefinirCasaParaVisualizar(casa, usuario, _context, HttpContext, ViewData);
             lista = FunilHelpers.VincularCasaProspeccao(usuario, lista);
-            lista = FunilHelpers.PeriodizarProspecções(ano, lista);
-            lista = FunilHelpers.OrdenarProspecções(sortOrder, lista);
-            lista = FunilHelpers.FiltrarProspecções(searchString, lista);
-            SetarFiltrosNaView(sortOrder, searchString);
-            CategorizarProspecçõesNaView(lista);
+            lista = FunilHelpers.PeriodizarProspecções(ano, lista); // ANO DA PROSPEC
+            lista = FunilHelpers.OrdenarProspecções(sortOrder, lista); //SORT ORDEM ALFABETICA
+            lista = FunilHelpers.FiltrarProspecções(searchString, lista); //APENAS NA BUSCA
+            FunilHelpers.SetarFiltrosNaView(HttpContext, ViewData, sortOrder, searchString);
+            FunilHelpers.CategorizarProspecçõesNaView(lista, usuario, HttpContext, ViewBag);
             return View(lista.ToList());
         }
-
-
-        private void CategorizarProspecçõesNaView(List<Prospeccao> lista)
-        {
-
-            var concluidos = lista.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida ||
-                                                              f.Status == StatusProspeccao.Suspensa ||
-                                                              f.Status == StatusProspeccao.NaoConvertida)).ToList();
-
-            List<Prospeccao> errados = lista.Where(p => p.Status.OrderBy(k => k.Data).FirstOrDefault().Status != StatusProspeccao.ContatoInicial
-            && p.Status.OrderBy(k => k.Data).FirstOrDefault().Status != StatusProspeccao.Planejada).ToList();
-
-            List<Prospeccao> emProposta = lista.Where(p => p.Status.OrderBy(k => k.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList();
-
-            List<Prospeccao> ativos = lista.Where(p => p.Status.OrderBy(k => k.Data).All(pa => pa.Status == StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto)).ToList();
-
-            List<Prospeccao> planejados = lista.Where(p => p.Status.All(f => f.Status == StatusProspeccao.Planejada)).Where(u => u.Usuario.ToString() == HttpContext.User.Identity.Name).ToList();
-
-            ViewBag.Erradas = errados;
-            ViewBag.Concluidas = concluidos;
-            ViewBag.Ativas = ativos;
-            ViewBag.EmProposta = emProposta;
-            ViewBag.Planejadas = planejados;
-        }
-
-        private void SetarFiltrosNaView(string sortOrder = "", string searchString = "")
-        {
-            //Filtros e ordenadores
-            if (string.IsNullOrEmpty(searchString) && HttpContext.Session.Keys.Contains("_CurrentFilter"))
-            {
-                ViewData["CurrentFilter"] = HttpContext.Session.GetString("_CurrentFilter");
-            }
-            else
-            {
-                ViewData["CurrentFilter"] = searchString;
-                HttpContext.Session.SetString("_CurrentFilter", searchString);
-            }
-
-            if (string.IsNullOrEmpty(sortOrder) && HttpContext.Session.Keys.Contains("_CurrentFilter"))
-            {
-                ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-                ViewData["DateSortParm"] = sortOrder == "TipoContratacao" ? "tipo_desc" : "TipoContratacao";
-            }
-            else
-            {
-                ViewData["CurrentFilter"] = sortOrder;
-                HttpContext.Session.SetString("____", sortOrder);
-            }
-        }
-
-        private List<Prospeccao> DefinirCasaParaVisualizar(string? casa)
-        {
-            Instituto enum_casa;
-
-            if (Enum.IsDefined(typeof(Instituto), casa))
-            {
-                HttpContext.Session.SetString("_Casa", casa);
-                enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
-            }
-            else
-            {
-                enum_casa = Instituto.Super;
-            }
-
-
-            List<Prospeccao> prospeccoes = new List<Prospeccao>();
-
-            List<Prospeccao> lista = enum_casa == Instituto.Super ?
-            _context.Prospeccao.ToList() :
-            _context.Prospeccao.Where(p => p.Casa.Equals(enum_casa)).ToList();
-
-            prospeccoes.AddRange(lista);
-
-            ViewData["Area"] = casa;
-
-            return prospeccoes.ToList();
-        }
-
 
         // GET: FunilDeVendas/Details/5
         public async Task<IActionResult> Details(string id)
