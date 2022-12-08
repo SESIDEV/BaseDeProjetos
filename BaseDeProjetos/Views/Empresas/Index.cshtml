@@ -228,29 +228,6 @@
                                 <br />
                                 <h6>Prospecções da empresa:</h6>
                                 <br />
-                                <h6>Planejadas:</h6>
-                                @if (prospsPlanejadas.Where(P => P.Empresa.Id == @item.Id).Count() > 0)
-                                {
-                                    <table>
-                                        <tr>
-                                            <th>Id</th>
-                                            <th>Líder</th>
-                                        </tr>
-
-                                        @foreach (Prospeccao pro in prospsPlanejadas.Where(P => P.Empresa.Id == @item.Id))
-                                        {
-                                            <tr>
-                                                <td>@pro.Id</td>
-                                                <td>@pro.Usuario</td>
-                                            </tr>
-                                        }
-                                    </table>
-                                }
-                                else
-                                {
-                                    <p>Não há prospecções planejadas para esta empresa</p>
-                                }
-                                <br />
                                 <h6>Ativas:</h6>
                                 @if (prospsAtivas.Where(P => P.Empresa.Id == @item.Id).Count() > 0)
                                 {
@@ -263,7 +240,7 @@
                                         @foreach (Prospeccao pro in prospsAtivas.Where(P => P.Empresa.Id == @item.Id))
                                         {
                                             <tr>
-                                                <td>@pro.Id</td>
+                                                <td><a asp-controller="FunilDeVendas" asp-action="Details" asp-route-id="@pro.Id">@pro.Id</a></td>
                                                 <td>@pro.Usuario</td>
                                             </tr>
                                         }
@@ -272,6 +249,29 @@
                                 else
                                 {
                                     <p>Não há prospecções ativas para esta empresa</p>
+                                }
+                                <br>
+                                <h6>Planejadas:</h6>
+                                @if (prospsPlanejadas.Where(P => P.Empresa.Id == @item.Id).Count() > 0)
+                                {
+                                    <table>
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Líder</th>
+                                        </tr>
+
+                                        @foreach (Prospeccao pro in prospsPlanejadas.Where(P => P.Empresa.Id == @item.Id))
+                                        {
+                                            <tr>
+                                                <td><a asp-controller="FunilDeVendas" asp-action="Details" asp-route-id="@pro.Id">@pro.Id</a></td>
+                                                <td>@pro.Usuario</td>
+                                            </tr>
+                                        }
+                                    </table>
+                                }
+                                else
+                                {
+                                    <p>Não há prospecções planejadas para esta empresa</p>
                                 }
                             </div>
                         </div>
