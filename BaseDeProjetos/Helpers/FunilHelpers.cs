@@ -50,10 +50,17 @@ namespace BaseDeProjetos.Helpers
         public static List<Prospeccao> VincularCasaProspeccao(Usuario usuario, List<Prospeccao> listaProsp)
         {
 
-            if (usuario.Casa == Instituto.Super || usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO)
+            if (usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO)
             {
                 return listaProsp.Where(p => p.Casa == Instituto.ISIQV || p.Casa == Instituto.CISHO).ToList();
 
+            }
+            else if (usuario.Casa == Instituto.Super) {
+                return listaProsp.Where(p => 
+                p.Casa == Instituto.ISIQV || 
+                p.Casa == Instituto.CISHO ||
+                p.Casa ==Instituto.ISIII ||
+                p.Casa ==Instituto.ISISVP).ToList();
             }
             else
             {
