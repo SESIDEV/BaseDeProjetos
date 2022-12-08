@@ -155,6 +155,33 @@ namespace BaseDeProjetos.Helpers
             return prospeccoes.ToList();
         }
 
+        public static List<Producao> DefinirCasaParaVisualizarEmProducao(string? casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, ViewDataDictionary ViewData)
+        {
+            Instituto enum_casa;
+
+            List<Producao> producoes = new List<Producao>();
+
+            if (usuario.Nivel == Nivel.Dev) {
+                List<Producao> lista = _context.Producao.ToList();
+                producoes.AddRange(lista);
+            }
+
+            else {
+                
+                if (Enum.IsDefined(typeof(Instituto), casa)) {
+                    HttpContext.Session.SetString("_Casa", casa);
+                    enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
+                    List<Producao> lista = _context.Producao.Where(p => p.Casa.Equals(enum_casa)).ToList();
+
+                    producoes.AddRange(lista);
+
+                    ViewData["Area"] = casa;
+                }
+            }
+            
+            return producoes.ToList();
+        }
+
         public static Usuario ObterUsuarioAtivo(ApplicationDbContext _context, HttpContext HttpContext)
         {
             return _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);

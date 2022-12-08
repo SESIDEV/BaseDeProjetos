@@ -20,33 +20,6 @@ namespace BaseDeProjetos.Controllers
         {
             _context = context;
         }
-        private List<Producao> DefinirCasaParaVisualizar(string? casa)
-        {
-            Instituto enum_casa;
-
-            if (Enum.IsDefined(typeof(Instituto), casa))
-            {
-                HttpContext.Session.SetString("_Casa", casa);
-                enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
-            }
-            else
-            {
-                enum_casa = Instituto.Super;
-            }
-
-
-            List<Producao> publicacoes = new List<Producao>();
-
-            List<Producao> lista = enum_casa == Instituto.Super ?
-            _context.Producao.ToList() :
-            _context.Producao.Where(p => p.Casa.Equals(enum_casa)).ToList();
-
-            publicacoes.AddRange(lista);
-
-            ViewData["Area"] = casa;
-
-            return publicacoes.ToList();
-        }
 
         // GET: Producao
         public IActionResult Index(string casa, string searchString = "", string ano = "")
@@ -58,7 +31,8 @@ namespace BaseDeProjetos.Controllers
                 casa = usuario.Casa.ToString();
 
             }
-            List<Producao> lista = DefinirCasaParaVisualizar(casa);
+            List<Producao> lista = new List<Producao>();
+            lista = FunilHelpers.DefinirCasaParaVisualizarEmProducao(casa, usuario, _context, HttpContext, ViewData);
             lista = FunilHelpers.VincularCasaProducao(usuario, lista);
             lista = FunilHelpers.PeriodizarProduções(ano, lista);
             lista = FunilHelpers.FiltrarProduções(searchString, lista);
