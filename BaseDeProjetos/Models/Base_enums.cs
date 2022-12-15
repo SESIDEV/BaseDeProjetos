@@ -580,7 +580,10 @@ namespace BaseDeProjetos.Models
         PMO,
 
         [Display(Name = "Desenvolvedor")]
-        Dev
+        Dev,
+
+        [Display(Name = "Externos")]
+        Externos
     }
 
     public enum SetoresDeAtividade
