@@ -24,7 +24,7 @@
 
         linhaDePesquisa = ViewBag.LinhaDePesquisa as List<LinhaPesquisa>;
 
-        linhaDePesquisaUnica = linhaDePesquisa.OrderByDescending(p => linhaDePesquisa.Where(k=> k == p).Count()).Distinct().Select(p=> $"{{name: `{p.GetDisplayName().ToUpperInvariant()}`, y: {linhaDePesquisa.Where(k=> k == p).Count()}}},").ToList();
+        linhaDePesquisaUnica = linhaDePesquisa.OrderByDescending(p => linhaDePesquisa.Where(k => k == p).Count()).Distinct().Select(p => $"{{name: `{p.GetDisplayName().ToUpperInvariant()}`, y: {linhaDePesquisa.Where(k => k == p).Count()}}},").ToList();
 
         if (despesas > 0)
         {
@@ -230,7 +230,7 @@
         },
         title: {
           align: "left",
-          text: "Prospecções Por Linha De Pesquisa",
+          text: "Prospecções Totais Por Linha De Pesquisa",
         },
         accessibility: {
           announceNewData: {
