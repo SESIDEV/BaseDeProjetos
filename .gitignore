@@ -349,3 +349,6 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 /Highcharts-8.1.2
+
+# Apple stuff
+.DS_Store
