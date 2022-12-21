@@ -12,8 +12,6 @@
 	decimal sustentabilidade = 100;
 	float quali = 1;
 	List<LinhaPesquisa> linhaDePesquisa = new List<LinhaPesquisa>();
-	//List<string> dadosGraficoLinhaDePesquisa = new List<string>();
-	List<string> labelsLinhaDePesquisa = new List<string>();
 	string labelLinhaDePesquisa = "";
 	string dadosLinhaDePesquisa = "";
 
@@ -59,11 +57,10 @@
 }
 
 
-<partial name="Menu" view-data="@ViewData" />
+<partial name="Header" view-data="@ViewData" />
     <div class="app-wrapper"> <!-- Classe antiga era app-wrapper -->	    
 	    <div class="app-content pt-3 p-md-3 p-lg-4">
 		    <div class="container-xl">
-			    
 			    <h1 class="app-page-title">Bem vindo ao Sistema de Gestão de Inovação - SGI</h1>
 				<h1 class="app-page-description">Status Financeiro</h1>
 				<h1 style="font-size: 1.0rem; margin-bottom: 1.0rem; font-weight: normal;">@ViewBag.Data.ToString("dd/MM/yyyy")</h1>
