@@ -304,6 +304,7 @@ namespace BaseDeProjetos.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             Projeto projeto = await _context.Projeto.FindAsync(id);
+            _context.Remove(projeto.Lider);
             _context.Projeto.Remove(projeto);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
