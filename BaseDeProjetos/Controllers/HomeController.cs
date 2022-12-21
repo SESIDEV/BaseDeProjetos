@@ -56,7 +56,7 @@ namespace BaseDeProjetos.Controllers
                 ViewData["n_empresas"] = _context.Prospeccao.Where(p => p.Status.Any(s => s.Status != StatusProspeccao.Planejada)).Select(e => e.Empresa).Distinct().Count();
                 ViewData["satisfacao"] = 0.8750;
                 ViewData["Valor_Prosp_Proposta"] = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).Where(p => p.Status.Any(s => s.Status == StatusProspeccao.ComProposta)).Sum(p => p.ValorProposta);
-                ViewBag.Usuarios = _context.Users.AsEnumerable().Where(p => p.Casa == usuario.Casa).Where(u => ValidarCasa(u, usuario)).Where(a => a.EmailConfirmed == true).Where(b => b.Nivel != Nivel.Dev).ToList().Count();
+                ViewBag.Usuarios = _context.Users.AsEnumerable().Where(p => p.Casa == usuario.Casa).Where(u => ValidarCasa(u, usuario)).Where(a => a.EmailConfirmed == true).Where(b => b.Nivel != Nivel.Dev && b.Nivel != Nivel.Externos).ToList().Count();
                 ViewBag.Estados = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).Select(p => p.Empresa.Estado).ToList();
                 ViewBag.LinhaDePesquisa = _context.Prospeccao.Where(p => p.Casa == usuario.Casa && p.Status.Any(l => l.Status != StatusProspeccao.Planejada)).Select(p => p.LinhaPequisa).ToList();                
 
