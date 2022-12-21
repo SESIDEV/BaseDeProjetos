@@ -295,7 +295,7 @@ namespace BaseDeProjetos.Models
 
     public enum StatusProjeto
     {
-        [Display(Name = "Contratrado/Em planejamento")]
+        [Display(Name = "Contratado/Em planejamento")]
         Contratado,
 
         [Display(Name = "Em execução")]
