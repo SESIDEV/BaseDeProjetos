@@ -1,4 +1,4 @@
-﻿@*@model IEnumerable<BaseDeProjetos.Models.Producao>
+@*@model IEnumerable<BaseDeProjetos.Models.Producao>
 
 @{ViewData["Title"] = "Gestão do Conhecimento";}
 <style>
@@ -136,11 +136,11 @@
 								<h4 class="app-doc-title truncate mb-0"><a href="#file-link">@Html.DisplayFor(modelItem => item.Titulo)</a></h4>
 							<div class="app-doc-meta">
 								<ul class="list-unstyled mb-0">
-									<li><span>Descrição:</span>@Html.DisplayFor(modelItem => item.Descricao)</li>
-									<li><span class="text-muted">Tipo de Publicação:</span> Artigo Publicado</li>
+									@*<li><span>Descrição:</span>@Html.DisplayFor(modelItem => item.Descricao)</li>*@
+									<li><span style="display:block" class="text-muted">Tipo de Publicação:</span>@Html.DisplayFor(modelItem => item.Grupo)</li>
 										<!-- Verificar condição para mudar exibição no futuro, talvez?-->
 										<li><span class="text-muted">Status:</span> @Html.DisplayFor(modelItem => item.StatusPub)</li>										
-										<li><span class="text-muted">Publicado em:</span> 10/28</li>
+										<li><span class="text-muted">Publicado em:</span> @Html.DisplayFor(modelItem => item.Data.Month)/@Html.DisplayFor(modelItem => item.Data.Year)</li>
 									<li><span class="text-muted">Instituto:</span> ISI - Química Verde</li>
 								</ul>
 							</div><!--//app-doc-meta-->
