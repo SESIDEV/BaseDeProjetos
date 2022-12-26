@@ -75,8 +75,15 @@
 </div>*@
 
 @model IEnumerable<BaseDeProjetos.Models.Producao>
+@addTagHelper *, BaseDeProjetos.Models.Producao
 
-@{ViewData["Title"] = "Gestão do Conhecimento";}
+@{
+	SelectList ListProjetos = ViewData["Projetos"] as SelectList;
+	SelectList ListEmpresas = ViewData["Empresas"] as SelectList;
+
+	ViewData["Title"] = "Gestão do Conhecimento";
+	IEnumerable<BaseDeProjetos.Models.Producao> ListaProducoes = ViewData["ListaProducoes"] as IEnumerable<BaseDeProjetos.Models.Producao>;
+}
 <div class="app-wrapper">
 	<div class="app-content pt-3 p-md-3 p-lg-4">
 		<div class="container-xl">
@@ -99,30 +106,45 @@
 
 							</div><!--//col-->
 							<div class="col-auto">
-
-								<select class="form-select w-auto">
-										<option selected="" value="option-1">All</option>
-										<option value="option-2">Text file</option>
-										<option value="option-3">Image</option>
-										<option value="option-4">Spreadsheet</option>
-										<option value="option-5">Presentation</option>
-										<option value="option-6">Zip file</option>
+								<select class="form-select w-auto" id="ano" name="ano" onchange="updateLink()">
+										<option selected="" value="Todos">Ano</option>
+										<option value="2022">2022</option>
+										<option value="2021">2021</option>
+										<option value="2020">2020</option>
+										<option value="2019">2019</option>
+										<option value="2018">2018</option>
 
 								</select>
 							</div>
-							<div class="col-auto">
-								<a class="btn app-btn-primary" href="#"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-upload me-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-<path fill-rule="evenodd" d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
-<path fill-rule="evenodd" d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
-</svg>Upload File</a>
-							</div>
+								<div class="col-auto">
+									<form asp-action="Create">
+									<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+									<div class="modal fade" id="modalGestaoConhecimentoToggle" aria-hidden="true" aria-labelledby="modalGestaoConhecimentoToggleLabel" tabindex="-1">
+										<div class="modal-dialog modal-dialog-centered">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h1 class="modal-title fs-5" id="modalGestaoConhecimentoToggleLabel">Adicionar Produção</h1>
+													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+												</div>
+												<div class="modal-body">
+													<div class="form-group">
+														<partial name="Create" view-data="@ViewData" />
+													</div>
+												</div>												
+											</div>
+										</div>
+									</div>									
+									<a class="btn app-btn-primary" data-bs-toggle="modal" href="#modalGestaoConhecimentoToggle" role="button">Adicionar produção</a>
+								</form>
+								</div>
+							
 						</div><!--//row-->
 					</div><!--//table-utilities-->
 				</div><!--//col-auto-->
 			</div><!--//row-->
 
 			<div class="row g-4">
-				@foreach (var item in Model) {
+				@foreach (var item in ListaProducoes) {
 				<div class="col-6 col-md-4 col-xl-3 col-xxl-3">
 					<div class="app-card app-card-doc shadow-sm h-100">
 						<div class="app-card-thumb-holder p-3">
