@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using System;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
@@ -14,20 +14,24 @@ namespace BaseDeProjetos.Helpers
         public static HtmlString VerificarTemperatura(int qtdDias)
         {
             if (qtdDias < 7)
-            {
-                return new HtmlString($"<span class='badge badge-funil badge-quente text-dark'>Quente ({qtdDias} Dias)</span>");
+            {                
+                return new HtmlString($"<span class='badge bg-quente'>Quente: ({qtdDias} Dias)</span>");
             }
             else if (qtdDias >= 7 && qtdDias <= 15)
             {
-                return new HtmlString($"<span class='badge badge-funil badge-morno text-dark'>Morno ({qtdDias} Dias)</span>");
+                return new HtmlString($"<span class='badge bg-morno'>Morno: ({qtdDias} Dias)</span>");
             }
             else if (qtdDias >= 16 && qtdDias <= 30)
             {
-                return new HtmlString($"<span class='badge badge-funil badge-esfriando text-dark'>Esfriando ({qtdDias} Dias)</span>");
+                return new HtmlString($"<span class='badge bg-esfriando text-dark'>Esfriando: ({qtdDias} Dias)</span>");                
             }
+            else if (qtdDias > 30)
+            {
+                return new HtmlString($"<span class='badge bg-frio text-dark'>Frio: ({qtdDias} Dias)</span>");                
+            } 
             else
             {
-                return new HtmlString($"<span class='badge badge-funil badge-frio text-dark'>Frio ({qtdDias} Dias)</span>");
+                return new HtmlString($"<span class='badge bg-frio text-dark'>Congelado: ({qtdDias} Dias)</span>");
             }
         }
         public static bool ProspeccaoExists(string id, ApplicationDbContext _context)
