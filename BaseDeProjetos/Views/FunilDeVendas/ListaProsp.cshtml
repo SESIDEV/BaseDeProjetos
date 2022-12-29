@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
+@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
 @using System.Globalization
 @using BaseDeProjetos.Helpers
 @{
@@ -151,7 +151,11 @@
                         <h1 class="app-card-title">Empresa:</h1>
                         <span>@item.Empresa.Nome</span>
                         <h1 class="app-card-title">Líder</h1>
-                        <span>@item.Usuario.UserName</span>
+                        @if (item.Usuario != null) {                            
+                            <span>@item.Usuario.UserName</span>
+                        } else {
+                            <span>Sem Líder</span>
+                        }
                         <h1 class="app-card-title">Projeto:</h1>
                         <span>@item.NomeProspeccao</span>
                         <h1 class="app-card-title">Tipo de Contratação:</h1>
@@ -193,12 +197,22 @@
         @if (item.Empresa.Logo != null)
         {
             <td class="cell"><img src="@item.Empresa.Logo" id="logoEmpresa" alt="Logo da Empresa" style="background-color:white"></td>
-        } else
+        } 
+        else
         {
             <td class="cell"><nobr id="logo_alt">Sem Logo</nobr></td>
         }
         <td class="cell">@item.Empresa.Nome</td> @*Empresa*@
-        <td class="cell"><span class="badge bg-success">@item.Usuario.UserName</span></td> @*Líder*@
+        <td class="cell">
+        @if (item.Usuario != null) {
+            <span class="badge bg-success">@item.Usuario.UserName</span> @*Líder*@
+        } 
+        else 
+        {
+            <span class="badge bg-danger">Sem Líder</span>
+        }
+        </td>
+        <td class="cell">
         @if (item.NomeProspeccao != null)
         {
             Console.WriteLine(item.NomeProspeccao);
