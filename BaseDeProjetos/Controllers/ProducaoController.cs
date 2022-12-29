@@ -39,11 +39,11 @@ namespace BaseDeProjetos.Controllers
             Producoes = FunilHelpers.PeriodizarProduções(ano, Producoes);
             Producoes = FunilHelpers.FiltrarProduções(searchString, Producoes);
 
-			//List<Empresa> empresas = _context.Empresa.ToList();
-			//List<Projeto> projetos = _context.Projeto.ToList();
+			List<Empresa> empresas = _context.Empresa.ToList();
+		    List<Projeto> projetos = _context.Projeto.ToList();
 
-			//ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-			//ViewData["Projetos"] = new SelectList(projetos, "Id", "NomeProjeto");
+			ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+			ViewData["Projetos"] = new SelectList(projetos, "Id", "NomeProjeto");
 			ViewData["ListaProducoes"] = Producoes.ToList();
 
             return View();

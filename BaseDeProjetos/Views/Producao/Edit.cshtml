@@ -4,108 +4,105 @@
     SelectList ListProjetos = ViewData["Projetos"] as SelectList;
     SelectList ListEmpresas = ViewData["Empresas"] as SelectList;
     ViewData["Title"] = "Editar";
+    Producao producao = ViewData["item"] as Producao;
 }
 
-<h1>Editar</h1>
-<script>
-addEventListener("load", () => {MostrarImagem();});
-</script>
-<h4>Produção</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Grupo" class="control-label"></label>
-                <select asp-for="Grupo" class="form-control" asp-items="Html.GetEnumSelectList<GrupoPublicacao>().OrderBy(p=>p.Text)"></select>
-                <span asp-validation-for="Grupo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Casa" class="control-label"></label>
-                <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Instituto>()"></select>
-                <span asp-validation-for="Casa" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Titulo" class="control-label"></label>
-                <input asp-for="Titulo" class="form-control" />
-                <span asp-validation-for="Titulo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Descricao" class="control-label"></label>
-                <input asp-for="Descricao" class="form-control" />
-                <span asp-validation-for="Descricao" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Autores" class="control-label"></label>
-                <input asp-for="Autores" class="form-control" />
-                <span asp-validation-for="Autores" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StatusPub" class="control-label"></label>
-                <select asp-for="StatusPub" class="form-control" onchange="statusPatente()" asp-items="Html.GetEnumSelectList<StatusPub>()"></select>
-                <span asp-validation-for="Grupo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Data" class="control-label"></label>
-                <input type="date" asp-for="Data" class="form-control" />
-                <span asp-validation-for="Data" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Local" class="control-label"></label>
-                <input asp-for="Local" class="form-control" />
-                <span asp-validation-for="Local" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DOI" class="control-label"></label>
-                <input asp-for="DOI" class="form-control" />
-                <span asp-validation-for="DOI" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Imagem" class="control-label"></label>
-                <input type="file" class="form-control" id="logo_imagem" onchange="Base64()"/>
-                <input asp-for="Imagem" id="img_b64" class="control-label" style="display: none;" value="@Model.Imagem" onchange="MostrarImagem()" readonly>
-                <span asp-validation-for="Imagem" class="text-danger"></span>
-            </div>
-            <img id="img_preview" src="" width="300" style="margin-top:5px;">
-            @if (Model.Projeto != null){
-            <div id='campos-patente'>
-                <hr>
-                <div class="form-group">
-                    <label asp-for="Projeto" class="control-label"></label>
-                    <select asp-for="Projeto" class="form-control"  asp-items='@ListProjetos'>
-                        <option value="-1">Selecione o projeto</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Empresa" class="control-label"></label>
-                    <select asp-for="Empresa" class="form-control"  asp-items='@ListEmpresas'>
-                        <option value="-1">Selecione a empresa</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Responsavel" class="control-label"></label>
-                    <input asp-for="Responsavel" class="form-control" value=""/>
-                </div>
-                <div class="form-group">
-                    <label asp-for="NumPatente" class="control-label"></label>
-                    <input asp-for="NumPatente" class="form-control" value=""/>
-                </div>
 
-            </div>
-            }
-            <hr />
-            <div class="form-group">
-                <input type="submit" value="Salvar" class="btn btn-primary" />
-            </div>
-        </form>
+<script>
+    addEventListener("load", () => {MostrarImagem();});     
+</script>
+
+@if (producao != null) {
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+	<input type="hidden" asp-for="@producao.Id" />
+    <div class="form-group">
+        <label asp-for="Grupo" class="control-label"></label>
+        <select asp-for="Grupo" class="form-control" asp-items="Html.GetEnumSelectList<GrupoPublicacao>().OrderBy(p=>p.Text)"></select>
+        <span asp-validation-for="Grupo" class="text-danger"></span>
     </div>
-</div>
-<br>
-<div>
+    <div class="form-group">
+        <label asp-for="Casa" class="control-label"></label>
+        <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Instituto>()"></select>
+        <span asp-validation-for="Casa" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Titulo" class="control-label"></label>
+        <input asp-for="Titulo" class="form-control" />
+        <span asp-validation-for="Titulo" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Descricao" class="control-label"></label>
+        <input asp-for="Descricao" class="form-control" />
+        <span asp-validation-for="Descricao" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Autores" class="control-label"></label>
+        <input asp-for="Autores" class="form-control" />
+        <span asp-validation-for="Autores" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="StatusPub" class="control-label"></label>
+        <select asp-for="StatusPub" class="form-control" onchange="statusPatente()" asp-items="Html.GetEnumSelectList<StatusPub>()"></select>
+        <span asp-validation-for="Grupo" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Data" class="control-label"></label>
+        <input type="date" asp-for="Data" class="form-control" />
+        <span asp-validation-for="Data" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Local" class="control-label"></label>
+        <input asp-for="Local" class="form-control" />
+        <span asp-validation-for="Local" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="DOI" class="control-label"></label>
+        <input asp-for="DOI" class="form-control" />
+        <span asp-validation-for="DOI" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Imagem" class="control-label"></label>
+        <input type="file" class="form-control" id="logo_imagem" onchange="Base64()"/>
+        <input asp-for="Imagem" id="img_b64" class="control-label" style="display: none;" value="@producao.Imagem" onchange="MostrarImagem()" readonly>
+        <span asp-validation-for="Imagem" class="text-danger"></span>
+    </div>
+    <img id="img_preview" src="" width="300" style="margin-top:5px;">
+    @if (producao.Projeto != null)
+    {
+        <div id='campos-patente'>
+            <hr>
+            <div class="form-group">
+                <label asp-for="Projeto" class="control-label"></label>
+                <select asp-for="Projeto" class="form-control" asp-items='@ListProjetos'>
+                    <option value="-1">Selecione o projeto</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Empresa" class="control-label"></label>
+                <select asp-for="Empresa" class="form-control" asp-items='@ListEmpresas'>
+                    <option value="-1">Selecione a empresa</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Responsavel" class="control-label"></label>
+                <input asp-for="Responsavel" class="form-control" value="" />
+            </div>
+            <div class="form-group">
+                <label asp-for="NumPatente" class="control-label"></label>
+                <input asp-for="NumPatente" class="form-control" value="" />
+            </div>
+
+        </div>
+    }
+    <div class="modal-footer">
+        <input type="submit" value="Salvar" class="btn btn-primary" data-bs-target="#modalGestaoConhecimento-@producao.Id-EditToggle" data-bs-toggle="modal">
+    </div>
+}
+
+       
+@*<div>
     <a asp-action="Index">Voltar para Lista</a>
-</div>
+</div>*@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
