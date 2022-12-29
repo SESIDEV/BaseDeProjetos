@@ -1,4 +1,4 @@
-@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
+﻿@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
 @using System.Globalization
 @using BaseDeProjetos.Helpers
 @{
@@ -204,7 +204,8 @@
         }
         <td class="cell">@item.Empresa.Nome</td> @*Empresa*@
         <td class="cell">
-        @if (item.Usuario != null) {
+        @if (item.Usuario != null) 
+        {
             <span class="badge bg-success">@item.Usuario.UserName</span> @*Líder*@
         } 
         else 
@@ -215,12 +216,12 @@
         <td class="cell">
         @if (item.NomeProspeccao != null)
         {
-            Console.WriteLine(item.NomeProspeccao);
-            <td class="cell"><span>@item.NomeProspeccao</span></td> @*Projeto*@
+            <span>@item.NomeProspeccao</span> @*Projeto*@
         } else
         {
-            <td class="cell"><span>A definir</span></td> @*Projeto*@
+            <span>A definir</span> @*Projeto*@
         }
+        </td>
         @{
             var subtracaoUltimoStatus = @DateTime.Now.Subtract(@item.Status.Last().Data).Days;
         }
