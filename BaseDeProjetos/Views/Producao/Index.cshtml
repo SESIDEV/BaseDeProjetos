@@ -158,28 +158,12 @@
 
 								<!-- Modal Delete -->
 								<form asp-action="Delete" asp-route-id="@producao.Id">
-								<div class="modal fade" id="modalGestaoConhecimento-@producao.Id-DeleteToggle" aria-hidden="true"
-									aria-labelledby="modalGestaoConhecimento-@producao.Id-DeleteToggleLabel" tabindex="-1">
-									<div class="modal-dialog modal-dialog-centered">
-										<div class="modal-content">
-											<div class="modal-header">
-												<h1 class="modal-title fs-5" id="modalGestaoConhecimento-@producao.Id-DeleteToggleLabel">Deletar Produção
-												</h1>
-												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-											</div>
-											<div class="modal-body">													
-												<div class="form-group">
-													@{
-														if (producao != null)
-														{
-															<partial name="Delete" model="@producao" />
-														}
-													}
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
+									@{
+										if (producao != null)
+										{
+											<partial name="Delete" model="@producao" />
+										}
+									}								
 								</form>
 
 								<h4 class="app-doc-title truncate mb-0">
