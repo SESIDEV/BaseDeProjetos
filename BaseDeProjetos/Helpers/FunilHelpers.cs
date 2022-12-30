@@ -25,7 +25,7 @@ namespace BaseDeProjetos.Helpers
             {
                 return new HtmlString($"<span class='badge bg-esfriando text-dark'>Esfriando: ({qtdDias} Dias)</span>");                
             }
-            else if (qtdDias > 30)
+            else if (qtdDias > 30 && qtdDias <= 365)
             {
                 return new HtmlString($"<span class='badge bg-frio text-dark'>Frio: ({qtdDias} Dias)</span>");                
             } 
