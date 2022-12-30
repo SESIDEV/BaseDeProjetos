@@ -16,8 +16,7 @@
      aria-labelledby="modalGestaoConhecimento-@idProducao-EditToggleLabel" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                
+            <div class="modal-header">                
                 <h1 class="modal-title fs-5" id="modalGestaoConhecimento-@idProducao-EditToggleLabel">
                     Editar Produção
                 </h1>
@@ -25,6 +24,8 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
                     <div class="form-group">
                         <label asp-for="Grupo" class="control-label"></label>
                         <select asp-for="Grupo" class="form-control"
