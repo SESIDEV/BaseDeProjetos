@@ -125,37 +125,7 @@
 								</select>
 							</div>
 							<div class="col-auto">
-								<form asp-action="Create">
-									<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-									<div class="modal fade" id="modalGestaoConhecimentoCreateToggle"
-										 aria-hidden="true"
-										 aria-labelledby="modalGestaoConhecimentoCreateToggleLabel"
-										 tabindex="-1">
-										<div class="modal-dialog modal-dialog-centered">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h1 class="modal-title fs-5"
-														id="modalGestaoConhecimentoCreateToggleLabel">
-														Adicionar Produção
-													</h1>
-													<button type="button" class="btn-close"
-															data-bs-dismiss="modal"
-															aria-label="Close"></button>
-												</div>
-												<div class="modal-body">
-													<div class="form-group">
-														<partial name="Create" view-data="@ViewData" />
-													</div>
-												</div>												
-											</div>
-										</div>
-									</div>
-									<a class="btn app-btn-primary" data-bs-toggle="modal"
-									   href="#modalGestaoConhecimentoCreateToggle" role="button">
-										Adicionar
-										produção
-									</a>
-								</form>
+								<partial name="Create" view-data="@ViewData" />								
 							</div>
 
 						</div><!--//row-->
