@@ -190,9 +190,7 @@
 														@{
 															if (item != null)
 															{
-																ViewData["item"] = item;
-																<input type="hidden" asp-for="@item.Id" />
-																<partial name="Edit" view-data="@ViewData" />
+																<partial name="Edit" model="@item" />
 															}
 														}
 													</div>
