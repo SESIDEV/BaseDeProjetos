@@ -60,10 +60,9 @@
             @Html.DisplayFor(model => model.DOI)
         </dd>
     </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Deletar" class="btn btn-danger" /> |
-        <a asp-action="Index">Voltar para Lista</a>
-    </form>
+
+    <div class="modal-footer">
+        <a asp-action="Index" class="btn app-btn-secondary">Voltar para Lista</a>        
+        <input type="submit" value="Deletar" class="btn btn-danger" data-bs-target="#modalGestaoConhecimento-Id-DeleteToggle" data-bs-toggle="modal">        
+    </div>
 </div>
