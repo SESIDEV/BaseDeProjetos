@@ -160,57 +160,83 @@
 
 @if (Model.Count() > 1)
 {
-    <div class="row">
-        <figure class="highcharts-figure col-12">
-            <div id="funil"></div>
-        </figure>
+    <div class="pb-4">
+        <div class="app-card app-card-chart h-100">
+            <div class="app-card-header p-3">
+                <h4 class="app-card-title">Funil de Vendas</h4>
+            </div>
+            <div class="app-card-body p-4">
+                <figure class="highcharts-figure">
+                    <div id="funil"></div>
+                </figure>
+            </div>
+            <div class="p-4">
+                <input class="form-check-input" type="checkbox" id="caixaSelecaoAtivas" onclick="marcada()">
+                <label class="form-check-label" for="botao_ativas">Mostrar apenas as ativas</label>
+            </div>
+        </div>
 
-        <div class="col-6">
+        
+    </div>
 
-            <div id="tempo_SLA" class="jumbotron row text-center h-100">
-
+    <div class="d-flex gap-4 justify-content-between align-items-start"> @*style="display: flex; justify-content: space-between; align-items: flex-start;">*@
+        <div class="app-card app-card-chart w-50 h-100">
+            <div class="app-card-header p-3">
+                <h4 class="app-card-title">Indicadores de Prospecção</h4>
+            </div><!--//app-card-header-->
+            <div class="app-card-body row text-center p-3 p-lg-4">
                 <div class="col-12">
-                    <!--[Iury] checkbox \/ -->
-                    <input class="form-check-input" type="checkbox" id="caixaSelecaoAtivas" onclick="marcada()">
-                    <label class="form-check-label" for="botao_ativas">Mostrar apenas as ativas</label><br>
-                    <hr />
-                </div>
-
-                <div class="col-12 bg-light bg-gradient">
                     <!--[Iury] IDs da checkbox \/ -->
                     <h1 id="CheckboxProspAtivas1" class="display-3">@n_empresas</h1>
                     <small id="CheckboxProspAtivas2">Número de empresas prospectadas</small> <hr />
                 </div>
-
-                <div class="col-4 bg-light bg-gradient">
+                <div class="col-4">
                     <h4 id="CheckboxProspAtivas7">@Math.Abs(DiferencaTodas.Days) dias</h4>
                     <small id="CheckboxProspAtivas10">Tempo médio entre o primeiro contato e a emissão da proposta</small>
                 </div>
-
-                <div class="col-4 bg-light bg-gradient">
+                <div class="col-4">
                     <!--[Iury] IDs da checkbox \/ -->
                     <h4 id="CheckboxProspAtivas4">@prospec_totais.Count()</h4>
                     <small id="CheckboxProspAtivas3">Contatos iniciais de prospecção</small>
                 </div>
-
-                <div class="col-4 bg-light bg-gradient">
+                <div class="col-4">
                     <h4> @infrutiferas.ToString("P2")</h4>
                     <small>
                         Percentual de prospecções infrutíferas
                     </small>
                 </div>
+            </div><!--//app-card-body-->
+
+
+
+        </div>
+        <div class="app-card app-card-chart w-50 h-100">
+            <div class="app-card-header p-3">
+                <h4 class="app-card-title">Status Geral das Prospecções</h4>
+            </div><!--//app-card-header-->
+            <div class="app-card-body text-center p-3 p-lg-4">
+                <figure class="highcharts-figure">
+                    <div id="pizza_desistencia"></div>
+                </figure>
+            </div><!--//app-card-body-->
+        </div>
+    </div>
+    
+
+    @*<div class="row">
+        <div class="col-6">
+
+            <div id="tempo_SLA" class="jumbotron row text-center h-100">
+                   
             </div>
         </div>
-
-        <figure class="highcharts-figure col-6">
-            <div id="pizza_desistencia"></div>
-        </figure>
+               
 
         <figure class="highcharts-figure col-6">
             <div id="pizza_conversao"></div>
         </figure>
 
-        <div class="col-6 bg-light bg-gradient">
+        <div class="col-6">
             <div id="taxa_conversao" class="row jumbotron text-center h-100">
                 <div class="col-12">
                     <h1 class="display-3">@taxa_conversao.ToString("P2")</h1>
@@ -248,14 +274,14 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>*@
 
     <!-- Gráfico de Fomentos por status-->
     <script type="text/javascript">
 
         var chart1 = Highcharts.chart('funil', {
             chart: { type: 'column' },
-            title: { text: 'Funil de Vendas' },
+            title: { text: null },
             xAxis: { categories: ["Contato inicial", "Em discussão", "Com Proposta", "Convertida",], },
             yAxis: { min: 0, title: { text: 'Ocorrências' } },
             tooltip: {
@@ -295,10 +321,7 @@
             { name: 'Parceiros de Edital', data: [@par_CI_a, @par_ED_a, @par_CP_a] },
             { name: 'ANP/ANEEL', data: [@anp_CI_a, @anp_ED_a, @anp_CP_a] }];
 
-    </script>
-    <!-- Pizzas -->
-    <script>
-        Highcharts.chart('pizza_conversao', {
+        var chart2 = Highcharts.chart('pizza_desistencia', {
             chart: {
                 plotBackgroundColor: null,
                 plotBorderWidth: null,
@@ -306,52 +329,7 @@
                 type: 'pie'
             },
             title: {
-                text: 'Status de Prospecções com propostas'
-            },
-            tooltip: {
-                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-            },
-            accessibility: {
-                point: {
-                    valueSuffix: '%'
-                }
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: true,
-                        format: '<b>{point.name}</b>: {point.y} prospecções'
-                    }
-                }
-            },
-            series: [{
-                size: '60%',
-                name: 'Propostas',
-                colorByPoint: true,
-                data: [{
-                    name: 'Em andamento',
-                    y: @(n_propostas - n_convertidas - n_nao_convertidas),
-                }, {
-                    name: 'Convertidas',
-                    y: @n_convertidas
-                    }, {
-                    name: 'Não convertidas',
-                    y: @n_nao_convertidas
-                    }]
-            }]
-        });
-
-        Highcharts.chart('pizza_desistencia', {
-            chart: {
-                plotBackgroundColor: null,
-                plotBorderWidth: null,
-                plotShadow: false,
-                type: 'pie'
-            },
-            title: {
-                text: 'Status geral das prospecções'
+                text: null
             },
             tooltip: {
                 pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -409,8 +387,55 @@
                         ]
                     }]
             }
-
         });
+
+    </script>
+    <!-- Pizzas -->
+    <script>
+        Highcharts.chart('pizza_conversao', {
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: 'Status de Prospecções com propostas'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            accessibility: {
+                point: {
+                    valueSuffix: '%'
+                }
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.y} prospecções'
+                    }
+                }
+            },
+            series: [{
+                size: '60%',
+                name: 'Propostas',
+                colorByPoint: true,
+                data: [{
+                    name: 'Em andamento',
+                    y: @(n_propostas - n_convertidas - n_nao_convertidas),
+                }, {
+                    name: 'Convertidas',
+                    y: @n_convertidas
+                    }, {
+                    name: 'Não convertidas',
+                    y: @n_nao_convertidas
+                    }]
+            }]
+        });        
     </script>
 
     <script type="text/javascript">
