@@ -87,6 +87,83 @@ function updateLink() {
     
 }
 
+function montarNetwork(pessoas) {
+	var nodes = null;
+	var edges = null;
+	var network = null;
+    let defuserpic = "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png";
+	
+    var listaPessoas = []
+
+    pessoas.forEach(function (p){
+        var obj = {};
+        obj['id'] = p['Id']
+        obj['title'] = p['UserName']
+        
+        if (!('image' in p)){
+            obj['image'] = defuserpic
+        }
+        listaPessoas.push(obj)
+    })
+
+	nodes = new vis.DataSet(listaPessoas);//lista de pessoas
+	 
+	edges = new vis.DataSet([
+	  { from: 1, to: 2 },
+	  { from: 2, to: 3 },
+	]);
+  
+	// create a network
+	var container = document.getElementById("chart-line");
+    
+	var data = {
+	  nodes: nodes,
+	  edges: edges,
+	};
+
+	var options = {
+		nodes: {
+            shape: "circularImage",
+			borderWidth: 8,
+			size: 30,
+			color: {
+				border: "#229954",
+				background: "#666666",
+			},
+			font: {color: "#17202A"},
+		},
+		edges: {
+			color: "#D0D3D4",
+			value: 5,
+			shadow: true,
+		},
+		interaction:{
+			dragNodes: true,
+			dragView: false,
+			zoomView: false,
+		},
+	}
+	network = new vis.Network(container, data, options)
+
+	network.on('click', function(selecao) {
+		if (selecao.nodes.length != 0){
+			document.getElementById('user_card').style.display = 'block'
+			var clickedNode = nodes.get(selecao.nodes)[0];
+			network.focus(clickedNode.id,{scale:2, animation:{duration: 400}})
+			document.getElementById("imagem-do-card").src = clickedNode.image
+            document.getElementById("nome-do-card").innerHTML = clickedNode.title
+		} else {
+			//network.fit({animation:{duration: 400}})
+			network.moveTo({position:{x:0,y:0}, scale:2,animation:{duration: 400}})
+			document.getElementById("user_card").style.display = 'none'
+		}
+	});
+	
+	network.once('stabilized', function() {
+		network.moveTo({position:{x:0,y:0}, scale:2})
+	});
+}
+
 function statusPatente(){
 
     let status = document.querySelector("#StatusPub").value
@@ -223,3 +300,7 @@ function Base64() {
 function MostrarImagem(){
     document.getElementById("img_preview").src = document.getElementById('img_b64').value
 }
+
+window.addEventListener('load', function(){
+    fetch('/Pessoas/dados').then(response => response.json()).then(data => {montarNetwork(data)});    
+});
