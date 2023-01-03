@@ -110,9 +110,6 @@
 										</button>
 									</div>
 								</form>
-
-							</div><!--//col-->
-							<div class="col-auto">
 								<select class="form-select w-auto" id="ano" name="ano"
 										onchange="updateLink()">
 									<option selected="" value="Todos">Ano</option>
@@ -123,10 +120,14 @@
 									<option value="2018">2018</option>
 
 								</select>
+								<partial name="Create" view-data="@ViewData" />
+							</div><!--//col-->
+							@*<div class="col-auto">
+								
 							</div>
 							<div class="col-auto">
-								<partial name="Create" view-data="@ViewData" />								
-							</div>
+																
+							</div>*@
 
 						</div><!--//row-->
 					</div><!--//table-utilities-->
