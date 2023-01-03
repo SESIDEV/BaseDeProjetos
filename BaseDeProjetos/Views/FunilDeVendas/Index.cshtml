@@ -188,7 +188,7 @@
 			</div><!--//row-->
 
 
-			<nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav flex-column flex-sm-row mb-4">
+			<nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
 				<a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-dashboard-tab" data-bs-toggle="tab" href="#prospeccao-dashboard" role="tab" aria-controls="prospeccao-dashboard" aria-selected="true">Dashboard</a>
 				<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" data-bs-toggle="tab" href="#prospeccao-ativas" role="tab" aria-controls="prospeccao-ativas" aria-selected="false">Ativas (@ativas.Count())</a>
 				<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" data-bs-toggle="tab" href="#prospeccao-comproposta" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta (@propostas.Count())</a>
@@ -201,7 +201,7 @@
 
 			<div class="tab-content" id="orders-table-tab-content">
 				<div class="tab-pane fade show active" id="prospeccao-dashboard" role="tabpanel" aria-labelledby="prospeccao-dashboard-tab">
-					<div class="app-card app-card-orders-table shadow-sm mb-5">
+					<div class="app-card app-card-orders-table mb-5">
 						<div class="app-card-body">
 							<partial name="graph_funil" view-data="@ViewData" />							
 						</div><!--//app-card-body-->
