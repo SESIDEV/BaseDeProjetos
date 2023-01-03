@@ -161,7 +161,7 @@
 @if (Model.Count() > 1)
 {
     <div class="pb-4">
-        <div class="app-card app-card-chart h-100">
+        <div class="app-card app-card-chart shadow-sm h-100">
             <div class="app-card-header p-3">
                 <h4 class="app-card-title">Funil de Vendas</h4>
             </div>
@@ -179,47 +179,102 @@
         
     </div>
 
-    <div class="d-flex gap-4 justify-content-between align-items-start"> @*style="display: flex; justify-content: space-between; align-items: flex-start;">*@
-        <div class="app-card app-card-chart w-50 h-100">
-            <div class="app-card-header p-3">
-                <h4 class="app-card-title">Indicadores de Prospecção</h4>
-            </div><!--//app-card-header-->
-            <div class="app-card-body row text-center p-3 p-lg-4">
-                <div class="col-12">
-                    <!--[Iury] IDs da checkbox \/ -->
-                    <h1 id="CheckboxProspAtivas1" class="display-3">@n_empresas</h1>
-                    <small id="CheckboxProspAtivas2">Número de empresas prospectadas</small> <hr />
-                </div>
-                <div class="col-4">
-                    <h4 id="CheckboxProspAtivas7">@Math.Abs(DiferencaTodas.Days) dias</h4>
-                    <small id="CheckboxProspAtivas10">Tempo médio entre o primeiro contato e a emissão da proposta</small>
-                </div>
-                <div class="col-4">
-                    <!--[Iury] IDs da checkbox \/ -->
-                    <h4 id="CheckboxProspAtivas4">@prospec_totais.Count()</h4>
-                    <small id="CheckboxProspAtivas3">Contatos iniciais de prospecção</small>
-                </div>
-                <div class="col-4">
-                    <h4> @infrutiferas.ToString("P2")</h4>
-                    <small>
-                        Percentual de prospecções infrutíferas
-                    </small>
-                </div>
-            </div><!--//app-card-body-->
+    <div class="pb-4">
+        <div class="d-flex gap-4 justify-content-between align-items-start shadow-sm">
+            <div class="app-card app-card-chart w-50 h-100">
+                <div class="app-card-header p-3">
+                    <h4 class="app-card-title">Indicadores de Prospecção</h4>
+                </div><!--//app-card-header-->
+                <div class="app-card-body row text-center p-3 p-lg-4">
+                    <div class="col-12">
+                        <!--[Iury] IDs da checkbox \/ -->
+                        <h1 id="CheckboxProspAtivas1" class="display-3">@n_empresas</h1>
+                        <small id="CheckboxProspAtivas2">Número de empresas prospectadas</small> <hr />
+                    </div>
+                    <div class="col-4">
+                        <h4 id="CheckboxProspAtivas7">@Math.Abs(DiferencaTodas.Days) dias</h4>
+                        <small id="CheckboxProspAtivas10">Tempo médio entre o primeiro contato e a emissão da proposta</small>
+                    </div>
+                    <div class="col-4">
+                        <!--[Iury] IDs da checkbox \/ -->
+                        <h4 id="CheckboxProspAtivas4">@prospec_totais.Count()</h4>
+                        <small id="CheckboxProspAtivas3">Contatos iniciais de prospecção</small>
+                    </div>
+                    <div class="col-4">
+                        <h4> @infrutiferas.ToString("P2")</h4>
+                        <small>
+                            Percentual de prospecções infrutíferas
+                        </small>
+                    </div>
+                </div><!--//app-card-body-->
+            </div>
 
-
-
+            <div class="app-card app-card-chart w-50 h-100">
+                <div class="app-card-header p-3">
+                    <h4 class="app-card-title">Status Geral das Prospecções</h4>
+                </div><!--//app-card-header-->
+                <div class="app-card-body text-center p-3 p-lg-4">
+                    <figure class="highcharts-figure">
+                        <div id="pizza_desistencia"></div>
+                    </figure>
+                </div><!--//app-card-body-->
+            </div>
         </div>
+    </div>
+    <div class="d-flex gap-4 justify-content-between align-items-start shadow-sm">
         <div class="app-card app-card-chart w-50 h-100">
             <div class="app-card-header p-3">
-                <h4 class="app-card-title">Status Geral das Prospecções</h4>
+                <h4 class="app-card-title">Status de Prospecções com Proposta</h4>
             </div><!--//app-card-header-->
             <div class="app-card-body text-center p-3 p-lg-4">
                 <figure class="highcharts-figure">
-                    <div id="pizza_desistencia"></div>
+                    <div id="pizza_conversao"></div>
                 </figure>
             </div><!--//app-card-body-->
         </div>
+
+        <div class="app-card app-card-chart w-50 h-100">
+            <div class="app-card-header p-3">
+                <h4 class="app-card-title">Status de Prospecções com Proposta</h4>
+            </div><!--//app-card-header-->
+            <div class="app-card-body row text-center p-3 p-lg-4">                
+                <div class="col-12">
+                    <h1 class="display-3">@taxa_conversao.ToString("P2")</h1>
+                    <small>
+                        Taxa de conversão de prospecções
+                    </small>
+                    <hr />
+                </div>
+                <div class="col-4">
+                    <!-- Quando transformar em calculado, remover o R$-->
+                    @if (valor > 0)
+                    {
+                        <h4 id="CheckboxProspAtivas5">@valor.ToString("C2")</h4>
+                    }
+                    else
+                    {
+                        <h4 id="CheckboxProspAtivas5">R$ ---</h4>
+                    }
+                    <small id="CheckboxProspAtivas8">
+                        Ticket médio das prospecções
+                    </small>
+                </div>
+                <div class="col-4">
+                    <h4 id="CheckboxProspAtivas6">@n_propostas</h4>
+                    <small id="CheckboxProspAtivas9">
+                        Propostas comerciais enviadas
+                    </small>
+                </div>
+                <div class="col-4">
+                    <h4>@n_convertidas</h4>
+                    <small>
+                        Projetos contratados
+                    </small>
+                </div>
+            </div><!--//app-card-body-->
+        </div>
+        
+
     </div>
     
 
@@ -321,7 +376,9 @@
             { name: 'Parceiros de Edital', data: [@par_CI_a, @par_ED_a, @par_CP_a] },
             { name: 'ANP/ANEEL', data: [@anp_CI_a, @anp_ED_a, @anp_CP_a] }];
 
-        var chart2 = Highcharts.chart('pizza_desistencia', {
+        <!-- Pizzas -->
+
+        var pizzaDesistencia = Highcharts.chart('pizza_desistencia', {
             chart: {
                 plotBackgroundColor: null,
                 plotBorderWidth: null,
@@ -389,10 +446,7 @@
             }
         });
 
-    </script>
-    <!-- Pizzas -->
-    <script>
-        Highcharts.chart('pizza_conversao', {
+        var pizzaConversao = Highcharts.chart('pizza_conversao', {
             chart: {
                 plotBackgroundColor: null,
                 plotBorderWidth: null,
@@ -430,12 +484,13 @@
                 }, {
                     name: 'Convertidas',
                     y: @n_convertidas
-                    }, {
+                            }, {
                     name: 'Não convertidas',
                     y: @n_nao_convertidas
-                    }]
+                            }]
             }]
-        });        
+        });
+
     </script>
 
     <script type="text/javascript">
