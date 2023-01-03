@@ -119,7 +119,6 @@ namespace BaseDeProjetos
                 endpoints.MapRazorPages();
             });
 
-            context.Database.Migrate();
         }
     }
 }
