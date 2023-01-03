@@ -43,6 +43,9 @@ namespace BaseDeProjetos.Models
         }
 
         public override int GetHashCode() => (Id).GetHashCode();
+
+        public virtual string CaminhoPasta {get; set; }
+
     }
 
     public class FollowUp
