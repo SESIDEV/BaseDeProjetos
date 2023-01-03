@@ -4,6 +4,7 @@ namespace BaseDeProjetos.Models
 {
     public class Editais
     {
+        [Key]
         public virtual int Id { get; set; }
         [Display(Name = "Nome do edital")]
         public virtual string Name { get; set; }
