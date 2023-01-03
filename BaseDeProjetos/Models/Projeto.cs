@@ -25,27 +25,8 @@ namespace BaseDeProjetos.Models
         public virtual DateTime DataInicio { get; set; }
 
         public virtual DateTime DataEncerramento { get; set; }
-        public virtual List<Usuario> Equipe { get; set; }
 
-        [NotMapped]
-        public Usuario Lider
-        {
-            get
-            {
-                if (Equipe.Count() > 0)
-                {
-                    return Equipe[0];
-                }
-                else
-                {
-                    throw new InvalidOperationException("A equipe não foi definida");
-                }
-            }
-            private set { }
-        }
-
-        [NotMapped]
-        public string NomeLider => Lider.NormalizedEmail.Split("@")[0];
+        public virtual string MembrosEquipe { get; set; }
 
         public virtual Estado Estado { get; set; }
 
