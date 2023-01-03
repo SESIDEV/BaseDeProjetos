@@ -36,7 +36,9 @@ namespace BaseDeProjetos.Controllers
                 casa = usuario.Casa.ToString();
 
             }
-            List<Prospeccao> lista = new List<Prospeccao>();
+
+            List<Empresa> empresas = _context.Empresa.ToList();
+            List<Prospeccao> lista;
             lista = FunilHelpers.DefinirCasaParaVisualizar(casa, usuario, _context, HttpContext, ViewData);
             lista = FunilHelpers.VincularCasaProspeccao(usuario, lista);
             lista = FunilHelpers.PeriodizarProspecções(ano, lista); // ANO DA PROSPEC
@@ -44,7 +46,9 @@ namespace BaseDeProjetos.Controllers
             lista = FunilHelpers.FiltrarProspecções(searchString, lista); //APENAS NA BUSCA
             FunilHelpers.SetarFiltrosNaView(HttpContext, ViewData, sortOrder, searchString);
             FunilHelpers.CategorizarProspecçõesNaView(lista, usuario, HttpContext, ViewBag);
-            return View(lista.ToList());
+            ViewData["ListaProspeccoes"] = lista.ToList();
+            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+            return View();
         }
 
         // GET: FunilDeVendas/Details/5
