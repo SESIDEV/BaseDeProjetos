@@ -73,6 +73,16 @@ function CasasFunil() {
     window.location.assign(url_final);
 }
 
+function passarComp(element) {
+    if (element.classList[1] == 'bg-secondary'){
+        element.classList.replace('bg-secondary','bg-primary')
+        document.querySelector("#filt").appendChild(element)
+    } else {
+        element.classList.replace('bg-primary','bg-secondary')
+        document.querySelector("#notfilt").appendChild(element)
+    }
+}
+
 function updateLink() {
     var baseUrl = location.href.split("?")[0];
     var params = "?ano=";
