@@ -30,18 +30,17 @@
     <script src="~/plugins/popper.min.js"></script>
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 </head>
-<body>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+<body class="app">
+    <partial name="Header" />
+        
+    @RenderBody()
 
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; @DateTime.Today.Year - SGI-GGI - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacidade</a> | Layout: <small>Designed with <span class="sr-only">love</span><i class="fas fa-heart" style="color: #fb866a;"></i> by <a class="app-link" href="http://themes.3rdwavemedia.com" target="_blank">Xiaoying Riley</a> for developers</small>
         </div>
     </footer>
+
     @RenderSection("Scripts", required: false)
 </body>
 </html>
