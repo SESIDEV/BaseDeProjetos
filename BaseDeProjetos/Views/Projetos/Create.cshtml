@@ -1,10 +1,9 @@
 ﻿@model BaseDeProjetos.Models.Projeto
-@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http;
 
 @{
     ViewData["Title"] = "Criar Projeto";
-    ViewData["Title"] = "Adicionar Prospecção";
-    if (!(Context.Session.GetString("_Casa") is null))
+    @if (!(Context.Session.GetString("_Casa") is null))
     {
         ViewData["Area"] = Context.Session.GetString("_Casa");
     }
@@ -49,6 +48,11 @@
                     <label asp-for="NomeProjeto" class="control-label"></label>
                     <input asp-for="NomeProjeto" class="form-control" />
                     <span asp-validation-for="NomeProjeto" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MembrosEquipe" class="control-label"></label>
+                    <input asp-for="MembrosEquipe" class="form-control" data-toggle="modal" data-target="#ModalCenter" />
+                    <span asp-validation-for="MembrosEquipe" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="AreaPesquisa" class="control-label"></label>
@@ -123,11 +127,98 @@
 </div>
 
 <div>
-    <a asp-action="Index" asp-route-casa="@ViewData["Area"]">Voltar</a>
+    <a asp-action="Index" asp-route-casa="@ViewData["Area"]" class="btn btn-primary">Voltar</a>
 </div>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+<!-- Modal Membros da equipe-->
+<div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLongTitle">Inserir Membros da Equipe</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body d-flex justify-content-between gap-2">
+                <div style="width:45%;">
+                    <span>Membros do Projeto</span>
+                    <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" class="border border-secondary rounded" style="width:100%;min-height:150px;">
+                        
+                    </div>
+                </div>
+                <div style="width:45%;">
+                    <span>Membros Disponíveis</span>
+                    <div id="div2" ondrop="drop(event)" ondragover="allowDrop(event)" class="border border-secondary rounded" style="width:100%;min-height:150px;">
+                        <p draggable="true" ondragstart="drag(event)" id="1" width="88" height="31">Teste1</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    let listaUsuarios = [];
+    var campoDeUsuariosDisponiveis = document.querySelector("#div2")
+
+    async function obterListaDeUsuariosJson() {
+        await fetch("https://localhost:44352/Projetos/ListaUsuarios")
+            .then((response) => {
+
+                return response.json()
+            })
+            .then((data) => {
+
+                listaUsuarios = data;
+            })
+        listaUsuarios.forEach(usuario => {
+            var elem = `<p draggable="true" ondragstart="drag(event)" id="${usuario}" width="88" height="31">Teste1</p>`
+            campoDeUsuariosDisponiveis.appendChild(elem)
+        })
     }
+    obterListaDeUsuariosJson()
+
+    /*function mostrarModal(){
+        let inputMembrosEquipe = document.querySelector("#MembrosEquipe")
+
+    }*/
+
+    function criarElemento(idUsuario){
+        
+        var elemento = 
+        
+
     }
+
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        ev.target.appendChild(document.getElementById(data));
+    }
+
+    function TratandoListaDeUsuarios(lista) {
+        let listaDeUsuarios = lista.split(";")
+        return listaDeUsuarios;
+    }
+
+
+    function PesquisarUsuario(termo) {
+        let listaUsuarios = TratandoListaDeUsuarios(usuarios)
+        let usuario = listaUsuarios.filter(u => u.includes(termo))
+        console.log(usuario)
+    }
+
+</script>

@@ -308,6 +308,12 @@ namespace BaseDeProjetos.Helpers
             }
             return p.Status.Any(s => s.Status == StatusProspeccao.ComProposta);
         }
+
+        public static string ListarUsuarios(string usuario)
+        {
+            
+            return "Pare de reclamar compilador";
+        }
     }
 
 }

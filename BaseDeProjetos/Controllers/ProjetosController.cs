@@ -232,52 +232,52 @@ namespace BaseDeProjetos.Controllers
             }
         }*/
 
-    // POST: Projetos/Edit/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to, for
-    // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    /*[HttpPost]
-    [ValidateAntiForgeryToken]
-   public async Task<IActionResult> Edit(string id, [Bind("Id,Casa,NomeProjeto,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos")] Projeto projeto)
-    {
-        if (id != projeto.Id)
+        // POST: Projetos/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /*[HttpPost]
+        [ValidateAntiForgeryToken]
+       public async Task<IActionResult> Edit(string id, [Bind("Id,Casa,NomeProjeto,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos")] Projeto projeto)
         {
-            return NotFound();
-        }
-
-        if (ModelState.IsValid)
-        {
-            try
+            if (id != projeto.Id)
             {
-                _context.Projeto.Update(projeto);
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
+
+            if (ModelState.IsValid)
             {
-                if (!ProjetoExists(projeto.Id))
+                try
                 {
-                    return NotFound();
+                    _context.Projeto.Update(projeto);
+                    await _context.SaveChangesAsync();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!ProjetoExists(projeto.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
+                return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
             }
-            return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
-        }
-        return View(projeto);
-    }*/
-
-    /*private List<Usuario> ObterUsuarios(Projeto projeto)
-        {
-            List<Usuario> usuarios_reais = new List<Usuario>();
-
-            for (int i = 0; i < projeto.Equipe.Count(); i++)
-            {
-                usuarios_reais.Add(_context.Users.First(p => p.Id == projeto.Equipe[i].Id));
-            }
-
-            return usuarios_reais;
+            return View(projeto);
         }*/
+
+        /*private List<Usuario> ObterUsuarios(Projeto projeto)
+            {
+                List<Usuario> usuarios_reais = new List<Usuario>();
+
+                for (int i = 0; i < projeto.Equipe.Count(); i++)
+                {
+                    usuarios_reais.Add(_context.Users.First(p => p.Id == projeto.Equipe[i].Id));
+                }
+
+                return usuarios_reais;
+            }*/
 
         // GET: Projetos/Delete/5
         public async Task<IActionResult> Delete(string id)
@@ -374,6 +374,13 @@ namespace BaseDeProjetos.Controllers
                 _context.Add(projeto);
                 _context.SaveChanges();
             }
+
+        }
+        public JsonResult ListaUsuarios()
+        {
+            List<string> usuarios = _context.Users.AsEnumerable().Where(usuario => usuario.EmailConfirmed == true).Where(usuario => usuario.Nivel != Nivel.Dev && usuario.Nivel != Nivel.Externos).Select((usuario) => usuario.Email.ToString().ToLower()).ToList();
+
+            return Json(usuarios);
         }
     }
 }

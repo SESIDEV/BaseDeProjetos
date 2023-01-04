@@ -25,7 +25,7 @@ namespace BaseDeProjetos.Models
         public virtual DateTime DataInicio { get; set; }
 
         public virtual DateTime DataEncerramento { get; set; }
-
+        [Display(AutoGenerateFilter = true, Name = "Membros da Equipe")]
         public virtual string MembrosEquipe { get; set; }
 
         public virtual Estado Estado { get; set; }
