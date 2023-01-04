@@ -28,13 +28,7 @@ namespace BaseDeProjetos.Controllers
         }
         public string dados(){
             
-            var usuarios = _context.Users.Where(u => u.Email != null).Select(u => new {u.Id, u.Email, u.UserName}).ToList();
-            List<Empresa> empresas = _context.Empresa.ToList();
-            List<Prospeccao> prospeccao = _context.Prospeccao.ToList();
-
-            string usuariosJson = JsonSerializer.Serialize(usuarios);
-
-            return usuariosJson;
+            return Helpers.Helpers.PuxarDadosUsuarios(_context);
 
         }
     }
