@@ -44,6 +44,7 @@ namespace BaseDeProjetos.Models
 
         public override int GetHashCode() => (Id).GetHashCode();
 
+        [Display(Name = "Caminho/Endereço da pasta no sistema")]
         public virtual string CaminhoPasta {get; set; }
 
     }
