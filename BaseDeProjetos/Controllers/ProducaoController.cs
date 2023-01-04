@@ -33,7 +33,10 @@ namespace BaseDeProjetos.Controllers
             {
                 casa = usuario.Casa.ToString();
             }
-            
+
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             Producoes = FunilHelpers.DefinirCasaParaVisualizarEmProducao(casa, usuario, _context, HttpContext, ViewData);
             Producoes = FunilHelpers.VincularCasaProducao(usuario, Producoes);
             Producoes = FunilHelpers.PeriodizarProduções(ano, Producoes);

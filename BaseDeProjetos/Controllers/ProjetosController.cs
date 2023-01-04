@@ -1,4 +1,5 @@
 ﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -37,12 +38,17 @@ namespace BaseDeProjetos.Controllers
         // GET: Projetos
         public IActionResult Index(string casa, string sortOrder = "", string searchString = "", string ano = "")
         {
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             SetarFiltros(sortOrder, searchString);
             IQueryable<Projeto> projetos = DefinirCasa(casa);
             projetos = PeriodizarProjetos(ano, projetos);
             CategorizarStatusProjetos(projetos);
             GerarIndicadores(casa, _context);
-            return View(projetos.ToList());
+            ViewData["projetos"] = projetos.ToList();
+            return View();
         }
 
         private void SetarFiltros(string sortOrder = "", string searchString = "")
