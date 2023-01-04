@@ -1,4 +1,5 @@
 ﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +38,10 @@ namespace BaseDeProjetos.Controllers
         // GET: Projetos
         public IActionResult Index(string casa, string sortOrder = "", string searchString = "", string ano = "")
         {
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             SetarFiltros(sortOrder, searchString);
             IQueryable<Projeto> projetos = DefinirCasa(casa);
             projetos = PeriodizarProjetos(ano, projetos);
@@ -154,6 +159,10 @@ namespace BaseDeProjetos.Controllers
         // GET: Projetos/Details/5
         public async Task<IActionResult> Details(string id)
         {
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             if (id == null)
             {
                 return NotFound();
@@ -174,7 +183,10 @@ namespace BaseDeProjetos.Controllers
         {
             List<Empresa> empresas = _context.Empresa.ToList();
             ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-            return View();
+			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+			ViewBag.usuarioCasa = usuario.Casa;
+			ViewBag.usuarioNivel = usuario.Nivel;
+			return View();
         }
 
         // POST: Projetos/Create
@@ -199,6 +211,10 @@ namespace BaseDeProjetos.Controllers
         // GET: Projetos/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
 
             if (id == null)
@@ -283,6 +299,10 @@ namespace BaseDeProjetos.Controllers
         // GET: Projetos/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             if (id == null)
             {
                 return NotFound();

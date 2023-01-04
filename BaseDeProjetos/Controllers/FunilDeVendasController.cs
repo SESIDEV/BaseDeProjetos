@@ -34,8 +34,10 @@ namespace BaseDeProjetos.Controllers
             if (string.IsNullOrEmpty(casa))
             {
                 casa = usuario.Casa.ToString();
-
             }
+
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
 
             List<Empresa> empresas = _context.Empresa.ToList();
             List<Prospeccao> lista;
@@ -218,7 +220,11 @@ namespace BaseDeProjetos.Controllers
         {
             CriarSelectListsDaView();
 
-            if (id == null)
+			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+			ViewBag.usuarioCasa = usuario.Casa;
+			ViewBag.usuarioNivel = usuario.Nivel;
+
+			if (id == null)
             {
                 return NotFound();
             }

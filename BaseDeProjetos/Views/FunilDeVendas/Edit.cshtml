@@ -9,11 +9,12 @@
         ViewData["Area"] = Context.Session.GetString("_Casa");
     }
 }
-<h1>Editar</h1>
 
-<h4>Prospecção</h4>
-<hr />
-<div class="row gx-2 gy-2">
+<div class="row gx-2 gy-2" style="padding-left: 25em; padding-right: 10em">
+    <h1>Editar</h1>
+
+    <h4>Prospecção</h4>
+    <hr />
     <form asp-action="Edit" method="post" class="row">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <fieldset class="card col-6">

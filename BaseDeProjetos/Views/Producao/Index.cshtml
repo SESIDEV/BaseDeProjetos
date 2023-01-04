@@ -95,8 +95,7 @@
 					<div class="page-utilities">
 						<div class="row g-2 justify-content-start justify-content-md-end align-items-center">
 							<div class="col-auto">
-								<form asp-controller="Producao" asp-action="Index" method="get"
-									  class="docs-search-form row gx-1 align-items-center">
+								<form asp-controller="Producao" asp-action="Index" method="get" class="docs-search-form row gx-1 align-items-center">
 									<div class="col-auto">
 										<input type="text" id="search-docs" name="SearchString"
 											   class="form-control search-docs"
@@ -109,18 +108,22 @@
 											Procurar
 										</button>
 									</div>
-								</form>
-								<select class="form-select w-auto" id="ano" name="ano"
-										onchange="updateLink()">
-									<option selected="" value="Todos">Ano</option>
-									<option value="2022">2022</option>
-									<option value="2021">2021</option>
-									<option value="2020">2020</option>
-									<option value="2019">2019</option>
-									<option value="2018">2018</option>
-
-								</select>
-								<partial name="Create" view-data="@ViewData" />
+									<div class="col-auto">
+										<select class="form-select w-auto" id="ano" name="ano"
+												onchange="updateLink()">
+											<option selected="" value="Todos">Ano</option>
+											<option value="2022">2022</option>
+											<option value="2021">2021</option>
+											<option value="2020">2020</option>
+											<option value="2019">2019</option>
+											<option value="2018">2018</option>
+										</select>
+									</div>
+									<div class="col-auto">
+										<partial name="Create" view-data="@ViewData" />
+									</div>
+								</form>					
+								
 							</div><!--//col-->
 							@*<div class="col-auto">
 								
