@@ -220,7 +220,11 @@ namespace BaseDeProjetos.Controllers
         {
             CriarSelectListsDaView();
 
-            if (id == null)
+			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+			ViewBag.usuarioCasa = usuario.Casa;
+			ViewBag.usuarioNivel = usuario.Nivel;
+
+			if (id == null)
             {
                 return NotFound();
             }

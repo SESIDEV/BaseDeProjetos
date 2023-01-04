@@ -47,8 +47,7 @@ namespace BaseDeProjetos.Controllers
             projetos = PeriodizarProjetos(ano, projetos);
             CategorizarStatusProjetos(projetos);
             GerarIndicadores(casa, _context);
-            ViewData["projetos"] = projetos.ToList();
-            return View();
+            return View(projetos.ToList());
         }
 
         private void SetarFiltros(string sortOrder = "", string searchString = "")
@@ -160,6 +159,10 @@ namespace BaseDeProjetos.Controllers
         // GET: Projetos/Details/5
         public async Task<IActionResult> Details(string id)
         {
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             if (id == null)
             {
                 return NotFound();
@@ -180,7 +183,10 @@ namespace BaseDeProjetos.Controllers
         {
             List<Empresa> empresas = _context.Empresa.ToList();
             ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-            return View();
+			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+			ViewBag.usuarioCasa = usuario.Casa;
+			ViewBag.usuarioNivel = usuario.Nivel;
+			return View();
         }
 
         // POST: Projetos/Create
@@ -205,6 +211,10 @@ namespace BaseDeProjetos.Controllers
         // GET: Projetos/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
 
             if (id == null)
@@ -289,6 +299,10 @@ namespace BaseDeProjetos.Controllers
         // GET: Projetos/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             if (id == null)
             {
                 return NotFound();

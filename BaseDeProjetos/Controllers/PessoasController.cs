@@ -24,6 +24,9 @@ namespace BaseDeProjetos.Controllers
         {
             Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             return View();
         }
         public string dados(){
