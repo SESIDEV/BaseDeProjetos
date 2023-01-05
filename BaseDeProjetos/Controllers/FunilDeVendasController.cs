@@ -112,7 +112,8 @@ namespace BaseDeProjetos.Controllers
                 Empresa = _context.Empresa.FirstOrDefault(E => E.Id == id),
                 Usuario = _context.Users.FirstOrDefault(u => u.UserName == userId),
                 Casa = usuarioCasa,
-                LinhaPequisa = LinhaPesquisa.Indefinida
+                LinhaPequisa = LinhaPesquisa.Indefinida,
+                CaminhoPasta = ""
             };
             prosp.Status = new List<FollowUp>
             {
@@ -174,7 +175,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, Empresa, Contato, Casa")] Prospeccao prospeccao)
+        public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, Empresa, Contato, Casa, CaminhoPasta")] Prospeccao prospeccao)
         {
             if (ModelState.IsValid)
             {
@@ -274,7 +275,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id," + "TipoContratacao, " + "NomeProspeccao, " + "PotenciaisParceiros, " + "LinhaPequisa, Empresa, Contato, Casa, Usuario, ValorProposta, ValorEstimado, Status")] Prospeccao prospeccao)
+        public async Task<IActionResult> Edit(string id, [Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Empresa, Contato, Casa, Usuario, ValorProposta, ValorEstimado, Status, CaminhoPasta")] Prospeccao prospeccao)
         {
             if (id != prospeccao.Id)
             {

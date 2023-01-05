@@ -1,19 +1,9 @@
 ﻿@model BaseDeProjetos.Models.Editais
 
 @{
-    Layout = null;
+    ViewData["Title"] = "Detalhes do Edital";
 }
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Details</title>
-</head>
-<body>
-
-<div>
+<div class="container">
     <h4>Editais</h4>
     <hr />
     <dl class="row">
@@ -92,8 +82,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a> |
+    <a asp-action="Index" class="btn btn-primary">Voltar</a>
 </div>
-</body>
-</html>

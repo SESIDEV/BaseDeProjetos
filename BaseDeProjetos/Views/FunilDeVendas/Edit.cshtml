@@ -199,6 +199,12 @@
                     <span asp-validation-for="PotenciaisParceiros" class="text-danger"></span>
                 </div>
 
+                <div class="form-group">
+                    <label asp-for="CaminhoPasta" class="control-label"></label>
+                    <input asp-for="CaminhoPasta" class="form-control" placeholder="Caminho da pasta no drive" />
+                    <span asp-validation-for="CaminhoPasta" class="text-danger"></span>
+                </div>
+
                 <label class="control-label"> Líder da Prospecção</label>
                 <select asp-for="Usuario.Id" class="form-control" asp-items='@ViewData["Equipe"] as SelectList'>
                     <option value="@Model.Usuario" selected disabled>@Model.Usuario.UserName</option>
