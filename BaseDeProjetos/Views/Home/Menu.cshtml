@@ -57,7 +57,8 @@
                         <small>Gestão do Conhecimento</small>
                     </a>
                 </li>
-                @if(usuarioNivel.ToString() == "PMO"){
+                @if (usuarioNivel.ToString() == "PMO" || usuarioNivel.ToString() == "Dev" || usuarioNivel.ToString() == "Supervisor")
+                {
                     <li>
                     <a class="dropdown-item" asp-action="Index" asp-controller="Indicadores" asp-route-casa="@casa_nome"
                    id="a-success">
