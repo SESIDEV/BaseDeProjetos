@@ -1,102 +1,94 @@
 ﻿@model BaseDeProjetos.Models.Editais
 
 @{
-    Layout = null;
+    ViewData["Title"] = "Excluir Edital";
 }
+<div class="container">
+    <h3>Você quer excluir esse edital?</h3>
+    <div>
+        <h4>Editais</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Descricao)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Descricao)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Local)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Local)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.StatusEdital)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.StatusEdital)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.AgenciaFomento)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.AgenciaFomento)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.PrazoSubmissao)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.PrazoSubmissao)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.ValorEdital)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.ValorEdital)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Proponente)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Proponente)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.LinkEdital)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.LinkEdital)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.ProjetoProposto)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.ProjetoProposto)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.DataResultado)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.DataResultado)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.StatusSubmissao)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.StatusSubmissao)
+            </dd>
+        </dl>
 
-<!DOCTYPE html>
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Delete" class="btn btn-danger" /> |
+            <a asp-action="Index" class="btn btn-primary">Voltar</a>
+        </form>
+    </div>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Delete</title>
-</head>
-<body>
-
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Editais</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descricao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descricao)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Local)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Local)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StatusEdital)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StatusEdital)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AgenciaFomento)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AgenciaFomento)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PrazoSubmissao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PrazoSubmissao)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ValorEdital)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ValorEdital)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Proponente)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Proponente)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LinkEdital)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LinkEdital)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ProjetoProposto)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ProjetoProposto)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DataResultado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DataResultado)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StatusSubmissao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StatusSubmissao)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
 </div>
-</body>
-</html>
+

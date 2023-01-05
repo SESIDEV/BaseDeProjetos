@@ -77,7 +77,15 @@
             </div>
             <div class="form-group">
                 <label asp-for="@Model.Status" class="control-label"></label>
-                <select asp-for="@Model.Status" class="form-control" asp-items="Html.GetEnumSelectList<StatusProspeccao>().Where(p => Int32.Parse(p.Value) >= (int)prosp.Status.OrderBy(p=> p.Data).Last().Status)"></select>
+                @if ((int)prosp.Status.OrderBy(p => p.Data).Last().Status == (int)StatusProspeccao.Planejada)
+                {
+                    <select asp-for="@Model.Status" class="form-control" asp-items="Html.GetEnumSelectList<StatusProspeccao>().Where(p => Int32.Parse(p.Value) <= (int)prosp.Status.OrderBy(p=> p.Data).Last().Status)"></select>
+                }
+                else
+                {
+                    <select asp-for="@Model.Status" class="form-control" asp-items="Html.GetEnumSelectList<StatusProspeccao>().Where(p => Int32.Parse(p.Value) >= (int)prosp.Status.OrderBy(p => p.Data).Last().Status)"></select>
+                }
+
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="form-group">

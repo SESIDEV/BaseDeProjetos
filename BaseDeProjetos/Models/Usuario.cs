@@ -16,5 +16,11 @@ namespace BaseDeProjetos.Models
         public Titulacao Titulacao { get; set; }
 
         public TipoVinculo Vinculo { get; set; }
+
+        [Display(Name = "Foto do Perfil")]
+        public string Foto { get; set; }
+
+        [Display(Name = "Competências")]
+        public string Competencia { get; set; }
     }
 }

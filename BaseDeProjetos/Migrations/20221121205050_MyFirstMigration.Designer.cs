@@ -3,14 +3,16 @@ using System;
 using BaseDeProjetos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BaseDeProjetos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221121205050_MyFirstMigration")]
+    partial class MyFirstMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -250,9 +252,6 @@ namespace BaseDeProjetos.Migrations
                     b.Property<string>("Descricao")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int?>("EmpresaId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Grupo")
                         .HasColumnType("int");
 
@@ -262,15 +261,6 @@ namespace BaseDeProjetos.Migrations
                     b.Property<string>("Local")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("NumPatente")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("ProjetoId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
-
-                    b.Property<string>("Responsavel")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
                     b.Property<int>("StatusPub")
                         .HasColumnType("int");
 
@@ -278,10 +268,6 @@ namespace BaseDeProjetos.Migrations
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EmpresaId");
-
-                    b.HasIndex("ProjetoId");
 
                     b.ToTable("Producao");
                 });
@@ -347,9 +333,6 @@ namespace BaseDeProjetos.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
-                    b.Property<string>("CaminhoPasta")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
                     b.Property<int>("Casa")
                         .HasColumnType("int");
 
@@ -402,9 +385,6 @@ namespace BaseDeProjetos.Migrations
                     b.Property<int>("Casa")
                         .HasColumnType("int");
 
-                    b.Property<string>("Competencia")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -415,9 +395,6 @@ namespace BaseDeProjetos.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("Foto")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
@@ -639,17 +616,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasOne("BaseDeProjetos.Models.Empresa", "empresa")
                         .WithMany()
                         .HasForeignKey("empresaId");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.Producao", b =>
-                {
-                    b.HasOne("BaseDeProjetos.Models.Empresa", "Empresa")
-                        .WithMany()
-                        .HasForeignKey("EmpresaId");
-
-                    b.HasOne("BaseDeProjetos.Models.Projeto", "Projeto")
-                        .WithMany()
-                        .HasForeignKey("ProjetoId");
                 });
 
             modelBuilder.Entity("BaseDeProjetos.Models.Projeto", b =>

@@ -163,7 +163,6 @@ namespace BaseDeProjetos.Models
         Patente = 8,
 
     }
-
     public enum Titulacao
     {
         [Display(Name = "Nível Médio")]
@@ -190,7 +189,6 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Pós-Graduado - Stricto Sensu (Pós-Doutor)")]
         PosDoutor
     }
-
     public enum JustificaEPI
     {
         [Display(Name = "Primeira Entrega")]
@@ -206,6 +204,28 @@ namespace BaseDeProjetos.Models
         Subs_DanificadoExtraviado
     }
 
+    public enum Competencia
+    {
+        [Display(Name = "...")]
+        Zero = 0,
+        [Display(Name = "HTML/CSS")]
+        HTMLCSS,
+        [Display(Name = "Javascript")]
+        JS,
+        [Display(Name = "Python")]
+        Python,
+        [Display(Name = "MySQL")]
+        MYSQL,
+        [Display(Name = "C#")]
+        CSharp,
+        [Display(Name = "C++")]
+        Cmm,
+        [Display(Name = "Photoshop")]
+        Photoshop,
+        [Display(Name = "Excel")]
+        Excel,
+
+    }
     public enum TipoVinculo
     {
         Visitante,
@@ -214,7 +234,6 @@ namespace BaseDeProjetos.Models
         Estagiario,
         Empregado
     }
-
     public enum CasaFirjan
     {
         Firjan,
@@ -225,7 +244,6 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Firjan SENAI")]
         FirjanSENAI,
     }
-
     public enum LinhaPesquisa
     {
         [Display(Name = "QV - Quimica e Sustentabilidade", GroupName = "Quimica Verde")]
@@ -268,7 +286,6 @@ namespace BaseDeProjetos.Models
         SuporteProcessosSaude,
 
     }
-
     public enum StatusProspeccao
     {
         [Display(Name = "Contato inicial")]
@@ -292,10 +309,9 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Planejada")]
         Planejada = 9
     }
-
     public enum StatusProjeto
     {
-        [Display(Name = "Contratrado/Em planejamento")]
+        [Display(Name = "Contratado/Em planejamento")]
         Contratado,
 
         [Display(Name = "Em execução")]
@@ -310,7 +326,6 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Atrasado")]
         Atrasado,
     }
-
     public enum TipoContratacao
     {
         [Display(Name = "Contratação Direta")]
@@ -336,7 +351,6 @@ namespace BaseDeProjetos.Models
         [Display(Name = "A definir")]
         Indefinida
     }
-
     public enum TipoInovacao
     {
         Produto,
@@ -368,7 +382,6 @@ namespace BaseDeProjetos.Models
         Trabalho_Técnico,
         Demais_Tipos_de_Produção_Técnica
     }
-
     public enum Estado
     {
         [Display(Name = "Rio de Janeiro")]
@@ -448,7 +461,6 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Fora do país")]
         Estrangeiro
     }
-
     public enum StatusPub
     {
         [Display(Name = "Submetido", GroupName = "Artigo")]
@@ -489,7 +501,6 @@ namespace BaseDeProjetos.Models
         [Display(Name = "ISI - Sistemas Virtuais de Produção")]
         ISISVP
     }
-
     public enum Atividades
     {
         //Apoio
@@ -532,7 +543,6 @@ namespace BaseDeProjetos.Models
         //Outros
         Outros
     }
-
     public enum AreasAtividades
     {
         [Display(Name = "Atividades de apoio")]
@@ -549,7 +559,6 @@ namespace BaseDeProjetos.Models
 
         Outros
     }
-
     public enum MotivosNaoConversao
     {
         [Display(Name = "O cliente não aceitou o preço")]
@@ -567,7 +576,6 @@ namespace BaseDeProjetos.Models
         [Display(Name = "O cliente não quis informar o motivo")]
         NaoInformada
     }
-
     public enum Nivel
     {
         [Display(Name = "Usuário")]
@@ -580,9 +588,11 @@ namespace BaseDeProjetos.Models
         PMO,
 
         [Display(Name = "Desenvolvedor")]
-        Dev
-    }
+        Dev,
 
+        [Display(Name = "Externos")]
+        Externos
+    }
     public enum SetoresDeAtividade
     {
         Administração_pública, _defesa_e_seguridade_social,
@@ -673,24 +683,23 @@ namespace BaseDeProjetos.Models
         Transporte_aquaviário,
         Transporte_terrestre,
     }
-
     public enum Pais
     {
-        Brasil
+        [Display(Name = "Brasil")]
+        Brasil,
+        [Display(Name = "Exterior")]
+        Exterior
     }
-
     public enum Idioma
     {
         ptBR,
         enUS
     }
-
     public enum MeioDivulgacao
     {
         //TODO: Capitalizar Fonte
         IMPRESSO, WEB, MEIO_MAGNETICO, MEIO_DIGITAL, FILME, HIPERTEXTO, OUTRO, VARIOS, NAO_INFORMADO
     }
-
     public enum StatusSubmissaoEdital
     {
         [Display(Name = "Edital Submetido")]
@@ -704,7 +713,6 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Cancelado")]
         cancelado
     }
-
     public enum StatusEdital
     {
         [Display(Name = "Em aberto")]
@@ -712,7 +720,6 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Edital Encerrado")]
         encerrado
     }
-
     public enum AgenciaDeFomento
     {
         [Display(Name = "Finep")]
