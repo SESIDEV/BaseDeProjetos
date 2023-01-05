@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -417,6 +418,40 @@ namespace BaseDeProjetos.Controllers
                 Mensagem = e.Message
             };
             return View("Error", erro);
+        }
+
+        public string PuxarDadosProspeccoes(string casa = "ISIQV", int ano = 2022, bool planejadas = false){
+            
+            Instituto casa_ = (Instituto)Enum.Parse(typeof(Instituto), casa);
+
+            List<Prospeccao> lista_prosp = _context.Prospeccao.Where(p => p.Casa == casa_).ToList();
+
+            List<Dictionary<string, object>> listaFull = new List<Dictionary<string, object>>();
+
+            foreach (var p in lista_prosp)
+            {
+                if (p.Status.OrderBy(k=>k.Data).LastOrDefault().Data.Year == ano){
+                    if (planejadas){
+                        if (p.Status.OrderBy(k=>k.Data).LastOrDefault().Status == StatusProspeccao.Planejada){
+                        } else {
+                            continue;
+                        }
+                    }
+                    
+                    Dictionary<string, object> dict = new Dictionary<string, object>();
+                    dict["idProsp"] = p.Id;
+                    dict["Status"] = p.Status.OrderBy(k=>k.Data).LastOrDefault().Status.GetDisplayName();
+                    dict["Data"] = p.Status.OrderBy(k=>k.Data).LastOrDefault().Data;
+                    dict["Empresa"] = p.Empresa.Nome;
+                    dict["Segmento"] = p.Empresa.Segmento.GetDisplayName();
+                    listaFull.Add(dict);
+                } else {
+                    continue;
+                }
+            }
+
+            return JsonSerializer.Serialize(listaFull);
+
         }
 
     }

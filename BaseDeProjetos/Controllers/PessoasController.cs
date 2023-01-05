@@ -1,10 +1,7 @@
-using System.Linq;
-using System.Text.Json;
 using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
 using BaseDeProjetos.Helpers;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 
 
 namespace BaseDeProjetos.Controllers
@@ -33,6 +30,12 @@ namespace BaseDeProjetos.Controllers
             
             return Helpers.Helpers.PuxarDadosUsuarios(_context);
 
+        }
+
+        public string usuarioAtivo(){
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+            return usuario.UserName;
         }
     }
 }

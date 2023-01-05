@@ -313,7 +313,3 @@ function Base64() {
 function MostrarImagem(){
     document.getElementById("img_preview").src = document.getElementById('img_b64').value
 }
-
-window.addEventListener('load', function(){
-    fetch('/Pessoas/dados').then(response => response.json()).then(data => {montarNetwork(data)});    
-});
