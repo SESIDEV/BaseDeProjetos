@@ -143,19 +143,17 @@
             <div class="modal-body d-flex justify-content-between gap-2">
                 <div style="width:45%;">
                     <span>Membros do Projeto</span>
-                    <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" class="border border-secondary rounded" style="width:100%;min-height:150px;">
-                        
+                    <div id="membrosDoProjeto" ondrop="drop(event)" ondragover="allowDrop(event)" class="border border-secondary rounded" style="width:100%;min-height:150px;padding:10px;">
                     </div>
                 </div>
                 <div style="width:45%;">
                     <span>Membros Disponíveis</span>
-                    <div id="div2" ondrop="drop(event)" ondragover="allowDrop(event)" class="border border-secondary rounded" style="width:100%;min-height:150px;">
-                        <p draggable="true" ondragstart="drag(event)" id="1" width="88" height="31">Teste1</p>
+                    <div id="membrosDisponiveis" ondrop="drop(event)" ondragover="allowDrop(event)" class="border border-secondary rounded" style="width:100%;min-height:150px;padding:10px;">
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Salvar</button>
+                <button type="button" class="btn btn-primary" onclick="obterMembrosEscolhidos()">Salvar</button>
             </div>
         </div>
     </div>
@@ -164,7 +162,7 @@
 <script>
 
     let listaUsuarios = [];
-    var campoDeUsuariosDisponiveis = document.querySelector("#div2")
+    var campoDeUsuariosDisponiveis = document.querySelector("#membrosDisponiveis")
 
     async function obterListaDeUsuariosJson() {
         await fetch("https://localhost:44352/Projetos/ListaUsuarios")
@@ -175,39 +173,56 @@
             .then((data) => {
 
                 listaUsuarios = data;
+                listaUsuarios.forEach(usuario => {
+                    var usuariosDisponiveis = document.createElement("p")
+                    usuariosDisponiveis.setAttribute("draggable", "true")
+                    usuariosDisponiveis.setAttribute("ondragstart", "drag(event)")
+                    usuariosDisponiveis.setAttribute("id", `${usuario}`)
+                    usuariosDisponiveis.textContent = `${usuario}`
+                    usuariosDisponiveis.classList.add("badge", "text-bg-success")
+                    usuariosDisponiveis.style.padding = "10px"
+                    campoDeUsuariosDisponiveis.append(usuariosDisponiveis)
+                })
             })
-        listaUsuarios.forEach(usuario => {
-            var elem = `<p draggable="true" ondragstart="drag(event)" id="${usuario}" width="88" height="31">Teste1</p>`
-            campoDeUsuariosDisponiveis.appendChild(elem)
-        })
+
     }
     obterListaDeUsuariosJson()
 
-    /*function mostrarModal(){
-        let inputMembrosEquipe = document.querySelector("#MembrosEquipe")
-
-    }*/
-
-    function criarElemento(idUsuario){
-        
-        var elemento = 
-        
-
-    }
 
     function allowDrop(ev) {
-        ev.preventDefault();
+        if (ev.target.getAttribute("droppable") == "false") {
+            ev.dataTransfer.dropEffect = "none"; // dropping is not allowed
+            ev.preventDefault();            
+        }
+        else {
+            ev.dataTransfer.dropEffect = "all"; // drop it like it's hot
+            ev.preventDefault();
+        }
     }
 
     function drag(ev) {
         ev.dataTransfer.setData("text", ev.target.id);
+        ev.target.setAttribute("droppable", "false")
+        
     }
 
     function drop(ev) {
         ev.preventDefault();
-        var data = ev.dataTransfer.getData("text");
-        ev.target.appendChild(document.getElementById(data));
+        let data = ev.dataTransfer.getData("text");
+        ev.target.appendChild(document.getElementById(data));        
     }
+
+    function obterMembrosEscolhidos(){
+        let membrosDoProjeto = document.querySelector("#membrosDoProjeto").childNodes
+
+        membrosDoProjeto.forEach((membro, indice) => {
+            if(indice > 0){
+                console.log(membro.textContent)
+            }            
+        })
+        
+    }
+    
 
     function TratandoListaDeUsuarios(lista) {
         let listaDeUsuarios = lista.split(";")
