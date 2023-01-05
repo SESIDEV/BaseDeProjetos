@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -24,24 +25,39 @@ namespace BaseDeProjetos.Controllers
         // GET: Producao
         public IActionResult Index(string casa, string searchString = "", string ano = "")
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+			List<Producao> Producoes;
+
+			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
 
             if (string.IsNullOrEmpty(casa))
             {
                 casa = usuario.Casa.ToString();
+            }            
 
-            }
-            List<Producao> lista = new List<Producao>();
-            lista = FunilHelpers.DefinirCasaParaVisualizarEmProducao(casa, usuario, _context, HttpContext, ViewData);
-            lista = FunilHelpers.VincularCasaProducao(usuario, lista);
-            lista = FunilHelpers.PeriodizarProduções(ano, lista);
-            lista = FunilHelpers.FiltrarProduções(searchString, lista);
-            return View(lista.ToList());
+            Producoes = FunilHelpers.DefinirCasaParaVisualizarEmProducao(casa, usuario, _context, HttpContext, ViewData);
+            Producoes = FunilHelpers.VincularCasaProducao(usuario, Producoes);
+            Producoes = FunilHelpers.PeriodizarProduções(ano, Producoes);
+            Producoes = FunilHelpers.FiltrarProduções(searchString, Producoes);
+
+			List<Empresa> empresas = _context.Empresa.ToList();
+		    List<Projeto> projetos = _context.Projeto.ToList();
+
+			ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+			ViewData["Projetos"] = new SelectList(projetos, "Id", "NomeProjeto");
+			ViewData["ListaProducoes"] = Producoes.ToList();
+
+            return View();
         }
 
         // GET: Producao/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             if (id == null)
             {
                 return NotFound();
@@ -60,6 +76,10 @@ namespace BaseDeProjetos.Controllers
         // GET: Producao/Create
         public IActionResult Create()
         {
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             List<Empresa> empresas = _context.Empresa.ToList();
             List<Projeto> projetos = _context.Projeto.ToList();
             ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
@@ -86,6 +106,10 @@ namespace BaseDeProjetos.Controllers
         // GET: Producao/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             if (id == null)
             {
                 return NotFound();
@@ -141,6 +165,10 @@ namespace BaseDeProjetos.Controllers
         // GET: Producao/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             if (id == null)
             {
                 return NotFound();

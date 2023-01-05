@@ -1,4 +1,8 @@
-﻿using System.Drawing;
+﻿using System.Linq;
+using System.Text.Json;
+using BaseDeProjetos.Data;
+using BaseDeProjetos.Models;
+using System.Collections.Generic;
 
 namespace BaseDeProjetos.Helpers
 {
@@ -24,6 +28,18 @@ namespace BaseDeProjetos.Helpers
             }
 
             return valor.ToString("#,0");
+        }
+
+        public static string PuxarDadosUsuarios(ApplicationDbContext _context){
+            
+            var usuarios = _context.Users.Where(u => u.Email != null).Select(u => new {u.Id, u.Email, u.UserName}).ToList(); //, u.Foto
+            List<Empresa> empresas = _context.Empresa.ToList();
+            List<Prospeccao> prospeccao = _context.Prospeccao.ToList();
+
+            string usuariosJson = JsonSerializer.Serialize(usuarios);
+
+            return usuariosJson;
+
         }
     }
 
