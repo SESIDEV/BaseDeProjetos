@@ -31,13 +31,13 @@ namespace BaseDeProjetos.Controllers
 
             Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             if (string.IsNullOrEmpty(casa))
             {
                 casa = usuario.Casa.ToString();
             }
-
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
 
             List<Empresa> empresas = _context.Empresa.ToList();
             List<Prospeccao> lista;
@@ -50,12 +50,23 @@ namespace BaseDeProjetos.Controllers
             FunilHelpers.CategorizarProspecçõesNaView(lista, usuario, HttpContext, ViewBag);
             ViewData["ListaProspeccoes"] = lista.ToList();
             ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+            ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
+
             return View();
         }
 
         // GET: FunilDeVendas/Details/5
         public async Task<IActionResult> Details(string id)
         {
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
+            List<Empresa> empresas = _context.Empresa.ToList();
+            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+            ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
+
             if (id == null)
             {
                 return NotFound();
@@ -74,6 +85,11 @@ namespace BaseDeProjetos.Controllers
         // GET: FunilDeVendas/Create
         public IActionResult Create(int id)
         {
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             List<Empresa> empresas = _context.Empresa.ToList();
             ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
             return View();
@@ -81,6 +97,11 @@ namespace BaseDeProjetos.Controllers
 
         public IActionResult Planejar(int id, string userId)
         {
+
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
 
             userId = HttpContext.User.Identity.Name;
             Instituto usuarioCasa = _context.Users.FirstOrDefault(u => u.UserName == userId).Casa;
@@ -115,6 +136,11 @@ namespace BaseDeProjetos.Controllers
         [HttpGet]
         public IActionResult Atualizar(string id)
         {
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             ViewData["origem"] = id;
             ViewData["prosp"] = _context.Prospeccao.FirstOrDefault(p => p.Id == id);
             return View("CriarFollowUp");
@@ -220,7 +246,7 @@ namespace BaseDeProjetos.Controllers
         {
             CriarSelectListsDaView();
 
-			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 			ViewBag.usuarioCasa = usuario.Casa;
 			ViewBag.usuarioNivel = usuario.Nivel;
 
@@ -260,7 +286,7 @@ namespace BaseDeProjetos.Controllers
                 try
                 {
                     prospeccao = EditarDadosDaProspecção(id, prospeccao);
-                    await _context.SaveChangesAsync();
+                    _context.SaveChanges(); // Essa linha já foi async, talvez seja possível que isso permita ressurgências...
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -335,6 +361,11 @@ namespace BaseDeProjetos.Controllers
         // GET: FunilDeVendas/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             if (id == null)
             {
                 return NotFound();
