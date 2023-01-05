@@ -110,9 +110,12 @@ function montarNetwork(pessoas) {
         obj['id'] = p['Id']
         obj['title'] = p['UserName']
         
-        if (!('image' in p)){
+        if (!('image' in p) || p['image'] == "."){
             obj['image'] = defuserpic
+        } else {
+            obj['image'] = p['image']
         }
+
         listaPessoas.push(obj)
     })
 

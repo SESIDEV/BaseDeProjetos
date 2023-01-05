@@ -32,7 +32,7 @@ namespace BaseDeProjetos.Helpers
 
         public static string PuxarDadosUsuarios(ApplicationDbContext _context){
             
-            var usuarios = _context.Users.Where(u => u.Email != null).Select(u => new {u.Id, u.Email, u.UserName}).ToList();
+            var usuarios = _context.Users.Where(u => u.Email != null).Select(u => new {u.Id, u.Email, u.UserName}).ToList(); //, u.Foto
             List<Empresa> empresas = _context.Empresa.ToList();
             List<Prospeccao> prospeccao = _context.Prospeccao.ToList();
 
