@@ -43,7 +43,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="MembrosEquipe" class="control-label p-2"></label><span data-toggle="modal" data-target="#ModalCenter" class="m-1 border bg-success text-white p-2 rounded" style="cursor:pointer;">Alterar</span>
+                    <label asp-for="MembrosEquipe" class="control-label p-2"></label>
+                    <button type="button" class="btn app-btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Abrir</button>
                     <input asp-for="MembrosEquipe" class="form-control d-none" />
                     <span asp-validation-for="MembrosEquipe" class="text-danger"></span>
                     <div id="membrosSelecionados" class="form-control" style="padding:2rem;"></div>
@@ -133,14 +134,12 @@
 </div>
 
 <!-- Modal Membros da equipe-->
-<div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="ModalLongTitle">Inserir Membros da Equipe</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="enviarMembrosParaInput()">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Inserir Membros da Equipe</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="enviarMembrosParaInput()"><span aria-hidden="true"></span></button>
             </div>
             <div class="modal-body d-flex justify-content-between gap-2">
                 <div style="width:45%;">
@@ -155,7 +154,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" onclick="exibirMembrosSelecionados()">Alterar</button>
+                <button type="button" class="btn app-btn-primary" onclick="exibirMembrosSelecionados()">Adicionar</button>
+                @*<button type="button" class="btn app-btn-secondary" data-bs-dismiss="modal" onclick="enviarMembrosParaInput()">Enviar</button>*@
             </div>
         </div>
     </div>
@@ -170,12 +170,10 @@
     let listaUsuarios = [];
     let stringDeUsuariosSelecionados = "";
     var campoDeUsuariosDisponiveis = document.querySelector("#membrosDisponiveis")
-    let url = "https://sgi-ggi-isi.azurewebsites.net/"
-    let rotaProjetos = "/Projetos/Create"
-    let urlCompleta = `${url}${rotaProjetos}`
+    let url = window.location.origin + "/Projetos/ListaUsuarios"
 
     async function obterListaDeUsuariosJson() {
-        await fetch(urlCompleta)
+        await fetch(url)
             .then((response) => {
 
                 return response.json()
