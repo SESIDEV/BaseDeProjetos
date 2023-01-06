@@ -50,9 +50,10 @@
                     <span asp-validation-for="NomeProjeto" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="MembrosEquipe" class="control-label"></label>
-                    <input asp-for="MembrosEquipe" class="form-control" data-toggle="modal" data-target="#ModalCenter" />
+                    <label asp-for="MembrosEquipe" class="control-label p-2"></label><span data-toggle="modal" data-target="#ModalCenter" class="m-1 border bg-success text-white p-2 rounded" style="cursor:pointer;">Adicionar</span>
+                    <input asp-for="MembrosEquipe" class="form-control d-none" />
                     <span asp-validation-for="MembrosEquipe" class="text-danger"></span>
+                    <div id="membrosSelecionados" class="form-control" style="padding:2rem;"></div>
                 </div>
                 <div class="form-group">
                     <label asp-for="AreaPesquisa" class="control-label"></label>
@@ -136,7 +137,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="ModalLongTitle">Inserir Membros da Equipe</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="enviarMembrosParaInput()">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -148,12 +149,12 @@
                 </div>
                 <div style="width:45%;">
                     <span>Membros Disponíveis</span>
-                    <div id="membrosDisponiveis" ondrop="drop(event)" ondragover="allowDrop(event)" class="border border-secondary rounded" style="width:100%;min-height:150px;padding:10px;">
+                    <div id="membrosDisponiveis" ondrop="drop(event)" ondragover="allowDrop(event)" class="border border-secondary rounded" style="width:100%;height:150px;padding:10px;overflow-y:auto;">
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="obterMembrosEscolhidos()">Salvar</button>
+                <button type="button" class="btn btn-primary" onclick="exibirMembrosSelecionados()">Adicionar</button>
             </div>
         </div>
     </div>
@@ -162,10 +163,14 @@
 <script>
 
     let listaUsuarios = [];
+    let stringDeUsuariosSelecionados = "";
     var campoDeUsuariosDisponiveis = document.querySelector("#membrosDisponiveis")
+    let url = "https://sgi-ggi-isi.azurewebsites.net/"
+    let rotaProjetos = "/Projetos/Create"
+    let urlCompleta = `${url}${rotaProjetos}`
 
     async function obterListaDeUsuariosJson() {
-        await fetch("https://localhost:44352/Projetos/ListaUsuarios")
+        await fetch(urlCompleta)
             .then((response) => {
 
                 return response.json()
@@ -180,7 +185,8 @@
                     usuariosDisponiveis.setAttribute("id", `${usuario}`)
                     usuariosDisponiveis.textContent = `${usuario}`
                     usuariosDisponiveis.classList.add("badge", "text-bg-success")
-                    usuariosDisponiveis.style.padding = "10px"
+                    usuariosDisponiveis.style.padding = "5px"
+                    usuariosDisponiveis.style.margin = "10px"
                     campoDeUsuariosDisponiveis.append(usuariosDisponiveis)
                 })
             })
@@ -188,11 +194,10 @@
     }
     obterListaDeUsuariosJson()
 
-
     function allowDrop(ev) {
         if (ev.target.getAttribute("droppable") == "false") {
             ev.dataTransfer.dropEffect = "none"; // dropping is not allowed
-            ev.preventDefault();            
+            ev.preventDefault();
         }
         else {
             ev.dataTransfer.dropEffect = "all"; // drop it like it's hot
@@ -203,37 +208,33 @@
     function drag(ev) {
         ev.dataTransfer.setData("text", ev.target.id);
         ev.target.setAttribute("droppable", "false")
-        
     }
 
     function drop(ev) {
         ev.preventDefault();
         let data = ev.dataTransfer.getData("text");
-        ev.target.appendChild(document.getElementById(data));        
+        ev.target.appendChild(document.getElementById(data));
     }
 
-    function obterMembrosEscolhidos(){
-        let membrosDoProjeto = document.querySelector("#membrosDoProjeto").childNodes
-
-        membrosDoProjeto.forEach((membro, indice) => {
+    function enviarMembrosParaInput() {
+        let membrosSelecionados = document.querySelector("#membrosSelecionados").childNodes
+        let input = document.querySelector("#MembrosEquipe")
+        let membroSelecionado = "";
+        membrosSelecionados.forEach((membro, indice) => {
             if(indice > 0){
-                console.log(membro.textContent)
-            }            
+                membroSelecionado += `${membro.textContent};`.toString()
+                input.value = membroSelecionado
+            }
         })
-        
     }
+
+    function exibirMembrosSelecionados() {
+        let membrosSelecionados = document.querySelector("#membrosSelecionados")
+        let membrosDoProjeto = document.querySelector("#membrosDoProjeto").childNodes
+        membrosDoProjeto.forEach((membro, indice) => {
+            membrosSelecionados.append(membro)
+        })
+    }
+
     
-
-    function TratandoListaDeUsuarios(lista) {
-        let listaDeUsuarios = lista.split(";")
-        return listaDeUsuarios;
-    }
-
-
-    function PesquisarUsuario(termo) {
-        let listaUsuarios = TratandoListaDeUsuarios(usuarios)
-        let usuario = listaUsuarios.filter(u => u.includes(termo))
-        console.log(usuario)
-    }
-
 </script>

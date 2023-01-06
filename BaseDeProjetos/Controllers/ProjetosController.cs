@@ -182,11 +182,11 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NomeProjeto,Casa,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos, Empresa")] Projeto projeto)
+        public async Task<IActionResult> Create([Bind("Id,NomeProjeto,MembrosEquipe,Casa,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos, Empresa,")] Projeto projeto)
         {
             if (ModelState.IsValid)
             {
-                Usuario lider = new Usuario() { UserName = "Preencher", NormalizedEmail = "meuovo@firjan.com.br" };
+                Usuario lider = new Usuario() { UserName = "Preencher", NormalizedEmail = "usuario@firjan.com.br" };
                 projeto.Empresa = _context.Empresa.FirstOrDefault(e => e.Id == projeto.Empresa.Id);
                 _context.Add(projeto);
                 await _context.SaveChangesAsync();
@@ -232,12 +232,12 @@ namespace BaseDeProjetos.Controllers
             }
         }*/
 
-        // POST: Projetos/Edit/5
+        //POST: Projetos/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        /*[HttpPost]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-       public async Task<IActionResult> Edit(string id, [Bind("Id,Casa,NomeProjeto,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos")] Projeto projeto)
+       public async Task<IActionResult> Edit(string id, [Bind("Id,Casa,NomeProjeto, MembrosEquipe,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos")] Projeto projeto)
         {
             if (id != projeto.Id)
             {
@@ -265,7 +265,7 @@ namespace BaseDeProjetos.Controllers
                 return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
             }
             return View(projeto);
-        }*/
+        }
 
         /*private List<Usuario> ObterUsuarios(Projeto projeto)
             {
