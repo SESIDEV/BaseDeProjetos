@@ -53,6 +53,7 @@ namespace BaseDeProjetos.Controllers
                 ViewData["n_prosp_ativas"] = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).ToList().Where(p => prospeccaoAtiva(p) == true).ToList().Count;
                 ViewData["n_prosp_total"] = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).ToList().Count;
                 ViewData["n_prosp_emproposta"] = _context.Prospeccao.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList().Count;
+                ViewData["n_prosp_planejadas"] = _context.Prospeccao.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Planejada).ToList().Count;
                 int n_prosp_convertidas = _context.Prospeccao.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida).ToList().Count;
                 int n_prosp_naoconvertidas = _context.Prospeccao.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.NaoConvertida).ToList().Count;
                 int n_prosp_suspensa = _context.Prospeccao.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Suspensa).ToList().Count;

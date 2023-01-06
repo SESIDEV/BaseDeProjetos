@@ -110,7 +110,7 @@ namespace BaseDeProjetos.Helpers
         public static void CategorizarProspecçõesNaView(List<Prospeccao> lista, Usuario usuario, HttpContext HttpContext, dynamic ViewBag)
         {
 
-            var concluidos = lista.Where(prospeccao => prospeccao.Status.Any(followup => followup.Status == StatusProspeccao.Convertida ||
+			List<Prospeccao> concluidos = lista.Where(prospeccao => prospeccao.Status.Any(followup => followup.Status == StatusProspeccao.Convertida ||
                                                               followup.Status == StatusProspeccao.Suspensa ||
                                                               followup.Status == StatusProspeccao.NaoConvertida)).ToList();
 

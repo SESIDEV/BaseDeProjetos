@@ -9,9 +9,11 @@
 	int n_prosp_totais = 0;
 	int n_prosp_emproposta = 0;
 	int n_prosp_concluidas = 0;
+	int n_prosp_planejadas = 0;
 	float proporcao_prosp_ativas = 0;
 	float proporcao_prosp_emproposta = 0;
 	float proporcao_prosp_concluidas = 0;
+	float proporcao_prosp_planejadas = 0;
 	decimal receita = 1;
 	decimal despesas = 1;
 	decimal investimento = 1;
@@ -32,9 +34,11 @@
 		n_prosp_totais = (int)ViewBag.n_prosp_total;
 		n_prosp_emproposta = (int)ViewBag.n_prosp_emproposta;
 		n_prosp_concluidas = (int)ViewBag.n_prosp_concluidas;
+		n_prosp_planejadas = (int)ViewBag.n_prosp_planejadas;
 		proporcao_prosp_ativas = (int)((float)n_prosp_ativas / (float)n_prosp_totais * 100);
 		proporcao_prosp_emproposta = (int)((float)n_prosp_emproposta / (float)n_prosp_totais * 100);
 		proporcao_prosp_concluidas = (int)((float)n_prosp_concluidas / (float)n_prosp_totais * 100);
+		proporcao_prosp_planejadas = (int)((float)n_prosp_planejadas / (float)n_prosp_totais * 100);
 
 		linhaDePesquisa = ViewBag.LinhaDePesquisa as List<LinhaPesquisa>;
 
@@ -231,7 +235,7 @@
 						</div>
 			        </div>
 
-			        <div class="col-12 col-lg-12">
+			        <div class="col-12 col-lg-12" style="display:none">
 					<figure class="highcharts-figure">
 						<div id="container"></div>
 						<p class="highcharts-description">
@@ -329,7 +333,7 @@
 										    <div class="title mb-1 ">Concluídas</div>
 											<div class="stat-cell mb-1">@n_prosp_concluidas</div>
 										    <div class="progress">
-											<div class="progress-bar bg-success" role="progressbar" style="width: @proporcao_prosp_concluidas%" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100"></div>
+											<div class="progress-bar bg-success" role="progressbar" style="width: @proporcao_prosp_concluidas%" aria-valuenow="@proporcao_prosp_concluidas" aria-valuemin="0" aria-valuemax="100"></div>
 </div>
 									    </div>
 									    <div class="col-auto">
@@ -345,8 +349,9 @@
 								    <div class="row align-items-center">
 									    <div class="col">
 										    <div class="title mb-1 ">Planejadas</div>
+											<div class="stat-cell mb-1">@n_prosp_planejadas</div>
 										    <div class="progress">
-  <div class="progress-bar bg-success" role="progressbar" style="width: 52%;" aria-valuenow="52" aria-valuemin="0" aria-valuemax="100"></div>
+											<div class="progress-bar bg-success" role="progressbar" style="width: @proporcao_prosp_planejadas%;" aria-valuenow="@proporcao_prosp_planejadas" aria-valuemin="0" aria-valuemax="100"></div>
 </div>
 									    </div>
 									    <div class="col-auto">
