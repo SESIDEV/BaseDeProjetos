@@ -10,10 +10,10 @@
     }
 }
 
-<!-- Modal Edit-->
-    
+
+<partial name="Header" view-data="@ViewData" />
 <div style="padding-left: 25em; padding-right: 10em">
-    
+    <!-- Modal Edit-->
     <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
         <partial name="Edit" model="@Model" />
     </form>

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -31,7 +31,18 @@
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 </head>
 <body class="app">
-    <partial name="Header" />
+    @{
+        var routeData = ViewContext.RouteData;
+        var requestUrl = Context.Request.Path;
+    }
+
+    
+    @* Não remover, impede que rotas que não definam um controller ou um action como o Logout, etc exibam o Sidebar/Header, etc que vivem exigindo dados do usuário Logado.
+    @if ((routeData.Values["controller"] != null || routeData.Values["action"] != null) && (routeData.Values["action"].ToString() != "Index" && routeData.Values["controller"].ToString() != "Home"))
+    
+    {
+        <partial name="Header" />
+    }*@
         
     @RenderBody()
 

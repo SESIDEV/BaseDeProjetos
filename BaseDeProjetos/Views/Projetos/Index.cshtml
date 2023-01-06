@@ -5,6 +5,7 @@
     List<Projeto> encerrados = ViewBag.Encerrados as List<Projeto>;
 }
 
+<partial name="Header" view-data="@ViewData" />
 <div class="row card" style="padding-left: 25em; padding-right: 10em; padding-top: 2em;">
     <div class=" col-12 card-body">
         <h1 class="card-title">Projetos @ViewData["Area"]</h1>
