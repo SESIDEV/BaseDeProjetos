@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
+using BaseDeProjetos.Helpers;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -22,13 +23,23 @@ namespace BaseDeProjetos.Controllers
         // GET: Editais
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Editais.ToListAsync());
+			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+			ViewBag.usuarioCasa = usuario.Casa;
+			ViewBag.usuarioNivel = usuario.Nivel;
+
+			return View(await _context.Editais.ToListAsync());
         }
 
         // GET: Editais/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+			ViewBag.usuarioCasa = usuario.Casa;
+			ViewBag.usuarioNivel = usuario.Nivel;
+
+			if (id == null)
             {
                 return NotFound();
             }
@@ -46,7 +57,12 @@ namespace BaseDeProjetos.Controllers
         // GET: Editais/Create
         public IActionResult Create()
         {
-            return View();
+			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+			ViewBag.usuarioCasa = usuario.Casa;
+			ViewBag.usuarioNivel = usuario.Nivel;
+
+			return View();
         }
 
         // POST: Editais/Create
@@ -68,7 +84,12 @@ namespace BaseDeProjetos.Controllers
         // GET: Editais/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+			ViewBag.usuarioCasa = usuario.Casa;
+			ViewBag.usuarioNivel = usuario.Nivel;
+
+			if (id == null)
             {
                 return NotFound();
             }
@@ -119,7 +140,12 @@ namespace BaseDeProjetos.Controllers
         // GET: Editais/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+			ViewBag.usuarioCasa = usuario.Casa;
+			ViewBag.usuarioNivel = usuario.Nivel;
+
+			if (id == null)
             {
                 return NotFound();
             }
