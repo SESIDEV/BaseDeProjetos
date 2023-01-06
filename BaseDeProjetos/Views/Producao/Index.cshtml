@@ -48,7 +48,7 @@
 									</div>
 								</form>
 								
-							</div><!--//col-->
+							</div>
 							@*<div class="col-auto">
 								
 							</div>
@@ -56,10 +56,10 @@
 																
 							</div>*@
 
-						</div><!--//row-->
-					</div><!--//table-utilities-->
-				</div><!--//col-auto-->
-			</div><!--//row-->
+						</div>
+					</div>
+				</div>
+			</div>
 
 			<div class="row g-4">
 				@foreach (var producao in ListaProducoes)
@@ -119,7 +119,7 @@
 											<span class="text-muted">Instituto: </span>@Html.DisplayFor(modelItem => producao.Casa)
 										</li>
 									</ul>
-								</div><!--//app-doc-meta-->
+								</div>
 
 								<div class="app-card-actions">
 									<div class="dropdown">
@@ -131,7 +131,7 @@
 												<path fill-rule="evenodd"
 												  d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
 											</svg>
-										</div><!--//dropdown-toggle-->
+										</div>
 										<ul class="dropdown-menu">
 											<li>
 												<a asp-action="Details" asp-route-id="@producao.Id"	class="dropdown-item">
@@ -184,18 +184,13 @@
 												</a>
 											</li>
 										</ul>
-									</div><!--//dropdown-->
-								</div><!--//app-card-actions-->
-
-							</div><!--//app-card-body-->
-
-						</div><!--//app-card-->
-					</div>
-
-					<!--//col-->
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>					
 				}
-			</div><!--//row-->
-			<nav class="app-pagination mt-5">
+			</div>
 				<ul class="pagination justify-content-center">
 					<li class="page-item disabled">
 						<a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
@@ -208,6 +203,6 @@
 					</li>
 				</ul>
 			</nav><!--//app-pagination-->
-		</div><!--//container-fluid-->
-	</div><!--//app-content-->
-</div><!--//app-wrapper-->  
+		</div>
+	</div>
+</div>  

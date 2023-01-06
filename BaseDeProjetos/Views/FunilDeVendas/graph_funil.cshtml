@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
+@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
 @using System
 @using BaseDeProjetos.Helpers
 <style>
@@ -185,7 +185,7 @@
             <div class="app-card app-card-chart w-50 h-100">
                 <div class="app-card-header p-3">
                     <h4 class="app-card-title">Indicadores de Prospecção</h4>
-                </div><!--//app-card-header-->
+                </div>
                 <div class="app-card-body row text-center p-3 p-lg-4">
                     <div class="col-12">
                         <!--[Iury] IDs da checkbox \/ -->
@@ -207,18 +207,18 @@
                             Percentual de prospecções infrutíferas
                         </small>
                     </div>
-                </div><!--//app-card-body-->
+                </div>
             </div>
 
             <div class="app-card app-card-chart w-50 h-100">
                 <div class="app-card-header p-3">
                     <h4 class="app-card-title">Status Geral das Prospecções</h4>
-                </div><!--//app-card-header-->
+                </div>
                 <div class="app-card-body text-center p-3 p-lg-4">
                     <figure class="highcharts-figure">
                         <div id="pizza_desistencia"></div>
                     </figure>
-                </div><!--//app-card-body-->
+                </div>
             </div>
         </div>
     </div>
@@ -226,18 +226,18 @@
         <div class="app-card app-card-chart w-50 h-100">
             <div class="app-card-header p-3">
                 <h4 class="app-card-title">Status de Prospecções com Proposta</h4>
-            </div><!--//app-card-header-->
+            </div>
             <div class="app-card-body text-center p-3 p-lg-4">
                 <figure class="highcharts-figure">
                     <div id="pizza_conversao"></div>
                 </figure>
-            </div><!--//app-card-body-->
+            </div>
         </div>
 
         <div class="app-card app-card-chart w-50 h-100">
             <div class="app-card-header p-3">
                 <h4 class="app-card-title">Status de Prospecções com Proposta</h4>
-            </div><!--//app-card-header-->
+            </div>
             <div class="app-card-body row text-center p-3 p-lg-4">                
                 <div class="col-12">
                     <h1 class="display-3">@taxa_conversao.ToString("P2")</h1>
@@ -272,7 +272,7 @@
                         Projetos contratados
                     </small>
                 </div>
-            </div><!--//app-card-body-->
+            </div>
         </div>
         
 
