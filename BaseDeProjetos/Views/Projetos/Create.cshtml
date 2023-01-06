@@ -165,12 +165,10 @@
     let listaUsuarios = [];
     let stringDeUsuariosSelecionados = "";
     var campoDeUsuariosDisponiveis = document.querySelector("#membrosDisponiveis")
-    let url = "https://sgi-ggi-isi.azurewebsites.net/"
-    let rotaProjetos = "/Projetos/Create"
-    let urlCompleta = `${url}${rotaProjetos}`
+    let url = window.location.origin + "/Projetos/ListaUsuarios"
 
     async function obterListaDeUsuariosJson() {
-        await fetch(urlCompleta)
+        await fetch(url)
             .then((response) => {
 
                 return response.json()
