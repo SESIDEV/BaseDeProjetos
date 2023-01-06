@@ -9,10 +9,11 @@
     }
 }
 
-<h1>Editar</h1>
-<h4>Projeto</h4>
-<hr />
-<div style="padding-left: 25em; padding-right: 10em">
+<partial name="Header" view-data="@ViewData" />
+<div style="padding-left: 25em; padding-right: 10em; padding-top: 2em">
+    <h1>Editar</h1>
+    <h4>Projeto</h4>
+    <hr />
     <div>
         <form asp-action="Edit" method="post" class="row">
             <fieldset class="col-6">

@@ -9,11 +9,12 @@
         ViewData["Area"] = Context.Session.GetString("_Casa");
     }
 }
-<h1>Criar</h1>
 
-<h4>Projeto</h4>
-<hr />
-<div style="padding-left: 25em; padding-right: 10em">
+<partial name="Header" view-data="@ViewData" />
+<div style="padding-left: 25em; padding-right: 10em; padding-top: 2em">
+    <h1>Criar</h1>
+    <h4>Projeto</h4>
+    <hr />
     <div>
         <form asp-action="Create" class="row">
             <fieldset class="col-6">
