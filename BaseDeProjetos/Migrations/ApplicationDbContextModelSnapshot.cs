@@ -318,6 +318,9 @@ namespace BaseDeProjetos.Migrations
                     b.Property<int>("Inovacao")
                         .HasColumnType("int");
 
+                    b.Property<string>("MembrosEquipe")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
                     b.Property<string>("NomeProjeto")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -448,9 +451,6 @@ namespace BaseDeProjetos.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("ProjetoId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -475,8 +475,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasName("UserNameIndex");
-
-                    b.HasIndex("ProjetoId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -676,13 +674,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasOne("BaseDeProjetos.Models.Usuario", "Usuario")
                         .WithMany()
                         .HasForeignKey("UsuarioId");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.Usuario", b =>
-                {
-                    b.HasOne("BaseDeProjetos.Models.Projeto", null)
-                        .WithMany("Equipe")
-                        .HasForeignKey("ProjetoId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

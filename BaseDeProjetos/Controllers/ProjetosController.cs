@@ -194,12 +194,11 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NomeProjeto,Casa,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos, Empresa")] Projeto projeto)
+        public async Task<IActionResult> Create([Bind("Id,NomeProjeto,MembrosEquipe,Casa,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos, Empresa,")] Projeto projeto)
         {
             if (ModelState.IsValid)
             {
-                Usuario lider = new Usuario() { UserName = "Preencher", NormalizedEmail = "meuovo@firjan.com.br" };
-                projeto.Equipe = new List<Usuario>() { lider };
+                Usuario lider = new Usuario() { UserName = "Preencher", NormalizedEmail = "usuario@firjan.com.br" };
                 projeto.Empresa = _context.Empresa.FirstOrDefault(e => e.Id == projeto.Empresa.Id);
                 _context.Add(projeto);
                 await _context.SaveChangesAsync();
@@ -229,12 +228,12 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
-            ConfigurarEquipe(projeto);
+            //ConfigurarEquipe(projeto);
 
             return View(projeto);
         }
 
-        private static void ConfigurarEquipe(Projeto projeto)
+        /*private static void ConfigurarEquipe(Projeto projeto)
         {
             if (projeto.Equipe.Count() < 2)
             {
@@ -247,14 +246,14 @@ namespace BaseDeProjetos.Controllers
                     projeto.Equipe.Add(new Usuario());
                 }
             }
-        }
+        }*/
 
-        // POST: Projetos/Edit/5
+        //POST: Projetos/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Casa,NomeProjeto,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos")] Projeto projeto)
+       public async Task<IActionResult> Edit(string id, [Bind("Id,Casa,NomeProjeto, MembrosEquipe,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos")] Projeto projeto)
         {
             if (id != projeto.Id)
             {
@@ -284,17 +283,17 @@ namespace BaseDeProjetos.Controllers
             return View(projeto);
         }
 
-        private List<Usuario> ObterUsuarios(Projeto projeto)
-        {
-            List<Usuario> usuarios_reais = new List<Usuario>();
-
-            for (int i = 0; i < projeto.Equipe.Count(); i++)
+        /*private List<Usuario> ObterUsuarios(Projeto projeto)
             {
-                usuarios_reais.Add(_context.Users.First(p => p.Id == projeto.Equipe[i].Id));
-            }
+                List<Usuario> usuarios_reais = new List<Usuario>();
 
-            return usuarios_reais;
-        }
+                for (int i = 0; i < projeto.Equipe.Count(); i++)
+                {
+                    usuarios_reais.Add(_context.Users.First(p => p.Id == projeto.Equipe[i].Id));
+                }
+
+                return usuarios_reais;
+            }*/
 
         // GET: Projetos/Delete/5
         public async Task<IActionResult> Delete(string id)
@@ -395,6 +394,13 @@ namespace BaseDeProjetos.Controllers
                 _context.Add(projeto);
                 _context.SaveChanges();
             }
+
+        }
+        public JsonResult ListaUsuarios()
+        {
+            List<string> usuarios = _context.Users.AsEnumerable().Where(usuario => usuario.EmailConfirmed == true).Where(usuario => usuario.Nivel != Nivel.Dev && usuario.Nivel != Nivel.Externos).Select((usuario) => usuario.Email.ToString().ToLower()).ToList();
+
+            return Json(usuarios);
         }
     }
 }

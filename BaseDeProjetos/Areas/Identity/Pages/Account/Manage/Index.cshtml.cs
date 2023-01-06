@@ -77,7 +77,7 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account.Manage
 
         private void GerarIndicadoresPessoais(Usuario user)
         {
-            Bag["n_projs"] = _context.Projeto.ToList().Where(p => AvaliarLider(p, user)).Count();
+            //Bag["n_projs"] = _context.Projeto.ToList().Where(p => AvaliarLider(p, user)).Count();
             Bag["n_prosps"] = _context.Prospeccao.ToList().Where(p => p.Usuario.Id == user.Id).Count();
             Bag["n_propostas"] = _context.Prospeccao.ToList().
                 Where(p => p.Usuario.Id == user.Id &&
@@ -88,15 +88,15 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account.Manage
                 p.Status.Any(j => j.Status == StatusProspeccao.Convertida)).
                 Count();
 
-            Bag["valor_projetos"] = _context.Projeto.
+            /*Bag["valor_projetos"] = _context.Projeto.
                 ToList()
                 .Where(p => AvaliarLider(p, user)).
                 Select(p => p.ValorAporteRecursos).Sum() * 0.5 + _context.Projeto.
                 ToList().Where(p => AvaliarColiderança(p, user)).
-                Select(p => p.ValorAporteRecursos).Sum() * 0.3;
+                Select(p => p.ValorAporteRecursos).Sum() * 0.3;*/
         }
 
-        private static bool AvaliarColiderança(Projeto p, Usuario user)
+        /*private static bool AvaliarColiderança(Projeto p, Usuario user)
         {
             for (int i = 1; i < p.Equipe.Count; i++)
             {
@@ -106,9 +106,9 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account.Manage
                 }
             }
             return false;
-        }
+        }*/
 
-        private static bool AvaliarLider(Projeto p, Usuario user)
+        /*private static bool AvaliarLider(Projeto p, Usuario user)
         {
             try
             {
@@ -118,7 +118,7 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account.Manage
             {
                 return false;
             }
-        }
+        }*/
 
         public async Task<IActionResult> OnPostAsync()
         {
