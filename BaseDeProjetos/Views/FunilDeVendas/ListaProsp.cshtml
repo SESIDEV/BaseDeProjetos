@@ -142,12 +142,7 @@
 {
     <!-- Modal Edit-->
     <form asp-action="Edit" asp-route-id="@prospeccao.Id" method="post">
-        @{
-            if (prospeccao != null)
-            {
-                <partial name="Edit" model="@prospeccao" />
-            }
-        }
+        @await Component.InvokeAsync("ModalEdit", new {id = prospeccao.Id })
     </form>
     <div class="modal fade" id="modalDetalhes-@prospeccao.Id" tabindex="-1" aria-labelledby="modalDetalhes-@prospeccao.Id-Label" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
