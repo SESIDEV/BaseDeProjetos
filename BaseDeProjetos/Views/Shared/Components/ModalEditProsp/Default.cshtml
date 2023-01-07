@@ -10,8 +10,6 @@
     }
 }
 
-@* Vamos deixar por enquanto, mas utilize o ViewComponent *@
-
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <div class="modal fade" id="editarProspModal-@Model.Id-Toggle" aria-hidden="true" aria-labelledby="editarProspModal-@Model.Id-ToggleLabel"
      tabindex="-1">
@@ -29,7 +27,7 @@
                 </div>
                 <div class="mb-2">
                     <label asp-for="Casa" class="col-form-label" style="font-weight: 600"></label>
-                    <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Instituto>().OrderBy(p=>p.Text)"></select>                    
+                    <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Instituto>().OrderBy(p=>p.Text)"></select>
                     <span asp-validation-for="Casa" class="text-danger"></span>
                 </div>
                 <div class="mb-2">
@@ -59,7 +57,7 @@
                     <span asp-validation-for="CaminhoPasta" class="text-danger"></span>
                 </div>
                 <div class="mb-2">
-                    <label class="control-label"> Líder da Prospecção</label>                    
+                    <label class="control-label"> Líder da Prospecção</label>
                     <select asp-for="Usuario.Id" class="form-control" asp-items='@ViewData["Equipe"] as SelectList'>
                         <option value="@Model.Usuario" selected disabled>@Model.Usuario.UserName</option>
                     </select>
@@ -112,7 +110,7 @@
                     <label asp-for="Contato.Email" class="col-form-label" style="font-weight: 600"></label>
                     <input type="email" asp-for="Contato.Email" class="form-control" />
                     <span asp-validation-for="Contato.Email" class="text-danger"></span>
-                </div>               
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn app-btn-primary" data-bs-target="#editarProspModal-@Model.Id-Toggle" data-bs-toggle="modal">
@@ -142,18 +140,18 @@
 
                 @if (Model.Status.Any(p => p.Status == StatusProspeccao.ComProposta))
                 {
-                <div class="form-group">
-                    <label asp-for="ValorProposta" class="control-label"></label>
-                    <input asp-for="ValorProposta" type="number" class="form-control" value='@Model.ValorProposta.ToString("F2",CultureInfo.CreateSpecificCulture("en-US"))' />
-                    <span asp-validation-for="ValorProposta" class="text-danger"></span>
-                </div>
+                    <div class="form-group">
+                        <label asp-for="ValorProposta" class="control-label"></label>
+                        <input asp-for="ValorProposta" type="number" class="form-control" value='@Model.ValorProposta.ToString("F2",CultureInfo.CreateSpecificCulture("en-US"))' />
+                        <span asp-validation-for="ValorProposta" class="text-danger"></span>
+                    </div>
                 }
             </div>
-            <div class="modal-footer">              
+            <div class="modal-footer">
                 <button type="button" class="btn app-btn-primary" data-bs-target="#editarProspModal-@Model.Id-Toggle2" data-bs-toggle="modal">
                     Anterior
                 </button>
-                <input type="submit" value="Salvar" class="btn app-btn-primary" />              
+                <input type="submit" value="Salvar" class="btn app-btn-primary" />
             </div>
         </div>
     </div>

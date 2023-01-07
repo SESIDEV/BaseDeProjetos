@@ -45,7 +45,8 @@
 								</select>
 							</div>
 							<div class="col-auto">
-								<partial name="Create" view-data="@ViewData" />
+								@await Component.InvokeAsync("ModalCreateProsp")
+								@*<partial name="Create" view-data="@ViewData" />*@
 							</div>
 						</div>
 					</div>
@@ -60,7 +61,6 @@
 				<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" data-bs-toggle="tab" href="#prospeccao-concluidas" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas (@concluidas.Count())</a>
 				<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" data-bs-toggle="tab" href="#prospeccao-planejadas" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas (@planejadas.Count())</a>
 				<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" data-bs-toggle="tab" href="#prospeccao-erradas" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas (@erradas.Count())</a>
-
 			</nav>
 
 

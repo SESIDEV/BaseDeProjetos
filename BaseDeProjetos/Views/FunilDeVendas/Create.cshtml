@@ -7,6 +7,9 @@
         ViewData["Area"] = Context.Session.GetString("_Casa");
     } 
 }
+
+@* Vamos deixar por enquanto, mas utilize o ViewComponent *@
+
 <form asp-action="Create" method="post">
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <div class="modal fade" id="criarProspModalToggle" aria-hidden="true" aria-labelledby="criarProspModalToggleLabel"
