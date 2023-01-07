@@ -188,7 +188,7 @@ namespace BaseDeProjetos.Helpers
 
         public static Usuario ObterUsuarioAtivo(ApplicationDbContext _context, HttpContext HttpContext)
         {
-            return _context.Users.FirstOrDefault(usuario => usuario.UserName == HttpContext.User.Identity.Name);
+            return _context.Users.ToList().FirstOrDefault(usuario => usuario.UserName == HttpContext.User.Identity.Name);
         }
 
         public static List<Prospeccao> PeriodizarProspecções(string ano, List<Prospeccao> lista)

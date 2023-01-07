@@ -398,7 +398,13 @@ namespace BaseDeProjetos.Controllers
         }
         public JsonResult ListaUsuarios()
         {
-            List<string> usuarios = _context.Users.AsEnumerable().Where(usuario => usuario.EmailConfirmed == true).Where(usuario => usuario.Nivel != Nivel.Dev && usuario.Nivel != Nivel.Externos).Select((usuario) => usuario.Email.ToString().ToLower()).ToList();
+            Usuario ativo = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            List<string> usuarios = _context.Users.AsEnumerable().
+                                        Where(u => u.Casa == ativo.Casa).
+                                        Where(usuario => usuario.EmailConfirmed == true).
+                                        Where(usuario => usuario.Nivel != Nivel.Dev && usuario.Nivel != Nivel.Externos).
+                                        Select((usuario) => usuario.Email.ToString().ToLower()).
+                                        ToList();
 
             return Json(usuarios);
         }

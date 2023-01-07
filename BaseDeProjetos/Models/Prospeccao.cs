@@ -21,6 +21,9 @@ namespace BaseDeProjetos.Models
         public virtual Pessoa Contato { get; set; }
         public virtual Usuario Usuario { get; set; }
 
+        [Display(Name = "Equipe")]
+        public virtual string MembrosEquipe { get; set; }
+
         [Display(Name = "Tipo de Contratação")]
         public virtual TipoContratacao TipoContratacao { get; set; }
 

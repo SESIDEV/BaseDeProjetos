@@ -139,22 +139,22 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Inserir Membros da Equipe</h1>
-               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="enviarMembrosParaInput()"><span aria-hidden="true"></span></button>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="criarListaDeUSuarios.enviarMembrosParaInput()"><span aria-hidden="true"></span></button>
             </div>
             <div class="modal-body d-flex justify-content-between gap-2">
                 <div style="width:45%;">
                     <span>Membros do Projeto</span>
-                    <div id="membrosDoProjeto" ondrop="drop(event)" ondragover="allowDrop(event)" class="border border-secondary rounded" style="width:100%;min-height:150px;padding:10px;">
+                    <div id="membrosDoProjeto" ondrop="dnd.drop(event)" ondragover="dnd.allowDrop(event)" class="border border-secondary rounded" style="width:100%;min-height:150px;padding:10px;">
                     </div>
                 </div>
                 <div style="width:45%;">
                     <span>Membros Disponíveis</span>
-                    <div id="membrosDisponiveis" ondrop="drop(event)" ondragover="allowDrop(event)" class="border border-secondary rounded" style="width:100%;height:150px;padding:10px;overflow-y:auto;">
+                    <div id="membrosDisponiveis" ondrop="dnd.drop(event)" ondragover="dnd.allowDrop(event)" class="border border-secondary rounded" style="width:100%;height:150px;padding:10px;overflow-y:auto;">
                     </div>
                 </div>
             </div>
             <div class="modal-footer">                
-                <button type="button" class="btn app-btn-primary" onclick="exibirMembrosSelecionados()">Adicionar</button>
+                <button type="button" class="btn app-btn-primary" onclick="criarListaDeUSuarios.exibirMembrosSelecionados()">Adicionar</button>
                 @*<button type="button" class="btn app-btn-secondary" data-bs-dismiss="modal" onclick="enviarMembrosParaInput()">Enviar</button>*@
             </div>
         </div>
@@ -163,78 +163,9 @@
 
 <script>
 
-    let listaUsuarios = [];
-    let stringDeUsuariosSelecionados = "";
-    var campoDeUsuariosDisponiveis = document.querySelector("#membrosDisponiveis")
-    let url = window.location.origin + "/Projetos/ListaUsuarios"
-
-    async function obterListaDeUsuariosJson() {
-        await fetch(url)
-            .then((response) => {
-
-                return response.json()
-            })
-            .then((data) => {
-
-                listaUsuarios = data;
-                listaUsuarios.forEach(usuario => {
-                    var usuariosDisponiveis = document.createElement("p")
-                    usuariosDisponiveis.setAttribute("draggable", "true")
-                    usuariosDisponiveis.setAttribute("ondragstart", "drag(event)")
-                    usuariosDisponiveis.setAttribute("id", `${usuario}`)
-                    usuariosDisponiveis.textContent = `${usuario}`
-                    usuariosDisponiveis.classList.add("badge", "text-bg-success")
-                    usuariosDisponiveis.style.padding = "5px"
-                    usuariosDisponiveis.style.margin = "10px"
-                    campoDeUsuariosDisponiveis.append(usuariosDisponiveis)
-                    console.log(usuario)
-                })
-            })
-
-    }
-    obterListaDeUsuariosJson()
-
-    function allowDrop(ev) {
-        if (ev.target.getAttribute("droppable") == "false") {
-            ev.dataTransfer.dropEffect = "none"; // dropping is not allowed
-            ev.preventDefault();
-        }
-        else {
-            ev.dataTransfer.dropEffect = "all"; // drop it like it's hot
-            ev.preventDefault();
-        }
-    }
-
-    function drag(ev) {
-        ev.dataTransfer.setData("text", ev.target.id);
-        ev.target.setAttribute("droppable", "false")
-    }
-
-    function drop(ev) {
-        ev.preventDefault();
-        let data = ev.dataTransfer.getData("text");
-        ev.target.appendChild(document.getElementById(data));
-    }
-
-    function enviarMembrosParaInput() {
-        let membrosSelecionados = document.querySelector("#membrosSelecionados").childNodes
-        let input = document.querySelector("#MembrosEquipe")
-        let membroSelecionado = "";
-        membrosSelecionados.forEach((membro, indice) => {
-            if(indice > 0){
-                membroSelecionado += `${membro.textContent};`.toString()
-                input.value = membroSelecionado
-            }
-        })
-    }
-
-    function exibirMembrosSelecionados() {
-        let membrosSelecionados = document.querySelector("#membrosSelecionados")
-        let membrosDoProjeto = document.querySelector("#membrosDoProjeto").childNodes
-        membrosDoProjeto.forEach((membro, indice) => {
-            membrosSelecionados.append(membro)
-        })
-    }
-
+    let dnd = new DragAndDrop();
+    let criarListaDeUSuarios = new ObterListaDeUsuariosJson();
+    criarListaDeUSuarios.enviarMembrosParaInput();
+    criarListaDeUSuarios.exibirMembrosSelecionados();
     
 </script>
