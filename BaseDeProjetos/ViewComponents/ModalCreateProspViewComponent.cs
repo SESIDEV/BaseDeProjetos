@@ -5,11 +5,11 @@ using BaseDeProjetos.Models;
 
 namespace BaseDeProjetos.ViewComponents
 {
-    public class ModalCreateViewComponent : ViewComponent
+    public class ModalCreateProspViewComponent : ViewComponent
     {
         private readonly ApplicationDbContext _context;
 
-        public ModalCreateViewComponent(ApplicationDbContext context)
+        public ModalCreateProspViewComponent(ApplicationDbContext context)
         {
             _context = context;
         }

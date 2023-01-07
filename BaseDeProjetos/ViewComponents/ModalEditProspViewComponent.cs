@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 
 namespace BaseDeProjetos.ViewComponents
 {
-    public class ModalEditViewComponent : ViewComponent
+    public class ModalEditProspViewComponent : ViewComponent
     {
         private readonly ApplicationDbContext _context;
 
-        public ModalEditViewComponent(ApplicationDbContext context)
+        public ModalEditProspViewComponent(ApplicationDbContext context)
         {
             _context = context;
         }
