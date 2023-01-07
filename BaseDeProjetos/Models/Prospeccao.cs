@@ -8,6 +8,15 @@ namespace BaseDeProjetos.Models
 {
     public class Prospeccao : IEquatable<Prospeccao>
     {
+        public Prospeccao(FollowUp followUp)
+        {
+            this.Status = new List<FollowUp> { followUp };
+        }
+
+        public Prospeccao() { 
+            
+        }
+
         [Key]
         public virtual string Id { get; set; }
 

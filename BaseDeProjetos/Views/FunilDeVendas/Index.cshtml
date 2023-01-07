@@ -45,7 +45,8 @@
 								</select>
 							</div>
 							<div class="col-auto">
-								<partial name="Create" view-data="@ViewData" />
+								@await Component.InvokeAsync("ModalCreate")
+								@*<partial name="Create" view-data="@ViewData" />*@
 							</div>
 						</div>
 					</div>
