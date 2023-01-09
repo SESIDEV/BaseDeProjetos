@@ -486,6 +486,12 @@ namespace BaseDeProjetos.Controllers
 
         }
 
+        public string PuxarDadosUsuarios(){
+            
+            return Helpers.Helpers.PuxarDadosUsuarios(_context);
+
+        }
+
     }
 
 }
