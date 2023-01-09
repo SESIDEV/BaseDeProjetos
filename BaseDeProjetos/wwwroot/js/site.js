@@ -107,12 +107,12 @@ function addUser(element) {
     }
 }
 
-function gerarSelectUsers(pessoas) {
+function gerarOpcoesSelect(lista) {
 	
-    pessoas.forEach(function (p){
+    lista.forEach(function (item){
         var opt = document.createElement("option");
-        opt.id = p['Id']
-        opt.innerHTML = p['UserName']
+        opt.item = item['Id']
+        opt.innerHTML = item['UserName'] // se for lista de pessoas
         document.querySelector("#notchoos").appendChild(opt)
     })
 }
