@@ -452,16 +452,10 @@ namespace BaseDeProjetos.Controllers
             return View("Error", erro);
         }
 
-        public IActionResult RetornarModal(string idProsp, string tipo)
+        public IActionResult RetornarModalEdicao(string idProsp)
         {
             CriarSelectListsDaView();
-            if (tipo == "Edit") {
-                return ViewComponent("ModalEditProsp", new { id = idProsp }); 
-            } else
-            {
-                return ViewComponent("ModalEditProsp", new { id = idProsp }); //temporario
-            }
-
+            return ViewComponent("ModalEditProsp", new {id = idProsp});
         }
 
         public string PuxarDadosProspeccoes(string casa = "ISIQV", int ano = 2022, bool planejadas = false){

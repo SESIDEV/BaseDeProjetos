@@ -13,6 +13,7 @@ namespace BaseDeProjetos.ViewComponents
             _context = context;
         }
 
+
         public async Task<IViewComponentResult> InvokeAsync(string id)
         {
             var model = await _context.Prospeccao.FindAsync(id);
