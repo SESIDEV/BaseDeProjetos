@@ -83,7 +83,7 @@
         <h5 class="col-12">Ações</h5>
         <hr />
         <a class="col btn btn-primary" asp-action="Atualizar" asp-route-id="@Model.Id">Adicionar Status</a>
-        <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#editarProspModal-@Model.Id-Toggle" role="button">Editar Prospecção</a>
+        @* <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#editarProspModal-@Model.Id-Toggle" role="button">Editar Prospecção</a> *@
         <a class="col btn btn-primary" asp-action="Index" asp-route-casa='@ViewData["Area"]'>Voltar</a>
     </div>
 </div>
