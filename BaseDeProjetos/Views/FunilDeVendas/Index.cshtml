@@ -37,17 +37,20 @@
 							</div>
 							<div class="col-auto">
 								<select class="form-select w-auto" id="ano" name="ano" onchange="updateLink()">
-									<option value="Todos">Todos</option>
-									<option value="2023">2023</option>
-									<option value="2022">2022</option>
-									<option value="2021">2021</option>
-									<option value="2020">2020</option>
-									<option value="2019">2019</option>
+								<option value="Todos">Todos</option>
+									@{
+										int anoFinal = 2019;
+										int anoAtual = DateTime.Now.Year;
+										while (anoAtual >= anoFinal)
+										{
+											<option value="@anoAtual">@anoAtual</option>
+											anoAtual--;
+										}
+									}								
 								</select>
 							</div>
 							<div class="col-auto">
 								@await Component.InvokeAsync("ModalCreateProsp")
-								@* <partial name="Create" view-data="@ViewData" /> *@
 							</div>
 						</div>
 					</div>
@@ -217,11 +220,22 @@
 	</div>
 </div>
 <script>
-	function carregarModalEdicao(idProspeccao) {
-		fetch(`/FunildeVendas/RetornarModalEdicao/?idProsp=${idProspeccao}`)
-		.then(response => response.text())
-		.then(result => {
-			const el = document.querySelector(`#modalEditProsp-${idProspeccao}-container`).innerHTML = result;
-		});
+	function carregarModalFunil(idProspeccao, tipo) {
+		if (tipo == "Edit") {
+			fetch(`/FunildeVendas/RetornarModal/?idProsp=${idProspeccao}&tipo=${tipo}`)
+			.then(response => response.text())
+			.then(result => {
+				document.querySelector(`#modalEditProsp-${idProspeccao}-container`).innerHTML = result;
+			}); 
+		} else {
+			console.log("Tipo de Modal Inválido");
+		}
+	}
+
+	function carregarModaisFunil(idProspeccao) {
+		modaisDisponiveis = ["Edit"]
+		modaisDisponiveis.forEach((tipo) => {
+			carregarModalFunil(idProspeccao, tipo)
+		})
 	}
 </script>
