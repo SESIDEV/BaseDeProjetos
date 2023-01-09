@@ -140,10 +140,11 @@
 </script> *@
 @foreach (var prospeccao in Model)
 {
-    @* <!-- Modal Edit-->
     <form asp-action="Edit" asp-route-id="@prospeccao.Id" method="post">
-        @await Component.InvokeAsync("ModalEditProsp", new {id = prospeccao.Id })
-    </form> *@
+        <div id="modalEditProsp-@prospeccao.Id-container">
+
+        </div>
+    </form>
     <div class="modal fade" id="modalDetalhes-@prospeccao.Id" tabindex="-1" aria-labelledby="modalDetalhes-@prospeccao.Id-Label" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -186,11 +187,11 @@
                         <p>Data: @prospeccao.Status.OrderBy(p => p.Data).Last().Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))</p>
                     </div>
                 <div class="modal-footer">
-                    @* <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#editarProspModal-@prospeccao.Id-Toggle" role="button">
+                    <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#editarProspModal-@prospeccao.Id-Toggle" role="button">
                         Editar
-                    </a>*@
+                    </a>
 
-                    <a asp-action="Edit" asp-route-id="@prospeccao.Id" class="btn btn-outline-primary">Editar</a>
+                    @*<a asp-action="Edit" asp-route-id="@prospeccao.Id" class="btn btn-outline-primary">Editar</a>*@
                     <a asp-action="Details" asp-route-id="@prospeccao.Id" class="btn btn-outline-primary">Histórico</a>
                     <a asp-action="Atualizar" asp-route-id="@prospeccao.Id" class="btn btn-outline-primary">Atualizar</a>
                     <a asp-action="Delete" asp-route-id="@prospeccao.Id" class="btn btn-outline-primary">Remover</a>
@@ -253,6 +254,8 @@
                 <span>Valor não informado</span>
             }
         </td>
-        <td class="cell"><button type="button" data-bs-target="#modalDetalhes-@prospeccao.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary">Detalhes</button></td> 
-    </tr>
+        <td class="cell">
+            <button type="button" data-bs-target="#modalDetalhes-@prospeccao.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary" onclick="carregarModalEdicao('@prospeccao.Id')">Detalhes</button>
+            </td> 
+        </tr>
 }
