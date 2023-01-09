@@ -452,6 +452,12 @@ namespace BaseDeProjetos.Controllers
             return View("Error", erro);
         }
 
+        public IActionResult RetornarModalEdicao(string idProsp)
+        {
+            CriarSelectListsDaView();
+            return ViewComponent("ModalEditProsp", new {id = idProsp});
+        }
+
         public string PuxarDadosProspeccoes(string casa = "ISIQV", int ano = 2022, bool planejadas = false){
             
             Instituto casa_ = (Instituto)Enum.Parse(typeof(Instituto), casa);
