@@ -2,10 +2,10 @@
 
 /* ===== Enable Bootstrap Popover (on element  ====== */
 
-//var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-// var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-//   return new bootstrap.Popover(popoverTriggerEl)
-// })
+var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+  return new bootstrap.Popover(popoverTriggerEl)
+})
 
 /* ==== Enable Bootstrap Alert ====== */
 var alertList = document.querySelectorAll('.alert')
@@ -21,7 +21,7 @@ const sidePanelDrop = document.getElementById('sidepanel-drop');
 const sidePanelClose = document.getElementById('sidepanel-close'); 
 
 window.addEventListener('load', function(){
-	//responsiveSidePanel();
+	responsiveSidePanel();
 });
 
 window.addEventListener('resize', function(){
