@@ -127,7 +127,7 @@
 
     /*** Alteração de layout lista de empresas e prospecções / Funil de Vendas ***/
 </style>
-<script>
+@* <script>
     var bt = document.querySelector('#bt')
 
     bt.addEventListener('click', e => {
@@ -137,13 +137,13 @@
     $(function () {
         $('[data-bs-toggle="popover"]').popover()
     })
-</script>
+</script> *@
 @foreach (var prospeccao in Model)
 {
-    <!-- Modal Edit-->
+    @* <!-- Modal Edit-->
     <form asp-action="Edit" asp-route-id="@prospeccao.Id" method="post">
         @await Component.InvokeAsync("ModalEditProsp", new {id = prospeccao.Id })
-    </form>
+    </form> *@
     <div class="modal fade" id="modalDetalhes-@prospeccao.Id" tabindex="-1" aria-labelledby="modalDetalhes-@prospeccao.Id-Label" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -186,11 +186,11 @@
                         <p>Data: @prospeccao.Status.OrderBy(p => p.Data).Last().Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))</p>
                     </div>
                 <div class="modal-footer">
-                    <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#editarProspModal-@prospeccao.Id-Toggle" role="button">
+                    @* <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#editarProspModal-@prospeccao.Id-Toggle" role="button">
                         Editar
-                    </a>                  
+                    </a>*@
 
-                    @*<a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary">Editar</a>*@
+                    <a asp-action="Edit" asp-route-id="@prospeccao.Id" class="btn btn-outline-primary">Editar</a>
                     <a asp-action="Details" asp-route-id="@prospeccao.Id" class="btn btn-outline-primary">Histórico</a>
                     <a asp-action="Atualizar" asp-route-id="@prospeccao.Id" class="btn btn-outline-primary">Atualizar</a>
                     <a asp-action="Delete" asp-route-id="@prospeccao.Id" class="btn btn-outline-primary">Remover</a>

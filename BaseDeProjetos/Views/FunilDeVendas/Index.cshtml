@@ -38,6 +38,7 @@
 							<div class="col-auto">
 								<select class="form-select w-auto" id="ano" name="ano" onchange="updateLink()">
 									<option value="Todos">Todos</option>
+									<option value="2023">2023</option>
 									<option value="2022">2022</option>
 									<option value="2021">2021</option>
 									<option value="2020">2020</option>
@@ -46,7 +47,7 @@
 							</div>
 							<div class="col-auto">
 								@await Component.InvokeAsync("ModalCreateProsp")
-								@*<partial name="Create" view-data="@ViewData" />*@
+								@* <partial name="Create" view-data="@ViewData" /> *@
 							</div>
 						</div>
 					</div>
@@ -71,19 +72,6 @@
 							<partial name="graph_funil" view-data="@ViewData" />							
 						</div>
 					</div>
-					@*<nav class="app-pagination">
-						<ul class="pagination justify-content-center">
-							<li class="page-item disabled">
-								<a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
-							</li>
-							<li class="page-item active"><a class="page-link" href="#">1</a></li>
-							<li class="page-item"><a class="page-link" href="#">2</a></li>
-							<li class="page-item"><a class="page-link" href="#">3</a></li>
-							<li class="page-item">
-								<a class="page-link" href="#">Próxima</a>
-							</li>
-						</ul>
-					</nav>*@
 
 				</div>
 
@@ -224,7 +212,7 @@
 						</div>
 					</div>
 				</div>
-			</div><!--//tab-content
+			</div>
 		</div>
 	</div>
 </div>
