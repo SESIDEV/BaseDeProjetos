@@ -220,7 +220,7 @@
 	</div>
 </div>
 <script>
-	function carregarModal(idProspeccao, tipo) {
+	function carregarModalFunil(idProspeccao, tipo) {
 		if (tipo == "Edit") {
 			fetch(`/FunildeVendas/RetornarModal/?idProsp=${idProspeccao}&tipo=${tipo}`)
 			.then(response => response.text())
@@ -232,10 +232,10 @@
 		}
 	}
 
-	function carregarModais(idProspeccao) {
+	function carregarModaisFunil(idProspeccao) {
 		modaisDisponiveis = ["Edit"]
 		modaisDisponiveis.forEach((tipo) => {
-			carregarModal(idProspeccao, tipo)
+			carregarModalFunil(idProspeccao, tipo)
 		})
 	}
 </script>
