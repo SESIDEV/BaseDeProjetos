@@ -33,6 +33,7 @@
         let elemento = document.createElement("p")
         elemento.setAttribute("draggable", "true")
         elemento.setAttribute("ondragstart", "dnd.drag(event)")
+        elemento.setAttribute("onclick", "criarListaDeUSuarios.removerMembroSelecionado(this)")
         elemento.setAttribute("id", `${valorDoElemento}`)
         elemento.textContent = `${valorDoElemento}`
         elemento.classList.add("badge", "text-bg-success")
@@ -55,5 +56,17 @@
         this.membrosDoProjeto.forEach((membro) => {
             this.membrosSelecionados.append(membro)
         })
+    }
+
+    removerMembroSelecionado(elemento) {
+        let idElemento = elemento.getAttribute("id")
+        let pai = document.getElementById(idElemento).parentElement;
+        if (pai.getAttribute("id") == "membrosSelecionados") {
+            if (confirm("Deseja remover este usuário?") == true) {
+                this.campoDeUsuariosDisponiveis.append(elemento)
+            }
+            
+        }
+        
     }
 }
