@@ -24,10 +24,10 @@ namespace BaseDeProjetos.Controllers
         public async Task<IActionResult> Index()
         {
 			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-			ViewBag.usuarioCasa = usuario.Casa;
+            List<Empresa> empresas = _context.Empresa.ToList();
+            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+            ViewBag.usuarioCasa = usuario.Casa;
 			ViewBag.usuarioNivel = usuario.Nivel;
-
 			return View(await _context.Editais.ToListAsync());
         }
 
