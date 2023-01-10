@@ -2,14 +2,14 @@
 
 
 <style>
-    th{
-        font-size: 0.7rem;
+    td, th {
+        font-size: 0.6rem;
     }
 </style>
 <partial name="Header" view-data="@ViewData" />
-<div class="container" style="padding-left: 25em; padding-right: 10em; padding-top: 2em">
+<div class="container" style="padding-left: 15em;">
     <p>
-        <a asp-action="Create" class="btn btn-primary">Criar Edital</a>
+        <a asp-action="Create" class="btn bg-success text-white">Criar Edital</a>
     </p>
     <table class="table">
         <thead>
@@ -99,7 +99,7 @@
                                 Ações
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-controller="FunilDeVendas" asp-action="ProspectarEdital" asp-route-id="@item.Id" class="btn btn-primary">Prospectar</a></li>
+                                <li><a class="dropdown-item bg-success text-white" data-bs-toggle="modal" href="#criarProspModalToggle" role="button">Prospectar Edital</a></li>
                                 <li><a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Editar</a></li>
                                 <li><a class="dropdown-item" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary mt-1">Detalhes</a></li>
                                 <li><a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-primary mt-1">Excluir</a></li>
@@ -110,5 +110,5 @@
             }
         </tbody>
     </table>
-
 </div>
+@await Component.InvokeAsync("ModalCreateProsp")
