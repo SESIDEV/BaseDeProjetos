@@ -221,17 +221,11 @@
 </div>
 <script>
 	function carregarModalFunil(idProspeccao, tipo) {
-		if (tipo == "Edit") {
+		if (tipo) {
 			fetch(`/FunildeVendas/RetornarModal/?idProsp=${idProspeccao}&tipo=${tipo}`)
 			.then(response => response.text())
 			.then(result => {
-				document.querySelector(`#modalEditProsp-${idProspeccao}-container`).innerHTML = result;
-			});
-		} else if (tipo == "Delete") {
-			fetch(`/FunildeVendas/RetornarModal/?idProsp=${idProspeccao}&tipo=${tipo}`)
-			.then(response => response.text())
-			.then(result => {
-				document.querySelector(`#modalDeleteProsp-${idProspeccao}-container`).innerHTML = result;
+				document.querySelector(`#modal${tipo}Prosp-${idProspeccao}-container`).innerHTML = result;
 			});
 		} else {
 			console.log("Tipo de Modal Inválido");
@@ -239,7 +233,7 @@
 	}
 
 	function carregarModaisFunil(idProspeccao) {
-		modaisDisponiveis = ["Edit", "Delete"]
+		modaisDisponiveis = ["Edit", "Delete", "History"]
 		modaisDisponiveis.forEach((tipo) => {
 			carregarModalFunil(idProspeccao, tipo)
 		})
