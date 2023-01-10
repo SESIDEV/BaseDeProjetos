@@ -55,7 +55,6 @@ namespace BaseDeProjetos.Controllers
 
             return View();
         }
-
         // GET: FunilDeVendas/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -82,7 +81,6 @@ namespace BaseDeProjetos.Controllers
 
             return View(prospeccao);
         }
-
         // GET: FunilDeVendas/Create
         public IActionResult Create(int id)
         {
@@ -135,6 +133,45 @@ namespace BaseDeProjetos.Controllers
 
         }
 
+        public IActionResult ProspectarEdital(int id, string userId)
+        {
+
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
+            userId = HttpContext.User.Identity.Name;
+            Instituto usuarioCasa = _context.Users.FirstOrDefault(u => u.UserName == userId).Casa;
+
+            Prospeccao prosp = new Prospeccao
+            {
+                Id = $"proj_{DateTime.Now.Ticks}",
+                Empresa = _context.Empresa.FirstOrDefault(E => E.Id == id),
+                Usuario = _context.Users.FirstOrDefault(u => u.UserName == userId),
+                Casa = usuarioCasa,
+                LinhaPequisa = LinhaPesquisa.Indefinida,
+                CaminhoPasta = ""
+            };
+            prosp.Status = new List<FollowUp>
+            {
+                new FollowUp
+                {
+
+                    OrigemID = prosp.Id,
+                    Data = DateTime.Today,
+                    Anotacoes = $"Prospecção iniciada a partir do edital",
+                    Status = StatusProspeccao.ContatoInicial
+
+                }
+            };
+
+            _context.Add(prosp);
+            _context.SaveChanges();
+            return RedirectToAction("Index", "FunilDeVendas");
+
+        }
+
         [HttpGet]
         public IActionResult Atualizar(string id)
         {
@@ -164,7 +201,6 @@ namespace BaseDeProjetos.Controllers
 
             return RedirectToAction(nameof(Details), new { id = id });
         }
-
         private void CriarFollowUp(FollowUp followup)
         {
             _context.Add(followup);
@@ -202,8 +238,6 @@ namespace BaseDeProjetos.Controllers
             var errors = ModelState.Values.SelectMany(v => v.Errors);
             return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
         }
-
-
         private async Task VincularUsuario(Prospeccao prospeccao)
         {
             string userId = HttpContext.User.Identity.Name;
@@ -242,7 +276,6 @@ namespace BaseDeProjetos.Controllers
 
             return prospeccao;
         }
-
         // GET: FunilDeVendas/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -264,13 +297,11 @@ namespace BaseDeProjetos.Controllers
             }
             return View(prospeccao);
         }
-
         private void CriarSelectListsDaView()
         {
             ViewData["Empresas"] = new SelectList(_context.Empresa.ToList(), "Id", "EmpresaUnique");
             ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
         }
-
         // POST: FunilDeVendas/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -287,7 +318,7 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {
-                    prospeccao = EditarDadosDaProspecção(id, prospeccao);
+                   prospeccao = EditarDadosDaProspecção(id, prospeccao);
                     _context.SaveChanges(); // Essa linha já foi async, talvez seja possível que isso permita ressurgências...
                 }
                 catch (DbUpdateConcurrencyException)
@@ -324,7 +355,6 @@ namespace BaseDeProjetos.Controllers
             _context.Update(prospeccao);
             return prospeccao;
         }
-
         public async Task<IActionResult> EditarFollowUp(int? id) // RETONAR VIEW
         {
             if (id == null)

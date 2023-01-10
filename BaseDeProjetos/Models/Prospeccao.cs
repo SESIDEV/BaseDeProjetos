@@ -24,7 +24,8 @@ namespace BaseDeProjetos.Models
         public virtual string NomeProspeccao { get; set; }
 
         [Display(Name = "Potenciais Parceiros da Prospeccção")]
-        public virtual string PotenciaisParceiros { get; set; } //Por ora é uma string separada por vírgulas
+        //Por ora é uma string separada por vírgulas
+        public virtual string PotenciaisParceiros { get; set; } 
 
         public virtual Empresa Empresa { get; set; }
         public virtual Pessoa Contato { get; set; }
@@ -44,6 +45,7 @@ namespace BaseDeProjetos.Models
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "R{0:C2}")]
         [Display(Name = "Valor da Proposta (R$)")]
         public virtual decimal ValorProposta { get; set; } = 0;
+        
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "R{0:C2}")]
         [Display(Name = "Valor Estimado da Prospecção (R$)")]
         public virtual decimal ValorEstimado { get; set; } = 0;

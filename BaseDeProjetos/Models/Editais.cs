@@ -33,6 +33,5 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Status da submissão")]
         public virtual StatusSubmissaoEdital StatusSubmissao { get; set; }
 
-
     }
 }
