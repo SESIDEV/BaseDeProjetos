@@ -83,38 +83,16 @@ function passarComp(element) {
     }
 }
 
-function addUser(element) {
-
-    let email = element.id
-    let nome = element.innerHTML
-
-    if (element.tagName == 'OPTION'){
-        let user = document.createElement("span");
-        usur.id = email;
-        user.innerHTML = nome;
-        user.classList.add('badge','bg-primary')
-        document.querySelector("#choos").appendChild(user)
-        element.remove();
-
-    } else {
-
-        let user = document.createElement("option");
-        user.id = email;
-        user.innerHTML = nome;
-        document.querySelector("#notchoos").appendChild(user)
-        element.remove();
-
-    }
-}
-
-function gerarSelectUsers(pessoas) {
-	
-    pessoas.forEach(function (p){
-        var opt = document.createElement("option");
-        opt.id = p['Id']
-        opt.innerHTML = p['UserName']
-        document.querySelector("#notchoos").appendChild(opt)
-    })
+function gerarOpcoesSelectPessoas() {
+	$("#campoSelect").select2({placeholder: "Nomes..."})
+    fetch('/FunilDeVendas/PuxarDadosUsuarios').then(response => response.json()).then(lista => {
+        document.querySelector('#campoSelect').innerHTML = '';
+        lista.forEach(function (item){
+            var opt = document.createElement("option");
+            opt.value = item['Email']
+            opt.innerHTML = item['UserName']
+            document.querySelector('#campoSelect').appendChild(opt)
+    })})
 }
 
 function updateLink() {
