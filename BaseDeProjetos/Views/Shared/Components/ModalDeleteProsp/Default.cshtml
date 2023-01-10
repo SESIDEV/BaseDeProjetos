@@ -1,0 +1,55 @@
+﻿@model BaseDeProjetos.Models.Prospeccao
+
+@{
+    ViewData["Title"] = "deletar";
+}
+
+<div class="modal fade" id="deletarProspModal-@Model.Id-Toggle" aria-hidden="true" aria-labelledby="deletarProspModal-@Model.Id-ToggleLabel"
+     tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="deletarProspModal-@Model.Id-ToggleLabel">Deletar Prospecção</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-2">
+                    <label asp-for="Id" class="col-form-label" style="font-weight: 600"></label>
+                    <div class="form-control" readonly>@Model.Id</div>
+                </div>
+                <div class="mb-2">
+                    <label asp-for="Casa" class="col-form-label" style="font-weight: 600"></label>
+                    <div class="form-control" readonly>@Model.Casa</div>
+                </div>                
+                <div class="mb-2">
+                    <label asp-for="NomeProspeccao" class="col-form-label" style="font-weight: 600"></label>
+                    <div class="form-control" readonly>@Model.NomeProspeccao</div>
+                </div>
+                <div class="mb-2">
+                    <label class="col-form-label" style="font-weight: 600">Líder da Prospecção</label>
+                    <div class="form-control" readonly>@Model.Usuario.UserName</div>
+                </div>
+                <div class="mb-2">
+                    <label class="col-form-label" style="font-weight: 600">Último Status:</label>
+                    <div style="font-size: inherit" readonly>@Model.Status.OrderBy(p=>p.Data).Last().Status.GetDisplayName()</div>                    
+                    <div class="form-control" readonly>@Model.Status.OrderBy(p=>p.Data).Last().Anotacoes</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <form asp-action="Delete" asp-route-id="Id" method="post">
+                <button type="button" class="btn app-btn-primary" data-bs-target="#deletarProspModal-@Model.Id-Toggle" data-bs-toggle="modal">
+                    Voltar
+                </button>
+                <input type="hidden" asp-for="Id" />
+                <input type="submit" value="Deletar" class="btn text-white btn-danger" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

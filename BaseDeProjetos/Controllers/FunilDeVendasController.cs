@@ -487,9 +487,12 @@ namespace BaseDeProjetos.Controllers
             CriarSelectListsDaView();
             if (tipo == "Edit") {
                 return ViewComponent("ModalEditProsp", new { id = idProsp }); 
+            } else if (tipo == "Delete")
+            {
+                return ViewComponent("ModalDeleteProsp", new { id = idProsp });
             } else
             {
-                return ViewComponent("ModalEditProsp", new { id = idProsp }); //temporario
+                return ViewComponent("ModalDeleteProsp", new { id = idProsp });
             }
 
         }
