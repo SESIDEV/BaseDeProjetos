@@ -83,8 +83,10 @@ function passarComp(element) {
     }
 }
 
-function gerarOpcoesSelectPessoas() {
-	$("#campoSelect").select2({placeholder: "Nomes..."})
+function gerarOpcoesSelectPessoas(nomeModal) {
+    $("#campoSelect").select2({
+        placeholder: "Nomes...", dropdownParent: $(`#${nomeModal}`)
+    })
     fetch('/FunilDeVendas/PuxarDadosUsuarios').then(response => response.json()).then(lista => {
         document.querySelector('#campoSelect').innerHTML = '';
         lista.forEach(function (item){

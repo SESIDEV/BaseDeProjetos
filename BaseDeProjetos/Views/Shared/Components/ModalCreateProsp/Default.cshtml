@@ -50,17 +50,17 @@
                                placeholder="Um nome amigável para a prospecção. Ex.: Proposta dos biossurfactantes" />
                         <span asp-validation-for="NomeProspeccao" class="text-danger"></span>
                     </div>
-                    <div class="mb-2">                        
+                   @* <div class="mb-2">                        
                         <label asp-for="MembrosEquipe" class="col-form-label" style="font-weight: 600">Membros do Projeto</label>
                         <button type="button" class="btn app-btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Abrir</button>
                         <input type="text" asp-for="MembrosEquipe"  class="form-control d-none" />
                         <div id="membrosSelecionados" class="form-control" style="padding:2rem; min-height:2rem; overflow:auto;"></div>
-                    </div>
+                    </div>*@
 
                     <div class="mb-2">                        
-                        <label asp-for="MembrosEquipe" class="col-form-label" style="font-weight: 600">Membros do Projeto 2</label>
+                        <label asp-for="MembrosEquipe" class="col-form-label" style="font-weight: 600">Membros do Projeto</label>
                         <div class="input-group flex-nowrap">
-                            <span class="input-group-text" id="addon-wrapping" onclick="gerarOpcoesSelectPessoas()">
+                            <span class="input-group-text" id="addon-wrapping" onclick="gerarOpcoesSelectPessoas('criarProspModalToggle')">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                                     <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
                                 </svg>
