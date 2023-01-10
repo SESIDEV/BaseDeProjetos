@@ -84,8 +84,9 @@ function passarComp(element) {
 }
 
 function gerarOpcoesSelectPessoas() {
-	
+	$("#campoSelect").select2({placeholder: "Nomes..."})
     fetch('/FunilDeVendas/PuxarDadosUsuarios').then(response => response.json()).then(lista => {
+        document.querySelector('#campoSelect').innerHTML = '';
         lista.forEach(function (item){
             var opt = document.createElement("option");
             opt.value = item['Email']
