@@ -1,4 +1,17 @@
 <partial name="Header" view-data="@ViewData" />
+<head>
+        <!-- Select 2 -->  
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+        <!-- Javascript -->          
+    <script src="assets/plugins/popper.min.js"></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+
+    <!-- Page Specific JS -->
+    <script src="assets/js/app.js"></script>
+</head>
 <div class="app-wrapper">	    
     <div class="app-content pt-3 p-md-3 p-lg-4">
         <div class="container-xl">
@@ -107,7 +120,7 @@
                                         <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
                                     </svg>
                                 </span>
-                                <input type="text" class="form-control" placeholder="Buscar...">
+                                <select id="campoSelect" class="form-select" multiple="true"></select>
                                 </div>
                             </h4>
                         </div>
@@ -158,11 +171,6 @@
 </div>    					
 
 
-<!-- Javascript -->          
-<script src="assets/plugins/popper.min.js"></script>
-<script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-
 <style>
     
     .background_principal {
@@ -192,14 +200,10 @@
 </style>
 
 <script>
+    $("#campoSelect").select2({placeholder: "Nomes..."})
+
     window.addEventListener('load', function(){
-        fetch('/Pessoas/dados').then(response => response.json()).then(data => {montarNetwork(data)});    
+        fetch('/Pessoas/dados').then(response => response.json()).then(data => {montarNetwork(data)});
+        gerarOpcoesSelectPessoas();
     });
 </script>
-
-<!-- Charts JS -->
-<script src="assets/plugins/chart.js/chart.min.js"></script> 
-<script src="assets/js/charts-demo.js"></script> 
-
-<!-- Page Specific JS -->
-<script src="assets/js/app.js"></script>
