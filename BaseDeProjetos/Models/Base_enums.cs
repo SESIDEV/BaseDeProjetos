@@ -702,7 +702,7 @@ namespace BaseDeProjetos.Models
     }
     public enum StatusSubmissaoEdital
     {
-        [Display(Name = "Edital Submetido")]
+        [Display(Name = "Submissão de edital")]
         submetido,
         [Display(Name = "Submissão em análise")]
         emAnalise,

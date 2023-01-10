@@ -99,6 +99,7 @@
                                 Ações
                             </button>
                             <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="FunilDeVendas" asp-action="ProspectarEdital" asp-route-id="@item.Id" class="btn btn-primary">Prospectar</a></li>
                                 <li><a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Editar</a></li>
                                 <li><a class="dropdown-item" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary mt-1">Detalhes</a></li>
                                 <li><a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-primary mt-1">Excluir</a></li>
