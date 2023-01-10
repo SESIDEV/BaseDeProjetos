@@ -485,14 +485,12 @@ namespace BaseDeProjetos.Controllers
         public IActionResult RetornarModal(string idProsp, string tipo)
         {
             CriarSelectListsDaView();
-            if (tipo == "Edit") {
-                return ViewComponent("ModalEditProsp", new { id = idProsp }); 
-            } else if (tipo == "Delete")
+            if (tipo != null || tipo != "") {
+                return ViewComponent($"Modal{tipo}Prosp", new { id = idProsp }); 
+            } 
+            else
             {
-                return ViewComponent("ModalDeleteProsp", new { id = idProsp });
-            } else
-            {
-                return ViewComponent("ModalDeleteProsp", new { id = idProsp });
+                return ViewComponent("null"); // View n existe é mais pra ""debug""
             }
 
         }
