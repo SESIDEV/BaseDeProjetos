@@ -73,6 +73,8 @@ namespace BaseDeProjetos.Models
         public virtual Prospeccao Origem { get; set; }
 
         public virtual string OrigemID { get; set; }
+        
+        [Display(Name = "Anotações")]
         public virtual string Anotacoes { get; set; }
         public virtual DateTime Data { get; set; }
 
