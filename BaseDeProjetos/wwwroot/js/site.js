@@ -83,18 +83,38 @@ function passarComp(element) {
     }
 }
 
-function gerarOpcoesSelectPessoas(nomeModal) {
-    $("#campoSelect").select2({
-        placeholder: "Nomes...", dropdownParent: $(`#${nomeModal}`)
-    })
+function gerarOpcoesSelectPessoas(nomeModal, idSelect) {
+    document.querySelector(`#${idSelect}`).innerHTML = '';
+    $(`#${idSelect}`).select2({dropdownParent: $(`#${nomeModal}`)})
     fetch('/FunilDeVendas/PuxarDadosUsuarios').then(response => response.json()).then(lista => {
-        document.querySelector('#campoSelect').innerHTML = '';
         lista.forEach(function (item){
             var opt = document.createElement("option");
             opt.value = item['Email']
             opt.innerHTML = item['UserName']
-            document.querySelector('#campoSelect').appendChild(opt)
+            document.querySelector(`#${idSelect}`).appendChild(opt)
     })})
+}
+
+function selectToText(idSelect, idText) {
+    let texto = ''
+    document.querySelector(`#select2-${idSelect}-container`).childNodes.forEach(p => texto += p.title + ';')
+    document.querySelector(`#${idText}`).value = texto
+}
+
+function textToSelect(nomeModal, idText, idSelect) {
+    gerarOpcoesSelectPessoas(nomeModal, idSelect)
+
+    botao_def = document.querySelector('#bloco_botao')
+    listaSel = document.querySelector(`#${idText}`).value.split(";")
+    listaSel.forEach(p => {
+        if (p == ''){} else {
+        botao_copy = botao_def.cloneNode(true)
+        botao_copy.removeAttribute('id')
+        botao_copy.title = p
+        botao_copy.children[1].innerHTML = p
+
+        document.querySelector(`#select2-${idSelect}-container`).appendChild(botao_copy)
+    }})
 }
 
 function updateLink() {

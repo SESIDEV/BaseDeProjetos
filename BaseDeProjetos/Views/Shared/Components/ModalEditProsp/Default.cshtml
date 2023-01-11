@@ -37,6 +37,18 @@
                     <input asp-for="NomeProspeccao" class="form-control" placeholder="Um nome amigável para a prospecção. Ex.: Proposta dos biossurfactantes" />
                     <span asp-validation-for="NomeProspeccao" class="text-danger"></span>
                 </div>
+                <div class="mb-2">                        
+                    <label asp-for="MembrosEquipe" class="col-form-label" style="font-weight: 600">Membros</label>
+                    <input type="text" asp-for="MembrosEquipe"class="form-control d-none" id="membrosTextEdit"/>
+                    <div class="input-group flex-nowrap">
+                        <span class="input-group-text" id="addon-wrapping">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                            </svg>
+                        </span>
+                        <select id="campoSelectEdit" class="form-select" multiple="true" onclick="textToSelect('editarProspModal-@Model.Id-Toggle','membrosTextEdit','campoSelectEdit')"></select>
+                    </div>
+                </div>
                 <div class="mb-2">
                     <label asp-for="TipoContratacao" class="col-form-label" style="font-weight: 600"></label>
                     <select asp-for="TipoContratacao" class="form-control" asp-items="Html.GetEnumSelectList<TipoContratacao>().OrderBy(p=>p.Text)"></select>
@@ -66,7 +78,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn app-btn-primary" data-bs-target="#editarProspModal-@Model.Id-Toggle2" data-bs-toggle="modal">
+                <button type="button" class="btn app-btn-primary" data-bs-target="#editarProspModal-@Model.Id-Toggle2" data-bs-toggle="modal" onclick="selectToText('campoSelectEdit', 'membrosTextEdit')">
                     Próximo
                 </button>
             </div>
@@ -155,6 +167,12 @@
                 </button>
                 <input type="submit" value="Salvar" class="btn app-btn-primary" />
             </div>
+            <li class="select2-selection__choice" title="NomeDefault" id="bloco_botao">
+                <button type="button" class="select2-selection__choice__remove" tabindex="-1" title="Remove item" aria-label="Remove item">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <span class="select2-selection__choice__display">NomeDefault</span>
+            </li>
         </div>
     </div>
 </div>
