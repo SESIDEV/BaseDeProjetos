@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Drawing;
+
 namespace BaseDeProjetos.Models
 {
     public class Editais
@@ -19,19 +22,40 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Prazo de submissão")]
         public virtual DateTime PrazoSubmissao { get; set; }
         [Display(Name = "Valor total do edital")]
-        public virtual decimal  ValorEdital { get; set; }
-        [Display(Name = "Proponente")]
-        public virtual string Proponente { get; set; }
+        public virtual decimal ValorEdital { get; set; }
         [Display(Name = "Link do edital")]
         public virtual string LinkEdital { get; set; }
+
+        public virtual List<Submissao> Submissoes { get; set; }
+
+        [Display(Name = "Data do resultado")]
+        public virtual DateTime DataResultado { get; set; }
+
+
+    }
+
+    public class Submissao
+    {
+        [Key]
+        public virtual string Id { get; set; }
+
+        public virtual bool ComEmpresa { get; set; }
+
+        public virtual Editais Edital { get; set; }
+
+        public virtual string EditalId { get; set; }
+
+        public virtual Prospeccao Prospeccao { get; set; }
+
+        public virtual string ProspeccaoId { get; set; }
+
+        [Display(Name = "Proponente")]
+        public virtual string Proponente { get; set; }
         [Display(Name = "Projeto proposto")]
         public virtual string ProjetoProposto { get; set; }
         [Display(Name = "Líder do projeto")]
-        public virtual Pessoa ResponsavelSubmissao { get; set; }
-        [Display(Name = "Data do resultado")]
-        public virtual DateTime DataResultado { get; set; }
+        public virtual string ResponsavelSubmissao { get; set; }
         [Display(Name = "Status da submissão")]
         public virtual StatusSubmissaoEdital StatusSubmissao { get; set; }
-
     }
 }

@@ -14,12 +14,10 @@ namespace BaseDeProjetos.Controllers
     public class EditaisController : Controller
     {
         private readonly ApplicationDbContext _context;
-
         public EditaisController(ApplicationDbContext context)
         {
             _context = context;
         }
-
         // GET: Editais
         public async Task<IActionResult> Index()
         {
@@ -30,7 +28,6 @@ namespace BaseDeProjetos.Controllers
 			ViewBag.usuarioNivel = usuario.Nivel;
 			return View(await _context.Editais.ToListAsync());
         }
-
         // GET: Editais/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -53,8 +50,46 @@ namespace BaseDeProjetos.Controllers
 
             return View(editais);
         }
-
         // GET: Editais/Create
+        public IActionResult SubmeterEdital(int id, string userId)
+        {
+
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
+            userId = HttpContext.User.Identity.Name;
+            Instituto usuarioCasa = _context.Users.FirstOrDefault(u => u.UserName == userId).Casa;
+
+            Prospeccao prosp = new Prospeccao
+            {
+                Id = $"proj_{DateTime.Now.Ticks}",
+                Empresa = _context.Empresa.FirstOrDefault(E => E.Id == id),
+                Usuario = _context.Users.FirstOrDefault(u => u.UserName == userId),
+                Casa = usuarioCasa,
+                LinhaPequisa = LinhaPesquisa.Indefinida,
+                CaminhoPasta = ""
+            };
+            prosp.Status = new List<FollowUp>
+            {
+                new FollowUp
+                {
+
+                    OrigemID = prosp.Id,
+                    Data = DateTime.Today,
+                    Anotacoes = $"Incluído no plano de prospecção de {User.Identity.Name}",
+                    Status = StatusProspeccao.Planejada
+
+                }
+            };
+
+            _context.Add(prosp);
+            _context.SaveChanges();
+            return RedirectToAction("Index", "Empresas");
+
+        }
+
         public IActionResult Create()
         {
 			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
@@ -64,7 +99,6 @@ namespace BaseDeProjetos.Controllers
 
 			return View();
         }
-
         // POST: Editais/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -175,5 +209,7 @@ namespace BaseDeProjetos.Controllers
         {
             return _context.Editais.Any(e => e.Id == id);
         }
+
+        
     }
 }
