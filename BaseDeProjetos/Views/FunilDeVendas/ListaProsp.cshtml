@@ -155,6 +155,10 @@
 
     </div>
 
+    <div id="modalEditFollowupProsp-@prospeccao.Id-container">
+
+    </div>
+
 
     <div class="modal fade" id="modalDetalhes-@prospeccao.Id" tabindex="-1" aria-labelledby="modalDetalhes-@prospeccao.Id-Label" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -204,13 +208,16 @@
                     <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#historyProspModal-@prospeccao.Id-Toggle" role="button">
                         Histórico
                     </a>
+                    <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#EditFollowupProspModal-@prospeccao.Id-Toggle" role="button">
+                        Atualizar
+                    </a>
                     <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#deletarProspModal-@prospeccao.Id-Toggle" role="button">
                         Deletar
                     </a>
 
                     @*<a asp-action="Edit" asp-route-id="@prospeccao.Id" class="btn btn-outline-primary">Editar</a>*@
                     @*<a asp-action="Details" asp-route-id="@prospeccao.Id" class="btn btn-outline-primary">Histórico</a>*@
-                    <a asp-action="Atualizar" asp-route-id="@prospeccao.Id" class="btn btn-outline-primary">Atualizar</a>
+                    @*<a asp-action="Atualizar" asp-route-id="@prospeccao.Id" class="btn btn-outline-primary">Atualizar</a>*@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>                    
                 </div>
             </div>

@@ -357,6 +357,11 @@ namespace BaseDeProjetos.Controllers
         }
         public async Task<IActionResult> EditarFollowUp(int? id) // RETONAR VIEW
         {
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             if (id == null)
             {
                 return NotFound();

@@ -239,7 +239,8 @@
 	}
 
 	function carregarModaisFunil(idProspeccao) {
-		modaisDisponiveis = ["Edit", "Delete", "History"]
+		// O nome precisa bater com o nome da view, no sentido que, o sufixo será "ProspViewComponent". Em outras palavras, está acoplado.
+		modaisDisponiveis = ["Edit", "Delete", "History", "EditFollowup"]
 		modaisDisponiveis.forEach((tipo) => {
 			carregarModalFunil(idProspeccao, tipo)
 		})
