@@ -1,0 +1,124 @@
+﻿@model BaseDeProjetos.Models.Prospeccao
+@using Microsoft.AspNetCore.Http
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Detalhes";
+    if (!(Context.Session.GetString("_Casa") is null))
+    {
+        ViewData["Area"] = Context.Session.GetString("_Casa");
+    }
+}
+
+<!-- Modal -->
+<div class="modal fade" id="historyProspModal-@Model.Id-Toggle" tabindex="-1" aria-labelledby="historyProspModal-@Model.Id-ToggleLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="historyProspModal-@Model.Id-Toggle">Histórico de Atualizações</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                    <div class="accordion" id="accordionPanelsFollowups">
+                        @foreach (var followup in Model.Status.OrderBy(s => s.Data).ToList())
+                        {
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="panelsFollowups-heading-@followup.Id"> 
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsFollowups-collapse-@followup.Id" aria-expanded="true" aria-controls="panelsFollowups-collapse-@followup.Id">
+                                        <div style="font-weight: 600">@followup.Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR")) - @(followup.Status.GetDisplayName())</div>
+                                    </button>
+                                </h2>
+                                <div id="panelsFollowups-collapse-@followup.Id" class="accordion-collapse collapse" aria-labelledby="panelsFollowups-heading-@followup.Id">
+                                    <div class="accordion-body">
+                                        @followup.Anotacoes
+                                        <hr />
+                                        Vence em: @followup.Vencimento.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))
+                                        <a class="btn btn-outline-danger" href="../RemoverFollowUp/@followup.Id">Remover</a> |
+                                        <a class="btn app-btn-secondary" href="../EditarFollowUp/@followup.Id">Editar</a>
+                                    </div>
+                                </div>
+                            </div>                            
+                        }                
+                    </div>                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn app-btn-secondary" data-bs-target="#modalDetalhes-@Model.Id-Toggle" data-bs-toggle="modal" >Voltar</button>
+                <button type="button" class="btn app-btn-primary" data-bs-dismiss="modal">Sair</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<partial name="Header" view-data="@ViewData" />
+<div style="padding-left: 25em; padding-right: 10em; padding-top: 2em">
+    <h1>Detalhes da prospecção</h1>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Usuario)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Usuario.UserName)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Casa)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Casa)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TipoContratacao)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TipoContratacao)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LinhaPequisa)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.LinhaPequisa)
+        </dd>
+    </dl>
+
+    <hr />
+    <h5> Histórico de Atualizações </h5>
+    <hr />
+    @foreach (var followup in Model.Status.OrderBy(s => s.Data).ToList())
+    {
+        <div class="card m-1">
+            <div class="card-body">
+                <h6 class="card-title">
+                    @followup.Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR")) - @(followup.Status.GetDisplayName())
+                </h6>
+                <div class="card-text">
+                    @followup.Anotacoes
+                </div>
+            </div>
+            <div class="card-footer">
+                Vence em: @followup.Vencimento.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))
+                <hr />
+                <a href="../RemoverFollowUp/@followup.Id">Remover</a> |
+                <a href="../EditarFollowUp/@followup.Id">Editar</a>
+            </div>
+        </div>
+    }
+    <hr />
+    <div class="row">
+        <h5 class="col-12">Ações</h5>
+        <hr />
+        <a class="col btn btn-primary" asp-action="Atualizar" asp-route-id="@Model.Id">Adicionar Status</a>
+        <a class="col btn btn-outline-primary" asp-action="Edit" asp-route-id="@Model.Id">Editar Prospecção</a>
+        @* <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#editarProspModal-@Model.Id-Toggle" role="button">Editar Prospecção</a> 
+        <a class="col btn btn-primary" asp-action="Index" asp-route-casa='@ViewData["Area"]'>Voltar</a>
+    </div>
+</div>*@
