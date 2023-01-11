@@ -259,9 +259,15 @@
             <span>@prospeccao.TipoContratacao.GetDisplayName()</span> @*Tipo Contratação*@
         </td>
         <td class="cell"><span>@prospeccao.Status.OrderBy(followup => followup.Data).Last().Status.GetDisplayName()</span></td> @*Status*@
-        <td class="cell">
-            @FunilHelpers.VerificarTemperatura(subtracaoUltimoStatus)
-        </td>
+        @if (prospeccao.Status.OrderBy(followup => followup.Data).Last().Status != StatusProspeccao.Planejada)
+        {
+            <td class="cell">
+                @if (prospeccao.Status.OrderBy(followup => followup.Data).Last().Status != StatusProspeccao.Planejada)
+                {
+                    @FunilHelpers.VerificarTemperatura(subtracaoUltimoStatus)
+                }
+            </td>
+        }
         <td class="cell">
             @if (prospeccao.ValorProposta != 0)
             {

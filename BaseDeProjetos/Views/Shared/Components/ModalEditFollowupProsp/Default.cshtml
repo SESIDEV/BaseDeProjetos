@@ -53,8 +53,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Informações da prospecção (primeiro contato)</label>
-                    <input type="text" class="form-control" value="@prosp.Status.First().Anotacoes" readonly />
+                    <label>Informações da prospecção (Primeiro Contato)</label>
+                    <textarea type="text" class="form-control" value="@prosp.Status.First().Anotacoes" readonly>@prosp.Status.First().Anotacoes
+                    </textarea>
                 </div>
 
             </div>
