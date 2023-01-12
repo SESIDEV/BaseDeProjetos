@@ -230,7 +230,13 @@ namespace BaseDeProjetos.Helpers
             {
                 searchString = searchString.ToLower();
 
-                prospeccoes = prospeccoes.Where(s => s.Empresa.Nome.ToLower().Contains(searchString) || s.Usuario.UserName.ToLower().Contains(searchString)).ToList();
+                prospeccoes = prospeccoes.Where(s =>
+                s.Empresa.Nome.ToLower().Contains(searchString) ||
+                s.Usuario.UserName.ToLower().Contains(searchString) ||
+                s.NomeProspeccao.ToLower().Contains(searchString) ||
+                s.MembrosEquipe.ToLower().Contains(searchString)
+                
+                ).ToList();
             }
 
             return prospeccoes;
