@@ -31,9 +31,19 @@
 
 }
 <div>
-    <figure class="col-12 highcharts-figure">
-        <div id="projetos"></div>
-    </figure>
+    <div class="pb-4">
+        <div class="app-card app-card-chart shadow-sm h-100">
+            <div class="app-card-header p-3">
+                <h4 class="app-card-title">Projetos dos Institutos</h4>
+            </div>            
+            <div class="app-card-body p-4">
+                <figure class="col-12 highcharts-figure">
+                    <div id="projetos"></div>
+                </figure>
+            </div>
+        </div>
+    </div>
+    
 </div>
 
 <script type="text/javascript">
@@ -42,7 +52,7 @@
             type: 'column'
         },
         title: {
-            text: 'Projetos dos institutos'
+            text: null
         },
         xAxis: {
             categories: [
