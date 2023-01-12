@@ -104,11 +104,11 @@
                         <label asp-for="@Model.Status" class="control-label"></label>
                         @if ((int)prosp.Status.OrderBy(p => p.Data).Last().Status == (int)StatusProspeccao.Planejada)
                         {
-                            <select asp-for="@Model.Status" class="form-control" asp-items="Html.GetEnumSelectList<StatusProspeccao>().Where(p => Int32.Parse(p.Value) <= (int)prosp.Status.OrderBy(p=> p.Data).Last().Status)"></select>
+                            <select asp-for="@Model.Status" class="form-control" asp-items="Html.GetEnumSelectList<StatusProspeccao>().Where(p => Int32.Parse(p.Value) <= (int)prosp.Status.OrderBy(p=> p.Data).Last().Status)" onchange="checarStatusNaoConvertida(this)"></select>
                         }
                         else
                         {
-                            <select asp-for="@Model.Status" class="form-control" asp-items="Html.GetEnumSelectList<StatusProspeccao>().Where(p => Int32.Parse(p.Value) >= (int)prosp.Status.OrderBy(p => p.Data).Last().Status)"></select>
+                            <select asp-for="@Model.Status" class="form-control" asp-items="Html.GetEnumSelectList<StatusProspeccao>().Where(p => Int32.Parse(p.Value) >= (int)prosp.Status.OrderBy(p => p.Data).Last().Status)" onchange="checarStatusNaoConvertida(this)"></select>
                         }
 
                         <span asp-validation-for="Status" class="text-danger"></span>
@@ -118,9 +118,8 @@
                         <textarea class="form-control" asp-for=" Anotacoes" rows="3"></textarea>
                         <span asp-validation-for="Anotacoes" class="text-danger"></span>
                     </div>
-
-                    <hr />
                     <div id="naoconversao" style="display:none">
+                        <hr />
                         <div class="form-group">
                             <label class="control-label"> Motivo de não conversão:</label>
                             <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<MotivosNaoConversao>()"></select>

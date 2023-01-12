@@ -117,6 +117,14 @@ function textToSelect(nomeModal, idText, idSelect) {
     }})
 }
 
+function checarStatusNaoConvertida(select){
+    if (select.value == 7){
+        document.querySelector('#naoconversao').style.display = 'block';
+    } else {
+        document.querySelector('#naoconversao').style.display = 'none';
+    }
+}
+
 function updateLink() {
     var baseUrl = location.href.split("?")[0];
     var params = "?ano=";
