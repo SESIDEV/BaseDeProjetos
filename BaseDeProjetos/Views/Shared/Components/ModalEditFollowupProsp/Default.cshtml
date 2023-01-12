@@ -104,13 +104,11 @@
                         <textarea class="form-control" asp-for=" Anotacoes" rows="3"> @Model.Anotacoes</textarea>
                         <span asp-validation-for="Anotacoes" class="text-danger"></span>
                     </div>
-
-                    <hr />
                     <div id="naoconversao" style="display:none">
+                        <hr />
                         <div class="form-group">
                             <label class="control-label"> Motivo de não conversão:</label>
-                            <select asp-for="Status" class="form-control"
-                                    asp-items="Html.GetEnumSelectList<MotivosNaoConversao>()"></select>
+                            <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<MotivosNaoConversao>()"></select>
                         </div>
                     </div>
                 </div>
