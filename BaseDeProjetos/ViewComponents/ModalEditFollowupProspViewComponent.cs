@@ -2,6 +2,7 @@
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Internal;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,12 +16,11 @@ namespace BaseDeProjetos.ViewComponents
 			_context = context;
 		}
 
-        public async Task<IViewComponentResult> InvokeAsync(string id)
+        public async Task<IViewComponentResult> InvokeAsync(string id, string id2)
         {
             ViewData["prospeccao"] = await _context.Prospeccao.FindAsync(id);
-			Prospeccao prosp = await _context.Prospeccao.FindAsync(id);
-			FollowUp follow = prosp.Status.OrderBy(f => f.Data).LastOrDefault();
-            return View(follow);
+			FollowUp followup = await _context.FollowUp.FindAsync(Int32.Parse(id2));
+            return View(followup);
         }
     }
 }

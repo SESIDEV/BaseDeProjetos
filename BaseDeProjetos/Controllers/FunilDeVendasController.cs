@@ -449,6 +449,7 @@ namespace BaseDeProjetos.Controllers
             }
             else
             {
+                // TODO: Colocar isso no frontend em vez de jogar uma exceção na cara do usuário
                 throw new InvalidOperationException("Não é possível remover todas os followups de uma prospecção");
             }
         }
@@ -498,6 +499,19 @@ namespace BaseDeProjetos.Controllers
                 return ViewComponent("null"); // View n existe é mais pra ""debug""
             }
 
+        }
+
+        public IActionResult RetornarModalEditFollowup(string idProsp, string idFollowup, string tipo)
+        {
+            CriarSelectListsDaView();
+            if (tipo != null || tipo != "")
+            {
+                return ViewComponent($"Modal{tipo}Prosp", new { id = idProsp, id2 = idFollowup });
+            }
+            else 
+            {
+                return ViewComponent("null"); // View debug
+            }
         }
 
         public string PuxarDadosProspeccoes(string casa = "ISIQV", int ano = 2022, bool planejadas = false){

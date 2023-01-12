@@ -34,7 +34,7 @@
                                         <hr />
                                         Vence em: @followup.Vencimento.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))
                                         <a class="btn btn-outline-danger" href="../RemoverFollowUp/@followup.Id">Remover</a> |
-                                        <a class="btn app-btn-secondary" href="../EditarFollowUp/@followup.Id">Editar</a>
+                                        <button type="button" class="btn app-btn-secondary" data-bs-toggle="modal" data-bs-target="#EditFollowupProspModal-@followup.Id-Toggle" onclick="carregarModalEditarFollowup('@Model.Id','@followup.Id','EditFollowup')">Editar</button>
                                     </div>
                                 </div>
                             </div>                            
