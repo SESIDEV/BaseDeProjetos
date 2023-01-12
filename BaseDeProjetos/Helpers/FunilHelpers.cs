@@ -230,17 +230,27 @@ namespace BaseDeProjetos.Helpers
             {
                 searchString = searchString.ToLower();
 
-                prospeccoes = prospeccoes.Where(s =>
-                s.Empresa.Nome.ToLower().Contains(searchString) ||
-                s.Usuario.UserName.ToLower().Contains(searchString) ||
-                s.NomeProspeccao.ToLower().Contains(searchString) ||
-                s.MembrosEquipe.ToLower().Contains(searchString)
-                
+                prospeccoes = prospeccoes.Where(p =>
+                checarSubstring(searchString, p.Empresa.Nome) ||
+                checarSubstring(searchString, p.Usuario.UserName) ||
+                checarSubstring(searchString, p.NomeProspeccao) ||
+                checarSubstring(searchString, p.MembrosEquipe)
+
                 ).ToList();
             }
 
             return prospeccoes;
         }
+
+        private static bool checarSubstring(string searchString, string campo)
+        {
+            if (campo != null){
+                return campo.ToLower().Contains(searchString);
+            } else {
+                return false;
+            }
+        }
+
         public static List<Producao> FiltrarProduções(string searchString, List<Producao> producoes)
         {
 
