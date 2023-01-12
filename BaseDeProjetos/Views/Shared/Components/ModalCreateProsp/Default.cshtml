@@ -46,8 +46,7 @@
                     </div>
                     <div class="mb-2">
                         <label asp-for="NomeProspeccao" class="col-form-label" style="font-weight: 600"></label>
-                        <input asp-for="NomeProspeccao" class="form-control"
-                               placeholder="Um nome amigável para a prospecção. Ex.: Proposta dos biossurfactantes" />
+                        <input asp-for="NomeProspeccao" class="form-control" autocomplete="off" placeholder="Um nome amigável para a prospecção. Ex.: Proposta dos biossurfactantes" />
                         <span asp-validation-for="NomeProspeccao" class="text-danger"></span>
                     </div>
                     <div class="mb-2">                        
@@ -76,8 +75,7 @@
                     </div>
                     <div class="mb-2">
                         <label asp-for="PotenciaisParceiros" class="col-form-label" style="font-weight: 600"></label>
-                        <input asp-for="PotenciaisParceiros" class="form-control"
-                               placeholder="Uma lista de potenciais parceiros, separados por PONTO E VIRGULA. Ex.: Pepsico; Coca-cola" />
+                        <input asp-for="PotenciaisParceiros" class="form-control" placeholder="Ex.: Pepsico; Coca-cola" autocomplete="off"/>
                         <span asp-validation-for="PotenciaisParceiros" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
