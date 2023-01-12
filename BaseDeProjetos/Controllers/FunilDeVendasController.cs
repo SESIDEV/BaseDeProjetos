@@ -199,7 +199,7 @@ namespace BaseDeProjetos.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction(nameof(Details), new { id = id });
+            return RedirectToAction(nameof(Index), new { id = id });
         }
         private void CriarFollowUp(FollowUp followup)
         {
