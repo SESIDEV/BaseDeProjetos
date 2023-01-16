@@ -4,6 +4,8 @@
     ViewData["Title"] = "Deletar";
 }
 
+<partial name="Header" view-data="@ViewData" />
+<div id="temp-container" style="padding-left:20em; padding-top:2em">
 <h1>Deletar</h1>
 
 <h3>Você tem certeza que quer deletar esta empresa?</h3>
@@ -42,4 +44,5 @@
         <input type="submit" value="Deletar" class="btn btn-danger" /> |
         <a asp-action="Index">Voltar para Lista</a>
     </form>
+</div>
 </div>

@@ -2,6 +2,8 @@
 
 @{ ViewData["Title"] = "Editar"; }
 
+<partial name="Header" view-data="@ViewData" />
+<div id="temp-container" style="padding-left: 20em; padding-top: 2em">
 <h1>Editar</h1>
 <script>
 addEventListener("load", () => {MostrarImagem();});
@@ -56,7 +58,7 @@ addEventListener("load", () => {MostrarImagem();});
 <div>
     <a asp-action="Index">Voltar para Lista</a>
 </div>
-
+</div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

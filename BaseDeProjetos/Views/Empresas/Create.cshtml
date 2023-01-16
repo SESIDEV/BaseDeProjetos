@@ -2,6 +2,8 @@
 @{
     ViewData["Title"] = "Criar";
  }
+<partial name="Header" view-data="@ViewData" />
+<div id="temp-container" style="padding-left:20em;padding-top: 2em">
 <h1>Criar</h1>
 <h4>Empresa</h4>
 <div class="form-check">
@@ -9,6 +11,7 @@
   <label class="form-check-label" for="empresa_estrangeira_check">Empresa Estrangeira</label>
 </div>
 <hr />
+</div>
 <script>
     function ChecarCNPJ() {
         document.getElementById("valor_cnpj").value = document.getElementById("valor_cnpj").value.replace(/[^0-9]/g, '');
@@ -27,7 +30,8 @@
         );
     }
 </script>
-<div class="row">
+
+<div class="row" style="padding-left: 20em;">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
