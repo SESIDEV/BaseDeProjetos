@@ -23,14 +23,14 @@
                                                     <div class="card">
                                                         <h5 class="card-header">Competências</h5>
                                                         <div class="card-body" id="notfilt">
-                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Competência 1</span>
-                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Competência 1</span>
-                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Competência 1</span>
-                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Competência 1</span>
-                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Competência 1</span>
-                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Competência 1</span>
-                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Competência 1</span>
-                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Competência 1</span>
+                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Biorefinaria</span>
+                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Engenharia de Software</span>
+                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Estatística</span>
+                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Fotofísica</span>
+                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Inteligência Artificial</span>
+                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Petroquímica</span>
+                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Quimiometria</span>
+                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Síntese orgânica</span>
                                                         </div>
                                                     </div>
                                                     
@@ -107,7 +107,7 @@
                                             <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
                                         </svg>
                                     </span>
-                                    <select id="campoSelect" class="form-select" multiple="true"></select>
+                                    <select id="pessoasSelect" class="form-select" onchange="procurarPessoa(this)"></select>
                                 </div>
                             </h4>
                         </div>
@@ -178,7 +178,7 @@
 
 <script>
     window.addEventListener('load', function(){
-        gerarOpcoesSelectPessoas();
+        gerarOpcoesSelectPessoas(null,'pessoasSelect')
         fetch('/Pessoas/dados').then(response => response.json()).then(data => {montarNetwork(data)});
     });
 </script>
