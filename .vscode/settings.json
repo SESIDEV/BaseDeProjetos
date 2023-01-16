@@ -17,6 +17,7 @@
   "conventionalCommits.scopes": [
     "migration",
     "sidebar",
-    "pessoas"
+    "pessoas",
+    "header"
   ]
 }
