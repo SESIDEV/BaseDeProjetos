@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Net.Http;
+using BaseDeProjetos.Helpers;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -24,7 +25,12 @@ namespace BaseDeProjetos.Controllers
         // GET: Empresas
         public IActionResult Index(string searchString = "")
         {
-            ViewBag.Prospeccoes = _context.Prospeccao.Where(P => P.Status.All(S => S.Status != StatusProspeccao.NaoConvertida &&
+			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+			ViewBag.usuarioCasa = usuario.Casa;
+			ViewBag.usuarioNivel = usuario.Nivel;
+
+			ViewBag.Prospeccoes = _context.Prospeccao.Where(P => P.Status.All(S => S.Status != StatusProspeccao.NaoConvertida &&
                                                                                     S.Status != StatusProspeccao.Convertida &&
                                                                                     S.Status != StatusProspeccao.Suspensa)).ToList();
 
@@ -83,7 +89,12 @@ namespace BaseDeProjetos.Controllers
         // GET: Empresas/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+			ViewBag.usuarioCasa = usuario.Casa;
+			ViewBag.usuarioNivel = usuario.Nivel;
+
+			if (id == null)
             {
                 return NotFound();
             }
@@ -101,7 +112,12 @@ namespace BaseDeProjetos.Controllers
         // GET: Empresas/Create
         public IActionResult Create()
         {
-            return View();
+			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+			ViewBag.usuarioCasa = usuario.Casa;
+			ViewBag.usuarioNivel = usuario.Nivel;
+
+			return View();
         }
 
         // POST: Empresas/Create
@@ -123,7 +139,12 @@ namespace BaseDeProjetos.Controllers
         // GET: Empresas/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+			ViewBag.usuarioCasa = usuario.Casa;
+			ViewBag.usuarioNivel = usuario.Nivel;
+
+			if (id == null)
             {
                 return NotFound();
             }
@@ -175,7 +196,12 @@ namespace BaseDeProjetos.Controllers
         // GET: Empresas/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+			ViewBag.usuarioCasa = usuario.Casa;
+			ViewBag.usuarioNivel = usuario.Nivel;
+
+			if (id == null)
             {
                 return NotFound();
             }

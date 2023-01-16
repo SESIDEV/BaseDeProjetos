@@ -8,6 +8,15 @@ namespace BaseDeProjetos.Models
 {
     public class Prospeccao : IEquatable<Prospeccao>
     {
+        public Prospeccao(FollowUp followUp)
+        {
+            this.Status = new List<FollowUp> { followUp };
+        }
+
+        public Prospeccao() { 
+            
+        }
+
         [Key]
         public virtual string Id { get; set; }
 
@@ -15,11 +24,15 @@ namespace BaseDeProjetos.Models
         public virtual string NomeProspeccao { get; set; }
 
         [Display(Name = "Potenciais Parceiros da Prospeccção")]
-        public virtual string PotenciaisParceiros { get; set; } //Por ora é uma string separada por vírgulas
+        //Por ora é uma string separada por vírgulas
+        public virtual string PotenciaisParceiros { get; set; } 
 
         public virtual Empresa Empresa { get; set; }
         public virtual Pessoa Contato { get; set; }
         public virtual Usuario Usuario { get; set; }
+
+        [Display(Name = "Equipe")]
+        public virtual string MembrosEquipe { get; set; }
 
         [Display(Name = "Tipo de Contratação")]
         public virtual TipoContratacao TipoContratacao { get; set; }
@@ -32,6 +45,7 @@ namespace BaseDeProjetos.Models
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "R{0:C2}")]
         [Display(Name = "Valor da Proposta (R$)")]
         public virtual decimal ValorProposta { get; set; } = 0;
+        
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "R{0:C2}")]
         [Display(Name = "Valor Estimado da Prospecção (R$)")]
         public virtual decimal ValorEstimado { get; set; } = 0;
@@ -59,6 +73,8 @@ namespace BaseDeProjetos.Models
         public virtual Prospeccao Origem { get; set; }
 
         public virtual string OrigemID { get; set; }
+        
+        [Display(Name = "Anotações")]
         public virtual string Anotacoes { get; set; }
         public virtual DateTime Data { get; set; }
 

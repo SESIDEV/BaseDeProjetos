@@ -2,13 +2,21 @@
 
 
 <style>
-    th{
-        font-size: 0.7rem;
+    td, th {
+        font-size: 1rem;
     }
+
+    .dropdown-item:hover {
+        border: solid 1px green;
+        border-radius: 5px;
+        transition: 0.5s;
+    }
+
 </style>
-<div class="container">
+<partial name="Header" view-data="@ViewData" />
+<div class="container" style="padding-left: 15em;">
     <p>
-        <a asp-action="Create" class="btn btn-primary">Criar Edital</a>
+        <a asp-action="Create" class="btn bg-success text-white">Criar Edital</a>
     </p>
     <table class="table">
         <thead>
@@ -35,19 +43,10 @@
                     @Html.DisplayNameFor(model => model.ValorEdital)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Proponente)
-                </th>
-                <th>
                     @Html.DisplayNameFor(model => model.LinkEdital)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.ProjetoProposto)
-                </th>
-                <th>
                     @Html.DisplayNameFor(model => model.DataResultado)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.StatusSubmissao)
                 </th>
                 <th></th>
             </tr>
@@ -78,26 +77,18 @@
                         @Html.DisplayFor(modelItem => item.ValorEdital)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Proponente)
-                    </td>
-                    <td>
                         @Html.DisplayFor(modelItem => item.LinkEdital)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ProjetoProposto)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.DataResultado)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.StatusSubmissao)
-                    </td>
-                    <td>
                         <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn btn-success text-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Ações
                             </button>
                             <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" id="btn-prospectar" data-bs-toggle="modal" href="#criarProspModalToggle" role="button">Prospectar Edital</a></li>
                                 <li><a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Editar</a></li>
                                 <li><a class="dropdown-item" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary mt-1">Detalhes</a></li>
                                 <li><a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-primary mt-1">Excluir</a></li>
@@ -108,5 +99,5 @@
             }
         </tbody>
     </table>
-
 </div>
+@await Component.InvokeAsync("ModalCreateProsp")

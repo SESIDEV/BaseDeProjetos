@@ -1,130 +1,308 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
 @{
-    ViewData["Title"] = "Index";
-    List<Prospeccao> ativas = ViewBag.Ativas as List<Prospeccao>;
-    List<Prospeccao> propostas = ViewBag.EmProposta as List<Prospeccao>;
-    List<Prospeccao> concluidas = ViewBag.Concluidas as List<Prospeccao>;
-    List<Prospeccao> planejadas = ViewBag.Planejadas as List<Prospeccao>;
-    List<Prospeccao> erradas = ViewBag.Erradas as List<Prospeccao>;
-    List<Instituto> institutos = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto))).Where(c=>c!= Instituto.Super).ToList();
+	ViewData["Title"] = "Index";
+	List<Prospeccao> ativas = ViewBag.Ativas as List<Prospeccao>;
+	List<Prospeccao> propostas = ViewBag.EmProposta as List<Prospeccao>;
+	List<Prospeccao> concluidas = ViewBag.Concluidas as List<Prospeccao>;
+	List<Prospeccao> planejadas = ViewBag.Planejadas as List<Prospeccao>;
+	List<Prospeccao> erradas = ViewBag.Erradas as List<Prospeccao>;
+	List<Instituto> institutos = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto))).Where(c => c != Instituto.Super).ToList();
 }
+
+<partial name="Header" view-data="@ViewData" />
+<div class="app-wrapper">
+	<div class="app-content pt-3 p-md-3 p-lg-4">
+		<div class="container-xl">
+
+			<div class="row g-3 mb-4 align-items-center justify-content-between">
+				<div class="col-auto">
+					<h1 class="app-page-title mb-0">Prospecções</h1>
+				</div>
+				<div class="col-auto">
+					<div class="page-utilities">
+						<div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+							<div class="col-auto">
+								<form class="table-search-form row gx-1 align-items-center">
+									<div class="col-auto">
+										<input type="text" id="search-orders" name="SearchString" value='@ViewData["CurrentFilter"]' class="form-control search-orders" placeholder="Buscar..." autocomplete="off">
+									</div>
+									<div class="col-auto">
+										<button type="submit" class="btn app-btn-primary">Pesquisar</button>
+									</div>
+									<div class="col-auto">
+										<button type="submit" class="btn app-btn-primary">Lista Completa</button>
+									</div>
+								</form>
+
+							</div>
+							<div class="col-auto">
+								<select class="form-select w-auto" id="ano" name="ano" onchange="updateLink()">
+								<option value="Todos">Todos</option>
+									@{
+										int anoFinal = 2019;
+										int anoAtual = DateTime.Now.Year;
+										while (anoAtual >= anoFinal)
+										{
+											<option value="@anoAtual">@anoAtual</option>
+											anoAtual--;
+										}
+									}								
+								</select>
+							</div>
+							<div class="col-auto">
+								<a class="btn app-btn-primary" data-bs-toggle="modal" href="#criarProspModalToggle" role="button">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill"
+										 viewBox="0 0 16 16">
+										<path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
+									</svg> Nova Prospecção
+								</a>
+								@await Component.InvokeAsync("ModalCreateProsp")
+							</div>
+
+							<div class="col-auto" id="container-ajuda">
+								<a type="button" class="btn bg-warning text-white" data-bs-toggle="modal" href="#modalTutorialFdv" role="button">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-octagon-fill" viewBox="0 0 16 16">
+										<path d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146zM5.496 6.033a.237.237 0 0 1-.24-.247C5.35 4.091 6.737 3.5 8.005 3.5c1.396 0 2.672.73 2.672 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.105a.25.25 0 0 1-.25.25h-.81a.25.25 0 0 1-.25-.246l-.004-.217c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.803 0-1.253.478-1.342 1.134-.018.137-.128.25-.266.25h-.825zm2.325 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927z" />
+									</svg> Tutorial!
+								</a>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
+				<a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-dashboard-tab" data-bs-toggle="tab" href="#prospeccao-dashboard" role="tab" aria-controls="prospeccao-dashboard" aria-selected="true">Dashboard</a>
+				<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" data-bs-toggle="tab" href="#prospeccao-ativas" role="tab" aria-controls="prospeccao-ativas" aria-selected="false">Ativas (@ativas.Count())</a>
+				<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" data-bs-toggle="tab" href="#prospeccao-comproposta" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta (@propostas.Count())</a>
+				<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" data-bs-toggle="tab" href="#prospeccao-concluidas" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas (@concluidas.Count())</a>
+				<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" data-bs-toggle="tab" href="#prospeccao-planejadas" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas (@planejadas.Count())</a>
+				<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" data-bs-toggle="tab" href="#prospeccao-erradas" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas (@erradas.Count())</a>
+			</nav>
+
+
+			<div class="tab-content" id="orders-table-tab-content">
+				<div class="tab-pane fade show active" id="prospeccao-dashboard" role="tabpanel" aria-labelledby="prospeccao-dashboard-tab">
+					<div class="app-card app-card-orders-table mb-5">
+						<div class="app-card-body">
+							<partial name="graph_funil" view-data="@ViewData" />							
+						</div>
+					</div>
+
+				</div>
+
+				@*// TODO: Loop*@
+
+				<div class="tab-pane fade" id="prospeccao-ativas" role="tabpanel" aria-labelledby="prospeccao-ativas-tab">
+					<div class="app-card app-card-orders-table shadow-sm mb-5">
+						<div class="app-card-body">
+							<div class="table-responsive">
+
+								<table class="table mb-0 text-left">
+									<thead>
+										<tr>
+											<th class="cell">Logo</th>
+											<th class="cell">Empresa</th>
+											<th class="cell">Líder</th>
+											<th class="cell">Projeto</th>
+											<th class="cell">Tipo Contratação</th>
+											<th class="cell">Status</th>
+											<th class="cell">Temperatura</th>
+											<th class="cell">Valor</th>
+											<th class="cell">Detalhes</th>
+										</tr>
+									</thead>
+									<tbody>
+										<partial name="ListaProsp" view-data="@ViewData" model="@ativas" />
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="tab-pane fade" id="prospeccao-comproposta" role="tabpanel" aria-labelledby="prospeccao-comproposta-tab">
+					<div class="app-card app-card-orders-table shadow-sm mb-5">
+						<div class="app-card-body">
+							<div class="table-responsive">
+								<table class="table mb-0 text-left">
+									<thead>
+										<tr>
+											<th class="cell">Logo</th>
+											<th class="cell">Empresa</th>
+											<th class="cell">Líder</th>
+											<th class="cell">Projeto</th>
+											<th class="cell">Tipo Contratação</th>
+											<th class="cell">Status</th>
+											<th class="cell">Temperatura</th>
+											<th class="cell">Valor</th>
+											<th class="cell">Detalhes</th>
+										</tr>
+									</thead>
+									<tbody>
+										<partial name="ListaProsp" view-data="@ViewData" model="@propostas" />
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="tab-pane fade" id="prospeccao-concluidas" role="tabpanel" aria-labelledby="prospeccao-concluidas-tab">
+					<div class="app-card app-card-orders-table shadow-sm mb-5">
+						<div class="app-card-body">
+							<div class="table-responsive">
+								<table class="table mb-0 text-left">
+									<thead>
+										<tr>
+											<th class="cell">Logo</th>
+											<th class="cell">Empresa</th>
+											<th class="cell">Líder</th>
+											<th class="cell">Projeto</th>
+											<th class="cell">Tipo Contratação</th>
+											<th class="cell">Status</th>
+											<th class="cell">Temperatura</th>
+											<th class="cell">Valor</th>
+											<th class="cell">Detalhes</th>
+										</tr>
+									</thead>
+									<tbody>
+										<partial name="ListaProsp" Detalhes-data="@ViewData" model="@concluidas" />
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="tab-pane fade" id="prospeccao-planejadas" role="tabpanel" aria-labelledby="prospeccao-planejadas-tab">
+					<div class="app-card app-card-orders-table shadow-sm mb-5">
+						<div class="app-card-body">
+							<div class="table-responsive">
+								<table class="table mb-0 text-left">
+									<thead>
+										<tr>
+											<th class="cell">Logo</th>
+											<th class="cell">Empresa</th>
+											<th class="cell">Líder</th>
+											<th class="cell">Projeto</th>
+											<th class="cell">Tipo Contratação</th>
+											<th class="cell">Status</th>
+											<th class="cell">Valor</th>
+											<th class="cell">Detalhes</th>
+										</tr>
+									</thead>
+									<tbody>
+										<partial name="ListaProsp" view-data="@ViewData" model="@planejadas" />
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="tab-pane fade" id="prospeccao-erradas" role="tabpanel" aria-labelledby="prospeccao-erradas-tab">
+					<div class="app-card app-card-orders-table shadow-sm mb-5">
+						<div class="app-card-body">
+							<div class="table-responsive">
+								<table class="table mb-0 text-left">
+									<thead>
+										<tr>
+											<th class="cell">Logo</th>
+											<th class="cell">Empresa</th>
+											<th class="cell">Líder</th>
+											<th class="cell">Projeto</th>
+											<th class="cell">Tipo Contratação</th>
+											<th class="cell">Status</th>
+											<th class="cell">Temperatura</th>
+											<th class="cell">Valor</th>
+											<th class="cell">Detalhes</th>
+										</tr>
+									</thead>
+									<tbody>
+										<partial name="ListaProsp" view-data="@ViewData" model="@erradas" />
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="modalTut">
+	<div class="modal fade" id="modalTutorialFdv" aria-hidden="true" aria-labelledby="modalTutorialFdvLabel"
+		 tabindex="-1">
+		<div class="modal-dialog modal-xl modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="modalTutorialFdvLabel">Tutorial Funil de Vendas</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="d-flex align-items-start justify-content-center">
+						<iframe width="960" height="540" src="https://www.youtube-nocookie.com/embed/4RTvGaA0FC4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-primary" data-bs-dismiss="modal">Sair</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 <script>
-    function getSelected() {
-        var year = location.href.split('?')[1].split('&');
+	function carregarModalFunil(idProspeccao, tipo) {
+		if (tipo) {
+			fetch(`/FunildeVendas/RetornarModal?idProsp=${idProspeccao}&tipo=${tipo}`)
+			.then(response => response.text())
+			.then(result => {
+				document.querySelector(`#modal${tipo}Prosp-${idProspeccao}-container`).innerHTML = result;
+			});
+		} else {
+			console.log("Tipo de Modal Inválido");
+		}
+	}
 
-        for (let i = 0; i < year.length; i++) {
-            if (year[i].includes('ano')) {
-                var ano = year[i].split('=')[1];
-                return ano;
-            }
-            else {
-                return document.getElementById('ano').value;
-            }
-        }
-    }
+	function carregarModaisFunil(idProspeccao) {
+		// O nome precisa bater com o nome da view, no sentido que, o sufixo será "ProspViewComponent". Em outras palavras, está acoplado.
+		modaisDisponiveis = ["Edit", "Delete", "History", "CreateFollowup"]
+		modaisDisponiveis.forEach((tipo) => {
+			carregarModalFunil(idProspeccao, tipo)
+		})
+	}
 
-    function inserirAnoAtual() {
-        setInterval(() => {
-            document.querySelector("#ano").value = getSelected();
-        }, 200)             
-    }
-    inserirAnoAtual();
+	function carregarModalEditarFollowup(idProspeccao, idFollowup, tipo) {
+		console.log(`#modal${tipo}Prosp-${idProspeccao}-container`)
+		if (tipo) {
+			fetch(`/FunildeVendas/RetornarModalEditFollowup?idProsp=${idProspeccao}&idFollowup=${idFollowup}&tipo=${tipo}`)
+				.then(response => response.text())
+				.then(result => {
+					document.querySelector(`#modal${tipo}Prosp-${idProspeccao}-container`).innerHTML = result;
+				});
+		} else {
+			console.log("Algo deu errado");
+		}
+	}
+
+	//function obterCookie(nomeCookie) {
+	//	var results = document.cookie.match('(^|;) ?' + nomeCookie + '=([^;]*)(;|$)');
+
+	//	if (results)
+	//		return (unescape(results[2]));
+	//	else
+	//		return null;
+	//}
+
+	//function setarCookie(nomeCookie,  maxAge) {
+	//	// 1 day = 86400s
+	//	document.cookie = `name=${nomeCookie};maxAge=${maxAge};isFirstTime=${true}`;
+	//}
+
+
+
 
 </script>
-<div class="row card">
-    <div class=" col-12 card-body">
-        <h1 class="card-title">Prospecções @ViewData["Area"]</h1>
-        <div>
-            <div>
-                <div>
-                    <h5 class="text-white h4">Menu</h5>
-                    <div class="row g-3">
-                        <div class="col-2">
-                            <span>Selecione o ano:</span>
-                            <select class="form-select" id="ano" name="ano" onchange="updateLink()">                                
-                                <option value="Todos">Todos</option>
-                                <option value="2022">2022</option>
-                                <option value="2021">2021</option>
-                                <option value="2020">2020</option>
-                                <option value="2019">2019</option>
-                            </select>
-                        </div>
-                        <div class="col-6">
-                            <form asp-controller="FunilDeVendas" asp-action="Index">
-                                <input class="input-group" name="ano" value="Todos" id="inputLiderOuEmpresa" style="display: none; padding: 0px; margin: 0px;"/>                         
-                                <br />
-                                <div class="input-group mb-3">                                    
-                                    <input class="form-control" type="text" name="SearchString" value='@ViewData["CurrentFilter"]' placeholder="Pesquise pelo líder ou empresa"/>
-                                    <button type="submit" class="btn btn-primary">Procurar</button>
-                                    <button type="submit" class="btn btn-primary" style="margin-left: 15px;">Lista Completa</button>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="col-4"><br />
-                            <a asp-action="Create" style="text-decoration:none;" class="btn btn-primary">Nova Prospecção</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <nav class="navbar navbar-light bg-light">
-                <div class="container-fluid justify-content-end">
-                </div>
-            </nav>
-        </div>
-
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Dashboard</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="ativas-tab" data-toggle="tab" href="#ativas" role="tab" aria-controls="ativas" aria-selected="false">Ativas (@ativas.Count())</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="propostas-tab" data-toggle="tab" href="#propostas" role="tab" aria-controls="propostas" aria-selected="false">Com Proposta (@propostas.Count())</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="concluidas-tab" data-toggle="tab" href="#concluidas" role="tab" aria-controls="concluidas" aria-selected="false">Concluídas (@concluidas.Count())</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="planejadas-tab" data-toggle="tab" href="#planejadas" role="tab" aria-controls="planejadas" aria-selected="true">Planejadas (@planejadas.Count())</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="erradas-tab" data-toggle="tab" href="#erradas" role="tab" aria-controls="erradas" aria-selected="true">Erradas (@erradas.Count())</a>
-            </li>
-        </ul>
-        
-
-        <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                <div>
-                    <partial name="graph_funil" view-data="@ViewData" model="@Model" />
-                </div>
-            </div>
-            <div class="tab-pane fade" id="ativas" role="tabpanel" aria-labelledby="ativas-tab">
-                <div>
-                    <partial name="ListaProsp" view-data="@ViewData" model="@ativas" />
-                </div>
-            </div>
-            <div class="tab-pane fade" id="propostas" role="tabpanel" aria-labelledby="propostas-tab">
-                <div>
-                    <partial name="ListaProsp" view-data="@ViewData" model="@propostas" />
-                </div>
-            </div>
-            <div class="tab-pane fade" id="concluidas" role="tabpanel" aria-labelledby="concluidas-tab">
-                <div>
-                    <partial name="ListaProsp" view-data="@ViewData" model="@concluidas" />
-                </div>
-            </div>
-            <div class="tab-pane fade" id="planejadas" role="tabpanel" aria-labelledby="planejadas-tab">
-                <div>
-                    <partial name="ListaProsp" view-data="@ViewData" model="@planejadas" />
-                </div>
-            </div>
-            <div class="tab-pane fade" id="erradas" role="tabpanel" aria-labelledby="erradas-tab">
-                <div>
-                    <partial name="ListaProsp" view-data="@ViewData" model="@erradas" />
-                </div>
-            </div>
-        </div>
-    </div>
-</div>

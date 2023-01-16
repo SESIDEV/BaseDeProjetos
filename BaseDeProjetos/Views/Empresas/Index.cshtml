@@ -120,6 +120,8 @@
         color: white;
     }
 </style>
+
+<partial name="Header" view-data="@ViewData" />
 <div class="container">
     <div class="row">
         <div class="col-12">
@@ -178,10 +180,10 @@
                             <p><strong>Prospeccoes Totais: </strong>@prosps.Where(P => P.Empresa.Id == @item.Id).Count()</p>
                             <p><strong>CNPJ:</strong> @item.CNPJ</p>
                             <p><strong>Setor:</strong> @item.Segmento</p>
-                            <button class="btn-empresa efeito-hover" data-toggle="collapse" data-target="#e_@item.Id">Ações</button>
-                            <button class="btn-empresa efeito-hover" data-toggle="collapse" data-target="#ce_@item.Id">Contatos</button>
-                            <button class="btn-empresa efeito-hover" data-target="#ce_@item.Id"><a asp-controller="FunilDeVendas" asp-action="Planejar" asp-route-id="@item.Id">Planejar</a></button>
-                            <button class="btn-empresa efeito-hover" data-toggle="collapse" data-target="#pe_@item.Id">Prospecções</button>
+                            <button class="btn-empresa efeito-hover" data-bs-toggle="collapse" data-bs-target="#e_@item.Id">Ações</button>
+                            <button class="btn-empresa efeito-hover" data-bs-toggle="collapse" data-bs-target="#ce_@item.Id">Contatos</button>
+                            <button class="btn-empresa efeito-hover" data-bs-target="#ce_@item.Id"><a asp-controller="FunilDeVendas" asp-action="Planejar" asp-route-id="@item.Id">Planejar</a></button>
+                            <button class="btn-empresa efeito-hover" data-bs-toggle="collapse" data-bs-target="#pe_@item.Id">Prospecções</button>
 
                             <div id="e_@item.Id" class="collapse">
                                 <h6>Ações</h6>

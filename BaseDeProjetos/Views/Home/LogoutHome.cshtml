@@ -1,9 +1,23 @@
 ﻿@page
 @model BaseDeProjetos.Views.Home.LogoutHomeModel
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<Usuario> SignInManager
+@inject UserManager<Usuario> UserManager
 
-<div class="container">
-    <div class="row">
-        <div class="card col-md-9 m-0">
+<ul class="navbar-nav justify-content-end gap-2" style="flex-direction: row; margin-right: 25em; margin-bottom: .5em;">
+    @if (!SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item efeito-hover">
+            <a class="btn bg-success text-white" asp-area="Identity" asp-page="/Account/Register">Cadastrar</a>
+        </li>
+        <li class="nav-item efeito-hover">
+            <a class="btn bg-success text-white" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+    }
+</ul>
+<div class="container" style="margin-bottom: 15em;">
+    <div class="row gap-2">
+        <div class="card col-md-8 m-0">
             <div class="card-body">
                 <h5 class="card-title text-center">Bem vindo ao sistema de Gestão de Inovação - SGI</h5>
                 <hr />

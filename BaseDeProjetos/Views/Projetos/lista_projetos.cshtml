@@ -25,111 +25,106 @@
 </style>
 
 
-    @foreach (var item in Model)
-    {
-    if (item.DataEncerramento < DateTime.Today && (item.Status == StatusProjeto.EmExecucao)){
-        item.Status = StatusProjeto.Atrasado;
-    }
-        <div class="container">
-            <div class="card mb-2 mt-1">
-
-            @switch(item.Status){
-                case StatusProjeto.EmExecucao:
-                    <div class="card-header bg-primary" style="color:white">
-                        @Html.DisplayFor(modelItem => item.Status)
-                    </div>
-                    break;
-                case StatusProjeto.Concluido:
-                    <div class="card-header bg-success" style="color:white">
-                        @Html.DisplayFor(modelItem => item.Status)
-                    </div>
-                break;
-                case StatusProjeto.Contratado:
-                    <div class="card-header bg-light">
-                        @Html.DisplayFor(modelItem => item.Status)
-                    </div>
-                break;
-                case StatusProjeto.Atrasado:
-                    <div class="card-header bg-danger" style="color:white">
-                        @Html.DisplayFor(modelItem => item.Status)
-                    </div>
-                break;
-                default:
-                    <div class="card-header bg-warning" style="color:white">
-                    Projeto desatualizado. Contate o PMO Operacional
-                        @Html.DisplayFor(modelItem => item.Status)
-                    </div>
-                break;
-            }
-                <div class="card-body">
-                    <div class="card-text row">
-                        <div class="col-2">
-                            @if (item.Empresa != null)
-                            {
-                                <img style="background-color:white" id="logoEmpresa" src="@item.Empresa.Logo" alt="Logo da Empresa" />
-                            }
-                            else
-                            {
-                                <h5 id="logo_alt">Sem Logo</h5>
-                            }
-                        </div>
-
-
-                        <div class="col-10 row">
-                            <div class="col-12 row">
-                                <span class="col"><strong>@Html.DisplayNameFor(model => model.Empresa.Nome)</strong></span>
-                                <span class="col"><strong>@Html.DisplayNameFor(model => model.NomeProjeto)</strong></span>
-                                <span class="col"><strong>@Html.DisplayNameFor(model => model.ValorAporteRecursos)</strong></span>
-                                <span class="col"><strong>@Html.DisplayNameFor(model => model.FonteFomento)</strong></span>
-                                <span class="col"><strong>@Html.DisplayNameFor(model => model.DataEncerramento)</strong></span>
-                            </div>
-
-                            <hr>
-
-                            <div class="col-12 row">
-                                <span class="col">@Html.DisplayFor(modelItem => item.Empresa.Nome)</span>
-                                <span class="col">@Html.DisplayFor(modelItem => item.NomeProjeto)</span>
-                                <span class="col">
-                                    @if(item.ValorAporteRecursos != 0 && item.ValorAporteRecursos > 0)
-                                    {
-                                        <span> R$ @Helpers.FormatarValoresDashboards((decimal)item.ValorAporteRecursos)</span>
-                                    }
-                                    else
-                                    {
-                                        <span>A preencher</span>
-                                    }
-                                </span class="col">
-                                <span class="col">@Html.DisplayFor(modelItem => item.FonteFomento)</span>
-                                <span class="col">
-                                    @item.DataEncerramento.ToString("dd/MM/yyy")
-                                </span>
-                            </div>
-
-
-
-                        </div>
-                    </div>
-
-              <div class="collapse" id="@item.Id">
-                           <hr>
-                <div >
-                    <div style="display:flex; justify-content: center; gap: 5px;">
-                        <a asp-action="Edit" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Editar</button></a>
-                        <a asp-action="Details" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Detalhes</button></a>
-                        <a asp-action="IncluirEntrega" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Inserir Entregas</button></a>
-                        <a asp-action="Delete" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Remover</button></a>
-                    </div>
-                </div>
-
-                </div>
-                 </div>
-                 <button id="btn-collapse" class="btn btn-outline-secondary container-fluid" type="button" data-toggle="collapse" data-target="#@item.Id" aria-expanded="false" aria-controls="collapseExample">
-                    Ver mais detalhes
-                </button>
-
-             </div>
-           
+@foreach (var projeto in Model)
+{
+    <form asp-action="Edit" asp-route-id="@projeto.Id" method="post">
+        <div id="modalEditProj-@projeto.Id-container">
         </div>
+    </form>
 
 
-    }
+    <div id="modalDeleteProj-@projeto.Id-container">
+    </div>
+
+    <div id="modalHistoryProj-@projeto.Id-container">
+    </div>
+
+    <div id="modalCreateFollowupProj-@projeto.Id-container">
+    </div>
+
+    <div id="modalEditFollowupProj-@projeto.Id-container">
+    </div>
+
+
+    <div class="modal fade" id="modalDetalhes-@projeto.Id" tabindex="-1" aria-labelledby="modalDetalhes-@projeto.Id-Label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalDetalhes-@projeto.Id-Label">Detalhes do Projeto</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex flex-column gap-1">
+                    <h1 class="app-card-title">Empresa:</h1>
+                    <span>@projeto.Empresa.Nome</span>
+                    <h1 class="app-card-title">Projeto:</h1>
+                    <span>@projeto.NomeProjeto</span>
+                    <h1 class="app-card-title">Status:</h1>
+                    <span>@projeto.Status.GetDisplayName()</span>
+                    <h1 class="app-card-title">Valor:</h1>
+                    <nobr>
+                    <span>R$ @Helpers.FormatarValoresDashboards((decimal)projeto.ValorAporteRecursos)</span>
+                    </nobr>                    
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#editarProjModal-@projeto.Id-Toggle" role="button">
+                        Editar
+                    </a>
+                    <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#historyProjModal-@projeto.Id-Toggle" role="button">
+                        Histórico
+                    </a>
+                    <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#CreateFollowupProjModal-@projeto.Id-Toggle" role="button">
+                        Incluir Status
+                    </a>
+                    <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#deletarProjModal-@projeto.Id-Toggle" role="button">
+                        Deletar
+                    </a>
+
+                    @*<a asp-action="Edit" asp-route-id="@projeto.Id" class="btn btn-outline-primary">Editar</a>*@
+                    @*<a asp-action="Details" asp-route-id="@projeto.Id" class="btn btn-outline-primary">Histórico</a>*@
+                    @*<a asp-action="Atualizar" asp-route-id="@projeto.Id" class="btn btn-outline-primary">Atualizar</a>*@
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <tr>
+        @if (projeto.Empresa.Logo != null)
+        {
+            <td class="cell"><img src="@projeto.Empresa.Logo" id="logoEmpresa" alt="Logo da Empresa" style="background-color:white"></td>
+        }
+        else
+        {
+            <td class="cell"><nobr id="logo_alt">Sem Logo</nobr></td>
+        }
+        <td class="cell">@projeto.Empresa.Nome</td> @*Empresa*@
+        <td class="cell">
+            @projeto.NomeProjeto
+        </td>
+        <td class="cell">
+            @projeto.Status.GetDisplayName()
+        </td>
+            
+        <td class="cell">
+            @if(projeto.ValorAporteRecursos != 0 && projeto.ValorAporteRecursos > 0)
+            {
+                <span> R$ @Helpers.FormatarValoresDashboards((decimal)projeto.ValorAporteRecursos)</span>
+            }
+            else
+            {
+                <span>A preencher</span>
+            }
+        </td>
+        <td class="cell">
+            @projeto.FonteFomento.GetDisplayName()
+        </td>        
+        <td class="cell">
+
+            <span>@projeto.DataEncerramento.ToString("dd/MM/yyyy")</span>
+            
+        </td>
+
+        <td class="cell">
+            <button type="button" data-bs-target="#modalDetalhes-@projeto.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary" onclick="carregarModaisProjeto('@projeto.Id')">Detalhes</button>
+        </td>
+    </tr>
+}

@@ -8,12 +8,12 @@
     {
         ViewData["Area"] = Context.Session.GetString("_Casa");
     }
-
 }
 
-<h1>Detalhes da prospecção</h1>
 
-<div>
+<partial name="Header" view-data="@ViewData" />
+<div style="padding-left: 25em; padding-right: 10em; padding-top: 2em">
+    <h1>Detalhes da prospecção</h1>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -74,12 +74,13 @@
             </div>
         </div>
     }
-</div>
-<hr />
-<div class="row">
-    <h5 class="col-12">Ações</h5>
     <hr />
-    <a class="col btn btn-primary" asp-action="Atualizar" asp-route-id="@Model.Id">Adicionar Status</a>
-    <a class="col btn btn-primary" asp-action="Edit" asp-route-id="@Model.Id">Editar Prospecção</a>
-    <a class="col btn btn-primary" asp-action="Index" asp-route-casa='@ViewData["Area"]'>Voltar</a>
+    <div class="row">
+        <h5 class="col-12">Ações</h5>
+        <hr />
+        <a class="col btn btn-primary" asp-action="Atualizar" asp-route-id="@Model.Id">Incluir Status</a>
+        <a class="col btn btn-outline-primary" asp-action="Edit" asp-route-id="@Model.Id">Editar Prospecção</a>
+        @* <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#editarProspModal-@Model.Id-Toggle" role="button">Editar Prospecção</a> *@
+        <a class="col btn btn-primary" asp-action="Index" asp-route-casa='@ViewData["Area"]'>Voltar</a>
+    </div>
 </div>

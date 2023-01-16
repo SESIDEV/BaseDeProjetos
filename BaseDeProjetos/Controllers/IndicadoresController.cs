@@ -24,6 +24,9 @@ namespace BaseDeProjetos.Controllers
         {
 
             Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             List<IndicadoresFinanceiros> listaIndicadoresFinanceiros = await _context.IndicadoresFinanceiros.ToListAsync();
             if (string.IsNullOrEmpty(casa))
             {
@@ -49,7 +52,6 @@ namespace BaseDeProjetos.Controllers
             }            
 
         }
-
 
         private List<IndicadoresFinanceiros> DefinirCasaParaVisualizar(string? casa)
         {
@@ -79,6 +81,10 @@ namespace BaseDeProjetos.Controllers
         // GET: IndicadoresFinanceiros/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             if (id == null)
             {
                 return NotFound();
@@ -97,6 +103,10 @@ namespace BaseDeProjetos.Controllers
         // GET: IndicadoresFinanceiros/Create
         public IActionResult Create()
         {
+            Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             return View();
         }
 
@@ -119,6 +129,10 @@ namespace BaseDeProjetos.Controllers
         // GET: IndicadoresFinanceiros/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             if (id == null)
             {
                 return NotFound();
@@ -170,6 +184,10 @@ namespace BaseDeProjetos.Controllers
         // GET: IndicadoresFinanceiros/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             if (id == null)
             {
                 return NotFound();

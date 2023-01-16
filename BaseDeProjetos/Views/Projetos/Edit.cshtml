@@ -9,10 +9,11 @@
     }
 }
 
-<h1>Editar</h1>
-<h4>Projeto</h4>
-<hr />
-<div>
+<partial name="Header" view-data="@ViewData" />
+<div style="padding-left: 25em; padding-right: 10em; padding-top: 2em">
+    <h1>Editar</h1>
+    <h4>Projeto</h4>
+    <hr />
     <div>
         <form asp-action="Edit" method="post" class="row">
             <fieldset class="col-6">
@@ -40,6 +41,15 @@
                     <input asp-for="NomeProjeto" class="form-control" />
                     <span asp-validation-for="NomeProjeto" class="text-danger"></span>
                 </div>
+
+                <div class="form-group">
+                    <label asp-for="MembrosEquipe" class="control-label p-2"></label>
+                    <button type="button" class="btn app-btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Abrir</button>
+                    <input asp-for="MembrosEquipe" class="form-control d-none" />
+                    <span asp-validation-for="MembrosEquipe" class="text-danger"></span>
+                    <div id="membrosSelecionados" class="form-control" style="padding:2rem;"></div>
+                </div>
+
                 <div class="form-group">
                     <label asp-for="AreaPesquisa" class="control-label"></label>
                     <select asp-for="AreaPesquisa" class="form-control" asp-items="Html.GetEnumSelectList<LinhaPesquisa>()"></select>
@@ -123,10 +133,43 @@
     </div>
 </div>
 
+<!-- Modal Membros da equipe-->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Inserir Membros da Equipe</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="criarListaDeUSuarios.enviarMembrosParaInput()"><span aria-hidden="true"></span></button>
+            </div>
+            <div class="modal-body d-flex justify-content-between gap-2">
+                <div style="width:45%;">
+                    <span>Membros do Projeto</span>
+                    <div id="membrosDoProjeto" ondrop="dnd.drop(event)" ondragover="dnd.allowDrop(event)" class="border border-secondary rounded" style="width:100%;min-height:150px;padding:10px;">
+                    </div>
+                </div>
+                <div style="width:45%;">
+                    <span>Membros Disponíveis</span>
+                    <div id="membrosDisponiveis" ondrop="dnd.drop(event)" ondragover="dnd.allowDrop(event)" class="border border-secondary rounded" style="width:100%;height:150px;padding:10px;overflow-y:auto;">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn app-btn-primary" onclick="criarListaDeUSuarios.exibirMembrosSelecionados()">Adicionar</button>
+                @*<button type="button" class="btn app-btn-secondary" data-bs-dismiss="modal" onclick="enviarMembrosParaInput()">Enviar</button>*@
+            </div>
+        </div>
+    </div>
+</div>
+
 <div>
     <a asp-action="Index" asp-route-casa="@ViewData["Area"]">Voltar</a>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+<script>
+
+    let dnd = new DragAndDrop();
+    let criarListaDeUSuarios = new ObterListaDeUsuariosJson();
+    criarListaDeUSuarios.enviarMembrosParaInput();
+    criarListaDeUSuarios.exibirMembrosSelecionados();
+
+</script>

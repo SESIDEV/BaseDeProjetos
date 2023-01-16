@@ -4,9 +4,9 @@
     ViewData["Title"] = "Detalhes";
 }
 
-<h1>Detalhes</h1>
-<hr />
-<div>
+<partial name="Header" view-data="@ViewData" />
+<div style="padding-left: 25em; padding-right: 10em; padding-top: 2em">
+
     <h3>@Html.DisplayFor(model => model.Titulo)</h3>
     <dl class="row">
         <img class="col-md-4" src="@Html.DisplayFor(model => model.Imagem)" alt="imagem">
@@ -88,9 +88,10 @@
             </div>
         </div>
     </dl>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id">Editar</a> |
+        <a asp-action="Index">Voltar para Lista</a>
+    </div>
 </div>
 
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Editar</a> |
-    <a asp-action="Index">Voltar para Lista</a>
-</div>
+

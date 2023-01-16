@@ -14,25 +14,21 @@
 
     /*** Alteração de layout lista de empresas e prospecções / Funil de Vendas ***/
 
-    .badge-esfriando {
+    .bg-esfriando {
         background-color: #fff462;
     }
 
-    .badge-funil {
-        width: 50%;
-    }
-
-    .badge-frio {
+    .bg-frio {
         background-color: #beffff;
     }
 
-    .badge-morno {
+    .bg-morno {
         background-color: #ff8f50;
     }
 
-    .badge-quente {
+    .bg-quente {
         background-color: #ff5c50;
-    }    
+    }
 
     .card-container {
         background-color: #fff;
@@ -124,117 +120,14 @@
     #logoEmpresa {
         width: 100%;
         height: 100%;
-        max-height: 180px;
-        max-width: 180px;
+        max-height: 40px;
+        max-width: 40px;
         object-fit: contain;
-        padding: 20px;
     }
 
     /*** Alteração de layout lista de empresas e prospecções / Funil de Vendas ***/
 </style>
-@foreach (var item in Model)
-{
-    <div class="card-container container-fluid">
-        <div class="card">
-            <div class="empresa-preview">
-                @if (item.Empresa.Logo != null)
-                {
-                    <img style="background-color:white" id="logoEmpresa" src="@item.Empresa.Logo" alt="Logo da Empresa" />
-                }
-                else
-                {
-                    <h5 id="logo_alt">Sem Logo</h5>
-                }
-            </div>
-            <div class="card-info">
-                <div class="content-left">
-                    <p class="description-info"><strong>Empresa: </strong>@item.Empresa.Nome</p>
-                    <p class="description-info"><strong>Projeto: </strong>@item.NomeProspeccao</p>
-                    <p class="description-info"><strong>Linha: </strong>@item.LinhaPequisa.GetDisplayName()</p>
-                    
-                    @{var subtracaoUltimoStatus = @DateTime.Now.Subtract(@item.Status.Last().Data).Days;}
-                                        
-                    <p class="description-info">
-                        <strong>Temperatura:@FunilHelpers.VerificarTemperatura(subtracaoUltimoStatus)</strong>                        
-                    </p>                    
-                </div>
-
-                <div class="content-right">
-                    <p class="description-info"><strong>Tipo Contratação: </strong>@item.TipoContratacao.GetDisplayName()
-                    </p>
-                    @if (item.Usuario != null)
-                    {
-                        <div class="description-info" style="display:flex; align-items: center; gap: 3px;">
-                            <strong>Líder:</strong><button type="button" id="info" class="badge text-bg-secondary"
-                        data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right"
-                        data-bs-content="Right popover">@item.Usuario.UserName</button>
-                        </div>
-                    }
-                    else
-                    {
-                        <p class="description-info"><strong>Lider: </strong>Não Informado</p>
-                    }
-                    @if (item.Status.Last().Status == StatusProspeccao.ComProposta)
-                    {
-                        <p class="description-info"><strong>Status: </strong>@item.Status.OrderBy(p => p.Data).Last().Status.GetDisplayName()</p>
-
-                        @if (item.ValorProposta != 0)
-                        {
-                            <p class="description-info"><strong>Valor da Proposta:</strong> R$ @Helpers.FormatarValoresDashboards((decimal)item.ValorProposta)</p>
-                        }
-                        else if (item.ValorEstimado != 0)
-                        {
-                            <p class="description-info"><strong>Valor Estimado:</strong> R$ @Helpers.FormatarValoresDashboards((decimal)item.ValorEstimado)</p>
-                        }
-                        else
-                        {
-                            <p class="description-info"><strong>Valor Estimado:</strong> Valor não informado</p>
-                        }
-                    }
-                    else
-                    {
-                        <p class="description-info"><strong>Status: </strong>@item.Status.OrderBy(p => p.Data).Last().Status.GetDisplayName()</p>
-                        @if (item.ValorEstimado != 0)
-                        {
-                            <p class="description-info"><strong>Valor Estimado:</strong> R$ @Helpers.FormatarValoresDashboards((decimal)item.ValorEstimado)</p>
-                        }
-                        else
-                        {
-                            <p class="description-info"><strong>Valor Estimado:</strong> Valor não informado</p>
-                        }
-                    }
-                </div>
-            </div>
-        </div>
-        <button id="btn-collapse" class="btn btn-outline-secondary container-fluid" type="button" data-toggle="collapse"
-        data-target="#@item.Id" aria-expanded="false" aria-controls="collapseExample">
-            Ver mais detalhes
-        </button>
-        <div class="collapse" id="@item.Id">
-            <div class="card card-body" id="card-body">
-                <div id="content">
-                    <div id="title-status">
-                        <h4>Último Status:</h4>
-                    </div>
-                    <div>
-                        <p>@item.Status.OrderBy(p => p.Data).Last().Anotacoes</p>
-                    </div>
-                    <div>
-                        Data: @item.Status.OrderBy(p => p.Data).Last().Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))
-                    </div>
-                </div>
-            </div>
-            <div style="display:flex; justify-content: center; gap: 5px;">
-                <a asp-action="Edit" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Editar</button></a>
-                <a asp-action="Details" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Histórico</button></a>
-                <a asp-action="Atualizar" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Atualizar</button></a>
-                <a asp-action="Delete" asp-route-id="@item.Id"><button class="btn btn-outline-primary">Remover</button></a>
-            </div>
-        </div>
-    </div>
-
-}
-<script>
+@* <script>
     var bt = document.querySelector('#bt')
 
     bt.addEventListener('click', e => {
@@ -242,6 +135,159 @@
     })
 
     $(function () {
-        $('[data-toggle="popover"]').popover()
+        $('[data-bs-toggle="popover"]').popover()
     })
-</script>
+</script> *@
+@foreach (var prospeccao in Model)
+{
+    <form asp-action="Edit" asp-route-id="@prospeccao.Id" method="post">
+        <div id="modalEditProsp-@prospeccao.Id-container">
+
+        </div>
+    </form>
+
+    
+    <div id="modalDeleteProsp-@prospeccao.Id-container">
+
+    </div>
+
+    <div id="modalHistoryProsp-@prospeccao.Id-container">
+
+    </div>
+
+    <div id="modalCreateFollowupProsp-@prospeccao.Id-container">
+
+    </div>
+
+    <div id="modalEditFollowupProsp-@prospeccao.Id-container">
+
+    </div>
+
+
+    <div class="modal fade" id="modalDetalhes-@prospeccao.Id" tabindex="-1" aria-labelledby="modalDetalhes-@prospeccao.Id-Label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalDetalhes-@prospeccao.Id-Label">Detalhes da Prospecção</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                    <div class="modal-body d-flex flex-column gap-1">
+                        <h1 class="app-card-title">Empresa:</h1>
+                        <span>@prospeccao.Empresa.Nome</span>
+                        <h1 class="app-card-title">Líder</h1>
+                        @if (prospeccao.Usuario != null) {                            
+                            <span>@prospeccao.Usuario.UserName</span>
+                        } else {
+                            <span>Sem Líder</span>
+                        }
+                        <h1 class="app-card-title">Projeto:</h1>
+                        <span>@prospeccao.NomeProspeccao</span>
+                        <h1 class="app-card-title">Tipo de Contratação:</h1>
+                        <span>@prospeccao.TipoContratacao.GetDisplayName()</span>
+                        <h1 class="app-card-title">Status:</h1>
+                        <span>@prospeccao.Status.OrderBy(followup => followup.Data).Last().Status.GetDisplayName()</span>
+                        <h1 class="app-card-title">Valor:</h1>
+                        <nobr>
+                            @if (prospeccao.ValorProposta != 0)
+                            {
+                                <span>R$ @Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorProposta)</span>
+                            }
+                            else if (prospeccao.ValorEstimado != 0)
+                            {
+                                <span>R$ @Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorEstimado)</span>
+                            }
+                            else
+                            {
+                                <span>Valor não informado</span>
+                            }
+                        </nobr>
+                        <h1 class="app-card-title">Último Status:</h1>
+                        <span>@prospeccao.Status.OrderBy(p => p.Data).Last().Anotacoes</span>
+                        <p>Data: @prospeccao.Status.OrderBy(p => p.Data).Last().Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))</p>
+                    </div>
+                <div class="modal-footer">
+                    <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#editarProspModal-@prospeccao.Id-Toggle" role="button">
+                        Editar
+                    </a>
+                    <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#historyProspModal-@prospeccao.Id-Toggle" role="button">
+                        Histórico
+                    </a>
+                    <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#CreateFollowupProspModal-@prospeccao.Id-Toggle" role="button">
+                        Incluir Status
+                    </a>
+                    <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#deletarProspModal-@prospeccao.Id-Toggle" role="button">
+                        Deletar
+                    </a>
+
+                    @*<a asp-action="Edit" asp-route-id="@prospeccao.Id" class="btn btn-outline-primary">Editar</a>*@
+                    @*<a asp-action="Details" asp-route-id="@prospeccao.Id" class="btn btn-outline-primary">Histórico</a>*@
+                    @*<a asp-action="Atualizar" asp-route-id="@prospeccao.Id" class="btn btn-outline-primary">Atualizar</a>*@
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <tr>
+        @if (prospeccao.Empresa.Logo != null)
+        {
+            <td class="cell"><img src="@prospeccao.Empresa.Logo" id="logoEmpresa" alt="Logo da Empresa" style="background-color:white"></td>
+        } 
+        else
+        {
+            <td class="cell"><nobr id="logo_alt">Sem Logo</nobr></td>
+        }
+        <td class="cell">@prospeccao.Empresa.Nome</td> @*Empresa*@
+        <td class="cell">
+        @if (prospeccao.Usuario != null) 
+        {
+            <span class="badge bg-success">@prospeccao.Usuario.UserName</span> @*Líder*@
+        } 
+        else 
+        {
+            <span class="badge bg-danger">Sem Líder</span>
+        }
+        </td>
+        <td class="cell">
+        @if (prospeccao.NomeProspeccao != null)
+        {
+            <span>@prospeccao.NomeProspeccao</span> @*Projeto*@
+        } else
+        {
+            <span>A definir</span> @*Projeto*@
+        }
+        </td>
+        @{
+            var subtracaoUltimoStatus = @DateTime.Now.Subtract(prospeccao.Status.Last().Data).Days;
+        }
+        <td class="cell">
+            <span>@prospeccao.TipoContratacao.GetDisplayName()</span> @*Tipo Contratação*@
+        </td>
+        <td class="cell"><span>@prospeccao.Status.OrderBy(followup => followup.Data).Last().Status.GetDisplayName()</span></td> @*Status*@
+        @if (prospeccao.Status.OrderBy(followup => followup.Data).Last().Status != StatusProspeccao.Planejada)
+        {
+            <td class="cell">
+                @if (prospeccao.Status.OrderBy(followup => followup.Data).Last().Status != StatusProspeccao.Planejada)
+                {
+                    @FunilHelpers.VerificarTemperatura(subtracaoUltimoStatus)
+                }
+            </td>
+        }
+        <td class="cell">
+            @if (prospeccao.ValorProposta != 0)
+            {
+                <span>R$ @Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorProposta)</span>
+            }
+            else if (prospeccao.ValorEstimado != 0)
+            {
+                <span>R$ @Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorEstimado)</span>
+            }
+            else
+            {
+                <span>Valor não informado</span>
+            }
+        </td>
+        <td class="cell">
+            <button type="button" data-bs-target="#modalDetalhes-@prospeccao.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary" onclick="carregarModaisFunil('@prospeccao.Id')">Detalhes</button>
+            </td> 
+        </tr>
+}

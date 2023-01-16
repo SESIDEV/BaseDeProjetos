@@ -1,77 +1,181 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Projeto>
 @{
     ViewData["Title"] = "Projetos";
-    List<Projeto> ativas = ViewBag.Ativos as List<Projeto>;
+    List<Projeto> ativos = ViewBag.Ativos as List<Projeto>;
     List<Projeto> encerrados = ViewBag.Encerrados as List<Projeto>;
 }
 
-<div class="row card">
-    <div class=" col-12 card-body">
-        <h1 class="card-title">Projetos @ViewData["Area"]</h1>
-        <div>
-            <div>
-                <div>
-                    <form asp-controller="Projetos" asp-action="Index">
-                        <div class="row g-3">
-                            <div class="col-2">
-                                <select autofocus class="form-select" name="ano">
-                                    <option value="Todos" selected>Selecione o ano:</option>
-                                    <option value="2019">2019</option>
-                                    <option value="2020">2020</option>
-                                    <option value="2021">2021</option>
-                                    <option value="2022">2022</option>
-                                </select>
-                            </div>
-                            <div class="col-2">
-                                <select class="form-select">
-                                    <option value="">Selecione Status</option>
-                                    <option value="Contratado">Contratado</option>
-                                    <option value="EmExecucao">Em Execucao</option>
-                                    <option value="Concluido">Concluido</option>
-                                </select>
-                            </div>
-                            <div class="col-6">
-                                <div class="input-group mb-3">
-                                    <input class="form-control" type="text" name="SearchString" value="@ViewData["CurrentFilter"]" placeholder="Pesquise pela empresa" />
-                                    <button type="submit" class="btn btn-primary">Procurar</button>
-                                </div>
-                            </div>
-                            <div class="col-2">
-                                <a asp-action="Create" style="text-decoration:none;" class="btn btn-primary">Novo Projeto</a>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <nav class="navbar navbar-light bg-light">
-                <div class="container-fluid justify-content-end">
-                </div>
-            </nav>
-        </div>
+<partial name="Header" view-data="@ViewData" />
+<div class="app-wrapper">
+	<div class="app-content pt-3 p-md-3 p-lg-4">
+		<div class="container-xl">
+			<div class="row g-3 mb-4 align-items-center justify-content-between">
+				<div class="col-auto">
+					<h1 class="app-page-title mb-0">Projetos @ViewData["Area"]</h1>
+				</div>
+				<div class="col-auto">
+					<div class="page-utilities">
+						<div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+							<div class="col-auto">
+								<form class="table-search-form row gx-1 align-items-center">
+									<div class="col-auto">
+										<input type="text" id="search-orders" name="SearchString" value='@ViewData["CurrentFilter"]' class="form-control search-orders" placeholder="Pesquise pela empresa" autocomplete="off">
+									</div>
+									<div class="col-auto">
+										<button type="submit" class="btn app-btn-primary">Pesquisar</button>
+									</div>
+									<div class="col-auto">
+										<button type="submit" class="btn app-btn-primary">Lista Completa</button>
+									</div>
+								</form>
 
-        <nav>
-            <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Gráficos</button>
-                <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Ativas</button>
-                <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Concluídas</button>
-            </div>
-        </nav>
-        <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade active show" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                <div>
-                    <partial name="graph_projetos" view-data="@ViewData" model="@Model" />
-                </div>
-            </div>
-            <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
-                <div>
-                    <partial name="lista_projetos" view-data="@ViewData" model="@ativas" />
-                </div>
-            </div>
-            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                <div>
-                    <partial name="lista_projetos" view-data="@ViewData" model="@encerrados" />
-                </div>
-            </div>
-        </div>
-    </div>
+							</div>
+							<div class="col-auto">
+								<select autofocus class="form-select w-auto" name="ano">
+									<option value="Todos">Todos</option>
+									@{
+										int anoFinal = 2019;
+										int anoAtual = DateTime.Now.Year;
+										while (anoAtual >= anoFinal)
+										{
+											<option value="@anoAtual">@anoAtual</option>
+											anoAtual--;
+										}
+									}
+								</select>
+
+							</div>
+							<div class="col-auto">
+								<select class="form-select w-auto">
+									<option value="">Selecione Status</option>
+									<option value="Contratado">Contratado</option>
+									<option value="EmExecucao">Em Execução</option>
+									<option value="Concluido">Concluído</option>
+								</select>
+
+							</div>
+							<div class="col-auto">
+								<a class="btn app-btn-primary" data-bs-toggle="modal" href="#criarProjModalToggle" role="button">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill"
+										 viewBox="0 0 16 16">
+										<path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
+									</svg> Novo Projeto
+								</a>
+								@await Component.InvokeAsync("ModalCreateProj")
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
+				<a class="flex-sm-fill text-sm-center nav-link active" id="projeto-graficos-tab" data-bs-toggle="tab" href="#projeto-graficos" role="tab" aria-controls="projeto-graficos" aria-selected="true">Gráficos</a>
+				<a class="flex-sm-fill text-sm-center nav-link" id="projeto-ativos-tab" data-bs-toggle="tab" href="#projeto-ativos" role="tab" aria-controls="projeto-ativos" aria-selected="false">Ativos (@ativos.Count())</a>
+				<a class="flex-sm-fill text-sm-center nav-link" id="projeto-encerrados-tab" data-bs-toggle="tab" href="#projeto-encerrados" role="tab" aria-controls="projeto-encerrados" aria-selected="false">Concluídos (@encerrados.Count())</a>
+			</nav>
+
+
+			<div class="tab-content" id="orders-table-tab-content">
+				<div class="tab-pane fade show active" id="projeto-graficos" role="tabpanel" aria-labelledby="projeto-graficos-tab">
+					<div class="app-card app-card-orders-table mb-5">
+						<div class="app-card-body">
+							<partial name="graph_projetos" view-data="@ViewData" />
+						</div>
+					</div>
+
+				</div>
+
+				@*// TODO: Loop*@
+
+				<div class="tab-pane fade" id="projeto-ativos" role="tabpanel" aria-labelledby="projeto-ativos-tab">
+					<div class="app-card app-card-orders-table shadow-sm mb-5">
+						<div class="app-card-body">
+							<div class="table-responsive">
+
+								<table class="table mb-0 text-left">
+									<thead>
+										<tr>
+											<th class="cell">Logo</th>
+											<th class="cell">Empresa</th>
+											<th class="cell">Projeto</th>
+											<th class="cell">Status</th>
+											<th class="cell">Valor</th>
+											<th class="cell">Fonte de Fomento</th>
+											<th class="cell">Data Encerramento</th>
+											<th class="cell">Detalhes</th>
+										</tr>
+									</thead>
+									<tbody>
+										<partial name="lista_projetos" view-data="@ViewData" model="@ativos" />
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="tab-pane fade" id="projeto-encerrados" role="tabpanel" aria-labelledby="projeto-encerrados-tab">
+					<div class="app-card app-card-orders-table shadow-sm mb-5">
+						<div class="app-card-body">
+							<div class="table-responsive">
+								<table class="table mb-0 text-left">
+									<thead>
+										<tr>
+											<th class="cell">Logo</th>
+											<th class="cell">Empresa</th>
+											<th class="cell">Projeto</th>
+											<th class="cell">Status</th>
+											<th class="cell">Valor</th>
+											<th class="cell">Fonte de Fomento</th>
+											<th class="cell">Data Encerramento</th>
+											<th class="cell">Detalhes</th>
+										</tr>
+									</thead>
+									<tbody>
+										<partial name="lista_projetos" Detalhes-data="@ViewData" model="@encerrados" />
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
 </div>
+<script>
+	function carregarModalFunil(idprojeto, tipo) {
+		if (tipo) {
+			fetch(`/FunildeVendas/RetornarModal?idProj=${idprojeto}&tipo=${tipo}`)
+				.then(response => response.text())
+				.then(result => {
+					document.querySelector(`#modal${tipo}Proj-${idprojeto}-container`).innerHTML = result;
+				});
+		} else {
+			console.log("Tipo de Modal Inválido");
+		}
+	}
+
+	function carregarModaisFunil(idprojeto) {
+		// O nome precisa bater com o nome da view, no sentido que, o sufixo será "ProjViewComponent". Em outras palavras, está acoplado.
+		modaisDisponiveis = ["Edit", "Delete", "History", "CreateFollowup"]
+		modaisDisponiveis.forEach((tipo) => {
+			carregarModalFunil(idprojeto, tipo)
+		})
+	}
+
+	function carregarModalEditarFollowup(idprojeto, idFollowup, tipo) {
+		console.log(`#modal${tipo}Proj-${idprojeto}-container`)
+		if (tipo) {
+			fetch(`/FunildeVendas/RetornarModalEditFollowup?idProj=${idprojeto}&idFollowup=${idFollowup}&tipo=${tipo}`)
+				.then(response => response.text())
+				.then(result => {
+					document.querySelector(`#modal${tipo}Proj-${idprojeto}-container`).innerHTML = result;
+				});
+		} else {
+			console.log("Algo deu errado");
+		}
+	}
+</script>

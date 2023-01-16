@@ -13,9 +13,9 @@
     }
 }
 
-<h1>Details</h1>
-
-<div class="row">
+<partial name="Header" view-data="@ViewData" />
+<div class="row" style="padding-left: 25em; padding-right: 10em; padding-top: 2em">
+    <h1>Details</h1>
     <hr />
     <div class="card col-12">
         <dl class="row card-body">
@@ -25,6 +25,24 @@
             </dt>
             <dd class="col-sm-9">
                 @Html.DisplayFor(model => model.NomeProjeto)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.MembrosEquipe)
+            </dt>
+            <dd class="col-sm-9">
+                <div class="accordion" id="accordionExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Equipe do Projeto - <span id="qtdMembros" class="m-1"></span><span class="m-1">Membros</span>
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <ul id="lista"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
             </dd>
             <dt class="col-sm-3">
                 @Html.DisplayNameFor(model => model.AreaPesquisa)
@@ -88,11 +106,50 @@
             </dd>
         </dl>
     </div>
-   </div>
+</div>
 
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a> |
     <div>
-        <a asp-action="Index" asp-route-casa="@ViewData["Area"]">Voltar</a>
+        <a asp-action="Index" asp-route-casa="@ViewData["Area"]" class="btn btn-primary">Voltar</a>
     </div>
 </div>
+
+<div class="d-none" id="listaDeMembros">
+    @Html.DisplayFor(model => model.MembrosEquipe)
+</div>
+
+<script>
+
+    let listaDeMembros = document.querySelector("#listaDeMembros").textContent
+    let btn = document.querySelector("#btn")
+
+    function TratandoListaDeUsuarios(lista) {
+        return lista.trim().split(";")
+    }
+
+    function criarListaDeMembros(){
+        let lista = document.querySelector("#lista")
+        let qtdMembros = document.querySelector("#qtdMembros")
+        let listaUsuarios = TratandoListaDeUsuarios(listaDeMembros)
+        
+        listaUsuarios.forEach((membro, indice) => {
+            if(indice < listaUsuarios.length){
+                var usuario = document.createElement("li")
+                usuario.setAttribute("id", `${membro}`)
+                usuario.textContent = `${membro}`
+                usuario.classList.add("badge", "text-bg-success")
+                usuario.style.padding = "5px"
+                usuario.style.margin = "10px"
+                lista.append(usuario)
+            }
+        })
+
+        qtdMembros.innerHTML = listaUsuarios.length - 1
+        
+    }
+    criarListaDeMembros()
+
+
+
+</script>

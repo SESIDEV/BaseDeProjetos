@@ -81,27 +81,13 @@ namespace BaseDeProjetos.Migrations
                     b.Property<DateTime>("PrazoSubmissao")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("ProjetoProposto")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("Proponente")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<int?>("ResponsavelSubmissaoid")
-                        .HasColumnType("int");
-
                     b.Property<int>("StatusEdital")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StatusSubmissao")
                         .HasColumnType("int");
 
                     b.Property<decimal>("ValorEdital")
                         .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ResponsavelSubmissaoid");
 
                     b.ToTable("Editais");
                 });
@@ -318,6 +304,9 @@ namespace BaseDeProjetos.Migrations
                     b.Property<int>("Inovacao")
                         .HasColumnType("int");
 
+                    b.Property<string>("MembrosEquipe")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
                     b.Property<string>("NomeProjeto")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -362,6 +351,9 @@ namespace BaseDeProjetos.Migrations
                     b.Property<int>("LinhaPequisa")
                         .HasColumnType("int");
 
+                    b.Property<string>("MembrosEquipe")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
                     b.Property<string>("NomeProspeccao")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -389,6 +381,44 @@ namespace BaseDeProjetos.Migrations
                     b.HasIndex("UsuarioId");
 
                     b.ToTable("Prospeccao");
+                });
+
+            modelBuilder.Entity("BaseDeProjetos.Models.Submissao", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<bool>("ComEmpresa")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("EditalId")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<int?>("EditalId1")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProjetoProposto")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Proponente")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("ProspeccaoId")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<string>("ResponsavelSubmissao")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<int>("StatusSubmissao")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EditalId1");
+
+                    b.HasIndex("ProspeccaoId");
+
+                    b.ToTable("Submissoes");
                 });
 
             modelBuilder.Entity("BaseDeProjetos.Models.Usuario", b =>
@@ -448,9 +478,6 @@ namespace BaseDeProjetos.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("ProjetoId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -475,8 +502,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasName("UserNameIndex");
-
-                    b.HasIndex("ProjetoId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -620,13 +645,6 @@ namespace BaseDeProjetos.Migrations
                         .HasForeignKey("UsuarioId");
                 });
 
-            modelBuilder.Entity("BaseDeProjetos.Models.Editais", b =>
-                {
-                    b.HasOne("BaseDeProjetos.Models.Pessoa", "ResponsavelSubmissao")
-                        .WithMany()
-                        .HasForeignKey("ResponsavelSubmissaoid");
-                });
-
             modelBuilder.Entity("BaseDeProjetos.Models.FollowUp", b =>
                 {
                     b.HasOne("BaseDeProjetos.Models.Prospeccao", "Origem")
@@ -678,11 +696,15 @@ namespace BaseDeProjetos.Migrations
                         .HasForeignKey("UsuarioId");
                 });
 
-            modelBuilder.Entity("BaseDeProjetos.Models.Usuario", b =>
+            modelBuilder.Entity("BaseDeProjetos.Models.Submissao", b =>
                 {
-                    b.HasOne("BaseDeProjetos.Models.Projeto", null)
-                        .WithMany("Equipe")
-                        .HasForeignKey("ProjetoId");
+                    b.HasOne("BaseDeProjetos.Models.Editais", "Edital")
+                        .WithMany("Submissoes")
+                        .HasForeignKey("EditalId1");
+
+                    b.HasOne("BaseDeProjetos.Models.Prospeccao", "Prospeccao")
+                        .WithMany()
+                        .HasForeignKey("ProspeccaoId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
