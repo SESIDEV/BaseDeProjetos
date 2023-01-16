@@ -1,3 +1,5 @@
+@{ ViewData["Title"] = "Pessoas"; }
+
 <partial name="Header" view-data="@ViewData" />
 <div class="app-wrapper">	    
     <div class="app-content pt-3 p-md-3 p-lg-4">
@@ -18,71 +20,74 @@
                                         </h2>
                                         <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                             <div class="accordion-body row">
-
-                                                <div class="col">
-                                                    <div class="card">
-                                                        <h5 class="card-header">Competências</h5>
-                                                        <div class="card-body" id="notfilt">
-                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Biorefinaria</span>
-                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Engenharia de Software</span>
-                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Estatística</span>
-                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Fotofísica</span>
-                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Inteligência Artificial</span>
-                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Petroquímica</span>
-                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Quimiometria</span>
-                                                            <span class="badge bg-secondary comp" onclick="passarComp(this)">Síntese orgânica</span>
+                                            <div class="col">
+                                                    <div class="app-card shadow-sm mb-2">
+                                                        <div class="app-card-header p-3">
+                                                            <div class="row justify-content-between align-items-center">
+                                                                <div class="col-auto">
+                                                                    <h4 class="app-card-title">Competências</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="app-card-body p-3 p-lg-4" id="notfilt">
+                                                            <span class="badge bg-secondary badge-competencia" onclick="passarComp(this)">Biorefinaria</span>
+                                                            <span class="badge bg-secondary badge-competencia" onclick="passarComp(this)">Engenharia de Software</span>
+                                                            <span class="badge bg-secondary badge-competencia" onclick="passarComp(this)">Estatística</span>
+                                                            <span class="badge bg-secondary badge-competencia" onclick="passarComp(this)">Fotofísica</span>
+                                                            <span class="badge bg-secondary badge-competencia" onclick="passarComp(this)">Inteligência Artificial</span>
+                                                            <span class="badge bg-secondary badge-competencia" onclick="passarComp(this)">Petroquímica</span>
+                                                            <span class="badge bg-secondary badge-competencia" onclick="passarComp(this)">Quimiometria</span>
+                                                            <span class="badge bg-secondary badge-competencia" onclick="passarComp(this)">Síntese orgânica</span>
                                                         </div>
                                                     </div>
-                                                    
-                                                    <div class="card">
-                                                        <div class="card-body" id="filt">
+
+                                                    <div class="app-card shadow-sm">
+                                                        <div class="app-card-header p-3">
+                                                            <div class="row justify-content-between align-items-center">
+                                                                <div class="col-auto">
+                                                                    <h4 class="app-card-title">Filtradas</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="app-card-body p-3 p-lg-4" id="filt">
                                                             <p class="card-text"><small class="text-muted">Filtradas</small></p>
                                                         </div>
                                                     </div>
+                                                    
                                                 </div>
 
                                                 <div class="col">
-                                                    <div class="card">
-                                                        <h5 class="card-header">Cargos</h5>
-                                                        <div class="card-body">
-                                                            <div class="form-check">
+
+                                                    <div class="app-card shadow-sm">
+                                                        <div class="app-card-header p-3">
+                                                            <div class="row justify-content-between align-items-center">
+                                                                <div class="col-auto">
+                                                                    <h4 class="app-card-title">Cargos</h4>
+                                                                </div>                                                                
+                                                            </div>
+                                                        </div>
+                                                        <div class="app-card-body p-3 p-lg-4">
+                                                            <div class="mb-3 form-check">   
                                                                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                                 <label class="form-check-label" for="flexCheckDefault">
                                                                     Cargo 1
                                                                 </label>
                                                             </div>
-                                                            <div class="form-check">
+                                                            <div class="mb-3 form-check">   
                                                                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                                 <label class="form-check-label" for="flexCheckDefault">
                                                                     Cargo 2
                                                                 </label>
                                                             </div>
-                                                            <div class="form-check">
+                                                            <div class="mb-3 form-check">   
                                                                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                                 <label class="form-check-label" for="flexCheckDefault">
                                                                     Cargo 3
                                                                 </label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                                <label class="form-check-label" for="flexCheckDefault">
-                                                                    Cargo 4
-                                                                </label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                                <label class="form-check-label" for="flexCheckDefault">
-                                                                    Cargo 5
-                                                                </label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                                <label class="form-check-label" for="flexCheckDefault">
-                                                                    Cargo 6
-                                                                </label>
-                                                            </div>
+                                                            </div>                                                        
                                                         </div>
                                                     </div>
+                                                    
                                                 </div>
 
                                             </div>
@@ -121,13 +126,13 @@
                                     <div class="card-body">
                                         <h5 id="nome-do-card" class="card-title">Nome da Pessoa</h5>
                                         <div>
-                                            <span class="badge text-bg-info">Competencia 1</span>
-                                            <span class="badge text-bg-info">Competencia 2</span>
-                                            <span class="badge text-bg-info">Competencia 3</span>
-                                            <span class="badge text-bg-info">Competencia 4</span>
-                                            <span class="badge text-bg-info">Competencia 5</span>
-                                            <span class="badge text-bg-info">Competencia 6</span>
-                                            <span class="badge text-bg-info">Competencia 7</span>
+                                            <span class="badge badge-competencia text-bg-info">Competencia 1</span>
+                                            <span class="badge badge-competencia text-bg-info">Competencia 2</span>
+                                            <span class="badge badge-competencia text-bg-info">Competencia 3</span>
+                                            <span class="badge badge-competencia text-bg-info">Competencia 4</span>
+                                            <span class="badge badge-competencia text-bg-info">Competencia 5</span>
+                                            <span class="badge badge-competencia text-bg-info">Competencia 6</span>
+                                            <span class="badge badge-competencia text-bg-info">Competencia 7</span>
                                         </div>
                                         <br>
                                         <div id="botoes_do_card" class="d-flex gap-2 flex-column">
@@ -159,6 +164,9 @@
         backdrop-filter: blur(5px);
     }
     
+    .badge-competencia {
+        cursor: pointer;
+    }
     
     .modal {
         height: 40rem;
