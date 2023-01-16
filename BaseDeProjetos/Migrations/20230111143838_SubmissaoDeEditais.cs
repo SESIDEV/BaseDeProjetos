@@ -6,14 +6,6 @@ namespace BaseDeProjetos.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Editais_Pessoa_ResponsavelSubmissaoid",
-                table: "Editais");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Editais_ResponsavelSubmissaoid",
-                table: "Editais");
-
             migrationBuilder.DropColumn(
                 name: "ProjetoProposto",
                 table: "Editais");
@@ -90,30 +82,11 @@ namespace BaseDeProjetos.Migrations
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
-                name: "ResponsavelSubmissaoid",
-                table: "Editais",
-                type: "int",
-                nullable: true);
-
-            migrationBuilder.AddColumn<int>(
                 name: "StatusSubmissao",
                 table: "Editais",
                 type: "int",
                 nullable: false,
                 defaultValue: 0);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Editais_ResponsavelSubmissaoid",
-                table: "Editais",
-                column: "ResponsavelSubmissaoid");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Editais_Pessoa_ResponsavelSubmissaoid",
-                table: "Editais",
-                column: "ResponsavelSubmissaoid",
-                principalTable: "Pessoa",
-                principalColumn: "id",
-                onDelete: ReferentialAction.Restrict);
         }
     }
 }
