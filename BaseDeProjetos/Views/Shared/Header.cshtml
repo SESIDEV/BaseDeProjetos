@@ -24,6 +24,10 @@
 							</form>
 						</div>
 
+						<div class="col-auto">
+							<a class="btn app-btn-primary" asp-area="" asp-controller="Empresas" asp-action="Index">Empresas</a>
+						</div>
+
 						<div class="app-utilities col-auto">
 							@*<div class="app-utility-item app-notifications-dropdown dropdown">
 								<a class="dropdown-toggle no-toggle-arrow" id="notifications-dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" title="Notifications">
@@ -129,7 +133,6 @@
 								<ul class="dropdown-menu" aria-labelledby="user-dropdown-toggle">
 									@*<li><a class="dropdown-item" href="account.html">Account</a></li>
 									<li><a class="dropdown-item" href="settings.html">Settings</a></li>*@
-									<li><a class="dropdown-item" asp-area="" asp-controller="Empresas" asp-action="Index">Empresas</a></li>
 									<li><hr class="dropdown-divider"></li>
 									@if (SignInManager.IsSignedIn(User))
 									{
