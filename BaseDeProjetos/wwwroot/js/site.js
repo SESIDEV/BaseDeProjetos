@@ -85,7 +85,11 @@ function passarComp(element) {
 
 function gerarOpcoesSelectPessoas(nomeModal, idSelect) {
     document.querySelector(`#${idSelect}`).innerHTML = '';
-    $(`#${idSelect}`).select2({dropdownParent: $(`#${nomeModal}`)})
+    if (nomeModal == null){
+        $(`#${idSelect}`).select2()
+    } else {
+        $(`#${idSelect}`).select2({dropdownParent: $(`#${nomeModal}`)})
+    }
     fetch('/FunilDeVendas/PuxarDadosUsuarios').then(response => response.json()).then(lista => {
         lista.forEach(function (item){
             var opt = document.createElement("option");
