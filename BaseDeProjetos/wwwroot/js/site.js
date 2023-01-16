@@ -102,7 +102,7 @@ function gerarOpcoesSelectPessoas(nomeModal, idSelect) {
 }
 
 function procurarPessoa(select) {
-    redePessoas.focus(select.value)
+    redePessoas.focus(select.value, {scale:3, animation:{duration: 400}})
 }
 
 function selectToText(idSelect, idText) {
@@ -161,12 +161,12 @@ function montarNetwork(pessoas) {
         var obj = {};
         obj['id'] = p['Email']
         obj['title'] = p['UserName']
+        obj['image'] = p['Foto']
         
-        if (!('image' in p) || p['image'] == "."){
+        if ((p['Foto'] == null) || (p['Foto'] == "")){
             obj['image'] = defuserpic
-        } else {
-            obj['image'] = p['image']
         }
+
 
         listaPessoas.push(obj)
     })
