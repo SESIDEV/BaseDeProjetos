@@ -99,6 +99,10 @@ function gerarOpcoesSelectPessoas(nomeModal, idSelect) {
     })})
 }
 
+function procurarPessoa(select) {
+    //select.value
+}
+
 function selectToText(idSelect, idText) {
     let texto = ''
     document.querySelector(`#select2-${idSelect}-container`).childNodes.forEach(p => texto += p.title + ';')
