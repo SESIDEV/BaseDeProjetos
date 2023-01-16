@@ -10,6 +10,8 @@
  *
  * */
 
+redePessoas = null
+
 function FiltroEmpresaEstrangeira(){
 
     let checkBox = document.getElementById("empresa_estrangeira_check");
@@ -100,7 +102,7 @@ function gerarOpcoesSelectPessoas(nomeModal, idSelect) {
 }
 
 function procurarPessoa(select) {
-    //select.value
+    redePessoas.focus(select.value)
 }
 
 function selectToText(idSelect, idText) {
@@ -157,7 +159,7 @@ function montarNetwork(pessoas) {
 
     pessoas.forEach(function (p){
         var obj = {};
-        obj['id'] = p['Id']
+        obj['id'] = p['Email']
         obj['title'] = p['UserName']
         
         if (!('image' in p) || p['image'] == "."){
@@ -225,6 +227,8 @@ function montarNetwork(pessoas) {
 	network.once('stabilized', function() {
 		network.moveTo({position:{x:0,y:0}, scale:2})
 	});
+
+    redePessoas = network;
 }
 
 function statusPatente(){
