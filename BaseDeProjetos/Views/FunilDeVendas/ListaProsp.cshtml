@@ -11,121 +11,6 @@
         margin: 0;
         padding: 0;
     }
-
-    /*** Alteração de layout lista de empresas e prospecções / Funil de Vendas ***/
-
-    .bg-esfriando {
-        background-color: #fff462;
-    }
-
-    .bg-frio {
-        background-color: #beffff;
-    }
-
-    .bg-morno {
-        background-color: #ff8f50;
-    }
-
-    .bg-quente {
-        background-color: #ff5c50;
-    }
-
-    .card-container {
-        background-color: #fff;
-        border-radius: 10px;
-        overflow: hidden;
-        margin-top: 10px;
-    }
-
-    .card {
-        width: 100%;
-        display: flex;
-        flex-direction: row;
-    }
-
-    .card-preview {
-        background-color: #2A265F;
-        color: #fff;
-        width: 20%;
-    }
-
-    .card-preview a {
-        display: inline-block;
-        font-size: 12px;
-        opacity: 0.6;
-        margin-top: 30px;
-        text-decoration: none;
-    }
-
-    .card-preview h2 {
-        letter-spacing: 1px;
-        text-align: center;
-    }
-
-    .card-info {
-        width: 80%;
-        display: flex;
-        justify-content: flex-start;
-    }
-
-    .content-left,
-    .content-right {
-        width: 50%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .description-info {
-        margin-top: 10px;
-        margin-left: 5px;
-    }
-
-    #card-body,
-    #content {
-        display: flex;
-        flex-direction: row;
-    }
-
-    #content {
-        flex-direction: column;
-        width: 80%;
-    }
-
-    #box-btn-actions {
-        width: 20%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: flex-end;
-    }
-
-    .btn-acao {
-        width: 60px;
-        font-size: 14px;
-        padding: 0;
-    }
-
-    .empresa-preview {
-        background-color: #fff;
-        color: #2A265F;
-        min-width: 200px;
-        max-height: 200px;
-        max-width: 200px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    #logoEmpresa {
-        width: 100%;
-        height: 100%;
-        max-height: 40px;
-        max-width: 40px;
-        object-fit: contain;
-    }
-
-    /*** Alteração de layout lista de empresas e prospecções / Funil de Vendas ***/
 </style>
 @* <script>
     var bt = document.querySelector('#bt')
@@ -163,70 +48,10 @@
 
     </div>
 
+    <div id="modalDetalhesProsp-@prospeccao.Id-container">
 
-    <div class="modal fade" id="modalDetalhes-@prospeccao.Id" tabindex="-1" aria-labelledby="modalDetalhes-@prospeccao.Id-Label" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modalDetalhes-@prospeccao.Id-Label">Detalhes da Prospecção</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                    <div class="modal-body d-flex flex-column gap-1">
-                        <h1 class="app-card-title">Empresa:</h1>
-                        <span>@prospeccao.Empresa.Nome</span>
-                        <h1 class="app-card-title">Líder</h1>
-                        @if (prospeccao.Usuario != null) {                            
-                            <span>@prospeccao.Usuario.UserName</span>
-                        } else {
-                            <span>Sem Líder</span>
-                        }
-                        <h1 class="app-card-title">Projeto:</h1>
-                        <span>@prospeccao.NomeProspeccao</span>
-                        <h1 class="app-card-title">Tipo de Contratação:</h1>
-                        <span>@prospeccao.TipoContratacao.GetDisplayName()</span>
-                        <h1 class="app-card-title">Status:</h1>
-                        <span>@prospeccao.Status.OrderBy(followup => followup.Data).Last().Status.GetDisplayName()</span>
-                        <h1 class="app-card-title">Valor:</h1>
-                        <nobr>
-                            @if (prospeccao.ValorProposta != 0)
-                            {
-                                <span>R$ @Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorProposta)</span>
-                            }
-                            else if (prospeccao.ValorEstimado != 0)
-                            {
-                                <span>R$ @Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorEstimado)</span>
-                            }
-                            else
-                            {
-                                <span>Valor não informado</span>
-                            }
-                        </nobr>
-                        <h1 class="app-card-title">Último Status:</h1>
-                        <span>@prospeccao.Status.OrderBy(p => p.Data).Last().Anotacoes</span>
-                        <p>Data: @prospeccao.Status.OrderBy(p => p.Data).Last().Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))</p>
-                    </div>
-                <div class="modal-footer">
-                    <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#editarProspModal-@prospeccao.Id-Toggle" role="button">
-                        Editar
-                    </a>
-                    <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#historyProspModal-@prospeccao.Id-Toggle" role="button">
-                        Histórico
-                    </a>
-                    <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#CreateFollowupProspModal-@prospeccao.Id-Toggle" role="button">
-                        Incluir Status
-                    </a>
-                    <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#deletarProspModal-@prospeccao.Id-Toggle" role="button">
-                        Deletar
-                    </a>
-
-                    @*<a asp-action="Edit" asp-route-id="@prospeccao.Id" class="btn btn-outline-primary">Editar</a>*@
-                    @*<a asp-action="Details" asp-route-id="@prospeccao.Id" class="btn btn-outline-primary">Histórico</a>*@
-                    @*<a asp-action="Atualizar" asp-route-id="@prospeccao.Id" class="btn btn-outline-primary">Atualizar</a>*@
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>                    
-                </div>
-            </div>
-        </div>
     </div>
+    
     <tr>
         @if (prospeccao.Empresa.Logo != null)
         {
@@ -287,7 +112,7 @@
             }
         </td>
         <td class="cell">
-            <button type="button" data-bs-target="#modalDetalhes-@prospeccao.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary" onclick="carregarModaisFunil('@prospeccao.Id')">Detalhes</button>
+            <button type="button" data-bs-target="#modalDetalhes-@prospeccao.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary" onmouseover="carregarModaisFunil('@prospeccao.Id')">Detalhes</button>
             </td> 
         </tr>
 }
