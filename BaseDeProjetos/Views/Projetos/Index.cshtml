@@ -28,7 +28,6 @@
 	}
 
 	function carregarModalEditarFollowup(idprojeto, idFollowup, tipo) {
-		console.log(`#modal${tipo}Proj-${idprojeto}-container`)
 		if (tipo) {
 			fetch(`/FunildeVendas/RetornarModalEditFollowup?idProj=${idprojeto}&idFollowup=${idFollowup}&tipo=${tipo}`)
 				.then(response => response.text())

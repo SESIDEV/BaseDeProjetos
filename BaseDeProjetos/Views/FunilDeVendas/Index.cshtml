@@ -139,6 +139,80 @@
     }
 
 </style>
+<script>
+	var prospeccoesDetalhes = [];
+
+	function carregarModalFunil(idProspeccao, tipo) {
+		if (!prospeccoesDetalhes.includes(idProspeccao)) {
+			if (tipo) {
+				fetch(`/FunildeVendas/RetornarModal?idProsp=${idProspeccao}&tipo=${tipo}`)
+					.then(response => response.text())
+					.then(result => {
+						document.querySelector(`#modal${tipo}Prosp-${idProspeccao}-container`).innerHTML = result;
+					});
+			}
+		}
+	}
+
+	function carregarModalDetalhesFunil(idProspeccao) {
+		// Verifica se o modal da prospeccao ja foi carregada para que não se carregue-o duas vezes sem necessidade
+		let buttonName = "#button-" + idProspeccao
+		console.log(buttonName)
+		let buttonDetalhes = document.querySelector(buttonName)
+
+		if (!prospeccoesDetalhes.includes(idProspeccao)) {
+
+		buttonDetalhes.disabled = true;
+		buttonDetalhes.innerHTML = '<div class="spinner-border spinner-border-sm text-light" role="status"><span class="visually-hidden">Loading...</span></div>';		
+			fetch(`/FunildeVendas/RetornarModalDetalhes?idProsp=${idProspeccao}`)
+				.then(response => response.text())
+				.then(result => {
+					document.querySelector(`#modalDetalhesProsp-${idProspeccao}-container`).innerHTML = result;
+					buttonDetalhes.innerHTML = 'Detalhes';
+					buttonDetalhes.disabled = false;
+					buttonDetalhes.removeAttribute("style");
+				});				
+		}		
+	}
+
+	function carregarModaisFunil(idProspeccao) {
+		// O nome precisa bater com o nome da view, no sentido que, o sufixo será "ProspViewComponent". Em outras palavras, está acoplado.
+		
+		modaisDisponiveis = ["Edit", "Delete", "History", "CreateFollowup"]
+		modaisDisponiveis.forEach((tipo) => {
+			carregarModalFunil(idProspeccao, tipo)
+		})
+		carregarModalDetalhesFunil(idProspeccao);
+		prospeccoesDetalhes.push(idProspeccao);
+	}
+
+	function carregarModalEditarFollowup(idProspeccao, idFollowup, tipo) {
+		console.log(`#modal${tipo}Prosp-${idProspeccao}-container`)
+		if (tipo) {
+			fetch(`/FunildeVendas/RetornarModalEditFollowup?idProsp=${idProspeccao}&idFollowup=${idFollowup}&tipo=${tipo}`)
+				.then(response => response.text())
+				.then(result => {
+					document.querySelector(`#modal${tipo}Prosp-${idProspeccao}-container`).innerHTML = result;
+				});
+		} else {
+			console.log("Algo deu errado");
+		}
+	}
+
+	//function obterCookie(nomeCookie) {
+	//	var results = document.cookie.match('(^|;) ?' + nomeCookie + '=([^;]*)(;|$)');
+
+	//	if (results)
+	//		return (unescape(results[2]));
+	//	else
+	//		return null;
+	//}
+
+	//function setarCookie(nomeCookie,  maxAge) {
+	//	// 1 day = 86400s
+	//	document.cookie = `name=${nomeCookie};maxAge=${maxAge};isFirstTime=${true}`;
+	//}
+</script>
 <div class="app-wrapper">
 	<div class="app-content pt-3 p-md-3 p-lg-4">
 		<div class="container-xl">
@@ -383,70 +457,3 @@
 		</div>
 	</div>
 </div>
-<script>
-	var prospeccoesDetalhes = [];
-
-	function carregarModalFunil(idProspeccao, tipo) {
-		if (!prospeccoesDetalhes.includes(idProspeccao)) {
-			if (tipo) {
-				fetch(`/FunildeVendas/RetornarModal?idProsp=${idProspeccao}&tipo=${tipo}`)
-				.then(response => response.text())
-				.then(result => {
-					document.querySelector(`#modal${tipo}Prosp-${idProspeccao}-container`).innerHTML = result;
-				});
-			}
-		}
-	}
-
-	function carregarModalDetalhesFunil(idProspeccao) {
-		// Verifica se o modal da prospeccao ja foi carregada para que não se carregue-o duas vezes sem necessidade
-		if (!prospeccoesDetalhes.includes(idProspeccao)) {
-			fetch(`/FunildeVendas/RetornarModalDetalhes?idProsp=${idProspeccao}`)
-			.then(response => response.text())
-			.then(result => {
-				document.querySelector(`#modalDetalhesProsp-${idProspeccao}-container`).innerHTML = result;
-			});
-		}
-	}
-
-	function carregarModaisFunil(idProspeccao) {
-		// O nome precisa bater com o nome da view, no sentido que, o sufixo será "ProspViewComponent". Em outras palavras, está acoplado.
-		modaisDisponiveis = ["Edit", "Delete", "History", "CreateFollowup"]
-		modaisDisponiveis.forEach((tipo) => {
-			carregarModalFunil(idProspeccao, tipo)
-		})
-		carregarModalDetalhesFunil(idProspeccao);
-		prospeccoesDetalhes.push(idProspeccao);
-	}
-
-	function carregarModalEditarFollowup(idProspeccao, idFollowup, tipo) {
-		console.log(`#modal${tipo}Prosp-${idProspeccao}-container`)
-		if (tipo) {
-			fetch(`/FunildeVendas/RetornarModalEditFollowup?idProsp=${idProspeccao}&idFollowup=${idFollowup}&tipo=${tipo}`)
-				.then(response => response.text())
-				.then(result => {
-					document.querySelector(`#modal${tipo}Prosp-${idProspeccao}-container`).innerHTML = result;
-				});
-		} else {
-			console.log("Algo deu errado");
-		}
-	}
-
-	//function obterCookie(nomeCookie) {
-	//	var results = document.cookie.match('(^|;) ?' + nomeCookie + '=([^;]*)(;|$)');
-
-	//	if (results)
-	//		return (unescape(results[2]));
-	//	else
-	//		return null;
-	//}
-
-	//function setarCookie(nomeCookie,  maxAge) {
-	//	// 1 day = 86400s
-	//	document.cookie = `name=${nomeCookie};maxAge=${maxAge};isFirstTime=${true}`;
-	//}
-
-
-
-
-</script>
