@@ -149,16 +149,38 @@ function updateLink() {
     
 }
 
-function montarNetwork(pessoas) {
+function montarNetwork(pessoas, competencias=null) {
 	var nodes = null;
 	var edges = null;
 	var network = null;
     let defuserpic = "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png";
-	
+    var existeFiltro = false
     var listaPessoas = []
 
-    pessoas.forEach(function (p){
+    if (competencias != null){
+        compFiltradas = document.querySelector(`#${competencias}`).split(";")
+        existeFiltro = NaoEhNulaOuVazia(compFiltradas)
+    }
+
+    pessoas.forEach(p => {
+        let listaCompPessoa = null
+        let notInclude = false
         var obj = {};
+
+        if (existeFiltro){
+            listaCompPessoa = p['Competencia'].split(";")
+
+            compFiltradas.forEach(comp => {
+                if (!listaCompPessoa.includes(comp)) {
+                    notInclude = true;
+                    return;
+                }
+            });
+            if (notInclude) {
+                return;
+            }  
+        }
+
         obj['id'] = p['Email']
         obj['title'] = p['UserName']
         obj['image'] = p['Foto']
@@ -166,7 +188,6 @@ function montarNetwork(pessoas) {
         if ((p['Foto'] == null) || (p['Foto'] == "")){
             obj['image'] = defuserpic
         }
-
 
         listaPessoas.push(obj)
     })
@@ -229,6 +250,23 @@ function montarNetwork(pessoas) {
 	});
 
     redePessoas = network;
+}
+
+function NaoEhNulaOuVazia(compFiltradas) {
+    return compFiltradas != null && compFiltradas != "" && compFiltradas != [];
+}
+
+function converterCompetencias() {
+
+    let inputComp = ""
+    let dict1 = {}
+
+    listaComp = inputComp.split(";")
+
+    listaComp.forEach(c => {
+        compString = dict1[c]
+    })
+
 }
 
 function statusPatente(){
