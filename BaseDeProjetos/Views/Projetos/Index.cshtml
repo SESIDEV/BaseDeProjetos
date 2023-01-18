@@ -6,6 +6,39 @@
 }
 
 <partial name="Header" view-data="@ViewData" />
+<script>
+	function carregarModalFunil(idprojeto, tipo) {
+		if (tipo) {
+			fetch(`/FunildeVendas/RetornarModal?idProj=${idprojeto}&tipo=${tipo}`)
+				.then(response => response.text())
+				.then(result => {
+					document.querySelector(`#modal${tipo}Proj-${idprojeto}-container`).innerHTML = result;
+				});
+		} else {
+			console.log("Tipo de Modal Inválido");
+		}
+	}
+
+	function carregarModaisFunil(idprojeto) {
+		// O nome precisa bater com o nome da view, no sentido que, o sufixo será "ProjViewComponent". Em outras palavras, está acoplado.
+		modaisDisponiveis = ["Edit", "Delete", "History", "CreateFollowup"]
+		modaisDisponiveis.forEach((tipo) => {
+			carregarModalFunil(idprojeto, tipo)
+		})
+	}
+
+	function carregarModalEditarFollowup(idprojeto, idFollowup, tipo) {
+		if (tipo) {
+			fetch(`/FunildeVendas/RetornarModalEditFollowup?idProj=${idprojeto}&idFollowup=${idFollowup}&tipo=${tipo}`)
+				.then(response => response.text())
+				.then(result => {
+					document.querySelector(`#modal${tipo}Proj-${idprojeto}-container`).innerHTML = result;
+				});
+		} else {
+			console.log("Algo deu errado");
+		}
+	}
+</script>
 <div class="app-wrapper">
 	<div class="app-content pt-3 p-md-3 p-lg-4">
 		<div class="container-xl">
@@ -145,37 +178,3 @@
 		</div>
 	</div>
 </div>
-<script>
-	function carregarModalFunil(idprojeto, tipo) {
-		if (tipo) {
-			fetch(`/FunildeVendas/RetornarModal?idProj=${idprojeto}&tipo=${tipo}`)
-				.then(response => response.text())
-				.then(result => {
-					document.querySelector(`#modal${tipo}Proj-${idprojeto}-container`).innerHTML = result;
-				});
-		} else {
-			console.log("Tipo de Modal Inválido");
-		}
-	}
-
-	function carregarModaisFunil(idprojeto) {
-		// O nome precisa bater com o nome da view, no sentido que, o sufixo será "ProjViewComponent". Em outras palavras, está acoplado.
-		modaisDisponiveis = ["Edit", "Delete", "History", "CreateFollowup"]
-		modaisDisponiveis.forEach((tipo) => {
-			carregarModalFunil(idprojeto, tipo)
-		})
-	}
-
-	function carregarModalEditarFollowup(idprojeto, idFollowup, tipo) {
-		console.log(`#modal${tipo}Proj-${idprojeto}-container`)
-		if (tipo) {
-			fetch(`/FunildeVendas/RetornarModalEditFollowup?idProj=${idprojeto}&idFollowup=${idFollowup}&tipo=${tipo}`)
-				.then(response => response.text())
-				.then(result => {
-					document.querySelector(`#modal${tipo}Proj-${idprojeto}-container`).innerHTML = result;
-				});
-		} else {
-			console.log("Algo deu errado");
-		}
-	}
-</script>
