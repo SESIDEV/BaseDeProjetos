@@ -464,6 +464,11 @@ namespace BaseDeProjetos.Controllers
 
         }
 
+        public IActionResult RetornarModalDetalhes(string idProsp) 
+        {
+            return ViewComponent($"ModalDetalhesProsp", new { id = idProsp });
+        }
+
         public IActionResult RetornarModalEditFollowup(string idProsp, string idFollowup, string tipo)
         {
             CriarSelectListsDaView();
