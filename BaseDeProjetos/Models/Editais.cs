@@ -36,20 +36,20 @@ namespace BaseDeProjetos.Models
 
     public class Submissao
     {
+        [Display(Name = "Id da Sumbmissão")]
         [Key]
         public virtual string Id { get; set; }
-
+        [Display(Name = "Empresa do Edital")]
         public virtual bool ComEmpresa { get; set; }
-
+        [Display(Name = "Edital")]
         public virtual Editais Edital { get; set; }
-
+        [Display(Name = "Id do Edital")]
         public virtual string EditalId { get; set; }
-
+        [Display(Name = "Prospecção")]
         public virtual Prospeccao Prospeccao { get; set; }
-
+        [Display(Name = "Id da Prospecção")]
         public virtual string ProspeccaoId { get; set; }
-
-        [Display(Name = "Proponente")]
+        [Display(Name = "Proponente do Edital")]
         public virtual string Proponente { get; set; }
         [Display(Name = "Projeto proposto")]
         public virtual string ProjetoProposto { get; set; }

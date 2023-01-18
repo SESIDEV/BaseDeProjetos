@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -133,45 +134,6 @@ namespace BaseDeProjetos.Controllers
 
         }
 
-        public IActionResult ProspectarEdital(int id, string userId)
-        {
-
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-
-            userId = HttpContext.User.Identity.Name;
-            Instituto usuarioCasa = _context.Users.FirstOrDefault(u => u.UserName == userId).Casa;
-
-            Prospeccao prosp = new Prospeccao
-            {
-                Id = $"proj_{DateTime.Now.Ticks}",
-                Empresa = _context.Empresa.FirstOrDefault(E => E.Id == id),
-                Usuario = _context.Users.FirstOrDefault(u => u.UserName == userId),
-                Casa = usuarioCasa,
-                LinhaPequisa = LinhaPesquisa.Indefinida,
-                CaminhoPasta = ""
-            };
-            prosp.Status = new List<FollowUp>
-            {
-                new FollowUp
-                {
-
-                    OrigemID = prosp.Id,
-                    Data = DateTime.Today,
-                    Anotacoes = $"Prospecção iniciada a partir do edital",
-                    Status = StatusProspeccao.ContatoInicial
-
-                }
-            };
-
-            _context.Add(prosp);
-            _context.SaveChanges();
-            return RedirectToAction("Index", "FunilDeVendas");
-
-        }
-
         [HttpGet]
         public IActionResult Atualizar(string id)
         {
@@ -282,10 +244,10 @@ namespace BaseDeProjetos.Controllers
             CriarSelectListsDaView();
 
             Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-			ViewBag.usuarioCasa = usuario.Casa;
-			ViewBag.usuarioNivel = usuario.Nivel;
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
 
-			if (id == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -318,7 +280,7 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {
-                   prospeccao = EditarDadosDaProspecção(id, prospeccao);
+                    prospeccao = EditarDadosDaProspecção(id, prospeccao);
                     _context.SaveChanges(); // Essa linha já foi async, talvez seja possível que isso permita ressurgências...
                 }
                 catch (DbUpdateConcurrencyException)
@@ -491,9 +453,10 @@ namespace BaseDeProjetos.Controllers
         public IActionResult RetornarModal(string idProsp, string tipo)
         {
             CriarSelectListsDaView();
-            if (tipo != null || tipo != "") {
-                return ViewComponent($"Modal{tipo}Prosp", new { id = idProsp }); 
-            } 
+            if (tipo != null || tipo != "")
+            {
+                return ViewComponent($"Modal{tipo}Prosp", new { id = idProsp });
+            }
             else
             {
                 return ViewComponent("null"); // View n existe é mais pra ""debug""
@@ -508,14 +471,15 @@ namespace BaseDeProjetos.Controllers
             {
                 return ViewComponent($"Modal{tipo}Prosp", new { id = idProsp, id2 = idFollowup });
             }
-            else 
+            else
             {
                 return ViewComponent("null"); // View debug
             }
         }
 
-        public string PuxarDadosProspeccoes(string casa = "ISIQV", int ano = 2022, bool planejadas = false){
-            
+        public string PuxarDadosProspeccoes(string casa = "ISIQV", int ano = 2022, bool planejadas = false)
+        {
+
             Instituto casa_ = (Instituto)Enum.Parse(typeof(Instituto), casa);
 
             List<Prospeccao> lista_prosp = _context.Prospeccao.Where(p => p.Casa == casa_).ToList();
@@ -524,22 +488,29 @@ namespace BaseDeProjetos.Controllers
 
             foreach (var p in lista_prosp)
             {
-                if (p.Status.OrderBy(k=>k.Data).LastOrDefault().Data.Year == ano){
-                    if (planejadas){
-                        if (p.Status.OrderBy(k=>k.Data).LastOrDefault().Status == StatusProspeccao.Planejada){
-                        } else {
+                if (p.Status.OrderBy(k => k.Data).LastOrDefault().Data.Year == ano)
+                {
+                    if (planejadas)
+                    {
+                        if (p.Status.OrderBy(k => k.Data).LastOrDefault().Status == StatusProspeccao.Planejada)
+                        {
+                        }
+                        else
+                        {
                             continue;
                         }
                     }
-                    
+
                     Dictionary<string, object> dict = new Dictionary<string, object>();
                     dict["idProsp"] = p.Id;
-                    dict["Status"] = p.Status.OrderBy(k=>k.Data).LastOrDefault().Status.GetDisplayName();
-                    dict["Data"] = p.Status.OrderBy(k=>k.Data).LastOrDefault().Data;
+                    dict["Status"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Status.GetDisplayName();
+                    dict["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data;
                     dict["Empresa"] = p.Empresa.Nome;
                     dict["Segmento"] = p.Empresa.Segmento.GetDisplayName();
                     listaFull.Add(dict);
-                } else {
+                }
+                else
+                {
                     continue;
                 }
             }
@@ -548,8 +519,9 @@ namespace BaseDeProjetos.Controllers
 
         }
 
-        public string PuxarDadosUsuarios(){
-            
+        public string PuxarDadosUsuarios()
+        {
+
             return Helpers.Helpers.PuxarDadosUsuarios(_context);
 
         }

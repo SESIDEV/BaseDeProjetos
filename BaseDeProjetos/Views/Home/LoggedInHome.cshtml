@@ -5,54 +5,54 @@
 @using System.Text.Json;
 @{
 
-	int n_prosp_ativas = 0;
-	int n_prosp_totais = 0;
-	int n_prosp_emproposta = 0;
-	int n_prosp_concluidas = 0;
-	int n_prosp_planejadas = 0;
-	float proporcao_prosp_ativas = 0;
-	float proporcao_prosp_emproposta = 0;
-	float proporcao_prosp_concluidas = 0;
-	float proporcao_prosp_planejadas = 0;
-	decimal receita = 1;
-	decimal despesas = 1;
-	decimal investimento = 1;
-	decimal sustentabilidade = 100;
-	float quali = 1;
-	List<LinhaPesquisa> linhaDePesquisa = new List<LinhaPesquisa>();
-	string labelLinhaDePesquisa = "";
-	string dadosLinhaDePesquisa = "";
+    int n_prosp_ativas = 0;
+    int n_prosp_totais = 0;
+    int n_prosp_emproposta = 0;
+    int n_prosp_concluidas = 0;
+    int n_prosp_planejadas = 0;
+    float proporcao_prosp_ativas = 0;
+    float proporcao_prosp_emproposta = 0;
+    float proporcao_prosp_concluidas = 0;
+    float proporcao_prosp_planejadas = 0;
+    decimal receita = 1;
+    decimal despesas = 1;
+    decimal investimento = 1;
+    decimal sustentabilidade = 100;
+    float quali = 1;
+    List<LinhaPesquisa> linhaDePesquisa = new List<LinhaPesquisa>();
+    string labelLinhaDePesquisa = "";
+    string dadosLinhaDePesquisa = "";
 
-	try
-	{
-		//decimal receita = (decimal)ViewBag.receita_isiqv + (decimal)ViewBag.receita_isiii + (decimal)ViewBag.receita_cisho;
-		receita = (decimal)ViewBag.receita_total;
-		investimento = (decimal)ViewBag.invest_total;
-		despesas = (decimal)ViewBag.despesa_total;
-		quali = (float)ViewBag.quali;
-		n_prosp_ativas = (int)ViewBag.n_prosp_ativas;
-		n_prosp_totais = (int)ViewBag.n_prosp_total;
-		n_prosp_emproposta = (int)ViewBag.n_prosp_emproposta;
-		n_prosp_concluidas = (int)ViewBag.n_prosp_concluidas;
-		n_prosp_planejadas = (int)ViewBag.n_prosp_planejadas;
-		proporcao_prosp_ativas = (int)((float)n_prosp_ativas / (float)n_prosp_totais * 100);
-		proporcao_prosp_emproposta = (int)((float)n_prosp_emproposta / (float)n_prosp_totais * 100);
-		proporcao_prosp_concluidas = (int)((float)n_prosp_concluidas / (float)n_prosp_totais * 100);
-		proporcao_prosp_planejadas = (int)((float)n_prosp_planejadas / (float)n_prosp_totais * 100);
+    try
+    {
+        //decimal receita = (decimal)ViewBag.receita_isiqv + (decimal)ViewBag.receita_isiii + (decimal)ViewBag.receita_cisho;
+        receita = (decimal)ViewBag.receita_total;
+        investimento = (decimal)ViewBag.invest_total;
+        despesas = (decimal)ViewBag.despesa_total;
+        quali = (float)ViewBag.quali;
+        n_prosp_ativas = (int)ViewBag.n_prosp_ativas;
+        n_prosp_totais = (int)ViewBag.n_prosp_total;
+        n_prosp_emproposta = (int)ViewBag.n_prosp_emproposta;
+        n_prosp_concluidas = (int)ViewBag.n_prosp_concluidas;
+        n_prosp_planejadas = (int)ViewBag.n_prosp_planejadas;
+        proporcao_prosp_ativas = (int)((float)n_prosp_ativas / (float)n_prosp_totais * 100);
+        proporcao_prosp_emproposta = (int)((float)n_prosp_emproposta / (float)n_prosp_totais * 100);
+        proporcao_prosp_concluidas = (int)((float)n_prosp_concluidas / (float)n_prosp_totais * 100);
+        proporcao_prosp_planejadas = (int)((float)n_prosp_planejadas / (float)n_prosp_totais * 100);
 
-		linhaDePesquisa = ViewBag.LinhaDePesquisa as List<LinhaPesquisa>;
+        linhaDePesquisa = ViewBag.LinhaDePesquisa as List<LinhaPesquisa>;
 
-		// Separação do query SQL em algumas variáveis para clareza
-		var linhaDePesquisaDistintos = linhaDePesquisa.OrderByDescending(p => linhaDePesquisa.Where(k => k == p).Count()).Distinct();
-		//dadosGraficoLinhaDePesquisa = linhaDePesquisaDistintos.Select(p => $"{{name: `{p.GetDisplayName().ToUpperInvariant()}`, y: {linhaDePesquisa.Where(k => k == p).Count()}}},").ToList();
-		List<int> quantidades = linhaDePesquisaDistintos.Select(p => linhaDePesquisa.Where(k => k == p).Count()).ToList();
-		List<string> linha = linhaDePesquisaDistintos.Select(p => $"`{p.GetDisplayName().ToUpperInvariant()}`").ToList();
+        // Separação do query SQL em algumas variáveis para clareza
+        var linhaDePesquisaDistintos = linhaDePesquisa.OrderByDescending(p => linhaDePesquisa.Where(k => k == p).Count()).Distinct();
+        //dadosGraficoLinhaDePesquisa = linhaDePesquisaDistintos.Select(p => $"{{name: `{p.GetDisplayName().ToUpperInvariant()}`, y: {linhaDePesquisa.Where(k => k == p).Count()}}},").ToList();
+        List<int> quantidades = linhaDePesquisaDistintos.Select(p => linhaDePesquisa.Where(k => k == p).Count()).ToList();
+        List<string> linha = linhaDePesquisaDistintos.Select(p => $"`{p.GetDisplayName().ToUpperInvariant()}`").ToList();
 
-		for (int i = 0; i < quantidades.Count(); i++)
-		{
-			labelLinhaDePesquisa += linha[i] + ",";
-			dadosLinhaDePesquisa += quantidades[i] + ",";			
-		}
+        for (int i = 0; i < quantidades.Count(); i++)
+        {
+            labelLinhaDePesquisa += linha[i] + ",";
+            dadosLinhaDePesquisa += quantidades[i] + ",";
+        }
 
         if (despesas > 0)
         {
@@ -73,613 +73,614 @@
 
 
 <partial name="Header" view-data="@ViewData" />
-    <div class="app-wrapper"> <!-- Classe antiga era app-wrapper -->	    
-	    <div class="app-content pt-3 p-md-3 p-lg-4">
-		    <div class="container-xl">
-			    <h1 class="app-page-title">Bem vindo ao Sistema de Gestão de Inovação - SGI</h1>
-				<h1 class="app-page-description">Status Financeiro</h1>
-				<h1 style="font-size: 1.0rem; margin-bottom: 1.0rem; font-weight: normal;">@ViewBag.Data.ToString("dd/MM/yyyy")</h1>
-				    
-			    <div class="row g-4 mb-4">
-				    <div class="col-6 card-sgi">
-					    <div class="app-card app-card-stat shadow-sm h-100">
-						    <div class="app-card-body p-3 p-lg-4">
-							    <h4 class="stats-type mb-1">Volume de Negócio</h4>
-							    <div class="stats-figure">R$ @Helpers.FormatarValoresDashboards((decimal)@ViewBag.Volume_Negocios)</div>
-							    <!-- <div class="stats-meta text-success">
-								    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
-</svg> 20%</div> -->
-						    </div>
-						    <a class="app-card-link-mask" href="#"></a>
-					    </div>
-				    </div>
-				    
-				    <div class="col-6 card-sgi">
-					    <div class="app-card app-card-stat shadow-sm h-100">
-						    <div class="app-card-body p-3 p-lg-4">
-							    <h4 class="stats-type mb-1">Receita por Competência</h4>
-							    <div class="stats-figure">R$ @Helpers.FormatarValoresDashboards(@receita)</div>
-							    <!-- <div class="stats-meta text-success">
-								    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-down" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
-</svg> 5% </div> -->
-						    </div>
-						    <a class="app-card-link-mask" href="#"></a>
-					    </div>
-				    </div>
-				    <div class="col-6 card-sgi">
-					    <div class="app-card app-card-stat shadow-sm h-100">
-						    <div class="app-card-body p-3 p-lg-4">
-							    <h4 class="stats-type mb-1">Receita por Caixa</h4>
-							    <div class="stats-figure">R$ @Helpers.FormatarValoresDashboards(@investimento)</div>
-							    <!-- <div class="stats-meta">
-								    Open</div> -->
-						    </div>
-						    <a class="app-card-link-mask" href="#"></a>
-					    </div>
-				    </div>
-				    <div class="col-6 card-sgi">
-					    <div class="app-card app-card-stat shadow-sm h-100">
-						    <div class="app-card-body p-3 p-lg-4">
-							    <h4 class="stats-type mb-1">Despesa</h4>
-							    <div class="stats-figure">R$ @Helpers.FormatarValoresDashboards(@despesas)</div>
-							    <!-- <div class="stats-meta">New</div> -->
-						    </div>
-						    <a class="app-card-link-mask" href="#"></a>
-					    </div>
-				    </div>
-					<div class="col-6 card-sgi">
-					    <div class="app-card app-card-stat shadow-sm h-100">
-						    <div class="app-card-body p-3 p-lg-4">
-							    <h4 class="stats-type mb-1">Sustentabilidade</h4>
-							    <div class="stats-figure">@sustentabilidade.ToString("F2")%</div>
-							    <!-- <div class="stats-meta">New</div> -->
-						    </div>
-						    <a class="app-card-link-mask" href="#"></a>
-					    </div>
-				    </div>
-			    </div>
+<div class="app-wrapper">
+    <!-- Classe antiga era app-wrapper -->
+    <div class="app-content pt-3 p-md-3 p-lg-4">
+        <div class="container-xl">
+            <h1 class="app-page-title">Bem vindo ao Sistema de Gestão de Inovação - SGI</h1>
+            <h1 class="app-page-description">Status Financeiro</h1>
+            <h1 style="font-size: 1.0rem; margin-bottom: 1.0rem; font-weight: normal;">@ViewBag.Data.ToString("dd/MM/yyyy")</h1>
 
-				<h1 class="app-page-description">Status Operacional</h1>
+            <div class="row g-4 mb-4">
+                <div class="col-6 card-sgi">
+                    <div class="app-card app-card-stat shadow-sm h-100">
+                        <div class="app-card-body p-3 p-lg-4">
+                            <h4 class="stats-type mb-1">Volume de Negócio</h4>
+                            <div class="stats-figure">R$ @Helpers.FormatarValoresDashboards((decimal)@ViewBag.Volume_Negocios)</div>
+                            <!-- <div class="stats-meta text-success">
+                                                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+                            </svg> 20%</div> -->
+                        </div>
+                        <a class="app-card-link-mask" href="#"></a>
+                    </div>
+                </div>
 
-				<div class="row g-4 mb-4">
-				    <div class="col-6 card-sgi">
-					    <div class="app-card app-card-stat shadow-sm h-100">
-						    <div class="app-card-body p-3 p-lg-4">
-							    <h4 class="stats-type mb-1">Prospecções Ativas</h4>
-							<div class="stats-figure">@n_prosp_ativas</div>
-							    <!-- <div class="stats-meta text-success">
-								    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
-</svg> 20%</div> -->
-						    </div>
-						    <a class="app-card-link-mask" href="#"></a>
-					    </div>
-				    </div>
-				    
-				    <div class="col-6 card-sgi">
-					    <div class="app-card app-card-stat shadow-sm h-100">
-						    <div class="app-card-body p-3 p-lg-4">
-							    <h4 class="stats-type mb-1">Projetos Ativos</h4>
-							    <div class="stats-figure">@ViewBag.n_proj</div>
-							    <!-- <div class="stats-meta text-success">
-								    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-down" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
-</svg> 5% </div> -->
-						    </div>
-						    <a class="app-card-link-mask" href="#"></a>
-					    </div>
-				    </div>
-				    <div class="col-6 card-sgi">
-					    <div class="app-card app-card-stat shadow-sm h-100">
-						    <div class="app-card-body p-3 p-lg-4">
-							    <h4 class="stats-type mb-1">Colaboradores</h4>
-							    <div class="stats-figure">@ViewBag.Usuarios</div>
-							    <!-- <div class="stats-meta">
-								    Open</div> -->
-						    </div>
-						    <a class="app-card-link-mask" href="#"></a>
-					    </div>
-				    </div>
-				    <div class="col-6 card-sgi">
-					    <div class="app-card app-card-stat shadow-sm h-100">
-						    <div class="app-card-body p-3 p-lg-4">
-							    <h4 class="stats-type mb-1">Empresas com Relacionamento</h4>
-							    <div class="stats-figure">@ViewBag.n_empresas</div>
-							    <!-- <div class="stats-meta">New</div> -->
-						    </div>
-						    <a class="app-card-link-mask" href="#"></a>
-					    </div>
-				    </div>
-					<div class="col-6 card-sgi">
-					    <div class="app-card app-card-stat shadow-sm h-100">
-						    <div class="app-card-body p-3 p-lg-4">
-							    <h4 class="stats-type mb-1">Satisfação do Cliente</h4>
-							    <div class="stats-figure">@ViewBag.satisfacao.ToString("P1")</div>
-							    <!-- <div class="stats-meta">New</div> -->
-						    </div>
-						    <a class="app-card-link-mask" href="#"></a>
-					    </div>
-				    </div>
-			    </div>
+                <div class="col-6 card-sgi">
+                    <div class="app-card app-card-stat shadow-sm h-100">
+                        <div class="app-card-body p-3 p-lg-4">
+                            <h4 class="stats-type mb-1">Receita por Competência</h4>
+                            <div class="stats-figure">R$ @Helpers.FormatarValoresDashboards(@receita)</div>
+                            <!-- <div class="stats-meta text-success">
+                                                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-down" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
+                            </svg> 5% </div> -->
+                        </div>
+                        <a class="app-card-link-mask" href="#"></a>
+                    </div>
+                </div>
+                <div class="col-6 card-sgi">
+                    <div class="app-card app-card-stat shadow-sm h-100">
+                        <div class="app-card-body p-3 p-lg-4">
+                            <h4 class="stats-type mb-1">Receita por Caixa</h4>
+                            <div class="stats-figure">R$ @Helpers.FormatarValoresDashboards(@investimento)</div>
+                            <!-- <div class="stats-meta">
+                                Open</div> -->
+                        </div>
+                        <a class="app-card-link-mask" href="#"></a>
+                    </div>
+                </div>
+                <div class="col-6 card-sgi">
+                    <div class="app-card app-card-stat shadow-sm h-100">
+                        <div class="app-card-body p-3 p-lg-4">
+                            <h4 class="stats-type mb-1">Despesa</h4>
+                            <div class="stats-figure">R$ @Helpers.FormatarValoresDashboards(@despesas)</div>
+                            <!-- <div class="stats-meta">New</div> -->
+                        </div>
+                        <a class="app-card-link-mask" href="#"></a>
+                    </div>
+                </div>
+                <div class="col-6 card-sgi">
+                    <div class="app-card app-card-stat shadow-sm h-100">
+                        <div class="app-card-body p-3 p-lg-4">
+                            <h4 class="stats-type mb-1">Sustentabilidade</h4>
+                            <div class="stats-figure">@sustentabilidade.ToString("F2")%</div>
+                            <!-- <div class="stats-meta">New</div> -->
+                        </div>
+                        <a class="app-card-link-mask" href="#"></a>
+                    </div>
+                </div>
+            </div>
 
-			    <div class="row g-4 mb-4">
-					<div class="col-12 col-lg-12">
-						<div class="app-card app-card-chart h-100 shadow-sm">
-							<div class="app-card-header p-3">
-								<div class="row justify-content-between align-items-center">
-									<div class="col-auto">
-									<h4 class="app-card-title">Prospecções Totais Por Linha De Pesquisa</h4>
-									</div>
-									<div class="col-auto">
-										<div class="card-header-action">
-											<a href="charts.html">More charts</a>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="app-card-body p-3 p-lg-4">
-								@*<div class="mb-3 d-flex">
-									<select class="form-select form-select-sm ms-auto d-inline-flex w-auto">
-										<option value="1" selected>This week</option>
-										<option value="2">Today</option>
-										<option value="3">This Month</option>
-										<option value="3">This Year</option>
-									</select>
-								</div>*@
-								<div class="chart-container">
-									<canvas id="canvas-barchart"></canvas>
-								</div>
-							</div>
-						</div>
-			        </div>
+            <h1 class="app-page-description">Status Operacional</h1>
 
-			        <div class="col-12 col-lg-12" style="display:none">
-					<figure class="highcharts-figure">
-						<div id="container"></div>
-						<p class="highcharts-description">
-							Sankey charts are used to visualize data flow and volume
-							between nodes. The wider lines indicate larger volumes.
-						</p>
-					</figure>
-				        @*<div class="app-card app-card-chart h-100 shadow-sm">
-					        <div class="app-card-header p-3">
-						        <div class="row justify-content-between align-items-center">
-							        <div class="col-auto">
-						                <h4 class="app-card-title">Line Chart Example</h4>
-							        </div>
-							        <div class="col-auto">
-								        <div class="card-header-action">
-									        <a href="charts.html">More charts</a>
-								        </div>
-							        </div>
-						        </div>
-					        </div>
-					        <div class="app-card-body p-3 p-lg-4">
-							    <div class="mb-3 d-flex">   
-							        <select class="form-select form-select-sm ms-auto d-inline-flex w-auto">
-									    <option value="1" selected>This week</option>
-									    <option value="2">Today</option>
-									    <option value="3">This Month</option>
-									    <option value="3">This Year</option>
-									</select>
-							    </div>
-						        <div class="chart-container">
-				                    <canvas id="canvas-linechart" ></canvas>
-						        </div>
-					        </div>
-				        </div>*@
-			        </div>
-			        
-			        
-			    </div>
-			    <div class="row g-4 mb-4">
-				    <div class="col-12 col-lg-6">
-				        <div class="app-card app-card-progress-list h-100 shadow-sm">
-					        <div class="app-card-header p-3">
-						        <div class="row justify-content-between align-items-center">
-							        <div class="col-auto">
-						                <h4 class="app-card-title">Progresso das Prospecções</h4>
-							        </div>
-							        <div class="col-auto">
-								        <div class="card-header-action">
-									        <a asp-action="FunilDeVendas">Todas as prospecções</a>
-								        </div>
-							        </div>
-						        </div>
-					        </div>
-					        <div class="app-card-body">
-							    <div class="item p-3">
-								    <div class="row align-items-center">
-									    <div class="col">
-										    <div class="title mb-1 ">Ativas</div>
-											<div class="stat-cell mb-1">@n_prosp_ativas</div>
-										    <div class="progress">
-											<div class="progress-bar bg-success" role="progressbar" style="width: @proporcao_prosp_ativas%" aria-valuenow="@proporcao_prosp_ativas" aria-valuemin="0" aria-valuemax="100"></div>
-											</div>
-									    </div>
-									    <div class="col-auto">
-										    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
-</svg>
-									    </div>
-								    </div>
-								    <a class="item-link-mask" href="#"></a>
-							    </div>
-							    
-							    
-							     <div class="item p-3">
-								    <div class="row align-items-center">
-									    <div class="col">
-										    <div class="title mb-1 ">Com Proposta</div>
-										<div class="stat-cell mb-1">@n_prosp_emproposta</div>
-										    <div class="progress">
-											<div class="progress-bar bg-success" role="progressbar" style="width: @proporcao_prosp_emproposta%" aria-valuenow="@proporcao_prosp_emproposta" aria-valuemin="0" aria-valuemax="100"></div>
-											</div>
-									    </div>
-									    <div class="col-auto">
-										    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
-</svg>
-									    </div>
-								    </div>
-								    <a class="item-link-mask" href="#"></a>
-							    </div>
-							    
-							    <div class="item p-3">
-								    <div class="row align-items-center">
-									    <div class="col">
-										    <div class="title mb-1 ">Concluídas</div>
-											<div class="stat-cell mb-1">@n_prosp_concluidas</div>
-										    <div class="progress">
-											<div class="progress-bar bg-success" role="progressbar" style="width: @proporcao_prosp_concluidas%" aria-valuenow="@proporcao_prosp_concluidas" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="row g-4 mb-4">
+                <div class="col-6 card-sgi">
+                    <div class="app-card app-card-stat shadow-sm h-100">
+                        <div class="app-card-body p-3 p-lg-4">
+                            <h4 class="stats-type mb-1">Prospecções Ativas</h4>
+                            <div class="stats-figure">@n_prosp_ativas</div>
+                            <!-- <div class="stats-meta text-success">
+                                                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+                            </svg> 20%</div> -->
+                        </div>
+                        <a class="app-card-link-mask" href="#"></a>
+                    </div>
+                </div>
+
+                <div class="col-6 card-sgi">
+                    <div class="app-card app-card-stat shadow-sm h-100">
+                        <div class="app-card-body p-3 p-lg-4">
+                            <h4 class="stats-type mb-1">Projetos Ativos</h4>
+                            <div class="stats-figure">@ViewBag.n_proj</div>
+                            <!-- <div class="stats-meta text-success">
+                                                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-down" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
+                            </svg> 5% </div> -->
+                        </div>
+                        <a class="app-card-link-mask" href="#"></a>
+                    </div>
+                </div>
+                <div class="col-6 card-sgi">
+                    <div class="app-card app-card-stat shadow-sm h-100">
+                        <div class="app-card-body p-3 p-lg-4">
+                            <h4 class="stats-type mb-1">Colaboradores</h4>
+                            <div class="stats-figure">@ViewBag.Usuarios</div>
+                            <!-- <div class="stats-meta">
+                                Open</div> -->
+                        </div>
+                        <a class="app-card-link-mask" href="#"></a>
+                    </div>
+                </div>
+                <div class="col-6 card-sgi">
+                    <div class="app-card app-card-stat shadow-sm h-100">
+                        <div class="app-card-body p-3 p-lg-4">
+                            <h4 class="stats-type mb-1">Empresas com Relacionamento</h4>
+                            <div class="stats-figure">@ViewBag.n_empresas</div>
+                            <!-- <div class="stats-meta">New</div> -->
+                        </div>
+                        <a class="app-card-link-mask" href="#"></a>
+                    </div>
+                </div>
+                <div class="col-6 card-sgi">
+                    <div class="app-card app-card-stat shadow-sm h-100">
+                        <div class="app-card-body p-3 p-lg-4">
+                            <h4 class="stats-type mb-1">Satisfação do Cliente</h4>
+                            <div class="stats-figure">@ViewBag.satisfacao.ToString("P1")</div>
+                            <!-- <div class="stats-meta">New</div> -->
+                        </div>
+                        <a class="app-card-link-mask" href="#"></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-12 col-lg-12">
+                    <div class="app-card app-card-chart h-100 shadow-sm">
+                        <div class="app-card-header p-3">
+                            <div class="row justify-content-between align-items-center">
+                                <div class="col-auto">
+                                    <h4 class="app-card-title">Prospecções Totais Por Linha De Pesquisa</h4>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="card-header-action">
+                                        <a href="charts.html">More charts</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="app-card-body p-3 p-lg-4">
+                            @*<div class="mb-3 d-flex">
+                            <select class="form-select form-select-sm ms-auto d-inline-flex w-auto">
+                            <option value="1" selected>This week</option>
+                            <option value="2">Today</option>
+                            <option value="3">This Month</option>
+                            <option value="3">This Year</option>
+                            </select>
+                            </div>*@
+                            <div class="chart-container">
+                                <canvas id="canvas-barchart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-12" style="display:none">
+                    <figure class="highcharts-figure">
+                        <div id="container"></div>
+                        <p class="highcharts-description">
+                            Sankey charts are used to visualize data flow and volume
+                            between nodes. The wider lines indicate larger volumes.
+                        </p>
+                    </figure>
+                    @*<div class="app-card app-card-chart h-100 shadow-sm">
+                    <div class="app-card-header p-3">
+                    <div class="row justify-content-between align-items-center">
+                    <div class="col-auto">
+                    <h4 class="app-card-title">Line Chart Example</h4>
+                    </div>
+                    <div class="col-auto">
+                    <div class="card-header-action">
+                    <a href="charts.html">More charts</a>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+                    <div class="app-card-body p-3 p-lg-4">
+                    <div class="mb-3 d-flex">
+                    <select class="form-select form-select-sm ms-auto d-inline-flex w-auto">
+                    <option value="1" selected>This week</option>
+                    <option value="2">Today</option>
+                    <option value="3">This Month</option>
+                    <option value="3">This Year</option>
+                    </select>
+                    </div>
+                    <div class="chart-container">
+                    <canvas id="canvas-linechart" ></canvas>
+                    </div>
+                    </div>
+                    </div>*@
+                </div>
+
+
+            </div>
+            <div class="row g-4 mb-4">
+                <div class="col-12 col-lg-6">
+                    <div class="app-card app-card-progress-list h-100 shadow-sm">
+                        <div class="app-card-header p-3">
+                            <div class="row justify-content-between align-items-center">
+                                <div class="col-auto">
+                                    <h4 class="app-card-title">Progresso das Prospecções</h4>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="card-header-action">
+                                        <a asp-action="FunilDeVendas">Todas as prospecções</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="app-card-body">
+                            <div class="item p-3">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <div class="title mb-1 ">Ativas</div>
+                                        <div class="stat-cell mb-1">@n_prosp_ativas</div>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: @proporcao_prosp_ativas%" aria-valuenow="@proporcao_prosp_ativas" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <a class="item-link-mask" href="#"></a>
+                            </div>
+
+
+                            <div class="item p-3">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <div class="title mb-1 ">Com Proposta</div>
+                                        <div class="stat-cell mb-1">@n_prosp_emproposta</div>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: @proporcao_prosp_emproposta%" aria-valuenow="@proporcao_prosp_emproposta" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <a class="item-link-mask" href="#"></a>
+                            </div>
+
+                            <div class="item p-3">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <div class="title mb-1 ">Concluídas</div>
+                                        <div class="stat-cell mb-1">@n_prosp_concluidas</div>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: @proporcao_prosp_concluidas%" aria-valuenow="@proporcao_prosp_concluidas" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <a class="item-link-mask" href="#"></a>
+                            </div>
+
+                            <div class="item p-3">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <div class="title mb-1 ">Planejadas</div>
+                                        <div class="stat-cell mb-1">@n_prosp_planejadas</div>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: @proporcao_prosp_planejadas%;" aria-valuenow="@proporcao_prosp_planejadas" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <a class="item-link-mask" href="#"></a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                @*Não remover, pode ser útil para exibir algo no futuro*@
+                @*<div class="col-12 col-lg-6">
+                <div class="app-card app-card-stats-table h-100 shadow-sm">
+                <div class="app-card-header p-3">
+                <div class="row justify-content-between align-items-center">
+                <div class="col-auto">
+                <h4 class="app-card-title">Stats List</h4>
+                </div>
+                <div class="col-auto">
+                <div class="card-header-action">
+                <a href="#">View report</a>
+                </div>
+                </div>
+                </div>
+                </div>
+                <div class="app-card-body p-3 p-lg-4">
+                <div class="table-responsive">
+                <table class="table table-borderless mb-0">
+                <thead>
+                <tr>
+                <th class="meta">Source</th>
+                <th class="meta stat-cell">Views</th>
+                <th class="meta stat-cell">Today</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td><a href="#">google.com</a></td>
+                <td class="stat-cell">110</td>
+                <td class="stat-cell">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-up text-success" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+                </svg>
+                30%
+                </td>
+                </tr>
+                <tr>
+                <td><a href="#">getbootstrap.com</a></td>
+                <td class="stat-cell">67</td>
+                <td class="stat-cell">23%</td>
+                </tr>
+                <tr>
+                <td><a href="#">w3schools.com</a></td>
+                <td class="stat-cell">56</td>
+                <td class="stat-cell">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-down text-danger" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
+                </svg>
+                20%
+                </td>
+                </tr>
+                <tr>
+                <td><a href="#">javascript.com </a></td>
+                <td class="stat-cell">24</td>
+                <td class="stat-cell">-</td>
+                </tr>
+                <tr>
+                <td><a href="#">github.com </a></td>
+                <td class="stat-cell">17</td>
+                <td class="stat-cell">15%</td>
+                </tr>
+                </tbody>
+                </table>
+                </div>
+                </div>
+                </div>
+                </div>*@
+            </div>
+            @* Pode ser útil para exibir algum conteúdo no futuro, favor não remover por enquanto *@
+            @*<div class="row g-4 mb-4">
+            <div class="col-12 col-lg-4">
+            <div class="app-card app-card-basic d-flex flex-column align-items-start shadow-sm">
+            <div class="app-card-header p-3 border-bottom-0">
+            <div class="row align-items-center gx-3">
+            <div class="col-auto">
+            <div class="app-icon-holder">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-receipt" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27zm.217 1.338L2 2.118v11.764l.137.274.51-.51a.5.5 0 0 1 .707 0l.646.647.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.509.509.137-.274V2.118l-.137-.274-.51.51a.5.5 0 0 1-.707 0L12 1.707l-.646.647a.5.5 0 0 1-.708 0L10 1.707l-.646.647a.5.5 0 0 1-.708 0L8 1.707l-.646.647a.5.5 0 0 1-.708 0L6 1.707l-.646.647a.5.5 0 0 1-.708 0L4 1.707l-.646.647a.5.5 0 0 1-.708 0l-.509-.51z"/>
+            <path fill-rule="evenodd" d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm8-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+            </div>
+
+            </div>
+            <div class="col-auto">
+            <h4 class="app-card-title">Invoices</h4>
+            </div>
+            </div>
+            </div>
+            <div class="app-card-body px-4">
+
+            <div class="intro">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam aliquet eros vel diam semper mollis.</div>
+            </div>
+            <div class="app-card-footer p-4 mt-auto">
+            <a class="btn app-btn-secondary" href="#">Create New</a>
+            </div>
+            </div>
+            </div>
+            <div class="col-12 col-lg-4">
+            <div class="app-card app-card-basic d-flex flex-column align-items-start shadow-sm">
+            <div class="app-card-header p-3 border-bottom-0">
+            <div class="row align-items-center gx-3">
+            <div class="col-auto">
+            <div class="app-icon-holder">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-code-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+            <path fill-rule="evenodd" d="M6.854 4.646a.5.5 0 0 1 0 .708L4.207 8l2.647 2.646a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0zm2.292 0a.5.5 0 0 0 0 .708L11.793 8l-2.647 2.646a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708 0z"/>
+            </svg>
+            </div>
+
+            </div>
+            <div class="col-auto">
+            <h4 class="app-card-title">Apps</h4>
+            </div>
+            </div>
+            </div>
+            <div class="app-card-body px-4">
+
+            <div class="intro">Pellentesque varius, elit vel volutpat sollicitudin, lacus quam efficitur augue</div>
+            </div>
+            <div class="app-card-footer p-4 mt-auto">
+            <a class="btn app-btn-secondary" href="#">Create New</a>
+            </div>
+            </div>
+            </div>
+            <div class="col-12 col-lg-4">
+            <div class="app-card app-card-basic d-flex flex-column align-items-start shadow-sm">
+            <div class="app-card-header p-3 border-bottom-0">
+            <div class="row align-items-center gx-3">
+            <div class="col-auto">
+            <div class="app-icon-holder">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-tools" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M0 1l1-1 3.081 2.2a1 1 0 0 1 .419.815v.07a1 1 0 0 0 .293.708L10.5 9.5l.914-.305a1 1 0 0 1 1.023.242l3.356 3.356a1 1 0 0 1 0 1.414l-1.586 1.586a1 1 0 0 1-1.414 0l-3.356-3.356a1 1 0 0 1-.242-1.023L9.5 10.5 3.793 4.793a1 1 0 0 0-.707-.293h-.071a1 1 0 0 1-.814-.419L0 1zm11.354 9.646a.5.5 0 0 0-.708.708l3 3a.5.5 0 0 0 .708-.708l-3-3z"/>
+            <path fill-rule="evenodd" d="M15.898 2.223a3.003 3.003 0 0 1-3.679 3.674L5.878 12.15a3 3 0 1 1-2.027-2.027l6.252-6.341A3 3 0 0 1 13.778.1l-2.142 2.142L12 4l1.757.364 2.141-2.141zm-13.37 9.019L3.001 11l.471.242.529.026.287.445.445.287.026.529L5 13l-.242.471-.026.529-.445.287-.287.445-.529.026L3 15l-.471-.242L2 14.732l-.287-.445L1.268 14l-.026-.529L1 13l.242-.471.026-.529.445-.287.287-.445.529-.026z"/>
+            </svg>
+            </div>
+
+            </div>
+            <div class="col-auto">
+            <h4 class="app-card-title">Tools</h4>
+            </div>
+            </div>
+            </div>
+            <div class="app-card-body px-4">
+
+            <div class="intro">Sed maximus, libero ac pharetra elementum, turpis nisi molestie neque, et tincidunt velit turpis non enim.</div>
+            </div>
+            <div class="app-card-footer p-4 mt-auto">
+            <a class="btn app-btn-secondary" href="#">Create New</a>
+            </div>
+            </div>
+            </div>
+            </div>*@
+
+        </div>
+    </div>
 </div>
-									    </div>
-									    <div class="col-auto">
-										    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
-</svg>
-									    </div>
-								    </div>
-								    <a class="item-link-mask" href="#"></a>
-							    </div>
-							    
-							    <div class="item p-3">
-								    <div class="row align-items-center">
-									    <div class="col">
-										    <div class="title mb-1 ">Planejadas</div>
-											<div class="stat-cell mb-1">@n_prosp_planejadas</div>
-										    <div class="progress">
-											<div class="progress-bar bg-success" role="progressbar" style="width: @proporcao_prosp_planejadas%;" aria-valuenow="@proporcao_prosp_planejadas" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-									    </div>
-									    <div class="col-auto">
-										    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
-</svg>
-									    </div>
-								    </div>
-								    <a class="item-link-mask" href="#"></a>
-							    </div>
-		
-					        </div>
-				        </div>
-			        </div>
-					@*Não remover, pode ser útil para exibir algo no futuro*@
-			        @*<div class="col-12 col-lg-6">
-				        <div class="app-card app-card-stats-table h-100 shadow-sm">
-					        <div class="app-card-header p-3">
-						        <div class="row justify-content-between align-items-center">
-							        <div class="col-auto">
-						                <h4 class="app-card-title">Stats List</h4>
-							        </div>
-							        <div class="col-auto">
-								        <div class="card-header-action">
-									        <a href="#">View report</a>
-								        </div>
-							        </div>
-						        </div>
-					        </div>
-					        <div class="app-card-body p-3 p-lg-4">
-						        <div class="table-responsive">
-							        <table class="table table-borderless mb-0">
-										<thead>
-											<tr>
-												<th class="meta">Source</th>
-												<th class="meta stat-cell">Views</th>
-												<th class="meta stat-cell">Today</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td><a href="#">google.com</a></td>
-												<td class="stat-cell">110</td>
-												<td class="stat-cell">
-													<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-up text-success" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-									  <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
-									</svg> 
-									                30%
-									            </td>
-											</tr>
-											<tr>
-												<td><a href="#">getbootstrap.com</a></td>
-												<td class="stat-cell">67</td>
-												<td class="stat-cell">23%</td>
-											</tr>
-											<tr>
-												<td><a href="#">w3schools.com</a></td>
-												<td class="stat-cell">56</td>
-												<td class="stat-cell">
-													<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-down text-danger" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-									  <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
-									</svg>
-												    20%
-											    </td>
-											</tr>
-											<tr>
-												<td><a href="#">javascript.com </a></td>
-												<td class="stat-cell">24</td>
-												<td class="stat-cell">-</td>
-											</tr>
-											<tr>
-												<td><a href="#">github.com </a></td>
-												<td class="stat-cell">17</td>
-												<td class="stat-cell">15%</td>
-											</tr>
-										</tbody>
-									</table>
-						        </div>
-					        </div>
-				        </div>
-			        </div>*@
-			    </div>
-				@* Pode ser útil para exibir algum conteúdo no futuro, favor não remover por enquanto *@
-			    @*<div class="row g-4 mb-4">
-				    <div class="col-12 col-lg-4">
-					    <div class="app-card app-card-basic d-flex flex-column align-items-start shadow-sm">
-						    <div class="app-card-header p-3 border-bottom-0">
-						        <div class="row align-items-center gx-3">
-							        <div class="col-auto">
-								        <div class="app-icon-holder">
-										    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-receipt" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd" d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27zm.217 1.338L2 2.118v11.764l.137.274.51-.51a.5.5 0 0 1 .707 0l.646.647.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.509.509.137-.274V2.118l-.137-.274-.51.51a.5.5 0 0 1-.707 0L12 1.707l-.646.647a.5.5 0 0 1-.708 0L10 1.707l-.646.647a.5.5 0 0 1-.708 0L8 1.707l-.646.647a.5.5 0 0 1-.708 0L6 1.707l-.646.647a.5.5 0 0 1-.708 0L4 1.707l-.646.647a.5.5 0 0 1-.708 0l-.509-.51z"/>
-  <path fill-rule="evenodd" d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm8-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"/>
-</svg>
-									    </div>
-						                
-							        </div>
-							        <div class="col-auto">
-								        <h4 class="app-card-title">Invoices</h4>
-							        </div>
-						        </div>
-						    </div>
-						    <div class="app-card-body px-4">
-							    
-							    <div class="intro">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam aliquet eros vel diam semper mollis.</div>
-						    </div>
-						    <div class="app-card-footer p-4 mt-auto">
-							   <a class="btn app-btn-secondary" href="#">Create New</a>
-						    </div>
-						</div>
-				    </div>
-				    <div class="col-12 col-lg-4">
-					    <div class="app-card app-card-basic d-flex flex-column align-items-start shadow-sm">
-						    <div class="app-card-header p-3 border-bottom-0">
-						        <div class="row align-items-center gx-3">
-							        <div class="col-auto">
-								        <div class="app-icon-holder">
-										    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-code-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
-  <path fill-rule="evenodd" d="M6.854 4.646a.5.5 0 0 1 0 .708L4.207 8l2.647 2.646a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0zm2.292 0a.5.5 0 0 0 0 .708L11.793 8l-2.647 2.646a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708 0z"/>
-</svg>
-									    </div>
-						                
-							        </div>
-							        <div class="col-auto">
-								        <h4 class="app-card-title">Apps</h4>
-							        </div>
-						        </div>
-						    </div>
-						    <div class="app-card-body px-4">
-							    
-							    <div class="intro">Pellentesque varius, elit vel volutpat sollicitudin, lacus quam efficitur augue</div>
-						    </div>
-						    <div class="app-card-footer p-4 mt-auto">
-							   <a class="btn app-btn-secondary" href="#">Create New</a>
-						    </div>
-						</div>
-				    </div>
-				    <div class="col-12 col-lg-4">
-					    <div class="app-card app-card-basic d-flex flex-column align-items-start shadow-sm">
-						    <div class="app-card-header p-3 border-bottom-0">
-						        <div class="row align-items-center gx-3">
-							        <div class="col-auto">
-								        <div class="app-icon-holder">
-										    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-tools" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd" d="M0 1l1-1 3.081 2.2a1 1 0 0 1 .419.815v.07a1 1 0 0 0 .293.708L10.5 9.5l.914-.305a1 1 0 0 1 1.023.242l3.356 3.356a1 1 0 0 1 0 1.414l-1.586 1.586a1 1 0 0 1-1.414 0l-3.356-3.356a1 1 0 0 1-.242-1.023L9.5 10.5 3.793 4.793a1 1 0 0 0-.707-.293h-.071a1 1 0 0 1-.814-.419L0 1zm11.354 9.646a.5.5 0 0 0-.708.708l3 3a.5.5 0 0 0 .708-.708l-3-3z"/>
-  <path fill-rule="evenodd" d="M15.898 2.223a3.003 3.003 0 0 1-3.679 3.674L5.878 12.15a3 3 0 1 1-2.027-2.027l6.252-6.341A3 3 0 0 1 13.778.1l-2.142 2.142L12 4l1.757.364 2.141-2.141zm-13.37 9.019L3.001 11l.471.242.529.026.287.445.445.287.026.529L5 13l-.242.471-.026.529-.445.287-.287.445-.529.026L3 15l-.471-.242L2 14.732l-.287-.445L1.268 14l-.026-.529L1 13l.242-.471.026-.529.445-.287.287-.445.529-.026z"/>
-</svg>
-									    </div>
-						                
-							        </div>
-							        <div class="col-auto">
-								        <h4 class="app-card-title">Tools</h4>
-							        </div>
-						        </div>
-						    </div>
-						    <div class="app-card-body px-4">
-							    
-							    <div class="intro">Sed maximus, libero ac pharetra elementum, turpis nisi molestie neque, et tincidunt velit turpis non enim.</div>
-						    </div>
-						    <div class="app-card-footer p-4 mt-auto">
-							   <a class="btn app-btn-secondary" href="#">Create New</a>
-						    </div>
-						</div>
-				    </div>
-			    </div>*@
-			    
-		    </div>
-	    </div>	    
-    </div>    					
-   
-    <!-- Page Specific JS -->
-    <script src="~/js/app.js"></script> 
 
-    <!-- FontAwesome JS -->
-    <script defer src="~/plugins/fontawesome/js/all.min.js"></script>
+<!-- Page Specific JS -->
+<script src="~/js/app.js"></script>
+
+<!-- FontAwesome JS -->
+<script defer src="~/plugins/fontawesome/js/all.min.js"></script>
 
 <!--Gráfico Barras-->
 <script type="text/javascript">
-	window.chartColors = {
-		green: '#75c181',
-		gray: '#a9b5c9',
-		text: '#252930',
-		border: '#e7e9ed'
-	};
+    window.chartColors = {
+        green: '#75c181',
+        gray: '#a9b5c9',
+        text: '#252930',
+        border: '#e7e9ed'
+    };
 
-	var barChartConfig = {
-		type: 'bar',
+    var barChartConfig = {
+        type: 'bar',
 
-		data: {
-			labels: [@Html.Raw(@labelLinhaDePesquisa)],
-			datasets: [{
-				label: 'ISI QV',
-				backgroundColor: window.chartColors.green,
-				borderColor: window.chartColors.green,
-				borderWidth: 1,
-				maxBarThickness: 16,
-				data: [@dadosLinhaDePesquisa]			
-			}]
-		},
-		options: {
-			responsive: true,
-			aspectRatio: 1.5,
-			legend: {
-				position: 'bottom',
-				align: 'end',
-			},
-			title: {
-				display: false,
-				text: 'Chart.js Bar Chart Example'
-			},
-			tooltips: {
-				mode: 'index',
-				intersect: false,
-				titleMarginBottom: 10,
-				bodySpacing: 10,
-				xPadding: 16,
-				yPadding: 16,
-				borderColor: window.chartColors.border,
-				borderWidth: 1,
-				backgroundColor: '#fff',
-				bodyFontColor: window.chartColors.text,
-				titleFontColor: window.chartColors.text,
+        data: {
+            labels: [@Html.Raw(@labelLinhaDePesquisa)],
+            datasets: [{
+                label: 'ISI QV',
+                backgroundColor: window.chartColors.green,
+                borderColor: window.chartColors.green,
+                borderWidth: 1,
+                maxBarThickness: 16,
+                data: [@dadosLinhaDePesquisa]
+            }]
+        },
+        options: {
+            responsive: true,
+            aspectRatio: 1.5,
+            legend: {
+                position: 'bottom',
+                align: 'end',
+            },
+            title: {
+                display: false,
+                text: 'Chart.js Bar Chart Example'
+            },
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+                titleMarginBottom: 10,
+                bodySpacing: 10,
+                xPadding: 16,
+                yPadding: 16,
+                borderColor: window.chartColors.border,
+                borderWidth: 1,
+                backgroundColor: '#fff',
+                bodyFontColor: window.chartColors.text,
+                titleFontColor: window.chartColors.text,
 
-			},
-			scales: {
-				xAxes: [{
-					ticks: {
-						autoSkip: false,
-						maxRotation: 90,
-						minRotation: 90
-					},
-					display: true,
-					gridLines: {
-						drawBorder: false,
-						color: window.chartColors.border,
-					},
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        autoSkip: false,
+                        maxRotation: 90,
+                        minRotation: 90
+                    },
+                    display: true,
+                    gridLines: {
+                        drawBorder: false,
+                        color: window.chartColors.border,
+                    },
 
-				}],
-				yAxes: [{
-					display: true,
-					gridLines: {
-						drawBorder: false,
-						color: window.chartColors.borders,
-					},
-
-
-				}]
-			}
-
-		}
-	}
-
-	var sankeyChart = Highcharts.chart('container', 
-	{
-	  title: {
-		text: 'Highcharts Sankey Diagram'
-	  },
-	  accessibility: {
-		point: {
-		  valueDescriptionFormat: '{index}. {point.from} to {point.to}, {point.weight}.'
-		}
-	  },
-	  series: [{
-		keys: ['from', 'to', 'weight'],
-		data: [
-		  ['Brazil', 'Portugal', 5],
-		  ['Brazil', 'France', 1],
-		  ['Brazil', 'Spain', 1],
-		  ['Brazil', 'England', 1],
-		  ['Canada', 'Portugal', 1],
-		  ['Canada', 'France', 5],
-		  ['Canada', 'England', 1],
-		  ['Mexico', 'Portugal', 1],
-		  ['Mexico', 'France', 1],
-		  ['Mexico', 'Spain', 5],
-		  ['Mexico', 'England', 1],
-		  ['USA', 'Portugal', 1],
-		  ['USA', 'France', 1],
-		  ['USA', 'Spain', 1],
-		  ['USA', 'England', 5],
-		  ['Portugal', 'Angola', 2],
-		  ['Portugal', 'Senegal', 1],
-		  ['Portugal', 'Morocco', 1],
-		  ['Portugal', 'South Africa', 3],
-		  ['France', 'Angola', 1],
-		  ['France', 'Senegal', 3],
-		  ['France', 'Mali', 3],
-		  ['France', 'Morocco', 3],
-		  ['France', 'South Africa', 1],
-		  ['Spain', 'Senegal', 1],
-		  ['Spain', 'Morocco', 3],
-		  ['Spain', 'South Africa', 1],
-		  ['England', 'Angola', 1],
-		  ['England', 'Senegal', 1],
-		  ['England', 'Morocco', 2],
-		  ['England', 'South Africa', 7],
-		  ['South Africa', 'China', 5],
-		  ['South Africa', 'India', 1],
-		  ['South Africa', 'Japan', 3],
-		  ['Angola', 'China', 5],
-		  ['Angola', 'India', 1],
-		  ['Angola', 'Japan', 3],
-		  ['Senegal', 'China', 5],
-		  ['Senegal', 'India', 1],
-		  ['Senegal', 'Japan', 3],
-		  ['Mali', 'China', 5],
-		  ['Mali', 'India', 1],
-		  ['Mali', 'Japan', 3],
-		  ['Morocco', 'China', 5],
-		  ['Morocco', 'India', 1],
-		  ['Morocco', 'Japan', 3]
-		],
-		type: 'sankey',
-		name: 'Sankey demo series'
-	  }]
-
-	});
-
-	// Gerar os charts ao carregar
-	window.addEventListener('load', function () {
-
-		//var lineChart = document.getElementById('canvas-linechart').getContext('2d');
-		//window.myLine = new Chart(lineChart, lineChartConfig);
-
-		var barChart = document.getElementById('canvas-barchart').getContext('2d');
-		window.myBar = new Chart(barChart, barChartConfig);
+                }],
+                yAxes: [{
+                    display: true,
+                    gridLines: {
+                        drawBorder: false,
+                        color: window.chartColors.borders,
+                    },
 
 
-	});
+                }]
+            }
+
+        }
+    }
+
+    var sankeyChart = Highcharts.chart('container',
+        {
+            title: {
+                text: 'Highcharts Sankey Diagram'
+            },
+            accessibility: {
+                point: {
+                    valueDescriptionFormat: '{index}. {point.from} to {point.to}, {point.weight}.'
+                }
+            },
+            series: [{
+                keys: ['from', 'to', 'weight'],
+                data: [
+                    ['Brazil', 'Portugal', 5],
+                    ['Brazil', 'France', 1],
+                    ['Brazil', 'Spain', 1],
+                    ['Brazil', 'England', 1],
+                    ['Canada', 'Portugal', 1],
+                    ['Canada', 'France', 5],
+                    ['Canada', 'England', 1],
+                    ['Mexico', 'Portugal', 1],
+                    ['Mexico', 'France', 1],
+                    ['Mexico', 'Spain', 5],
+                    ['Mexico', 'England', 1],
+                    ['USA', 'Portugal', 1],
+                    ['USA', 'France', 1],
+                    ['USA', 'Spain', 1],
+                    ['USA', 'England', 5],
+                    ['Portugal', 'Angola', 2],
+                    ['Portugal', 'Senegal', 1],
+                    ['Portugal', 'Morocco', 1],
+                    ['Portugal', 'South Africa', 3],
+                    ['France', 'Angola', 1],
+                    ['France', 'Senegal', 3],
+                    ['France', 'Mali', 3],
+                    ['France', 'Morocco', 3],
+                    ['France', 'South Africa', 1],
+                    ['Spain', 'Senegal', 1],
+                    ['Spain', 'Morocco', 3],
+                    ['Spain', 'South Africa', 1],
+                    ['England', 'Angola', 1],
+                    ['England', 'Senegal', 1],
+                    ['England', 'Morocco', 2],
+                    ['England', 'South Africa', 7],
+                    ['South Africa', 'China', 5],
+                    ['South Africa', 'India', 1],
+                    ['South Africa', 'Japan', 3],
+                    ['Angola', 'China', 5],
+                    ['Angola', 'India', 1],
+                    ['Angola', 'Japan', 3],
+                    ['Senegal', 'China', 5],
+                    ['Senegal', 'India', 1],
+                    ['Senegal', 'Japan', 3],
+                    ['Mali', 'China', 5],
+                    ['Mali', 'India', 1],
+                    ['Mali', 'Japan', 3],
+                    ['Morocco', 'China', 5],
+                    ['Morocco', 'India', 1],
+                    ['Morocco', 'Japan', 3]
+                ],
+                type: 'sankey',
+                name: 'Sankey demo series'
+            }]
+
+        });
+
+    // Gerar os charts ao carregar
+    window.addEventListener('load', function () {
+
+        //var lineChart = document.getElementById('canvas-linechart').getContext('2d');
+        //window.myLine = new Chart(lineChart, lineChartConfig);
+
+        var barChart = document.getElementById('canvas-barchart').getContext('2d');
+        window.myBar = new Chart(barChart, barChartConfig);
+
+
+    });
 </script>

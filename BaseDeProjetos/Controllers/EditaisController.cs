@@ -21,22 +21,22 @@ namespace BaseDeProjetos.Controllers
         // GET: Editais
         public async Task<IActionResult> Index()
         {
-			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
             List<Empresa> empresas = _context.Empresa.ToList();
             ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
             ViewBag.usuarioCasa = usuario.Casa;
-			ViewBag.usuarioNivel = usuario.Nivel;
-			return View(await _context.Editais.ToListAsync());
+            ViewBag.usuarioNivel = usuario.Nivel;
+            return View(await _context.Editais.ToListAsync());
         }
         // GET: Editais/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-			ViewBag.usuarioCasa = usuario.Casa;
-			ViewBag.usuarioNivel = usuario.Nivel;
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
 
-			if (id == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -50,54 +50,16 @@ namespace BaseDeProjetos.Controllers
 
             return View(editais);
         }
-        // GET: Editais/Create
-        public IActionResult SubmeterEdital(int id, string userId)
-        {
 
+        // GET: Editais/Create        
+        public IActionResult Create()
+        {
             Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
             ViewBag.usuarioCasa = usuario.Casa;
             ViewBag.usuarioNivel = usuario.Nivel;
 
-            userId = HttpContext.User.Identity.Name;
-            Instituto usuarioCasa = _context.Users.FirstOrDefault(u => u.UserName == userId).Casa;
-
-            Prospeccao prosp = new Prospeccao
-            {
-                Id = $"proj_{DateTime.Now.Ticks}",
-                Empresa = _context.Empresa.FirstOrDefault(E => E.Id == id),
-                Usuario = _context.Users.FirstOrDefault(u => u.UserName == userId),
-                Casa = usuarioCasa,
-                LinhaPequisa = LinhaPesquisa.Indefinida,
-                CaminhoPasta = ""
-            };
-            prosp.Status = new List<FollowUp>
-            {
-                new FollowUp
-                {
-
-                    OrigemID = prosp.Id,
-                    Data = DateTime.Today,
-                    Anotacoes = $"Incluído no plano de prospecção de {User.Identity.Name}",
-                    Status = StatusProspeccao.Planejada
-
-                }
-            };
-
-            _context.Add(prosp);
-            _context.SaveChanges();
-            return RedirectToAction("Index", "Empresas");
-
-        }
-
-        public IActionResult Create()
-        {
-			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-			ViewBag.usuarioCasa = usuario.Casa;
-			ViewBag.usuarioNivel = usuario.Nivel;
-
-			return View();
+            return View();
         }
         // POST: Editais/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
@@ -118,12 +80,12 @@ namespace BaseDeProjetos.Controllers
         // GET: Editais/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-			ViewBag.usuarioCasa = usuario.Casa;
-			ViewBag.usuarioNivel = usuario.Nivel;
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
 
-			if (id == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -174,12 +136,12 @@ namespace BaseDeProjetos.Controllers
         // GET: Editais/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-			ViewBag.usuarioCasa = usuario.Casa;
-			ViewBag.usuarioNivel = usuario.Nivel;
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
 
-			if (id == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -209,7 +171,51 @@ namespace BaseDeProjetos.Controllers
         {
             return _context.Editais.Any(e => e.Id == id);
         }
+                
+        public IActionResult ProspectarEdital(int id)
+        {
 
-        
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            Editais Edital = _context.Editais.FirstOrDefault(e => e.Id == id);
+            string prospeccaoId = $"proj_{DateTime.Now.Ticks}";
+
+            Submissao submissao = new Submissao
+            {
+
+                ComEmpresa = false,
+                Edital = Edital,
+                EditalId = Edital.Id.ToString(),
+                Prospeccao = new Prospeccao
+                {
+                    Id = prospeccaoId,
+                    Usuario = usuario,
+                    Status = new List<FollowUp> {
+                        new FollowUp
+                        {
+
+                            OrigemID = prospeccaoId,
+                            Data = DateTime.Today,
+                            Anotacoes = $"Prospecção iniciada a partir do edital {Edital.Name}",
+                            Status = StatusProspeccao.ContatoInicial
+
+                        }
+                    },
+                    Casa = usuario.Casa
+
+                },
+                ProspeccaoId = prospeccaoId,
+                Proponente = "",
+                ProjetoProposto = "",
+                ResponsavelSubmissao = usuario.UserName,
+                StatusSubmissao = StatusSubmissaoEdital.emAnalise
+
+
+
+            };
+            _context.Add(submissao);
+            _context.SaveChanges();
+            return RedirectToAction("Index", "FunilDeVendas");
+        }
+
     }
 }

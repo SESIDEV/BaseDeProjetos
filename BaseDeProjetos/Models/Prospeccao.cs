@@ -25,39 +25,30 @@ namespace BaseDeProjetos.Models
 
         [Display(Name = "Potenciais Parceiros da Prospeccção")]
         //Por ora é uma string separada por vírgulas
-        public virtual string PotenciaisParceiros { get; set; } 
-
+        public virtual string PotenciaisParceiros { get; set; }
         public virtual Empresa Empresa { get; set; }
         public virtual Pessoa Contato { get; set; }
         public virtual Usuario Usuario { get; set; }
-
         [Display(Name = "Equipe")]
         public virtual string MembrosEquipe { get; set; }
-
         [Display(Name = "Tipo de Contratação")]
         public virtual TipoContratacao TipoContratacao { get; set; }
-
         [Display(Name = "Linha de Pesquisa")]
         public virtual LinhaPesquisa LinhaPequisa { get; set; }
-
         public virtual List<FollowUp> Status { get; set; } = new List<FollowUp>();
         public virtual Instituto Casa { get; set; }
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "R{0:C2}")]
         [Display(Name = "Valor da Proposta (R$)")]
-        public virtual decimal ValorProposta { get; set; } = 0;
-        
+        public virtual decimal ValorProposta { get; set; } = 0;        
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "R{0:C2}")]
         [Display(Name = "Valor Estimado da Prospecção (R$)")]
         public virtual decimal ValorEstimado { get; set; } = 0;
-
         public bool Equals([AllowNull] Prospeccao other)
         {
             if (other is null) return false;
             return other.Id == Id;
         }
-
         public override int GetHashCode() => (Id).GetHashCode();
-
         [Display(Name = "Caminho/Endereço da pasta no sistema")]
         public virtual string CaminhoPasta {get; set; }
 
