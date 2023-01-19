@@ -276,64 +276,47 @@ namespace BaseDeProjetos.Helpers
 
             return producoes;
         }
-        public static bool VerificarContratacaoDireta(Prospeccao prospeccao)
+        public static bool VerificarContratacao(Prospeccao prospeccao, TipoContratacao tipoContratacao)
         {
-            return prospeccao.TipoContratacao == TipoContratacao.ContratacaoDireta;
-        }
-        public static bool VerificarContratacaoEditalInovacao(Prospeccao prospeccao)
-        {
-            return prospeccao.TipoContratacao == TipoContratacao.EditalInovacao;
-        }
-        public static bool VerificarContratacaoAgenciaFomento(Prospeccao prospeccao)
-        {
-            return prospeccao.TipoContratacao == TipoContratacao.AgenciaFomento;
-        }
-        public static bool VerificarContratacaoEmbrapii(Prospeccao prospeccao)
-        {
-            return prospeccao.TipoContratacao == TipoContratacao.Embrapii;
-        }
-        public static bool VerificarContratacaoIndefinida(Prospeccao prospeccao)
-        {
-            return prospeccao.TipoContratacao == TipoContratacao.Indefinida;
-        }
-        public static bool VerificarContratacaoParceiro(Prospeccao prospeccao)
-        {
-            return prospeccao.TipoContratacao == TipoContratacao.Parceiro;
-        }
-        public static bool VerificarContratacaoANP(Prospeccao prospeccao)
-        {
-            return prospeccao.TipoContratacao == TipoContratacao.ANP;
-        }
-        public static bool VerificarStatusContatoInicial(Prospeccao prospeccao)
-        {
-            if (prospeccao.Status.Count == 0)
+            switch (tipoContratacao)
             {
-                return false;
+                case TipoContratacao.ContratacaoDireta:
+                    return prospeccao.TipoContratacao == tipoContratacao;
+                case TipoContratacao.EditalInovacao:
+                    return prospeccao.TipoContratacao == tipoContratacao;
+                case TipoContratacao.AgenciaFomento:
+                    return prospeccao.TipoContratacao == tipoContratacao;
+                case TipoContratacao.Embrapii:
+                    return prospeccao.TipoContratacao == tipoContratacao;
+                case TipoContratacao.Indefinida:
+                    return prospeccao.TipoContratacao == tipoContratacao;
+                case TipoContratacao.Parceiro:
+                    return prospeccao.TipoContratacao == tipoContratacao;
+                case TipoContratacao.ANP:
+                    return prospeccao.TipoContratacao == tipoContratacao;
+                default:
+                    return false;
             }
-            return prospeccao.Status.Any(s => s.Status == StatusProspeccao.ContatoInicial);
-        }
-        public static bool VerificarStatusEmDiscussao(Prospeccao prospeccao)
-        {
-            if (prospeccao.Status.Count == 0)
-            {
-                return false;
-            }
-            return prospeccao.Status.Any(followup => followup.Status < StatusProspeccao.ComProposta && followup.Status > StatusProspeccao.ContatoInicial);
-        }
-        public static bool VerificarStatusComProposta(Prospeccao prospeccao)
-        {
-            if (prospeccao.Status.Count == 0)
-            {
-                return false;
-            }
-            return prospeccao.Status.Any(followup => followup.Status == StatusProspeccao.ComProposta);
         }
 
-        public static string ListarUsuarios(string usuario)
+        public static bool VerificarStatus(Prospeccao prospeccao, StatusProspeccao status)
         {
-            
-            return "Pare de reclamar compilador";
+            if (prospeccao.Status.Count == 0)
+            {
+                return false;
+            }
+
+            switch (status)
+            {
+                case StatusProspeccao.ContatoInicial:
+                    return prospeccao.Status.Any(s => s.Status == status);
+                case StatusProspeccao.Discussao_EsbocoProjeto: // Status seria < 5 e > 0 1-4 INCLUSO, se precisar inclua um case acima sem execução de nenhuma instrução ou break
+                    return prospeccao.Status.Any(followup => followup.Status < StatusProspeccao.ComProposta && followup.Status > StatusProspeccao.ContatoInicial);
+                case StatusProspeccao.ComProposta:
+                    return prospeccao.Status.Any(followup => followup.Status == status);
+                default:
+                    return false;
+            }
         }
     }
-
 }
