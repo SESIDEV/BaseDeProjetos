@@ -12,74 +12,33 @@
 </style>
 @{
     IEnumerable<BaseDeProjetos.Models.Prospeccao> Prospeccoes = ViewData["ListaProspeccoes"] as IEnumerable<BaseDeProjetos.Models.Prospeccao>;
-    int cd_CI, cd_ED, cd_CP, ei_CI, ei_ED, ei_CP, af_CI, af_ED, af_CP, emb_CI, emb_ED, emb_CP, ou_CI, ou_ED, ou_CP, par_CI, par_ED, par_CP, anp_CI, anp_ED, anp_CP = 0;
-    int cd_CI_a, cd_ED_a, cd_CP_a, ei_CI_a, ei_ED_a, ei_CP_a, af_CI_a, af_ED_a, af_CP_a, emb_CI_a, emb_ED_a, emb_CP_a, ou_CI_a, ou_ED_a, ou_CP_a, par_CI_a, par_ED_a, par_CP_a, anp_CI_a, anp_ED_a, anp_CP_a = 0;
+    Dictionary<string, int> contagem = new Dictionary<string, int>();
 
-    cd_CI = Prospeccoes.Where(p => FunilHelpers.VerificarContratacaoDireta(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
-    cd_ED = Prospeccoes.Where(p => FunilHelpers.VerificarContratacaoDireta(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
-    cd_CP = Prospeccoes.Where(p => FunilHelpers.VerificarContratacaoDireta(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
-
-    ei_CI = Prospeccoes.Where(p => FunilHelpers.VerificarContratacaoEditalInovacao(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
-    ei_ED = Prospeccoes.Where(p => FunilHelpers.VerificarContratacaoEditalInovacao(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
-    ei_CP = Prospeccoes.Where(p => FunilHelpers.VerificarContratacaoEditalInovacao(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
-
-    af_CI = Prospeccoes.Where(p => FunilHelpers.VerificarContratacaoAgenciaFomento(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
-    af_ED = Prospeccoes.Where(p => FunilHelpers.VerificarContratacaoAgenciaFomento(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
-    af_CP = Prospeccoes.Where(p => FunilHelpers.VerificarContratacaoAgenciaFomento(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
-
-    emb_CI = Prospeccoes.Where(p => FunilHelpers.VerificarContratacaoEmbrapii(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
-    emb_ED = Prospeccoes.Where(p => FunilHelpers.VerificarContratacaoEmbrapii(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
-    emb_CP = Prospeccoes.Where(p => FunilHelpers.VerificarContratacaoEmbrapii(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
-
-    ou_CI = Prospeccoes.Where(p => FunilHelpers.VerificarContratacaoIndefinida(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
-    ou_ED = Prospeccoes.Where(p => FunilHelpers.VerificarContratacaoIndefinida(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
-    ou_CP = Prospeccoes.Where(p => FunilHelpers.VerificarContratacaoIndefinida(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
-
-    par_CI = Prospeccoes.Where(p => FunilHelpers.VerificarContratacaoParceiro(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
-    par_ED = Prospeccoes.Where(p => FunilHelpers.VerificarContratacaoParceiro(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
-    par_CP = Prospeccoes.Where(p => FunilHelpers.VerificarContratacaoParceiro(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
-
-    anp_CI = Prospeccoes.Where(p => FunilHelpers.VerificarContratacaoANP(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
-    anp_ED = Prospeccoes.Where(p => FunilHelpers.VerificarContratacaoANP(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
-    anp_CP = Prospeccoes.Where(p => FunilHelpers.VerificarContratacaoANP(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
+    foreach (TipoContratacao contratacao in Enum.GetValues(typeof(TipoContratacao)))
+    {
+        foreach (StatusProspeccao status in Enum.GetValues(typeof(StatusProspeccao)))
+        {
+            var key = contratacao.ToString() + "_" + status.ToString();
+            contagem[key] = Prospeccoes.Where(p => FunilHelpers.VerificarContratacao(p, contratacao) && FunilHelpers.VerificarStatus(p, status)).ToList().Count();
+        }
+    }
 
     //ATIVAS \/ \/ \/ \/ \/ \/
 
     var prospec_ativas = Prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).All(pa => pa.Status == StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto || pa.Status == StatusProspeccao.ComProposta));
     var prospec_totais = Prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(pa => pa.Status != StatusProspeccao.Planejada));
 
-    cd_CI_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoDireta(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
-    cd_ED_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoDireta(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
-    cd_CP_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoDireta(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
+    foreach (TipoContratacao contratacao in Enum.GetValues(typeof(TipoContratacao)))
+    {
+        foreach (StatusProspeccao status in Enum.GetValues(typeof(StatusProspeccao)))
+        {
+            var key = contratacao.ToString() + "_" + status.ToString() + "_Ativas";
+            contagem[key] = prospec_ativas.Where(p => FunilHelpers.VerificarContratacao(p, contratacao) && FunilHelpers.VerificarStatus(p, status)).ToList().Count();
+        }
+    }
 
-    ei_CI_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoEditalInovacao(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
-    ei_ED_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoEditalInovacao(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
-    ei_CP_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoEditalInovacao(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
-
-    af_CI_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoAgenciaFomento(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
-    af_ED_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoAgenciaFomento(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
-    af_CP_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoAgenciaFomento(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
-
-    emb_CI_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoEmbrapii(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
-    emb_ED_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoEmbrapii(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
-    emb_CP_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoEmbrapii(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
-
-    ou_CI_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoIndefinida(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
-    ou_ED_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoIndefinida(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
-    ou_CP_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoIndefinida(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
-
-    par_CI_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoParceiro(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
-    par_ED_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoParceiro(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
-    par_CP_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoParceiro(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
-
-    anp_CI_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoANP(p) && FunilHelpers.VerificarStatusContatoInicial(p)).ToList().Count();
-    anp_ED_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoANP(p) && FunilHelpers.VerificarStatusEmDiscussao(p)).Count();
-    anp_CP_a = prospec_ativas.Where(p => FunilHelpers.VerificarContratacaoANP(p) && FunilHelpers.VerificarStatusComProposta(p)).ToList().Count();
-
-
-
-    decimal n_propostas = Prospeccoes.Where(p => FunilHelpers.VerificarStatusComProposta(p)).Count();
-    decimal n_propostas_ativas = Prospeccoes.Where(p => FunilHelpers.VerificarStatusComProposta(p) && p.Status.All(s => s.Status < StatusProspeccao.Convertida)).Count();
+    decimal n_propostas = Prospeccoes.Where(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.ComProposta)).Count();
+    decimal n_propostas_ativas = Prospeccoes.Where(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.ComProposta) && p.Status.All(s => s.Status < StatusProspeccao.Convertida)).Count();
 
     decimal n_convertidas = Prospeccoes.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.Convertida)).Count();
     decimal n_nao_convertidas = Prospeccoes.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.NaoConvertida)).Count();
@@ -282,8 +241,28 @@
     <!-- Gráfico de Fomentos por status-->
     <script type="text/javascript">
 
+        const seriespadrao = [
+            { name: 'Contratação Direta', data: [@contagem["ContratacaoDireta_ContatoInicial"], @contagem["ContratacaoDireta_Discussao_EsbocoProjeto"], @contagem["ContratacaoDireta_ComProposta"]] },
+            { name: 'Editais de Inovação SESI/SENAI', data: [@contagem["EditalInovacao_ContatoInicial"], @contagem["EditalInovacao_Discussao_EsbocoProjeto"], @contagem["EditalInovacao_ComProposta"]] },
+            { name: 'Agências de Fomento', data: [@contagem["AgenciaFomento_ContatoInicial"], @contagem["AgenciaFomento_Discussao_EsbocoProjeto"], @contagem["AgenciaFomento_ComProposta"] ] },
+            { name: 'Embrapii', data: [@contagem["Embrapii_ContatoInicial"], @contagem["Embrapii_Discussao_EsbocoProjeto"], @contagem["Embrapii_ComProposta"] ] },
+            { name: 'A definir', data: [@contagem["Indefinida_ContatoInicial"], @contagem["Indefinida_Discussao_EsbocoProjeto"], @contagem["Indefinida_ComProposta"] ] },
+            { name: 'Parceiros de Edital', data: [@contagem["Parceiro_ContatoInicial"], @contagem["Parceiro_Discussao_EsbocoProjeto"], @contagem["Parceiro_ComProposta"] ] },
+            { name: 'ANP/ANEEL', data: [@contagem["ANP_ContatoInicial"], @contagem["ANP_Discussao_EsbocoProjeto"], @contagem["ANP_ComProposta"] ] }
+        ];
+
+        var seriesativas = [
+            { name: 'Contratação Direta', data: [@contagem["ContratacaoDireta_ContatoInicial_Ativas"], @contagem["ContratacaoDireta_Discussao_EsbocoProjeto_Ativas"], @contagem["ContratacaoDireta_ComProposta_Ativas"]] },
+            { name: 'Editais de Inovação SESI/SENAI', data: [@contagem["EditalInovacao_ContatoInicial_Ativas"], @contagem["EditalInovacao_Discussao_EsbocoProjeto_Ativas"], @contagem["EditalInovacao_ComProposta_Ativas"]] },
+            { name: 'Agências de Fomento', data: [@contagem["AgenciaFomento_ContatoInicial_Ativas"], @contagem["AgenciaFomento_Discussao_EsbocoProjeto_Ativas"], @contagem["AgenciaFomento_ComProposta_Ativas"] ] },
+            { name: 'Embrapii', data: [@contagem["Embrapii_ContatoInicial_Ativas"], @contagem["Embrapii_Discussao_EsbocoProjeto_Ativas"], @contagem["Embrapii_ComProposta_Ativas"] ] },
+            { name: 'A definir', data: [@contagem["Indefinida_ContatoInicial_Ativas"], @contagem["Indefinida_Discussao_EsbocoProjeto_Ativas"], @contagem["Indefinida_ComProposta_Ativas"] ] },
+            { name: 'Parceiros de Edital', data: [@contagem["Parceiro_ContatoInicial_Ativas"], @contagem["Parceiro_Discussao_EsbocoProjeto_Ativas"], @contagem["Parceiro_ComProposta_Ativas"] ] },
+            { name: 'ANP/ANEEL', data: [@contagem["ANP_ContatoInicial_Ativas"], @contagem["ANP_Discussao_EsbocoProjeto_Ativas"], @contagem["ANP_ComProposta_Ativas"] ] }
+        ];
+
         var chart1 = Highcharts.chart('funil', {
-            chart: { type: 'column' },
+            chart: { type: 'column', allowMutatingData: false },
             title: { text: null },
             xAxis: { categories: ["Contato inicial", "Em discussão", "Com Proposta", "Convertida",], },
             yAxis: { min: 0, title: { text: 'Ocorrências' } },
@@ -296,33 +275,8 @@
                 useHTML: true
             },
             plotOptions: { column: { pointPadding: 0.2, borderWidth: 0 } },
-            series: [
-                { name: 'Contratação Direta', data: [@cd_CI, @cd_ED, @cd_CP] },
-                { name: 'Editais de Inovação SESI/SENAI', data: [@ei_CI, @ei_ED, @ei_CP] },
-                { name: 'Agências de Fomento', data: [@af_CI, @af_ED, @af_CP] },
-                { name: 'Embrapii', data: [@emb_CI, @emb_ED, @emb_CP] },
-                { name: 'A definir', data: [@ou_CI, @ou_ED, @ou_CP] },
-                { name: 'Parceiros de Edital', data: [@par_CI, @par_ED, @par_CP] },
-                { name: 'ANP/ANEEL', data: [@anp_CI, @anp_ED, @anp_CP] }]
+            series: seriespadrao
         })
-
-        var seriespadrao = [
-            { name: 'Contratação Direta', data: [@cd_CI, @cd_ED, @cd_CP] },
-            { name: 'Editais de Inovação SESI/SENAI', data: [@ei_CI, @ei_ED, @ei_CP] },
-            { name: 'Agências de Fomento', data: [@af_CI, @af_ED, @af_CP] },
-            { name: 'Embrapii', data: [@emb_CI, @emb_ED, @emb_CP] },
-            { name: 'A definir', data: [@ou_CI, @ou_ED, @ou_CP] },
-            { name: 'Parceiros de Edital', data: [@par_CI, @par_ED, @par_CP] },
-            { name: 'ANP/ANEEL', data: [@anp_CI, @anp_ED, @anp_CP] }];
-
-        var seriesativas = [
-            { name: 'Contratação Direta', data: [@cd_CI_a, @cd_ED_a, @cd_CP_a] },
-            { name: 'Editais de Inovação SESI/SENAI', data: [@ei_CI_a, @ei_ED_a, @ei_CP_a] },
-            { name: 'Agências de Fomento', data: [@af_CI_a, @af_ED_a, @af_CP_a] },
-            { name: 'Embrapii', data: [@emb_CI_a, @emb_ED_a, @emb_CP_a] },
-            { name: 'A definir', data: [@ou_CI_a, @ou_ED_a, @ou_CP_a] },
-            { name: 'Parceiros de Edital', data: [@par_CI_a, @par_ED_a, @par_CP_a] },
-            { name: 'ANP/ANEEL', data: [@anp_CI_a, @anp_ED_a, @anp_CP_a] }];
 
         <!-- Pizzas -->
 
