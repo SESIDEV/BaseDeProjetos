@@ -9,7 +9,8 @@
         ViewData["Area"] = Context.Session.GetString("_Casa");
     }
 }
-<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<form asp-action="Edit" asp-route-id="@Model.Id" method="post">
 <div class="modal fade" id="editarProspModal-@Model.Id-Toggle" aria-hidden="true" aria-labelledby="editarProspModal-@Model.Id-ToggleLabel"
      tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
@@ -19,6 +20,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="mb-2">
                     <label asp-for="Id" class="control-label"></label>
                     <input asp-for="Id" class="form-control" readonly />
@@ -91,6 +93,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="mb-2" id="group">
                     <label asp-for="Empresa" class="col-form-label" style="font-weight: 600"></label>
                     <select asp-for="Empresa.Id" class="form-control" asp-items='@(ViewData["Empresas"] as SelectList).OrderBy(p=>p.Text)'>
@@ -143,6 +146,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="mb-2">
                     <label asp-for="ValorEstimado" class="col-form-label" style="font-weight: 600"></label>
                     <input asp-for="ValorEstimado" type="number" class="form-control" value='@Model.ValorEstimado.ToString("F2",CultureInfo.CreateSpecificCulture("en-US"))' />
@@ -173,6 +177,7 @@
         </div>
     </div>
 </div>
+</form>
 
 @section Scripts {
     @{

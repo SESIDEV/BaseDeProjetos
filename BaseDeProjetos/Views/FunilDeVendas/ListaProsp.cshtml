@@ -25,12 +25,10 @@
 </script> *@
 @foreach (var prospeccao in Model)
 {
-    <form asp-action="Edit" asp-route-id="@prospeccao.Id" method="post">
-        <div id="modalEditProsp-@prospeccao.Id-container">
+    
+    <div id="modalEditProsp-@prospeccao.Id-container">
 
-        </div>
-    </form>
-
+    </div>
     
     <div id="modalDeleteProsp-@prospeccao.Id-container">
 
