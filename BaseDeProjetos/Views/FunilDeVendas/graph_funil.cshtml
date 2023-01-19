@@ -2,440 +2,453 @@
 @using System
 @using BaseDeProjetos.Helpers
 <style>
-    .center {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 200px;
-        border: 3px solid;
-    }
+  .center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    border: 3px solid;
+  }
 </style>
 @{
-    IEnumerable<BaseDeProjetos.Models.Prospeccao> Prospeccoes = ViewData["ListaProspeccoes"] as IEnumerable<BaseDeProjetos.Models.Prospeccao>;
-    Dictionary<string, int> contagem = new Dictionary<string, int>();
+  IEnumerable<BaseDeProjetos.Models.Prospeccao> Prospeccoes = ViewData["ListaProspeccoes"] as
+      IEnumerable<BaseDeProjetos.Models.Prospeccao>;
+  Dictionary<string, int> contagem = new Dictionary<string, int>();
 
-    foreach (TipoContratacao contratacao in Enum.GetValues(typeof(TipoContratacao)))
+  foreach (TipoContratacao contratacao in Enum.GetValues(typeof(TipoContratacao)))
+  {
+    foreach (StatusProspeccao status in Enum.GetValues(typeof(StatusProspeccao)))
     {
-        foreach (StatusProspeccao status in Enum.GetValues(typeof(StatusProspeccao)))
-        {
-            var key = contratacao.ToString() + "_" + status.ToString();
-            contagem[key] = Prospeccoes.Where(p => FunilHelpers.VerificarContratacao(p, contratacao) && FunilHelpers.VerificarStatus(p, status)).ToList().Count();
-        }
+      var key = contratacao.ToString() + "_" + status.ToString();
+      contagem[key] = Prospeccoes.Where(p => FunilHelpers.VerificarContratacao(p, contratacao) &&
+      FunilHelpers.VerificarStatus(p, status)).ToList().Count();
+    }
+  }
+
+  //ATIVAS \/ \/ \/ \/ \/ \/
+
+  var prospec_ativas = Prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).All(pa => pa.Status ==
+  StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto || pa.Status ==
+  StatusProspeccao.ComProposta));
+  var prospec_totais = Prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(pa => pa.Status !=
+  StatusProspeccao.Planejada));
+
+  foreach (TipoContratacao contratacao in Enum.GetValues(typeof(TipoContratacao)))
+  {
+    foreach (StatusProspeccao status in Enum.GetValues(typeof(StatusProspeccao)))
+    {
+      var key = contratacao.ToString() + "_" + status.ToString() + "_Ativas";
+      contagem[key] = prospec_ativas.Where(p => FunilHelpers.VerificarContratacao(p, contratacao) &&
+      FunilHelpers.VerificarStatus(p, status)).ToList().Count();
+    }
+  }
+
+  decimal n_propostas = Prospeccoes.Where(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.ComProposta)).Count();
+  decimal n_propostas_ativas = Prospeccoes.Where(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.ComProposta) &&
+  p.Status.All(s => s.Status < StatusProspeccao.Convertida)).Count();
+
+  decimal n_convertidas = Prospeccoes.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.Convertida)).Count();
+  decimal n_nao_convertidas = Prospeccoes.Where(p => p.Status.Any(s => s.Status ==
+  StatusProspeccao.NaoConvertida)).Count();
+  decimal n_canceladas = Prospeccoes.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.Suspensa)).Count();
+  decimal n_prospeccoes_andamento = Prospeccoes.Count() - n_convertidas - n_nao_convertidas - n_canceladas;
+  decimal n_empresas = prospec_totais.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();
+  decimal n_planejadas = Prospeccoes.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.Planejada)).Count();
+
+  //Novo Filtro:
+  decimal n_empresas_ativas = prospec_ativas.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();
+  var avancadas = Prospeccoes.Where(p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)).
+  Where(p => p.Status.Any(k => k.Status > StatusProspeccao.ComProposta)). // lista de prospecção (selecionar com proposta)
+  Where(p => (p.Status.First().Data - p.Status.FirstOrDefault(s => s.Status == StatusProspeccao.ComProposta).Data) >
+  TimeSpan.Zero); // filtrar lista para obter datas positivas (maior que zero)
+
+  decimal valor_ativas2 = 0;
+  foreach (Prospeccao prosp in prospec_ativas)
+  { valor_ativas2 += prosp.ValorProposta; }
+
+  if (n_propostas_ativas > 0)
+  { valor_ativas2 = valor_ativas2 / n_propostas_ativas; }
+
+  decimal valor = 0;
+  foreach (Prospeccao prosp in Prospeccoes)
+  {
+    valor += prosp.ValorProposta;
+  }
+
+  if (n_propostas > 0)
+  {
+    valor = valor / n_propostas;
+  }
+
+  string valor_ativas = valor_ativas2.ToString("C2");
+  string valor2 = valor.ToString("C2");
+
+  TimeSpan RetonarValorDiferencaTempo(List<Prospeccao> prosps)
+  {
+    TimeSpan diff;
+    if (prosps.Count() > 0)
+    {
+      diff = prosps.Aggregate(new TimeSpan(0),
+      (inicial, prospeccao) => prospeccao.Status.FirstOrDefault(s => s.Status == StatusProspeccao.ComProposta).Data -
+      prospeccao.Status.First().Data,
+      diff => diff);
+
+      diff = new TimeSpan(diff.Ticks / prosps.Count());
+    }
+    else
+    {
+      diff = new TimeSpan(0);
     }
 
-    //ATIVAS \/ \/ \/ \/ \/ \/
+    return diff;
+  }
 
-    var prospec_ativas = Prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).All(pa => pa.Status == StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto || pa.Status == StatusProspeccao.ComProposta));
-    var prospec_totais = Prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(pa => pa.Status != StatusProspeccao.Planejada));
-
-    foreach (TipoContratacao contratacao in Enum.GetValues(typeof(TipoContratacao)))
-    {
-        foreach (StatusProspeccao status in Enum.GetValues(typeof(StatusProspeccao)))
-        {
-            var key = contratacao.ToString() + "_" + status.ToString() + "_Ativas";
-            contagem[key] = prospec_ativas.Where(p => FunilHelpers.VerificarContratacao(p, contratacao) && FunilHelpers.VerificarStatus(p, status)).ToList().Count();
-        }
-    }
-
-    decimal n_propostas = Prospeccoes.Where(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.ComProposta)).Count();
-    decimal n_propostas_ativas = Prospeccoes.Where(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.ComProposta) && p.Status.All(s => s.Status < StatusProspeccao.Convertida)).Count();
-
-    decimal n_convertidas = Prospeccoes.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.Convertida)).Count();
-    decimal n_nao_convertidas = Prospeccoes.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.NaoConvertida)).Count();
-    decimal n_canceladas = Prospeccoes.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.Suspensa)).Count();
-    decimal n_prospeccoes_andamento = Prospeccoes.Count() - n_convertidas - n_nao_convertidas - n_canceladas;
-    decimal n_empresas = prospec_totais.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();
-    decimal n_planejadas = Prospeccoes.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.Planejada)).Count();
-
-    //Novo Filtro:
-    decimal n_empresas_ativas = prospec_ativas.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();
-    var avancadas = Prospeccoes.Where(p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)).
-        Where(p => p.Status.Any(k => k.Status > StatusProspeccao.ComProposta)). // lista de prospecção (selecionar com proposta)
-        Where(p => (p.Status.First().Data - p.Status.FirstOrDefault(s => s.Status == StatusProspeccao.ComProposta).Data) > TimeSpan.Zero); // filtrar lista para obter datas positivas (maior que zero)
-
-    decimal valor_ativas2 = 0;
-    foreach (Prospeccao prosp in prospec_ativas)
-    { valor_ativas2 += prosp.ValorProposta; }
-
-    if (n_propostas_ativas > 0)
-    { valor_ativas2 = valor_ativas2 / n_propostas_ativas; }
-
-    decimal valor = 0;
-    foreach (Prospeccao prosp in Prospeccoes)
-    {
-        valor += prosp.ValorProposta;
-    }
-
-    if (n_propostas > 0)
-    {
-        valor = valor / n_propostas;
-    }
-
-    string valor_ativas = valor_ativas2.ToString("C2");
-    string valor2 = valor.ToString("C2");
-
-    TimeSpan RetonarValorDiferencaTempo(List<Prospeccao> prosps)
-    {
-        TimeSpan diff;
-        if (prosps.Count() > 0)
-        {
-            diff = prosps.Aggregate(new TimeSpan(0),
-                (inicial, prospeccao) => prospeccao.Status.FirstOrDefault(s => s.Status == StatusProspeccao.ComProposta).Data - prospeccao.Status.First().Data,
-                diff => diff);
-
-            diff = new TimeSpan(diff.Ticks / prosps.Count());
-        }
-        else
-        {
-            diff = new TimeSpan(0);
-        }
-
-        return diff;
-    }
-
-    TimeSpan DiferencaTodas = RetonarValorDiferencaTempo(avancadas.ToList());
-    TimeSpan DiferencaAtivas = RetonarValorDiferencaTempo(prospec_ativas.Where(s => s.Status.Any(p => p.Status == StatusProspeccao.ComProposta)).ToList());
+  TimeSpan DiferencaTodas = RetonarValorDiferencaTempo(avancadas.ToList());
+  TimeSpan DiferencaAtivas = RetonarValorDiferencaTempo(prospec_ativas.Where(s => s.Status.Any(p => p.Status ==
+  StatusProspeccao.ComProposta)).ToList());
 
 
-    decimal taxa_conversao;
-    try
-    {
-        taxa_conversao = (n_convertidas / (n_convertidas + n_nao_convertidas));
-    }
-    catch (Exception)
-    {
-        taxa_conversao = 1;
-    }
+  decimal taxa_conversao;
+  try
+  {
+    taxa_conversao = (n_convertidas / (n_convertidas + n_nao_convertidas));
+  }
+  catch (Exception)
+  {
+    taxa_conversao = 1;
+  }
 
-    decimal infrutiferas;
-    try
-    {
-        infrutiferas = (n_canceladas + n_nao_convertidas) / (Prospeccoes.Count() - (avancadas.Count() - n_convertidas - n_nao_convertidas));
-    }
-    catch (Exception)
-    {
-        infrutiferas = 0;
-    }
+  decimal infrutiferas;
+  try
+  {
+    infrutiferas = (n_canceladas + n_nao_convertidas) / (Prospeccoes.Count() - (avancadas.Count() - n_convertidas -
+    n_nao_convertidas));
+  }
+  catch (Exception)
+  {
+    infrutiferas = 0;
+  }
 }
 
 @if (Prospeccoes.Count() > 1)
 {
-    <div class="pb-4">
-        <div class="app-card app-card-chart shadow-sm h-100">
-            <div class="app-card-header p-3">
-                <h4 class="app-card-title">Funil de Vendas</h4>
-            </div>
-            <div class="app-card-body p-4">
-                <figure class="highcharts-figure">
-                    <div id="funil"></div>
-                </figure>
-            </div>
-            <div class="p-4">
-                <input class="form-check-input" type="checkbox" id="caixaSelecaoAtivas" onclick="marcada()">
-                <label class="form-check-label" for="botao_ativas">Mostrar apenas as ativas</label>
-            </div>
-        </div>
-
-        
+  <div class="pb-4">
+    <div class="app-card app-card-chart shadow-sm h-100">
+      <div class="app-card-header p-3">
+        <h4 class="app-card-title">Funil de Vendas</h4>
+      </div>
+      <div class="app-card-body p-4">
+        <figure class="highcharts-figure">
+          <div id="funil"></div>
+        </figure>
+      </div>
+      <div class="p-4">
+        <input class="form-check-input" type="checkbox" id="caixaSelecaoAtivas" onclick="marcada()">
+        <label class="form-check-label" for="botao_ativas">Mostrar apenas as ativas</label>
+      </div>
     </div>
 
-    <div class="pb-4">
-        <div class="d-flex gap-4 justify-content-between align-items-start shadow-sm">
-            <div class="app-card app-card-chart w-50 h-100">
-                <div class="app-card-header p-3">
-                    <h4 class="app-card-title">Indicadores de Prospecção</h4>
-                </div>
-                <div class="app-card-body row text-center p-3 p-lg-4">
-                    <div class="col-12">
-                        <!--[Iury] IDs da checkbox \/ -->
-                        <h1 id="CheckboxProspAtivas1" class="display-3">@n_empresas</h1>
-                        <small id="CheckboxProspAtivas2">Número de empresas prospectadas</small> <hr />
-                    </div>
-                    <div class="col-4">
-                        <h4 id="CheckboxProspAtivas7">@Math.Abs(DiferencaTodas.Days) dias</h4>
-                        <small id="CheckboxProspAtivas10">Tempo médio entre o primeiro contato e a emissão da proposta</small>
-                    </div>
-                    <div class="col-4">
-                        <!--[Iury] IDs da checkbox \/ -->
-                        <h4 id="CheckboxProspAtivas4">@prospec_totais.Count()</h4>
-                        <small id="CheckboxProspAtivas3">Contatos iniciais de prospecção</small>
-                    </div>
-                    <div class="col-4">
-                        <h4> @infrutiferas.ToString("P2")</h4>
-                        <small>
-                            Percentual de prospecções infrutíferas
-                        </small>
-                    </div>
-                </div>
-            </div>
 
-            <div class="app-card app-card-chart w-50 h-100">
-                <div class="app-card-header p-3">
-                    <h4 class="app-card-title">Status Geral das Prospecções</h4>
-                </div>
-                <div class="app-card-body text-center p-3 p-lg-4">
-                    <figure class="highcharts-figure">
-                        <div id="pizza_desistencia"></div>
-                    </figure>
-                </div>
-            </div>
-        </div>
-    </div>
+  </div>
+
+  <div class="pb-4">
     <div class="d-flex gap-4 justify-content-between align-items-start shadow-sm">
-        <div class="app-card app-card-chart w-50 h-100">
-            <div class="app-card-header p-3">
-                <h4 class="app-card-title">Status de Prospecções com Proposta</h4>
-            </div>
-            <div class="app-card-body text-center p-3 p-lg-4">
-                <figure class="highcharts-figure">
-                    <div id="pizza_conversao"></div>
-                </figure>
-            </div>
+      <div class="app-card app-card-chart w-50 h-100">
+        <div class="app-card-header p-3">
+          <h4 class="app-card-title">Indicadores de Prospecção</h4>
         </div>
-
-        <div class="app-card app-card-chart w-50 h-100">
-            <div class="app-card-header p-3">
-                <h4 class="app-card-title">Status de Prospecções com Proposta</h4>
-            </div>
-            <div class="app-card-body row text-center p-3 p-lg-4">                
-                <div class="col-12">
-                    <h1 class="display-3">@taxa_conversao.ToString("P2")</h1>
-                    <small>
-                        Taxa de conversão de prospecções
-                    </small>
-                    <hr />
-                </div>
-                <div class="col-4">
-                    <!-- Quando transformar em calculado, remover o R$-->
-                    @if (valor > 0)
-                    {
-                        <h4 id="CheckboxProspAtivas5">@valor.ToString("C2")</h4>
-                    }
-                    else
-                    {
-                        <h4 id="CheckboxProspAtivas5">R$ ---</h4>
-                    }
-                    <small id="CheckboxProspAtivas8">
-                        Ticket médio das prospecções
-                    </small>
-                </div>
-                <div class="col-4">
-                    <h4 id="CheckboxProspAtivas6">@n_propostas</h4>
-                    <small id="CheckboxProspAtivas9">
-                        Propostas comerciais enviadas
-                    </small>
-                </div>
-                <div class="col-4">
-                    <h4>@n_convertidas</h4>
-                    <small>
-                        Projetos contratados
-                    </small>
-                </div>
-            </div>
+        <div class="app-card-body row text-center p-3 p-lg-4">
+          <div class="col-12">
+            <!--[Iury] IDs da checkbox \/ -->
+          <h1 id="CheckboxProspAtivas1" class="display-3">@n_empresas</h1>
+            <small id="CheckboxProspAtivas2">Número de empresas prospectadas</small>
+            <hr />
+          </div>
+          <div class="col-4">
+            <h4 id="CheckboxProspAtivas7">@Math.Abs(DiferencaTodas.Days) dias</h4>
+            <small id="CheckboxProspAtivas10">Tempo médio entre o primeiro contato e a emissão da proposta</small>
+          </div>
+          <div class="col-4">
+            <!--[Iury] IDs da checkbox \/ -->
+          <h4 id="CheckboxProspAtivas4">@prospec_totais.Count()</h4>
+            <small id="CheckboxProspAtivas3">Contatos iniciais de prospecção</small>
+          </div>
+          <div class="col-4">
+            <h4> @infrutiferas.ToString("P2")</h4>
+            <small>
+              Percentual de prospecções infrutíferas
+            </small>
+          </div>
         </div>
-        
+      </div>
 
+      <div class="app-card app-card-chart w-50 h-100">
+        <div class="app-card-header p-3">
+          <h4 class="app-card-title">Status Geral das Prospecções</h4>
+        </div>
+        <div class="app-card-body text-center p-3 p-lg-4">
+          <figure class="highcharts-figure">
+            <div id="pizza_desistencia"></div>
+          </figure>
+        </div>
+      </div>
     </div>
-    
+  </div>
+  <div class="d-flex gap-4 justify-content-between align-items-start shadow-sm">
+    <div class="app-card app-card-chart w-50 h-100">
+      <div class="app-card-header p-3">
+        <h4 class="app-card-title">Status de Prospecções com Proposta</h4>
+      </div>
+      <div class="app-card-body text-center p-3 p-lg-4">
+        <figure class="highcharts-figure">
+          <div id="pizza_conversao"></div>
+        </figure>
+      </div>
+    </div>
 
-    <!-- Gráfico de Fomentos por status-->
-    <script type="text/javascript">
+    <div class="app-card app-card-chart w-50 h-100">
+      <div class="app-card-header p-3">
+        <h4 class="app-card-title">Status de Prospecções com Proposta</h4>
+      </div>
+      <div class="app-card-body row text-center p-3 p-lg-4">
+        <div class="col-12">
+          <h1 class="display-3">@taxa_conversao.ToString("P2")</h1>
+          <small>
+            Taxa de conversão de prospecções
+          </small>
+          <hr />
+        </div>
+        <div class="col-4">
+          <!-- Quando transformar em calculado, remover o R$-->
+          @if (valor > 0)
+          {
+            <h4 id="CheckboxProspAtivas5">@valor.ToString("C2")</h4>
+          }
+          else
+          {
+            <h4 id="CheckboxProspAtivas5">R$ ---</h4>
+          }
+          <small id="CheckboxProspAtivas8">
+            Ticket médio das prospecções
+          </small>
+        </div>
+        <div class="col-4">
+          <h4 id="CheckboxProspAtivas6">@n_propostas</h4>
+          <small id="CheckboxProspAtivas9">
+            Propostas comerciais enviadas
+          </small>
+        </div>
+        <div class="col-4">
+          <h4>@n_convertidas</h4>
+          <small>
+            Projetos contratados
+          </small>
+        </div>
+      </div>
+    </div>
 
-        const seriespadrao = [
-            { name: 'Contratação Direta', data: [@contagem["ContratacaoDireta_ContatoInicial"], @contagem["ContratacaoDireta_Discussao_EsbocoProjeto"], @contagem["ContratacaoDireta_ComProposta"]] },
-            { name: 'Editais de Inovação SESI/SENAI', data: [@contagem["EditalInovacao_ContatoInicial"], @contagem["EditalInovacao_Discussao_EsbocoProjeto"], @contagem["EditalInovacao_ComProposta"]] },
-            { name: 'Agências de Fomento', data: [@contagem["AgenciaFomento_ContatoInicial"], @contagem["AgenciaFomento_Discussao_EsbocoProjeto"], @contagem["AgenciaFomento_ComProposta"] ] },
-            { name: 'Embrapii', data: [@contagem["Embrapii_ContatoInicial"], @contagem["Embrapii_Discussao_EsbocoProjeto"], @contagem["Embrapii_ComProposta"] ] },
-            { name: 'A definir', data: [@contagem["Indefinida_ContatoInicial"], @contagem["Indefinida_Discussao_EsbocoProjeto"], @contagem["Indefinida_ComProposta"] ] },
-            { name: 'Parceiros de Edital', data: [@contagem["Parceiro_ContatoInicial"], @contagem["Parceiro_Discussao_EsbocoProjeto"], @contagem["Parceiro_ComProposta"] ] },
-            { name: 'ANP/ANEEL', data: [@contagem["ANP_ContatoInicial"], @contagem["ANP_Discussao_EsbocoProjeto"], @contagem["ANP_ComProposta"] ] }
-        ];
 
-        var seriesativas = [
-            { name: 'Contratação Direta', data: [@contagem["ContratacaoDireta_ContatoInicial_Ativas"], @contagem["ContratacaoDireta_Discussao_EsbocoProjeto_Ativas"], @contagem["ContratacaoDireta_ComProposta_Ativas"]] },
-            { name: 'Editais de Inovação SESI/SENAI', data: [@contagem["EditalInovacao_ContatoInicial_Ativas"], @contagem["EditalInovacao_Discussao_EsbocoProjeto_Ativas"], @contagem["EditalInovacao_ComProposta_Ativas"]] },
-            { name: 'Agências de Fomento', data: [@contagem["AgenciaFomento_ContatoInicial_Ativas"], @contagem["AgenciaFomento_Discussao_EsbocoProjeto_Ativas"], @contagem["AgenciaFomento_ComProposta_Ativas"] ] },
-            { name: 'Embrapii', data: [@contagem["Embrapii_ContatoInicial_Ativas"], @contagem["Embrapii_Discussao_EsbocoProjeto_Ativas"], @contagem["Embrapii_ComProposta_Ativas"] ] },
-            { name: 'A definir', data: [@contagem["Indefinida_ContatoInicial_Ativas"], @contagem["Indefinida_Discussao_EsbocoProjeto_Ativas"], @contagem["Indefinida_ComProposta_Ativas"] ] },
-            { name: 'Parceiros de Edital', data: [@contagem["Parceiro_ContatoInicial_Ativas"], @contagem["Parceiro_Discussao_EsbocoProjeto_Ativas"], @contagem["Parceiro_ComProposta_Ativas"] ] },
-            { name: 'ANP/ANEEL', data: [@contagem["ANP_ContatoInicial_Ativas"], @contagem["ANP_Discussao_EsbocoProjeto_Ativas"], @contagem["ANP_ComProposta_Ativas"] ] }
-        ];
+  </div>
 
-        var chart1 = Highcharts.chart('funil', {
-            chart: { type: 'column', allowMutatingData: false },
-            title: { text: null },
-            xAxis: { categories: ["Contato inicial", "Em discussão", "Com Proposta", "Convertida",], },
-            yAxis: { min: 0, title: { text: 'Ocorrências' } },
-            tooltip: {
-                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><b>{point.y:.1f} prospecções</b></td></tr>',
-                footerFormat: '</table>',
-                shared: true,
-                useHTML: true
-            },
-            plotOptions: { column: { pointPadding: 0.2, borderWidth: 0 } },
-            series: seriespadrao
-        })
 
-        <!-- Pizzas -->
+  <!-- Gráfico de Fomentos por status-->
+  <script type="text/javascript">
 
-        var pizzaDesistencia = Highcharts.chart('pizza_desistencia', {
-            chart: {
-                plotBackgroundColor: null,
-                plotBorderWidth: null,
-                plotShadow: false,
-                type: 'pie'
-            },
-            title: {
-                text: null
-            },
-            tooltip: {
-                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-            },
-            accessibility: {
-                point: {
-                    valueSuffix: '%'
-                }
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: true,
-                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-                    }
-                }
-            },
-            series: [{
-                size: '60%',
-                name: 'Propostas',
-                colorByPoint: true,
-                data: [{
-                    name: 'Em andamento',
-                    y: @n_prospeccoes_andamento,
-                    drilldown: 'andamento'
-                }, {
-                    name: 'Convertidas',
-                    y: @n_convertidas,
-                    drilldown: null
-                },
-                {
-                    name: 'Não Convertidas',
-                    y: @n_nao_convertidas,
-                    drilldown: null
-                },
-                {
-                    name: 'Canceladas',
-                    y: @n_canceladas,
-                    drilldown: null
-                },
-                ],
-            }],
+    const seriespadrao = [
+      { name: 'Contratação Direta', data: [@contagem["ContratacaoDireta_ContatoInicial"], @contagem["ContratacaoDireta_Discussao_EsbocoProjeto"], @contagem["ContratacaoDireta_ComProposta"]] },
+      { name: 'Editais de Inovação SESI/SENAI', data: [@contagem["EditalInovacao_ContatoInicial"], @contagem["EditalInovacao_Discussao_EsbocoProjeto"], @contagem["EditalInovacao_ComProposta"]] },
+      { name: 'Agências de Fomento', data: [@contagem["AgenciaFomento_ContatoInicial"], @contagem["AgenciaFomento_Discussao_EsbocoProjeto"], @contagem["AgenciaFomento_ComProposta"] ] },
+      { name: 'Embrapii', data: [@contagem["Embrapii_ContatoInicial"], @contagem["Embrapii_Discussao_EsbocoProjeto"], @contagem["Embrapii_ComProposta"] ] },
+      { name: 'A definir', data: [@contagem["Indefinida_ContatoInicial"], @contagem["Indefinida_Discussao_EsbocoProjeto"], @contagem["Indefinida_ComProposta"] ] },
+      { name: 'Parceiros de Edital', data: [@contagem["Parceiro_ContatoInicial"], @contagem["Parceiro_Discussao_EsbocoProjeto"], @contagem["Parceiro_ComProposta"] ] },
+      { name: 'ANP/ANEEL', data: [@contagem["ANP_ContatoInicial"], @contagem["ANP_Discussao_EsbocoProjeto"], @contagem["ANP_ComProposta"] ] }
+    ];
 
-            drilldown: {
-                series: [
-                    {
-                        id: 'andamento',
-                        data: [
-                            ["Ativas",
-        @(n_prospeccoes_andamento)],
-                            ["Com proposta",
-        @(n_propostas)]
-                        ]
-                    }]
-            }
-        });
+    var seriesativas = [
+      { name: 'Contratação Direta', data: [@contagem["ContratacaoDireta_ContatoInicial_Ativas"], @contagem["ContratacaoDireta_Discussao_EsbocoProjeto_Ativas"], @contagem["ContratacaoDireta_ComProposta_Ativas"]] },
+      { name: 'Editais de Inovação SESI/SENAI', data: [@contagem["EditalInovacao_ContatoInicial_Ativas"], @contagem["EditalInovacao_Discussao_EsbocoProjeto_Ativas"], @contagem["EditalInovacao_ComProposta_Ativas"]] },
+      { name: 'Agências de Fomento', data: [@contagem["AgenciaFomento_ContatoInicial_Ativas"], @contagem["AgenciaFomento_Discussao_EsbocoProjeto_Ativas"], @contagem["AgenciaFomento_ComProposta_Ativas"] ] },
+      { name: 'Embrapii', data: [@contagem["Embrapii_ContatoInicial_Ativas"], @contagem["Embrapii_Discussao_EsbocoProjeto_Ativas"], @contagem["Embrapii_ComProposta_Ativas"] ] },
+      { name: 'A definir', data: [@contagem["Indefinida_ContatoInicial_Ativas"], @contagem["Indefinida_Discussao_EsbocoProjeto_Ativas"], @contagem["Indefinida_ComProposta_Ativas"] ] },
+      { name: 'Parceiros de Edital', data: [@contagem["Parceiro_ContatoInicial_Ativas"], @contagem["Parceiro_Discussao_EsbocoProjeto_Ativas"], @contagem["Parceiro_ComProposta_Ativas"] ] },
+      { name: 'ANP/ANEEL', data: [@contagem["ANP_ContatoInicial_Ativas"], @contagem["ANP_Discussao_EsbocoProjeto_Ativas"], @contagem["ANP_ComProposta_Ativas"] ] }
+    ];
 
-        var pizzaConversao = Highcharts.chart('pizza_conversao', {
-            chart: {
-                plotBackgroundColor: null,
-                plotBorderWidth: null,
-                plotShadow: false,
-                type: 'pie'
-            },
-            title: {
-                text: 'Status de Prospecções com propostas'
-            },
-            tooltip: {
-                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-            },
-            accessibility: {
-                point: {
-                    valueSuffix: '%'
-                }
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: true,
-                        format: '<b>{point.name}</b>: {point.y} prospecções'
-                    }
-                }
-            },
-            series: [{
-                size: '60%',
-                name: 'Propostas',
-                colorByPoint: true,
-                data: [{
-                    name: 'Em andamento',
-                    y: @(n_propostas - n_convertidas - n_nao_convertidas),
-                }, {
-                    name: 'Convertidas',
-                    y: @n_convertidas
-                            }, {
-                    name: 'Não convertidas',
-                    y: @n_nao_convertidas
-                            }]
-            }]
-        });
+    var chart1 = Highcharts.chart('funil', {
+      chart: { type: 'column', allowMutatingData: false },
+      title: { text: null },
+      xAxis: { categories: ["Contato inicial", "Em discussão", "Com Proposta", "Convertida",], },
+      yAxis: { min: 0, title: { text: 'Ocorrências' } },
+      tooltip: {
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+          '<td style="padding:0"><b>{point.y:.1f} prospecções</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+      },
+      plotOptions: { column: { pointPadding: 0.2, borderWidth: 0 } },
+      series: seriespadrao
+    })
 
-    </script>
+    <!-- Pizzas -->
 
-    <script type="text/javascript">
-        function alterarTextos(statusfiltro) {
-            if (!statusfiltro) {
-                document.getElementById("CheckboxProspAtivas2").textContent = "Número de empresas prospectadas";
-                document.getElementById("CheckboxProspAtivas3").textContent = "Contatos iniciais de prospecção";
-                document.getElementById("CheckboxProspAtivas8").textContent = "Ticket médio das prospecções";
-                document.getElementById("CheckboxProspAtivas9").textContent = "Propostas comerciais enviadas";
-                document.getElementById("CheckboxProspAtivas10").textContent = "Tempo médio entre o primeiro contato e a emissão da proposta";
-            }
-            else {
-                document.getElementById("CheckboxProspAtivas2").textContent += " (Ativas)";
-                document.getElementById("CheckboxProspAtivas3").textContent += " (Ativas)";
-                document.getElementById("CheckboxProspAtivas8").textContent += " (Ativas)";
-                document.getElementById("CheckboxProspAtivas9").textContent += " (Ativas)";
-                document.getElementById("CheckboxProspAtivas10").textContent += " (Ativas)";
-            }
+    var pizzaDesistencia = Highcharts.chart('pizza_desistencia', {
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+      },
+      title: {
+        text: null
+      },
+      tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+      },
+      accessibility: {
+        point: {
+          valueSuffix: '%'
         }
-
-
-        function marcada() {
-            if (document.getElementById("caixaSelecaoAtivas").checked) {
-                document.getElementById("CheckboxProspAtivas1").innerHTML = @n_empresas_ativas;
-                document.getElementById("CheckboxProspAtivas4").textContent = @prospec_ativas.Count();
-                document.getElementById("CheckboxProspAtivas5").textContent = "@valor_ativas";
-                document.getElementById("CheckboxProspAtivas6").textContent = @n_propostas_ativas;
-                document.getElementById("CheckboxProspAtivas7").textContent = "@Math.Abs(DiferencaAtivas.Days) dias";
-                alterarTextos(true)
-                chart1.update({ series: seriesativas });
-            } else {
-                document.getElementById("CheckboxProspAtivas1").innerHTML = @n_empresas;
-                document.getElementById("CheckboxProspAtivas4").textContent = @prospec_totais.Count();
-                document.getElementById("CheckboxProspAtivas5").textContent = "@valor2";
-                document.getElementById("CheckboxProspAtivas6").textContent = @n_propostas;
-                document.getElementById("CheckboxProspAtivas7").textContent = "@Math.Abs(DiferencaTodas.Days) dias";
-                alterarTextos(false)
-                chart1.update({ series: seriespadrao });
-            }
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          dataLabels: {
+            enabled: true,
+            format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+          }
         }
-    </script>
+      },
+      series: [{
+        size: '60%',
+        name: 'Propostas',
+        colorByPoint: true,
+        data: [{
+          name: 'Em andamento',
+          y: @n_prospeccoes_andamento,
+          drilldown: 'andamento'
+        }, {
+          name: 'Convertidas',
+          y: @n_convertidas,
+          drilldown: null
+        },
+        {
+          name: 'Não Convertidas',
+          y: @n_nao_convertidas,
+          drilldown: null
+        },
+        {
+          name: 'Canceladas',
+          y: @n_canceladas,
+          drilldown: null
+        },
+        ],
+      }],
+
+      drilldown: {
+        series: [
+          {
+            id: 'andamento',
+            data: [
+              ["Ativas",
+    @(n_prospeccoes_andamento)],
+              ["Com proposta",
+    @(n_propostas)]
+            ]
+          }]
+      }
+    });
+
+    var pizzaConversao = Highcharts.chart('pizza_conversao', {
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+      },
+      title: {
+        text: 'Status de Prospecções com propostas'
+      },
+      tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+      },
+      accessibility: {
+        point: {
+          valueSuffix: '%'
+        }
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          dataLabels: {
+            enabled: true,
+            format: '<b>{point.name}</b>: {point.y} prospecções'
+          }
+        }
+      },
+      series: [{
+        size: '60%',
+        name: 'Propostas',
+        colorByPoint: true,
+        data: [{
+          name: 'Em andamento',
+          y: @(n_propostas - n_convertidas - n_nao_convertidas),
+        }, {
+          name: 'Convertidas',
+          y: @n_convertidas
+                              }, {
+          name: 'Não convertidas',
+          y: @n_nao_convertidas
+                              }]
+      }]
+    });
+
+  </script>
+
+  <script type="text/javascript">
+    function alterarTextos(statusfiltro) {
+      if (!statusfiltro) {
+        document.getElementById("CheckboxProspAtivas2").textContent = "Número de empresas prospectadas";
+        document.getElementById("CheckboxProspAtivas3").textContent = "Contatos iniciais de prospecção";
+        document.getElementById("CheckboxProspAtivas8").textContent = "Ticket médio das prospecções";
+        document.getElementById("CheckboxProspAtivas9").textContent = "Propostas comerciais enviadas";
+        document.getElementById("CheckboxProspAtivas10").textContent = "Tempo médio entre o primeiro contato e a emissão da proposta";
+      }
+      else {
+        document.getElementById("CheckboxProspAtivas2").textContent += " (Ativas)";
+        document.getElementById("CheckboxProspAtivas3").textContent += " (Ativas)";
+        document.getElementById("CheckboxProspAtivas8").textContent += " (Ativas)";
+        document.getElementById("CheckboxProspAtivas9").textContent += " (Ativas)";
+        document.getElementById("CheckboxProspAtivas10").textContent += " (Ativas)";
+      }
+    }
+
+
+    function marcada() {
+      if (document.getElementById("caixaSelecaoAtivas").checked) {
+        document.getElementById("CheckboxProspAtivas1").innerHTML = @n_empresas_ativas;
+        document.getElementById("CheckboxProspAtivas4").textContent = @prospec_ativas.Count();
+        document.getElementById("CheckboxProspAtivas5").textContent = "@valor_ativas";
+        document.getElementById("CheckboxProspAtivas6").textContent = @n_propostas_ativas;
+        document.getElementById("CheckboxProspAtivas7").textContent = "@Math.Abs(DiferencaAtivas.Days) dias";
+        alterarTextos(true)
+        chart1.update({ series: seriesativas });
+      } else {
+        document.getElementById("CheckboxProspAtivas1").innerHTML = @n_empresas;
+        document.getElementById("CheckboxProspAtivas4").textContent = @prospec_totais.Count();
+        document.getElementById("CheckboxProspAtivas5").textContent = "@valor2";
+        document.getElementById("CheckboxProspAtivas6").textContent = @n_propostas;
+        document.getElementById("CheckboxProspAtivas7").textContent = "@Math.Abs(DiferencaTodas.Days) dias";
+        alterarTextos(false)
+        chart1.update({ series: seriespadrao });
+      }
+    }
+  </script>
 }
 else
 {
-    <h3> Ainda não existem dados cadastrados. Esta aba aparecerá quando você tiver mais dados cadastrados.</h3>
+  <h3> Ainda não existem dados cadastrados. Esta aba aparecerá quando você tiver mais dados cadastrados.</h3>
 }

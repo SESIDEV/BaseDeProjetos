@@ -1,0 +1,36 @@
+﻿@model BaseDeProjetos.Models.Projeto
+
+@{
+  ViewData["Title"] = "Deletar";
+}
+
+<div class="modal fade" id="deletarProjetoModal-@Model.Id-Toggle" aria-hidden="true"
+  aria-labelledby="deletarProjetoModal-@Model.Id-ToggleLabel" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="deletarProjetoModal-@Model.Id-ToggleLabel">Deletar Prospecção</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <form asp-action="Delete" asp-route-id="Id" method="post">
+          <button type="button" class="btn app-btn-primary" data-bs-target="#deletarProjetoModal-@Model.Id-Toggle"
+            data-bs-toggle="modal">
+            Voltar
+          </button>
+          <input type="hidden" asp-for="Id" />
+          <input type="submit" value="Deletar" class="btn text-white btn-danger" />
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+@{
+await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+}

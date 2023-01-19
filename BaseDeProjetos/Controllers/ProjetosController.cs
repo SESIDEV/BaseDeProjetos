@@ -42,6 +42,9 @@ namespace BaseDeProjetos.Controllers
             ViewBag.usuarioCasa = usuario.Casa;
             ViewBag.usuarioNivel = usuario.Nivel;
 
+            List<Empresa> empresas = _context.Empresa.ToList();
+            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+
             SetarFiltros(sortOrder, searchString);
             IQueryable<Projeto> projetos = DefinirCasa(casa);
             projetos = PeriodizarProjetos(ano, projetos);
@@ -137,6 +140,24 @@ namespace BaseDeProjetos.Controllers
                 _context.Projeto.Where(p => p.Casa.Equals(enum_casa));
 
             return lista;
+        }
+
+        public IActionResult RetornarModal(string idProjeto, string tipo)
+        {
+            if (tipo != null || tipo != "")
+            {
+                return ViewComponent($"Modal{tipo}Projeto", new { id = idProjeto });
+            }
+            else
+            {
+                return ViewComponent("null"); // View n existe é mais pra ""debug""
+            }
+
+        }
+
+        public IActionResult RetornarModalDetalhes(string idProjeto)
+        {
+            return ViewComponent($"ModalDetalhesProjeto", new { id = idProjeto });
         }
 
         private bool ValidarProjetoId(string id)

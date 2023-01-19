@@ -1,51 +1,52 @@
 ﻿@model BaseDeProjetos.Models.Producao
 
 @{
-    ViewData["Title"] = "Deletar";
-    var idProducao = Model.Id;
+  ViewData["Title"] = "Deletar";
+  var idProducao = Model.Id;
 }
 
 <form asp-action="Delete" asp-route-id="@Model.Id">
-    <div class="modal fade" id="modalGestaoConhecimento-@idProducao-DeleteToggle" aria-hidden="true"
-         aria-labelledby="modalGestaoConhecimento-@idProducao-DeleteToggleLabel" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modalGestaoConhecimento-@idProducao-DeleteToggleLabel">
-                        Deletar Produção
-                    </h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="modal-body d-flex flex-column gap-1">
-                        <h1 class="app-card-title">@Html.DisplayNameFor(model => model.Casa)</h1>
-                        <span>@Html.DisplayFor(model => model.Casa)</span>
-                        <h1 class="app-card-title">@Html.DisplayNameFor(model => model.Grupo)</h1>
-                        <span>@Html.DisplayFor(model => model.Grupo)</span>
-                        <h1 class="app-card-title">@Html.DisplayNameFor(model => model.Titulo)</h1>
-                        <span>@Html.DisplayFor(model => model.Titulo)</span>
-                        <h1 class="app-card-title">@Html.DisplayNameFor(model => model.Descricao)</h1>
-                        <span>@Html.DisplayFor(model => model.Descricao)</span>
-                        <h1 class="app-card-title">@Html.DisplayNameFor(model => model.Autores)</h1>
-                        <span>@Html.DisplayFor(model => model.Autores)</span>
-                        <h1 class="app-card-title">@Html.DisplayNameFor(model => model.Data)</h1>
-                        <span>@Html.DisplayFor(model => model.Data)</span>
-                        <h1 class="app-card-title">@Html.DisplayNameFor(model => model.Local)</h1>
-                        <span>@Html.DisplayFor(model => model.Local)</span>
-                        <h1 class="app-card-title">@Html.DisplayNameFor(model => model.DOI)</h1>
-                        <span>@Html.DisplayFor(model => model.DOI)</span>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a asp-action="Index" class="btn app-btn-secondary">Voltar para Lista</a>
-                    <input type="submit" value="Deletar" class="btn btn-danger" data-bs-target="#modalGestaoConhecimento-@idProducao-DeleteToggle" data-bs-toggle="modal">
-                </div>
-            </div>
+  <div class="modal fade" id="modalGestaoConhecimento-@idProducao-DeleteToggle" aria-hidden="true"
+    aria-labelledby="modalGestaoConhecimento-@idProducao-DeleteToggleLabel" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="modalGestaoConhecimento-@idProducao-DeleteToggleLabel">
+            Deletar Produção
+          </h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <div class="modal-body">
+          <div class="modal-body d-flex flex-column gap-1">
+            <h1 class="app-card-title">@Html.DisplayNameFor(model => model.Casa)</h1>
+            <span>@Html.DisplayFor(model => model.Casa)</span>
+            <h1 class="app-card-title">@Html.DisplayNameFor(model => model.Grupo)</h1>
+            <span>@Html.DisplayFor(model => model.Grupo)</span>
+            <h1 class="app-card-title">@Html.DisplayNameFor(model => model.Titulo)</h1>
+            <span>@Html.DisplayFor(model => model.Titulo)</span>
+            <h1 class="app-card-title">@Html.DisplayNameFor(model => model.Descricao)</h1>
+            <span>@Html.DisplayFor(model => model.Descricao)</span>
+            <h1 class="app-card-title">@Html.DisplayNameFor(model => model.Autores)</h1>
+            <span>@Html.DisplayFor(model => model.Autores)</span>
+            <h1 class="app-card-title">@Html.DisplayNameFor(model => model.Data)</h1>
+            <span>@Html.DisplayFor(model => model.Data)</span>
+            <h1 class="app-card-title">@Html.DisplayNameFor(model => model.Local)</h1>
+            <span>@Html.DisplayFor(model => model.Local)</span>
+            <h1 class="app-card-title">@Html.DisplayNameFor(model => model.DOI)</h1>
+            <span>@Html.DisplayFor(model => model.DOI)</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <a asp-action="Index" class="btn app-btn-secondary">Voltar para Lista</a>
+          <input type="submit" value="Deletar" class="btn btn-danger"
+            data-bs-target="#modalGestaoConhecimento-@idProducao-DeleteToggle" data-bs-toggle="modal">
+        </div>
+      </div>
     </div>
+  </div>
 </form>
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+@{
+await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
 }

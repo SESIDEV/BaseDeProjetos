@@ -2,174 +2,183 @@
 @using Microsoft.AspNetCore.Http
 
 @{
-    ViewData["Title"] = "Editar";
-    if (!(Context.Session.GetString("_Casa") is null))
-    {
-        ViewData["Area"] = Context.Session.GetString("_Casa");
-    }
+  ViewData["Title"] = "Editar";
+  if (!(Context.Session.GetString("_Casa") is null))
+  {
+    ViewData["Area"] = Context.Session.GetString("_Casa");
+  }
 }
 
 <partial name="Header" view-data="@ViewData" />
 <div style="padding-left: 25em; padding-right: 10em; padding-top: 2em">
-    <h1>Editar</h1>
-    <h4>Projeto</h4>
-    <hr />
-    <div>
-        <form asp-action="Edit" method="post" class="row">
-            <fieldset class="col-6">
-                <legend>Dados básicos do Projeto</legend>
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="Id" class="control-label"></label>
-                    <input asp-for="Id" class="form-control" readonly />
-                    <span asp-validation-for="Id" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Casa" class="control-label"></label>
-                    <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Instituto>()"></select>
-                    <span asp-validation-for="Casa" class="text-danger"></span>
-                </div>
+  <h1>Editar</h1>
+  <h4>Projeto</h4>
+  <hr />
+  <div>
+    <form asp-action="Edit" method="post" class="row">
+      <fieldset class="col-6">
+        <legend>Dados básicos do Projeto</legend>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+          <label asp-for="Id" class="control-label"></label>
+          <input asp-for="Id" class="form-control" readonly />
+          <span asp-validation-for="Id" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="Casa" class="control-label"></label>
+          <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Instituto>()"></select>
+          <span asp-validation-for="Casa" class="text-danger"></span>
+        </div>
 
-                <div class="form-group">
-                    <label asp-for="Empresa.Nome" class="control-label"></label>
-                    <input asp-for="Empresa.Nome" class="form-control" />
-                    <span asp-validation-for="Empresa.Nome" class="text-danger"></span>
-                </div>
+        <div class="form-group">
+          <label asp-for="Empresa.Nome" class="control-label"></label>
+          <input asp-for="Empresa.Nome" class="form-control" />
+          <span asp-validation-for="Empresa.Nome" class="text-danger"></span>
+        </div>
 
-                <div class="form-group">
-                    <label asp-for="NomeProjeto" class="control-label"></label>
-                    <input asp-for="NomeProjeto" class="form-control" />
-                    <span asp-validation-for="NomeProjeto" class="text-danger"></span>
-                </div>
+        <div class="form-group">
+          <label asp-for="NomeProjeto" class="control-label"></label>
+          <input asp-for="NomeProjeto" class="form-control" />
+          <span asp-validation-for="NomeProjeto" class="text-danger"></span>
+        </div>
 
-                <div class="form-group">
-                    <label asp-for="MembrosEquipe" class="control-label p-2"></label>
-                    <button type="button" class="btn app-btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Abrir</button>
-                    <input asp-for="MembrosEquipe" class="form-control d-none" />
-                    <span asp-validation-for="MembrosEquipe" class="text-danger"></span>
-                    <div id="membrosSelecionados" class="form-control" style="padding:2rem;"></div>
-                </div>
+        <div class="form-group">
+          <label asp-for="MembrosEquipe" class="control-label p-2"></label>
+          <button type="button" class="btn app-btn-primary" data-bs-toggle="modal"
+            data-bs-target="#exampleModal">Abrir</button>
+          <input asp-for="MembrosEquipe" class="form-control d-none" />
+          <span asp-validation-for="MembrosEquipe" class="text-danger"></span>
+          <div id="membrosSelecionados" class="form-control" style="padding:2rem;"></div>
+        </div>
 
-                <div class="form-group">
-                    <label asp-for="AreaPesquisa" class="control-label"></label>
-                    <select asp-for="AreaPesquisa" class="form-control" asp-items="Html.GetEnumSelectList<LinhaPesquisa>()"></select>
-                    <span asp-validation-for="AreaPesquisa" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Inovacao" class="control-label"></label>
-                    <select asp-for="Inovacao" class="form-control" asp-items="Html.GetEnumSelectList<TipoInovacao>()"></select>
-                    <span asp-validation-for="Inovacao" class="text-danger"></span>
-                </div>
+        <div class="form-group">
+          <label asp-for="AreaPesquisa" class="control-label"></label>
+          <select asp-for="AreaPesquisa" class="form-control"
+            asp-items="Html.GetEnumSelectList<LinhaPesquisa>()"></select>
+          <span asp-validation-for="AreaPesquisa" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="Inovacao" class="control-label"></label>
+          <select asp-for="Inovacao" class="form-control" asp-items="Html.GetEnumSelectList<TipoInovacao>()"></select>
+          <span asp-validation-for="Inovacao" class="text-danger"></span>
+        </div>
 
-                <div class="form-group">
-                    <label asp-for="DataInicio" class="control-label"></label>
-                    <input type="date" asp-for="DataInicio" class="form-control" />
-                    <span asp-validation-for="DataInicio" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="DataEncerramento" class="control-label"></label>
-                    <input type="date" asp-for="DataEncerramento" class="form-control" />
-                    <span asp-validation-for="DataEncerramento" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="DuracaoProjetoEmMeses" class="control-label"></label>
-                    <input asp-for="DuracaoProjetoEmMeses" min="0" class="form-control" />
-                    <span asp-validation-for="DuracaoProjetoEmMeses" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Status" class="control-label"></label>
-                    <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<StatusProjeto>()"></select>
-                    <span asp-validation-for="Status" class="text-danger"></span>
-                </div>
-            </fieldset>
-            <div class="col-6">
-                <fieldset>
-                    <legend>Dados contábeis do projeto</legend>
-                    <div class="form-group">
-                        <label asp-for="Estado" class="control-label"></label>
-                        <select asp-for="Estado" class="form-control" asp-items="Html.GetEnumSelectList<Estado>()"></select>
-                        <span asp-validation-for="Estado" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="FonteFomento" class="control-label"></label>
-                        <select asp-for="FonteFomento" class="form-control" asp-items="Html.GetEnumSelectList<TipoContratacao>()">
-                            <option selected="selected" value="">Selecione uma opção</option>
-                        </select>
-                        <span asp-validation-for="FonteFomento" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="ValorTotalProjeto" class="control-label"></label> (R$)
-                        <input asp-for="ValorTotalProjeto" class="form-control" placeholder="@Model.ValorTotalProjeto" />
-                        <span asp-validation-for="ValorTotalProjeto" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="ValorAporteRecursos" class="control-label"></label> (R$)
-                        <input asp-for="ValorAporteRecursos" class="form-control" placeholder="3,00" />
-                        <span asp-validation-for="ValorAporteRecursos" class="text-danger"></span>
-                    </div>
-                </fieldset>
-                @* Estes campos serão utlizados futuramente, favor não apagar!
-                <fieldset>
-                    <legend>Equipe</legend>
-                    <div class="form-group">
-                        <label class="control-label"> Líder do Projeto</label>
-                        <select asp-for="Equipe[0].Id" class="form-control" asp-items="@ViewData["Equipe"] as SelectList">
-                            <option value="@(Model.Equipe.Count > 0?Model.Equipe[0].Id : "-1")" selected disabled> @Model.Equipe[0].UserName</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label"> Vice-Líder do Projeto</label>
-                        <select asp-for="Equipe[1].Id" class="form-control" asp-items="@ViewData["Equipe"] as SelectList">
-                            <option value="@(Model.Equipe.Count > 1?Model.Equipe[1].Id : "-1")" selected disabled> @Model.Equipe[1].UserName</option>
-                        </select>
-                    </div>
-                </fieldset>
-                *@
-            </div>
-            <div class="form-group col-12">
-                <input type="submit" value="Editar" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+        <div class="form-group">
+          <label asp-for="DataInicio" class="control-label"></label>
+          <input type="date" asp-for="DataInicio" class="form-control" />
+          <span asp-validation-for="DataInicio" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="DataEncerramento" class="control-label"></label>
+          <input type="date" asp-for="DataEncerramento" class="form-control" />
+          <span asp-validation-for="DataEncerramento" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="DuracaoProjetoEmMeses" class="control-label"></label>
+          <input asp-for="DuracaoProjetoEmMeses" min="0" class="form-control" />
+          <span asp-validation-for="DuracaoProjetoEmMeses" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="Status" class="control-label"></label>
+          <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<StatusProjeto>()"></select>
+          <span asp-validation-for="Status" class="text-danger"></span>
+        </div>
+      </fieldset>
+      <div class="col-6">
+        <fieldset>
+          <legend>Dados contábeis do projeto</legend>
+          <div class="form-group">
+            <label asp-for="Estado" class="control-label"></label>
+            <select asp-for="Estado" class="form-control" asp-items="Html.GetEnumSelectList<Estado>()"></select>
+            <span asp-validation-for="Estado" class="text-danger"></span>
+          </div>
+          <div class="form-group">
+            <label asp-for="FonteFomento" class="control-label"></label>
+            <select asp-for="FonteFomento" class="form-control" asp-items="Html.GetEnumSelectList<TipoContratacao>()">
+              <option selected="selected" value="">Selecione uma opção</option>
+            </select>
+            <span asp-validation-for="FonteFomento" class="text-danger"></span>
+          </div>
+          <div class="form-group">
+            <label asp-for="ValorTotalProjeto" class="control-label"></label> (R$)
+            <input asp-for="ValorTotalProjeto" class="form-control" placeholder="@Model.ValorTotalProjeto" />
+            <span asp-validation-for="ValorTotalProjeto" class="text-danger"></span>
+          </div>
+          <div class="form-group">
+            <label asp-for="ValorAporteRecursos" class="control-label"></label> (R$)
+            <input asp-for="ValorAporteRecursos" class="form-control" placeholder="3,00" />
+            <span asp-validation-for="ValorAporteRecursos" class="text-danger"></span>
+          </div>
+        </fieldset>
+        @* Estes campos serão utlizados futuramente, favor não apagar!
+          <fieldset>
+          <legend>Equipe</legend>
+          <div class="form-group">
+          <label class="control-label"> Líder do Projeto</label>
+          <select asp-for="Equipe[0].Id" class="form-control" asp-items="@ViewData["Equipe"] as SelectList">
+          <option value="@(Model.Equipe.Count > 0?Model.Equipe[0].Id : "-1")" selected disabled>
+          @Model.Equipe[0].UserName</option>
+          </select>
+          </div>
+          <div class="form-group">
+          <label class="control-label"> Vice-Líder do Projeto</label>
+          <select asp-for="Equipe[1].Id" class="form-control" asp-items="@ViewData["Equipe"] as SelectList">
+          <option value="@(Model.Equipe.Count > 1?Model.Equipe[1].Id : "-1")" selected disabled>
+          @Model.Equipe[1].UserName</option>
+          </select>
+          </div>
+          </fieldset>
+        *@
+      </div>
+      <div class="form-group col-12">
+        <input type="submit" value="Editar" class="btn btn-primary" />
+      </div>
+    </form>
+  </div>
 </div>
 
 <!-- Modal Membros da equipe-->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Inserir Membros da Equipe</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="criarListaDeUSuarios.enviarMembrosParaInput()"><span aria-hidden="true"></span></button>
-            </div>
-            <div class="modal-body d-flex justify-content-between gap-2">
-                <div style="width:45%;">
-                    <span>Membros do Projeto</span>
-                    <div id="membrosDoProjeto" ondrop="dnd.drop(event)" ondragover="dnd.allowDrop(event)" class="border border-secondary rounded" style="width:100%;min-height:150px;padding:10px;">
-                    </div>
-                </div>
-                <div style="width:45%;">
-                    <span>Membros Disponíveis</span>
-                    <div id="membrosDisponiveis" ondrop="dnd.drop(event)" ondragover="dnd.allowDrop(event)" class="border border-secondary rounded" style="width:100%;height:150px;padding:10px;overflow-y:auto;">
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn app-btn-primary" onclick="criarListaDeUSuarios.exibirMembrosSelecionados()">Adicionar</button>
-                @*<button type="button" class="btn app-btn-secondary" data-bs-dismiss="modal" onclick="enviarMembrosParaInput()">Enviar</button>*@
-            </div>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Inserir Membros da Equipe</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+          onclick="criarListaDeUsuarios.enviarMembrosParaInput()"><span aria-hidden="true"></span></button>
+      </div>
+      <div class="modal-body d-flex justify-content-between gap-2">
+        <div style="width:45%;">
+          <span>Membros do Projeto</span>
+          <div id="membrosDoProjeto" ondrop="dnd.drop(event)" ondragover="dnd.allowDrop(event)"
+            class="border border-secondary rounded" style="width:100%;min-height:150px;padding:10px;">
+          </div>
         </div>
+        <div style="width:45%;">
+          <span>Membros Disponíveis</span>
+          <div id="membrosDisponiveis" ondrop="dnd.drop(event)" ondragover="dnd.allowDrop(event)"
+            class="border border-secondary rounded" style="width:100%;height:150px;padding:10px;overflow-y:auto;">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn app-btn-primary"
+          onclick="criarListaDeUsuarios.exibirMembrosSelecionados()">Adicionar</button>
+        @*<button type="button" class="btn app-btn-secondary" data-bs-dismiss="modal"
+          onclick="enviarMembrosParaInput()">Enviar</button>*@
+      </div>
     </div>
+  </div>
 </div>
 
 <div>
-    <a asp-action="Index" asp-route-casa="@ViewData["Area"]">Voltar</a>
+  <a asp-action="Index" asp-route-casa="@ViewData["Area"]">Voltar</a>
 </div>
 
 <script>
 
-    let dnd = new DragAndDrop();
-    let criarListaDeUSuarios = new ObterListaDeUsuariosJson();
-    criarListaDeUSuarios.enviarMembrosParaInput();
-    criarListaDeUSuarios.exibirMembrosSelecionados();
+  let dnd = new DragAndDrop();
+  let criarListaDeUsuarios = new ObterListaDeUsuariosJson();
+  criarListaDeUsuarios.enviarMembrosParaInput();
+  criarListaDeUsuarios.exibirMembrosSelecionados();
 
 </script>

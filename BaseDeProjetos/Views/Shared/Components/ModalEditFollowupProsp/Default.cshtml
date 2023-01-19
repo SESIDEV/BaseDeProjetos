@@ -2,128 +2,128 @@
 @using Microsoft.AspNetCore.Http
 @using System.Globalization
 @{
-    ViewData["Title"] = "Atualizar Prospecção";
-    if (!(Context.Session.GetString("_Casa") is null))
-    {
-        ViewData["Area"] = Context.Session.GetString("_Casa");
-    }
+  ViewData["Title"] = "Atualizar Prospecção";
+  if (!(Context.Session.GetString("_Casa") is null))
+  {
+    ViewData["Area"] = Context.Session.GetString("_Casa");
+  }
 
-    var prosp = ViewData["prospeccao"] as Prospeccao;
+  var prosp = ViewData["prospeccao"] as Prospeccao;
 }
 
 <!-- Modal -->
 <div class="modal fade" id="EditFollowupProspModal-@prosp.Id-Toggle" tabindex="-1"
-     aria-labelledby="EditFollowupProspModal-@prosp.Id-ToggleLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="EditFollowupProspModal-@prosp.Id-Toggle">
-                    Editar Status da Prospecção
-                </h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div style="font-size: 1.25rem; color:black;">Dados da Prospecção:</div>
-                <div class="form-group">
-                    <label asp-for="Id" class="control-label"></label>
-                    <input type="text" class="form-control" value="@prosp.Id" readonly />
-                    <span asp-validation-for="Id" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label> Empresa </label>
-                    <input type="text" class="form-control" value="@prosp.Empresa.Nome" readonly />
-                </div>
-                <div class="form-group">
-                    <label> Casa </label>
-                    <input type="text" class="form-control" value="@prosp.Casa" readonly />
-                </div>
-                <div class="form-group">
-                    <label> Tipo de Contratação </label>
-                    <input type="text" class="form-control" value="@prosp.TipoContratacao" readonly />
-                </div>
-                <div class="form-group">
-                    <label> Status </label>
-                    <input type="text" class="form-control" value="" placeholder="@prosp.Status.Last().Status"
-                           readonly />
-                </div>
-
-                <div class="form-group">
-                    <label> Contato da prospecção</label>
-                    <input type="text" class="form-control" value="@prosp.Contato.Nome" readonly />
-                </div>
-
-                <div class="form-group">
-                    <label>Informações da prospecção (Primeiro Contato)</label>
-                    <textarea type="text" class="form-control" value="@prosp.Status.First().Anotacoes" readonly>@prosp.Status.First().Anotacoes
-                    </textarea>
-                </div>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn app-btn-secondary" data-bs-target="#modalDetalhes-@prosp.Id-Toggle"
-                        data-bs-toggle="modal">
-                    Sair
-                </button>
-                <button type="button" class="btn app-btn-primary"
-                        data-bs-target="#EditFollowupProspModal-@prosp.Id-Toggle2" data-bs-toggle="modal">
-                    Próximo
-                </button>
-            </div>
+  aria-labelledby="EditFollowupProspModal-@prosp.Id-ToggleLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="EditFollowupProspModal-@prosp.Id-Toggle">
+          Editar Status da Prospecção
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size: 1.25rem; color:black;">Dados da Prospecção:</div>
+        <div class="form-group">
+          <label asp-for="Id" class="control-label"></label>
+          <input type="text" class="form-control" value="@prosp.Id" readonly />
+          <span asp-validation-for="Id" class="text-danger"></span>
         </div>
+        <div class="form-group">
+          <label> Empresa </label>
+          <input type="text" class="form-control" value="@prosp.Empresa.Nome" readonly />
+        </div>
+        <div class="form-group">
+          <label> Casa </label>
+          <input type="text" class="form-control" value="@prosp.Casa" readonly />
+        </div>
+        <div class="form-group">
+          <label> Tipo de Contratação </label>
+          <input type="text" class="form-control" value="@prosp.TipoContratacao" readonly />
+        </div>
+        <div class="form-group">
+          <label> Status </label>
+          <input type="text" class="form-control" value="" placeholder="@prosp.Status.Last().Status" readonly />
+        </div>
+
+        <div class="form-group">
+          <label> Contato da prospecção</label>
+          <input type="text" class="form-control" value="@prosp.Contato.Nome" readonly />
+        </div>
+
+        <div class="form-group">
+          <label>Informações da prospecção (Primeiro Contato)</label>
+          <textarea type="text" class="form-control" value="@prosp.Status.First().Anotacoes" readonly>@prosp.Status.First().Anotacoes
+                    </textarea>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn app-btn-secondary" data-bs-target="#modalDetalhes-@prosp.Id-Toggle"
+          data-bs-toggle="modal">
+          Sair
+        </button>
+        <button type="button" class="btn app-btn-primary" data-bs-target="#EditFollowupProspModal-@prosp.Id-Toggle2"
+          data-bs-toggle="modal">
+          Próximo
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 <div class="modal fade" id="EditFollowupProspModal-@prosp.Id-Toggle2" aria-hidden="true"
-     aria-labelledby="#EditFollowupProspModal-@prosp.Id-ToggleLabel2" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="EditFollowupProspModal-@prosp.Id-ToggleLabel2">
-                    Informações da Empresa
-                </h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form asp-controller="FunilDeVendas" asp-action="EditarFollowUp" asp-route-id="@Model.Id" method="POST">
-                <div class="modal-body">
-                    <input asp-for="OrigemID" type="hidden" value="@Model.OrigemID" />
-                    <input asp-for="Id" type="hidden" value="@Model.Id" />
+  aria-labelledby="#EditFollowupProspModal-@prosp.Id-ToggleLabel2" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="EditFollowupProspModal-@prosp.Id-ToggleLabel2">
+          Informações da Empresa
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form asp-controller="FunilDeVendas" asp-action="EditarFollowUp" asp-route-id="@Model.Id" method="POST">
+        <div class="modal-body">
+          <input asp-for="OrigemID" type="hidden" value="@Model.OrigemID" />
+          <input asp-for="Id" type="hidden" value="@Model.Id" />
 
-                    <div class="form-group">
-                        <label asp-for="Data" class="control-label"></label>
-                        <input asp-for="Data" type="date" class="form-control" />
-                        <span asp-validation-for="Data" class="text-danger"
-                              value='@Model.Data.ToString("F2",CultureInfo.CreateSpecificCulture("en-US"))'></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Status" class="control-label"></label>
-                        <select asp-for="Status" value="@Model.Status" class="form-control"
-                                asp-items="Html.GetEnumSelectList<StatusProspeccao>()"></select>
-                        <span asp-validation-for="Status" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Anotacoes" class="control-label"></label>
-                        <textarea class="form-control" asp-for=" Anotacoes" rows="3"> @Model.Anotacoes</textarea>
-                        <span asp-validation-for="Anotacoes" class="text-danger"></span>
-                    </div>
-                    <div id="naoconversao" style="display:none">
-                        <hr />
-                        <div class="form-group">
-                            <label class="control-label"> Motivo de não conversão:</label>
-                            <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<MotivosNaoConversao>()"></select>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn app-btn-primary"
-                            data-bs-target="#EditFollowupProspModal-@prosp.Id-Toggle" data-bs-toggle="modal">
-                        Anterior
-                    </button>
-                    <input type="submit" value="Editar" class="btn app-btn-primary">
-                </div>
-            </form>
+          <div class="form-group">
+            <label asp-for="Data" class="control-label"></label>
+            <input asp-for="Data" type="date" class="form-control" />
+            <span asp-validation-for="Data" class="text-danger"
+              value='@Model.Data.ToString("F2",CultureInfo.CreateSpecificCulture("en-US"))'></span>
+          </div>
+          <div class="form-group">
+            <label asp-for="Status" class="control-label"></label>
+            <select asp-for="Status" value="@Model.Status" class="form-control"
+              asp-items="Html.GetEnumSelectList<StatusProspeccao>()"></select>
+            <span asp-validation-for="Status" class="text-danger"></span>
+          </div>
+          <div class="form-group">
+            <label asp-for="Anotacoes" class="control-label"></label>
+            <textarea class="form-control" asp-for=" Anotacoes" rows="3"> @Model.Anotacoes</textarea>
+            <span asp-validation-for="Anotacoes" class="text-danger"></span>
+          </div>
+          <div id="naoconversao" style="display:none">
+            <hr />
+            <div class="form-group">
+              <label class="control-label"> Motivo de não conversão:</label>
+              <select asp-for="Status" class="form-control"
+                asp-items="Html.GetEnumSelectList<MotivosNaoConversao>()"></select>
+            </div>
+          </div>
         </div>
+        <div class="modal-footer">
+          <button type="button" class="btn app-btn-primary" data-bs-target="#EditFollowupProspModal-@prosp.Id-Toggle"
+            data-bs-toggle="modal">
+            Anterior
+          </button>
+          <input type="submit" value="Editar" class="btn app-btn-primary">
+        </div>
+      </form>
     </div>
+  </div>
 </div>
 <script>
-    var dateControl = document.querySelector('input[type="date"]');
-    dateControl.max = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+  var dateControl = document.querySelector('input[type="date"]');
+  dateControl.max = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
 </script>
