@@ -19,74 +19,23 @@
         justify-content: center;
         gap: 10px;
     }
-    span{
-        text-align:center;
-    }
 </style>
 
 
 @foreach (var projeto in Model)
 {
-    <form asp-action="Edit" asp-route-id="@projeto.Id" method="post">
-        <div id="modalEditProj-@projeto.Id-container">
-        </div>
-    </form>
-
-
-    <div id="modalDeleteProj-@projeto.Id-container">
+    <div id="modalEditProjeto-@projeto.Id-container">
     </div>
 
-    <div id="modalHistoryProj-@projeto.Id-container">
+    <div id="modalDeleteProjeto-@projeto.Id-container">
     </div>
 
-    <div id="modalCreateFollowupProj-@projeto.Id-container">
+    <div id="modalHistoryProjeto-@projeto.Id-container">
     </div>
 
-    <div id="modalEditFollowupProj-@projeto.Id-container">
+    <div id="modalDetailsProjeto-@projeto.Id-container">
     </div>
-
-
-    <div class="modal fade" id="modalDetalhes-@projeto.Id" tabindex="-1" aria-labelledby="modalDetalhes-@projeto.Id-Label" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modalDetalhes-@projeto.Id-Label">Detalhes do Projeto</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body d-flex flex-column gap-1">
-                    <h1 class="app-card-title">Empresa:</h1>
-                    <span>@projeto.Empresa.Nome</span>
-                    <h1 class="app-card-title">Projeto:</h1>
-                    <span>@projeto.NomeProjeto</span>
-                    <h1 class="app-card-title">Status:</h1>
-                    <span>@projeto.Status.GetDisplayName()</span>
-                    <h1 class="app-card-title">Valor:</h1>
-                    <nobr>
-                    <span>R$ @Helpers.FormatarValoresDashboards((decimal)projeto.ValorAporteRecursos)</span>
-                    </nobr>                    
-                </div>
-                <div class="modal-footer">
-                    <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#editarProjModal-@projeto.Id-Toggle" role="button">
-                        Editar
-                    </a>
-                    <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#historyProjModal-@projeto.Id-Toggle" role="button">
-                        Histórico
-                    </a>
-                    <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#CreateFollowupProjModal-@projeto.Id-Toggle" role="button">
-                        Incluir Status
-                    </a>
-                    <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#deletarProjModal-@projeto.Id-Toggle" role="button">
-                        Deletar
-                    </a>
-
-                    @*<a asp-action="Edit" asp-route-id="@projeto.Id" class="btn btn-outline-primary">Editar</a>*@
-                    @*<a asp-action="Details" asp-route-id="@projeto.Id" class="btn btn-outline-primary">Histórico</a>*@
-                    @*<a asp-action="Atualizar" asp-route-id="@projeto.Id" class="btn btn-outline-primary">Atualizar</a>*@
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    
     <tr>
         @if (projeto.Empresa.Logo != null)
         {
@@ -124,7 +73,7 @@
         </td>
 
         <td class="cell">
-            <button type="button" data-bs-target="#modalDetalhes-@projeto.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary" onclick="carregarModaisProjeto('@projeto.Id')">Detalhes</button>
+            <button type="button" data-bs-target="#modalDetalhes-@projeto.Id" id="button-@projeto.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary" onmouseover="carregarModaisProjeto('@projeto.Id')">Detalhes</button>
         </td>
     </tr>
 }

@@ -139,7 +139,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Inserir Membros da Equipe</h1>
-               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="criarListaDeUSuarios.enviarMembrosParaInput()"><span aria-hidden="true"></span></button>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="criarListaDeUsuarios.enviarMembrosParaInput()"><span aria-hidden="true"></span></button>
             </div>
             <div class="modal-body d-flex justify-content-between gap-2">
                 <div style="width:45%;">
@@ -154,7 +154,7 @@
                 </div>
             </div>
             <div class="modal-footer">                
-                <button type="button" class="btn app-btn-primary" onclick="criarListaDeUSuarios.exibirMembrosSelecionados()">Adicionar</button>
+                <button type="button" class="btn app-btn-primary" onclick="criarListaDeUsuarios.exibirMembrosSelecionados()">Adicionar</button>
                 @*<button type="button" class="btn app-btn-secondary" data-bs-dismiss="modal" onclick="enviarMembrosParaInput()">Enviar</button>*@
             </div>
         </div>
@@ -164,8 +164,8 @@
 <script>
 
     let dnd = new DragAndDrop();
-    let criarListaDeUSuarios = new ObterListaDeUsuariosJson();
-    criarListaDeUSuarios.enviarMembrosParaInput();
-    criarListaDeUSuarios.exibirMembrosSelecionados();
+    let criarListaDeUsuarios = new ObterListaDeUsuariosJson();
+    criarListaDeUsuarios.enviarMembrosParaInput();
+    criarListaDeUsuarios.exibirMembrosSelecionados();
     
 </script>

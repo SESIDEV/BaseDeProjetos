@@ -1,24 +1,26 @@
 ﻿@model BaseDeProjetos.Models.Projeto
 @using Microsoft.AspNetCore.Http
+@using System.Globalization
 
 @{
-    ViewData["Title"] = "Editar";
+    ViewData["Title"] = "Edit";
     if (!(Context.Session.GetString("_Casa") is null))
     {
         ViewData["Area"] = Context.Session.GetString("_Casa");
     }
 }
 
-<partial name="Header" view-data="@ViewData" />
-<div style="padding-left: 25em; padding-right: 10em; padding-top: 2em">
-    <h1>Editar</h1>
-    <h4>Projeto</h4>
-    <hr />
-    <div>
-        <form asp-action="Edit" method="post" class="row">
-            <fieldset class="col-6">
-                <legend>Dados básicos do Projeto</legend>
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<form asp-action="Edit" method="post">
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="modal fade" id="editarProjetoModal-@Model.Id-Toggle" aria-hidden="true" aria-labelledby="editarProjetoModal-@Model.Id-ToggleLabel"
+     tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="editarProjetoModal-@Model.Id-ToggleLabel">Dados do Projeto</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
                 <div class="form-group">
                     <label asp-for="Id" class="control-label"></label>
                     <input asp-for="Id" class="form-control" readonly />
@@ -81,11 +83,25 @@
                     <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<StatusProjeto>()"></select>
                     <span asp-validation-for="Status" class="text-danger"></span>
                 </div>
-            </fieldset>
-            <div class="col-6">
-                <fieldset>
-                    <legend>Dados contábeis do projeto</legend>
-                    <div class="form-group">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn app-btn-primary" data-bs-target="#editarProjetoModal-@Model.Id-Toggle2" data-bs-toggle="modal" onclick="selectToText('campoSelectEdit', 'membrosTextEdit')">
+                    Próximo
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editarProjetoModal-@Model.Id-Toggle2" aria-hidden="true" aria-labelledby="editarProjetoModal-@Model.Id-ToggleLabel2"
+     tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="editarProjetoModal-@Model.Id-ToggleLabel2">Informações da Empresa</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
                         <label asp-for="Estado" class="control-label"></label>
                         <select asp-for="Estado" class="form-control" asp-items="Html.GetEnumSelectList<Estado>()"></select>
                         <span asp-validation-for="Estado" class="text-danger"></span>
@@ -107,8 +123,7 @@
                         <input asp-for="ValorAporteRecursos" class="form-control" placeholder="3,00" />
                         <span asp-validation-for="ValorAporteRecursos" class="text-danger"></span>
                     </div>
-                </fieldset>
-                @* Estes campos serão utlizados futuramente, favor não apagar!
+                    @* Estes campos serão utlizados futuramente, favor não apagar!
                 <fieldset>
                     <legend>Equipe</legend>
                     <div class="form-group">
@@ -126,19 +141,29 @@
                 </fieldset>
                 *@
             </div>
-            <div class="form-group col-12">
-                <input type="submit" value="Editar" class="btn btn-primary" />
+            <div class="modal-footer">
+                <button type="button" class="btn app-btn-primary" data-bs-target="#editarProjetoModal-@Model.Id-Toggle" data-bs-toggle="modal">
+                    Anterior
+                </button>
+                <button type="Submit" class="btn app-btn-primary">
+                    Editar
+                </button>
             </div>
-        </form>
+            <li class="select2-selection__choice d-none" title="NomeDefault" id="bloco_botao">
+                <button type="button" class="select2-selection__choice__remove" tabindex="-1" title="Remove item" aria-label="Remove item">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <span class="select2-selection__choice__display">NomeDefault</span>
+            </li>
+        </div>
     </div>
 </div>
-
 <!-- Modal Membros da equipe-->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalMembrosEquipe" tabindex="-1" aria-labelledby="modalMembrosEquipeLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Inserir Membros da Equipe</h1>
+                <h1 class="modal-title fs-5" id="modalMembrosEquipeLabel">Inserir Membros da Equipe</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="criarListaDeUsuarios.enviarMembrosParaInput()"><span aria-hidden="true"></span></button>
             </div>
             <div class="modal-body d-flex justify-content-between gap-2">
@@ -160,16 +185,17 @@
         </div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index" asp-route-casa="@ViewData["Area"]">Voltar</a>
-</div>
+</form>
 
 <script>
-
     let dnd = new DragAndDrop();
     let criarListaDeUsuarios = new ObterListaDeUsuariosJson();
     criarListaDeUsuarios.enviarMembrosParaInput();
     criarListaDeUsuarios.exibirMembrosSelecionados();
-
 </script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

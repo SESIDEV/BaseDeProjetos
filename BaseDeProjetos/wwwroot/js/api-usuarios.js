@@ -33,7 +33,7 @@
         let elemento = document.createElement("p")
         elemento.setAttribute("draggable", "true")
         elemento.setAttribute("ondragstart", "dnd.drag(event)")
-        elemento.setAttribute("onclick", "criarListaDeUSuarios.removerMembroSelecionado(this)")
+        elemento.setAttribute("onclick", "criarListaDeUsuarios.removerMembroSelecionado(this)")
         elemento.setAttribute("id", `${valorDoElemento}`)
         elemento.textContent = `${valorDoElemento}`
         elemento.classList.add("badge", "text-bg-success")

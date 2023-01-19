@@ -7,37 +7,49 @@
 
 <partial name="Header" view-data="@ViewData" />
 <script>
-	function carregarModalFunil(idprojeto, tipo) {
+	var projetosDetalhes = []
+
+	function carregarModalProjeto(idProjeto, tipo) {
 		if (tipo) {
-			fetch(`/FunildeVendas/RetornarModal?idProj=${idprojeto}&tipo=${tipo}`)
+			fetch(`/Projetos/RetornarModal?idProjeto=${idProjeto}&tipo=${tipo}`)
 				.then(response => response.text())
 				.then(result => {
-					document.querySelector(`#modal${tipo}Proj-${idprojeto}-container`).innerHTML = result;
+					document.querySelector(`#modal${tipo}Projeto-${idProjeto}-container`).innerHTML = result;
 				});
 		} else {
 			console.log("Tipo de Modal Inválido");
 		}
 	}
 
-	function carregarModaisFunil(idprojeto) {
-		// O nome precisa bater com o nome da view, no sentido que, o sufixo será "ProjViewComponent". Em outras palavras, está acoplado.
-		modaisDisponiveis = ["Edit", "Delete", "History", "CreateFollowup"]
-		modaisDisponiveis.forEach((tipo) => {
-			carregarModalFunil(idprojeto, tipo)
-		})
-	}
+	function carregarModalDetalhesProjeto(idProjeto) {
+		// Verifica se o modal da Projetoeccao ja foi carregada para que não se carregue-o duas vezes sem necessidade
+		let buttonName = "#button-" + idProjeto
+		let buttonDetalhes = document.querySelector(buttonName)
 
-	function carregarModalEditarFollowup(idprojeto, idFollowup, tipo) {
-		if (tipo) {
-			fetch(`/FunildeVendas/RetornarModalEditFollowup?idProj=${idprojeto}&idFollowup=${idFollowup}&tipo=${tipo}`)
+		if (!projetosDetalhes.includes(idProjeto)) {
+		buttonDetalhes.disabled = true;
+		buttonDetalhes.innerHTML = '<div class="spinner-border spinner-border-sm text-light" role="status"><span class="visually-hidden">Loading...</span></div>';		
+			fetch(`/Projetos/RetornarModalDetalhes?idProjeto=${idProjeto}`)
 				.then(response => response.text())
 				.then(result => {
-					document.querySelector(`#modal${tipo}Proj-${idprojeto}-container`).innerHTML = result;
-				});
-		} else {
-			console.log("Algo deu errado");
-		}
+					document.querySelector(`#modalDetailsProjeto-${idProjeto}-container`).innerHTML = result;
+					buttonDetalhes.innerHTML = 'Detalhes';
+					buttonDetalhes.disabled = false;
+				});				
+		}		
 	}
+
+	function carregarModaisProjeto(idProjeto) {
+		// O nome precisa bater com o nome da view, no sentido que, o sufixo será "ProjViewComponent". Em outras palavras, está acoplado.
+		modaisDisponiveis = ["Edit", "Delete"]
+		modaisDisponiveis.forEach((tipo) => {
+			carregarModalProjeto(idProjeto, tipo)
+		})
+		carregarModalDetalhesProjeto(idProjeto);
+		projetosDetalhes.push(idProjeto);
+	}
+
+
 </script>
 <div class="app-wrapper">
 	<div class="app-content pt-3 p-md-3 p-lg-4">
@@ -88,13 +100,13 @@
 
 							</div>
 							<div class="col-auto">
-								<a class="btn app-btn-primary" asp-action="Create" role="button">
+								<a class="btn app-btn-primary" data-bs-toggle="modal" href="#modalCreateProjeto" role="button">
 									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill"
 										 viewBox="0 0 16 16">
 										<path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
 									</svg> Novo Projeto
 								</a>
-								@* @await Component.InvokeAsync("ModalCreateProj") *@
+								@await Component.InvokeAsync("ModalCreateProjeto")
 							</div>
 						</div>
 					</div>
