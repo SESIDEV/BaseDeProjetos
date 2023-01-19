@@ -1,4 +1,4 @@
-@model IEnumerable<BaseDeProjetos.Models.Producao>
+﻿@model IEnumerable<BaseDeProjetos.Models.Producao>
 @addTagHelper *, BaseDeProjetos.Models.Producao
 
 @{
@@ -44,11 +44,17 @@
 											<option value="2018">2018</option>
 										</select>
 									</div>
-									<div class="col-auto">
-										<partial name="Create" view-data="@ViewData" />
-									</div>
 								</form>
-								
+									<div class="col-auto">
+										@await Component.InvokeAsync("ModalCreateProducao")
+										<a class="btn app-btn-primary" data-bs-toggle="modal"
+										   href="#modalGestaoConhecimentoCreateToggle" role="button">
+											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+												<path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
+											</svg>
+											Nova Produção
+										</a>
+									</div>								
 							</div>
 							@*<div class="col-auto">
 								
@@ -76,24 +82,10 @@
 							<div class="app-card-body p-3 has-card-actions">
 
 								<!-- Modal Edit-->
-								<form asp-action="Edit" asp-route-id="@producao.Id">
-									@{
-										if (producao != null)
-										{
-											<partial name="Edit" model="@producao" />
-										}
-									}
-								</form>
-
+								@await Component.InvokeAsync("ModalEditProducao", new {id = producao.Id})
+								
 								<!-- Modal Delete -->
-								<form asp-action="Delete" asp-route-id="@producao.Id">
-									@{
-										if (producao != null)
-										{
-											<partial name="Delete" model="@producao" />
-										}
-									}								
-								</form>
+								@await Component.InvokeAsync("ModalDeleteProducao", new {id = producao.Id})							
 
 								<h4 class="app-doc-title truncate mb-0">
 									<a asp-action="Details" asp-route-id="@producao.Id">@Html.DisplayFor(modelItem => producao.Titulo)</a>

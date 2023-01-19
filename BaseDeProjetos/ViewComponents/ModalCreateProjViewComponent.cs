@@ -15,7 +15,6 @@ namespace BaseDeProjetos.ViewComponents
 
 		public async Task<IViewComponentResult> InvokeAsync()
 		{
-			//var model = await _context.Prospeccao.FindAsync(id);
 			return View();
 		}
 	}
