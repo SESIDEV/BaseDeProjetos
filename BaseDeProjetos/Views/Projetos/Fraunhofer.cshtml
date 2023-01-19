@@ -1,206 +1,206 @@
 ﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+  For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    decimal receita = 0;
-    decimal ticket_medio = 0M;
-    decimal receita_pesquisador = 0M;
-    int grandes_empresas = 0;
-    decimal sti_revenue = 0M;
-    decimal sti_cost = 0M;
-    double share_industry = 1;
-    double share_funding = 1;
-    double share_sis = 1;
-    int empresas_fora = 0;
+  decimal receita = 0;
+  decimal ticket_medio = 0M;
+  decimal receita_pesquisador = 0M;
+  int grandes_empresas = 0;
+  decimal sti_revenue = 0M;
+  decimal sti_cost = 0M;
+  double share_industry = 1;
+  double share_funding = 1;
+  double share_sis = 1;
+  int empresas_fora = 0;
 
-    switch (ViewBag.Area)
-    {
-        case "ISIQV":
-            receita = 3M;
-            ticket_medio = 219721.95M;
-            receita_pesquisador = 417471.70M;
-            grandes_empresas = 4;
-            sti_revenue = 4174717M;
-            sti_cost = 2308086M;
-            share_industry = 0.56;
-            share_funding = 0.11;
-            share_sis = 0.32;
-            empresas_fora = 5;
-            break;
-        case "ISIII":
-            receita = 290523M;
-            ticket_medio = 47420.5M;
-            receita_pesquisador = 72630.75M;
-            grandes_empresas = 4;
-            sti_revenue = 290523M;
-            sti_cost = 202674M;
-            share_industry = 0.62;
-            share_funding = 0.29;
-            share_sis = 0.1;
-            empresas_fora = 0;
+  switch (ViewBag.Area)
+  {
+    case "ISIQV":
+      receita = 3M;
+      ticket_medio = 219721.95M;
+      receita_pesquisador = 417471.70M;
+      grandes_empresas = 4;
+      sti_revenue = 4174717M;
+      sti_cost = 2308086M;
+      share_industry = 0.56;
+      share_funding = 0.11;
+      share_sis = 0.32;
+      empresas_fora = 5;
+      break;
+    case "ISIII":
+      receita = 290523M;
+      ticket_medio = 47420.5M;
+      receita_pesquisador = 72630.75M;
+      grandes_empresas = 4;
+      sti_revenue = 290523M;
+      sti_cost = 202674M;
+      share_industry = 0.62;
+      share_funding = 0.29;
+      share_sis = 0.1;
+      empresas_fora = 0;
 
-            break;
-        case "CISHO":
-            receita = 257302M;
-            ticket_medio = 64325M;
-            receita_pesquisador = 128651M;
-            grandes_empresas = 1;
-            sti_revenue = 257302M;
-            sti_cost = 47428M;
-            share_industry = 0.0;
-            share_funding = 0.0;
-            share_sis = 1;
-            empresas_fora = 3;
-            break;
-    }
+      break;
+    case "CISHO":
+      receita = 257302M;
+      ticket_medio = 64325M;
+      receita_pesquisador = 128651M;
+      grandes_empresas = 1;
+      sti_revenue = 257302M;
+      sti_cost = 47428M;
+      share_industry = 0.0;
+      share_funding = 0.0;
+      share_sis = 1;
+      empresas_fora = 3;
+      break;
+  }
 
-    
-    ticket_medio = (Decimal)(ViewBag.n_revenue / ViewBag.n_empresas);
-    sti_revenue = (Decimal)ViewBag.n_revenue;
-    receita_pesquisador = (Decimal)(ViewBag.n_revenue / ViewBag.n_pesquisadores);
-    
-    decimal sti_cost_cover = sti_revenue / (sti_cost + 0.001M);
+
+  ticket_medio = (Decimal)(ViewBag.n_revenue / ViewBag.n_empresas);
+  sti_revenue = (Decimal)ViewBag.n_revenue;
+  receita_pesquisador = (Decimal)(ViewBag.n_revenue / ViewBag.n_pesquisadores);
+
+  decimal sti_cost_cover = sti_revenue / (sti_cost + 0.001M);
 
 }
 <partial name="Header" view-data="@ViewData" />
 <div class="row mt-2">
-    <div class="col-12 small" id="KPI">
-        <div class="row justify-content-center">
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-header"> Indicadores do @ViewBag.Area </div>
-                    <div class="card-body">
-                        Total de empresas com projetos
-                        <h4> @ViewBag.n_empresas </h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-header"> Indicadores do @ViewBag.Area </div>
-                    <div class="card-body">
-                        Número de projetos em andamento
-                        <h4> @ViewBag.n_projs </h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-header"> Indicadores do @ViewBag.Area </div>
-                    <div class="card-body">
-                        Carteira de projetos do @ViewBag.Area no período
-                        <h4>@ViewBag.n_empresas</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-header"> Indicadores do @ViewBag.Area </div>
-                    <div class="card-body">
-                        Ticket médio dos projetos contratados
-                        <h4>@ticket_medio.ToString("C2")</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-header"> Indicadores do @ViewBag.Area </div>
-                    <div class="card-body">
-                        Receita de projetos por pesquisador
-                        <h4>@receita_pesquisador.ToString("C2")</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-header"> Indicadores do @ViewBag.Area </div>
-                    <div class="card-body">
-                        Número de grandes empresas com projetos
-                        <h4> @grandes_empresas </h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-header"> KPIs Business - 1 </div>
-                    <div class="card-body">
-                        Total STI Revenue
-                        <h4>@sti_revenue.ToString("C2")</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-header"> KPIs Business - 2 </div>
-                    <div class="card-body">
-                        Total STI cost
-                        <h4>@sti_cost.ToString("C2")</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-header"> KPIs Business - 3 </div>
-                    <div class="card-body">
-                        Cost covered by Revenue
-                        <h4>@sti_cost_cover.ToString("P1")</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-header"> KPIs Business - 4 </div>
-                    <div class="card-body">
-                        Share of industry revenue
-                        <h4>@share_industry.ToString("P1")</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-header"> KPIs Business - 5 </div>
-                    <div class="card-body">
-                        Share of revenue from funding programs
-                        <h4>@share_funding.ToString("P1")</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-header"> KPIs Business - 6 </div>
-                    <div class="card-body">
-                        Share of revenue from sistema industria
-                        <h4>@share_sis.ToString("P1")</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-header"> KPIs Business - 7 </div>
-                    <div class="card-body">
-                        Total R&amp;D&amp;I Revenue
-                        <h4>@receita.ToString("C2")</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-header"> KPIs Business - 8 </div>
-                    <div class="card-body">
-                        Share of R&amp;D&amp;I revenue
-                        <h4>100.00 % </h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-header"> KPIs Business - 12 </div>
-                    <div class="card-body">
-                        Number of R&amp;D&amp;I projects outside own state
-                        <h4> @empresas_fora </h4>
-                    </div>
-                </div>
-            </div>
+  <div class="col-12 small" id="KPI">
+    <div class="row justify-content-center">
+      <div class="col-3">
+        <div class="card">
+          <div class="card-header"> Indicadores do @ViewBag.Area </div>
+          <div class="card-body">
+            Total de empresas com projetos
+            <h4> @ViewBag.n_empresas </h4>
+          </div>
         </div>
+      </div>
+      <div class="col-3">
+        <div class="card">
+          <div class="card-header"> Indicadores do @ViewBag.Area </div>
+          <div class="card-body">
+            Número de projetos em andamento
+            <h4> @ViewBag.n_projs </h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="card">
+          <div class="card-header"> Indicadores do @ViewBag.Area </div>
+          <div class="card-body">
+            Carteira de projetos do @ViewBag.Area no período
+            <h4>@ViewBag.n_empresas</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="card">
+          <div class="card-header"> Indicadores do @ViewBag.Area </div>
+          <div class="card-body">
+            Ticket médio dos projetos contratados
+            <h4>@ticket_medio.ToString("C2")</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="card">
+          <div class="card-header"> Indicadores do @ViewBag.Area </div>
+          <div class="card-body">
+            Receita de projetos por pesquisador
+            <h4>@receita_pesquisador.ToString("C2")</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="card">
+          <div class="card-header"> Indicadores do @ViewBag.Area </div>
+          <div class="card-body">
+            Número de grandes empresas com projetos
+            <h4> @grandes_empresas </h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="card">
+          <div class="card-header"> KPIs Business - 1 </div>
+          <div class="card-body">
+            Total STI Revenue
+            <h4>@sti_revenue.ToString("C2")</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="card">
+          <div class="card-header"> KPIs Business - 2 </div>
+          <div class="card-body">
+            Total STI cost
+            <h4>@sti_cost.ToString("C2")</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="card">
+          <div class="card-header"> KPIs Business - 3 </div>
+          <div class="card-body">
+            Cost covered by Revenue
+            <h4>@sti_cost_cover.ToString("P1")</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="card">
+          <div class="card-header"> KPIs Business - 4 </div>
+          <div class="card-body">
+            Share of industry revenue
+            <h4>@share_industry.ToString("P1")</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="card">
+          <div class="card-header"> KPIs Business - 5 </div>
+          <div class="card-body">
+            Share of revenue from funding programs
+            <h4>@share_funding.ToString("P1")</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="card">
+          <div class="card-header"> KPIs Business - 6 </div>
+          <div class="card-body">
+            Share of revenue from sistema industria
+            <h4>@share_sis.ToString("P1")</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="card">
+          <div class="card-header"> KPIs Business - 7 </div>
+          <div class="card-body">
+            Total R&amp;D&amp;I Revenue
+            <h4>@receita.ToString("C2")</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="card">
+          <div class="card-header"> KPIs Business - 8 </div>
+          <div class="card-body">
+            Share of R&amp;D&amp;I revenue
+            <h4>100.00 % </h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="card">
+          <div class="card-header"> KPIs Business - 12 </div>
+          <div class="card-body">
+            Number of R&amp;D&amp;I projects outside own state
+            <h4> @empresas_fora </h4>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

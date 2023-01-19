@@ -5,72 +5,76 @@
 @inject UserManager<Usuario> UserManager
 
 <ul class="navbar-nav justify-content-end gap-2" style="flex-direction: row; margin-right: 25em; margin-bottom: .5em;">
-    @if (!SignInManager.IsSignedIn(User))
-    {
-        <li class="nav-item efeito-hover">
-            <a class="btn bg-success text-white" asp-area="Identity" asp-page="/Account/Register">Cadastrar</a>
-        </li>
-        <li class="nav-item efeito-hover">
-            <a class="btn bg-success text-white" asp-area="Identity" asp-page="/Account/Login">Login</a>
-        </li>
-    }
+  @if (!SignInManager.IsSignedIn(User))
+  {
+    <li class="nav-item efeito-hover">
+      <a class="btn bg-success text-white" asp-area="Identity" asp-page="/Account/Register">Cadastrar</a>
+    </li>
+    <li class="nav-item efeito-hover">
+      <a class="btn bg-success text-white" asp-area="Identity" asp-page="/Account/Login">Login</a>
+    </li>
+  }
 </ul>
 <div class="container" style="margin-bottom: 15em;">
-    <div class="row gap-2">
-        <div class="card col-md-8 m-0">
-            <div class="card-body">
-                <h5 class="card-title text-center">Bem vindo ao sistema de Gestão de Inovação - SGI</h5>
-                <hr />
-                <center>
-                    <img class="card-img text-center" style="width:20%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Artemis_%28PSF%29.svg/587px-Artemis_%28PSF%29.svg.png" alt="" />
-                </center>
-                <hr />
-                <div class="card-text"> O SGI é uma plataforma unificada para gestão de dados referentes às equipes dos Insitituto SENAI de Inovação em Química Verde(ISI-QV) e Inspeção e Integridade(ISI-II), assim como do Centro de Inovação SESI em Higiene Ocupacional (CIS-HO)</div>
-            </div>
-        </div>
-
-        <div class="card col-md-3 m-0">
-            <div class="card-body">
-                <h6 class="card-title text-center">Notas da versão</h6>
-                <hr>
-
-                <h6> Versão 0.4.21 - 06/04/2022</h6>
-                <ul style="font-size:small; height:100px; overflow-y:scroll">
-                    <li class="card-text"> Novas visualizações na lista de empresas</li>
-                    <li class="card-text"> Periodização no funil da página principal</li>
-                    <li class="card-text"> Adição de filtro para prospecções ativas</li>
-                    <li class="card-text"> Inclusão de Status Geral como subgráfico nas propostas em andamento</li>
-                    <li class="card-text"> Revisado cálculo das prospecções infrutíferas</li>
-                    <li class="card-text"> Ajuste de exibição dos indicadores de contatos iniciais</li>
-                    <li class="card-text"> Exibição do último status na lista de prospecções</li>
-                    <li class="card-text"> Novo atalho para a lista de empresas</li>
-                    <li class="card-text"> Scroll na listagem de updates na página principal</li>
-                    <li class="card-text"> Novas visualizações na lista de prospecções</li>
-                    <li class="card-text"> Iury fez um kruckshaw (favor promovê-lo)</li>
-                </ul>
-                <hr>
-
-                <h6> Versão 0.3.08 - 07/04/2021</h6>
-                <ul style="font-size:small; height:100px; overflow-y:scroll">
-                    <li class="card-text"> Novas visualizações no dashboard de prospecções</li>
-                    <li class="card-text"> Implementado novas regras de notificação de prospecções</li>
-                    <li class="card-text"> Inclusão de campo referente ao valor das propostas</li>
-                    <li class="card-text"> Aumento da cobetura de testes automáticos</li>
-                </ul>
-                <hr>
-
-                <h6> Versão 0.2.01 - 05/02/2021</h6>
-                <ul style="font-size:small; height:100px; overflow-y:scroll">
-                    <li class="card-text"> Acertado problema da inclusão de membros da equipe de projetos</li>
-                    <li class="card-text"> Implementado funcionalidade de gerenciamento de entregas de projeto</li>
-                    <li class="card-text"> Acertado estouro de layout da lista de projetos</li>
-                    <li class="card-text"> Aumento da cobetura de testes automáticos</li>
-                </ul>
-                <hr>
-
-                <h6> Versão 0.1.31 - 06/01/2021</h6>
-                <small class="card-text"> Ajuste de versão para inclusão de dados em 2021</small>
-            </div>
-        </div>
+  <div class="row gap-2">
+    <div class="card col-md-8 m-0">
+      <div class="card-body">
+        <h5 class="card-title text-center">Bem vindo ao sistema de Gestão de Inovação - SGI</h5>
+        <hr />
+        <center>
+          <img class="card-img text-center" style="width:20%"
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Artemis_%28PSF%29.svg/587px-Artemis_%28PSF%29.svg.png"
+            alt="" />
+        </center>
+        <hr />
+        <div class="card-text"> O SGI é uma plataforma unificada para gestão de dados referentes às equipes dos
+          Insitituto SENAI de Inovação em Química Verde(ISI-QV) e Inspeção e Integridade(ISI-II), assim como do Centro
+          de Inovação SESI em Higiene Ocupacional (CIS-HO)</div>
+      </div>
     </div>
+
+    <div class="card col-md-3 m-0">
+      <div class="card-body">
+        <h6 class="card-title text-center">Notas da versão</h6>
+        <hr>
+
+        <h6> Versão 0.4.21 - 06/04/2022</h6>
+        <ul style="font-size:small; height:100px; overflow-y:scroll">
+          <li class="card-text"> Novas visualizações na lista de empresas</li>
+          <li class="card-text"> Periodização no funil da página principal</li>
+          <li class="card-text"> Adição de filtro para prospecções ativas</li>
+          <li class="card-text"> Inclusão de Status Geral como subgráfico nas propostas em andamento</li>
+          <li class="card-text"> Revisado cálculo das prospecções infrutíferas</li>
+          <li class="card-text"> Ajuste de exibição dos indicadores de contatos iniciais</li>
+          <li class="card-text"> Exibição do último status na lista de prospecções</li>
+          <li class="card-text"> Novo atalho para a lista de empresas</li>
+          <li class="card-text"> Scroll na listagem de updates na página principal</li>
+          <li class="card-text"> Novas visualizações na lista de prospecções</li>
+          <li class="card-text"> Iury fez um kruckshaw (favor promovê-lo)</li>
+        </ul>
+        <hr>
+
+        <h6> Versão 0.3.08 - 07/04/2021</h6>
+        <ul style="font-size:small; height:100px; overflow-y:scroll">
+          <li class="card-text"> Novas visualizações no dashboard de prospecções</li>
+          <li class="card-text"> Implementado novas regras de notificação de prospecções</li>
+          <li class="card-text"> Inclusão de campo referente ao valor das propostas</li>
+          <li class="card-text"> Aumento da cobetura de testes automáticos</li>
+        </ul>
+        <hr>
+
+        <h6> Versão 0.2.01 - 05/02/2021</h6>
+        <ul style="font-size:small; height:100px; overflow-y:scroll">
+          <li class="card-text"> Acertado problema da inclusão de membros da equipe de projetos</li>
+          <li class="card-text"> Implementado funcionalidade de gerenciamento de entregas de projeto</li>
+          <li class="card-text"> Acertado estouro de layout da lista de projetos</li>
+          <li class="card-text"> Aumento da cobetura de testes automáticos</li>
+        </ul>
+        <hr>
+
+        <h6> Versão 0.1.31 - 06/01/2021</h6>
+        <small class="card-text"> Ajuste de versão para inclusão de dados em 2021</small>
+      </div>
+    </div>
+  </div>
 </div>

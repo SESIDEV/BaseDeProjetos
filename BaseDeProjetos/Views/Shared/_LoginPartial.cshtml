@@ -4,50 +4,51 @@
 
 
 <style>
-    .efeito-hover:hover{
-        background-color: gray;
-        transition: 500ms ease-in-out;
-        border-radius: 10px;
-        outline: none;
-        border: none;
-    }
+  .efeito-hover:hover {
+    background-color: gray;
+    transition: 500ms ease-in-out;
+    border-radius: 10px;
+    outline: none;
+    border: none;
+  }
 
-    .efeito-hover:hover > a {        
-        color: #fff !important;
-    }
+  .efeito-hover:hover>a {
+    color: #fff !important;
+  }
 
-    .efeito-hover:hover > form > button{
-       color: #fff !important;
-    }
+  .efeito-hover:hover>form>button {
+    color: #fff !important;
+  }
 </style>
 
 <ul class="navbar-nav">
 
-    @if (SignInManager.IsSignedIn(User))
-    {
-        <li class="nav-item efeito-hover">
-            <a class="nav-link text-dark d-none" asp-area="" asp-controller="Editais" asp-action="Index">Editais</a>
-        </li>
-         <li class="nav-item efeito-hover">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Empresas" asp-action="Index">Empresas</a>
-         </li>
-         <li class="nav-item efeito-hover">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Meu Perfil</a>
-         </li>
-         <li class="nav-item efeito-hover">
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                <button type="submit" class="nav-link btn btn-link text-dark">Sair</button>
-            </form>
-         </li>
-        
-    }
-    else
-    {
-        <li class="nav-item efeito-hover">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Cadastrar</a>
-        </li>
-        <li class="nav-item efeito-hover">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
-        </li>
-    }
+  @if (SignInManager.IsSignedIn(User))
+  {
+    <li class="nav-item efeito-hover">
+      <a class="nav-link text-dark d-none" asp-area="" asp-controller="Editais" asp-action="Index">Editais</a>
+    </li>
+    <li class="nav-item efeito-hover">
+      <a class="nav-link text-dark" asp-area="" asp-controller="Empresas" asp-action="Index">Empresas</a>
+    </li>
+    <li class="nav-item efeito-hover">
+      <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Meu Perfil</a>
+    </li>
+    <li class="nav-item efeito-hover">
+      <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout"
+      asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+        <button type="submit" class="nav-link btn btn-link text-dark">Sair</button>
+      </form>
+    </li>
+
+  }
+  else
+  {
+    <li class="nav-item efeito-hover">
+      <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Cadastrar</a>
+    </li>
+    <li class="nav-item efeito-hover">
+      <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+    </li>
+  }
 </ul>
