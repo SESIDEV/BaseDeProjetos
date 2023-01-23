@@ -16,7 +16,7 @@
 
 <!-- Modal -->
 <div class="modal fade" id="CreateFollowupProspModal-@prosp.Id-Toggle" tabindex="-1"
-     aria-labelledby="CreateFollowupProspModal-@prosp.Id-ToggleLabel" aria-hidden="true">
+    aria-labelledby="CreateFollowupProspModal-@prosp.Id-ToggleLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -46,7 +46,8 @@
                 </div>
                 <div class="form-group">
                     <label> Status </label>
-                    <input type="text" class="form-control" value="@prosp.Status.OrderBy(p=> p.Data).Last().Status.ToString()" readonly />
+                    <input type="text" class="form-control"
+                        value="@prosp.Status.OrderBy(p=> p.Data).Last().Status.ToString()" readonly />
                 </div>
 
                 <div class="form-group">
@@ -64,17 +65,18 @@
 
                 <div class="form-group">
                     <label>Informações da prospecção (primeiro contato)</label>
-                    <input type="text" class="form-control" value="@prosp.Status.OrderBy(p=>p.Data).First().Anotacoes" readonly />
+                    <input type="text" class="form-control" value="@prosp.Status.OrderBy(p=>p.Data).First().Anotacoes"
+                        readonly />
                 </div>
 
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn app-btn-secondary" data-bs-target="#modalDetalhes-@prosp.Id-Toggle"
-                        data-bs-toggle="modal">
+                    data-bs-toggle="modal">
                     Sair
                 </button>
                 <button type="button" class="btn app-btn-primary"
-                        data-bs-target="#CreateFollowupProspModal-@prosp.Id-Toggle2" data-bs-toggle="modal">
+                    data-bs-target="#CreateFollowupProspModal-@prosp.Id-Toggle2" data-bs-toggle="modal">
                     Próximo
                 </button>
             </div>
@@ -82,7 +84,7 @@
     </div>
 </div>
 <div class="modal fade" id="CreateFollowupProspModal-@prosp.Id-Toggle2" aria-hidden="true"
-     aria-labelledby="#CreateFollowupProspModal-@prosp.Id-ToggleLabel2" tabindex="-1">
+    aria-labelledby="#CreateFollowupProspModal-@prosp.Id-ToggleLabel2" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -102,7 +104,8 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="@Model.Status" class="control-label"></label>
-                        <select asp-for="@Model.Status" class="form-control" asp-items="Html.GetEnumSelectList<StatusProspeccao>().Where(p => Int32.Parse(p.Value) >= (int)prosp.Status.OrderBy(p => p.Data).Last().Status)"></select>
+                        <select asp-for="@Model.Status" class="form-control"
+                            asp-items="Html.GetEnumSelectList<StatusProspeccao>().Where(p => Int32.Parse(p.Value) >= (int)prosp.Status.OrderBy(p => p.Data).Last().Status)"></select>
                         <span asp-validation-for="Status" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -114,13 +117,14 @@
                         <hr />
                         <div class="form-group">
                             <label class="control-label"> Motivo de não conversão:</label>
-                            <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<MotivosNaoConversao>()"></select>
+                            <select asp-for="Status" class="form-control"
+                                asp-items="Html.GetEnumSelectList<MotivosNaoConversao>()"></select>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn app-btn-primary"
-                            data-bs-target="#CreateFollowupProspModal-@prosp.Id-Toggle" data-bs-toggle="modal">
+                        data-bs-target="#CreateFollowupProspModal-@prosp.Id-Toggle" data-bs-toggle="modal">
                         Anterior
                     </button>
                     <input type="submit" value="Incluir" class="btn app-btn-primary">

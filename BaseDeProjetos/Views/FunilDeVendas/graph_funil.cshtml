@@ -11,7 +11,8 @@
     }
 </style>
 @{
-    IEnumerable<BaseDeProjetos.Models.Prospeccao> Prospeccoes = ViewData["ListaProspeccoes"] as IEnumerable<BaseDeProjetos.Models.Prospeccao>;
+    IEnumerable<BaseDeProjetos.Models.Prospeccao> Prospeccoes = ViewData["ListaProspeccoes"] as
+            IEnumerable<BaseDeProjetos.Models.Prospeccao>;
     Dictionary<string, int> contagem = new Dictionary<string, int>();
 
     foreach (TipoContratacao contratacao in Enum.GetValues(typeof(TipoContratacao)))
@@ -19,29 +20,36 @@
         foreach (StatusProspeccao status in Enum.GetValues(typeof(StatusProspeccao)))
         {
             var key = contratacao.ToString() + "_" + status.ToString();
-            contagem[key] = Prospeccoes.Where(p => FunilHelpers.VerificarContratacao(p, contratacao) && FunilHelpers.VerificarStatus(p, status)).ToList().Count();
+            contagem[key] = Prospeccoes.Where(p => FunilHelpers.VerificarContratacao(p, contratacao) &&
+            FunilHelpers.VerificarStatus(p, status)).ToList().Count();
         }
     }
 
     //ATIVAS \/ \/ \/ \/ \/ \/
 
-    var prospec_ativas = Prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).All(pa => pa.Status == StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto || pa.Status == StatusProspeccao.ComProposta));
-    var prospec_totais = Prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(pa => pa.Status != StatusProspeccao.Planejada));
+    var prospec_ativas = Prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).All(pa => pa.Status ==
+    StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto || pa.Status ==
+    StatusProspeccao.ComProposta));
+    var prospec_totais = Prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(pa => pa.Status !=
+    StatusProspeccao.Planejada));
 
     foreach (TipoContratacao contratacao in Enum.GetValues(typeof(TipoContratacao)))
     {
         foreach (StatusProspeccao status in Enum.GetValues(typeof(StatusProspeccao)))
         {
             var key = contratacao.ToString() + "_" + status.ToString() + "_Ativas";
-            contagem[key] = prospec_ativas.Where(p => FunilHelpers.VerificarContratacao(p, contratacao) && FunilHelpers.VerificarStatus(p, status)).ToList().Count();
+            contagem[key] = prospec_ativas.Where(p => FunilHelpers.VerificarContratacao(p, contratacao) &&
+            FunilHelpers.VerificarStatus(p, status)).ToList().Count();
         }
     }
 
     decimal n_propostas = Prospeccoes.Where(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.ComProposta)).Count();
-    decimal n_propostas_ativas = Prospeccoes.Where(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.ComProposta) && p.Status.All(s => s.Status < StatusProspeccao.Convertida)).Count();
+    decimal n_propostas_ativas = Prospeccoes.Where(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.ComProposta) &&
+    p.Status.All(s => s.Status < StatusProspeccao.Convertida)).Count();
 
     decimal n_convertidas = Prospeccoes.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.Convertida)).Count();
-    decimal n_nao_convertidas = Prospeccoes.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.NaoConvertida)).Count();
+    decimal n_nao_convertidas = Prospeccoes.Where(p => p.Status.Any(s => s.Status ==
+    StatusProspeccao.NaoConvertida)).Count();
     decimal n_canceladas = Prospeccoes.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.Suspensa)).Count();
     decimal n_prospeccoes_andamento = Prospeccoes.Count() - n_convertidas - n_nao_convertidas - n_canceladas;
     decimal n_empresas = prospec_totais.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();
@@ -50,8 +58,9 @@
     //Novo Filtro:
     decimal n_empresas_ativas = prospec_ativas.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();
     var avancadas = Prospeccoes.Where(p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)).
-        Where(p => p.Status.Any(k => k.Status > StatusProspeccao.ComProposta)). // lista de prospecção (selecionar com proposta)
-        Where(p => (p.Status.First().Data - p.Status.FirstOrDefault(s => s.Status == StatusProspeccao.ComProposta).Data) > TimeSpan.Zero); // filtrar lista para obter datas positivas (maior que zero)
+    Where(p => p.Status.Any(k => k.Status > StatusProspeccao.ComProposta)). // lista de prospecção (selecionar com proposta)
+    Where(p => (p.Status.First().Data - p.Status.FirstOrDefault(s => s.Status == StatusProspeccao.ComProposta).Data) >
+    TimeSpan.Zero); // filtrar lista para obter datas positivas (maior que zero)
 
     decimal valor_ativas2 = 0;
     foreach (Prospeccao prosp in prospec_ativas)
@@ -80,8 +89,9 @@
         if (prosps.Count() > 0)
         {
             diff = prosps.Aggregate(new TimeSpan(0),
-                (inicial, prospeccao) => prospeccao.Status.FirstOrDefault(s => s.Status == StatusProspeccao.ComProposta).Data - prospeccao.Status.First().Data,
-                diff => diff);
+            (inicial, prospeccao) => prospeccao.Status.FirstOrDefault(s => s.Status == StatusProspeccao.ComProposta).Data -
+            prospeccao.Status.First().Data,
+            diff => diff);
 
             diff = new TimeSpan(diff.Ticks / prosps.Count());
         }
@@ -94,7 +104,8 @@
     }
 
     TimeSpan DiferencaTodas = RetonarValorDiferencaTempo(avancadas.ToList());
-    TimeSpan DiferencaAtivas = RetonarValorDiferencaTempo(prospec_ativas.Where(s => s.Status.Any(p => p.Status == StatusProspeccao.ComProposta)).ToList());
+    TimeSpan DiferencaAtivas = RetonarValorDiferencaTempo(prospec_ativas.Where(s => s.Status.Any(p => p.Status ==
+    StatusProspeccao.ComProposta)).ToList());
 
 
     decimal taxa_conversao;
@@ -110,7 +121,8 @@
     decimal infrutiferas;
     try
     {
-        infrutiferas = (n_canceladas + n_nao_convertidas) / (Prospeccoes.Count() - (avancadas.Count() - n_convertidas - n_nao_convertidas));
+        infrutiferas = (n_canceladas + n_nao_convertidas) / (Prospeccoes.Count() - (avancadas.Count() - n_convertidas -
+        n_nao_convertidas));
     }
     catch (Exception)
     {
@@ -136,7 +148,7 @@
             </div>
         </div>
 
-        
+
     </div>
 
     <div class="pb-4">
@@ -148,16 +160,18 @@
                 <div class="app-card-body row text-center p-3 p-lg-4">
                     <div class="col-12">
                         <!--[Iury] IDs da checkbox \/ -->
-                        <h1 id="CheckboxProspAtivas1" class="display-3">@n_empresas</h1>
-                        <small id="CheckboxProspAtivas2">Número de empresas prospectadas</small> <hr />
+                    <h1 id="CheckboxProspAtivas1" class="display-3">@n_empresas</h1>
+                        <small id="CheckboxProspAtivas2">Número de empresas prospectadas</small>
+                        <hr />
                     </div>
                     <div class="col-4">
                         <h4 id="CheckboxProspAtivas7">@Math.Abs(DiferencaTodas.Days) dias</h4>
-                        <small id="CheckboxProspAtivas10">Tempo médio entre o primeiro contato e a emissão da proposta</small>
+                        <small id="CheckboxProspAtivas10">Tempo médio entre o primeiro contato e a emissão da
+                            proposta</small>
                     </div>
                     <div class="col-4">
                         <!--[Iury] IDs da checkbox \/ -->
-                        <h4 id="CheckboxProspAtivas4">@prospec_totais.Count()</h4>
+                    <h4 id="CheckboxProspAtivas4">@prospec_totais.Count()</h4>
                         <small id="CheckboxProspAtivas3">Contatos iniciais de prospecção</small>
                     </div>
                     <div class="col-4">
@@ -197,7 +211,7 @@
             <div class="app-card-header p-3">
                 <h4 class="app-card-title">Status de Prospecções com Proposta</h4>
             </div>
-            <div class="app-card-body row text-center p-3 p-lg-4">                
+            <div class="app-card-body row text-center p-3 p-lg-4">
                 <div class="col-12">
                     <h1 class="display-3">@taxa_conversao.ToString("P2")</h1>
                     <small>
@@ -233,10 +247,10 @@
                 </div>
             </div>
         </div>
-        
+
 
     </div>
-    
+
 
     <!-- Gráfico de Fomentos por status-->
     <script type="text/javascript">
@@ -386,10 +400,10 @@
                 }, {
                     name: 'Convertidas',
                     y: @n_convertidas
-                            }, {
+                                }, {
                     name: 'Não convertidas',
                     y: @n_nao_convertidas
-                            }]
+                                }]
             }]
         });
 

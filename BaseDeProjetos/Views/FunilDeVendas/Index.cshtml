@@ -12,131 +12,131 @@
 <partial name="Header" view-data="@ViewData" />
 <style>
 .button-flash {
-    animation: rainbow 2s infinite;
+	animation: rainbow 2s infinite;
 }
 
 @@keyframes rainbow {
-    0% {
+	0% {
 		background-color: #ffc107;
-    }
-    50% {
+	}
+	50% {
 		background-color: #ffdb6f;
-    }
+	}
 	100% {
 		background-color: #ffc107;
-    }
+	}
 }
 
 .bg-esfriando {
-        background-color: #fff462;
-    }
+		background-color: #fff462;
+	}
 
-    .bg-frio {
-        background-color: #beffff;
-    }
+	.bg-frio {
+		background-color: #beffff;
+	}
 
-    .bg-morno {
-        background-color: #ff8f50;
-    }
+	.bg-morno {
+		background-color: #ff8f50;
+	}
 
-    .bg-quente {
-        background-color: #ff5c50;
-    }
+	.bg-quente {
+		background-color: #ff5c50;
+	}
 
-    .card-container {
-        background-color: #fff;
-        border-radius: 10px;
-        overflow: hidden;
-        margin-top: 10px;
-    }
+	.card-container {
+		background-color: #fff;
+		border-radius: 10px;
+		overflow: hidden;
+		margin-top: 10px;
+	}
 
-    .card {
-        width: 100%;
-        display: flex;
-        flex-direction: row;
-    }
+	.card {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+	}
 
-    .card-preview {
-        background-color: #2A265F;
-        color: #fff;
-        width: 20%;
-    }
+	.card-preview {
+		background-color: #2A265F;
+		color: #fff;
+		width: 20%;
+	}
 
-    .card-preview a {
-        display: inline-block;
-        font-size: 12px;
-        opacity: 0.6;
-        margin-top: 30px;
-        text-decoration: none;
-    }
+	.card-preview a {
+		display: inline-block;
+		font-size: 12px;
+		opacity: 0.6;
+		margin-top: 30px;
+		text-decoration: none;
+	}
 
-    .card-preview h2 {
-        letter-spacing: 1px;
-        text-align: center;
-    }
+	.card-preview h2 {
+		letter-spacing: 1px;
+		text-align: center;
+	}
 
-    .card-info {
-        width: 80%;
-        display: flex;
-        justify-content: flex-start;
-    }
+	.card-info {
+		width: 80%;
+		display: flex;
+		justify-content: flex-start;
+	}
 
-    .content-left,
-    .content-right {
-        width: 50%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
+	.content-left,
+	.content-right {
+		width: 50%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
 
-    .description-info {
-        margin-top: 10px;
-        margin-left: 5px;
-    }
+	.description-info {
+		margin-top: 10px;
+		margin-left: 5px;
+	}
 
-    #card-body,
-    #content {
-        display: flex;
-        flex-direction: row;
-    }
+	#card-body,
+	#content {
+		display: flex;
+		flex-direction: row;
+	}
 
-    #content {
-        flex-direction: column;
-        width: 80%;
-    }
+	#content {
+		flex-direction: column;
+		width: 80%;
+	}
 
-    #box-btn-actions {
-        width: 20%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: flex-end;
-    }
+	#box-btn-actions {
+		width: 20%;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: flex-end;
+	}
 
-    .btn-acao {
-        width: 60px;
-        font-size: 14px;
-        padding: 0;
-    }
+	.btn-acao {
+		width: 60px;
+		font-size: 14px;
+		padding: 0;
+	}
 
-    .empresa-preview {
-        background-color: #fff;
-        color: #2A265F;
-        min-width: 200px;
-        max-height: 200px;
-        max-width: 200px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+	.empresa-preview {
+		background-color: #fff;
+		color: #2A265F;
+		min-width: 200px;
+		max-height: 200px;
+		max-width: 200px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
 
-    #logoEmpresa {
-        width: 100%;
-        height: 100%;
-        max-height: 40px;
-        max-width: 40px;
-        object-fit: contain;
-    }
+	#logoEmpresa {
+		width: 100%;
+		height: 100%;
+		max-height: 40px;
+		max-width: 40px;
+		object-fit: contain;
+	}
 
 </style>
 <script>
@@ -177,7 +177,7 @@
 
 	function carregarModaisFunil(idProspeccao) {
 		// O nome precisa bater com o nome da view, no sentido que, o sufixo será "ProspViewComponent". Em outras palavras, está acoplado.
-		
+
 		modaisDisponiveis = ["Edit", "Delete", "History", "CreateFollowup"]
 		modaisDisponiveis.forEach((tipo) => {
 			carregarModalFunil(idProspeccao, tipo)
@@ -439,31 +439,31 @@
 <div id="modalTut">
   <div class="modal fade" id="modalTutorialFdv" aria-hidden="true" aria-labelledby="modalTutorialFdvLabel"
     tabindex="-1">
-    <div class="modal-dialog modal-xl modal-dialog-centered" style="flex-direction: column">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="modalTutorialFdvLabel">Tutorial Funil de Vendas</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="d-flex align-items-start justify-content-center">
-            <div class="app-card-title">Tutorial para Prospecções Planejadas:</div>
-            <iframe width="960" height="540" src="https://www.youtube-nocookie.com/embed/8LQDTjAz-UM"
+	<div class="modal-dialog modal-xl modal-dialog-centered" style="flex-direction: column">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <h1 class="modal-title fs-5" id="modalTutorialFdvLabel">Tutorial Funil de Vendas</h1>
+		  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<div class="modal-body">
+		  <div class="d-flex align-items-start justify-content-center">
+			<div class="app-card-title">Tutorial para Prospecções Planejadas:</div>
+			<iframe width="960" height="540" src="https://www.youtube-nocookie.com/embed/8LQDTjAz-UM"
               title="YouTube video player" frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowfullscreen></iframe>
-            <div class="app-card-title">Tutorial para o Funil de Vendas:</div>
-            <iframe width="960" height="540" src="https://www.youtube-nocookie.com/embed/4RTvGaA0FC4"
+			<div class="app-card-title">Tutorial para o Funil de Vendas:</div>
+			<iframe width="960" height="540" src="https://www.youtube-nocookie.com/embed/4RTvGaA0FC4"
               title="YouTube video player" frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowfullscreen></iframe>
 
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-primary" data-bs-dismiss="modal">Sair</button>
-        </div>
-      </div>
-    </div>
+		  </div>
+		</div>
+		<div class="modal-footer">
+		  <button class="btn btn-primary" data-bs-dismiss="modal">Sair</button>
+		</div>
+	  </div>
+	</div>
   </div>
 </div>

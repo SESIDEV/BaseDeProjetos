@@ -7,31 +7,28 @@
 
 <form asp-action="Create">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="modal fade" id="modalGestaoConhecimentoCreateToggle"
-         aria-hidden="true"
-         aria-labelledby="modalGestaoConhecimentoCreateToggleLabel"
-         tabindex="-1">
+    <div class="modal fade" id="modalGestaoConhecimentoCreateToggle" aria-hidden="true"
+        aria-labelledby="modalGestaoConhecimentoCreateToggleLabel" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5"
-                        id="modalGestaoConhecimentoCreateToggleLabel">
+                    <h1 class="modal-title fs-5" id="modalGestaoConhecimentoCreateToggleLabel">
                         Adicionar Produção
                     </h1>
-                    <button type="button" class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
                         <div class="form-group">
                             <label asp-for="Grupo" class="control-label"></label>
-                            <select id="select_tipo" asp-for="Grupo" class="form-control" onchange="ChecarPatente()" asp-items="Html.GetEnumSelectList<GrupoPublicacao>().OrderBy(p=>p.Text)"></select>
+                            <select id="select_tipo" asp-for="Grupo" class="form-control" onchange="ChecarPatente()"
+                                asp-items="Html.GetEnumSelectList<GrupoPublicacao>().OrderBy(p=>p.Text)"></select>
                             <span asp-validation-for="Grupo" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="Casa" class="control-label"></label>
-                            <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Instituto>()"></select>
+                            <select asp-for="Casa" class="form-control"
+                                asp-items="Html.GetEnumSelectList<Instituto>()"></select>
                             <span asp-validation-for="Grupo" class="text-danger"></span>
                         </div>
                         <div class="form-group">
@@ -51,7 +48,8 @@
                         </div>
                         <div class="form-group">
                             <label asp-for="StatusPub" class="control-label"></label>
-                            <select asp-for="StatusPub" class="form-control" onchange="statusPatente()" asp-items="Html.GetEnumSelectList<StatusPub>()"></select>
+                            <select asp-for="StatusPub" class="form-control" onchange="statusPatente()"
+                                asp-items="Html.GetEnumSelectList<StatusPub>()"></select>
                             <span asp-validation-for="Grupo" class="text-danger"></span>
                         </div>
                         <div class="form-group">
@@ -72,7 +70,8 @@
                         <div class="form-group">
                             <label asp-for="Imagem" class="control-label"></label>
                             <input type="file" class="form-control" id="logo_imagem" onchange="Base64()" />
-                            <input asp-for="Imagem" id="img_b64" class="control-label" style="display: none;" value="" readonly>
+                            <input asp-for="Imagem" id="img_b64" class="control-label" style="display: none;" value=""
+                                readonly>
                             <span asp-validation-for="Imagem" class="text-danger"></span>
                         </div>
                         <img id="img_preview" src="" width="300" style="margin-top:5px;">
@@ -100,17 +99,18 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <input type="submit" value="Adicionar" class="btn app-btn-primary" data-bs-target="#modalGestaoConhecimentoToggle" data-bs-toggle="modal">
+                            <input type="submit" value="Adicionar" class="btn app-btn-primary"
+                                data-bs-target="#modalGestaoConhecimentoToggle" data-bs-toggle="modal">
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>    
+    </div>
 </form>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+@{
+await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
 }

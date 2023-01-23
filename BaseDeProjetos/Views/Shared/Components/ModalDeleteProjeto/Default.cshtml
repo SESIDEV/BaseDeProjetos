@@ -4,8 +4,8 @@
     ViewData["Title"] = "Deletar";
 }
 
-<div class="modal fade" id="deletarProjetoModal-@Model.Id-Toggle" aria-hidden="true" aria-labelledby="deletarProjetoModal-@Model.Id-ToggleLabel"
-     tabindex="-1">
+<div class="modal fade" id="deletarProjetoModal-@Model.Id-Toggle" aria-hidden="true"
+    aria-labelledby="deletarProjetoModal-@Model.Id-ToggleLabel" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -17,11 +17,12 @@
             </div>
             <div class="modal-footer">
                 <form asp-action="Delete" asp-route-id="Id" method="post">
-                <button type="button" class="btn app-btn-primary" data-bs-target="#deletarProjetoModal-@Model.Id-Toggle" data-bs-toggle="modal">
-                    Voltar
-                </button>
-                <input type="hidden" asp-for="Id" />
-                <input type="submit" value="Deletar" class="btn text-white btn-danger" />
+                    <button type="button" class="btn app-btn-primary"
+                        data-bs-target="#deletarProjetoModal-@Model.Id-Toggle" data-bs-toggle="modal">
+                        Voltar
+                    </button>
+                    <input type="hidden" asp-for="Id" />
+                    <input type="submit" value="Deletar" class="btn text-white btn-danger" />
                 </form>
             </div>
         </div>
@@ -29,7 +30,7 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+@{
+await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
 }

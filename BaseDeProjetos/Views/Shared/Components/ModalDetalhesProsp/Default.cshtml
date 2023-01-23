@@ -2,8 +2,8 @@
 @using BaseDeProjetos.Helpers
 @using System.Globalization
 
-<div class="modal fade" id="modalDetalhes-@Model.Id" tabindex="-1"
-    aria-labelledby="modalDetalhes-@Model.Id-Label" aria-hidden="true">
+<div class="modal fade" id="modalDetalhes-@Model.Id" tabindex="-1" aria-labelledby="modalDetalhes-@Model.Id-Label"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -14,10 +14,13 @@
                 <h1 class="app-card-title">Empresa:</h1>
                 <span>@Model.Empresa.Nome</span>
                 <h1 class="app-card-title">Líder</h1>
-                @if (Model.Usuario != null) {
-                <span>@Model.Usuario.UserName</span>
-                } else {
-                <span>Sem Líder</span>
+                @if (Model.Usuario != null)
+                {
+                    <span>@Model.Usuario.UserName</span>
+                }
+                else
+                {
+                    <span>Sem Líder</span>
                 }
                 <h1 class="app-card-title">Projeto:</h1>
                 <span>@Model.NomeProspeccao</span>
@@ -29,15 +32,15 @@
                 <nobr>
                     @if (Model.ValorProposta != 0)
                     {
-                    <span>R$ @Helpers.FormatarValoresDashboards((decimal)Model.ValorProposta)</span>
+                        <span>R$ @Helpers.FormatarValoresDashboards((decimal)Model.ValorProposta)</span>
                     }
                     else if (Model.ValorEstimado != 0)
                     {
-                    <span>R$ @Helpers.FormatarValoresDashboards((decimal)Model.ValorEstimado)</span>
+                        <span>R$ @Helpers.FormatarValoresDashboards((decimal)Model.ValorEstimado)</span>
                     }
                     else
                     {
-                    <span>Valor não informado</span>
+                        <span>Valor não informado</span>
                     }
                 </nobr>
                 <h1 class="app-card-title">Último Status:</h1>
@@ -50,16 +53,16 @@
                     role="button">
                     Editar
                 </a>
-                <a class="btn btn-outline-primary" data-bs-toggle="modal"
-                    href="#historyProspModal-@Model.Id-Toggle" role="button">
+                <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#historyProspModal-@Model.Id-Toggle"
+                    role="button">
                     Histórico
                 </a>
                 <a class="btn btn-outline-primary" data-bs-toggle="modal"
                     href="#CreateFollowupProspModal-@Model.Id-Toggle" role="button">
                     Incluir Status
                 </a>
-                <a class="btn btn-outline-primary" data-bs-toggle="modal"
-                    href="#deletarProspModal-@Model.Id-Toggle" role="button">
+                <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#deletarProspModal-@Model.Id-Toggle"
+                    role="button">
                     Deletar
                 </a>
 
@@ -70,7 +73,7 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+@{
+await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
 }
