@@ -108,7 +108,7 @@ namespace BaseDeProjetos.Controllers
 
             Prospeccao prosp = new Prospeccao
             {
-                Id = $"proj_{DateTime.Now.Ticks}",
+                Id = $"prosp_{DateTime.Now.Ticks}",
                 Empresa = _context.Empresa.FirstOrDefault(E => E.Id == id),
                 Usuario = _context.Users.FirstOrDefault(u => u.UserName == userId),
                 Casa = usuarioCasa,
