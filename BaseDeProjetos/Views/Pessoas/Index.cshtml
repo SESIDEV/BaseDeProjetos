@@ -10,95 +10,80 @@
                 <div class="inner">
                     <div class="app-card-body p-4">
                         <div class="row gx-5 gy-3">
+                            <div class="accordion" id="accordionExample">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Filtros
+                                    </button>
+                                    </h2>
+                                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body row">
+                                        <div class="col">
+                                                <div class="app-card shadow-sm mb-2">
+                                                    <div class="app-card-header p-3">
+                                                        <div class="row justify-content-between align-items-center">
+                                                            <div class="col-auto">
+                                                                <h4 class="app-card-title">Competências</h4>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="app-card-body p-3 p-lg-4" id="notfilt"></div>
+                                                </div>
 
-                                <div class="accordion" id="accordionExample">
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header" id="headingOne">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            Filtros
-                                        </button>
-                                        </h2>
-                                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                                            <div class="accordion-body row">
+                                                <div class="app-card shadow-sm">
+                                                    <div class="app-card-header p-3">
+                                                        <div class="row justify-content-between align-items-center">
+                                                            <div class="col-auto">
+                                                                <h4 class="app-card-title">Filtradas</h4>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="app-card-body p-3 p-lg-4" id="filt">
+                                                        <p class="card-text"><small class="text-muted">Filtradas</small></p>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+
                                             <div class="col">
-                                                    <div class="app-card shadow-sm mb-2">
-                                                        <div class="app-card-header p-3">
-                                                            <div class="row justify-content-between align-items-center">
-                                                                <div class="col-auto">
-                                                                    <h4 class="app-card-title">Competências</h4>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="app-card-body p-3 p-lg-4" id="notfilt">
-                                                            <span class="badge bg-secondary badge-competencia" onclick="passarComp(this)">Biorefinaria</span>
-                                                            <span class="badge bg-secondary badge-competencia" onclick="passarComp(this)">Engenharia de Software</span>
-                                                            <span class="badge bg-secondary badge-competencia" onclick="passarComp(this)">Estatística</span>
-                                                            <span class="badge bg-secondary badge-competencia" onclick="passarComp(this)">Fotofísica</span>
-                                                            <span class="badge bg-secondary badge-competencia" onclick="passarComp(this)">Inteligência Artificial</span>
-                                                            <span class="badge bg-secondary badge-competencia" onclick="passarComp(this)">Petroquímica</span>
-                                                            <span class="badge bg-secondary badge-competencia" onclick="passarComp(this)">Quimiometria</span>
-                                                            <span class="badge bg-secondary badge-competencia" onclick="passarComp(this)">Síntese orgânica</span>
-                                                        </div>
-                                                    </div>
 
-                                                    <div class="app-card shadow-sm">
-                                                        <div class="app-card-header p-3">
-                                                            <div class="row justify-content-between align-items-center">
-                                                                <div class="col-auto">
-                                                                    <h4 class="app-card-title">Filtradas</h4>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="app-card-body p-3 p-lg-4" id="filt">
-                                                            <p class="card-text"><small class="text-muted">Filtradas</small></p>
+                                                <div class="app-card shadow-sm">
+                                                    <div class="app-card-header p-3">
+                                                        <div class="row justify-content-between align-items-center">
+                                                            <div class="col-auto">
+                                                                <h4 class="app-card-title">Cargos</h4>
+                                                            </div>                                                                
                                                         </div>
                                                     </div>
-                                                    
+                                                    <div class="app-card-body p-3 p-lg-4">
+                                                        <div class="mb-3 form-check">   
+                                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                            <label class="form-check-label" for="flexCheckDefault">
+                                                                Cargo 1
+                                                            </label>
+                                                        </div>
+                                                        <div class="mb-3 form-check">   
+                                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                            <label class="form-check-label" for="flexCheckDefault">
+                                                                Cargo 2
+                                                            </label>
+                                                        </div>
+                                                        <div class="mb-3 form-check">   
+                                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                            <label class="form-check-label" for="flexCheckDefault">
+                                                                Cargo 3
+                                                            </label>
+                                                        </div>                                                        
+                                                    </div>
                                                 </div>
-
-                                                <div class="col">
-
-                                                    <div class="app-card shadow-sm">
-                                                        <div class="app-card-header p-3">
-                                                            <div class="row justify-content-between align-items-center">
-                                                                <div class="col-auto">
-                                                                    <h4 class="app-card-title">Cargos</h4>
-                                                                </div>                                                                
-                                                            </div>
-                                                        </div>
-                                                        <div class="app-card-body p-3 p-lg-4">
-                                                            <div class="mb-3 form-check">   
-                                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                                <label class="form-check-label" for="flexCheckDefault">
-                                                                    Cargo 1
-                                                                </label>
-                                                            </div>
-                                                            <div class="mb-3 form-check">   
-                                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                                <label class="form-check-label" for="flexCheckDefault">
-                                                                    Cargo 2
-                                                                </label>
-                                                            </div>
-                                                            <div class="mb-3 form-check">   
-                                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                                <label class="form-check-label" for="flexCheckDefault">
-                                                                    Cargo 3
-                                                                </label>
-                                                            </div>                                                        
-                                                        </div>
-                                                    </div>
-                                                    
-                                                </div>
-
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
+                            </div>
                         </div>
-
                     </div>
-                    
                 </div>
             </div>
             <div class="row g-4 mb-4">
@@ -125,15 +110,8 @@
                                     <img id="imagem-do-card"class="card-img-top">
                                     <div class="card-body">
                                         <h5 id="nome-do-card" class="card-title">Nome da Pessoa</h5>
-                                        <div>
-                                            <span class="badge badge-competencia text-bg-info">Competencia 1</span>
-                                            <span class="badge badge-competencia text-bg-info">Competencia 2</span>
-                                            <span class="badge badge-competencia text-bg-info">Competencia 3</span>
-                                            <span class="badge badge-competencia text-bg-info">Competencia 4</span>
-                                            <span class="badge badge-competencia text-bg-info">Competencia 5</span>
-                                            <span class="badge badge-competencia text-bg-info">Competencia 6</span>
-                                            <span class="badge badge-competencia text-bg-info">Competencia 7</span>
-                                        </div>
+                                        <h5 class="d-none" id="competencias"></h5>
+                                        <div id="campo_competencias"></div>
                                         <br>
                                         <div id="botoes_do_card" class="d-flex gap-2 flex-column">
                                             <a href="#" class="btn app-btn-primary">Produções</a>
@@ -152,6 +130,8 @@
     </div>    
 </div>    					
 
+<span id="badge_competencia" class="badge text-bg-info d-none">Competencia Default</span>
+<span id="badge_competencia_select" class="badge bg-secondary badge-competencia" onclick="passarComp(this)">Comp Select</span>
 
 <style>
     
@@ -188,5 +168,6 @@
     window.addEventListener('load', function(){
         gerarOpcoesSelectPessoas(null,'pessoasSelect')
         fetch('/Pessoas/dados').then(response => response.json()).then(data => {montarNetwork(data)});
+        listarCompetencias()
     });
 </script>

@@ -76,6 +76,14 @@ function CasasFunil() {
 }
 
 function passarComp(element) {
+    campoComp = document.querySelector("#filt").cloneNode(true)
+    elemComp = campoComp.children
+    elemComp[0].remove() // retirando a tag <p>
+    listaComp = []
+    for (let item of elemComp) {
+        listaComp.push(item.innerHTML)
+    }
+    fetch('/Pessoas/dados').then(response => response.json()).then(data => {montarNetwork(data, listaComp)});
     if (element.classList[1] == 'bg-secondary'){
         element.classList.replace('bg-secondary','bg-primary')
         document.querySelector("#filt").appendChild(element)
@@ -125,6 +133,37 @@ function textToSelect(nomeModal, idText, idSelect) {
 
         document.querySelector(`#select2-${idSelect}-container`).appendChild(botao_copy)
     }})
+}
+
+function listarCompetencias(){
+    fetch('/Pessoas/dictCompetencias').then((response) => response.json()).then((json) => {
+        listaComp = Object.values(json)
+        badge_def_sel = document.querySelector('#badge_competencia_select')
+        listaComp.forEach(c => {
+            if (c == '' || c == null){} else {
+            badge_copy = badge_def_sel.cloneNode(true)
+            badge_copy.removeAttribute('id')
+            badge_copy.innerHTML = c
+            badge_copy.classList.remove('d-none')
+
+            document.querySelector(`#notfilt`).appendChild(badge_copy)
+    }})})
+}
+
+function mostrarCompetencias() {
+    fetch('/Pessoas/dictCompetencias').then((response) => response.json()).then((json) => {
+        document.querySelector(`#campo_competencias`).innerHTML = ""
+        badge_def = document.querySelector('#badge_competencia')
+        listaComp = document.querySelector(`#competencias`).innerHTML.split(";")
+        listaComp.forEach(num => {
+            if (num == '' || num == null){} else {
+            badge_copy = badge_def.cloneNode(true)
+            badge_copy.removeAttribute('id')
+            badge_copy.innerHTML = json[num]
+            badge_copy.classList.remove('d-none')
+
+            document.querySelector(`#campo_competencias`).appendChild(badge_copy)
+    }})})
 }
 
 function checarStatusNaoConvertida(select){
@@ -184,6 +223,7 @@ function montarNetwork(pessoas, competencias=null) {
         obj['id'] = p['Email']
         obj['title'] = p['UserName']
         obj['image'] = p['Foto']
+        obj['comp'] = p['Competencia']
         
         if ((p['Foto'] == null) || (p['Foto'] == "")){
             obj['image'] = defuserpic
@@ -210,14 +250,14 @@ function montarNetwork(pessoas, competencias=null) {
 	var options = {
 		nodes: {
             shape: "circularImage",
-			borderWidth: 8,
+			borderWidth: 5,
 			size: 30,
 			color: {
 				border: "#229954",
 				background: "#666666",
 			},
 			font: {color: "#17202A"},
-		},
+        },
 		edges: {
 			color: "#D0D3D4",
 			value: 5,
@@ -238,6 +278,8 @@ function montarNetwork(pessoas, competencias=null) {
 			network.focus(clickedNode.id,{scale:2, animation:{duration: 400}})
 			document.getElementById("imagem-do-card").src = clickedNode.image
             document.getElementById("nome-do-card").innerHTML = clickedNode.title
+            document.getElementById("competencias").innerHTML = clickedNode.comp
+            mostrarCompetencias()
 		} else {
 			//network.fit({animation:{duration: 400}})
 			network.moveTo({position:{x:0,y:0}, scale:2,animation:{duration: 400}})

@@ -32,11 +32,21 @@ namespace BaseDeProjetos.Helpers
 
         public static string PuxarDadosUsuarios(ApplicationDbContext _context){
             
-            var usuarios = _context.Users.Where(u => u.Email != null).Select(u => new {u.Email, u.UserName, u.Foto}).ToList(); //, u.Foto
+            var usuarios = _context.Users.Where(u => u.Email != null).Select(u => new {u.Email, u.UserName, u.Foto, u.Competencia}).ToList();
 
             string usuariosJson = JsonSerializer.Serialize(usuarios);
 
             return usuariosJson;
+
+        }
+
+        public static string PuxarDadosEmpresas(ApplicationDbContext _context){
+            
+            var empresas = _context.Empresa.Where(e => e.Nome != null);//.Select(e => new {e.Nome, e.Segmento.GetDisplayName()}).ToList();
+
+            string empresasJson = JsonSerializer.Serialize(empresas);
+
+            return empresasJson;
 
         }
     }
