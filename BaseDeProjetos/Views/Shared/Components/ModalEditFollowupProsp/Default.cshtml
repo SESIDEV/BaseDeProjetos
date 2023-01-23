@@ -2,11 +2,18 @@
 @using Microsoft.AspNetCore.Http
 @using System.Globalization
 @{
+
   ViewData["Title"] = "Atualizar Prospecção";
+
   if (!(Context.Session.GetString("_Casa") is null))
+
   {
+
     ViewData["Area"] = Context.Session.GetString("_Casa");
+
   }
+
+
 
   var prosp = ViewData["prospeccao"] as Prospeccao;
 }
@@ -48,7 +55,17 @@
 
         <div class="form-group">
           <label> Contato da prospecção</label>
-          <input type="text" class="form-control" value="@prosp.Contato.Nome" readonly />
+                    @{
+                        if (prosp.Contato == null)
+                        {
+                          <input type="text" class="form-control" value="Sem Contato" readonly />
+                        }
+                     
+                        else
+                        {
+                          <input type="text" class="form-control" value="@prosp.Contato.Nome" readonly />
+                        }                    
+                    }
         </div>
 
         <div class="form-group">

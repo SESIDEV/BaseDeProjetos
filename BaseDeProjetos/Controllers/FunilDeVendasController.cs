@@ -354,7 +354,7 @@ namespace BaseDeProjetos.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction("Details", new { id = followup.OrigemID });
+            return RedirectToAction("Index", "FunilDeVendas");
         }
 
         // GET: FunilDeVendas/Delete/5
@@ -407,7 +407,7 @@ namespace BaseDeProjetos.Controllers
             {
                 _context.FollowUp.Remove(followup);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Details", new { id = followup.OrigemID });
+                return RedirectToAction("Index", "FunilDeVendas");
             }
             else
             {
