@@ -1,85 +1,79 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Projeto>
 @using BaseDeProjetos.Helpers
 <style>
-  .caixa-logo {
-    max-width: 180px;
-    height: 100%;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-  }
-
-  #logoEmpresa {
-    object-fit: contain;
-    max-width: 180px;
-    max-height: 180px;
-    padding: 20px;
-  }
-
-  #box-btn-actions {
-    width: 100%;
-    justify-content: center;
-    gap: 10px;
-  }
+    .caixa-logo {
+        max-width: 180px;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+    #logoEmpresa {
+        object-fit: contain;
+        max-width: 180px;
+        max-height: 180px;
+        padding: 20px;
+    }
+    #box-btn-actions {
+        width: 100%;
+        justify-content: center;
+        gap: 10px;
+    }
 </style>
 
 
 @foreach (var projeto in Model)
 {
-  <div id="modalEditProjeto-@projeto.Id-container">
-  </div>
+    <div id="modalEditProjeto-@projeto.Id-container">
+    </div>
 
-  <div id="modalDeleteProjeto-@projeto.Id-container">
-  </div>
+    <div id="modalDeleteProjeto-@projeto.Id-container">
+    </div>
 
-  <div id="modalHistoryProjeto-@projeto.Id-container">
-  </div>
+    <div id="modalHistoryProjeto-@projeto.Id-container">
+    </div>
 
-  <div id="modalDetailsProjeto-@projeto.Id-container">
-  </div>
+    <div id="modalDetailsProjeto-@projeto.Id-container">
+    </div>
+    
+    <tr>
+        @if (projeto.Empresa.Logo != null)
+        {
+            <td class="cell"><img loading="lazy" src="@projeto.Empresa.Logo" id="logoEmpresa" alt="Logo da Empresa" style="background-color:white"></td>
+        }
+        else
+        {
+            <td class="cell"><nobr id="logo_alt">Sem Logo</nobr></td>
+        }
+        <td class="cell">@projeto.Empresa.Nome</td> @*Empresa*@
+        <td class="cell">
+            @projeto.NomeProjeto
+        </td>
+        <td class="cell">
+            @projeto.Status.GetDisplayName()
+        </td>
+            
+        <td class="cell">
+            @if(projeto.ValorAporteRecursos != 0 && projeto.ValorAporteRecursos > 0)
+            {
+                <span> R$ @Helpers.FormatarValoresDashboards((decimal)projeto.ValorAporteRecursos)</span>
+            }
+            else
+            {
+                <span>A preencher</span>
+            }
+        </td>
+        <td class="cell">
+            @projeto.FonteFomento.GetDisplayName()
+        </td>        
+        <td class="cell">
 
-  <tr>
-    @if (projeto.Empresa.Logo != null)
-    {
-      <td class="cell"><img loading="lazy" src="@projeto.Empresa.Logo" id="logoEmpresa" alt="Logo da Empresa"
-      style="background-color:white"></td>
-    }
-    else
-    {
-      <td class="cell">
-        <nobr id="logo_alt">Sem Logo</nobr>
-      </td>
-    }
-    <td class="cell">@projeto.Empresa.Nome</td> @*Empresa*@
-    <td class="cell">
-      @projeto.NomeProjeto
-    </td>
-    <td class="cell">
-      @projeto.Status.GetDisplayName()
-    </td>
+            <span>@projeto.DataEncerramento.ToString("dd/MM/yyyy")</span>
+            
+        </td>
 
-    <td class="cell">
-      @if (projeto.ValorAporteRecursos != 0 && projeto.ValorAporteRecursos > 0)
-      {
-        <span> R$ @Helpers.FormatarValoresDashboards((decimal)projeto.ValorAporteRecursos)</span>
-      }
-      else
-      {
-        <span>A preencher</span>
-      }
-    </td>
-    <td class="cell">
-      @projeto.FonteFomento.GetDisplayName()
-    </td>
-    <td class="cell">
-
-      <span>@projeto.DataEncerramento.ToString("dd/MM/yyyy")</span>
-
-    </td>
-
-    <td class="cell">
-      <button type="button" data-bs-target="#modalDetalhes-@projeto.Id" id="button-@projeto.Id" data-bs-toggle="modal"
-      class="btn-sm app-btn-primary" onmouseover="carregarModaisProjeto('@projeto.Id')">Detalhes</button>
-    </td>
-  </tr>
+        <td class="cell">
+            <button type="button" data-bs-target="#modalDetalhes-@projeto.Id" id="button-@projeto.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary" onmouseover="carregarModaisProjeto('@projeto.Id')">Detalhes</button>
+        </td>
+    </tr>
 }

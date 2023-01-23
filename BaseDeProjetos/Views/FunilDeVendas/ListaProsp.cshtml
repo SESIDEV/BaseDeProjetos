@@ -2,122 +2,115 @@
 @using System.Globalization
 @using BaseDeProjetos.Helpers
 @{
-  var ptbr = new CultureInfo("pt-BR");
-
+    var ptbr = new CultureInfo("pt-BR");    
+    
 }
 <style>
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
 </style>
 @* <script>
-  var bt = document.querySelector('#bt')
+    var bt = document.querySelector('#bt')
 
-  bt.addEventListener('click', e => {
-  e.preventDefault();
-  })
+    bt.addEventListener('click', e => {
+        e.preventDefault();
+    })
 
-  $(function () {
-  $('[data-bs-toggle="popover"]').popover()
-  })
-  </script> *@
+    $(function () {
+        $('[data-bs-toggle="popover"]').popover()
+    })
+</script> *@
 @foreach (var prospeccao in Model)
 {
+    
+    <div id="modalEditProsp-@prospeccao.Id-container">
 
-  <div id="modalEditProsp-@prospeccao.Id-container">
+    </div>
+    
+    <div id="modalDeleteProsp-@prospeccao.Id-container">
 
-  </div>
+    </div>
 
-  <div id="modalDeleteProsp-@prospeccao.Id-container">
+    <div id="modalHistoryProsp-@prospeccao.Id-container">
 
-  </div>
+    </div>
 
-  <div id="modalHistoryProsp-@prospeccao.Id-container">
+    <div id="modalCreateFollowupProsp-@prospeccao.Id-container">
 
-  </div>
+    </div>
 
-  <div id="modalCreateFollowupProsp-@prospeccao.Id-container">
+    <div id="modalEditFollowupProsp-@prospeccao.Id-container">
 
-  </div>
+    </div>
 
-  <div id="modalEditFollowupProsp-@prospeccao.Id-container">
+    <div id="modalDetalhesProsp-@prospeccao.Id-container">
 
-  </div>
-
-  <div id="modalDetalhesProsp-@prospeccao.Id-container">
-
-  </div>
-
-  <tr>
-    @if (prospeccao.Empresa.Logo != null)
-    {
-      <td class="cell"><img loading="lazy" src="@prospeccao.Empresa.Logo" id="logoEmpresa" alt="Logo da Empresa"
-      style="background-color:white"></td>
-    }
-    else
-    {
-      <td class="cell">
-        <nobr id="logo_alt">Sem Logo</nobr>
-      </td>
-    }
-    <td class="cell">@prospeccao.Empresa.Nome</td> @*Empresa*@
-    <td class="cell">
-      @if (prospeccao.Usuario != null)
-      {
-        <span class="badge bg-success">@prospeccao.Usuario.UserName</span> @*Líder*@
-      }
-      else
-      {
-        <span class="badge bg-danger">Sem Líder</span>
-      }
-    </td>
-    <td class="cell">
-      @if (prospeccao.NomeProspeccao != null)
-      {
-        <span>@prospeccao.NomeProspeccao</span> @*Projeto*@
-      }
-      else
-      {
-        <span>A definir</span> @*Projeto*@
-      }
-    </td>
-    @{
-      var subtracaoUltimoStatus = @DateTime.Now.Subtract(prospeccao.Status.Last().Data).Days;
-    }
-    <td class="cell">
-      <span>@prospeccao.TipoContratacao.GetDisplayName()</span> @*Tipo Contratação*@
-    </td>
-    <td class="cell"><span>@prospeccao.Status.OrderBy(followup => followup.Data).Last().Status.GetDisplayName()</span>
-    </td> @*Status*@
-    @if (prospeccao.Status.OrderBy(followup => followup.Data).Last().Status != StatusProspeccao.Planejada)
-    {
-      <td class="cell">
+    </div>
+    
+    <tr>
+        @if (prospeccao.Empresa.Logo != null)
+        {
+            <td class="cell"><img loading="lazy" src="@prospeccao.Empresa.Logo" id="logoEmpresa" alt="Logo da Empresa" style="background-color:white"></td>
+        } 
+        else
+        {
+            <td class="cell"><nobr id="logo_alt">Sem Logo</nobr></td>
+        }
+        <td class="cell">@prospeccao.Empresa.Nome</td> @*Empresa*@
+        <td class="cell">
+        @if (prospeccao.Usuario != null) 
+        {
+            <span class="badge bg-success">@prospeccao.Usuario.UserName</span> @*Líder*@
+        } 
+        else 
+        {
+            <span class="badge bg-danger">Sem Líder</span>
+        }
+        </td>
+        <td class="cell">
+        @if (prospeccao.NomeProspeccao != null)
+        {
+            <span>@prospeccao.NomeProspeccao</span> @*Projeto*@
+        } else
+        {
+            <span>A definir</span> @*Projeto*@
+        }
+        </td>
+        @{
+            var subtracaoUltimoStatus = @DateTime.Now.Subtract(prospeccao.Status.Last().Data).Days;
+        }
+        <td class="cell">
+            <span>@prospeccao.TipoContratacao.GetDisplayName()</span> @*Tipo Contratação*@
+        </td>
+        <td class="cell"><span>@prospeccao.Status.OrderBy(followup => followup.Data).Last().Status.GetDisplayName()</span></td> @*Status*@
         @if (prospeccao.Status.OrderBy(followup => followup.Data).Last().Status != StatusProspeccao.Planejada)
         {
-          @FunilHelpers.VerificarTemperatura(subtracaoUltimoStatus)
+            <td class="cell">
+                @if (prospeccao.Status.OrderBy(followup => followup.Data).Last().Status != StatusProspeccao.Planejada)
+                {
+                    @FunilHelpers.VerificarTemperatura(subtracaoUltimoStatus)
+                }
+            </td>
         }
-      </td>
-    }
-    <td class="cell">
-      @if (prospeccao.ValorProposta != 0)
-      {
-        <span>R$ @Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorProposta)</span>
-      }
-      else if (prospeccao.ValorEstimado != 0)
-      {
-        <span>R$ @Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorEstimado)</span>
-      }
-      else
-      {
-        <span>Valor não informado</span>
-      }
-    </td>
-    <td class="cell">
-      <button type="button" id="button-@prospeccao.Id" data-bs-target="#modalDetalhes-@prospeccao.Id"
-      data-bs-toggle="modal" class="btn-sm app-btn-primary"
-      onmouseover="carregarModaisFunil('@prospeccao.Id')">Detalhes</button>
-    </td>
-  </tr>
+        <td class="cell">
+            @if (prospeccao.ValorProposta != 0)
+            {
+                <span>R$ @Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorProposta)</span>
+            }
+            else if (prospeccao.ValorEstimado != 0)
+            {
+                <span>R$ @Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorEstimado)</span>
+            }
+            else
+            {
+                <span>Valor não informado</span>
+            }
+        </td>
+        <td class="cell">
+            <button type="button" id="button-@prospeccao.Id" data-bs-target="#modalDetalhes-@prospeccao.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary" onmouseover="carregarModaisFunil('@prospeccao.Id')">Detalhes</button>
+            </td> 
+        </tr>
 }

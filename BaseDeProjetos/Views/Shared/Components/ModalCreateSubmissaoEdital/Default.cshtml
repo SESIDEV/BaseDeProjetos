@@ -2,38 +2,37 @@
 
 <!-- Modal -->
 <form asp-action="Create">
-  <div class="modal fade" id="modalCriarSubmissaoEdital" tabindex="-1" aria-labelledby="modalCriarSubmissaoEditalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="modalCriarSubmissaoEditalLabel">Criar Submissão pra Edital</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal fade" id="modalCriarSubmissaoEdital" tabindex="-1" aria-labelledby="modalCriarSubmissaoEditalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalCriarSubmissaoEditalLabel">Criar Submissão pra Edital</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label asp-for="@Model.Proponente" class="control-label"></label>
+                        <input type="text" class="form-control" value="@Model.Proponente" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="@Model.ProjetoProposto" class="control-label"></label>
+                        <input type="text" class="form-control" value="@Model.ProjetoProposto"  />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="@Model.StatusSubmissao" class="control-label"></label>
+                        <input type="text" class="form-control" value="@Model.StatusSubmissao" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Sair</button>
+                    <button type="button" class="btn app-btn-primary">Criar</button>
+                </div>
+            </div>
         </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label asp-for="@Model.Proponente" class="control-label"></label>
-            <input type="text" class="form-control" value="@Model.Proponente" />
-          </div>
-          <div class="form-group">
-            <label asp-for="@Model.ProjetoProposto" class="control-label"></label>
-            <input type="text" class="form-control" value="@Model.ProjetoProposto" />
-          </div>
-          <div class="form-group">
-            <label asp-for="@Model.StatusSubmissao" class="control-label"></label>
-            <input type="text" class="form-control" value="@Model.StatusSubmissao" />
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Sair</button>
-          <button type="button" class="btn app-btn-primary">Criar</button>
-        </div>
-      </div>
     </div>
-  </div>
 </form>
 @section Scripts {
-@{
-await Html.RenderPartialAsync("_ValidationScriptsPartial");
-}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

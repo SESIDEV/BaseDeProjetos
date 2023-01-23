@@ -1,157 +1,154 @@
 ﻿@model BaseDeProjetos.Models.Projeto
 
 @{
-  ViewData["Title"] = "Details";
+    ViewData["Title"] = "Details";
 }
 @using Microsoft.AspNetCore.Http
 @{
 
-  ViewData["Title"] = "Adicionar Prospecção";
-  if (!(Context.Session.GetString("_Casa") is null))
-  {
-    ViewData["Area"] = Context.Session.GetString("_Casa");
-  }
+    ViewData["Title"] = "Adicionar Prospecção";
+    if (!(Context.Session.GetString("_Casa") is null))
+    {
+        ViewData["Area"] = Context.Session.GetString("_Casa");
+    }
 }
 
 <partial name="Header" view-data="@ViewData" />
 <div class="row" style="padding-left: 25em; padding-right: 10em; padding-top: 2em">
-  <h1>Details</h1>
-  <hr />
-  <div class="card col-12">
-    <dl class="row card-body">
-      <h4 class="col-12 card-title">Projeto</h4>
-      <dt class="col-sm-3">
-        @Html.DisplayNameFor(model => model.NomeProjeto)
-      </dt>
-      <dd class="col-sm-9">
-        @Html.DisplayFor(model => model.NomeProjeto)
-      </dd>
-      <dt class="col-sm-3">
-        @Html.DisplayNameFor(model => model.MembrosEquipe)
-      </dt>
-      <dd class="col-sm-9">
-        <div class="accordion" id="accordionExample">
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="headingOne">
-              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
-                aria-expanded="true" aria-controls="collapseOne">Equipe do Projeto - <span id="qtdMembros"
-                  class="m-1"></span><span class="m-1">Membros</span>
-              </button>
-            </h2>
-            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
-              data-bs-parent="#accordionExample">
-              <div class="accordion-body">
-                <ul id="lista"></ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </dd>
-      <dt class="col-sm-3">
-        @Html.DisplayNameFor(model => model.AreaPesquisa)
-      </dt>
-      <dd class="col-sm-9">
-        @Html.DisplayFor(model => model.AreaPesquisa)
-      </dd>
-      <dt class="col-sm-3">
-        @Html.DisplayNameFor(model => model.DataInicio)
-      </dt>
-      <dd class="col-sm-9">
-        @Html.DisplayFor(model => model.DataInicio)
-      </dd>
-      <dt class="col-sm-3">
-        @Html.DisplayNameFor(model => model.DataEncerramento)
-      </dt>
-      <dd class="col-sm-9">
-        @Html.DisplayFor(model => model.DataEncerramento)
-      </dd>
-      <dt class="col-sm-3">
-        @Html.DisplayNameFor(model => model.Estado)
-      </dt>
-      <dd class="col-sm-9">
-        @Html.DisplayFor(model => model.Estado)
-      </dd>
-      <dt class="col-sm-3">
-        @Html.DisplayNameFor(model => model.FonteFomento)
-      </dt>
-      <dd class="col-sm-9">
-        @Html.DisplayFor(model => model.FonteFomento)
-      </dd>
-      <dt class="col-sm-3">
-        @Html.DisplayNameFor(model => model.Inovacao)
-      </dt>
-      <dd class="col-sm-9">
-        @Html.DisplayFor(model => model.Inovacao)
-      </dd>
-      <dt class="col-sm-3">
-        @Html.DisplayNameFor(model => model.Status)
-      </dt>
-      <dd class="col-sm-9">
-        @Html.DisplayFor(model => model.Status)
-      </dd>
-      <dt class="col-sm-3">
-        @Html.DisplayNameFor(model => model.DuracaoProjetoEmMeses)
-      </dt>
-      <dd class="col-sm-9">
-        @Html.DisplayFor(model => model.DuracaoProjetoEmMeses)
-      </dd>
-      <dt class="col-sm-3">
-        @Html.DisplayNameFor(model => model.ValorTotalProjeto)
-      </dt>
-      <dd class="col-sm-9">
-        @Html.DisplayFor(model => model.ValorTotalProjeto)
-      </dd>
-      <dt class="col-sm-3">
-        @Html.DisplayNameFor(model => model.ValorAporteRecursos)
-      </dt>
-      <dd class="col-sm-9">
-        @Html.DisplayFor(model => model.ValorAporteRecursos)
-      </dd>
-    </dl>
-  </div>
+    <h1>Details</h1>
+    <hr />
+    <div class="card col-12">
+        <dl class="row card-body">
+            <h4 class="col-12 card-title">Projeto</h4>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.NomeProjeto)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.NomeProjeto)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.MembrosEquipe)
+            </dt>
+            <dd class="col-sm-9">
+                <div class="accordion" id="accordionExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Equipe do Projeto - <span id="qtdMembros" class="m-1"></span><span class="m-1">Membros</span>
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <ul id="lista"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.AreaPesquisa)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.AreaPesquisa)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.DataInicio)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.DataInicio)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.DataEncerramento)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.DataEncerramento)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Estado)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Estado)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.FonteFomento)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.FonteFomento)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Inovacao)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Inovacao)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Status)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Status)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.DuracaoProjetoEmMeses)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.DuracaoProjetoEmMeses)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.ValorTotalProjeto)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.ValorTotalProjeto)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.ValorAporteRecursos)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.ValorAporteRecursos)
+            </dd>
+        </dl>
+    </div>
 </div>
 
 <div>
-  <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a> |
-  <div>
-    <a asp-action="Index" asp-route-casa="@ViewData["Area"]" class="btn btn-primary">Voltar</a>
-  </div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a> |
+    <div>
+        <a asp-action="Index" asp-route-casa="@ViewData["Area"]" class="btn btn-primary">Voltar</a>
+    </div>
 </div>
 
 <div class="d-none" id="listaDeMembros">
-  @Html.DisplayFor(model => model.MembrosEquipe)
+    @Html.DisplayFor(model => model.MembrosEquipe)
 </div>
 
 <script>
 
-  let listaDeMembros = document.querySelector("#listaDeMembros").textContent
-  let btn = document.querySelector("#btn")
+    let listaDeMembros = document.querySelector("#listaDeMembros").textContent
+    let btn = document.querySelector("#btn")
 
-  function TratandoListaDeUsuarios(lista) {
-    return lista.trim().split(";")
-  }
+    function TratandoListaDeUsuarios(lista) {
+        return lista.trim().split(";")
+    }
 
-  function criarListaDeMembros() {
-    let lista = document.querySelector("#lista")
-    let qtdMembros = document.querySelector("#qtdMembros")
-    let listaUsuarios = TratandoListaDeUsuarios(listaDeMembros)
+    function criarListaDeMembros(){
+        let lista = document.querySelector("#lista")
+        let qtdMembros = document.querySelector("#qtdMembros")
+        let listaUsuarios = TratandoListaDeUsuarios(listaDeMembros)
+        
+        listaUsuarios.forEach((membro, indice) => {
+            if(indice < listaUsuarios.length){
+                var usuario = document.createElement("li")
+                usuario.setAttribute("id", `${membro}`)
+                usuario.textContent = `${membro}`
+                usuario.classList.add("badge", "text-bg-success")
+                usuario.style.padding = "5px"
+                usuario.style.margin = "10px"
+                lista.append(usuario)
+            }
+        })
 
-    listaUsuarios.forEach((membro, indice) => {
-      if (indice < listaUsuarios.length) {
-        var usuario = document.createElement("li")
-        usuario.setAttribute("id", `${membro}`)
-        usuario.textContent = `${membro}`
-        usuario.classList.add("badge", "text-bg-success")
-        usuario.style.padding = "5px"
-        usuario.style.margin = "10px"
-        lista.append(usuario)
-      }
-    })
-
-    qtdMembros.innerHTML = listaUsuarios.length - 1
-
-  }
-  criarListaDeMembros()
+        qtdMembros.innerHTML = listaUsuarios.length - 1
+        
+    }
+    criarListaDeMembros()
 
 
 
