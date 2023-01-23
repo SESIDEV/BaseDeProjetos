@@ -120,6 +120,52 @@
         color: white;
     }
 </style>
+<script>
+    var prospeccoesDetalhes = [];
+
+    function carregarModalProspeccao(idProspeccao, tipo) {
+        if (!prospeccoesDetalhes.includes(idProspeccao)) {
+            if (tipo) {
+                fetch(`/FunildeVendas/RetornarModal?idProsp=${idProspeccao}&tipo=${tipo}`)
+                    .then(response => response.text())
+                    .then(result => {
+                        document.querySelector(`#modal${tipo}Prosp-${idProspeccao}-container`).innerHTML = result;
+                    });
+            }
+        }
+    }
+
+    function carregarModalDetalhesProspeccao(idProspeccao) {
+        // Verifica se o modal da prospeccao ja foi carregada para que não se carregue-o duas vezes sem necessidade
+        let buttonName = "#button-" + idProspeccao
+        console.log(buttonName)
+        let buttonDetalhes = document.querySelector(buttonName)
+
+        if (!prospeccoesDetalhes.includes(idProspeccao)) {
+          buttonDetalhes.disabled = true;
+          buttonDetalhes.innerHTML = '<div class="spinner-border spinner-border-sm text-light" role="status"><span class="visually-hidden">Loading...</span></div>';
+          fetch(`/FunildeVendas/RetornarModalDetalhes?idProsp=${idProspeccao}`)
+            .then(response => response.text())
+            .then(result => {
+              document.querySelector(`#modalDetalhesProsp-${idProspeccao}-container`).innerHTML = result;
+                    buttonDetalhes.innerHTML = 'Detalhes da Prospecção: ' + idProspeccao;
+              buttonDetalhes.disabled = false;
+              buttonDetalhes.removeAttribute("style");
+            });
+        }
+      }
+
+    function carregarModaisProspeccao(idProspeccao) {
+        // O nome precisa bater com o nome da view, no sentido que, o sufixo será "ProspViewComponent". Em outras palavras, está acoplado.
+
+        modaisDisponiveis = ["Edit", "Delete", "History", "CreateFollowup"]
+        modaisDisponiveis.forEach((tipo) => {
+            carregarModalProspeccao(idProspeccao, tipo)
+        })
+        carregarModalDetalhesProspeccao(idProspeccao);
+        prospeccoesDetalhes.push(idProspeccao);
+    }
+</script>
 
 <partial name="Header" view-data="@ViewData" />
 <div class="container" style="padding-left: 15em;">
@@ -135,13 +181,13 @@
                                     <input class="input-group" name="ano" value="Todos" id="inputLiderOuEmpresa" style="display: none; padding: 0px; margin: 0px;" />
                                     <div class="input-group mb-3">
                                         <input class="form-control" type="text" name="SearchString" value='@ViewData["CurrentFilter"]' placeholder="Digite o nome da Empresa" />
-                                        <button type="submit" class="btn btn-primary">Procurar</button>
-                                        <a asp-action="Index" class="btn btn-primary" style="margin-left: 15px;">Lista Completa</a>
+                                        <button type="submit" class="btn app-btn-primary">Procurar</button>
+                                        <a asp-action="Index" class="btn app-btn-primary" style="margin-left: 15px;">Lista Completa</a>
                                     </div>
                                 </form>
                             </div>
                             <div class="col-4">
-                                <a asp-action="Create" style="text-decoration:none;" class="btn btn-primary">Adicionar Empresa</a>
+                                <a asp-action="Create" style="text-decoration:none;" class="btn app-btn-primary">Adicionar Empresa</a>
                             </div>
                         </div>
                     </div>
@@ -174,23 +220,21 @@
                             }
                         </div>
                         <div class="empresa-info">
-
-
                             <p><strong>Nome Empresa:</strong> @item.Nome</p>
                             <p><strong>Prospeccoes Totais: </strong>@prosps.Where(P => P.Empresa.Id == @item.Id).Count()</p>
                             <p><strong>CNPJ:</strong> @item.CNPJ</p>
                             <p><strong>Setor:</strong> @item.Segmento</p>
-                            <button class="btn-empresa efeito-hover" data-bs-toggle="collapse" data-bs-target="#e_@item.Id">Ações</button>
-                            <button class="btn-empresa efeito-hover" data-bs-toggle="collapse" data-bs-target="#ce_@item.Id">Contatos</button>
-                            <button class="btn-empresa efeito-hover" data-bs-target="#ce_@item.Id"><a asp-controller="FunilDeVendas" asp-action="Planejar" asp-route-id="@item.Id">Planejar</a></button>
-                            <button class="btn-empresa efeito-hover" data-bs-toggle="collapse" data-bs-target="#pe_@item.Id">Prospecções</button>
+                            <button class="btn app-btn-primary" data-bs-toggle="collapse" data-bs-target="#e_@item.Id">Ações</button>
+                            <button class="btn app-btn-primary" data-bs-toggle="collapse" data-bs-target="#ce_@item.Id">Contatos</button>
+                            <button class="btn app-btn-primary" data-bs-target="#ce_@item.Id"><a asp-controller="FunilDeVendas" asp-action="Planejar" asp-route-id="@item.Id">Planejar</a></button>
+                            <button class="btn app-btn-primary" data-bs-toggle="collapse" data-bs-target="#pe_@item.Id">Prospecções</button>
 
                             <div id="e_@item.Id" class="collapse">
                                 <h6>Ações</h6>
                                 <div>
-                                    <a asp-action="Edit" asp-route-id="@item.Id"><button class="btn-empresa efeito-hover">Editar</button></a>
-                                    <a asp-action="Details" asp-route-id="@item.Id"><button class="btn-empresa efeito-hover">Ver Detalhes</button></a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id"><button class="btn-empresa efeito-hover">Deletar</button></a>
+                                    <a asp-action="Edit" asp-route-id="@item.Id"><button class="btn app-btn-primary">Editar</button></a>
+                                    <a asp-action="Details" asp-route-id="@item.Id"><button class="btn app-btn-primary">Ver Detalhes</button></a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id"><button class="btn app-btn-primary">Deletar</button></a>
                                 </div>
                                 <br />
                             </div>
@@ -239,11 +283,15 @@
                                             <th>Líder</th>
                                         </tr>
 
-                                        @foreach (Prospeccao pro in prospsAtivas.Where(P => P.Empresa.Id == @item.Id))
+                                        @foreach (Prospeccao prospeccao in prospsAtivas.Where(P => P.Empresa.Id == @item.Id))
                                         {
-                                            <tr>
-                                                <td><a asp-controller="FunilDeVendas" asp-action="Details" asp-route-id="@pro.Id">@pro.Id</a></td>
-                                                <td>@pro.Usuario</td>
+                                            <div id="modalDetalhesProsp-@prospeccao.Id-container">
+
+                                            </div>
+                                            <tr>                                                
+                                                <td><button type="button" id="button-@prospeccao.Id" data-bs-target="#modalDetalhes-@prospeccao.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary"
+                                                onmouseover="carregarModaisProspeccao('@prospeccao.Id')">Detalhes da Prospecção: @prospeccao.Id</button></td>
+                                                <td>@prospeccao.Usuario</td>
                                             </tr>
                                         }
                                     </table>
@@ -262,11 +310,28 @@
                                             <th>Líder</th>
                                         </tr>
 
-                                        @foreach (Prospeccao pro in prospsPlanejadas.Where(P => P.Empresa.Id == @item.Id))
+                                        @foreach (Prospeccao prospeccao in prospsPlanejadas.Where(P => P.Empresa.Id == @item.Id))
                                         {
+                                            <div id="modalEditProsp-@prospeccao.Id-container">
+                                            </div>
+                                            <div id="modalDeleteProsp-@prospeccao.Id-container">
+                                            </div>
+                                            <div id="modalHistoryProsp-@prospeccao.Id-container">
+                                            </div>
+                                            <div id="modalCreateFollowupProsp-@prospeccao.Id-container">
+                                            </div>
+                                            <div id="modalEditFollowupProsp-@prospeccao.Id-container">
+                                            </div>
+                                            <div id="modalDetalhesProsp-@prospeccao.Id-container">
+                                            </div>
                                             <tr>
-                                                <td><a asp-controller="FunilDeVendas" asp-action="Details" asp-route-id="@pro.Id">@pro.Id</a></td>
-                                                <td>@pro.Usuario</td>
+                                                <td>
+                                                    <button type="button" id="button-@prospeccao.Id" data-bs-target="#modalDetalhes-@prospeccao.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary"
+                                                onmouseover="carregarModaisProspeccao('@prospeccao.Id')">
+                                                        Detalhes da Prospecção: @prospeccao.Id
+                                                    </button>
+                                                </td>
+                                                <td>@prospeccao.Usuario</td>
                                             </tr>
                                         }
                                     </table>
