@@ -159,8 +159,8 @@
           <div asp-validation-summary="ModelOnly" class="text-danger"></div>
           <div class="mb-2">
             <label asp-for="ValorEstimado" class="col-form-label" style="font-weight: 600"></label>
-            <input asp-for="ValorEstimado" type="number" class="form-control"
-              value='@Model.ValorEstimado.ToString("F2",CultureInfo.CreateSpecificCulture("en-US"))' />
+                        <input asp-for="ValorEstimado" type="number" step="0.01" class="form-control"
+              value='@Model.ValorEstimado.ToString("F2",CultureInfo.CreateSpecificCulture("pt-BR"))' />
             <span asp-validation-for="ValorEstimado" class="text-danger"></span>
           </div>
 
@@ -168,8 +168,7 @@
           {
             <div class="form-group">
               <label asp-for="ValorProposta" class="control-label"></label>
-              <input asp-for="ValorProposta" type="number" class="form-control"
-              value='@Model.ValorProposta.ToString("F2",CultureInfo.CreateSpecificCulture("en-US"))' />
+              <input asp-for="ValorProposta" type="number" step="0.01" class="form-control" value='@Model.ValorProposta.ToString("F2",CultureInfo.CreateSpecificCulture("pt-BR"))' />
               <span asp-validation-for="ValorProposta" class="text-danger"></span>
             </div>
           }
