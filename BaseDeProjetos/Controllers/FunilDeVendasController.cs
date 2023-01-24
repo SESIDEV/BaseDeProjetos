@@ -56,7 +56,8 @@ namespace BaseDeProjetos.Controllers
                 ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
 
                 return View();
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
@@ -64,63 +65,79 @@ namespace BaseDeProjetos.Controllers
         // GET: FunilDeVendas/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-
-            List<Empresa> empresas = _context.Empresa.ToList();
-            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-            ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
-
-            if (id == null)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return NotFound();
-            }
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-            Prospeccao prospeccao = await _context.Prospeccao
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (prospeccao == null)
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+
+                List<Empresa> empresas = _context.Empresa.ToList();
+                ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+                ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
+
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                Prospeccao prospeccao = await _context.Prospeccao
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (prospeccao == null)
+                {
+                    return NotFound();
+                }
+
+
+                return View(prospeccao);
+            }
+            else
             {
-                return NotFound();
+                return View("Forbidden");
             }
-
-            return View(prospeccao);
         }
         // GET: FunilDeVendas/Create
         public IActionResult Create(int id)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
 
-            List<Empresa> empresas = _context.Empresa.ToList();
-            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-            return View();
+                List<Empresa> empresas = _context.Empresa.ToList();
+                ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+                return View();
+            }
+            else
+            {
+                return View("Forbidden");
+            }
         }
 
         public IActionResult Planejar(int id, string userId)
         {
-
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-
-            userId = HttpContext.User.Identity.Name;
-            Instituto usuarioCasa = _context.Users.FirstOrDefault(u => u.UserName == userId).Casa;
-
-            Prospeccao prosp = new Prospeccao
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Id = $"proj_{DateTime.Now.Ticks}",
-                Empresa = _context.Empresa.FirstOrDefault(E => E.Id == id),
-                Usuario = _context.Users.FirstOrDefault(u => u.UserName == userId),
-                Casa = usuarioCasa,
-                LinhaPequisa = LinhaPesquisa.Indefinida,
-                CaminhoPasta = ""
-            };
-            prosp.Status = new List<FollowUp>
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+
+                userId = HttpContext.User.Identity.Name;
+                Instituto usuarioCasa = _context.Users.FirstOrDefault(u => u.UserName == userId).Casa;
+
+                Prospeccao prosp = new Prospeccao
+                {
+                    Id = $"proj_{DateTime.Now.Ticks}",
+                    Empresa = _context.Empresa.FirstOrDefault(E => E.Id == id),
+                    Usuario = _context.Users.FirstOrDefault(u => u.UserName == userId),
+                    Casa = usuarioCasa,
+                    LinhaPequisa = LinhaPesquisa.Indefinida,
+                    CaminhoPasta = ""
+                };
+                prosp.Status = new List<FollowUp>
             {
                 new FollowUp
                 {
@@ -133,23 +150,35 @@ namespace BaseDeProjetos.Controllers
                 }
             };
 
-            _context.Add(prosp);
-            _context.SaveChanges();
-            return RedirectToAction("Index", "Empresas");
+                _context.Add(prosp);
+                _context.SaveChanges();
+                return RedirectToAction("Index", "Empresas");
+            }
+            else
+            {
+                return View("Forbidden");
+            }
 
         }
 
         [HttpGet]
         public IActionResult Atualizar(string id)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
 
-            ViewData["origem"] = id;
-            ViewData["prosp"] = _context.Prospeccao.FirstOrDefault(p => p.Id == id);
-            return View("CriarFollowUp");
+                ViewData["origem"] = id;
+                ViewData["prosp"] = _context.Prospeccao.FirstOrDefault(p => p.Id == id);
+                return View("CriarFollowUp");
+            }
+            else
+            {
+                return View("Forbidden");
+            }
         }
 
         [HttpPost]
@@ -265,7 +294,8 @@ namespace BaseDeProjetos.Controllers
                     return NotFound();
                 }
                 return View(prospeccao);
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
@@ -391,7 +421,8 @@ namespace BaseDeProjetos.Controllers
                 }
 
                 return View(prospeccao);
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
@@ -399,37 +430,51 @@ namespace BaseDeProjetos.Controllers
 
         public async Task<IActionResult> RemoverFollowUp(int? id)
         {
-            if (id is null)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return NotFound();
-            }
+                if (id is null)
+                {
+                    return NotFound();
+                }
 
-            FollowUp followup = await _context.FollowUp
-                .FirstOrDefaultAsync(m => m.Id == id);
+                FollowUp followup = await _context.FollowUp
+                    .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (followup == null)
-            {
-                return NotFound();
-            }
+                if (followup == null)
+                {
+                    return NotFound();
+                }
 
-            return await RemoverFollowupAutenticado(followup);
-        }
-        private async Task<IActionResult> RemoverFollowupAutenticado(FollowUp followup)
-        {
-            //Verifica se o usuário está apto para remover o followup
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            Prospeccao prospeccao = _context.Prospeccao.FirstOrDefault(p => p.Id == followup.OrigemID);
-
-            if (verificarCondicoesRemocao(prospeccao, usuario, followup.Origem.Usuario) || usuario.Casa == Instituto.Super)
-            {
-                _context.FollowUp.Remove(followup);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Details", new { id = followup.OrigemID });
+                return await RemoverFollowupAutenticado(followup);
             }
             else
             {
-                // TODO: Colocar isso no frontend em vez de jogar uma exceção na cara do usuário
-                throw new InvalidOperationException("Não é possível remover todas os followups de uma prospecção");
+                return View("Forbidden");
+            }
+        }
+        private async Task<IActionResult> RemoverFollowupAutenticado(FollowUp followup)
+        {
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                //Verifica se o usuário está apto para remover o followup
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                Prospeccao prospeccao = _context.Prospeccao.FirstOrDefault(p => p.Id == followup.OrigemID);
+
+                if (verificarCondicoesRemocao(prospeccao, usuario, followup.Origem.Usuario) || usuario.Casa == Instituto.Super)
+                {
+                    _context.FollowUp.Remove(followup);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Details", new { id = followup.OrigemID });
+                }
+                else
+                {
+                    // TODO: Colocar isso no frontend em vez de jogar uma exceção na cara do usuário
+                    throw new InvalidOperationException("Não é possível remover todas os followups de uma prospecção");
+                }
+            }
+            else
+            {
+                return View("Forbidden");
             }
         }
 
@@ -480,19 +525,21 @@ namespace BaseDeProjetos.Controllers
                 {
                     return View("Error");
                 }
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
 
         }
 
-        public IActionResult RetornarModalDetalhes(string idProsp) 
+        public IActionResult RetornarModalDetalhes(string idProsp)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 return ViewComponent($"ModalDetalhesProsp", new { id = idProsp });
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
@@ -511,7 +558,8 @@ namespace BaseDeProjetos.Controllers
                 {
                     return ViewComponent("Error");
                 }
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
@@ -557,7 +605,7 @@ namespace BaseDeProjetos.Controllers
                 }
 
                 return JsonSerializer.Serialize(listaFull);
-            } 
+            }
             else
             {
                 return JsonSerializer.Serialize("403 Forbidden");
@@ -570,7 +618,8 @@ namespace BaseDeProjetos.Controllers
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 return Helpers.Helpers.PuxarDadosUsuarios(_context);
-            } else
+            }
+            else
             {
                 return "403 Forbidden";
             }
