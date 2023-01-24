@@ -25,52 +25,69 @@ namespace BaseDeProjetos.Controllers
         // GET: Empresas
         public IActionResult Index(string searchString = "")
         {
-			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-			ViewBag.usuarioCasa = usuario.Casa;
-			ViewBag.usuarioNivel = usuario.Nivel;
-
-			ViewBag.Prospeccoes = _context.Prospeccao.Where(P => P.Status.All(S => S.Status != StatusProspeccao.NaoConvertida &&
-                                                                                    S.Status != StatusProspeccao.Convertida &&
-                                                                                    S.Status != StatusProspeccao.Suspensa)).ToList();
-
-            ViewBag.ProspeccoesAtivas = _context.Prospeccao.Where(P => P.Status.All(S => S.Status != StatusProspeccao.NaoConvertida &&
-                                                                                    S.Status != StatusProspeccao.Convertida &&
-                                                                                    S.Status != StatusProspeccao.Suspensa && 
-                                                                                    S.Status != StatusProspeccao.Planejada)).ToList();
-
-            ViewBag.ProspeccoesPlanejadas = _context.Prospeccao.Where(P => P.Status.All(S => S.Status == StatusProspeccao.Planejada)).ToList();
-
-            ViewBag.Contatos = _context.Pessoa.ToList();
-            //Filtros e ordenadores
-            if (string.IsNullOrEmpty(searchString) && HttpContext.Session.Keys.Contains("_CurrentFilter"))
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewData["CurrentFilter"] = HttpContext.Session.GetString("_CurrentFilter");
-            }
-            else
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+
+                ViewBag.Prospeccoes = _context.Prospeccao.Where(P => P.Status.All(S => S.Status != StatusProspeccao.NaoConvertida &&
+                                                                                        S.Status != StatusProspeccao.Convertida &&
+                                                                                        S.Status != StatusProspeccao.Suspensa)).ToList();
+
+                ViewBag.ProspeccoesAtivas = _context.Prospeccao.Where(P => P.Status.All(S => S.Status != StatusProspeccao.NaoConvertida &&
+                                                                                        S.Status != StatusProspeccao.Convertida &&
+                                                                                        S.Status != StatusProspeccao.Suspensa &&
+                                                                                        S.Status != StatusProspeccao.Planejada)).ToList();
+
+                ViewBag.ProspeccoesPlanejadas = _context.Prospeccao.Where(P => P.Status.All(S => S.Status == StatusProspeccao.Planejada)).ToList();
+
+                ViewBag.Contatos = _context.Pessoa.ToList();
+                //Filtros e ordenadores
+                if (string.IsNullOrEmpty(searchString) && HttpContext.Session.Keys.Contains("_CurrentFilter"))
+                {
+                    ViewData["CurrentFilter"] = HttpContext.Session.GetString("_CurrentFilter");
+                }
+                else
+                {
+                    ViewData["CurrentFilter"] = searchString;
+                    HttpContext.Session.SetString("_CurrentFilter", searchString);
+                }
+
+                var empresas = FiltrarEmpresas(searchString, _context.Empresa.OrderBy(e => e.Nome).ToList());
+
+                return View(empresas);
+            } else
             {
-                ViewData["CurrentFilter"] = searchString;
-                HttpContext.Session.SetString("_CurrentFilter", searchString);
+                return View("Forbidden");
             }
-
-            var empresas = FiltrarEmpresas(searchString, _context.Empresa.OrderBy(e => e.Nome).ToList());
-
-            return View(empresas);
         }
 
         public JsonResult SeExisteCnpj(string cnpj)
         {
-
-            var procurar_dado = _context.Empresa.Where(x => x.CNPJ == cnpj).FirstOrDefault();
-            if (procurar_dado != null) { return Json(1); } else { return Json(0); }
+            if (HttpContext.User.Identity.IsAuthenticated) // Não expor o banco a ataques
+            {
+                var procurar_dado = _context.Empresa.Where(x => x.CNPJ == cnpj).FirstOrDefault();
+                if (procurar_dado != null) { return Json(1); } else { return Json(0); }
+            } else
+            {
+                return Json("403 Forbidden");
+            }
 
         }
         public async Task<string> DadosAPI(string query)
         {
-            HttpClient client = new HttpClient { BaseAddress = new Uri("https://receitaws.com.br/v1/cnpj/") };
-            var response = await client.GetAsync(query);
-            var data = await response.Content.ReadAsStringAsync();
-            return data;
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                HttpClient client = new HttpClient { BaseAddress = new Uri("https://receitaws.com.br/v1/cnpj/") };
+                var response = await client.GetAsync(query);
+                var data = await response.Content.ReadAsStringAsync();
+                return data;
+            } else
+            {
+                return "403 Forbidden";
+            }
         }
         private static List<Empresa> FiltrarEmpresas(string searchString, List<Empresa> lista)
         {
@@ -89,35 +106,47 @@ namespace BaseDeProjetos.Controllers
         // GET: Empresas/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-			ViewBag.usuarioCasa = usuario.Casa;
-			ViewBag.usuarioNivel = usuario.Nivel;
-
-			if (id == null)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return NotFound();
-            }
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-            Empresa empresa = await _context.Empresa
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (empresa == null)
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                Empresa empresa = await _context.Empresa
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (empresa == null)
+                {
+                    return NotFound();
+                }
+
+                return View(empresa);
+            } else
             {
-                return NotFound();
+                return View("Forbidden");
             }
-
-            return View(empresa);
         }
 
         // GET: Empresas/Create
         public IActionResult Create()
         {
-			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-			ViewBag.usuarioCasa = usuario.Casa;
-			ViewBag.usuarioNivel = usuario.Nivel;
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
 
-			return View();
+                return View();
+            } else
+            {
+                return View("Forbidden");
+            }
         }
 
         // POST: Empresas/Create
@@ -139,22 +168,28 @@ namespace BaseDeProjetos.Controllers
         // GET: Empresas/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-			ViewBag.usuarioCasa = usuario.Casa;
-			ViewBag.usuarioNivel = usuario.Nivel;
-
-			if (id == null)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return NotFound();
-            }
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-            Empresa empresa = await _context.Empresa.FindAsync(id);
-            if (empresa == null)
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                Empresa empresa = await _context.Empresa.FindAsync(id);
+                if (empresa == null)
+                {
+                    return NotFound();
+                }
+                return View(empresa);
+            } else
             {
-                return NotFound();
+                return View("Forbidden");
             }
-            return View(empresa);
         }
 
         // POST: Empresas/Edit/5
@@ -196,24 +231,30 @@ namespace BaseDeProjetos.Controllers
         // GET: Empresas/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-			ViewBag.usuarioCasa = usuario.Casa;
-			ViewBag.usuarioNivel = usuario.Nivel;
-
-			if (id == null)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return NotFound();
-            }
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-            Empresa empresa = await _context.Empresa
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (empresa == null)
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                Empresa empresa = await _context.Empresa
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (empresa == null)
+                {
+                    return NotFound();
+                }
+
+                return View(empresa);
+            } else
             {
-                return NotFound();
+                return View("Forbidden");
             }
-
-            return View(empresa);
         }
 
         // POST: Empresas/Delete/5

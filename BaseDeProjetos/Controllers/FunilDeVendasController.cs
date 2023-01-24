@@ -30,31 +30,36 @@ namespace BaseDeProjetos.Controllers
         [Route("FunilDeVendas/Index/{casa?}/{ano?}")]
         public IActionResult Index(string casa, string sortOrder = "", string searchString = "", string ano = "")
         {
-
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-
-            if (string.IsNullOrEmpty(casa))
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                casa = usuario.Casa.ToString();
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+
+                if (string.IsNullOrEmpty(casa))
+                {
+                    casa = usuario.Casa.ToString();
+                }
+
+                List<Empresa> empresas = _context.Empresa.ToList();
+                List<Prospeccao> lista;
+                lista = FunilHelpers.DefinirCasaParaVisualizar(casa, usuario, _context, HttpContext, ViewData);
+                lista = FunilHelpers.VincularCasaProspeccao(usuario, lista);
+                lista = FunilHelpers.PeriodizarProspecções(ano, lista); // ANO DA PROSPEC
+                lista = FunilHelpers.OrdenarProspecções(sortOrder, lista); //SORT ORDEM ALFABETICA
+                lista = FunilHelpers.FiltrarProspecções(searchString, lista); //APENAS NA BUSCA
+                FunilHelpers.SetarFiltrosNaView(HttpContext, ViewData, sortOrder, searchString);
+                FunilHelpers.CategorizarProspecçõesNaView(lista, usuario, HttpContext, ViewBag);
+                ViewData["ListaProspeccoes"] = lista.ToList();
+                ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+                ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
+
+                return View();
+            } else
+            {
+                return View("Forbidden");
             }
-
-            List<Empresa> empresas = _context.Empresa.ToList();
-            List<Prospeccao> lista;
-            lista = FunilHelpers.DefinirCasaParaVisualizar(casa, usuario, _context, HttpContext, ViewData);
-            lista = FunilHelpers.VincularCasaProspeccao(usuario, lista);
-            lista = FunilHelpers.PeriodizarProspecções(ano, lista); // ANO DA PROSPEC
-            lista = FunilHelpers.OrdenarProspecções(sortOrder, lista); //SORT ORDEM ALFABETICA
-            lista = FunilHelpers.FiltrarProspecções(searchString, lista); //APENAS NA BUSCA
-            FunilHelpers.SetarFiltrosNaView(HttpContext, ViewData, sortOrder, searchString);
-            FunilHelpers.CategorizarProspecçõesNaView(lista, usuario, HttpContext, ViewBag);
-            ViewData["ListaProspeccoes"] = lista.ToList();
-            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-            ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
-
-            return View();
         }
         // GET: FunilDeVendas/Details/5
         public async Task<IActionResult> Details(string id)
@@ -241,23 +246,29 @@ namespace BaseDeProjetos.Controllers
         // GET: FunilDeVendas/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-            CriarSelectListsDaView();
-
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-
-            if (id == null)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return NotFound();
-            }
+                CriarSelectListsDaView();
 
-            Prospeccao prospeccao = await _context.Prospeccao.FindAsync(id);
-            if (prospeccao == null)
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                Prospeccao prospeccao = await _context.Prospeccao.FindAsync(id);
+                if (prospeccao == null)
+                {
+                    return NotFound();
+                }
+                return View(prospeccao);
+            } else
             {
-                return NotFound();
+                return View("Forbidden");
             }
-            return View(prospeccao);
         }
         private void CriarSelectListsDaView()
         {
@@ -360,24 +371,30 @@ namespace BaseDeProjetos.Controllers
         // GET: FunilDeVendas/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-
-            if (id == null)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return NotFound();
-            }
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-            Prospeccao prospeccao = await _context.Prospeccao
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (prospeccao == null)
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                Prospeccao prospeccao = await _context.Prospeccao
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (prospeccao == null)
+                {
+                    return NotFound();
+                }
+
+                return View(prospeccao);
+            } else
             {
-                return NotFound();
+                return View("Forbidden");
             }
-
-            return View(prospeccao);
         }
 
         public async Task<IActionResult> RemoverFollowUp(int? id)
@@ -452,85 +469,112 @@ namespace BaseDeProjetos.Controllers
 
         public IActionResult RetornarModal(string idProsp, string tipo)
         {
-            CriarSelectListsDaView();
-            if (tipo != null || tipo != "")
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return ViewComponent($"Modal{tipo}Prosp", new { id = idProsp });
-            }
-            else
+                CriarSelectListsDaView();
+                if (tipo != null || tipo != "")
+                {
+                    return ViewComponent($"Modal{tipo}Prosp", new { id = idProsp });
+                }
+                else
+                {
+                    return View("Error");
+                }
+            } else
             {
-                return ViewComponent("null"); // View n existe é mais pra ""debug""
+                return View("Forbidden");
             }
 
         }
 
         public IActionResult RetornarModalDetalhes(string idProsp) 
         {
-            return ViewComponent($"ModalDetalhesProsp", new { id = idProsp });
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                return ViewComponent($"ModalDetalhesProsp", new { id = idProsp });
+            } else
+            {
+                return View("Forbidden");
+            }
         }
 
         public IActionResult RetornarModalEditFollowup(string idProsp, string idFollowup, string tipo)
         {
-            CriarSelectListsDaView();
-            if (tipo != null || tipo != "")
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return ViewComponent($"Modal{tipo}Prosp", new { id = idProsp, id2 = idFollowup });
-            }
-            else
+                CriarSelectListsDaView();
+                if (tipo != null || tipo != "")
+                {
+                    return ViewComponent($"Modal{tipo}Prosp", new { id = idProsp, id2 = idFollowup });
+                }
+                else
+                {
+                    return ViewComponent("Error");
+                }
+            } else
             {
-                return ViewComponent("null"); // View debug
+                return View("Forbidden");
             }
         }
 
         public string PuxarDadosProspeccoes(string casa = "ISIQV", int ano = 2022, bool planejadas = false)
         {
-
-            Instituto casa_ = (Instituto)Enum.Parse(typeof(Instituto), casa);
-
-            List<Prospeccao> lista_prosp = _context.Prospeccao.Where(p => p.Casa == casa_).ToList();
-
-            List<Dictionary<string, object>> listaFull = new List<Dictionary<string, object>>();
-
-            foreach (var p in lista_prosp)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                if (p.Status.OrderBy(k => k.Data).LastOrDefault().Data.Year == ano)
+                Instituto casa_ = (Instituto)Enum.Parse(typeof(Instituto), casa);
+
+                List<Prospeccao> lista_prosp = _context.Prospeccao.Where(p => p.Casa == casa_).ToList();
+
+                List<Dictionary<string, object>> listaFull = new List<Dictionary<string, object>>();
+
+                foreach (var p in lista_prosp)
                 {
-                    if (planejadas)
+                    if (p.Status.OrderBy(k => k.Data).LastOrDefault().Data.Year == ano)
                     {
-                        if (p.Status.OrderBy(k => k.Data).LastOrDefault().Status == StatusProspeccao.Planejada)
+                        if (planejadas)
                         {
+                            if (p.Status.OrderBy(k => k.Data).LastOrDefault().Status == StatusProspeccao.Planejada)
+                            {
+                            }
+                            else
+                            {
+                                continue;
+                            }
                         }
-                        else
-                        {
-                            continue;
-                        }
+
+                        Dictionary<string, object> dict = new Dictionary<string, object>();
+                        dict["idProsp"] = p.Id;
+                        dict["Status"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Status.GetDisplayName();
+                        dict["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data;
+                        dict["Empresa"] = p.Empresa.Nome;
+                        dict["Segmento"] = p.Empresa.Segmento.GetDisplayName();
+                        listaFull.Add(dict);
                     }
+                    else
+                    {
+                        continue;
+                    }
+                }
 
-                    Dictionary<string, object> dict = new Dictionary<string, object>();
-                    dict["idProsp"] = p.Id;
-                    dict["Status"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Status.GetDisplayName();
-                    dict["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data;
-                    dict["Empresa"] = p.Empresa.Nome;
-                    dict["Segmento"] = p.Empresa.Segmento.GetDisplayName();
-                    listaFull.Add(dict);
-                }
-                else
-                {
-                    continue;
-                }
+                return JsonSerializer.Serialize(listaFull);
+            } 
+            else
+            {
+                return JsonSerializer.Serialize("403 Forbidden");
             }
-
-            return JsonSerializer.Serialize(listaFull);
 
         }
 
         public string PuxarDadosUsuarios()
         {
-
-            return Helpers.Helpers.PuxarDadosUsuarios(_context);
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                return Helpers.Helpers.PuxarDadosUsuarios(_context);
+            } else
+            {
+                return "403 Forbidden";
+            }
 
         }
-
     }
-
 }
