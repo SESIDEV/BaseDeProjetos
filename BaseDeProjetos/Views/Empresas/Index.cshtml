@@ -10,6 +10,7 @@
 
 <script>
     var prospeccoesDetalhes = [];
+    var empresasCarregadas = [];
 
     function carregarModalProspeccao(idProspeccao, tipo) {
         if (!prospeccoesDetalhes.includes(idProspeccao)) {
@@ -46,13 +47,38 @@
     function carregarModaisProspeccao(idProspeccao) {
         // O nome precisa bater com o nome da view, no sentido que, o sufixo será "ProspViewComponent". Em outras palavras, está acoplado.
 
-        modaisDisponiveis = ["Edit", "Delete", "History", "CreateFollowup"]
+        modaisDisponiveis = ["Edit", "Delete", "History", "CreateFollowup"];
         modaisDisponiveis.forEach((tipo) => {
             carregarModalProspeccao(idProspeccao, tipo)
         })
         carregarModalDetalhesProspeccao(idProspeccao);
         prospeccoesDetalhes.push(idProspeccao);
     }
+
+    function carregarModalEmpresa(idEmpresa, tipo) {
+        console.log(idEmpresa)
+        if (!empresasCarregadas.includes(idEmpresa)) {
+            if (tipo) {
+                fetch(`/Empresas/RetornarModal?idEmpresa=${idEmpresa}&tipo=${tipo}`)
+                    .then(response => response.text())
+                    .then(result => {
+                        console.log("Querying", `#modal${tipo}Empresa-${idEmpresa}-container`);
+                        let a = document.querySelector(`#modal${tipo}Empresa-${idEmpresa}-container`).innerHTML = result;
+                        console.log("Queried to a selector, content now:", a)
+                    });
+            }
+        }
+    }
+
+    function carregarModaisEmpresa(idEmpresa) {
+        console.log(idEmpresa)
+        modaisDisponiveis = ["Delete"];
+        modaisDisponiveis.forEach((tipo) => {
+            carregarModalEmpresa(idEmpresa, tipo)
+        })
+        empresasCarregadas.push(idEmpresa);
+    }
+
 </script>
 <partial name="Header" view-data="@ViewData" />
 <div class="app-wrapper">
@@ -93,6 +119,10 @@
 			</div>
             @foreach (var empresa in Model)
             {
+                <div id="modalDeleteEmpresa-@empresa.Id-container">
+
+                </div>
+
                 <div class="app-card app-card-notification shadow-sm mb-4">
                     <div class="app-card-header px-4 py-3">
                         <div class="row g-3 align-items-center">
@@ -154,11 +184,8 @@
                                                 Detalhes
                                             </button>
                                         </a>
-                                        <a asp-action="Delete" asp-route-id="@empresa.Id">
-                                            <button class="btn app-btn-primary">
-                                                Deletar
-                                            </button>
-                                        </a>
+                                        <button type="button" id="button-@empresa.Id" data-bs-target="#deletarEmpresaModal-@empresa.Id-Toggle"
+                                        data-bs-toggle="modal" class="btn app-btn-primary" onmouseover="carregarModaisEmpresa('@empresa.Id')">Deletar</button>
                                     </div>
                                 </div>
                             </div>

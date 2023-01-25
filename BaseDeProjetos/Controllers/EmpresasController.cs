@@ -102,6 +102,25 @@ namespace BaseDeProjetos.Controllers
             return lista;
         }
 
+        public IActionResult RetornarModal(int idEmpresa, string tipo)
+        {
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                if (tipo != null || tipo != "")
+                {
+                    return ViewComponent($"Modal{tipo}Empresa", new { id = idEmpresa });
+                }
+                else
+                {
+                    return View("Error");
+                }
+            }
+            else
+            {
+                return View("Forbidden");
+            }
+
+        }
 
         // GET: Empresas/Details/5
         public async Task<IActionResult> Details(int? id)
