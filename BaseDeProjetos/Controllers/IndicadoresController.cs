@@ -22,20 +22,32 @@ namespace BaseDeProjetos.Controllers
         // GET: IndicadoresFinanceiros
         public async Task<IActionResult> Index(string casa)
         {
-
-            Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-
-            List<IndicadoresFinanceiros> listaIndicadoresFinanceiros = await _context.IndicadoresFinanceiros.ToListAsync();
-            if (string.IsNullOrEmpty(casa))
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                casa = usuario.Casa.ToString();
+                Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
+                if (usuario.Nivel == Nivel.PMO || usuario.Nivel == Nivel.Dev)
+                {
+                    ViewBag.usuarioCasa = usuario.Casa;
+                    ViewBag.usuarioNivel = usuario.Nivel;
 
+                    List<IndicadoresFinanceiros> listaIndicadoresFinanceiros = await _context.IndicadoresFinanceiros.ToListAsync();
+                    if (string.IsNullOrEmpty(casa))
+                    {
+                        casa = usuario.Casa.ToString();
+
+                    }
+                    List<IndicadoresFinanceiros> lista = DefinirCasaParaVisualizar(casa);
+                    lista = VincularCasaAosIndicadoresFinanceiros(usuario, listaIndicadoresFinanceiros);
+                    return View(lista.ToList());
+                }
+                else
+                {
+                    return View("Forbidden");
+                }
+            } else
+            {
+                return View("Forbidden");
             }
-            List<IndicadoresFinanceiros> lista = DefinirCasaParaVisualizar(casa);
-            lista = VincularCasaAosIndicadoresFinanceiros(usuario, listaIndicadoresFinanceiros);
-            return View(lista.ToList());
         }
 
         public static List<IndicadoresFinanceiros> VincularCasaAosIndicadoresFinanceiros(Usuario usuario, List<IndicadoresFinanceiros> listaIndicadoresFinanceiros)
@@ -81,33 +93,59 @@ namespace BaseDeProjetos.Controllers
         // GET: IndicadoresFinanceiros/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-
-            if (id == null)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return NotFound();
-            }
+                Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
+                if (usuario.Nivel == Nivel.PMO || usuario.Nivel == Nivel.Dev)
+                {
+                    ViewBag.usuarioCasa = usuario.Casa;
+                    ViewBag.usuarioNivel = usuario.Nivel;
 
-            IndicadoresFinanceiros indicadoresFinanceiros = await _context.IndicadoresFinanceiros
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (indicadoresFinanceiros == null)
+                    if (id == null)
+                    {
+                        return NotFound();
+                    }
+
+                    IndicadoresFinanceiros indicadoresFinanceiros = await _context.IndicadoresFinanceiros
+                        .FirstOrDefaultAsync(m => m.Id == id);
+                    if (indicadoresFinanceiros == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return View(indicadoresFinanceiros);
+                } 
+                else
+                {
+                    return View("Forbidden");
+                }
+            }
+            else
             {
-                return NotFound();
+                return View("Forbidden");
             }
-
-            return View(indicadoresFinanceiros);
         }
 
         // GET: IndicadoresFinanceiros/Create
         public IActionResult Create()
         {
-            Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
+            if (HttpContext.User.Identity.IsAuthenticated) { 
+                Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
+                if (usuario.Nivel == Nivel.PMO || usuario.Nivel == Nivel.Dev)
+                {
+                    ViewBag.usuarioCasa = usuario.Casa;
+                    ViewBag.usuarioNivel = usuario.Nivel;
 
-            return View();
+                    return View();
+                } else
+                {
+                    return View("Forbidden");
+                }
+            } 
+            else
+            {
+                return View("Forbidden");    
+            }
         }
 
         // POST: IndicadoresFinanceiros/Create
@@ -129,21 +167,35 @@ namespace BaseDeProjetos.Controllers
         // GET: IndicadoresFinanceiros/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-
-            if (id == null)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return NotFound();
-            }
+                Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
+                if (usuario.Nivel == Nivel.PMO || usuario.Nivel == Nivel.Dev)
+                {
+                    ViewBag.usuarioCasa = usuario.Casa;
+                    ViewBag.usuarioNivel = usuario.Nivel;
 
-            IndicadoresFinanceiros indicadoresFinanceiros = await _context.IndicadoresFinanceiros.FindAsync(id);
-            if (indicadoresFinanceiros == null)
+                    if (id == null)
+                    {
+                        return NotFound();
+                    }
+
+                    IndicadoresFinanceiros indicadoresFinanceiros = await _context.IndicadoresFinanceiros.FindAsync(id);
+                    if (indicadoresFinanceiros == null)
+                    {
+                        return NotFound();
+                    }
+                    return View(indicadoresFinanceiros);
+                } 
+                else
+                {
+                    return View("Forbidden");
+                }
+            } 
+            else
             {
-                return NotFound();
+                return View("Forbidden");
             }
-            return View(indicadoresFinanceiros);
         }
 
         // POST: IndicadoresFinanceiros/Edit/5
@@ -184,23 +236,37 @@ namespace BaseDeProjetos.Controllers
         // GET: IndicadoresFinanceiros/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-
-            if (id == null)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return NotFound();
-            }
+                Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
+                if (usuario.Nivel == Nivel.PMO || usuario.Nivel == Nivel.Dev)
+                {
+                    ViewBag.usuarioCasa = usuario.Casa;
+                    ViewBag.usuarioNivel = usuario.Nivel;
 
-            IndicadoresFinanceiros indicadoresFinanceiros = await _context.IndicadoresFinanceiros
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (indicadoresFinanceiros == null)
+                    if (id == null)
+                    {
+                        return NotFound();
+                    }
+
+                    IndicadoresFinanceiros indicadoresFinanceiros = await _context.IndicadoresFinanceiros
+                        .FirstOrDefaultAsync(m => m.Id == id);
+                    if (indicadoresFinanceiros == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return View(indicadoresFinanceiros);
+                } 
+                else
+                {
+                    return View("Forbidden");
+                }
+            } 
+            else
             {
-                return NotFound();
+                return View("Forbidden");
             }
-
-            return View(indicadoresFinanceiros);
         }
 
         // POST: IndicadoresFinanceiros/Delete/5

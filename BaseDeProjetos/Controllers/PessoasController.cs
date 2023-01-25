@@ -20,23 +20,41 @@ namespace BaseDeProjetos.Controllers
         [Route("Pessoas")]
         public IActionResult Index()
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
 
-            return View();
+                return View();
+            } 
+            else
+            {
+                return View("Forbidden");
+            }
         }
-        public string dados(){
-            
-            return Helpers.Helpers.PuxarDadosUsuarios(_context);
+        public string dados()
+        {
+            if (HttpContext.User.Identity.IsAuthenticated)
+                return Helpers.Helpers.PuxarDadosUsuarios(_context);
+            else
+                return "403 Forbidden";
 
         }
 
-        public string usuarioAtivo(){
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+        public string usuarioAtivo()
+        {
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-            return usuario.UserName;
+                return usuario.UserName;
+            } 
+            else
+            {
+                return "403 Forbidden";
+            }
         }
 
         public string dictCompetencias(){

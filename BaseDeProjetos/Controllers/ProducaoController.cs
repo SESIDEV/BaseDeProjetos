@@ -25,66 +25,83 @@ namespace BaseDeProjetos.Controllers
         // GET: Producao
         public IActionResult Index(string casa, string searchString = "", string ano = "")
         {
-			List<Producao> Producoes;
-
-			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-
-            if (string.IsNullOrEmpty(casa))
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                casa = usuario.Casa.ToString();
-            }            
+                List<Producao> Producoes;
 
-            Producoes = FunilHelpers.DefinirCasaParaVisualizarEmProducao(casa, usuario, _context, HttpContext, ViewData);
-            Producoes = FunilHelpers.VincularCasaProducao(usuario, Producoes);
-            Producoes = FunilHelpers.PeriodizarProduções(ano, Producoes);
-            Producoes = FunilHelpers.FiltrarProduções(searchString, Producoes);
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
 
-			List<Empresa> empresas = _context.Empresa.ToList();
-		    List<Projeto> projetos = _context.Projeto.ToList();
+                if (string.IsNullOrEmpty(casa))
+                {
+                    casa = usuario.Casa.ToString();
+                }
 
-			ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-			ViewData["Projetos"] = new SelectList(projetos, "Id", "NomeProjeto");
-			ViewData["ListaProducoes"] = Producoes.ToList();
+                Producoes = FunilHelpers.DefinirCasaParaVisualizarEmProducao(casa, usuario, _context, HttpContext, ViewData);
+                Producoes = FunilHelpers.VincularCasaProducao(usuario, Producoes);
+                Producoes = FunilHelpers.PeriodizarProduções(ano, Producoes);
+                Producoes = FunilHelpers.FiltrarProduções(searchString, Producoes);
 
-            return View();
+                List<Empresa> empresas = _context.Empresa.ToList();
+                List<Projeto> projetos = _context.Projeto.ToList();
+
+                ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+                ViewData["Projetos"] = new SelectList(projetos, "Id", "NomeProjeto");
+                ViewData["ListaProducoes"] = Producoes.ToList();
+
+                return View();
+            } else
+            {
+                return View("Forbidden");
+            }
         }
 
         // GET: Producao/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-
-            if (id == null)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return NotFound();
-            }
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
 
-            var producao = await _context.Producao
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (producao == null)
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                var producao = await _context.Producao
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (producao == null)
+                {
+                    return NotFound();
+                }
+
+                return View(producao);
+            } else
             {
-                return NotFound();
+                return View("Forbidden");
             }
-
-            return View(producao);
         }
 
         // GET: Producao/Create
         public IActionResult Create()
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
 
-            List<Empresa> empresas = _context.Empresa.ToList();
-            List<Projeto> projetos = _context.Projeto.ToList();
-            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-            ViewData["Projetos"] = new SelectList(projetos, "Id", "NomeProjeto");
-            return View();
+                List<Empresa> empresas = _context.Empresa.ToList();
+                List<Projeto> projetos = _context.Projeto.ToList();
+                ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+                ViewData["Projetos"] = new SelectList(projetos, "Id", "NomeProjeto");
+                return View();
+            } else { 
+                return View("Forbidden"); 
+            }
         }
 
         // POST: Producao/Create
@@ -106,25 +123,31 @@ namespace BaseDeProjetos.Controllers
         // GET: Producao/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-
-            if (id == null)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return NotFound();
-            }
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
 
-            var producao = await _context.Producao.FindAsync(id);
-            if (producao == null)
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                var producao = await _context.Producao.FindAsync(id);
+                if (producao == null)
+                {
+                    return NotFound();
+                }
+                List<Empresa> empresas = _context.Empresa.ToList();
+                List<Projeto> projetos = _context.Projeto.ToList();
+                ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+                ViewData["Projetos"] = new SelectList(projetos, "Id", "NomeProjeto");
+                return View(producao);
+            } else
             {
-                return NotFound();
+                return View("Forbidden");
             }
-            List<Empresa> empresas = _context.Empresa.ToList();
-            List<Projeto> projetos = _context.Projeto.ToList();
-            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-            ViewData["Projetos"] = new SelectList(projetos, "Id", "NomeProjeto");
-            return View(producao);
         }
 
         // POST: Producao/Edit/5
@@ -165,23 +188,29 @@ namespace BaseDeProjetos.Controllers
         // GET: Producao/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-
-            if (id == null)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return NotFound();
-            }
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
 
-            var producao = await _context.Producao
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (producao == null)
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                var producao = await _context.Producao
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (producao == null)
+                {
+                    return NotFound();
+                }
+
+                return View(producao);
+            } else
             {
-                return NotFound();
+                return View("Forbidden");
             }
-
-            return View(producao);
         }
 
         // POST: Producao/Delete/5
