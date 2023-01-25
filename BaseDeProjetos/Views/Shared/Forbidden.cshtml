@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Acesso Proibido - 403";
+}
+<style>
+    img.img-fluid {
+        width: 10em;
+        height: 10em;
+    }
+
+    @@media (min-width: 768px) {
+        img.img-fluid {
+            width: 15em;
+            height: 15em;
+        }
+    }
+
+</style>
+
+<div class="text-center">
+    <img src="~/assets/images/StopSign.svg" alt="Forbidden" class="img-fluid" />
+    <h1 class="text-danger">403 Forbidden</h1>
+    <p>Você não tem permissão para acessar essa página.</p>
+    <div class="mt-3 mb-3">
+        <a href="/" class="btn app-btn-secondary">Página Principal</a>
+        <a asp-area="Identity" asp-page="/Account/Login" class="btn app-btn-primary">Login</a>        
+    </div>
+</div>

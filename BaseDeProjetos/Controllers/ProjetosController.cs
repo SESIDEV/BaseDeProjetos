@@ -26,31 +26,44 @@ namespace BaseDeProjetos.Controllers
 
         public IActionResult PopularBase()
         {
-            string[] _base;
-            using (StreamReader file = new StreamReader("~/Base.csv"))
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                _base = file.ReadToEnd().Split("\n");
-            }
+                string[] _base;
+                using (StreamReader file = new StreamReader("~/Base.csv"))
+                {
+                    _base = file.ReadToEnd().Split("\n");
+                }
 
-            return View(nameof(Index));
+                return View(nameof(Index));
+            } else
+            {
+                return View("Forbidden");
+            }
         }
 
         // GET: Projetos
         public IActionResult Index(string casa, string sortOrder = "", string searchString = "", string ano = "")
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
 
-            List<Empresa> empresas = _context.Empresa.ToList();
-            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+                List<Empresa> empresas = _context.Empresa.ToList();
+                ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
 
-            SetarFiltros(sortOrder, searchString);
-            IQueryable<Projeto> projetos = DefinirCasa(casa);
-            projetos = PeriodizarProjetos(ano, projetos);
-            CategorizarStatusProjetos(projetos);
-            GerarIndicadores(casa, _context);
-            return View(projetos.ToList());
+                SetarFiltros(sortOrder, searchString);
+                IQueryable<Projeto> projetos = DefinirCasa(casa);
+                projetos = PeriodizarProjetos(ano, projetos);
+                CategorizarStatusProjetos(projetos);
+                GerarIndicadores(casa, _context);
+                return View(projetos.ToList());
+            } 
+            else
+            {
+                return View("Forbidden");
+            }
         }
 
         private void SetarFiltros(string sortOrder = "", string searchString = "")
@@ -144,20 +157,32 @@ namespace BaseDeProjetos.Controllers
 
         public IActionResult RetornarModal(string idProjeto, string tipo)
         {
-            if (tipo != null || tipo != "")
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return ViewComponent($"Modal{tipo}Projeto", new { id = idProjeto });
-            }
-            else
+                if (tipo != null || tipo != "")
+                {
+                    return ViewComponent($"Modal{tipo}Projeto", new { id = idProjeto });
+                }
+                else
+                {
+                    return ViewComponent("null"); // View n existe é mais pra ""debug""
+                }
+            } else
             {
-                return ViewComponent("null"); // View n existe é mais pra ""debug""
+                return View("Forbidden");
             }
 
         }
 
         public IActionResult RetornarModalDetalhes(string idProjeto)
         {
-            return ViewComponent($"ModalDetalhesProjeto", new { id = idProjeto });
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                return ViewComponent($"ModalDetalhesProjeto", new { id = idProjeto });
+            } else
+            {
+                return View("Forbidden");
+            }
         }
 
         private bool ValidarProjetoId(string id)
@@ -180,34 +205,46 @@ namespace BaseDeProjetos.Controllers
         // GET: Projetos/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-
-            if (id == null)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return NotFound();
-            }
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
 
-            Projeto projeto = await _context.Projeto
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (projeto == null)
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                Projeto projeto = await _context.Projeto
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (projeto == null)
+                {
+                    return NotFound();
+                }
+
+                return View(projeto);
+            } else
             {
-                return NotFound();
+                return View("Forbidden");
             }
-
-            return View(projeto);
         }
 
         // GET: Projetos/Create
         public IActionResult Create()
         {
-            List<Empresa> empresas = _context.Empresa.ToList();
-            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-			ViewBag.usuarioCasa = usuario.Casa;
-			ViewBag.usuarioNivel = usuario.Nivel;
-			return View();
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                List<Empresa> empresas = _context.Empresa.ToList();
+                ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+                return View();
+            } else
+            {
+                return View("Forbidden");
+            }
         }
 
         // POST: Projetos/Create
@@ -231,27 +268,33 @@ namespace BaseDeProjetos.Controllers
         // GET: Projetos/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-
-            ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
-
-            if (id == null)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return NotFound();
-            }
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
 
-            Projeto projeto = await _context.Projeto.FindAsync(id);
+                ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
 
-            if (projeto == null)
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                Projeto projeto = await _context.Projeto.FindAsync(id);
+
+                if (projeto == null)
+                {
+                    return NotFound();
+                }
+
+                //ConfigurarEquipe(projeto);
+
+                return View(projeto);
+            } else
             {
-                return NotFound();
+                return View("Forbidden");
             }
-
-            //ConfigurarEquipe(projeto);
-
-            return View(projeto);
         }
 
         /*private static void ConfigurarEquipe(Projeto projeto)
@@ -319,23 +362,30 @@ namespace BaseDeProjetos.Controllers
         // GET: Projetos/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-
-            if (id == null)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return NotFound();
-            }
 
-            Projeto projeto = await _context.Projeto
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (projeto == null)
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                Projeto projeto = await _context.Projeto
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (projeto == null)
+                {
+                    return NotFound();
+                }
+
+                return View(projeto);
+            } else
             {
-                return NotFound();
+                return View("Forbidden");
             }
-
-            return View(projeto);
         }
 
         // POST: Projetos/Delete/5
@@ -419,15 +469,21 @@ namespace BaseDeProjetos.Controllers
         }
         public JsonResult ListaUsuarios()
         {
-            Usuario ativo = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            List<string> usuarios = _context.Users.AsEnumerable().
-                                        Where(u => u.Casa == ativo.Casa).
-                                        Where(usuario => usuario.EmailConfirmed == true).
-                                        Where(usuario => usuario.Nivel != Nivel.Dev && usuario.Nivel != Nivel.Externos).
-                                        Select((usuario) => usuario.Email.ToString().ToLower()).
-                                        ToList();
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                Usuario ativo = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                List<string> usuarios = _context.Users.AsEnumerable().
+                                            Where(u => u.Casa == ativo.Casa).
+                                            Where(usuario => usuario.EmailConfirmed == true).
+                                            Where(usuario => usuario.Nivel != Nivel.Dev && usuario.Nivel != Nivel.Externos).
+                                            Select((usuario) => usuario.Email.ToString().ToLower()).
+                                            ToList();
 
-            return Json(usuarios);
+                return Json(usuarios);
+            } else
+            {
+                return Json("403 Forbidden");
+            }
         }
     }
 }

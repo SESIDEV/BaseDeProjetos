@@ -21,45 +21,66 @@ namespace BaseDeProjetos.Controllers
         // GET: Editais
         public async Task<IActionResult> Index()
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            List<Empresa> empresas = _context.Empresa.ToList();
-            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-            return View(await _context.Editais.ToListAsync());
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                List<Empresa> empresas = _context.Empresa.ToList();
+                ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+                return View(await _context.Editais.ToListAsync());
+            } 
+            else
+            {
+                return View("Forbidden");
+            }
         }
         // GET: Editais/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-
-            if (id == null)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return NotFound();
-            }
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-            var editais = await _context.Editais
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (editais == null)
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                var editais = await _context.Editais
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (editais == null)
+                {
+                    return NotFound();
+                }
+
+                return View(editais);
+            } 
+            else
             {
-                return NotFound();
+                return View("Forbidden");
             }
-
-            return View(editais);
         }
 
         // GET: Editais/Create        
         public IActionResult Create()
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
 
-            return View();
+                return View();
+            } 
+            else
+            {
+                return View("Forbidden");
+            }
         }
         // POST: Editais/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
@@ -80,22 +101,29 @@ namespace BaseDeProjetos.Controllers
         // GET: Editais/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-
-            if (id == null)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return NotFound();
-            }
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-            var editais = await _context.Editais.FindAsync(id);
-            if (editais == null)
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                var editais = await _context.Editais.FindAsync(id);
+                if (editais == null)
+                {
+                    return NotFound();
+                }
+                return View(editais);
+            } 
+            else
             {
-                return NotFound();
+                return View("Forbidden");
             }
-            return View(editais);
         }
 
         // POST: Editais/Edit/5
@@ -136,24 +164,32 @@ namespace BaseDeProjetos.Controllers
         // GET: Editais/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-
-            if (id == null)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return NotFound();
-            }
 
-            var editais = await _context.Editais
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (editais == null)
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                var editais = await _context.Editais
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (editais == null)
+                {
+                    return NotFound();
+                }
+
+                return View(editais);
+            } 
+            else
             {
-                return NotFound();
+                return View("Forbidden");
             }
-
-            return View(editais);
         }
 
         // POST: Editais/Delete/5
@@ -174,22 +210,23 @@ namespace BaseDeProjetos.Controllers
                 
         public IActionResult ProspectarEdital(int id)
         {
-
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            Editais Edital = _context.Editais.FirstOrDefault(e => e.Id == id);
-            string prospeccaoId = $"proj_{DateTime.Now.Ticks}";
-
-            Submissao submissao = new Submissao
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                Editais Edital = _context.Editais.FirstOrDefault(e => e.Id == id);
+                string prospeccaoId = $"proj_{DateTime.Now.Ticks}";
 
-                ComEmpresa = false,
-                Edital = Edital,
-                EditalId = Edital.Id.ToString(),
-                Prospeccao = new Prospeccao
+                Submissao submissao = new Submissao
                 {
-                    Id = prospeccaoId,
-                    Usuario = usuario,
-                    Status = new List<FollowUp> {
+
+                    ComEmpresa = false,
+                    Edital = Edital,
+                    EditalId = Edital.Id.ToString(),
+                    Prospeccao = new Prospeccao
+                    {
+                        Id = prospeccaoId,
+                        Usuario = usuario,
+                        Status = new List<FollowUp> {
                         new FollowUp
                         {
 
@@ -200,21 +237,26 @@ namespace BaseDeProjetos.Controllers
 
                         }
                     },
-                    Casa = usuario.Casa
+                        Casa = usuario.Casa
 
-                },
-                ProspeccaoId = prospeccaoId,
-                Proponente = "",
-                ProjetoProposto = "",
-                ResponsavelSubmissao = usuario.UserName,
-                StatusSubmissao = StatusSubmissaoEdital.emAnalise
+                    },
+                    ProspeccaoId = prospeccaoId,
+                    Proponente = "",
+                    ProjetoProposto = "",
+                    ResponsavelSubmissao = usuario.UserName,
+                    StatusSubmissao = StatusSubmissaoEdital.emAnalise
 
 
 
-            };
-            _context.Add(submissao);
-            _context.SaveChanges();
-            return RedirectToAction("Index", "FunilDeVendas");
+                };
+                _context.Add(submissao);
+                _context.SaveChanges();
+                return RedirectToAction("Index", "FunilDeVendas");
+            } 
+            else
+            {
+                return View("Forbidden");
+            }
         }
 
     }
