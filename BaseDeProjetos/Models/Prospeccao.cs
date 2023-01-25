@@ -49,8 +49,12 @@ namespace BaseDeProjetos.Models
             return other.Id == Id;
         }
         public override int GetHashCode() => (Id).GetHashCode();
+
         [Display(Name = "Caminho/Endereço da pasta no sistema")]
-        public virtual string CaminhoPasta {get; set; }
+        public virtual string CaminhoPasta {get; set;}
+
+        [Display(Name = "Tags")]
+        public virtual string Tags {get; set;}
 
     }
 

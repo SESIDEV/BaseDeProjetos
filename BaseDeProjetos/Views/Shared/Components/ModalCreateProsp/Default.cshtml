@@ -175,6 +175,19 @@
                         <span asp-validation-for="Status[0].OrigemID" class="text-danger"></span>
                     </div>
                     <div class="col-form-label" style="font-weight: 600">
+                        <label asp-for="Tags" class="control-label"></label>
+                        <input type="text" asp-for="Tags" class="form-control" id="tagsTextCreate"/>
+                        <div class="input-group flex-nowrap">
+                            <select id="campoTagsCreate" class="form-select" multiple="true" onclick="gerarOpcoesSelectTags('criarProspModalToggle3','campoTagsCreate')"></select>
+                            <span class="input-group-text" id="addon-wrapping" onclick="addTag('tagsTextCreate','campoTagsCreate')" onmouseover="novaTag()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
+                                    <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z"/>
+                                </svg>
+                            </span>
+                        </div>
+                        <span asp-validation-for="Tags" class="text-danger"></span>
+                    </div>
+                    <div class="col-form-label" style="font-weight: 600">
                         <label asp-for="Status[0].Anotacoes" class="control-label"></label>
                         <textarea class="form-control" asp-for=" Status[0].Anotacoes" rows="3"></textarea>
                         <span asp-validation-for="Status[0].Anotacoes" class="text-danger"></span>
@@ -194,6 +207,12 @@
                     </button>
                     <input type="submit" value="Concluir" class="btn app-btn-primary">
                 </div>
+                <li class="select2-selection__choice d-none" title="NomeDefault" id="bloco_botao">
+                    <span class="select2-selection__choice__display">NomeDefault</span>
+                    <button type="button" class="select2-selection__choice__remove" tabindex="-1" title="Remove item" aria-label="Remove item">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </li>
             </div>
         </div>
     </div>
