@@ -4,9 +4,11 @@ using BaseDeProjetos.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BaseDeProjetos.Controllers
 {
+    [Authorize]
     public class PessoasController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -7,9 +7,11 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BaseDeProjetos.Controllers
 {
+    [Authorize]
     public class IndicadoresController : Controller
     {
         private readonly ApplicationDbContext _context;

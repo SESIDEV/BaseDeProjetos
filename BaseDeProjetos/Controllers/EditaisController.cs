@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
 using BaseDeProjetos.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BaseDeProjetos.Controllers
 {
+    [Authorize]
     public class EditaisController : Controller
     {
         private readonly ApplicationDbContext _context;

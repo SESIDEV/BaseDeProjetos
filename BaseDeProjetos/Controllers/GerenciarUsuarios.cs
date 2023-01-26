@@ -10,9 +10,11 @@ using BaseDeProjetos.Models;
 using BaseDeProjetos.Helpers;
 using System.Collections;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BaseDeProjetos.Controllers
 {
+    [Authorize]
     public class GerenciarUsuarios : Controller
     {
         private readonly ApplicationDbContext _context;

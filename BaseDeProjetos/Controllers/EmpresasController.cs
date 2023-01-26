@@ -10,9 +10,11 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Net.Http;
 using BaseDeProjetos.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BaseDeProjetos.Controllers
 {
+    [Authorize]
     public class EmpresasController : Controller
     {
         private readonly ApplicationDbContext _context;
