@@ -195,12 +195,12 @@
                                         <button type="button" id="button-@empresa.Id" class="btn app-btn-primary" data-bs-target="#EditEmpresaModal-@empresa.Id-Toggle" data-bs-toggle="modal" class="btn app-btn-primary" onmouseover="carregarModaisEmpresa('@empresa.Id')">   
                                         Editar
                                         </button>
-                                        <a asp-action="Details" asp-route-id="@empresa.Id">
+                                        @*<a asp-action="Details" asp-route-id="@empresa.Id">
                                             <button class="btn app-btn-primary">
                                                 Ver
                                                 Detalhes
                                             </button>
-                                        </a>
+                                        </a>*@
                                         <button type="button" id="button-@empresa.Id" data-bs-target="#deletarEmpresaModal-@empresa.Id-Toggle"
                                         data-bs-toggle="modal" class="btn app-btn-primary" onmouseover="carregarModaisEmpresa('@empresa.Id')">Deletar</button>
                                     </div>
