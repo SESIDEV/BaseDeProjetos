@@ -34,6 +34,8 @@ namespace BaseDeProjetos.Controllers
                 return View("Forbidden");
             }
         }
+
+        
         public string dados()
         {
             if (HttpContext.User.Identity.IsAuthenticated)
