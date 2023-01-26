@@ -578,26 +578,36 @@ namespace BaseDeProjetos.Controllers
 
                 foreach (var p in lista_prosp)
                 {
+                    bool aprovado = false;
                     if (p.Status.OrderBy(k => k.Data).LastOrDefault().Data.Year == ano)
                     {
                         if (planejadas)
                         {
                             if (p.Status.OrderBy(k => k.Data).LastOrDefault().Status == StatusProspeccao.Planejada)
                             {
+                                aprovado = true;
                             }
                             else
                             {
                                 continue;
                             }
+                        } else {
+                            if (p.Status.OrderBy(k => k.Data).LastOrDefault().Status != StatusProspeccao.Planejada)
+                            {
+                                aprovado = true;
+                            }
                         }
 
-                        Dictionary<string, object> dict = new Dictionary<string, object>();
-                        dict["idProsp"] = p.Id;
-                        dict["Status"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Status.GetDisplayName();
-                        dict["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data;
-                        dict["Empresa"] = p.Empresa.Nome;
-                        dict["Segmento"] = p.Empresa.Segmento.GetDisplayName();
-                        listaFull.Add(dict);
+                        if (aprovado)
+                        {
+                            Dictionary<string, object> dict = new Dictionary<string, object>();
+                            dict["idProsp"] = p.Id;
+                            dict["Status"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Status.GetDisplayName();
+                            dict["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data;
+                            dict["Empresa"] = p.Empresa.Nome;
+                            dict["Segmento"] = p.Empresa.Segmento.GetDisplayName();
+                            listaFull.Add(dict);
+                        }    
                     }
                     else
                     {
