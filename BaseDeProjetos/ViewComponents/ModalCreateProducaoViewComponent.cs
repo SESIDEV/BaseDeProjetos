@@ -7,9 +7,9 @@ namespace BaseDeProjetos.ViewComponents
 {
     public class ModalCreateProducaoViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync(int id)
+        public async Task<IViewComponentResult> InvokeAsync()
         {
-            return View();
+            return View(new Producao());
         }
 
     }
