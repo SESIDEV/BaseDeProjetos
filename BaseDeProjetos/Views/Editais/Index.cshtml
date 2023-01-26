@@ -1,20 +1,152 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Editais>
+@{
+	ViewData["Title"] = "Editais";
+}
 
 
 <style>
-    td, th {
-        font-size: 1rem;
-    }
-
-    .dropdown-item:hover {
-        border: solid 1px green;
-        border-radius: 5px;
-        transition: 0.5s;
-    }
 
 </style>
+
 <partial name="Header" view-data="@ViewData" />
-<div class="container" style="padding-left: 15em;">
+<script>
+	var editaisDetalhes = []
+
+	function carregarModalEdital(idEdital, tipo) {
+		if (tipo) {
+			fetch(`/Editais/RetornarModal?idEdital=${idEdital}&tipo=${tipo}`)
+				.then(response => response.text())
+				.then(result => {
+					document.querySelector(`#modal${tipo}Edital-${idEdital}-container`).innerHTML = result;
+				});
+		} else {
+			console.log("Tipo de Modal Inválido");
+		}
+	}
+
+	function carregarModalDetalhesEdital(idEdital) {
+		// Verifica se o modal da Projetoeccao ja foi carregada para que não se carregue-o duas vezes sem necessidade
+		let buttonName = "#button-" + idEdital
+		let buttonDetalhes = document.querySelector(buttonName)
+
+		if (!editaisDetalhes.includes(idEdital)) {
+			buttonDetalhes.disabled = true;
+			buttonDetalhes.innerHTML = '<div class="spinner-border spinner-border-sm text-light" role="status"><span class="visually-hidden">Loading...</span></div>';
+			fetch(`/Editais/RetornarModalDetalhes?idEdital=${idEdital}`)
+				.then(response => response.text())
+				.then(result => {
+					document.querySelector(`#modalDetailsEdital-${idEdital}-container`).innerHTML = result;
+					buttonDetalhes.innerHTML = 'Detalhes';
+					buttonDetalhes.disabled = false;
+				});
+		}
+	}
+
+	function carregarModaisEdital(idEdital) {
+		// O nome precisa bater com o nome da view, no sentido que, o sufixo será "ProjViewComponent". Em outras palavras, está acoplado.
+		modaisDisponiveis = ["Edit", "Delete"]
+		modaisDisponiveis.forEach((tipo) => {
+			carregarModalEdital(idEdital, tipo)
+		})
+		carregarModalDetalhesEdital(idEdital);
+		editaisDetalhes.push(idEdital);
+	}
+
+
+</script>
+<div class="app-wrapper">
+	<div class="app-content pt-3 p-md-3 p-lg-4">
+		<div class="container-xl">
+			<div class="row g-3 mb-4 align-items-center justify-content-between">
+				<div class="col-auto">
+					<h1 class="app-page-title mb-0">Editais</h1>
+				</div>
+				<div class="col-auto">
+					<div class="page-utilities">
+						<div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+							<div class="col-auto">
+								<form class="table-search-form row gx-1 align-items-center">
+									<div class="col-auto">
+										<input type="text" id="search-orders" name="SearchString" value='@ViewData["CurrentFilter"]' class="form-control search-orders" placeholder="Pesquise pelo edital" autocomplete="off">
+									</div>
+									<div class="col-auto">
+										<button type="submit" class="btn app-btn-primary">Pesquisar</button>
+									</div>
+									<div class="col-auto">
+										<button type="submit" class="btn app-btn-primary">Lista Completa</button>
+									</div>
+								</form>
+
+							</div>
+							<div class="col-auto">
+								<select autofocus class="form-select w-auto" name="ano">
+									<option value="Todos">Todos</option>
+									@{
+										int anoFinal = 2019;
+										int anoAtual = DateTime.Now.Year;
+										while (anoAtual >= anoFinal)
+										{
+											<option value="@anoAtual">@anoAtual</option>
+											anoAtual--;
+										}
+									}
+								</select>
+
+							</div>
+							@*<div class="col-auto">
+								<select class="form-select w-auto">
+									<option value="">Selecione Status</option>
+									<option value="Contratado">Contratado</option>
+									<option value="EmExecucao">Em Execução</option>
+									<option value="Concluido">Concluído</option>
+								</select>
+							</div>*@
+							<div class="col-auto">
+								<a class="btn app-btn-primary" data-bs-toggle="modal" href="#modalCreateEdital" role="button">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill"
+										 viewBox="0 0 16 16">
+										<path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
+									</svg> Novo Edital
+								</a>
+								@await Component.InvokeAsync("ModalCreateEdital")
+							</div>
+						</div>
+					</div>
+					
+				</div>
+			</div>			
+			<div class="app-card app-card-orders-table shadow-sm mb-5">
+				<div class="app-card-body">
+					<div class="table-responsive">
+						<table class="table mb-0 text-left">
+							<thead>
+								<tr>
+									<th class="cell">Nome</th>
+									<th class="cell">Descrição</th>
+									<th class="cell">Local</th>
+									<th class="cell">Status do Edital</th>
+									<th class="cell">Agência de Fomento</th>
+									<th class="cell">Prazo de Submissão</th>
+									<th class="cell">Valor do Edital</th>
+									<th class="cell">Data do Resultado</th>
+									<th class="cell">Ações</th>
+								</tr>
+							</thead>
+							<tbody>
+								<partial name="lista_editais" view-data="@ViewData" />
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+@*
+<partial name="Header" view-data="@ViewData" />
+  <div class="container" style="padding-left: 15em;">
     <p>
         <a asp-action="Create" class="btn bg-success text-white">Criar Edital</a>
     </p>
@@ -102,3 +234,4 @@
 </div>
 @await Component.InvokeAsync("ModalCreateSubmissaoEdital")
 @await Component.InvokeAsync("ModalCreateProsp")
+*@
