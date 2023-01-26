@@ -1,127 +1,16 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Empresa>
-
+@using System.Globalization
 @{
     ViewData["Title"] = "Empresas";
     List<Pessoa> contatos = ViewBag.Contatos as List<Pessoa>;
-    List<Prospeccao> prosps = ViewBag.Prospeccoes as List<Prospeccao>;
+    List<Prospeccao> prospeccoes = ViewBag.Prospeccoes as List<Prospeccao>;
     List<Prospeccao> prospsPlanejadas = ViewBag.ProspeccoesPlanejadas as List<Prospeccao>;
     List<Prospeccao> prospsAtivas = ViewBag.ProspeccoesAtivas as List<Prospeccao>;
 }
-<style>
-    .efeito-hover:hover {
-        background-color: gray;
-        transition: 500ms ease-in-out;
-        border-radius: 10px;
-        outline: none;
-        border: none;
-        color: white;
-    }
 
-    .empresa {
-        border-radius: 10px;
-        box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
-        display: flex;
-        margin: 0 20px 20px 0;
-        overflow: hidden;
-        width: 100%;
-        border: 0.5px solid black;
-    }
-
-        .empresa h6 {
-            opacity: 0.6;
-            margin: 0;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .empresa h2 {
-            letter-spacing: 1px;
-            margin: 10px 0
-        }
-
-    .empresa-preview {
-        background-color: #fff;
-        color: #2A265F;
-        min-width: 200px;
-        max-width: 200px;
-        max-height: 200px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    #logoEmpresa {
-        width: 100%;
-        height: 100%;
-        max-width: 180px;
-        object-fit: contain;
-        padding: 20px;
-    }
-
-    .empresa-preview a {
-        color: #fff;
-        display: inline-block;
-        font-size: 12px;
-        opacity: 0.6;
-        margin-top: 30px;
-        text-decoration: none;
-    }
-
-    .empresa-info {
-        padding: 30px;
-        position: relative;
-        width: 100%;
-    }
-
-    .dados-container {
-        position: absolute;
-        top: 30px;
-        right: 30px;
-        text-align: right;
-        width: 150px;
-    }
-
-    .dados {
-        background-color: #ddd;
-        border-radius: 3px;
-        height: 5px;
-        width: 100%;
-    }
-
-        .dados::after {
-            border-radius: 3px;
-            background-color: #2A265F;
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 5px;
-            width: 66%;
-        }
-
-    .dados-text {
-        font-size: 10px;
-        opacity: 0.6;
-        letter-spacing: 1px;
-    }
-
-    .btn-empresa {
-        background-color: #0d6efd;
-        border: none;
-        border-radius: 5px;
-        color: white;
-        text-decoration: none;
-        font-size: 14px;
-        padding: 10px;
-    }
-
-    button > a {
-        text-decoration: none;
-        color: white;
-    }
-</style>
 <script>
     var prospeccoesDetalhes = [];
+    var empresasCarregadas = [];
 
     function carregarModalProspeccao(idProspeccao, tipo) {
         if (!prospeccoesDetalhes.includes(idProspeccao)) {
@@ -139,7 +28,7 @@
         // Verifica se o modal da prospeccao ja foi carregada para que não se carregue-o duas vezes sem necessidade
         let buttonName = "#button-" + idProspeccao
         console.log(buttonName)
-        let buttonDetalhes = document.querySelector(buttonName)
+        let buttonDetalhes = document.querySelector(buttonName)        
 
         if (!prospeccoesDetalhes.includes(idProspeccao)) {
           buttonDetalhes.disabled = true;
@@ -148,202 +37,307 @@
             .then(response => response.text())
             .then(result => {
               document.querySelector(`#modalDetalhesProsp-${idProspeccao}-container`).innerHTML = result;
-                    buttonDetalhes.innerHTML = 'Detalhes da Prospecção: ' + idProspeccao;
+                    buttonDetalhes.innerHTML = 'Detalhes';
               buttonDetalhes.disabled = false;
               buttonDetalhes.removeAttribute("style");
             });
         }
-      }
+    }
 
     function carregarModaisProspeccao(idProspeccao) {
         // O nome precisa bater com o nome da view, no sentido que, o sufixo será "ProspViewComponent". Em outras palavras, está acoplado.
 
-        modaisDisponiveis = ["Edit", "Delete", "History", "CreateFollowup"]
+        modaisDisponiveis = ["Edit", "Delete", "History", "CreateFollowup"];
         modaisDisponiveis.forEach((tipo) => {
             carregarModalProspeccao(idProspeccao, tipo)
         })
         carregarModalDetalhesProspeccao(idProspeccao);
         prospeccoesDetalhes.push(idProspeccao);
     }
-</script>
 
+    function carregarModalEmpresa(idEmpresa, tipo) {
+        console.log(idEmpresa)
+        if (!empresasCarregadas.includes(idEmpresa)) {
+            if (tipo) {
+                fetch(`/Empresas/RetornarModal?idEmpresa=${idEmpresa}&tipo=${tipo}`)
+                    .then(response => response.text())
+                    .then(result => {
+                        console.log("Querying", `#modal${tipo}Empresa-${idEmpresa}-container`);
+                        let a = document.querySelector(`#modal${tipo}Empresa-${idEmpresa}-container`).innerHTML = result;
+                        console.log("Queried to a selector, content now:", a)
+                    });
+            }
+        }
+    }
+
+    function carregarModaisEmpresa(idEmpresa) {
+        console.log(idEmpresa)
+        modaisDisponiveis = ["Delete"];
+        modaisDisponiveis.forEach((tipo) => {
+            carregarModalEmpresa(idEmpresa, tipo)
+        })
+        empresasCarregadas.push(idEmpresa);
+    }
+
+</script>
 <partial name="Header" view-data="@ViewData" />
-<div class="container" style="padding-left: 15em;">
-    <div class="row">
-        <div class="col-12">
-            <h1>Lista de Empresas</h1>
-            <div>
-                <div>
-                    <div>
-                        <div class="row g-3">
-                            <div class="col-8">
-                                <form asp-controller="Empresas" asp-action="Index" method="get">
-                                    <input class="input-group" name="ano" value="Todos" id="inputLiderOuEmpresa" style="display: none; padding: 0px; margin: 0px;" />
-                                    <div class="input-group mb-3">
-                                        <input class="form-control" type="text" name="SearchString" value='@ViewData["CurrentFilter"]' placeholder="Digite o nome da Empresa" />
-                                        <button type="submit" class="btn app-btn-primary">Procurar</button>
-                                        <a asp-action="Index" class="btn app-btn-primary" style="margin-left: 15px;">Lista Completa</a>
-                                    </div>
-                                </form>
+<div class="app-wrapper">
+	<div class="app-content pt-3 p-md-3 p-lg-4">
+		<div class="container-xl">
+			<div class="row g-3 mb-4 align-items-center justify-content-between">
+				<div class="col-auto">
+					<h1 class="app-page-title mb-0">Empresas</h1>
+				</div>
+				<div class="col-auto">
+					<div class="page-utilities">
+						<div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+							<div class="col-auto">
+								<form class="table-search-form row gx-1 align-items-center">
+									<div class="col-auto">
+										<input type="text" id="search-orders" name="SearchString" value='@ViewData["CurrentFilter"]' class="form-control search-orders" placeholder="Buscar Empresa..." autocomplete="off">
+									</div>
+									<div class="col-auto">
+										<button type="submit" class="btn app-btn-primary">Pesquisar</button>
+									</div>
+									<div class="col-auto">
+										<button type="submit" class="btn app-btn-primary">Lista Completa</button>
+									</div>
+								</form>
+							</div>
+							<div class="col-auto">
+                                <a class="btn app-btn-primary" asp-action="Create">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill"
+										 viewBox="0 0 16 16">
+										<path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
+									</svg> Adicionar Empresa
+								</a>
+								@*@await Component.InvokeAsync("ModalCreateProsp")*@
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+            @foreach (var empresa in Model)
+            {
+                <div id="modalDeleteEmpresa-@empresa.Id-container">
+
+                </div>
+
+                <div class="app-card app-card-notification shadow-sm mb-4">
+                    <div class="app-card-header px-4 py-3">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-12 col-lg-auto text-center text-lg-start">
+                                @if (empresa.Logo != null)
+                                {
+                                    <img loading="lazy" style="background-color:white; object-fit:contain; width: 100px; height: 100px" id="logoEmpresa" src="@empresa.Logo" alt="Logo da Empresa" />
+                                }
+                                else
+                                {
+                                    <div id="logo_alt" style="width: 100px; height: 100px">Sem Logo</div>
+                                }
                             </div>
-                            <div class="col-4">
-                                <a asp-action="Create" style="text-decoration:none;" class="btn app-btn-primary">Adicionar Empresa</a>
+                            <div class="col-12 col-lg-auto text-center text-lg-start">
+                                @*<div class="notification-type mb-2"><span class="badge bg-info">Project</span></div>*@
+                                <h4 class="notification-title mb-1">@empresa.Nome</h4>
+
+                                <ul class="notification-meta list-inline mb-0">
+                                    <li class="list-inline-item">
+                                        @{
+                                            if (empresa.CNPJ == "" || empresa.CNPJ == null || empresa.CNPJ == "0" || empresa.CNPJ == "00000000000000")
+                                            {
+                                                <nobr>CNPJ: Sem CNPJ Cadastrado</nobr>
+                                            } else
+                                            {
+                                                <nobr>CNPJ: @empresa.CNPJ</nobr>
+                                            }
+                                        }                                        
+                                    </li>
+                                    <li class="list-inline-item">|</li>
+                                    <li class="list-inline-item">Setor: @empresa.Segmento</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div>
-                    <nav class="navbar navbar-light bg-light">
-                        <div class="container-fluid justify-content-end">
+                    <div class="app-card-body p-4">
+                        <div class="notification-content">
+                            Prospecções Totais: @prospeccoes.Where(P => P.Empresa.Id == @empresa.Id).Count()
                         </div>
-                    </nav>
-                </div>
-            </div>
-        </div>
-        <hr />
-
-
-        <div class="row">
-
-            @foreach (var item in Model)
-            {
-                <div class="empresa-container col-12">
-                    <div class="empresa">
-                        <div class="empresa-preview">
-                            @if (item.Logo != null)
-                            {
-                                <img loading="lazy" style="background-color:white" id="logoEmpresa" src="@item.Logo" alt="Logo da Empresa" />
-                            }
-                            else
-                            {
-                                <h2 id="logo_alt">Sem Logo</h2>
-                            }
-                        </div>
-                        <div class="empresa-info">
-                            <p><strong>Nome Empresa:</strong> @item.Nome</p>
-                            <p><strong>Prospeccoes Totais: </strong>@prosps.Where(P => P.Empresa.Id == @item.Id).Count()</p>
-                            <p><strong>CNPJ:</strong> @item.CNPJ</p>
-                            <p><strong>Setor:</strong> @item.Segmento</p>
-                            <button class="btn app-btn-primary" data-bs-toggle="collapse" data-bs-target="#e_@item.Id">Ações</button>
-                            <button class="btn app-btn-primary" data-bs-toggle="collapse" data-bs-target="#ce_@item.Id">Contatos</button>
-                            <button class="btn app-btn-primary" data-bs-target="#ce_@item.Id"><a asp-controller="FunilDeVendas" asp-action="Planejar" asp-route-id="@item.Id">Planejar</a></button>
-                            <button class="btn app-btn-primary" data-bs-toggle="collapse" data-bs-target="#pe_@item.Id">Prospecções</button>
-
-                            <div id="e_@item.Id" class="collapse">
-                                <h6>Ações</h6>
-                                <div>
-                                    <a asp-action="Edit" asp-route-id="@item.Id"><button class="btn app-btn-primary">Editar</button></a>
-                                    <a asp-action="Details" asp-route-id="@item.Id"><button class="btn app-btn-primary">Ver Detalhes</button></a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id"><button class="btn app-btn-primary">Deletar</button></a>
-                                </div>
-                                <br />
-                            </div>
-
-                            <div id="ce_@item.Id" class="collapse">
-                                <br />
-                                <h6>Contatos Registrados</h6>
-
-                                @if (contatos != null)
-                                {
+                    </div>
+                    <div class="accordion accordion-flush" id="accordionEmpresa-@empresa.Id">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-heading-@empresa.Id-one">
+                                <button class="action-link app-card-footer accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-@empresa.Id-one" aria-expanded="false" aria-controls="flush-collapse-@empresa.Id-one">
+                                Ações
+                                </button>
+                            </h2>
+                            <div id="flush-collapse-@empresa.Id-one" class="accordion-collapse collapse" aria-labelledby="flush-heading-@empresa.Id-one" data-bs-parent="#accordionEmpresa-@empresa.Id">
+                                <div class="accordion-body">
                                     <div>
-                                        <br />
-                                        @foreach (Pessoa contato in contatos.Where(c => c.empresa != null).Where(c2 => c2.empresa.Id == item.Id))
+                                        <a asp-action="Edit" asp-route-id="@empresa.Id">
+                                            <button class="btn app-btn-primary">
+                                                Editar
+                                            </button>
+                                        </a>
+                                        <a asp-action="Details" asp-route-id="@empresa.Id">
+                                            <button class="btn app-btn-primary">
+                                                Ver
+                                                Detalhes
+                                            </button>
+                                        </a>
+                                        <button type="button" id="button-@empresa.Id" data-bs-target="#deletarEmpresaModal-@empresa.Id-Toggle"
+                                        data-bs-toggle="modal" class="btn app-btn-primary" onmouseover="carregarModaisEmpresa('@empresa.Id')">Deletar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-heading-@empresa.Id-two">
+                                <button class="action-link app-card-footer accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-@empresa.Id-two" aria-expanded="false" aria-controls="flush-collapse-@empresa.Id-two">
+                                    Contatos
+                                </button>
+                            </h2>
+                            <div id="flush-collapse-@empresa.Id-two" class="accordion-collapse collapse" aria-labelledby="flush-heading-@empresa.Id-two" data-bs-parent="accordionEmpresa-@empresa.Id">
+                                <div class="accordion-body">
+                                    <h6>Contatos Registrados:</h6>
+                                    @if (contatos.Count() != 0)
+                                    {
+                                        int count = 1;
+                                        @foreach (Pessoa contato in contatos.Where(c => c.empresa != null).Where(c2 => c2.empresa.Id == empresa.Id))
                                         {
                                             if (contato.Nome != null && contato.Email != null && contato.Telefone != null && contato.Cargo != null)
                                             {
-                                                <div>
-                                                    <p><strong>Nome</strong>: @contato.Nome</p>
-                                                    <p><strong>E-mail</strong>: @contato.Email</p>
-                                                    <p><strong>Telefone</strong>: @contato.Telefone</p>
-                                                    <p><strong>Cargo</strong>: @contato.Cargo</p>
-                                                </div>
-                                            }
-
-                                        }
-                                    </div>
-                                }
-                                else
-                                {
-                                    <p>Sem contatos registrados</p>
-                                }
-                                <br />
-
-
-                            </div>
-                            <div id="pe_@item.Id" class="collapse">
-                                <br />
-                                <h6>Prospecções da empresa:</h6>
-                                <br />
-                                <h6>Ativas:</h6>
-                                @if (prospsAtivas.Where(P => P.Empresa.Id == @item.Id).Count() > 0)
-                                {
-                                    <table>
-                                        <tr>
-                                            <th>Id</th>
-                                            <th>Líder</th>
-                                        </tr>
-
-                                        @foreach (Prospeccao prospeccao in prospsAtivas.Where(P => P.Empresa.Id == @item.Id))
-                                        {
-                                            <div id="modalDetalhesProsp-@prospeccao.Id-container">
-
-                                            </div>
-                                            <tr>                                                
-                                                <td><button type="button" id="button-@prospeccao.Id" data-bs-target="#modalDetalhes-@prospeccao.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary"
-                                                onmouseover="carregarModaisProspeccao('@prospeccao.Id')">Detalhes da Prospecção: @prospeccao.Id</button></td>
-                                                <td>@prospeccao.Usuario</td>
-                                            </tr>
-                                        }
-                                    </table>
-                                }
-                                else
-                                {
-                                    <p>Não há prospecções ativas para esta empresa</p>
-                                }
-                                <br>
-                                <h6>Planejadas:</h6>
-                                @if (prospsPlanejadas.Where(P => P.Empresa.Id == @item.Id).Count() > 0)
-                                {
-                                    <table>
-                                        <tr>
-                                            <th>Id</th>
-                                            <th>Líder</th>
-                                        </tr>
-
-                                        @foreach (Prospeccao prospeccao in prospsPlanejadas.Where(P => P.Empresa.Id == @item.Id))
-                                        {
-                                            <div id="modalEditProsp-@prospeccao.Id-container">
-                                            </div>
-                                            <div id="modalDeleteProsp-@prospeccao.Id-container">
-                                            </div>
-                                            <div id="modalHistoryProsp-@prospeccao.Id-container">
-                                            </div>
-                                            <div id="modalCreateFollowupProsp-@prospeccao.Id-container">
-                                            </div>
-                                            <div id="modalEditFollowupProsp-@prospeccao.Id-container">
-                                            </div>
-                                            <div id="modalDetalhesProsp-@prospeccao.Id-container">
-                                            </div>
-                                            <tr>
-                                                <td>
-                                                    <button type="button" id="button-@prospeccao.Id" data-bs-target="#modalDetalhes-@prospeccao.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary"
-                                                onmouseover="carregarModaisProspeccao('@prospeccao.Id')">
-                                                        Detalhes da Prospecção: @prospeccao.Id
-                                                    </button>
-                                                </td>
-                                                <td>@prospeccao.Usuario</td>
-                                            </tr>
-                                        }
-                                    </table>
-                                }
-                                else
-                                {
-                                    <p>Não há prospecções planejadas para esta empresa</p>
-                                }
+                                                <div class="mb-2">Contato @count:</div>
+                                                    <ul class="list-group">                                                    
+                                                    @if (contato.Nome != null)
+                                                    {
+                                                        <li class="list-group-item">Nome: @contato.Nome</li>
+                                                    }
+                                                    @if (contato.Email != null)
+                                                    {
+                                                        <li class="list-group-item">Email: @contato.Email</li>
+                                                    }
+                                                    @if (contato.Telefone != null)
+                                                    {
+                                                        <li class="list-group-item">Telefone: @contato.Telefone</li>
+                                                    }
+                                                    @if (contato.Cargo != null)
+                                                    {
+                                                        <li class="list-group-item">Cargo: @contato.Cargo</li>
+                                                    }
+                                                    </ul>                                                
+                                                <hr />
+                                                count++;
+                                            }                                            
+                                        }                                        
+                                    }
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-heading-@empresa.Id-three">
+                                <button class="action-link app-card-footer accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-@empresa.Id-three" aria-expanded="false" aria-controls="flush-collapse-@empresa.Id-three">
+                                    Prospecções
+                                </button>
+                            </h2>
+                            <div id="flush-collapse-@empresa.Id-three" class="accordion-collapse collapse" aria-labelledby="flush-heading-@empresa.Id-three" data-bs-parent="accordionEmpresa-@empresa.Id">
+                                <div class="accordion-body">
+                                    <h6>Prospecções Ativas:</h6>
+                                    @if (prospsAtivas.Where(P => P.Empresa.Id == @empresa.Id).Count() > 0)
+                                    {                                        
+                                        <table class="table table-striped">
+                                            <tr>
+                                                <th>Nome</th>
+                                                <th>Data do Último Status</th>
+                                                <th>Líder</th>
+                                                <th>Detalhes</th>
+                                            </tr>
+
+                                            @foreach (Prospeccao prospeccao in prospsAtivas.Where(P => P.Empresa.Id == @empresa.Id))
+                                            {
+                                                <div id="modalDetalhesProsp-@prospeccao.Id-container">
+                                                </div>
+                                                <tr>
+                                                    <td>
+                                                        @if (prospeccao.NomeProspeccao != null)
+                                                        {
+                                                            <span style="text-overflow: ellipsis;">@prospeccao.NomeProspeccao</span>
+                                                        } 
+                                                        else
+                                                        {
+                                                            <span style="text-overflow: ellipsis;">Prospecção sem Nome</span>
+                                                        }
+                                                    </td>
+                                                    <td>@prospeccao.Status.OrderBy(p => p.Data).LastOrDefault().Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))</td>
+                                                    <td>@prospeccao.Usuario</td>
+                                                    <td><button type="button" id="button-@prospeccao.Id"
+                                                    data-bs-target="#modalDetalhes-@prospeccao.Id" data-bs-toggle="modal"
+                                                    class="btn-sm app-btn-primary"
+                                                    onmouseover="carregarModaisProspeccao('@prospeccao.Id')">Detalhes</button></td>
+                                                </tr>
+                                            }
+                                        </table>
+                                    }
+                                    else
+                                    {
+                                        <p>Não há prospecções ativas para esta empresa</p>
+                                    }
+                                    <br>
+                                    <h6>Prospecções Planejadas:</h6>
+                                    @if (prospsPlanejadas.Where(P => P.Empresa.Id == @empresa.Id).Count() > 0)
+                                    {
+                                        <table class="table table-striped">
+                                            <tr>
+                                                <th>Nome</th>
+                                                <th>Data do Último Status</th>
+                                                <th>Líder</th>
+                                                <th>Detalhes</th>
+                                            </tr>
+
+                                            @foreach (Prospeccao prospeccao in prospsPlanejadas.Where(P => P.Empresa.Id == @empresa.Id))
+                                            {
+                                                <div id="modalEditProsp-@prospeccao.Id-container">
+                                                </div>
+                                                <div id="modalDeleteProsp-@prospeccao.Id-container">
+                                                </div>
+                                                <div id="modalHistoryProsp-@prospeccao.Id-container">
+                                                </div>
+                                                <div id="modalCreateFollowupProsp-@prospeccao.Id-container">
+                                                </div>
+                                                <div id="modalEditFollowupProsp-@prospeccao.Id-container">
+                                                </div>
+                                                <div id="modalDetalhesProsp-@prospeccao.Id-container">
+                                                </div>
+                                                <tr>
+                                                    <td>
+                                                        @if (prospeccao.NomeProspeccao != null)
+                                                        {
+                                                            <span style="text-overflow: ellipsis;">@prospeccao.NomeProspeccao</span>
+                                                        } 
+                                                        else
+                                                        {
+                                                            <span style="text-overflow: ellipsis;">Prospecção sem Nome</span>
+                                                        }
+                                                    </td>                                                    
+                                                    <td>@prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))</td>
+                                                    <td>@prospeccao.Usuario</td>
+                                                    <td><button type="button" id="button-@prospeccao.Id"
+                                                    data-bs-target="#modalDetalhes-@prospeccao.Id" data-bs-toggle="modal"
+                                                    class="btn-sm app-btn-primary"
+                                                    onmouseover="carregarModaisProspeccao('@prospeccao.Id','@prospeccao.NomeProspeccao')">Detalhes</button></td>
+                                                </tr>
+                                            }
+                                        </table>
+                                    }
+                                    else
+                                    {
+                                        <p>Não há prospecções planejadas para esta empresa</p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>                    
                 </div>
             }
-        </div>
-    </div>
+		</div>
+	</div>
+</div>

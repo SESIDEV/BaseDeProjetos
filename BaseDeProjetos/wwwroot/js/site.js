@@ -472,19 +472,3 @@ function AplicarDadosAPI() {
 
     })}) 
 }
-
-function Base64() {
-
-    imagem = document.getElementById("logo_imagem").files[0];
-    r = new FileReader();
-    r.readAsDataURL(imagem);
-    r.onload = function(){
-        document.getElementById("img_preview").src = r.result
-        document.getElementById('img_b64').value = r.result
-    }
-
-}
-
-function MostrarImagem(){
-    document.getElementById("img_preview").src = document.getElementById('img_b64').value
-}
