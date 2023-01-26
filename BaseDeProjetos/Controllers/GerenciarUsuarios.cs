@@ -22,62 +22,44 @@ namespace BaseDeProjetos.Controllers
             _context = context;
         }
 
-        /*public static List<Usuario> DefinirCasaParaVisualizarListaDeUsuarios(string? casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, ViewDataDictionary ViewData)
+        public Usuario UsuarioExiste(string nomeUsuario)
         {
-            Instituto enum_casa;
+            string usuarioLogado = nomeUsuario;
 
-            List<Usuario> usuarios = new List<Usuario>();
+            var usuarioExiste = _context.Users.Where(u => u.UserName == usuarioLogado).FirstOrDefault();
 
-            if (usuario.Nivel == Nivel.Dev)
+            var usuario = _context.Users.Find(usuarioExiste.Id);
+
+            return usuario;
+        }
+
+        public bool VerificarNivelUsuario(Usuario usuario)
+        {
+
+            if (usuario.Nivel == Nivel.PMO || usuario.Nivel == Nivel.Dev || usuario.Nivel == Nivel.Supervisor)
             {
-                List<Usuario> lista = _context.Users.ToList();
-                usuarios.AddRange(lista);
+                return true;
             }
-
             else
             {
-
-                if (Enum.IsDefined(typeof(Instituto), casa))
-                {
-                    HttpContext.Session.SetString("_Casa", casa);
-                    enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
-                    List<Usuario> lista = _context.Users.Where(usuario => usuario.Casa.Equals(enum_casa)).ToList();
-
-                    usuarios.AddRange(lista);
-
-                    ViewData["Area"] = casa;
-                }
+                return false;
             }
 
-            return usuarios.ToList();
-        }*/
+        }
 
         // GET: GerenciarUsuarios
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            /*if (httpContext.User.Identity.IsAuthenticated)
+            var listaUsuarios = new List<Usuario>();
+            Usuario usuario = UsuarioExiste(HttpContext.User.Identity.Name);
+            if (usuario != null && VerificarNivelUsuario(usuario))
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                listaUsuarios = _context.Users.Where(u => u.Casa == usuario.Casa).ToList();
 
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
-
-                if (string.IsNullOrEmpty(casa))
-                {
-                    casa = usuario.Casa.ToString();
-                }
-
-                List<Usuario> lista;
-
-                return View(await _context.Users.ToListAsync());
             }
 
-            else
-            {
-                return View("Forbidden");
-            }
-            */
-            return View(await _context.Users.ToListAsync());
+            return View(listaUsuarios);
+
         }
 
         // GET: GerenciarUsuarios/Details/5
