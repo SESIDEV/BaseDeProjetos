@@ -62,9 +62,7 @@
                 fetch(`/Empresas/RetornarModal?idEmpresa=${idEmpresa}&tipo=${tipo}`)
                     .then(response => response.text())
                     .then(result => {
-                        console.log("Querying", `#modal${tipo}Empresa-${idEmpresa}-container`);
-                        let a = document.querySelector(`#modal${tipo}Empresa-${idEmpresa}-container`).innerHTML = result;
-                        console.log("Queried to a selector, content now:", a)
+                        document.querySelector(`#modal${tipo}Empresa-${idEmpresa}-container`).innerHTML = result;
                     });
             }
         }
@@ -79,6 +77,22 @@
         empresasCarregadas.push(idEmpresa);
     }
 
+    function ChecarCNPJ() {
+        document.getElementById("valor_cnpj").value = document.getElementById("valor_cnpj").value.replace(/[^0-9]/g, '');
+        $("#StatusCNPJ").html("Checando...");
+        $.post('@Url.Action("SeExisteCnpj", "Empresas")', { cnpj: $("#valor_cnpj").val() },
+            function (data) {
+                if (data == 0) {
+                    $("#StatusCNPJ").html('');
+                    $("#valor_cnpj").css("border-color", "");
+                    validarCNPJ();
+                } else {
+                    $("#StatusCNPJ").html('<font color="Red">CNPJ já cadastrado.</font>');
+                    $("#valor_cnpj").css("border-color", "Red");
+                }
+            }
+        );
+    }
 </script>
 <partial name="Header" view-data="@ViewData" />
 <div class="app-wrapper">
@@ -105,12 +119,13 @@
 								</form>
 							</div>
 							<div class="col-auto">
-                                <a class="btn app-btn-primary" asp-action="Create">
+                                @await Component.InvokeAsync("ModalCreateEmpresa")
+                                <button type="button" class="btn app-btn-primary" data-bs-toggle="modal" data-bs-target="#CreateEmpresaModalToggle">
 									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill"
 										 viewBox="0 0 16 16">
 										<path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
 									</svg> Adicionar Empresa
-								</a>
+								</button>
 								@*@await Component.InvokeAsync("ModalCreateProsp")*@
 							</div>
 						</div>
@@ -121,7 +136,7 @@
             {
                 <div id="modalDeleteEmpresa-@empresa.Id-container">
 
-                </div>
+                </div>                
 
                 <div class="app-card app-card-notification shadow-sm mb-4">
                     <div class="app-card-header px-4 py-3">
