@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace BaseDeProjetos.ViewComponents
 {
-    public class ModalCreateProducaoViewComponent : ViewComponent
+    public class ModalCreateEmpresaViewComponent : ViewComponent
     {
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            return View(new Producao());
+            return View(new Empresa());
         }
 
     }
