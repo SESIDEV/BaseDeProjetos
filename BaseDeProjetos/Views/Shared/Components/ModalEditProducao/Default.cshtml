@@ -9,7 +9,19 @@
 
 
 <script>
-    addEventListener("load", () => { MostrarImagem(); });
+    function Base64(id) {
+        imagem = document.getElementById(`logo_imagem-${id}`).files[0];
+        r = new FileReader();
+        r.readAsDataURL(imagem);
+        r.onload = function () {
+            document.getElementById(`img_preview-${id}`).src = r.result
+            document.getElementById(`img_b64-${id}`).value = r.result
+        }
+    }
+
+    function MostrarImagem(id) {
+        document.getElementById(`img_preview-${id}`).src = document.getElementById(`img_b64-${id}`).value
+    }
 </script>
 
 <form asp-action="Edit" asp-route-id="@idProducao">
@@ -77,12 +89,12 @@
                         </div>
                         <div class="form-group">
                             <label asp-for="Imagem" class="control-label"></label>
-                            <input type="file" class="form-control" id="logo_imagem" onchange="Base64()" />
-                            <input asp-for="Imagem" id="img_b64" class="control-label" style="display: none;" value=""
-                                onchange="MostrarImagem()" readonly>
+                            <input type="file" class="form-control" id="logo_imagem-@Model.Id" onchange="Base64('@Model.Id')" />
+                            <input asp-for="Imagem" id="img_b64-@Model.Id" class="control-label" style="display: none;" value=""
+                                onchange="MostrarImagem('@Model.Id')" readonly>
                             <span asp-validation-for="Imagem" class="text-danger"></span>
                         </div>
-                        <img id="img_preview" src="" width="300" style="margin-top:5px;">
+                        <img id="img_preview-@Model.Id" src="" width="300" style="margin-top:5px;">
                         @if (Model.Projeto != null)
                         {
                             <div id='campos-patente'>
@@ -125,7 +137,7 @@
 
 
 @section Scripts {
-@{
-await Html.RenderPartialAsync("_ValidationScriptsPartial");
-}
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
