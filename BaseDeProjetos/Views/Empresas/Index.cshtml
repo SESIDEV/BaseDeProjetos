@@ -70,7 +70,7 @@
 
     function carregarModaisEmpresa(idEmpresa) {
         console.log(idEmpresa)
-        modaisDisponiveis = ["Delete"];
+        modaisDisponiveis = ["Edit", "Delete"];
         modaisDisponiveis.forEach((tipo) => {
             carregarModalEmpresa(idEmpresa, tipo)
         })
@@ -136,7 +136,11 @@
             {
                 <div id="modalDeleteEmpresa-@empresa.Id-container">
 
-                </div>                
+                </div>
+                
+                <div id="modalEditEmpresa-@empresa.Id-container">
+
+                </div>
 
                 <div class="app-card app-card-notification shadow-sm mb-4">
                     <div class="app-card-header px-4 py-3">
@@ -188,11 +192,9 @@
                             <div id="flush-collapse-@empresa.Id-one" class="accordion-collapse collapse" aria-labelledby="flush-heading-@empresa.Id-one" data-bs-parent="#accordionEmpresa-@empresa.Id">
                                 <div class="accordion-body">
                                     <div>
-                                        <a asp-action="Edit" asp-route-id="@empresa.Id">
-                                            <button class="btn app-btn-primary">
-                                                Editar
-                                            </button>
-                                        </a>
+                                        <button type="button" id="button-@empresa.Id" class="btn app-btn-primary" data-bs-target="#EditEmpresaModal-@empresa.Id-Toggle" data-bs-toggle="modal" class="btn app-btn-primary" onmouseover="carregarModaisEmpresa('@empresa.Id')">   
+                                        Editar
+                                        </button>
                                         <a asp-action="Details" asp-route-id="@empresa.Id">
                                             <button class="btn app-btn-primary">
                                                 Ver
@@ -271,6 +273,7 @@
                                             {
                                                 <div id="modalDetalhesProsp-@prospeccao.Id-container">
                                                 </div>
+
                                                 <tr>
                                                     <td>
                                                         @if (prospeccao.NomeProspeccao != null)

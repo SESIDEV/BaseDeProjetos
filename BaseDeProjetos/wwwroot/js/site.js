@@ -363,112 +363,139 @@ function statusPatente(){
 
 }
 
-function validarCNPJ(){
-    document.getElementById("valor_cnpj").value = document.getElementById("valor_cnpj").value.replace(/[^0-9]/g, '');
-    let cnpj = document.getElementById("valor_cnpj").value;
+function validarCNPJ(idElemento) {
+    let cnpj;
+    if (idElemento == null) {
+        document.getElementById("valor_cnpj").value = document.getElementById("valor_cnpj").value.replace(/[^0-9]/g, '');
+        cnpj = document.getElementById("valor_cnpj").value;
+    } else {
+        document.getElementById(`valor_cnpj-${idElemento}`).value = document.getElementById(`valor_cnpj-${idElemento}`).value.replace(/[^0-9]/g, '');
+        cnpj = document.getElementById(`valor_cnpj-${idElemento}`).value;
+    }
     if (isNaN(cnpj) || cnpj.length < 14) {
         alert("CNPJ inválido");
     } else {
-        AplicarDadosAPI();
+        AplicarDadosAPI(idElemento);
     }    
 }
 
-function AplicarDadosAPI() {
-
-    let cnpj = document.querySelector("#valor_cnpj").value;
+function AplicarDadosAPI(idElemento) {
+    let cnpj;
+    if (idElemento == null) {
+        cnpj = document.querySelector("#valor_cnpj").value;
+    } else {
+        cnpj = document.querySelector(`#valor_cnpj-${idElemento}`).value;
+    }
     let url = window.location.origin + "/Empresas/DadosAPI?query=" + cnpj;
     
     fetch(url).then(res => {
+        res.json().then(dados => {
+            if (idElemento == null) {
+                document.getElementById("NomeEmpresaCadastro").value = dados.nome;
+                document.getElementById("NomeFantasiaEmpresa").value = dados.fantasia;
+                document.getElementById("TipoEmpresaStatus").innerHTML = "Tipo: " + dados.tipo;
+                document.getElementById("SituacaoEmpresaStatus").innerHTML = "Situação: " + dados.situacao;
+            } else {
+                document.getElementById(`NomeEmpresaCadastro-${idElemento}`).value = dados.nome;
+                document.getElementById(`NomeFantasiaEmpresa-${idElemento}`).value = dados.fantasia;
+                document.getElementById(`TipoEmpresaStatus-${idElemento}`).innerHTML = "Tipo: " + dados.tipo;
+                document.getElementById(`SituacaoEmpresaStatus-${idElemento}`).innerHTML = "Situação: " + dados.situacao;
+            }
 
-    res.json().then(dados => {
-    document.getElementById("NomeEmpresaCadastro").value = dados.nome;
-    document.getElementById("NomeFantasiaEmpresa").value = dados.fantasia;
-    document.getElementById("TipoEmpresaStatus").innerHTML = "Tipo: " + dados.tipo;
-    document.getElementById("SituacaoEmpresaStatus").innerHTML = "Situação: " + dados.situacao;
+            // TUDO DAQUI PRA BAIXO FOI FEITO EXCLUSIVAMENTE PARA CONVERTER A SIGLA DE CADA ESTADO PARA O NOME COMPLETO
+            function Dicionario() {
+                this.add = add;
+                this.dataStore = [];
+                this.find = find;
+            }
+            function add(key, value) { this.dataStore[key] = value; }
+            function find(key) { return this.dataStore[key]; }
 
-    // TUDO DAQUI PRA BAIXO FOI FEITO EXCLUSIVAMENTE PARA CONVERTER A SIGLA DE CADA ESTADO PARA O NOME COMPLETO
-    function Dicionario(){
-        this.add = add;
-        this.dataStore = [];
-        this.find = find;
-    }
-    function add(key, value){this.dataStore[key] = value;}
-    function find(key){return this.dataStore[key];}
+            var siglas = new Dicionario();
 
-    var siglas = new Dicionario();
-    
-    siglas.add('RJ', 'Rio de Janeiro')
-    siglas.add('SP', 'São Paulo')
-    siglas.add('MG', 'Minas Gerais')
-    siglas.add('ES', 'Espírito Santo')
-    siglas.add('PR', 'Paraná')
-    siglas.add('SC', 'Santa Catarina')
-    siglas.add('RS', 'Rio Grande do Sul')
-    siglas.add('MT', 'Mato Grosso')
-    siglas.add('MS', 'Mato Grosso do Sul')
-    siglas.add('GO', 'Goiás')
-    siglas.add('DF', 'Distrito Federal')
-    siglas.add('AM', 'Amazonas')
-    siglas.add('PA', 'Pará')
-    siglas.add('RR', 'Roraima')
-    siglas.add('RO', 'Rondônia')
-    siglas.add('MA', 'Maranhão')
-    siglas.add('PI', 'Piauí')
-    siglas.add('RN', 'Rio Grande do Norte')
-    siglas.add('SE', 'Sergipe')
-    siglas.add('PE', 'Pernambuco')
-    siglas.add('PB', 'Paraíba')
-    siglas.add('BA', 'Bahia')
-    siglas.add('TO', 'Tocantins')
-    siglas.add('AP', 'Amapá')
-    siglas.add('CE', 'Ceará')
-    siglas.add('AL', 'Alagoas')
+            siglas.add('RJ', 'Rio de Janeiro')
+            siglas.add('SP', 'São Paulo')
+            siglas.add('MG', 'Minas Gerais')
+            siglas.add('ES', 'Espírito Santo')
+            siglas.add('PR', 'Paraná')
+            siglas.add('SC', 'Santa Catarina')
+            siglas.add('RS', 'Rio Grande do Sul')
+            siglas.add('MT', 'Mato Grosso')
+            siglas.add('MS', 'Mato Grosso do Sul')
+            siglas.add('GO', 'Goiás')
+            siglas.add('DF', 'Distrito Federal')
+            siglas.add('AM', 'Amazonas')
+            siglas.add('PA', 'Pará')
+            siglas.add('RR', 'Roraima')
+            siglas.add('RO', 'Rondônia')
+            siglas.add('MA', 'Maranhão')
+            siglas.add('PI', 'Piauí')
+            siglas.add('RN', 'Rio Grande do Norte')
+            siglas.add('SE', 'Sergipe')
+            siglas.add('PE', 'Pernambuco')
+            siglas.add('PB', 'Paraíba')
+            siglas.add('BA', 'Bahia')
+            siglas.add('TO', 'Tocantins')
+            siglas.add('AP', 'Amapá')
+            siglas.add('CE', 'Ceará')
+            siglas.add('AL', 'Alagoas')
 
-    // ESSA LINHA BUSCA O ÍNDICE A PARTIR DA SIGLA DEVOLVIDA PELA API --------\/
-    document.getElementById("EstadoEmpresaCadastro").value = siglas.find(dados.uf);
+            // ESSA LINHA BUSCA O ÍNDICE A PARTIR DA SIGLA DEVOLVIDA PELA API --------\/
+            if (idElemento == null) {
+                document.getElementById("EstadoEmpresaCadastro").value = siglas.find(dados.uf);
+            } else {
+                document.getElementById(`EstadoEmpresaCadastro-${idElemento}`).value = siglas.find(dados.uf);
+            }
 
 
 
-    // CONVERTER A SIGLA DE CADA ESTADO PARA O ÍNDICE DO ENUM
-    function Dicionario2(){
-        this.add = add;
-        this.dataStore = [];
-        this.find = find;
-    }
-    function add(key, value){this.dataStore[key] = value;}
-    function find(key){return this.dataStore[key];}
+            // CONVERTER A SIGLA DE CADA ESTADO PARA O ÍNDICE DO ENUM
+            function Dicionario2() {
+                this.add = add;
+                this.dataStore = [];
+                this.find = find;
+            }
+            function add(key, value) { this.dataStore[key] = value; }
+            function find(key) { return this.dataStore[key]; }
 
-    var indices = new Dicionario2();
-    
-    indices.add('RJ', 0)
-    indices.add('SP', 1)
-    indices.add('MG', 2)
-    indices.add('ES', 3)
-    indices.add('PR', 4)
-    indices.add('SC', 5)
-    indices.add('RS', 6)
-    indices.add('MT', 7)
-    indices.add('MS', 8)
-    indices.add('GO', 9)
-    indices.add('DF', 10)
-    indices.add('AM', 11)
-    indices.add('PA', 12)
-    indices.add('RR', 13)
-    indices.add('RO', 14)
-    indices.add('MA', 15)
-    indices.add('PI', 16)
-    indices.add('RN', 17)
-    indices.add('SE', 18)
-    indices.add('PE', 19)
-    indices.add('PB', 20)
-    indices.add('BA', 21)
-    indices.add('TO', 22)
-    indices.add('AP', 23)
-    indices.add('CE', 24)
-    indices.add('AL', 25)
+            var indices = new Dicionario2();
 
-    // ESSA LINHA BUSCA O NOME A PARTIR DA SIGLA DEVOLVIDA PELA API --------\/
-    document.getElementById("EstadoEmpresaCadastroINT").value = indices.find(dados.uf);
+            indices.add('RJ', 0)
+            indices.add('SP', 1)
+            indices.add('MG', 2)
+            indices.add('ES', 3)
+            indices.add('PR', 4)
+            indices.add('SC', 5)
+            indices.add('RS', 6)
+            indices.add('MT', 7)
+            indices.add('MS', 8)
+            indices.add('GO', 9)
+            indices.add('DF', 10)
+            indices.add('AM', 11)
+            indices.add('PA', 12)
+            indices.add('RR', 13)
+            indices.add('RO', 14)
+            indices.add('MA', 15)
+            indices.add('PI', 16)
+            indices.add('RN', 17)
+            indices.add('SE', 18)
+            indices.add('PE', 19)
+            indices.add('PB', 20)
+            indices.add('BA', 21)
+            indices.add('TO', 22)
+            indices.add('AP', 23)
+            indices.add('CE', 24)
+            indices.add('AL', 25)
+
+            // ESSA LINHA BUSCA O NOME A PARTIR DA SIGLA DEVOLVIDA PELA API --------\/
+            if (idElemento == null)
+            {
+                document.getElementById("EstadoEmpresaCadastroINT").value = indices.find(dados.uf);
+            }
+            else
+            {
+                document.getElementById(`EstadoEmpresaCadastroINT-${idElemento}`).value = indices.find(dados.uf);
+            }
 
     })}) 
 }
