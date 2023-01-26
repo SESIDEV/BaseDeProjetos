@@ -10,9 +10,11 @@ using Microsoft.EntityFrameworkCore;
 using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BaseDeProjetos.Controllers
 {
+    [Authorize]
     public class ProducaoController : Controller
     {
         private readonly ApplicationDbContext _context;
