@@ -195,6 +195,9 @@
                                         <button type="button" id="button-@empresa.Id" class="btn app-btn-primary" data-bs-target="#EditEmpresaModal-@empresa.Id-Toggle" data-bs-toggle="modal" class="btn app-btn-primary" onmouseover="carregarModaisEmpresa('@empresa.Id')">   
                                         Editar
                                         </button>
+                                        <a type="button" class="btn app-btn-primary" asp-controller="FunilDeVendas" asp-action="Planejar" asp-route-id="@empresa.Id">
+                                            Planejar
+                                        </a>
                                         @*<a asp-action="Details" asp-route-id="@empresa.Id">
                                             <button class="btn app-btn-primary">
                                                 Ver
