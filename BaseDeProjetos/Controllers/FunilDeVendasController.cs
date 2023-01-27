@@ -12,9 +12,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BaseDeProjetos.Controllers
 {
+    [Authorize]
     public class FunilDeVendasController : Controller
     {
         private readonly ApplicationDbContext _context;

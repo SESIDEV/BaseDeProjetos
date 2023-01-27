@@ -62,9 +62,7 @@
                 fetch(`/Empresas/RetornarModal?idEmpresa=${idEmpresa}&tipo=${tipo}`)
                     .then(response => response.text())
                     .then(result => {
-                        console.log("Querying", `#modal${tipo}Empresa-${idEmpresa}-container`);
-                        let a = document.querySelector(`#modal${tipo}Empresa-${idEmpresa}-container`).innerHTML = result;
-                        console.log("Queried to a selector, content now:", a)
+                        document.querySelector(`#modal${tipo}Empresa-${idEmpresa}-container`).innerHTML = result;
                     });
             }
         }
@@ -72,13 +70,29 @@
 
     function carregarModaisEmpresa(idEmpresa) {
         console.log(idEmpresa)
-        modaisDisponiveis = ["Delete"];
+        modaisDisponiveis = ["Edit", "Delete"];
         modaisDisponiveis.forEach((tipo) => {
             carregarModalEmpresa(idEmpresa, tipo)
         })
         empresasCarregadas.push(idEmpresa);
     }
 
+    function ChecarCNPJ() {
+        document.getElementById("valor_cnpj").value = document.getElementById("valor_cnpj").value.replace(/[^0-9]/g, '');
+        $("#StatusCNPJ").html("Checando...");
+        $.post('@Url.Action("SeExisteCnpj", "Empresas")', { cnpj: $("#valor_cnpj").val() },
+            function (data) {
+                if (data == 0) {
+                    $("#StatusCNPJ").html('');
+                    $("#valor_cnpj").css("border-color", "");
+                    validarCNPJ();
+                } else {
+                    $("#StatusCNPJ").html('<font color="Red">CNPJ já cadastrado.</font>');
+                    $("#valor_cnpj").css("border-color", "Red");
+                }
+            }
+        );
+    }
 </script>
 <partial name="Header" view-data="@ViewData" />
 <div class="app-wrapper">
@@ -105,12 +119,13 @@
 								</form>
 							</div>
 							<div class="col-auto">
-                                <a class="btn app-btn-primary" asp-action="Create">
+                                @await Component.InvokeAsync("ModalCreateEmpresa")
+                                <button type="button" class="btn app-btn-primary" data-bs-toggle="modal" data-bs-target="#CreateEmpresaModalToggle">
 									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill"
 										 viewBox="0 0 16 16">
 										<path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
 									</svg> Adicionar Empresa
-								</a>
+								</button>
 								@*@await Component.InvokeAsync("ModalCreateProsp")*@
 							</div>
 						</div>
@@ -120,6 +135,10 @@
             @foreach (var empresa in Model)
             {
                 <div id="modalDeleteEmpresa-@empresa.Id-container">
+
+                </div>
+                
+                <div id="modalEditEmpresa-@empresa.Id-container">
 
                 </div>
 
@@ -173,17 +192,18 @@
                             <div id="flush-collapse-@empresa.Id-one" class="accordion-collapse collapse" aria-labelledby="flush-heading-@empresa.Id-one" data-bs-parent="#accordionEmpresa-@empresa.Id">
                                 <div class="accordion-body">
                                     <div>
-                                        <a asp-action="Edit" asp-route-id="@empresa.Id">
-                                            <button class="btn app-btn-primary">
-                                                Editar
-                                            </button>
+                                        <button type="button" id="button-@empresa.Id" class="btn app-btn-primary" data-bs-target="#EditEmpresaModal-@empresa.Id-Toggle" data-bs-toggle="modal" class="btn app-btn-primary" onmouseover="carregarModaisEmpresa('@empresa.Id')">   
+                                        Editar
+                                        </button>
+                                        <a type="button" class="btn app-btn-primary" asp-controller="FunilDeVendas" asp-action="Planejar" asp-route-id="@empresa.Id">
+                                            Planejar
                                         </a>
-                                        <a asp-action="Details" asp-route-id="@empresa.Id">
+                                        @*<a asp-action="Details" asp-route-id="@empresa.Id">
                                             <button class="btn app-btn-primary">
                                                 Ver
                                                 Detalhes
                                             </button>
-                                        </a>
+                                        </a>*@
                                         <button type="button" id="button-@empresa.Id" data-bs-target="#deletarEmpresaModal-@empresa.Id-Toggle"
                                         data-bs-toggle="modal" class="btn app-btn-primary" onmouseover="carregarModaisEmpresa('@empresa.Id')">Deletar</button>
                                     </div>
@@ -256,6 +276,7 @@
                                             {
                                                 <div id="modalDetalhesProsp-@prospeccao.Id-container">
                                                 </div>
+
                                                 <tr>
                                                     <td>
                                                         @if (prospeccao.NomeProspeccao != null)
