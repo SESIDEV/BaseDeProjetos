@@ -200,7 +200,7 @@ namespace BaseDeProjetos.Controllers
             {
                 if (tipo != null)
                 {
-                    return ViewComponent($"Modal{tipo}Prosp", new { id = idEdital });
+                    return ViewComponent($"Modal{tipo}Edital", new { id = idEdital });
                 }
                 else 
                 {
