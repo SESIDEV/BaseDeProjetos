@@ -1,14 +1,15 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Editais>
+@using BaseDeProjetos.Helpers
 
 @foreach (var edital in Model)
 {
-    <div id="modalEditProjeto-@edital.Id-container">
+    <div id="modalEditEdital-@edital.Id-container">
     </div>
 
-    <div id="modalDeleteProjeto-@edital.Id-container">
+    <div id="modalDeleteEdital-@edital.Id-container">
     </div>
 
-    <div id="modalDetailsProjeto-@edital.Id-container">
+    <div id="modalDetailsEdital-@edital.Id-container">
     </div>
 
     <tr>       
@@ -18,8 +19,16 @@
         <td class="cell">@edital.StatusEdital</td>
         <td class="cell">@edital.AgenciaFomento</td>
         <td class="cell">@edital.PrazoSubmissao</td>
-        <td class="cell">@edital.ValorEdital</td>
+        <td class="cell">
+            @if (edital.ValorEdital != 0) {
+                <div>R$ @Helpers.FormatarValoresDashboards((decimal)edital.ValorEdital)</div>
+            } 
+            else 
+            {
+                <div>Sem Valor</div>
+            }            
+        </td>
         <td class="cell">@edital.DataResultado</td>
-        <td class="cell"><button type="button" data-bs-target="#modalAcoes-@edital.Id" id="button-@edital.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary" @*onmouseover="carregarModaisProjeto('@edital.Id')"*@>Ações</button></td>
+        <td class="cell"><button type="button" data-bs-target="#modalAcoes-@edital.Id" id="button-@edital.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary" onmouseover="carregarModaisEdital('@edital.Id')">Ações</button></td>
     </tr>
 }
