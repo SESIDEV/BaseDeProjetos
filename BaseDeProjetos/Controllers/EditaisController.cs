@@ -31,7 +31,7 @@ namespace BaseDeProjetos.Controllers
                 ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;
                 return View(await _context.Editais.ToListAsync());
-            } 
+            }
             else
             {
                 return View("Forbidden");
@@ -60,7 +60,7 @@ namespace BaseDeProjetos.Controllers
                 }
 
                 return View(editais);
-            } 
+            }
             else
             {
                 return View("Forbidden");
@@ -78,7 +78,7 @@ namespace BaseDeProjetos.Controllers
                 ViewBag.usuarioNivel = usuario.Nivel;
 
                 return View();
-            } 
+            }
             else
             {
                 return View("Forbidden");
@@ -121,7 +121,7 @@ namespace BaseDeProjetos.Controllers
                     return NotFound();
                 }
                 return View(editais);
-            } 
+            }
             else
             {
                 return View("Forbidden");
@@ -187,15 +187,33 @@ namespace BaseDeProjetos.Controllers
                 }
 
                 return View(editais);
-            } 
+            }
             else
             {
                 return View("Forbidden");
             }
         }
 
-        // POST: Editais/Delete/5
-        [HttpPost, ActionName("Delete")]
+        public IActionResult RetornarModal(string idEdital, string tipo)
+		{
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                if (tipo != null)
+                {
+                    return ViewComponent($"Modal{tipo}Edital", new { id = idEdital });
+                }
+                else 
+                {
+                    return View("Error");
+                }
+            } else
+            {
+                return View("Forbidden");
+            }
+        }      
+
+		// POST: Editais/Delete/5
+		[HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

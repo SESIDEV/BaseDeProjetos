@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace BaseDeProjetos.ViewComponents
 {
-    public class ModalDetalhesProspViewComponent : ViewComponent
+    public class ModalDetailsProspViewComponent : ViewComponent
     {
         private readonly ApplicationDbContext _context;
 
-        public ModalDetalhesProspViewComponent(ApplicationDbContext context)
+        public ModalDetailsProspViewComponent(ApplicationDbContext context)
         {
             _context = context;
         }
