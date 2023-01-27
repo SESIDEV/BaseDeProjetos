@@ -536,18 +536,6 @@ namespace BaseDeProjetos.Controllers
 
         }
 
-        public IActionResult RetornarModalDetalhes(string idProsp)
-        {
-            if (HttpContext.User.Identity.IsAuthenticated)
-            {
-                return ViewComponent($"ModalDetalhesProsp", new { id = idProsp });
-            }
-            else
-            {
-                return View("Forbidden");
-            }
-        }
-
         public IActionResult RetornarModalEditFollowup(string idProsp, string idFollowup, string tipo)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
