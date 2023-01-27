@@ -1,4 +1,4 @@
-@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
+﻿@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
 @{
 	ViewData["Title"] = "Funil de Vendas";
 	List<Prospeccao> ativas = ViewBag.Ativas as List<Prospeccao>;
@@ -435,6 +435,7 @@
 			</div>
 		</div>
 	</div>
+	<partial name="Footer" />
 </div>
 <div id="modalTut">
   <div class="modal fade" id="modalTutorialFdv" aria-hidden="true" aria-labelledby="modalTutorialFdvLabel"
