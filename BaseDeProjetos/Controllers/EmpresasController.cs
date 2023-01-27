@@ -307,7 +307,7 @@ namespace BaseDeProjetos.Controllers
                 bool aprovado = false;
 
                 if(estrangeiras){
-                    if (empresa.CNPJ == "00000000000000"){
+                    if (empresa.CNPJ == "00000000000000" || empresa.Estado == Estado.Estrangeiro){
                         aprovado = true;
                     } else {
                         continue;
