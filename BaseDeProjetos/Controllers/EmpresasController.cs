@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Net.Http;
 using BaseDeProjetos.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.Json;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -294,6 +295,42 @@ namespace BaseDeProjetos.Controllers
         private bool EmpresaExists(int id)
         {
             return _context.Empresa.Any(e => e.Id == id);
+        }
+
+        public string PuxarEmpresas(bool estrangeiras = false)
+        {
+            List<Empresa> lista_emp = _context.Empresa.ToList();
+
+            List<Dictionary<string, object>> listaFull = new List<Dictionary<string, object>>();
+
+            foreach (var empresa in lista_emp){
+                bool aprovado = false;
+
+                if(estrangeiras){
+                    if (empresa.CNPJ == "00000000000000"){
+                        aprovado = true;
+                    } else {
+                        continue;
+                    }
+                } else {
+                    if (empresa.CNPJ != "00000000000000"){
+                        aprovado = true;
+                    } else {
+                        continue;
+                    }
+                }
+
+                if (aprovado) {
+                    Dictionary<string, object> dict = new Dictionary<string, object>();
+                    dict["Nome"] = empresa.Nome;
+                    dict["Segmento"] = empresa.Segmento.GetDisplayName();
+                    dict["Estado"] = empresa.Estado;
+                    dict["CNPJ"] = empresa.CNPJ;
+                    listaFull.Add(dict);
+                }
+            }
+
+            return JsonSerializer.Serialize(listaFull);
         }
 
         /*public async Task<IActionResult> RetornarKPIsEmbrapii()
