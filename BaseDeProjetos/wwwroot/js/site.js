@@ -12,7 +12,7 @@
 
 redePessoas = null
 
-function FiltroEmpresaEstrangeira(){
+function FiltroEmpresaEstrangeira() {
 
     let checkBox = document.getElementById("empresa_estrangeira_check");
     let cnpj = document.getElementById("valor_cnpj");
@@ -20,10 +20,10 @@ function FiltroEmpresaEstrangeira(){
     let campo2 = document.getElementById("cadastro_campo2");
     let nome = document.getElementById("NomeEmpresaCadastro");
     let estado_int = document.getElementById("EstadoEmpresaCadastroINT");
-    
-  
-    if (checkBox.checked == true){
-    
+
+
+    if (checkBox.checked == true) {
+
         cnpj.value = 00000000000000;
         campo1.style.display = "none"
         estado_int.value = 26;
@@ -39,16 +39,16 @@ function FiltroEmpresaEstrangeira(){
         nome.setAttribute('readonly')
 
     }
-    
+
 }
 
-function ChecarPatente(){
+function ChecarPatente() {
 
     let valor = document.querySelector('#select_tipo').value
-    if (valor == 8){
+    if (valor == 8) {
         document.querySelector('#campos-patente').style = 'display:block'
     }
-    else{
+    else {
         document.querySelector('#campos-patente').style = 'display:none'
     }
 }
@@ -63,11 +63,11 @@ function CasasFunil() {
     const lista_caixas = [caixa1, caixa2, caixa3, caixa4];
     let caixas_ativas = []
 
-    lista_caixas.forEach(elemento => {if (elemento.checked == true){caixas_ativas.push(elemento)}});
+    lista_caixas.forEach(elemento => { if (elemento.checked == true) { caixas_ativas.push(elemento) } });
 
     let outras_casas = ""
 
-    for (let i = 1; i < caixas_ativas.length; i++){
+    for (let i = 1; i < caixas_ativas.length; i++) {
         outras_casas += "-" + caixas_ativas[i]?.value
     }
 
@@ -83,56 +83,58 @@ function passarComp(element) {
     for (let item of elemComp) {
         listaComp.push(item.innerHTML)
     }
-    fetch('/Pessoas/dados').then(response => response.json()).then(data => {montarNetwork(data, listaComp)});
-    if (element.classList[1] == 'bg-secondary'){
-        element.classList.replace('bg-secondary','bg-primary')
+    fetch('/Pessoas/dados').then(response => response.json()).then(data => { montarNetwork(data, listaComp) });
+    if (element.classList[1] == 'bg-secondary') {
+        element.classList.replace('bg-secondary', 'bg-primary')
         document.querySelector("#filt").appendChild(element)
     } else {
-        element.classList.replace('bg-primary','bg-secondary')
+        element.classList.replace('bg-primary', 'bg-secondary')
         document.querySelector("#notfilt").appendChild(element)
     }
 }
 
 function gerarOpcoesSelectPessoas(nomeModal, idSelect) {
     document.querySelector(`#${idSelect}`).innerHTML = '';
-    if (nomeModal == null){
+    if (nomeModal == null) {
         $(`#${idSelect}`).select2()
     } else {
-        $(`#${idSelect}`).select2({dropdownParent: $(`#${nomeModal}`)})
+        $(`#${idSelect}`).select2({ dropdownParent: $(`#${nomeModal}`) })
     }
     fetch('/FunilDeVendas/PuxarDadosUsuarios').then(response => response.json()).then(lista => {
-        lista.forEach(function (item){
+        lista.forEach(function (item) {
             var opt = document.createElement("option");
             opt.value = item['Email']
             opt.innerHTML = item['UserName']
             document.querySelector(`#${idSelect}`).appendChild(opt)
-    })})
+        })
+    })
 }
 
 function gerarOpcoesSelectTags(nomeModal, idSelect) {
     document.querySelector(`#${idSelect}`).innerHTML = '';
-    if (nomeModal == null){
+    if (nomeModal == null) {
         $(`#${idSelect}`).select2()
     } else {
-        $(`#${idSelect}`).select2({dropdownParent: $(`#${nomeModal}`)})
+        $(`#${idSelect}`).select2({ dropdownParent: $(`#${nomeModal}`) })
     }
     fetch('/FunilDeVendas/PuxarTagsProspecoes').then(response => response.json()).then(lista => {
-        lista.forEach(function (item){
+        lista.forEach(function (item) {
             var opt = document.createElement("option");
             opt.innerHTML = item
             document.querySelector(`#${idSelect}`).appendChild(opt)
-    })})
+        })
+    })
 }
-function novaTag(){
+function novaTag() {
     valor = document.querySelector(`.select2-search__field`).value
     document.querySelector(`.select2-search__field`).valorSalvo = valor
 }
 
-function addTag(campoInput, idSelect){
+function addTag(campoInput, idSelect) {
     valor = document.querySelector(`.select2-search__field`).valorSalvo
     valorAntigo = document.querySelector(`#${campoInput}`).value
 
-    if(valorAntigo == ''){
+    if (valorAntigo == '') {
         valorNovo = "#" + valor
     } else {
         valorNovo = valorAntigo + ";" + "#" + valor
@@ -150,7 +152,7 @@ function addTag(campoInput, idSelect){
 }
 
 function procurarPessoa(select) {
-    redePessoas.focus(select.value, {scale:3, animation:{duration: 400}})
+    redePessoas.focus(select.value, { scale: 3, animation: { duration: 400 } })
 }
 
 function selectToText(idSelect, idText) {
@@ -165,30 +167,33 @@ function textToSelect(nomeModal, idText, idSelect) {
     botao_def = document.querySelector('#bloco_botao')
     listaSel = document.querySelector(`#${idText}`).value.split(";")
     listaSel.forEach(p => {
-        if (p == ''){} else {
-        botao_copy = botao_def.cloneNode(true)
-        botao_copy.removeAttribute('id')
-        botao_copy.title = p
-        botao_copy.children[1].innerHTML = p
-        botao_copy.classList.remove('d-none')
+        if (p == '') { } else {
+            botao_copy = botao_def.cloneNode(true)
+            botao_copy.removeAttribute('id')
+            botao_copy.title = p
+            botao_copy.children[1].innerHTML = p
+            botao_copy.classList.remove('d-none')
 
-        document.querySelector(`#select2-${idSelect}-container`).appendChild(botao_copy)
-    }})
+            document.querySelector(`#select2-${idSelect}-container`).appendChild(botao_copy)
+        }
+    })
 }
 
-function listarCompetencias(){
+function listarCompetencias() {
     fetch('/Pessoas/dictCompetencias').then((response) => response.json()).then((json) => {
         listaComp = Object.values(json)
         badge_def_sel = document.querySelector('#badge_competencia_select')
         listaComp.forEach(c => {
-            if (c == '' || c == null){} else {
-            badge_copy = badge_def_sel.cloneNode(true)
-            badge_copy.removeAttribute('id')
-            badge_copy.innerHTML = c
-            badge_copy.classList.remove('d-none')
+            if (c == '' || c == null) { } else {
+                badge_copy = badge_def_sel.cloneNode(true)
+                badge_copy.removeAttribute('id')
+                badge_copy.innerHTML = c
+                badge_copy.classList.remove('d-none')
 
-            document.querySelector(`#notfilt`).appendChild(badge_copy)
-    }})})
+                document.querySelector(`#notfilt`).appendChild(badge_copy)
+            }
+        })
+    })
 }
 
 function mostrarCompetencias() {
@@ -197,18 +202,20 @@ function mostrarCompetencias() {
         badge_def = document.querySelector('#badge_competencia')
         listaComp = document.querySelector(`#competencias`).innerHTML.split(";")
         listaComp.forEach(num => {
-            if (num == '' || num == null){} else {
-            badge_copy = badge_def.cloneNode(true)
-            badge_copy.removeAttribute('id')
-            badge_copy.innerHTML = json[num]
-            badge_copy.classList.remove('d-none')
+            if (num == '' || num == null) { } else {
+                badge_copy = badge_def.cloneNode(true)
+                badge_copy.removeAttribute('id')
+                badge_copy.innerHTML = json[num]
+                badge_copy.classList.remove('d-none')
 
-            document.querySelector(`#campo_competencias`).appendChild(badge_copy)
-    }})})
+                document.querySelector(`#campo_competencias`).appendChild(badge_copy)
+            }
+        })
+    })
 }
 
-function checarStatusNaoConvertida(select){
-    if (select.value == 7){
+function checarStatusNaoConvertida(select) {
+    if (select.value == 7) {
         document.querySelector('#naoconversao').style.display = 'block';
     } else {
         document.querySelector('#naoconversao').style.display = 'none';
@@ -224,20 +231,20 @@ function updateLink() {
         location.href = baseUrl + params + select;
     }
     else {
-    location.href = baseUrl + params + select;
+        location.href = baseUrl + params + select;
     }
-    
+
 }
 
-function montarNetwork(pessoas, competencias=null) {
-	var nodes = null;
-	var edges = null;
-	var network = null;
+function montarNetwork(pessoas, competencias = null) {
+    var nodes = null;
+    var edges = null;
+    var network = null;
     let defuserpic = "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png";
     var existeFiltro = false
     var listaPessoas = []
 
-    if (competencias != null){
+    if (competencias != null) {
         compFiltradas = document.querySelector(`#${competencias}`).split(";")
         existeFiltro = NaoEhNulaOuVazia(compFiltradas)
     }
@@ -247,7 +254,7 @@ function montarNetwork(pessoas, competencias=null) {
         let notInclude = false
         var obj = {};
 
-        if (existeFiltro){
+        if (existeFiltro) {
             listaCompPessoa = p['Competencia'].split(";")
 
             compFiltradas.forEach(comp => {
@@ -258,79 +265,79 @@ function montarNetwork(pessoas, competencias=null) {
             });
             if (notInclude) {
                 return;
-            }  
+            }
         }
 
         obj['id'] = p['Email']
         obj['title'] = p['UserName']
         obj['image'] = p['Foto']
         obj['comp'] = p['Competencia']
-        
-        if ((p['Foto'] == null) || (p['Foto'] == "")){
+
+        if ((p['Foto'] == null) || (p['Foto'] == "")) {
             obj['image'] = defuserpic
         }
 
         listaPessoas.push(obj)
     })
 
-	nodes = new vis.DataSet(listaPessoas);//lista de pessoas
-	 
-	edges = new vis.DataSet([
-	  { from: 1, to: 2 },
-	  { from: 2, to: 3 },
-	]);
-  
-	// create a network
-	var container = document.getElementById("chart-line");
-    
-	var data = {
-	  nodes: nodes,
-	  edges: edges,
-	};
+    nodes = new vis.DataSet(listaPessoas);//lista de pessoas
 
-	var options = {
-		nodes: {
+    edges = new vis.DataSet([
+        { from: 1, to: 2 },
+        { from: 2, to: 3 },
+    ]);
+
+    // create a network
+    var container = document.getElementById("chart-line");
+
+    var data = {
+        nodes: nodes,
+        edges: edges,
+    };
+
+    var options = {
+        nodes: {
             shape: "circularImage",
-			borderWidth: 5,
-			size: 30,
-			color: {
-				border: "#229954",
-				background: "#666666",
-			},
-			font: {color: "#17202A"},
+            borderWidth: 5,
+            size: 30,
+            color: {
+                border: "#229954",
+                background: "#666666",
+            },
+            font: { color: "#17202A" },
         },
-		edges: {
-			color: "#D0D3D4",
-			value: 5,
-			shadow: true,
-		},
-		interaction:{
-			dragNodes: true,
-			dragView: false,
-			zoomView: false,
-		},
-	}
-	network = new vis.Network(container, data, options)
+        edges: {
+            color: "#D0D3D4",
+            value: 5,
+            shadow: true,
+        },
+        interaction: {
+            dragNodes: true,
+            dragView: false,
+            zoomView: false,
+        },
+    }
+    network = new vis.Network(container, data, options)
 
-	network.on('click', function(selecao) {
-		if (selecao.nodes.length != 0){
-			document.getElementById('user_card').style.display = 'block'
-			var clickedNode = nodes.get(selecao.nodes)[0];
-			network.focus(clickedNode.id,{scale:2, animation:{duration: 400}})
-			document.getElementById("imagem-do-card").src = clickedNode.image
+    network.on('click', function (selecao) {
+        if (selecao.nodes.length != 0) {
+            document.getElementById('user_card').style.display = 'block'
+            var clickedNode = nodes.get(selecao.nodes)[0];
+            network.focus(clickedNode.id, { scale: 2, animation: { duration: 400 } })
+            document.getElementById("imagem-do-card").src = clickedNode.image
             document.getElementById("nome-do-card").innerHTML = clickedNode.title
             document.getElementById("competencias").innerHTML = clickedNode.comp
             mostrarCompetencias()
-		} else {
-			//network.fit({animation:{duration: 400}})
-			network.moveTo({position:{x:0,y:0}, scale:2,animation:{duration: 400}})
-			document.getElementById("user_card").style.display = 'none'
-		}
-	});
-	
-	network.once('stabilized', function() {
-		network.moveTo({position:{x:0,y:0}, scale:2})
-	});
+        } else {
+            //network.fit({animation:{duration: 400}})
+            network.moveTo({ position: { x: 0, y: 0 }, scale: 2, animation: { duration: 400 } })
+            document.getElementById("user_card").style.display = 'none'
+        }
+    });
+
+    network.once('stabilized', function () {
+        network.moveTo({ position: { x: 0, y: 0 }, scale: 2 })
+    });
 
     redePessoas = network;
 }
@@ -352,10 +359,10 @@ function converterCompetencias() {
 
 }
 
-function statusPatente(){
+function statusPatente() {
 
     let status = document.querySelector("#StatusPub").value
-    if (status != 5){
+    if (status != 5) {
         document.querySelector("#NumPatente").readOnly = true;
     } else {
         document.querySelector("#NumPatente").readOnly = false;
@@ -376,7 +383,7 @@ function validarCNPJ(idElemento) {
         alert("CNPJ inválido");
     } else {
         AplicarDadosAPI(idElemento);
-    }    
+    }
 }
 
 function AplicarDadosAPI(idElemento) {
@@ -387,7 +394,7 @@ function AplicarDadosAPI(idElemento) {
         cnpj = document.querySelector(`#valor_cnpj-${idElemento}`).value;
     }
     let url = window.location.origin + "/Empresas/DadosAPI?query=" + cnpj;
-    
+
     fetch(url).then(res => {
         res.json().then(dados => {
             if (idElemento == null) {
@@ -488,14 +495,13 @@ function AplicarDadosAPI(idElemento) {
             indices.add('AL', 25)
 
             // ESSA LINHA BUSCA O NOME A PARTIR DA SIGLA DEVOLVIDA PELA API --------\/
-            if (idElemento == null)
-            {
+            if (idElemento == null) {
                 document.getElementById("EstadoEmpresaCadastroINT").value = indices.find(dados.uf);
             }
-            else
-            {
+            else {
                 document.getElementById(`EstadoEmpresaCadastroINT-${idElemento}`).value = indices.find(dados.uf);
             }
 
-    })}) 
+        })
+    })
 }
