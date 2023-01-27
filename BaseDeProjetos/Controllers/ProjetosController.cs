@@ -37,7 +37,8 @@ namespace BaseDeProjetos.Controllers
                 }
 
                 return View(nameof(Index));
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
@@ -61,7 +62,7 @@ namespace BaseDeProjetos.Controllers
                 CategorizarStatusProjetos(projetos);
                 GerarIndicadores(casa, _context);
                 return View(projetos.ToList());
-            } 
+            }
             else
             {
                 return View("Forbidden");
@@ -169,7 +170,8 @@ namespace BaseDeProjetos.Controllers
                 {
                     return ViewComponent("null"); // View n existe é mais pra ""debug""
                 }
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
@@ -181,7 +183,8 @@ namespace BaseDeProjetos.Controllers
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 return ViewComponent($"ModalDetalhesProjeto", new { id = idProjeto });
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
@@ -226,7 +229,8 @@ namespace BaseDeProjetos.Controllers
                 }
 
                 return View(projeto);
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
@@ -243,7 +247,8 @@ namespace BaseDeProjetos.Controllers
                 ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;
                 return View();
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
@@ -293,7 +298,8 @@ namespace BaseDeProjetos.Controllers
                 //ConfigurarEquipe(projeto);
 
                 return View(projeto);
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
@@ -319,7 +325,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-       public async Task<IActionResult> Edit(string id, [Bind("Id,Casa,NomeProjeto, MembrosEquipe,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos")] Projeto projeto)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Casa,NomeProjeto, MembrosEquipe,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos")] Projeto projeto)
         {
             if (id != projeto.Id)
             {
@@ -384,7 +390,8 @@ namespace BaseDeProjetos.Controllers
                 }
 
                 return View(projeto);
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
@@ -482,7 +489,8 @@ namespace BaseDeProjetos.Controllers
                                             ToList();
 
                 return Json(usuarios);
-            } else
+            }
+            else
             {
                 return Json("403 Forbidden");
             }

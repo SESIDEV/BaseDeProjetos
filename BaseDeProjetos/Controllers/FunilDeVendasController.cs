@@ -581,7 +581,9 @@ namespace BaseDeProjetos.Controllers
                             {
                                 continue;
                             }
-                        } else {
+                        }
+                        else
+                        {
                             if (p.Status.OrderBy(k => k.Data).LastOrDefault().Status != StatusProspeccao.Planejada)
                             {
                                 aprovado = true;
@@ -597,7 +599,7 @@ namespace BaseDeProjetos.Controllers
                             dict["Empresa"] = p.Empresa.Nome;
                             dict["Segmento"] = p.Empresa.Segmento.GetDisplayName();
                             listaFull.Add(dict);
-                        }    
+                        }
                     }
                     else
                     {

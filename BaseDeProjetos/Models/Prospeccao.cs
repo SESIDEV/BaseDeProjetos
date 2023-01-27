@@ -13,8 +13,9 @@ namespace BaseDeProjetos.Models
             this.Status = new List<FollowUp> { followUp };
         }
 
-        public Prospeccao() { 
-            
+        public Prospeccao()
+        {
+
         }
 
         [Key]
@@ -39,7 +40,7 @@ namespace BaseDeProjetos.Models
         public virtual Instituto Casa { get; set; }
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "R{0:C2}")]
         [Display(Name = "Valor da Proposta (R$)")]
-        public virtual decimal ValorProposta { get; set; } = 0;        
+        public virtual decimal ValorProposta { get; set; } = 0;
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "R{0:C2}")]
         [Display(Name = "Valor Estimado da Prospecção (R$)")]
         public virtual decimal ValorEstimado { get; set; } = 0;
@@ -51,10 +52,10 @@ namespace BaseDeProjetos.Models
         public override int GetHashCode() => (Id).GetHashCode();
 
         [Display(Name = "Caminho/Endereço da pasta no sistema")]
-        public virtual string CaminhoPasta {get; set;}
+        public virtual string CaminhoPasta { get; set; }
 
         [Display(Name = "Tags")]
-        public virtual string Tags {get; set;}
+        public virtual string Tags { get; set; }
 
     }
 
@@ -68,7 +69,7 @@ namespace BaseDeProjetos.Models
         public virtual Prospeccao Origem { get; set; }
 
         public virtual string OrigemID { get; set; }
-        
+
         [Display(Name = "Anotações")]
         public virtual string Anotacoes { get; set; }
         public virtual DateTime Data { get; set; }

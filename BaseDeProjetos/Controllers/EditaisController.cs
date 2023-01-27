@@ -195,25 +195,26 @@ namespace BaseDeProjetos.Controllers
         }
 
         public IActionResult RetornarModal(string idEdital, string tipo)
-		{
+        {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 if (tipo != null)
                 {
                     return ViewComponent($"Modal{tipo}Edital", new { id = idEdital });
                 }
-                else 
+                else
                 {
                     return View("Error");
                 }
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
-        }      
+        }
 
-		// POST: Editais/Delete/5
-		[HttpPost, ActionName("Delete")]
+        // POST: Editais/Delete/5
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -227,7 +228,7 @@ namespace BaseDeProjetos.Controllers
         {
             return _context.Editais.Any(e => e.Id == id);
         }
-                
+
         public IActionResult ProspectarEdital(int id)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -272,7 +273,7 @@ namespace BaseDeProjetos.Controllers
                 _context.Add(submissao);
                 _context.SaveChanges();
                 return RedirectToAction("Index", "FunilDeVendas");
-            } 
+            }
             else
             {
                 return View("Forbidden");
