@@ -3,6 +3,9 @@
 
 @foreach (var edital in Model)
 {
+    <div id="modalActionsEdital-@edital.Id-container">
+    </div>
+
     <div id="modalEditEdital-@edital.Id-container">
     </div>
 
@@ -29,6 +32,6 @@
             }            
         </td>
         <td class="cell">@edital.DataResultado</td>
-        <td class="cell"><button type="button" data-bs-target="#modalAcoes-@edital.Id" id="button-@edital.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary" onmouseover="carregarModaisEdital('@edital.Id')">Ações</button></td>
+        <td class="cell"><button type="button" data-bs-target="#ModalActionsEdital-@edital.Id" id="button-@edital.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary" onmouseover="carregarModaisEdital('@edital.Id')">Ações</button></td>
     </tr>
 }

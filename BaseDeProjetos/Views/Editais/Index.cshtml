@@ -1,4 +1,4 @@
-@model IEnumerable<BaseDeProjetos.Models.Editais>
+﻿@model IEnumerable<BaseDeProjetos.Models.Editais>
 @{
 	ViewData["Title"] = "Editais";
 }
@@ -10,7 +10,7 @@
 
 <partial name="Header" view-data="@ViewData" />
 <script>
-	var editaisDetalhes = []
+	var editaisCarregados = []
 
 	function carregarModalEdital(idEdital, tipo) {
 		if (tipo) {
@@ -29,14 +29,14 @@
 		let buttonName = "#button-" + idEdital
 		let buttonDetalhes = document.querySelector(buttonName)
 
-		if (!editaisDetalhes.includes(idEdital)) {
+		if (!editaisCarregados.includes(idEdital)) {
 			buttonDetalhes.disabled = true;
 			buttonDetalhes.innerHTML = '<div class="spinner-border spinner-border-sm text-light" role="status"><span class="visually-hidden">Loading...</span></div>';
-			fetch(`/Editais/RetornarModalDetalhes?idEdital=${idEdital}`)
+			fetch(`/Editais/RetornarModal?idEdital=${idEdital}&tipo=Actions`)
 				.then(response => response.text())
 				.then(result => {
-					document.querySelector(`#modalDetailsEdital-${idEdital}-container`).innerHTML = result;
-					buttonDetalhes.innerHTML = 'Detalhes';
+					document.querySelector(`#modalActionsEdital-${idEdital}-container`).innerHTML = result;
+					buttonDetalhes.innerHTML = 'Ações';
 					buttonDetalhes.disabled = false;
 				});
 		}
@@ -49,7 +49,7 @@
 			carregarModalEdital(idEdital, tipo)
 		})
 		carregarModalDetalhesEdital(idEdital);
-		editaisDetalhes.push(idEdital);
+		editaisCarregados.push(idEdital);
 	}
 
 

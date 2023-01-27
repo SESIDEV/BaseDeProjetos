@@ -210,7 +210,7 @@ namespace BaseDeProjetos.Controllers
             {
                 return View("Forbidden");
             }
-        }
+        }      
 
 		// POST: Editais/Delete/5
 		[HttpPost, ActionName("Delete")]

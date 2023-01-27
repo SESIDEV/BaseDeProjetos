@@ -1,0 +1,48 @@
+﻿@model BaseDeProjetos.Models.Editais
+@using BaseDeProjetos.Helpers
+@using System.Globalization
+
+<div class="modal fade" id="ModalActionsEdital-@Model.Id" tabindex="-1" aria-labelledby="ModalActionsEdital-@Model.Id-Label"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="ModalActionsEdital-@Model.Id-Label">Detalhes do Edital</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex flex-column gap-1">
+                <h1 class="app-card-title">Nome:</h1>
+                <span>@Model.Name</span>
+                <h1 class="app-card-title">Descrição:</h1>
+                <span>@Model.Descricao</span>
+                <h1 class="app-card-title">Local:</h1>
+                <span>@Model.Local</span>
+                <h1 class="app-card-title">Status do Edital:</h1>
+                <span>@Model.StatusEdital</span>
+                <h1 class="app-card-title">Agência de Fomento:</h1>
+                <span>@Model.AgenciaFomento</span>
+                <h1 class="app-card-title">Prazo de Submissão:</h1>
+                <span>@Model.PrazoSubmissao</span>
+                <h1 class="app-card-title">Valor do Edital:</h1>
+                <span>@Model.ValorEdital</span>
+                <h1 class="app-card-title">Data do Resultado:</h1>
+                <span>@Model.DataResultado</span>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ModalEditEdital-@Model.Id" role="button">
+                    Editar
+                </a>                
+                <a class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ModalDeleteEdital-@Model.Id" role="button">
+                    Deletar
+                </a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
