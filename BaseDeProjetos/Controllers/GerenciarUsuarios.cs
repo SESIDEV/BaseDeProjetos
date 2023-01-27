@@ -11,6 +11,9 @@ using BaseDeProjetos.Helpers;
 using System.Collections;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Data.SqlClient;
+using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
+using Microsoft.AspNetCore.Identity;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -35,6 +38,27 @@ namespace BaseDeProjetos.Controllers
             return usuario;
         }
 
+        public List<Usuario> VerificarEmailAtivo(string statusEmailUsuario)
+        {
+            var listaUsuarios = _context.Users.ToList();
+
+            switch (statusEmailUsuario)
+            {
+                case "1":
+                    listaUsuarios = _context.Users.Where(u => u.EmailConfirmed).ToList();
+                    break;
+                case "0":
+                    listaUsuarios = _context.Users.Where(u => !u.EmailConfirmed).ToList();
+                    break;
+                default:
+                    listaUsuarios = _context.Users.ToList();
+                    break;
+            }
+
+            return listaUsuarios;
+
+        }
+
         public bool VerificarNivelUsuario(Usuario usuario)
         {
 
@@ -48,19 +72,26 @@ namespace BaseDeProjetos.Controllers
             }
 
         }
-
+        [Route("GerenciarUsuarios")]
+        [Route("GerenciarUsuarios/Index")]
+        [Route("GerenciarUsuarios/Index/{id?}")]
         // GET: GerenciarUsuarios
-        public IActionResult Index()
+        public IActionResult Index(string? statusEmailUsuario)
         {
-            var listaUsuarios = new List<Usuario>();
+            ViewData["CurrentFilter"] = statusEmailUsuario;
+
+            var lista = _context.Users.ToList();
+
             Usuario usuario = UsuarioExiste(HttpContext.User.Identity.Name);
+
             if (usuario != null && VerificarNivelUsuario(usuario))
             {
-                listaUsuarios = _context.Users.Where(u => u.Casa == usuario.Casa).ToList();
+
+                lista = VerificarEmailAtivo(statusEmailUsuario);               
 
             }
 
-            return View(listaUsuarios);
+            return View(lista);
 
         }
 
@@ -95,8 +126,12 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,UserName,Email,EmailConfirmado,PasswordHash,Casa,Nivel")] Usuario usuario)
         {
+            ViewData["SenhaProvisoria"] = "AQAAAAEAACcQAAAAEEJOLHMoQRfLBTu8K2wwcFq91QZqkhyVQyP1TpvtsZ5/6jd5CP6jpEEL0bcpUjKvpg==";
+
             if (ModelState.IsValid)
             {
+                usuario.PasswordHash = "AQAAAAEAACcQAAAAEEJOLHMoQRfLBTu8K2wwcFq91QZqkhyVQyP1TpvtsZ5/6jd5CP6jpEEL0bcpUjKvpg==";
+
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -132,10 +167,12 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
+
             if (ModelState.IsValid)
             {
+                
                 try
-                {
+                {                    
                     _context.Update(usuario);
                     await _context.SaveChangesAsync();
                 }
