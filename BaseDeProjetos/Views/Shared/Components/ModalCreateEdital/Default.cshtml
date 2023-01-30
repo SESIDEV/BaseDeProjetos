@@ -1,0 +1,81 @@
+﻿@model BaseDeProjetos.Models.Editais
+@{
+
+}
+
+<script>
+
+</script>
+
+<div class="modal fade" id="ModalCreateEdital" tabindex="-1" aria-labelledby="ModalCreateEditalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="ModalCreateEditalLabel">Criar Edital</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="Create">
+                <div class="modal-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Descricao" class="control-label"></label>
+                        <input asp-for="Descricao" class="form-control" />
+                        <span asp-validation-for="Descricao" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Local" class="control-label"></label>
+                        <select asp-for="Local" class="form-control" asp-items="Html.GetEnumSelectList<Pais>().OrderBy(localEdital => localEdital.Text)"></select>
+                        <span asp-validation-for="Local" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="StatusEdital" class="control-label"></label>
+                        <select asp-for="StatusEdital" class="form-control" asp-items="Html.GetEnumSelectList<StatusEdital>().OrderBy(statusEdital => statusEdital.Text)"></select>
+                        <span asp-validation-for="StatusEdital" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="AgenciaFomento" class="control-label"></label>
+                        <select asp-for="AgenciaFomento" class="form-control" asp-items="Html.GetEnumSelectList<AgenciaDeFomento>().OrderBy(agenciaFomento => agenciaFomento.Text)"></select>
+                        <span asp-validation-for="AgenciaFomento" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PrazoSubmissao" class="control-label"></label>
+                        <input asp-for="PrazoSubmissao" class="form-control" />
+                        <span asp-validation-for="PrazoSubmissao" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ValorEdital" class="control-label"></label>
+                        <input asp-for="ValorEdital" class="form-control" />
+                        <span asp-validation-for="ValorEdital" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="LinkEdital" class="control-label"></label>
+                        <input asp-for="LinkEdital" class="form-control" />
+                        <span asp-validation-for="LinkEdital" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="DataResultado" class="control-label"></label>
+                        <input asp-for="DataResultado" class="form-control" />
+                        <span asp-validation-for="DataResultado" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sair</button>
+                    <button type="submit" class="btn text-white btn-danger">Criar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

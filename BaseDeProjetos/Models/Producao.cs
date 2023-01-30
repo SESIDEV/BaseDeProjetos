@@ -39,7 +39,7 @@ namespace BaseDeProjetos.Models
 
         [Display(Name = "Projeto Associado")]
         public virtual Projeto Projeto { get; set; }
-        
+
         [Display(Name = "Empresa Associada")]
         public virtual Empresa Empresa { get; set; }
 
