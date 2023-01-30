@@ -14,10 +14,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Data.SqlClient;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Microsoft.AspNetCore.Identity;
+using OfficeOpenXml.Drawing;
 
 namespace BaseDeProjetos.Controllers
 {
-    [Authorize]
+
     public class GerenciarUsuarios : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -80,14 +81,14 @@ namespace BaseDeProjetos.Controllers
         {
             ViewData["CurrentFilter"] = statusEmailUsuario;
 
-            var lista = _context.Users.ToList();
+            var lista = _context.Users.AsNoTracking().ToList();
 
             Usuario usuario = UsuarioExiste(HttpContext.User.Identity.Name);
 
             if (usuario != null && VerificarNivelUsuario(usuario))
             {
 
-                lista = VerificarEmailAtivo(statusEmailUsuario);               
+                lista = VerificarEmailAtivo(statusEmailUsuario);
 
             }
 
@@ -103,7 +104,7 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
-            var usuario = await _context.Users
+            var usuario = await _context.Users.AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id.ToString());
             if (usuario == null)
             {
@@ -126,7 +127,7 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,UserName,Email,EmailConfirmado,PasswordHash,Casa,Nivel")] Usuario usuario)
         {
-            ViewData["SenhaProvisoria"] = "AQAAAAEAACcQAAAAEEJOLHMoQRfLBTu8K2wwcFq91QZqkhyVQyP1TpvtsZ5/6jd5CP6jpEEL0bcpUjKvpg==";
+            ViewData["SenhaDefault"] = "AQAAAAEAACcQAAAAEEJOLHMoQRfLBTu8K2wwcFq91QZqkhyVQyP1TpvtsZ5/6jd5CP6jpEEL0bcpUjKvpg==";
 
             if (ModelState.IsValid)
             {
@@ -140,6 +141,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: GerenciarUsuarios/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(string? id)
         {
             if (id == null)
@@ -160,8 +162,9 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("id,UserName,Email,EmailConfirmado,PasswordHash,Casa,Nivel")] Usuario usuario)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,UserName,Email,Casa,Nivel,PasswordHash")] Usuario usuario)
         {
+
             if (id.ToString() != usuario.Id)
             {
                 return NotFound();
@@ -170,15 +173,23 @@ namespace BaseDeProjetos.Controllers
 
             if (ModelState.IsValid)
             {
-                
+
                 try
-                {                    
+                {
+                    
                     _context.Update(usuario);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!UsuarioExists(usuario.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -193,7 +204,7 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
-            var usuario = await _context.Users
+            var usuario = await _context.Users.AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id.ToString());
             if (usuario == null)
             {
@@ -216,7 +227,7 @@ namespace BaseDeProjetos.Controllers
 
         private bool UsuarioExists(string id)
         {
-            return _context.Users.Any(e => e.Id == id.ToString());
+            return _context.Users.AsNoTracking().Any(e => e.Id == id.ToString());
         }
     }
 }

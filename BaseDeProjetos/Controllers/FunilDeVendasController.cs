@@ -494,15 +494,9 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            Prospeccao prospeccao = await _context.Prospeccao.FindAsync(id);
+            var prospeccao =  _context.Prospeccao.Where(prosp => prosp.Id == id).Include(f => f.Status).First();
 
-            //Remover os filhos
-            List<FollowUp> follow_ups = _context.FollowUp.Where(p => p.OrigemID == id).ToList();
-            foreach (FollowUp followup in follow_ups)
-            {
-                _context.Remove(followup);
-            }
-            _context.Prospeccao.Remove(prospeccao);
+            _context.Remove(prospeccao);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
         }
