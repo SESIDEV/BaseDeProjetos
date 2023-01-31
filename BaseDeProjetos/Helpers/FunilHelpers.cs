@@ -14,7 +14,7 @@ namespace BaseDeProjetos.Helpers
         public static HtmlString VerificarTemperatura(int qtdDias)
         {
             if (qtdDias < 7)
-            {                
+            {
                 return new HtmlString($"<span class='badge bg-quente'>Quente: ({qtdDias} Dias)</span>");
             }
             else if (qtdDias >= 7 && qtdDias <= 15)
@@ -23,12 +23,12 @@ namespace BaseDeProjetos.Helpers
             }
             else if (qtdDias >= 16 && qtdDias <= 30)
             {
-                return new HtmlString($"<span class='badge bg-esfriando text-dark'>Esfriando: ({qtdDias} Dias)</span>");                
+                return new HtmlString($"<span class='badge bg-esfriando text-dark'>Esfriando: ({qtdDias} Dias)</span>");
             }
             else if (qtdDias > 30 && qtdDias <= 365)
             {
-                return new HtmlString($"<span class='badge bg-frio text-dark'>Frio: ({qtdDias} Dias)</span>");                
-            } 
+                return new HtmlString($"<span class='badge bg-frio text-dark'>Frio: ({qtdDias} Dias)</span>");
+            }
             else
             {
                 return new HtmlString($"<span class='badge bg-frio text-dark'>Congelado: ({qtdDias} Dias)</span>");
@@ -40,45 +40,49 @@ namespace BaseDeProjetos.Helpers
         }
         public static List<Producao> VincularCasaProducao(Usuario usuario, List<Producao> listaProd)
         {
-             if (usuario.Nivel == Nivel.Dev) {
-                return listaProd.Where(producao => 
-                producao.Casa == Instituto.ISIQV || 
+            if (usuario.Nivel == Nivel.Dev)
+            {
+                return listaProd.Where(producao =>
+                producao.Casa == Instituto.ISIQV ||
                 producao.Casa == Instituto.CISHO ||
                 producao.Casa == Instituto.ISIII ||
                 producao.Casa == Instituto.ISISVP).ToList();
             }
-            else {
-                if (usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO)
-            {
-                return listaProd.Where(producao => producao.Casa == Instituto.ISIQV || producao.Casa == Instituto.CISHO).ToList();
-
-            }
             else
             {
-                return listaProd.Where(producao => producao.Casa == usuario.Casa).ToList();
-            }
+                if (usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO)
+                {
+                    return listaProd.Where(producao => producao.Casa == Instituto.ISIQV || producao.Casa == Instituto.CISHO).ToList();
+
+                }
+                else
+                {
+                    return listaProd.Where(producao => producao.Casa == usuario.Casa).ToList();
+                }
             }
         }
         public static List<Prospeccao> VincularCasaProspeccao(Usuario usuario, List<Prospeccao> listaProsp)
         {
-            if (usuario.Nivel == Nivel.Dev) {
-                return listaProsp.Where(prospeccao => 
-                prospeccao.Casa == Instituto.ISIQV || 
+            if (usuario.Nivel == Nivel.Dev)
+            {
+                return listaProsp.Where(prospeccao =>
+                prospeccao.Casa == Instituto.ISIQV ||
                 prospeccao.Casa == Instituto.CISHO ||
                 prospeccao.Casa == Instituto.ISIII ||
                 prospeccao.Casa == Instituto.ISISVP).ToList();
             }
 
-            else {
-                if (usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO)
-            {
-                return listaProsp.Where(prospeccao => prospeccao.Casa == Instituto.ISIQV || prospeccao.Casa == Instituto.CISHO).ToList();
-
-            }
             else
             {
-                return listaProsp.Where(prospeccao => prospeccao.Casa == usuario.Casa).ToList();
-            }
+                if (usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO)
+                {
+                    return listaProsp.Where(prospeccao => prospeccao.Casa == Instituto.ISIQV || prospeccao.Casa == Instituto.CISHO).ToList();
+
+                }
+                else
+                {
+                    return listaProsp.Where(prospeccao => prospeccao.Casa == usuario.Casa).ToList();
+                }
             }
         }
 
@@ -110,7 +114,7 @@ namespace BaseDeProjetos.Helpers
         public static void CategorizarProspecçõesNaView(List<Prospeccao> lista, Usuario usuario, HttpContext HttpContext, dynamic ViewBag)
         {
 
-			List<Prospeccao> concluidos = lista.Where(prospeccao => prospeccao.Status.Any(followup => followup.Status == StatusProspeccao.Convertida ||
+            List<Prospeccao> concluidos = lista.Where(prospeccao => prospeccao.Status.Any(followup => followup.Status == StatusProspeccao.Convertida ||
                                                               followup.Status == StatusProspeccao.Suspensa ||
                                                               followup.Status == StatusProspeccao.NaoConvertida)).ToList();
 
@@ -138,14 +142,17 @@ namespace BaseDeProjetos.Helpers
 
             List<Prospeccao> prospeccoes = new List<Prospeccao>();
 
-            if (usuario.Nivel == Nivel.Dev) {
+            if (usuario.Nivel == Nivel.Dev)
+            {
                 List<Prospeccao> lista = _context.Prospeccao.ToList();
                 prospeccoes.AddRange(lista);
             }
 
-            else {
-                
-                if (Enum.IsDefined(typeof(Instituto), casa)) {
+            else
+            {
+
+                if (Enum.IsDefined(typeof(Instituto), casa))
+                {
                     HttpContext.Session.SetString("_Casa", casa);
                     enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
                     List<Prospeccao> lista = _context.Prospeccao.Where(prospeccao => prospeccao.Casa.Equals(enum_casa)).ToList();
@@ -155,7 +162,7 @@ namespace BaseDeProjetos.Helpers
                     ViewData["Area"] = casa;
                 }
             }
-            
+
             return prospeccoes.ToList();
         }
 
@@ -165,14 +172,17 @@ namespace BaseDeProjetos.Helpers
 
             List<Producao> producoes = new List<Producao>();
 
-            if (usuario.Nivel == Nivel.Dev) {
+            if (usuario.Nivel == Nivel.Dev)
+            {
                 List<Producao> lista = _context.Producao.ToList();
                 producoes.AddRange(lista);
             }
 
-            else {
-                
-                if (Enum.IsDefined(typeof(Instituto), casa)) {
+            else
+            {
+
+                if (Enum.IsDefined(typeof(Instituto), casa))
+                {
                     HttpContext.Session.SetString("_Casa", casa);
                     enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
                     List<Producao> lista = _context.Producao.Where(producao => producao.Casa.Equals(enum_casa)).ToList();
@@ -182,7 +192,7 @@ namespace BaseDeProjetos.Helpers
                     ViewData["Area"] = casa;
                 }
             }
-            
+
             return producoes.ToList();
         }
 
@@ -231,10 +241,10 @@ namespace BaseDeProjetos.Helpers
                 searchString = searchString.ToLower();
 
                 prospeccoes = prospeccoes.Where(p =>
-                checarSubstring(searchString, p.Empresa.Nome) ||
-                checarSubstring(searchString, p.Usuario.UserName) ||
-                checarSubstring(searchString, p.NomeProspeccao) ||
-                checarSubstring(searchString, p.MembrosEquipe)
+                ChecarSubstring(searchString, p.Empresa.Nome) ||
+                ChecarSubstring(searchString, p.Usuario.UserName) ||
+                ChecarSubstring(searchString, p.NomeProspeccao) ||
+                ChecarSubstring(searchString, p.MembrosEquipe)
 
                 ).ToList();
             }
@@ -242,11 +252,14 @@ namespace BaseDeProjetos.Helpers
             return prospeccoes;
         }
 
-        private static bool checarSubstring(string searchString, string campo)
+        private static bool ChecarSubstring(string searchString, string campo)
         {
-            if (campo != null){
+            if (campo != null)
+            {
                 return campo.ToLower().Contains(searchString);
-            } else {
+            }
+            else
+            {
                 return false;
             }
         }
@@ -258,20 +271,23 @@ namespace BaseDeProjetos.Helpers
             {
                 searchString = searchString.ToLower();
 
-                if (producoes[0].Empresa != null){
+                if (producoes[0].Empresa != null)
+                {
 
-                    producoes = producoes.Where(producao => 
+                    producoes = producoes.Where(producao =>
                         producao.Autores.ToLower().Contains(searchString) ||
                         producao.Titulo.ToLower().Contains(searchString) ||
                         producao.Empresa.Nome.ToLower().Contains(searchString) ||
                         producao.Projeto.NomeProjeto.ToLower().Contains(searchString)
                         ).ToList();
-                } else {
-                    producoes = producoes.Where(producao => 
+                }
+                else
+                {
+                    producoes = producoes.Where(producao =>
                         producao.Autores.ToLower().Contains(searchString) ||
                         producao.Titulo.ToLower().Contains(searchString)
                         ).ToList();
-                }               
+                }
             }
 
             return producoes;

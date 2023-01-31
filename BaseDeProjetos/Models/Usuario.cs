@@ -5,6 +5,7 @@ namespace BaseDeProjetos.Models
 {
     public class Usuario : IdentityUser
     {
+        
         public Instituto Casa { get; set; }
 
         public Nivel Nivel { get; set; }

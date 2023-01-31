@@ -43,7 +43,7 @@ namespace BaseDeProjetos.Controllers
 
 
                 //PARA FINS DE DEBUG
-                if(usuario.Casa == Instituto.Super)
+                if (usuario.Casa == Instituto.Super)
                 {
                     ViewData["Volume_Negocios"] = _context.Prospeccao.Where(p => p.Casa == Instituto.ISIQV).ToList().Where(p => prospeccaoAtiva(p) == true).Sum(p => p.ValorEstimado);
                 }
@@ -57,16 +57,16 @@ namespace BaseDeProjetos.Controllers
                 int n_prosp_convertidas = _context.Prospeccao.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida).ToList().Count;
                 int n_prosp_naoconvertidas = _context.Prospeccao.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.NaoConvertida).ToList().Count;
                 int n_prosp_suspensa = _context.Prospeccao.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Suspensa).ToList().Count;
-                ViewData["n_prosp_concluidas"] = n_prosp_convertidas + n_prosp_naoconvertidas + n_prosp_suspensa; 
-				//Volume de negocios é o somatório de todos os valores de prospecções
-				ViewData["Volume_Negocios"] = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).ToList().Where(p => prospeccaoAtiva(p) == true).Sum(p => p.ValorEstimado);
+                ViewData["n_prosp_concluidas"] = n_prosp_convertidas + n_prosp_naoconvertidas + n_prosp_suspensa;
+                //Volume de negocios é o somatório de todos os valores de prospecções
+                ViewData["Volume_Negocios"] = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).ToList().Where(p => prospeccaoAtiva(p) == true).Sum(p => p.ValorEstimado);
                 ViewData["n_proj"] = _context.Projeto.Where(p => p.Casa == usuario.Casa).Where(p => p.Casa == usuario.Casa).Where(p => p.Status == StatusProjeto.EmExecucao).ToList().Count;
                 ViewData["n_empresas"] = _context.Prospeccao.Where(p => p.Status.Any(s => s.Status != StatusProspeccao.Planejada)).Select(e => e.Empresa).Distinct().Count();
                 ViewData["satisfacao"] = 0.8750;
                 ViewData["Valor_Prosp_Proposta"] = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).Where(p => p.Status.Any(s => s.Status == StatusProspeccao.ComProposta)).Sum(p => p.ValorProposta);
                 ViewBag.Usuarios = _context.Users.AsEnumerable().Where(p => p.Casa == usuario.Casa).Where(u => ValidarCasa(u, usuario)).Where(a => a.EmailConfirmed == true).Where(b => b.Nivel != Nivel.Dev && b.Nivel != Nivel.Externos).ToList().Count();
                 ViewBag.Estados = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).Select(p => p.Empresa.Estado).ToList();
-                ViewBag.LinhaDePesquisa = _context.Prospeccao.Where(p => p.Casa == usuario.Casa && p.Status.Any(l => l.Status != StatusProspeccao.Planejada)).Select(p => p.LinhaPequisa).ToList();                
+                ViewBag.LinhaDePesquisa = _context.Prospeccao.Where(p => p.Casa == usuario.Casa && p.Status.Any(l => l.Status != StatusProspeccao.Planejada)).Select(p => p.LinhaPequisa).ToList();
 
             }
             return View();
@@ -111,8 +111,8 @@ namespace BaseDeProjetos.Controllers
                 }
 
 
-                              
-                
+
+
             }
             catch (Exception)
             {
@@ -131,9 +131,9 @@ namespace BaseDeProjetos.Controllers
                 return false;
             }
 
-            return p.Status.OrderBy(k=>k.Data).LastOrDefault().Status <= StatusProspeccao.ComProposta;
-;
-        }      
+            return p.Status.OrderBy(k => k.Data).LastOrDefault().Status <= StatusProspeccao.ComProposta;
+            ;
+        }
 
         private decimal ReceitaCasa(Instituto casa)
         {

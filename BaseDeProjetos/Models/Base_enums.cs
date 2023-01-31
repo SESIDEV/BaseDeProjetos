@@ -469,7 +469,7 @@ namespace BaseDeProjetos.Models
         Aceito,
         [Display(Name = "Publicado", GroupName = "Artigo")]
         Publicado,
-        
+
         [Display(Name = "Busca de Anterioridade", GroupName = "Patente")]
         BuscaAnterioridade,
 
@@ -482,7 +482,7 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Concedida", GroupName = "Patente")]
         Concedida = 5,
 
-        
+
     }
     public enum Instituto
     {

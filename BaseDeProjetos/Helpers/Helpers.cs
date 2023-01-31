@@ -40,9 +40,10 @@ namespace BaseDeProjetos.Helpers
 
         }
 
-        public static string PuxarTagsProspecoes(ApplicationDbContext _context){
-            
-            var tags = _context.Prospeccao.Where(p => p.Tags != null).Select(p => new {p.Tags}).ToList();
+        public static string PuxarTagsProspecoes(ApplicationDbContext _context)
+        {
+
+            var tags = _context.Prospeccao.Where(p => p.Tags != null).Select(p => new { p.Tags }).ToList();
 
             string tagsJson = JsonSerializer.Serialize(tags);
 
@@ -50,8 +51,9 @@ namespace BaseDeProjetos.Helpers
 
         }
 
-        public static string PuxarDadosEmpresas(ApplicationDbContext _context){
-            
+        public static string PuxarDadosEmpresas(ApplicationDbContext _context)
+        {
+
             var empresas = _context.Empresa.Where(e => e.Nome != null);//.Select(e => new {e.Nome, e.Segmento.GetDisplayName()}).ToList();
 
             string empresasJson = JsonSerializer.Serialize(empresas);

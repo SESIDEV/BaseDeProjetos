@@ -53,7 +53,8 @@ namespace BaseDeProjetos.Controllers
                 ViewData["ListaProducoes"] = Producoes.ToList();
 
                 return View();
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
@@ -81,7 +82,8 @@ namespace BaseDeProjetos.Controllers
                 }
 
                 return View(producao);
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
@@ -101,8 +103,10 @@ namespace BaseDeProjetos.Controllers
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
                 ViewData["Projetos"] = new SelectList(projetos, "Id", "NomeProjeto");
                 return View();
-            } else { 
-                return View("Forbidden"); 
+            }
+            else
+            {
+                return View("Forbidden");
             }
         }
 
@@ -146,7 +150,8 @@ namespace BaseDeProjetos.Controllers
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
                 ViewData["Projetos"] = new SelectList(projetos, "Id", "NomeProjeto");
                 return View(producao);
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
@@ -209,7 +214,8 @@ namespace BaseDeProjetos.Controllers
                 }
 
                 return View(producao);
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }

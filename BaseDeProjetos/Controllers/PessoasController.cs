@@ -30,14 +30,14 @@ namespace BaseDeProjetos.Controllers
                 ViewBag.usuarioNivel = usuario.Nivel;
 
                 return View();
-            } 
+            }
             else
             {
                 return View("Forbidden");
             }
         }
 
-        
+
         public string dados()
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -54,14 +54,15 @@ namespace BaseDeProjetos.Controllers
                 Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
                 return usuario.UserName;
-            } 
+            }
             else
             {
                 return "403 Forbidden";
             }
         }
 
-        public string dictCompetencias(){
+        public string dictCompetencias()
+        {
             IDictionary<string, string> competencias = new Dictionary<string, string>()
             {
                 {"1", "Avaliação do Ciclo de Vida"},

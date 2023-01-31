@@ -61,7 +61,8 @@ namespace BaseDeProjetos.Controllers
                 var empresas = FiltrarEmpresas(searchString, _context.Empresa.OrderBy(e => e.Nome).ToList());
 
                 return View(empresas);
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
@@ -73,7 +74,8 @@ namespace BaseDeProjetos.Controllers
             {
                 var procurar_dado = _context.Empresa.Where(x => x.CNPJ == cnpj).FirstOrDefault();
                 if (procurar_dado != null) { return Json(1); } else { return Json(0); }
-            } else
+            }
+            else
             {
                 return Json("403 Forbidden");
             }
@@ -87,7 +89,8 @@ namespace BaseDeProjetos.Controllers
                 var response = await client.GetAsync(query);
                 var data = await response.Content.ReadAsStringAsync();
                 return data;
-            } else
+            }
+            else
             {
                 return "403 Forbidden";
             }
@@ -148,7 +151,8 @@ namespace BaseDeProjetos.Controllers
                 }
 
                 return View(empresa);
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
@@ -165,7 +169,8 @@ namespace BaseDeProjetos.Controllers
                 ViewBag.usuarioNivel = usuario.Nivel;
 
                 return View();
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
@@ -208,7 +213,8 @@ namespace BaseDeProjetos.Controllers
                     return NotFound();
                 }
                 return View(empresa);
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
@@ -273,7 +279,8 @@ namespace BaseDeProjetos.Controllers
                 }
 
                 return View(empresa);
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
@@ -303,24 +310,35 @@ namespace BaseDeProjetos.Controllers
 
             List<Dictionary<string, object>> listaFull = new List<Dictionary<string, object>>();
 
-            foreach (var empresa in lista_emp){
+            foreach (var empresa in lista_emp)
+            {
                 bool aprovado = false;
 
-                if(estrangeiras){
-                    if (empresa.CNPJ == "00000000000000" || empresa.Estado == Estado.Estrangeiro){
+                if (estrangeiras)
+                {
+                    if (empresa.CNPJ == "00000000000000" || empresa.Estado == Estado.Estrangeiro)
+                    {
                         aprovado = true;
-                    } else {
+                    }
+                    else
+                    {
                         continue;
                     }
-                } else {
-                    if (empresa.CNPJ != "00000000000000"){
+                }
+                else
+                {
+                    if (empresa.CNPJ != "00000000000000")
+                    {
                         aprovado = true;
-                    } else {
+                    }
+                    else
+                    {
                         continue;
                     }
                 }
 
-                if (aprovado) {
+                if (aprovado)
+                {
                     Dictionary<string, object> dict = new Dictionary<string, object>();
                     dict["Nome"] = empresa.Nome;
                     dict["Segmento"] = empresa.Segmento.GetDisplayName();

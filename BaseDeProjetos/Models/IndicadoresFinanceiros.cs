@@ -21,7 +21,7 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Receita Por Caixa")]
         public decimal Investimento { get; set; }
 
-        public float QualiSeguranca {  get; set; }
+        public float QualiSeguranca { get; set; }
         public Instituto Casa { get; set; }
     }
 }

@@ -46,7 +46,8 @@ namespace BaseDeProjetos.Controllers
                 {
                     return View("Forbidden");
                 }
-            } else
+            }
+            else
             {
                 return View("Forbidden");
             }
@@ -54,7 +55,7 @@ namespace BaseDeProjetos.Controllers
 
         public static List<IndicadoresFinanceiros> VincularCasaAosIndicadoresFinanceiros(Usuario usuario, List<IndicadoresFinanceiros> listaIndicadoresFinanceiros)
         {
-           
+
             if (usuario.Casa == Instituto.Super || usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO)
             {
                 return listaIndicadoresFinanceiros.Where(lista => lista.Casa == Instituto.ISIQV).ToList();
@@ -63,7 +64,7 @@ namespace BaseDeProjetos.Controllers
             else
             {
                 return listaIndicadoresFinanceiros.Where(lista => lista.Casa == usuario.Casa).ToList();
-            }            
+            }
 
         }
 
@@ -116,7 +117,7 @@ namespace BaseDeProjetos.Controllers
                     }
 
                     return View(indicadoresFinanceiros);
-                } 
+                }
                 else
                 {
                     return View("Forbidden");
@@ -131,7 +132,8 @@ namespace BaseDeProjetos.Controllers
         // GET: IndicadoresFinanceiros/Create
         public IActionResult Create()
         {
-            if (HttpContext.User.Identity.IsAuthenticated) { 
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
                 Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
                 if (usuario.Nivel == Nivel.PMO || usuario.Nivel == Nivel.Dev)
                 {
@@ -139,14 +141,15 @@ namespace BaseDeProjetos.Controllers
                     ViewBag.usuarioNivel = usuario.Nivel;
 
                     return View();
-                } else
+                }
+                else
                 {
                     return View("Forbidden");
                 }
-            } 
+            }
             else
             {
-                return View("Forbidden");    
+                return View("Forbidden");
             }
         }
 
@@ -188,12 +191,12 @@ namespace BaseDeProjetos.Controllers
                         return NotFound();
                     }
                     return View(indicadoresFinanceiros);
-                } 
+                }
                 else
                 {
                     return View("Forbidden");
                 }
-            } 
+            }
             else
             {
                 return View("Forbidden");
@@ -259,12 +262,12 @@ namespace BaseDeProjetos.Controllers
                     }
 
                     return View(indicadoresFinanceiros);
-                } 
+                }
                 else
                 {
                     return View("Forbidden");
                 }
-            } 
+            }
             else
             {
                 return View("Forbidden");
