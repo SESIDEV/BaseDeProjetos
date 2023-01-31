@@ -32,7 +32,7 @@ namespace BaseDeProjetos.Helpers
 
         public static string PuxarDadosUsuarios(ApplicationDbContext _context){
             
-            var usuarios = _context.Users.Where(u => u.Email != null).Select(u => new {u.Email, u.UserName, u.Foto, u.Competencia}).ToList();
+            var usuarios = _context.Users.Where(u => u.Email != null && u.Casa == Instituto.ISIQV && u.EmailConfirmed == true).Select(u => new {u.Email, u.UserName, u.Foto, u.Competencia}).ToList();
 
             string usuariosJson = JsonSerializer.Serialize(usuarios);
 
