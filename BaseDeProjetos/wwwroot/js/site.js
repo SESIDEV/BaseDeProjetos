@@ -236,6 +236,20 @@ function updateLink() {
 
 }
 
+function Base64(id) {
+    imagem = document.getElementById(`logo_imagem-${id}`).files[0];
+    r = new FileReader();
+    r.readAsDataURL(imagem);
+    r.onload = function () {
+        document.getElementById(`img_preview-${id}`).src = r.result
+        document.getElementById(`img_b64-${id}`).value = r.result
+    }
+}
+
+function MostrarImagem(id) {
+    document.getElementById(`img_preview-${id}`).src = document.getElementById(`img_b64-${id}`).value
+}
+
 function montarNetwork(pessoas, competencias = null) {
     var nodes = null;
     var edges = null;
