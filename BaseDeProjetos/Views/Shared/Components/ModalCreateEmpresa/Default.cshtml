@@ -2,22 +2,6 @@
 @{
     ViewData["Title"] = "Criar";
 }
-<script>
-    function Base64() {
-        imagem = document.getElementById("logo_imagem").files[0];
-        r = new FileReader();
-        r.readAsDataURL(imagem);
-        r.onload = function(){
-        document.getElementById("img_preview").src = r.result
-        document.getElementById('img_b64').value = r.result
-        }
-    }
-
-    function MostrarImagem(){
-        document.getElementById("img_preview").src = document.getElementById('img_b64').value
-    }
-
-</script>
 <div class="modal fade" id="CreateEmpresaModalToggle" aria-hidden="true"
      aria-labelledby="CreateEmpresaModalToggleLabel" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
