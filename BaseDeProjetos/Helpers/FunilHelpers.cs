@@ -123,7 +123,7 @@ namespace BaseDeProjetos.Helpers
 
             List<Prospeccao> emProposta = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup => followup.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList();
 
-            List<Prospeccao> ativos = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup => followup.Data).All(prospeccaoAtiva => prospeccaoAtiva.Status == StatusProspeccao.ContatoInicial || prospeccaoAtiva.Status == StatusProspeccao.Discussao_EsbocoProjeto)).ToList();
+            List<Prospeccao> ativos = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup => followup.Data).LastOrDefault().Status < StatusProspeccao.ComProposta).ToList();
 
             List<Prospeccao> planejados = usuario.Nivel == Nivel.Dev ?
             lista.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).ToList() :
