@@ -127,7 +127,7 @@ namespace BaseDeProjetos.Helpers
 
             List<Prospeccao> planejados = usuario.Nivel == Nivel.Dev ?
             lista.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).ToList() :
-            lista.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).Where(localUsuario => localUsuario.Usuario.ToString() == HttpContext.User.Identity.Name).ToList();
+            lista.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).Where(prosp => prosp.Usuario.UserName.ToString() == HttpContext.User.Identity.Name).ToList();
 
             ViewBag.Erradas = errados;
             ViewBag.Concluidas = concluidos;
