@@ -1,4 +1,6 @@
 @{ ViewData["Title"] = "Pessoas"; }
+<!-- Vis -->
+<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 
 <partial name="Header" view-data="@ViewData" />
 <div class="app-wrapper">	    
@@ -168,7 +170,11 @@
 <script>
     window.addEventListener('load', function(){
         gerarOpcoesSelectPessoas(null,'pessoasSelect')
-        fetch('/Pessoas/dados').then(response => response.json()).then(data => {montarNetwork(data)});
+        
+        fetch('/Pessoas/dados').then(response => response.json()).then(data => {
+            localStorage.setItem('Pessoas', JSON.stringify(data));
+            montarNetwork(data)});
+
         listarCompetencias()
     });
 </script>
