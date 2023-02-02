@@ -127,8 +127,7 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,UserName,Email,EmailConfirmado,PasswordHash,Casa,Nivel")] Usuario usuario)
         {
-            ViewData["SenhaDefault"] = "AQAAAAEAACcQAAAAEEJOLHMoQRfLBTu8K2wwcFq91QZqkhyVQyP1TpvtsZ5/6jd5CP6jpEEL0bcpUjKvpg==";
-
+            
             if (ModelState.IsValid)
             {
                 usuario.PasswordHash = "AQAAAAEAACcQAAAAEEJOLHMoQRfLBTu8K2wwcFq91QZqkhyVQyP1TpvtsZ5/6jd5CP6jpEEL0bcpUjKvpg==";
@@ -162,9 +161,11 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,UserName,Email,Casa,Nivel,PasswordHash")] Usuario usuario)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,UserName,Email, EmailConfirmed,Casa,Nivel,PasswordHash")] Usuario usuario)
         {
 
+            Usuario usuarioEditado = usuario;
+            
             if (id.ToString() != usuario.Id)
             {
                 return NotFound();
@@ -176,9 +177,12 @@ namespace BaseDeProjetos.Controllers
 
                 try
                 {
-                    
-                    _context.Update(usuario);
+
+                    var usuarioExiste = await _context.Users.FindAsync(id);
+                    _context.Users.Remove(usuarioExiste);
+                    _context.Add(usuarioEditado);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -191,9 +195,8 @@ namespace BaseDeProjetos.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(usuario);
+            return View(usuarioEditado);
         }
 
         // GET: GerenciarUsuarios/Delete/5

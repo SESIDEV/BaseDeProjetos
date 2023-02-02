@@ -123,11 +123,11 @@ namespace BaseDeProjetos.Helpers
 
             List<Prospeccao> emProposta = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup => followup.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList();
 
-            List<Prospeccao> ativos = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup => followup.Data).All(prospeccaoAtiva => prospeccaoAtiva.Status == StatusProspeccao.ContatoInicial || prospeccaoAtiva.Status == StatusProspeccao.Discussao_EsbocoProjeto)).ToList();
+            List<Prospeccao> ativos = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup => followup.Data).LastOrDefault().Status < StatusProspeccao.ComProposta).ToList();
 
             List<Prospeccao> planejados = usuario.Nivel == Nivel.Dev ?
             lista.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).ToList() :
-            lista.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).Where(localUsuario => localUsuario.Usuario.ToString() == HttpContext.User.Identity.Name).ToList();
+            lista.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).Where(prosp => prosp.Usuario.UserName.ToString() == HttpContext.User.Identity.Name).ToList();
 
             ViewBag.Erradas = errados;
             ViewBag.Concluidas = concluidos;
