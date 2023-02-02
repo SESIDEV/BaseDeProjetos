@@ -25,32 +25,7 @@
     </script> *@
 @foreach (var prospeccao in Model)
 {
-
-    <div id="modalEditProsp-@prospeccao.Id-container">
-
-    </div>
-
-    <div id="modalDeleteProsp-@prospeccao.Id-container">
-
-    </div>
-
-    <div id="modalHistoryProsp-@prospeccao.Id-container">
-
-    </div>
-
-    <div id="modalCreateFollowupProsp-@prospeccao.Id-container">
-
-    </div>
-
-    <div id="modalEditFollowupProsp-@prospeccao.Id-container">
-
-    </div>
-
-    <div id="modalDetalhesProsp-@prospeccao.Id-container">
-
-    </div>
-
-    <tr>
+    <tr id="table-row-@prospeccao.Id" onmouseover="carregarModaisFunil('@prospeccao.Id')">
         @if (prospeccao.Empresa.Logo != null)
         {
             <td class="cell"><img loading="lazy" src="@prospeccao.Empresa.Logo" id="logoEmpresa" alt="Logo da Empresa"
@@ -116,8 +91,7 @@
         </td>
         <td class="cell">
             <button type="button" id="button-@prospeccao.Id" data-bs-target="#modalDetalhes-@prospeccao.Id"
-            data-bs-toggle="modal" class="btn-sm app-btn-primary"
-            onmouseover="carregarModaisFunil('@prospeccao.Id')">Detalhes</button>
+            data-bs-toggle="modal" class="btn-sm app-btn-primary">Detalhes</button>
         </td>
     </tr>
 }
