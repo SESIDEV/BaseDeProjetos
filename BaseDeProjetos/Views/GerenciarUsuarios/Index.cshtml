@@ -1,10 +1,55 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Usuario>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Gerenciamento de Usuários";
 }
+<!-- Vis -->
+<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 
-<h1>Index</h1>
+<partial name="Header" view-data="@ViewData" />
+<div class="app-wrapper">
+    <div class="app-content pt-3 p-md-3 p-lg-4">
+        <div class="container-xl">
+            <h1 class="app-page-title">Gerenciamento de Usuários</h1>
+            <div class="usuario-card-holder">
+            @foreach (var usuario in Model){
+                <div class="usuario-card shadow-sm" id="usuario-card-@usuario.Id">                    
+                    <button type="button" class="usuario-card-button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                                <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
+                            </svg>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                    @if (usuario.Foto != null){
+                        <img class="usuario-card-profile" src="@usuario.Foto">
+                    } 
+                    else
+                    {
+                        <img class="usuario-card-profile" src="~/assets/images/default_profile.png">
+                    }
+
+                    <div>@usuario.UserName</div>
+                    <div id="button-grouper">
+                        <button type="button" class="btn app-btn-primary">Prospecções</button>
+                        <button type="button" class="btn app-btn-primary">Produções</button>
+                        <button type="button" class="btn app-btn-primary">Projetos</button>
+                    </div>
+                    <div class="usuario-card-footer" id="usuario-card-@usuario.Id-footer">
+                            <div class="usuario-card-titulacao">Casa: @usuario.Casa</div>                        
+                    </div>
+                </div>
+            }
+            </div>
+        </div>
+    </div>
+    <partial name="Footer" />
+</div>
+
+@*<h1>Index</h1>
 
 <p>
     <a asp-action="Create" class="btn btn-success text-white">Novo Usuário</a>
@@ -55,3 +100,4 @@
         </tbody>
     </table>
 </div>
+*@

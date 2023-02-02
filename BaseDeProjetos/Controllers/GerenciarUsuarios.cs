@@ -78,11 +78,14 @@ namespace BaseDeProjetos.Controllers
         // GET: GerenciarUsuarios
         public IActionResult Index(string? statusEmailUsuario)
         {
+
             ViewData["CurrentFilter"] = statusEmailUsuario;
 
             var lista = _context.Users.ToList();
 
             Usuario usuario = UsuarioExiste(HttpContext.User.Identity.Name);
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
 
             if (usuario != null && VerificarNivelUsuario(usuario))
             {
