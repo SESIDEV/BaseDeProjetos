@@ -274,6 +274,16 @@
 
                                             @foreach (Prospeccao prospeccao in prospsAtivas.Where(P => P.Empresa.Id == @empresa.Id))
                                             {
+                                                <div id="modalEditProsp-@prospeccao.Id-container">
+                                                </div>
+                                                <div id="modalDeleteProsp-@prospeccao.Id-container">
+                                                </div>
+                                                <div id="modalHistoryProsp-@prospeccao.Id-container">
+                                                </div>
+                                                <div id="modalCreateFollowupProsp-@prospeccao.Id-container">
+                                                </div>
+                                                <div id="modalEditFollowupProsp-@prospeccao.Id-container">
+                                                </div>
                                                 <div id="modalDetalhesProsp-@prospeccao.Id-container">
                                                 </div>
 
