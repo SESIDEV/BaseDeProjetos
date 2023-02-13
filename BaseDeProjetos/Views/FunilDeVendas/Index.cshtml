@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
+@using Microsoft.AspNetCore.Http
 @{
 	ViewData["Title"] = "Funil de Vendas";
 	List<Prospeccao> ativas = ViewBag.Ativas as List<Prospeccao>;
@@ -156,9 +157,8 @@
 
 	function carregarModalDetalhesFunil(idProspeccao) {
 		// Verifica se o modal da prospeccao ja foi carregada para que não se carregue-o duas vezes sem necessidade
-		let buttonName = "#button-" + idProspeccao
-		console.log(buttonName)
-		let buttonDetalhes = document.querySelector(buttonName)
+		let buttonName = "#button-" + idProspeccao;
+		let buttonDetalhes = document.querySelector(buttonName);
 
 		if (!prospeccoesDetalhes.includes(idProspeccao)) {
 
@@ -175,9 +175,39 @@
 		}		
 	}
 
+
+	function criarDivs(tipos, idProspeccao) {
+		divs = [];
+		tipos.forEach((tipo)=> {
+			let modalContainer = document.createElement("div");
+			modalContainer.id = `modal${tipo}Prosp-${idProspeccao}-container`
+			divs.push(modalContainer);
+		});
+
+		return divs;
+	}
+
+	function popularContainersFunil(idProspeccao) {
+		if (!prospeccoesDetalhes.includes(idProspeccao)) {
+			let tableRowName = "#table-row-" + idProspeccao;
+			let tableRowProspeccao = document.querySelector(tableRowName);
+
+			let divs = criarDivs(["Edit", "Delete", "History", "CreateFollowup", "EditFollowup", "Detalhes"], idProspeccao);
+			divs.forEach((div)=> {
+				if (tableRowProspeccao.innerHTML == null) {
+					tableRowProspeccao.innerHTML = div.outerHTML;
+				} else {
+					tableRowProspeccao.innerHTML += div.outerHTML;
+				}
+			});			
+		}
+
+
+	}
+
 	function carregarModaisFunil(idProspeccao) {
 		// O nome precisa bater com o nome da view, no sentido que, o sufixo será "ProspViewComponent". Em outras palavras, está acoplado.
-
+		popularContainersFunil(idProspeccao);
 		modaisDisponiveis = ["Edit", "Delete", "History", "CreateFollowup"]
 		modaisDisponiveis.forEach((tipo) => {
 			carregarModalFunil(idProspeccao, tipo)
@@ -319,7 +349,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										<partial name="ListaProsp" view-data="@ViewData" model="@ativas" />
+										@await Html.PartialAsync("ListaProsp", @ativas)
 									</tbody>
 								</table>
 							</div>
@@ -346,7 +376,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										<partial name="ListaProsp" view-data="@ViewData" model="@propostas" />
+										@await Html.PartialAsync("ListaProsp", @propostas)									
 									</tbody>
 								</table>
 							</div>
@@ -373,7 +403,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										<partial name="ListaProsp" Detalhes-data="@ViewData" model="@concluidas" />
+										@await Html.PartialAsync("ListaProsp", @concluidas);
 									</tbody>
 								</table>
 							</div>
@@ -399,7 +429,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										<partial name="ListaProsp" view-data="@ViewData" model="@planejadas" />
+										@await Html.PartialAsync("ListaProsp", @planejadas);
 									</tbody>
 								</table>
 							</div>
@@ -426,7 +456,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										<partial name="ListaProsp" view-data="@ViewData" model="@erradas" />
+										@await Html.PartialAsync("ListaProsp", @erradas);
 									</tbody>
 								</table>
 							</div>
