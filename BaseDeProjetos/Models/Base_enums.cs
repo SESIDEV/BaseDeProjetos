@@ -484,6 +484,16 @@ namespace BaseDeProjetos.Models
 
 
     }
+
+    public enum Origem
+    {
+        [Display(Name = "Recebida")]
+        Recebida,
+
+        [Display(Name = "Iniciada")]
+        Iniciada
+    }
+    
     public enum Instituto
     {
         [Display(Name = "ISI - Química Verde")]

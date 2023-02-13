@@ -1,8 +1,6 @@
 ﻿using System.Linq;
 using System.Text.Json;
 using BaseDeProjetos.Data;
-using BaseDeProjetos.Models;
-using System.Collections.Generic;
 
 namespace BaseDeProjetos.Helpers
 {
@@ -32,7 +30,7 @@ namespace BaseDeProjetos.Helpers
 
         public static string PuxarDadosUsuarios(ApplicationDbContext _context){
             
-            var usuarios = _context.Users.Where(u => u.Email != null && u.Casa == Instituto.ISIQV && u.EmailConfirmed == true).Select(u => new {u.Email, u.UserName, u.Foto, u.Competencia}).ToList();
+            var usuarios = _context.Users.Where(u => u.Email != null && u.EmailConfirmed == true).Select(u => new {u.Email, u.UserName, u.Foto, u.Competencia}).ToList();
 
             string usuariosJson = JsonSerializer.Serialize(usuarios);
 
@@ -59,6 +57,17 @@ namespace BaseDeProjetos.Helpers
             string empresasJson = JsonSerializer.Serialize(empresas);
 
             return empresasJson;
+
+        }
+
+        public static string PuxarDadosProducoes(ApplicationDbContext _context)
+        {
+
+            var producoes = _context.Producao.Where(p => p.Titulo != null).Select(p => new {p.Casa, p.Titulo, p.Descricao, p.Autores, p.StatusPub, p.Data, p.Local, p.DOI}).ToList(); //.GetDisplayName() NAO FUNCIONA
+
+            string producoesJson = JsonSerializer.Serialize(producoes);
+
+            return producoesJson;
 
         }
     }

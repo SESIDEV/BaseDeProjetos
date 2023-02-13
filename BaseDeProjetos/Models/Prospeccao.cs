@@ -56,6 +56,9 @@ namespace BaseDeProjetos.Models
 
         [Display(Name = "Tags")]
         public virtual string Tags { get; set; }
+        
+        [Display(Name = "Origem")]
+        public virtual Origem Origem { get; set; }
 
     }
 

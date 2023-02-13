@@ -12,7 +12,7 @@
 
 redePessoas = null
 
-function FiltroEmpresaEstrangeira() {
+function FiltroEmpresaEstrangeira(){
 
     let checkBox = document.getElementById("empresa_estrangeira_check");
     let cnpj = document.getElementById("valor_cnpj");
@@ -39,16 +39,16 @@ function FiltroEmpresaEstrangeira() {
         nome.setAttribute('readonly')
 
     }
-
+    
 }
 
-function ChecarPatente() {
+function ChecarPatente(){
 
     let valor = document.querySelector('#select_tipo').value
-    if (valor == 8) {
+    if (valor == 8){
         document.querySelector('#campos-patente').style = 'display:block'
     }
-    else {
+    else{
         document.querySelector('#campos-patente').style = 'display:none'
     }
 }
@@ -63,11 +63,11 @@ function CasasFunil() {
     const lista_caixas = [caixa1, caixa2, caixa3, caixa4];
     let caixas_ativas = []
 
-    lista_caixas.forEach(elemento => { if (elemento.checked == true) { caixas_ativas.push(elemento) } });
+    lista_caixas.forEach(elemento => {if (elemento.checked == true){caixas_ativas.push(elemento)}});
 
     let outras_casas = ""
 
-    for (let i = 1; i < caixas_ativas.length; i++) {
+    for (let i = 1; i < caixas_ativas.length; i++){
         outras_casas += "-" + caixas_ativas[i]?.value
     }
 
@@ -76,6 +76,7 @@ function CasasFunil() {
 }
 
 function passarComp(element) {
+    realocarCompetenciaNaView(element);
     campoComp = document.querySelector("#filt").cloneNode(true)
     elemComp = campoComp.children
     elemComp[0].remove() // retirando a tag <p>
@@ -83,49 +84,56 @@ function passarComp(element) {
     for (let item of elemComp) {
         listaComp.push(item.innerHTML)
     }
-    fetch('/Pessoas/dados').then(response => response.json()).then(data => { montarNetwork(data, listaComp) });
-    if (element.classList[1] == 'bg-secondary') {
-        element.classList.replace('bg-secondary', 'bg-primary')
-        document.querySelector("#filt").appendChild(element)
+    console.log(listaComp)
+    console.log(elemComp)
+    if (localStorage.getItem("Pessoas")) {
+        montarNetwork(JSON.parse(localStorage.getItem("Pessoas")), listaComp)
     } else {
-        element.classList.replace('bg-primary', 'bg-secondary')
-        document.querySelector("#notfilt").appendChild(element)
+        fetch('/Pessoas/dados').then(response => response.json()).then(data => { montarNetwork(data, listaComp) });
+    }
+}
+
+function realocarCompetenciaNaView(element) {
+    if (element.classList[1] == 'bg-secondary') {
+        element.classList.replace('bg-secondary', 'bg-primary');
+        document.querySelector("#filt").appendChild(element);
+    } else {
+        element.classList.replace('bg-primary', 'bg-secondary');
+        document.querySelector("#notfilt").appendChild(element);
     }
 }
 
 function gerarOpcoesSelectPessoas(nomeModal, idSelect) {
     document.querySelector(`#${idSelect}`).innerHTML = '';
-    if (nomeModal == null) {
+    if (nomeModal == null){
         $(`#${idSelect}`).select2()
     } else {
-        $(`#${idSelect}`).select2({ dropdownParent: $(`#${nomeModal}`) })
+        $(`#${idSelect}`).select2({dropdownParent: $(`#${nomeModal}`)})
     }
     fetch('/FunilDeVendas/PuxarDadosUsuarios').then(response => response.json()).then(lista => {
-        lista.forEach(function (item) {
+        lista.forEach(function (item){
             var opt = document.createElement("option");
             opt.value = item['Email']
             opt.innerHTML = item['UserName']
             document.querySelector(`#${idSelect}`).appendChild(opt)
-        })
-    })
+    })})
 }
 
 function gerarOpcoesSelectTags(nomeModal, idSelect) {
     document.querySelector(`#${idSelect}`).innerHTML = '';
-    if (nomeModal == null) {
+    if (nomeModal == null){
         $(`#${idSelect}`).select2()
     } else {
-        $(`#${idSelect}`).select2({ dropdownParent: $(`#${nomeModal}`) })
+        $(`#${idSelect}`).select2({dropdownParent: $(`#${nomeModal}`)})
     }
     fetch('/FunilDeVendas/PuxarTagsProspecoes').then(response => response.json()).then(lista => {
-        lista.forEach(function (item) {
+        lista.forEach(function (item){
             var opt = document.createElement("option");
             opt.innerHTML = item
             document.querySelector(`#${idSelect}`).appendChild(opt)
-        })
-    })
+    })})
 }
-function novaTag() {
+function novaTag(){
     valor = document.querySelector(`.select2-search__field`).value
     document.querySelector(`.select2-search__field`).valorSalvo = valor
 }
@@ -180,20 +188,23 @@ function textToSelect(nomeModal, idText, idSelect) {
 }
 
 function listarCompetencias() {
-    fetch('/Pessoas/dictCompetencias').then((response) => response.json()).then((json) => {
-        listaComp = Object.values(json)
-        badge_def_sel = document.querySelector('#badge_competencia_select')
-        listaComp.forEach(c => {
-            if (c == '' || c == null) { } else {
-                badge_copy = badge_def_sel.cloneNode(true)
-                badge_copy.removeAttribute('id')
-                badge_copy.innerHTML = c
-                badge_copy.classList.remove('d-none')
+    fetch('/Pessoas/dictCompetencias').
+        then((response) => response.json()).
+        then((json) => {
+            localStorage.setItem('dictCompetencias', JSON.stringify(json))
+            listaComp = Object.values(json)
+            badge_def_sel = document.querySelector('#badge_competencia_select')
+            listaComp.forEach(c => {
+                if (c == '' || c == null) { } else {
+                    badge_copy = badge_def_sel.cloneNode(true)
+                    badge_copy.removeAttribute('id')
+                    badge_copy.innerHTML = c
+                    badge_copy.classList.remove('d-none')
 
-                document.querySelector(`#notfilt`).appendChild(badge_copy)
-            }
+                    document.querySelector(`#notfilt`).appendChild(badge_copy)
+                }
+            })
         })
-    })
 }
 
 function mostrarCompetencias() {
@@ -233,43 +244,30 @@ function updateLink() {
     else {
         location.href = baseUrl + params + select;
     }
-
+    
 }
 
-function Base64(id) {
-    imagem = document.getElementById(`logo_imagem-${id}`).files[0];
-    r = new FileReader();
-    r.readAsDataURL(imagem);
-    r.onload = function () {
-        document.getElementById(`img_preview-${id}`).src = r.result
-        document.getElementById(`img_b64-${id}`).value = r.result
-    }
-}
-
-function MostrarImagem(id) {
-    document.getElementById(`img_preview-${id}`).src = document.getElementById(`img_b64-${id}`).value
-}
-
-function montarNetwork(pessoas, competencias = null) {
+function montarNetwork(pessoas, compFiltradas = null) {
     var nodes = null;
     var edges = null;
     var network = null;
     let defuserpic = "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png";
     var existeFiltro = false
     var listaPessoas = []
+    var listaLigacoes = []
 
-    if (competencias != null) {
-        compFiltradas = document.querySelector(`#${competencias}`).split(";")
+    if (compFiltradas !== null) {
         existeFiltro = NaoEhNulaOuVazia(compFiltradas)
     }
-
+    let dictCompetencias = JSON.parse(localStorage.getItem('dictCompetencias'))
     pessoas.forEach(p => {
-        let listaCompPessoa = null
+        let listaCompPessoa = []
         let notInclude = false
-        var obj = {};
+        var user = {};
 
         if (existeFiltro) {
-            listaCompPessoa = p['Competencia'].split(";")
+
+            listaCompPessoa = p['Competencia'].split(";").map(cp => dictCompetencias[cp])
 
             compFiltradas.forEach(comp => {
                 if (!listaCompPessoa.includes(comp)) {
@@ -282,26 +280,59 @@ function montarNetwork(pessoas, competencias = null) {
             }
         }
 
-        obj['id'] = p['Email']
-        obj['title'] = p['UserName']
-        obj['image'] = p['Foto']
-        obj['comp'] = p['Competencia']
+        user['id'] = p['Email']
+        user['title'] = p['UserName']
+        user['image'] = p['Foto']
+        user['comp'] = p['Competencia']
 
         if ((p['Foto'] == null) || (p['Foto'] == "")) {
-            obj['image'] = defuserpic
+            user['image'] = defuserpic
         }
 
-        listaPessoas.push(obj)
+       
+        pessoas.filter(ps => ps['Email'] != user['id']).forEach(pessoaParalela => { // para cara pessoa na rede inteira
+            let iterar = true;
+            listaCompPessoaParalela = pessoaParalela['Competencia'].split(";").map(cp => dictCompetencias[cp])
+            listaCompPessoa.every(compet => { // para cada competencia da pessoa do loop atual
+            if (listaCompPessoaParalela.includes(compet)) {
+                let setUsuario = new Set([user['id'],pessoaParalela['Email']]);
+                let ligacoes = listaLigacoes.map(p=> new Set(Object.values(p)))
+                console.log(ligacoes)
+                if (ligacoes.filter(p2=> eqSet(p2,setUsuario)).length == 0){
+                        listaLigacoes.push({from: user['id'], to: pessoaParalela['Email']})
+                        iterar = false;
+                        return;
+                    } 
+            }
+           
+            })
+            if (iterar == false){
+                return
+            }
+        })
+
+        listaPessoas.push(user)
     })
 
-    nodes = new vis.DataSet(listaPessoas);//lista de pessoas
+    ({ nodes, edges, network } = construirGrafo(nodes, listaPessoas, edges, listaLigacoes, network));
+}
+const eqSet = (xs, ys) =>
+    xs.size === ys.size &&
+    [...xs].every((x) => ys.has(x));
 
-    edges = new vis.DataSet([
-        { from: 1, to: 2 },
-        { from: 2, to: 3 },
-    ]);
+function isSuperset(set, subset) {
+    for (var elem of subset) {
+        if (!set.has(elem)) {
+            return false;
+        }
+    }
+    return true;
+}
 
-    // create a network
+function construirGrafo(nodes, listaPessoas, edges, listaLigacoes, network) {
+    nodes = new vis.DataSet(listaPessoas); //lista de pessoas
+
+    edges = new vis.DataSet(listaLigacoes);
     var container = document.getElementById("chart-line");
 
     var data = {
@@ -309,11 +340,11 @@ function montarNetwork(pessoas, competencias = null) {
         edges: edges,
     };
 
-    var options = {
-        nodes: {
+	var options = {
+		nodes: {
             shape: "circularImage",
             borderWidth: 5,
-            size: 30,
+            size: 20,
             color: {
                 border: "#229954",
                 background: "#666666",
@@ -321,8 +352,8 @@ function montarNetwork(pessoas, competencias = null) {
             font: { color: "#17202A" },
         },
         edges: {
-            color: "#D0D3D4",
-            value: 5,
+            color: "#DBDBDB",
+            value: 0.5,
             shadow: true,
         },
         interaction: {
@@ -330,30 +361,34 @@ function montarNetwork(pessoas, competencias = null) {
             dragView: false,
             zoomView: false,
         },
-    }
-    network = new vis.Network(container, data, options)
+        physics:{
+            enabled: true,
+        }
+    };
+    network = new vis.Network(container, data, options);
 
     network.on('click', function (selecao) {
         if (selecao.nodes.length != 0) {
-            document.getElementById('user_card').style.display = 'block'
+            document.getElementById('user_card').style.display = 'block';
             var clickedNode = nodes.get(selecao.nodes)[0];
-            network.focus(clickedNode.id, { scale: 2, animation: { duration: 400 } })
-            document.getElementById("imagem-do-card").src = clickedNode.image
-            document.getElementById("nome-do-card").innerHTML = clickedNode.title
-            document.getElementById("competencias").innerHTML = clickedNode.comp
-            mostrarCompetencias()
+            network.focus(clickedNode.id, { scale: 2, animation: { duration: 400 } });
+            document.getElementById("imagem-do-card").src = clickedNode.image;
+            document.getElementById("nome-do-card").innerHTML = clickedNode.title;
+            document.getElementById("competencias").innerHTML = clickedNode.comp;
+            mostrarCompetencias();
         } else {
             //network.fit({animation:{duration: 400}})
-            network.moveTo({ position: { x: 0, y: 0 }, scale: 2, animation: { duration: 400 } })
-            document.getElementById("user_card").style.display = 'none'
+            network.moveTo({ position: { x: 0, y: 0 }, scale: 2, animation: { duration: 400 } });
+            document.getElementById("user_card").style.display = 'none';
         }
     });
 
     network.once('stabilized', function () {
-        network.moveTo({ position: { x: 0, y: 0 }, scale: 2 })
+        network.moveTo({ position: { x: 0, y: 0 }, scale: 2 });
     });
 
     redePessoas = network;
+    return { nodes, edges, network };
 }
 
 function NaoEhNulaOuVazia(compFiltradas) {
@@ -373,10 +408,10 @@ function converterCompetencias() {
 
 }
 
-function statusPatente() {
+function statusPatente(){
 
     let status = document.querySelector("#StatusPub").value
-    if (status != 5) {
+    if (status != 5){
         document.querySelector("#NumPatente").readOnly = true;
     } else {
         document.querySelector("#NumPatente").readOnly = false;
@@ -397,7 +432,7 @@ function validarCNPJ(idElemento) {
         alert("CNPJ inválido");
     } else {
         AplicarDadosAPI(idElemento);
-    }
+    }    
 }
 
 function AplicarDadosAPI(idElemento) {
@@ -408,7 +443,7 @@ function AplicarDadosAPI(idElemento) {
         cnpj = document.querySelector(`#valor_cnpj-${idElemento}`).value;
     }
     let url = window.location.origin + "/Empresas/DadosAPI?query=" + cnpj;
-
+    
     fetch(url).then(res => {
         res.json().then(dados => {
             if (idElemento == null) {
@@ -509,13 +544,14 @@ function AplicarDadosAPI(idElemento) {
             indices.add('AL', 25)
 
             // ESSA LINHA BUSCA O NOME A PARTIR DA SIGLA DEVOLVIDA PELA API --------\/
-            if (idElemento == null) {
+            if (idElemento == null)
+            {
                 document.getElementById("EstadoEmpresaCadastroINT").value = indices.find(dados.uf);
             }
-            else {
+            else
+            {
                 document.getElementById(`EstadoEmpresaCadastroINT-${idElemento}`).value = indices.find(dados.uf);
             }
 
-        })
-    })
+    })}) 
 }
