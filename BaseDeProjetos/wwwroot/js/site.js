@@ -187,6 +187,20 @@ function textToSelect(nomeModal, idText, idSelect) {
     })
 }
 
+function Base64(id) {
+    imagem = document.getElementById(`logo_imagem-${id}`).files[0];
+    r = new FileReader();
+    r.readAsDataURL(imagem);
+    r.onload = function () {
+        document.getElementById(`img_preview-${id}`).src = r.result
+        document.getElementById(`img_b64-${id}`).value = r.result
+    }
+}
+
+function MostrarImagem(id) {
+    document.getElementById(`img_preview-${id}`).src = document.getElementById(`img_b64-${id}`).value
+}
+
 function listarCompetencias() {
     fetch('/Pessoas/dictCompetencias').
         then((response) => response.json()).
