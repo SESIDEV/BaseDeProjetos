@@ -7,23 +7,6 @@
     var idProducao = Model.Id;
 }
 
-
-<script>
-    function Base64(id) {
-        imagem = document.getElementById(`logo_imagem-${id}`).files[0];
-        r = new FileReader();
-        r.readAsDataURL(imagem);
-        r.onload = function () {
-            document.getElementById(`img_preview-${id}`).src = r.result
-            document.getElementById(`img_b64-${id}`).value = r.result
-        }
-    }
-
-    function MostrarImagem(id) {
-        document.getElementById(`img_preview-${id}`).src = document.getElementById(`img_b64-${id}`).value
-    }
-</script>
-
 <form asp-action="Edit" asp-route-id="@idProducao">
     <div class="modal fade" id="modalGestaoConhecimento-@idProducao-EditToggle" aria-hidden="true"
         aria-labelledby="modalGestaoConhecimento-@idProducao-EditToggleLabel" tabindex="-1">

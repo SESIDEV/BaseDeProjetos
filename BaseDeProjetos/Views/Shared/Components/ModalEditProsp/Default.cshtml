@@ -37,6 +37,11 @@
                     <span asp-validation-for="NomeProspeccao" class="text-danger"></span>
                 </div>
                 <div class="mb-2">
+                    <label asp-for="Origem" class="col-form-label" style="font-weight: 600"></label>
+                    <select asp-for="Origem" class="form-control" asp-items="Html.GetEnumSelectList<Origem>()"></select>
+                    <span asp-validation-for="Origem" class="text-danger"></span>
+                </div>
+                <div class="mb-2">
                     <label asp-for="MembrosEquipe" class="col-form-label" style="font-weight: 600">Membros</label>
                     <input type="text" asp-for="MembrosEquipe" class="form-control d-none" id="membrosTextEdit" />
                     <div class="input-group flex-nowrap">
