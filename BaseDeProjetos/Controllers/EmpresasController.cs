@@ -42,7 +42,7 @@ namespace BaseDeProjetos.Controllers
                 ViewBag.ProspeccoesAtivas = _context.Prospeccao.Where(P => P.Status.All(S => S.Status != StatusProspeccao.NaoConvertida &&
                                                                                         S.Status != StatusProspeccao.Convertida &&
                                                                                         S.Status != StatusProspeccao.Suspensa)
-                                                                        && P.Status.LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
+                                                                        && P.Status.OrderBy(k => k.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
 
                 ViewBag.ProspeccoesPlanejadas = _context.Prospeccao.Where(P => P.Status.All(S => S.Status == StatusProspeccao.Planejada)).ToList();
 
