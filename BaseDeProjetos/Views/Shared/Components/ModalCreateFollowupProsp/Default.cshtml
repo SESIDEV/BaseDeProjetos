@@ -11,10 +11,16 @@
 
     IEnumerable<SelectListItem>FiltrarExcecao(IEnumerable<SelectListItem> lista, Prospeccao prosp){
         StatusProspeccao statusAtual = prosp.Status.OrderBy(s => s.Data).Last().Status;
-        if(statusAtual != StatusProspeccao.Planejada){
-            return lista.Where(status => (Int32.Parse(status.Value)) >= (int)statusAtual);
+        if(statusAtual == StatusProspeccao.Planejada){
+            return lista.Where(status => (Int32.Parse(status.Value)) == (int)StatusProspeccao.ContatoInicial);
         }
-        return lista.Where(status => (Int32.Parse(status.Value)) <= (int)statusAtual);
+        else if(statusAtual == StatusProspeccao.ContatoInicial){
+            return lista.Where(status => (Int32.Parse(status.Value)) > (int)statusAtual && (Int32.Parse(status.Value)) != (int)StatusProspeccao.Planejada);
+        }
+        else {
+            return lista.Where(status => (Int32.Parse(status.Value)) >= (int)statusAtual && (Int32.Parse(status.Value)) != (int)StatusProspeccao.Planejada);
+        }
+        
     }
 }
 
