@@ -14,13 +14,14 @@
         if(statusAtual == StatusProspeccao.Planejada){
             return lista.Where(status => (Int32.Parse(status.Value)) == (int)StatusProspeccao.ContatoInicial);
         }
-        else if(statusAtual == StatusProspeccao.ContatoInicial){
-            return lista.Where(status => (Int32.Parse(status.Value)) > (int)statusAtual && (Int32.Parse(status.Value)) != (int)StatusProspeccao.Planejada);
-        }
+        @* else if(statusAtual == StatusProspeccao.ContatoInicial){return lista.Where(status => (Int32.Parse(status.Value)) > (int)statusAtual && (Int32.Parse(status.Value)) != (int)StatusProspeccao.Planejada);} *@
         else {
             return lista.Where(status => (Int32.Parse(status.Value)) >= (int)statusAtual && (Int32.Parse(status.Value)) != (int)StatusProspeccao.Planejada);
         }
-        
+    }
+
+    string LimitarData(Prospeccao prosp){
+        return prosp.Status.OrderBy(s => s.Data).Last().Data.ToString("yyyy-MM-dd");
     }
 }
 
@@ -100,7 +101,7 @@
 
                     <div class="form-group">
                         <label asp-for="Data" class="control-label"></label>
-                        <input asp-for="Data" type="date" class="form-control" />
+                        <input asp-for="Data" type="date" class="form-control" min="@LimitarData(@prosp)"/>
                         <span asp-validation-for="Data" class="text-danger"></span>
                     </div>
                     <div class="form-group">
