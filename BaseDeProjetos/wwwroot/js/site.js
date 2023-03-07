@@ -433,6 +433,23 @@ function statusPatente(){
 
 }
 
+function ChecarCNPJ() {
+    document.getElementById("valor_cnpj").value = document.getElementById("valor_cnpj").value.replace(/[^0-9]/g, '');
+    $("#StatusCNPJ").html("Checando...");
+    $.post('@Url.Action("SeExisteCnpj", "Empresas")', { cnpj: $("#valor_cnpj").val() },
+        function (data) {
+            if (data == 0) {
+                $("#StatusCNPJ").html('');
+                $("#valor_cnpj").css("border-color", "");
+                validarCNPJ();
+            } else {
+                $("#StatusCNPJ").html('<font color="Red">CNPJ já cadastrado.</font>');
+                $("#valor_cnpj").css("border-color", "Red");
+            }
+        }
+    );
+}
+
 function validarCNPJ(idElemento) {
     let cnpj;
     if (idElemento == null) {
