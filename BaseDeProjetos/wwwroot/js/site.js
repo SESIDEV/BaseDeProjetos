@@ -75,6 +75,17 @@ function CasasFunil() {
     window.location.assign(url_final);
 }
 
+function trocarModalNovaProsp(){
+    valorSelect = document.getElementById("selectCreateProsp").value
+    if(valorSelect != "-1"){
+        document.getElementById("botaoToggleProspFollowUp").dataset.bsTarget = `#CreateFollowupProspModal-${valorSelect}-Toggle`
+        fetch(`/FunildeVendas/RetornarModal?idProsp=${valorSelect}&tipo=CreateFollowup`).then(response => response.text())
+            .then(result => {document.querySelector(`#modalCreateFollowUpProspContainer`).innerHTML = result;});
+    } else {
+        document.getElementById("botaoToggleProspFollowUp").dataset.bsTarget = "#criarProspModalToggle"
+    }
+}
+
 function passarComp(element) {
     realocarCompetenciaNaView(element);
     campoComp = document.querySelector("#filt").cloneNode(true)

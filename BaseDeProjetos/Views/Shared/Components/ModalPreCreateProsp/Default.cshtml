@@ -1,0 +1,46 @@
+﻿@model BaseDeProjetos.Models.Prospeccao
+@using Microsoft.AspNetCore.Http
+@{
+    ViewData["Title"] = "Adicionar Prospecção";
+    if (!(Context.Session.GetString("_Casa") is null))
+    {
+        ViewData["Area"] = Context.Session.GetString("_Casa");
+    }
+    List<Prospeccao> listaProsp = ViewData["prospPlan"] as List<Prospeccao>;
+    List<Prospeccao> listaPlanejados = listaProsp.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).Where(prosp => prosp.Usuario.UserName.ToString() == Context.User.Identity.Name).ToList();
+    List<SelectListItem> listaSelect = listaPlanejados.Select(p => new SelectListItem {Text = p.Empresa.Nome, Value = p.Id.ToString()}).ToList();
+    SelectList plan = new SelectList(listaSelect, "Value", "Text");
+    
+}
+
+<div class="modal fade" id="preCriarProspModalToggle" aria-hidden="true" aria-labelledby="preCriarProspModalToggleLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="criarProspModalToggleLabel">Registrar Contato Inicial</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="mb-2">
+                    <label class="col-form-label" style="font-weight: 600">Escolha uma opção</label>
+                    <select id="selectCreateProsp" class="form-control" asp-items='@plan' onchange="trocarModalNovaProsp()">
+                        <option value="-1">Não Planejada</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button id="botaoToggleProspFollowUp" type="button" class="btn app-btn-primary" data-bs-target="#criarProspModalToggle"
+                    data-bs-toggle="modal">
+                    Continuar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+</script>
