@@ -39,7 +39,7 @@
         }
         <td class="cell">@prospeccao.Empresa.Nome</td> @*Empresa*@
         <td class="cell position-relative">
-            @if(prospeccao.Status.First().Status == StatusProspeccao.Planejada){
+            @if(prospeccao.Status.OrderBy(p => p.Data).First().Status == StatusProspeccao.Planejada){
                 <span class="position-absolute top-10 start-100 translate-middle badge rounded-pill bg-info">Plan</span>
             }
             @if(prospeccao.Origem.GetDisplayName() == "Recebida"){
