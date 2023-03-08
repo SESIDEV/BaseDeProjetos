@@ -81,8 +81,10 @@ function trocarModalNovaProsp(){
     if(valorSelect != "-1"){
         document.getElementById("botaoToggleProspFollowUp").dataset.bsTarget = `#CreateFollowupProspModal-${valorSelect}-Toggle`
         fetch(`/FunildeVendas/RetornarModal?idProsp=${valorSelect}&tipo=CreateFollowup`).then(response => response.text())
-            .then(result => {document.querySelector(`#modalCreateFollowUpProspContainer`).innerHTML = result;})
-            .then(document.getElementById("botaoToggleProspFollowUp").disabled = false);
+            .then(result => {
+                document.querySelector(`#modalCreateFollowUpProspContainer`).innerHTML = result
+                document.getElementById("botaoToggleProspFollowUp").disabled = false
+            })
     } else {
         document.getElementById("botaoToggleProspFollowUp").dataset.bsTarget = "#criarProspModalToggle"
         document.getElementById("botaoToggleProspFollowUp").disabled = false
