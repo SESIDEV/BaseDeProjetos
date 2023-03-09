@@ -69,7 +69,7 @@
             }
         </td>
         @{
-            var subtracaoUltimoStatus = @DateTime.Now.Subtract(prospeccao.Status.Last().Data).Days;
+            var subtracaoUltimoStatus = @DateTime.Now.Subtract(prospeccao.Status.OrderBy(followup => followup.Data).Last().Data).Days;
         }
         <td class="cell">
             <span>@prospeccao.TipoContratacao.GetDisplayName()</span> @*Tipo Contratação*@
