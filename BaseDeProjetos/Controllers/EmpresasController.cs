@@ -342,7 +342,7 @@ namespace BaseDeProjetos.Controllers
                     Dictionary<string, object> dict = new Dictionary<string, object>();
                     dict["Nome"] = empresa.Nome;
                     dict["Segmento"] = empresa.Segmento.GetDisplayName();
-                    dict["Estado"] = empresa.Estado;
+                    dict["Estado"] = empresa.Estado.GetDisplayName();
                     dict["CNPJ"] = empresa.CNPJ;
                     listaFull.Add(dict);
                 }
