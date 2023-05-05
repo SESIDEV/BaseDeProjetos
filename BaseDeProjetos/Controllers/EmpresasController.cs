@@ -102,7 +102,10 @@ namespace BaseDeProjetos.Controllers
             {
                 searchString = searchString.ToLower();
 
-                lista = lista.Where(e => e.Nome.ToLower().Contains(searchString)).ToList();
+                lista = lista.Where(e =>
+                e.Nome.ToLower().Contains(searchString.ToLower()) ||
+                e.CNPJ.ToLower().Contains(searchString.ToLower())).ToList();
+
             }
 
             return lista;
