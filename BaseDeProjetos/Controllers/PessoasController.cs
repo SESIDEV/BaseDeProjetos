@@ -1,10 +1,10 @@
 using BaseDeProjetos.Data;
-using BaseDeProjetos.Models;
 using BaseDeProjetos.Helpers;
+using BaseDeProjetos.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Text.Json;
-using Microsoft.AspNetCore.Authorization;
 
 namespace BaseDeProjetos.Controllers
 {
