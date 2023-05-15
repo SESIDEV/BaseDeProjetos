@@ -1,4 +1,4 @@
-using BaseDeProjetos.Data;
+﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -25,6 +25,17 @@ namespace BaseDeProjetos.Controllers
             _context = context;
             _logger = logger;
         }
+
+        /// <summary>
+        /// Obtém a quantidade de prospecções dado um determinado Status
+        /// </summary>
+        /// <param name="status">Status a se buscar</param>
+        /// <returns>Quantidade de prospecções</returns>
+        private int GetQuantidadeProspStatus(StatusProspeccao status)
+        {
+            return _context.Prospeccao.Where(p => p.Status.OrderByDescending(f => f.Data).FirstOrDefault().Status == status).Count();
+        }
+
 
         [Route("")]
         [Route("Home")]
@@ -73,23 +84,17 @@ namespace BaseDeProjetos.Controllers
 
                 ViewData["n_prosp_concluidas"] = n_prosp_convertidas + n_prosp_naoconvertidas + n_prosp_suspensa;
                                 
+                ViewData["n_proj"] = _context.Projeto.Where(p => p.Casa == usuario.Casa).Where(p => p.Status == StatusProjeto.EmExecucao).ToList().Count;
                 ViewData["n_empresas"] = _context.Prospeccao.Where(p => p.Status.Any(s => s.Status != StatusProspeccao.Planejada)).Select(e => e.Empresa).Distinct().Count();
-                ViewData["satisfacao"] = 0.8750;
+                ViewData["satisfacao"] = 0.8750; // TODO: Implementar lógica?
                 ViewData["Valor_Prosp_Proposta"] = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).Where(p => p.Status.Any(s => s.Status == StatusProspeccao.ComProposta)).Sum(p => p.ValorProposta);
-                ViewBag.Usuarios = _context.Users.AsEnumerable().Where(p => p.Casa == usuario.Casa).Where(u => ValidarCasa(u, usuario)).Where(a => a.EmailConfirmed == true).Where(b => b.Nivel != Nivel.Dev && b.Nivel != Nivel.Externos).ToList().Count();
+                ViewBag.Usuarios = _context.Users.AsEnumerable().Where(p => p.Casa == usuario.Casa).Where(u => u.Casa == usuario.Casa).Where(u => u.EmailConfirmed == true).Where(u => u.Nivel != Nivel.Dev && u.Nivel != Nivel.Externos).ToList().Count();
                 ViewBag.Estados = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).Select(p => p.Empresa.Estado).ToList();
-                ViewBag.LinhaDePesquisa = _context.Prospeccao.Where(p => p.Casa == usuario.Casa && p.Status.Any(l => l.Status != StatusProspeccao.Planejada)).Select(p => p.LinhaPequisa).ToList();
+                ViewBag.LinhaDePesquisa = _context.Prospeccao.Where(p => p.Casa == usuario.Casa && p.Status.Any(f => f.Status != StatusProspeccao.Planejada)).Select(p => p.LinhaPequisa).ToList();
 
             }
             return View();
 
-        }
-        private static bool ValidarCasa(Usuario u, Usuario usuario)
-        {
-            if ((usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO))
-                return usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO;
-
-            return u.Casa == usuario.Casa;
         }
 
         private void ObterDadosReceita()
