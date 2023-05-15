@@ -2,13 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace BaseDeProjetos.ViewComponents
+namespace BaseDeProjetos.ViewComponents.ProjetoViewComponents
 {
-    public class ModalEditProjetoViewComponent : ViewComponent
+    public class ModalDeleteProjetoViewComponent : ViewComponent
     {
         private readonly ApplicationDbContext _context;
 
-        public ModalEditProjetoViewComponent(ApplicationDbContext context)
+        public ModalDeleteProjetoViewComponent(ApplicationDbContext context)
         {
             _context = context;
         }
