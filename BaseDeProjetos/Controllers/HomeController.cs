@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -41,26 +41,38 @@ namespace BaseDeProjetos.Controllers
 
                 ObterDadosReceita();
 
+                var prospeccoes = _context.Prospeccao
+                    .Where(p => p.Casa == usuario.Casa)
+                    .ToList();
 
-                //PARA FINS DE DEBUG
+                var prospeccoesAtivas = prospeccoes
+                    .Where(p => VerificarProspeccaoAtiva(p) == true)
+                    .ToList();
+
+                // Volume de negocios é o somatório de todos os valores de prospecções
+                ViewData["Volume_Negocios"] = prospeccoesAtivas.Sum(p => p.ValorEstimado);
+                
+                // Para fins de debug
                 if (usuario.Casa == Instituto.Super)
                 {
-                    ViewData["Volume_Negocios"] = _context.Prospeccao.Where(p => p.Casa == Instituto.ISIQV).ToList().Where(p => prospeccaoAtiva(p) == true).Sum(p => p.ValorEstimado);
+                    ViewData["Volume_Negocios"] = _context.Prospeccao
+                        .Where(p => p.Casa == Instituto.ISIQV).ToList()
+                        .Where(p => VerificarProspeccaoAtiva(p) == true)
+                        .Sum(p => p.ValorEstimado);
                 }
 
-                ViewData["Volume_Negocios"] = _context.Prospeccao.Where(p => p.Casa == Instituto.ISIQV).ToList().Where(p => prospeccaoAtiva(p) == true).Sum(p => p.ValorEstimado);
+                ViewData["n_prosp_ativas"] = prospeccoesAtivas.Count;
+                ViewData["n_prosp_total"] = prospeccoes.Count;
 
-                ViewData["n_prosp_ativas"] = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).ToList().Where(p => prospeccaoAtiva(p) == true).ToList().Count;
-                ViewData["n_prosp_total"] = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).ToList().Count;
-                ViewData["n_prosp_emproposta"] = _context.Prospeccao.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList().Count;
-                ViewData["n_prosp_planejadas"] = _context.Prospeccao.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Planejada).ToList().Count;
-                int n_prosp_convertidas = _context.Prospeccao.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida).ToList().Count;
-                int n_prosp_naoconvertidas = _context.Prospeccao.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.NaoConvertida).ToList().Count;
-                int n_prosp_suspensa = _context.Prospeccao.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Suspensa).ToList().Count;
+                ViewData["n_prosp_emproposta"] = GetQuantidadeProspStatus(StatusProspeccao.ComProposta);
+                ViewData["n_prosp_planejadas"] = GetQuantidadeProspStatus(StatusProspeccao.Planejada);
+
+                int n_prosp_convertidas = GetQuantidadeProspStatus(StatusProspeccao.Convertida);
+                int n_prosp_naoconvertidas = GetQuantidadeProspStatus(StatusProspeccao.NaoConvertida);
+                int n_prosp_suspensa = GetQuantidadeProspStatus(StatusProspeccao.Suspensa);
+
                 ViewData["n_prosp_concluidas"] = n_prosp_convertidas + n_prosp_naoconvertidas + n_prosp_suspensa;
-                //Volume de negocios é o somatório de todos os valores de prospecções
-                ViewData["Volume_Negocios"] = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).ToList().Where(p => prospeccaoAtiva(p) == true).Sum(p => p.ValorEstimado);
-                ViewData["n_proj"] = _context.Projeto.Where(p => p.Casa == usuario.Casa).Where(p => p.Casa == usuario.Casa).Where(p => p.Status == StatusProjeto.EmExecucao).ToList().Count;
+                                
                 ViewData["n_empresas"] = _context.Prospeccao.Where(p => p.Status.Any(s => s.Status != StatusProspeccao.Planejada)).Select(e => e.Empresa).Distinct().Count();
                 ViewData["satisfacao"] = 0.8750;
                 ViewData["Valor_Prosp_Proposta"] = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).Where(p => p.Status.Any(s => s.Status == StatusProspeccao.ComProposta)).Sum(p => p.ValorProposta);
@@ -124,7 +136,12 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
-        private bool prospeccaoAtiva(Prospeccao p)
+        /// <summary>
+        /// Verifica se uma prospecção está com status considerado ativo
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        private bool VerificarProspeccaoAtiva(Prospeccao p)
         {
             if (p.Status.Count <= 0)
             {
@@ -132,7 +149,6 @@ namespace BaseDeProjetos.Controllers
             }
 
             return p.Status.OrderBy(k => k.Data).LastOrDefault().Status <= StatusProspeccao.ComProposta;
-            ;
         }
 
         private decimal ReceitaCasa(Instituto casa)
