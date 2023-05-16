@@ -5,19 +5,19 @@ using Microsoft.EntityFrameworkCore.Internal;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BaseDeProjetos.ViewComponents
+namespace BaseDeProjetos.ViewComponents.FunilDeVendasViewComponents
 {
-	public class ModalCreateFollowupProspViewComponent : ViewComponent
-	{
-		private readonly ApplicationDbContext _context;
-		public ModalCreateFollowupProspViewComponent(ApplicationDbContext context)
-		{
-			_context = context;
-		}
+    public class ModalCreateFollowupProspViewComponent : ViewComponent
+    {
+        private readonly ApplicationDbContext _context;
+        public ModalCreateFollowupProspViewComponent(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
         public async Task<IViewComponentResult> InvokeAsync(string id)
         {
-			// Adaptar para create
+            // Adaptar para create
             ViewData["prospeccao"] = await _context.Prospeccao.FindAsync(id);
             return View();
         }

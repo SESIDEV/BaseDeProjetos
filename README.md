@@ -1,19 +1,35 @@
+# Base de Projetos do SGI
 
+Neste repositório se encontra o código fonte referente à base de projetos do SGI.
 
-#Sisdev
+## Tecnologias Utilizadas
 
-*Solicitações da reunião do dia 21/03/2022.*
+O projeto se utiliza das seguintes tecnologias:
 
-[] 1 - Ajustar tela de gráficos para exibidir somente 1 grupo para categoria "em discussão".
+- .NET Core 3.1 (MVC) 
+- C#
+- Entity Framework
+- MySQL
+- HTML/CSS/JS
 
-[] 2 - Ajustar o ano selecionado para filtrar a exibição dos dados.
+## Ambiente
 
-[] 3 - Ajustar o campo de status e criação, detalhes, atualização e remoção de prospecções.
+O ambiente de produção está automaticamente configurado graças ao GitHub Actions que submete todo e qualquer commit realizado no master para produção na Azure.
 
-[] 4 - Ajustar cadastro de prospeções para que não permita submeter formulário com campos vázios.
+## Como utilizar o repositório:
 
-[] 5 - Ajustar erro ao excluir itens do banco de dados e os mesmos retornarem.
+1. Primeiro, clone o repositório utilizando `git clone`:
 
-[] 6 - Remover duplicidade de empresas que constam no banco de dados com cadastros incompletos.
+    `git clone https://github.com/SESIDEV/BaseDeProjetos/`
 
-[] 7 - Inserir NOT NULL aos campos de banco de dados.
+2. Depois, acesse a pasta do repositório:
+
+    `cd caminhodapasta/BaseDeProjetos`
+
+3. Em seguida, abra o projeto utilizando o Visual Studio ou o VS Code.
+4. Por fim, execute o projeto que irá abrir no seu navegador no localhost
+
+## Observações e Dicas Importantes:
+
+- Crie branches sempre que estiver implementando grandes mudanças
+- Não envie commits direto pro `master` exceto em caso de situação emergencial ou diante permissão

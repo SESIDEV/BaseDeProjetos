@@ -25,7 +25,7 @@
     </script> *@
 @foreach (var prospeccao in Model)
 {
-    <tr id="table-row-@prospeccao.Id" onmouseover="carregarModaisFunil('@prospeccao.Id')">
+    <tr id="table-row-@prospeccao.Id">
         @if (prospeccao.Empresa.Logo != null)
         {
             <td class="cell"><img loading="lazy" src="@prospeccao.Empresa.Logo" id="logoEmpresa" alt="Logo da Empresa"
@@ -102,7 +102,7 @@
             }
         </td>
         <td class="cell">
-            <button type="button" id="button-@prospeccao.Id" data-bs-target="#modalDetalhes-@prospeccao.Id"
+            <button type="button" id="button-@prospeccao.Id" onmouseover="carregarModaisFunil('@prospeccao.Id')" data-bs-target="#modalDetalhes-@prospeccao.Id"
             data-bs-toggle="modal" class="btn-sm app-btn-primary">Detalhes</button>
         </td>
     </tr>
