@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using BaseDeProjetos.Models;
 using System;
 
-namespace BaseDeProjetos.ViewComponents
+namespace BaseDeProjetos.ViewComponents.EditalViewComponents
 {
     public class ModalDeleteEditalViewComponent : ViewComponent
     {
@@ -17,7 +17,7 @@ namespace BaseDeProjetos.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync(string id)
         {
-            var model = await _context.Editais.FindAsync(Int32.Parse(id));
+            var model = await _context.Editais.FindAsync(int.Parse(id));
             return View(model);
         }
     }

@@ -6,7 +6,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BaseDeProjetos.ViewComponents
+namespace BaseDeProjetos.ViewComponents.FunilDeVendasViewComponents
 {
     public class ModalDetailsProspViewComponent : ViewComponent
     {

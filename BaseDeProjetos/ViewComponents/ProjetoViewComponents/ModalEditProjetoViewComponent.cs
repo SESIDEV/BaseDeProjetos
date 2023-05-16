@@ -2,20 +2,20 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace BaseDeProjetos.ViewComponents
+namespace BaseDeProjetos.ViewComponents.ProjetoViewComponents
 {
-    public class ModalEditProspViewComponent : ViewComponent
+    public class ModalEditProjetoViewComponent : ViewComponent
     {
         private readonly ApplicationDbContext _context;
 
-        public ModalEditProspViewComponent(ApplicationDbContext context)
+        public ModalEditProjetoViewComponent(ApplicationDbContext context)
         {
             _context = context;
         }
 
         public async Task<IViewComponentResult> InvokeAsync(string id)
         {
-            var model = await _context.Prospeccao.FindAsync(id);
+            var model = await _context.Projeto.FindAsync(id);
             return View(model);
         }
     }
