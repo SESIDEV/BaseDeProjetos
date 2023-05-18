@@ -563,10 +563,20 @@ namespace BaseDeProjetos.Controllers
             {
                 Dictionary<string, object> dict = new Dictionary<string, object>();
                 dict["idProsp"] = p.Id;
+
+                if (string.IsNullOrEmpty(p.NomeProspeccao))
+                {
+                    dict["Titulo"] = "Sem título";
+                }
+                else
+                {
+                    dict["Titulo"] = p.NomeProspeccao;
+                }
+
                 dict["Titulo"] = p.NomeProspeccao;
                 dict["Líder"] = p.Usuario.UserName;
                 dict["Status"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Status.GetDisplayName();
-                dict["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data;
+                dict["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data.ToString("dd-MM-yyyy");
                 dict["Empresa"] = p.Empresa.Nome;
                 dict["CNPJ"] = p.Empresa.CNPJ;
                 dict["Segmento"] = p.Empresa.Segmento.GetDisplayName();
