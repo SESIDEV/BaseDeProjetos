@@ -549,6 +549,7 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        [AllowAnonymous]
         public string PuxarDadosProspeccoes(string casa = "ISIQV", int ano = 2022, bool planejadas = false)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
