@@ -587,7 +587,7 @@ namespace BaseDeProjetos.Controllers
                             Dictionary<string, object> dict = new Dictionary<string, object>();
                             dict["idProsp"] = p.Id;
                             dict["Titulo"] = p.NomeProspeccao;
-                            dict["Líder"] = p.Usuario;
+                            dict["Líder"] = p.Usuario.UserName;
                             dict["Status"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Status.GetDisplayName();
                             dict["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data;
                             dict["Empresa"] = p.Empresa.Nome;
