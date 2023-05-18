@@ -553,32 +553,32 @@ namespace BaseDeProjetos.Controllers
         [AllowAnonymous]
         public ActionResult PuxarDadosProspeccoes(string casa = "ISIQV")
         {
-                Instituto casa_ = (Instituto)Enum.Parse(typeof(Instituto), casa);
+            Instituto casa_ = (Instituto)Enum.Parse(typeof(Instituto), casa);
 
-                List<Prospeccao> lista_prosp = _context.Prospeccao.Where(p => p.Casa == casa_).ToList();
+            List<Prospeccao> lista_prosp = _context.Prospeccao.Where(p => p.Casa == casa_).ToList();
 
-                List<Dictionary<string, object>> listaFull = new List<Dictionary<string, object>>();
+            List<Dictionary<string, object>> listaFull = new List<Dictionary<string, object>>();
 
-                foreach (var p in lista_prosp)
-                {
-                    Dictionary<string, object> dict = new Dictionary<string, object>();
-                    dict["idProsp"] = p.Id;
-                    dict["Titulo"] = p.NomeProspeccao;
-                    dict["Líder"] = p.Usuario.UserName;
-                    dict["Status"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Status.GetDisplayName();
-                    dict["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data;
-                    dict["Empresa"] = p.Empresa.Nome;
-                    dict["CNPJ"] = p.Empresa.CNPJ;
-                    dict["Segmento"] = p.Empresa.Segmento.GetDisplayName();
-                    dict["Estado"] = p.Empresa.Estado.GetDisplayName();
-                    dict["Casa"] = p.Casa.GetDisplayName();
-                    dict["TipoContratacao"] = p.TipoContratacao.GetDisplayName();
-                    dict["LinhaPesquisa"] = p.LinhaPequisa.GetDisplayName();
-                    dict["Valor"] = p.ValorProposta;
-                    listaFull.Add(dict);
-                }
+            foreach (var p in lista_prosp)
+            {
+                Dictionary<string, object> dict = new Dictionary<string, object>();
+                dict["idProsp"] = p.Id;
+                dict["Titulo"] = p.NomeProspeccao;
+                dict["Líder"] = p.Usuario.UserName;
+                dict["Status"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Status.GetDisplayName();
+                dict["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data;
+                dict["Empresa"] = p.Empresa.Nome;
+                dict["CNPJ"] = p.Empresa.CNPJ;
+                dict["Segmento"] = p.Empresa.Segmento.GetDisplayName();
+                dict["Estado"] = p.Empresa.Estado.GetDisplayName();
+                dict["Casa"] = p.Casa.GetDisplayName();
+                dict["TipoContratacao"] = p.TipoContratacao.GetDisplayName();
+                dict["LinhaPesquisa"] = p.LinhaPequisa.GetDisplayName();
+                dict["Valor"] = p.ValorProposta;
+                listaFull.Add(dict);
+            }
 
-                return Json(listaFull);
+            return Json(listaFull);
         }
 
         public string PuxarDadosUsuarios()
@@ -596,9 +596,14 @@ namespace BaseDeProjetos.Controllers
 
         public string PuxarTagsProspecoes()
         {
-
-            return Helpers.Helpers.PuxarTagsProspecoes(_context);
-
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                return Helpers.Helpers.PuxarTagsProspecoes(_context);
+            }
+            else
+            {
+                return "403 Forbidden";
+            }
         }
 
     }
