@@ -40,9 +40,8 @@
                 </h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form asp-controller="FunilDeVendas" asp-action="Atualizar" method="POST">
+            <form class="form-submit" asp-controller="FunilDeVendas" asp-action="Atualizar" method="POST">
                 <div class="modal-body">
-                    
                     <div class="accordion" id="accordionFlushExample">
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="flush-headingOne">
@@ -123,7 +122,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" value="Incluir" class="btn app-btn-primary">
+                    <input type="submit" value="Incluir" class="btn-submit btn app-btn-primary">
                 </div>
             </form>
         </div>

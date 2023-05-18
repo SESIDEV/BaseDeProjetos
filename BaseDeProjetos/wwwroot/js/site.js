@@ -569,3 +569,13 @@ function AplicarDadosAPI(idElemento) {
 
     })}) 
 }
+
+function travarBotao()
+{
+    botoes = document.querySelectorAll(".btn-submit");
+    botoes.forEach(botao => {
+        botao.disabled = true;
+    });
+}
+
+addEventListener("submit", travarBotao);
