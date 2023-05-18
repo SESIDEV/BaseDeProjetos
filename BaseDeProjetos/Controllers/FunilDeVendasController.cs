@@ -606,7 +606,7 @@ namespace BaseDeProjetos.Controllers
                         continue;
                     }
                 }
-
+                HttpContext.Response.ContentType = "application/json";
                 return JsonSerializer.Serialize(listaFull);
         }
 
