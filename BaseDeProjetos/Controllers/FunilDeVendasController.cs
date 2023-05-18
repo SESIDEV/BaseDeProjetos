@@ -587,12 +587,18 @@ namespace BaseDeProjetos.Controllers
                         {
                             Dictionary<string, object> dict = new Dictionary<string, object>();
                             dict["idProsp"] = p.Id;
+                            dict["Titulo"] = p.NomeProspeccao;
+                            dict["Líder"] = p.Usuario;
                             dict["Status"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Status.GetDisplayName();
                             dict["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data;
                             dict["Empresa"] = p.Empresa.Nome;
                             dict["CNPJ"] = p.Empresa.CNPJ;
                             dict["Segmento"] = p.Empresa.Segmento.GetDisplayName();
                             dict["Estado"] = p.Empresa.Estado.GetDisplayName();
+                            dict["Casa"] = p.Casa.GetDisplayName();
+                            dict["TipoContratacao"] = p.TipoContratacao.GetDisplayName();
+                            dict["LinhaPesquisa"] = p.LinhaPequisa.GetDisplayName();
+                            dict["Valor"] = p.ValorProposta;
                             listaFull.Add(dict);
                         }
                     }
