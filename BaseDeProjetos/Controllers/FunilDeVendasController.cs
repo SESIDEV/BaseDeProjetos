@@ -551,7 +551,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         [AllowAnonymous]
-        public ActionResult PuxarDadosProspeccoes(string casa = "ISIQV", int ano = 2022, bool planejadas = false)
+        public ActionResult PuxarDadosProspeccoes(string casa = "ISIQV")
         {
                 Instituto casa_ = (Instituto)Enum.Parse(typeof(Instituto), casa);
 
@@ -561,60 +561,24 @@ namespace BaseDeProjetos.Controllers
 
                 foreach (var p in lista_prosp)
                 {
-                    bool aprovado = false;
-                    if (p.Status.OrderBy(k => k.Data).LastOrDefault().Data.Year == ano)
-                    {
-                        if (planejadas)
-                        {
-                            if (p.Status.OrderBy(k => k.Data).LastOrDefault().Status == StatusProspeccao.Planejada)
-                            {
-                                aprovado = true;
-                            }
-                            else
-                            {
-                                continue;
-                            }
-                        }
-                        else
-                        {
-                            if (p.Status.OrderBy(k => k.Data).LastOrDefault().Status != StatusProspeccao.Planejada)
-                            {
-                                aprovado = true;
-                            }
-                        }
-
-                        if (aprovado)
-                        {
-                            Dictionary<string, object> dict = new Dictionary<string, object>();
-                            dict["idProsp"] = p.Id;
-                            dict["Titulo"] = p.NomeProspeccao;
-                            dict["Líder"] = p.Usuario.UserName;
-                            dict["Status"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Status.GetDisplayName();
-                            dict["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data;
-                            dict["Empresa"] = p.Empresa.Nome;
-                            dict["CNPJ"] = p.Empresa.CNPJ;
-                            dict["Segmento"] = p.Empresa.Segmento.GetDisplayName();
-                            dict["Estado"] = p.Empresa.Estado.GetDisplayName();
-                            dict["Casa"] = p.Casa.GetDisplayName();
-                            dict["TipoContratacao"] = p.TipoContratacao.GetDisplayName();
-                            dict["LinhaPesquisa"] = p.LinhaPequisa.GetDisplayName();
-                            dict["Valor"] = p.ValorProposta;
-                            listaFull.Add(dict);
-                        }
-                    }
-                    else
-                    {
-                        continue;
-                    }
+                    Dictionary<string, object> dict = new Dictionary<string, object>();
+                    dict["idProsp"] = p.Id;
+                    dict["Titulo"] = p.NomeProspeccao;
+                    dict["Líder"] = p.Usuario.UserName;
+                    dict["Status"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Status.GetDisplayName();
+                    dict["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data;
+                    dict["Empresa"] = p.Empresa.Nome;
+                    dict["CNPJ"] = p.Empresa.CNPJ;
+                    dict["Segmento"] = p.Empresa.Segmento.GetDisplayName();
+                    dict["Estado"] = p.Empresa.Estado.GetDisplayName();
+                    dict["Casa"] = p.Casa.GetDisplayName();
+                    dict["TipoContratacao"] = p.TipoContratacao.GetDisplayName();
+                    dict["LinhaPesquisa"] = p.LinhaPequisa.GetDisplayName();
+                    dict["Valor"] = p.ValorProposta;
+                    listaFull.Add(dict);
                 }
-                // Serializar a listaFull para JSON
-                var jsonBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(listaFull));
 
-                // Definir o ContentType como "application/json"
-                Response.ContentType = "application/json";
-
-                // Retornar os bytes JSON
-                return File(jsonBytes, "application/json");
+                return Json(listaFull);
         }
 
         public string PuxarDadosUsuarios()
