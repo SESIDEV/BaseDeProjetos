@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using BaseDeProjetos.Models;
 using System.Threading.Tasks;
 
-namespace BaseDeProjetos.ViewComponents
+namespace BaseDeProjetos.ViewComponents.ProducaoViewComponents
 {
     public class ModalCreateProducaoViewComponent : ViewComponent
     {

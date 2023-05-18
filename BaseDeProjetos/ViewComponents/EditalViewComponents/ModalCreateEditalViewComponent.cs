@@ -3,20 +3,20 @@ using Microsoft.AspNetCore.Mvc;
 using BaseDeProjetos.Models;
 using System.Threading.Tasks;
 
-namespace BaseDeProjetos.ViewComponents
+namespace BaseDeProjetos.ViewComponents.EditalViewComponents
 {
-    public class ModalCreateSubmissaoEditalViewComponent : ViewComponent
+    public class ModalCreateEditalViewComponent : ViewComponent
     {
         private readonly ApplicationDbContext _context;
 
-        public ModalCreateSubmissaoEditalViewComponent(ApplicationDbContext context)
+        public ModalCreateEditalViewComponent(ApplicationDbContext context)
         {
             _context = context;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            return View(new Submissao());
+            return View(new Editais());
         }
 
     }

@@ -2,16 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using BaseDeProjetos.Models;
-using System.Linq;
-using System.Collections.Generic;
 
-namespace BaseDeProjetos.ViewComponents
+namespace BaseDeProjetos.ViewComponents.FunilDeVendasViewComponents
 {
-    public class ModalPreCreateProspViewComponent : ViewComponent
+    public class ModalCreateProspViewComponent : ViewComponent
     {
         private readonly ApplicationDbContext _context;
 
-        public ModalPreCreateProspViewComponent(ApplicationDbContext context)
+        public ModalCreateProspViewComponent(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -19,10 +17,6 @@ namespace BaseDeProjetos.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            List<Prospeccao> prosp = _context.Prospeccao.ToList();
-
-            ViewData["prospPlan"] = prosp;
-            
             return View(new Prospeccao(new FollowUp()));
         }
     }
