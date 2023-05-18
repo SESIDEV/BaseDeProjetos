@@ -550,7 +550,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         [AllowAnonymous]
-        public string PuxarDadosProspeccoes(string casa = "ISIQV", int ano = 2022, bool planejadas = false)
+        public ActionResult PuxarDadosProspeccoes(string casa = "ISIQV", int ano = 2022, bool planejadas = false)
         {
                 Instituto casa_ = (Instituto)Enum.Parse(typeof(Instituto), casa);
 
@@ -606,8 +606,7 @@ namespace BaseDeProjetos.Controllers
                         continue;
                     }
                 }
-                HttpContext.Response.ContentType = "application/json";
-                return JsonSerializer.Serialize(listaFull);
+                return Json(listaFull);
         }
 
         public string PuxarDadosUsuarios()
