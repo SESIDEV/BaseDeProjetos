@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -549,10 +550,9 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
-        public string PuxarDadosProspeccoes(string casa = "ISIQV", int ano = 2022, bool planejadas = false)
+        [AllowAnonymous]
+        public ActionResult PuxarDadosProspeccoes(string casa = "ISIQV", int ano = 2022, bool planejadas = false)
         {
-            if (HttpContext.User.Identity.IsAuthenticated)
-            {
                 Instituto casa_ = (Instituto)Enum.Parse(typeof(Instituto), casa);
 
                 List<Prospeccao> lista_prosp = _context.Prospeccao.Where(p => p.Casa == casa_).ToList();
@@ -587,12 +587,18 @@ namespace BaseDeProjetos.Controllers
                         {
                             Dictionary<string, object> dict = new Dictionary<string, object>();
                             dict["idProsp"] = p.Id;
+                            dict["Titulo"] = p.NomeProspeccao;
+                            dict["Líder"] = p.Usuario.UserName;
                             dict["Status"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Status.GetDisplayName();
                             dict["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data;
                             dict["Empresa"] = p.Empresa.Nome;
                             dict["CNPJ"] = p.Empresa.CNPJ;
                             dict["Segmento"] = p.Empresa.Segmento.GetDisplayName();
                             dict["Estado"] = p.Empresa.Estado.GetDisplayName();
+                            dict["Casa"] = p.Casa.GetDisplayName();
+                            dict["TipoContratacao"] = p.TipoContratacao.GetDisplayName();
+                            dict["LinhaPesquisa"] = p.LinhaPequisa.GetDisplayName();
+                            dict["Valor"] = p.ValorProposta;
                             listaFull.Add(dict);
                         }
                     }
@@ -601,14 +607,14 @@ namespace BaseDeProjetos.Controllers
                         continue;
                     }
                 }
+                // Serializar a listaFull para JSON
+                var jsonBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(listaFull));
 
-                return JsonSerializer.Serialize(listaFull);
-            }
-            else
-            {
-                return JsonSerializer.Serialize("403 Forbidden");
-            }
+                // Definir o ContentType como "application/json"
+                Response.ContentType = "application/json";
 
+                // Retornar os bytes JSON
+                return File(jsonBytes, "application/json");
         }
 
         public string PuxarDadosUsuarios()
