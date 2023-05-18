@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -606,7 +607,14 @@ namespace BaseDeProjetos.Controllers
                         continue;
                     }
                 }
-                return Json(listaFull);
+                // Serializar a listaFull para JSON
+                var jsonBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(listaFull));
+
+                // Definir o ContentType como "application/json"
+                Response.ContentType = "application/json";
+
+                // Retornar os bytes JSON
+                return File(jsonBytes, "application/json");
         }
 
         public string PuxarDadosUsuarios()
