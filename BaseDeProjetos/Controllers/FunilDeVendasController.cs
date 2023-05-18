@@ -552,8 +552,6 @@ namespace BaseDeProjetos.Controllers
         [AllowAnonymous]
         public string PuxarDadosProspeccoes(string casa = "ISIQV", int ano = 2022, bool planejadas = false)
         {
-            if (HttpContext.User.Identity.IsAuthenticated)
-            {
                 Instituto casa_ = (Instituto)Enum.Parse(typeof(Instituto), casa);
 
                 List<Prospeccao> lista_prosp = _context.Prospeccao.Where(p => p.Casa == casa_).ToList();
@@ -610,12 +608,6 @@ namespace BaseDeProjetos.Controllers
                 }
 
                 return JsonSerializer.Serialize(listaFull);
-            }
-            else
-            {
-                return JsonSerializer.Serialize("403 Forbidden");
-            }
-
         }
 
         public string PuxarDadosUsuarios()
