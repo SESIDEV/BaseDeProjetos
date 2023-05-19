@@ -25,8 +25,12 @@
                         <button class="btn app-btn-primary" onclick="validarCNPJ('@Model.Id')" type="button">Buscar</button>
                     </div>
                     <hr />
-                    <h6 id="TipoEmpresaStatus">Tipo: </h6>
-                    <h6 id="SituacaoEmpresaStatus">Situação: </h6>
+                    <h6 id="TipoEmpresaStatus-@Model.Id">Tipo:</h6>
+                    <h6 id="SituacaoEmpresaStatus-@Model.Id">Situação:</h6>
+                    <div style="display: flex; align-items: baseline;">
+                        <h6 id="BoolCnaeIndustrial">CNAE Industrial:</h6>
+                        <i id="checkCNAE-@Model.Id" class="fa" style="display:none; color:rgb(255, 255, 255); margin-left:1%"></i>
+                    </div>
                     <div class="form-group">
                         <label asp-for="Nome" class="control-label"></label>
                         <input asp-for="Nome" id="NomeEmpresaCadastro-@Model.Id" class="form-control" value="@Model.Nome" readonly />

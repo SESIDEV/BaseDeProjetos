@@ -12,6 +12,8 @@
 
 redePessoas = null
 
+var dictCNAE = {}
+
 function FiltroEmpresaEstrangeira(){
 
     let checkBox = document.getElementById("empresa_estrangeira_check");
@@ -433,7 +435,7 @@ function statusPatente(){
 
 }
 
-function validarCNPJ(idElemento) {
+function validarCNPJ(idElemento=null) {
     let cnpj;
     if (idElemento == null) {
         document.getElementById("valor_cnpj").value = document.getElementById("valor_cnpj").value.replace(/[^0-9]/g, '');
@@ -447,6 +449,35 @@ function validarCNPJ(idElemento) {
     } else {
         AplicarDadosAPI(idElemento);
     }    
+}
+
+function checarCNAE(dados, idElemento=null){
+    let codcnae = dados.atividade_principal[0].code.slice(0, 2);
+
+    if(typeof(dictCNAE[codcnae]) != "undefined"){
+
+        if(idElemento == null){
+            document.getElementById("checkCNAE").style.color = "green";
+            document.getElementById("checkCNAE").classList.value = "fa fa-check";
+            document.getElementById("checkCNAE").style.display = "block";
+        } else {
+            document.getElementById(`checkCNAE-${idElemento}`).style.color = "green";
+            document.getElementById(`checkCNAE-${idElemento}`).classList.value = "fa fa-check";
+            document.getElementById(`checkCNAE-${idElemento}`).style.display = "block";
+        }
+
+    } else {
+
+        if(idElemento == null){
+            document.getElementById("checkCNAE").style.color = "red";
+            document.getElementById("checkCNAE").classList.value = "fa fa-close";
+            document.getElementById("checkCNAE").style.display = "block";
+        } else {
+            document.getElementById(`checkCNAE-${idElemento}`).style.color = "red";
+            document.getElementById(`checkCNAE-${idElemento}`).classList.value = "fa fa-close";
+            document.getElementById(`checkCNAE-${idElemento}`).style.display = "block";
+        }
+    }
 }
 
 function AplicarDadosAPI(idElemento) {
@@ -465,11 +496,13 @@ function AplicarDadosAPI(idElemento) {
                 document.getElementById("NomeFantasiaEmpresa").value = dados.fantasia;
                 document.getElementById("TipoEmpresaStatus").innerHTML = "Tipo: " + dados.tipo;
                 document.getElementById("SituacaoEmpresaStatus").innerHTML = "Situação: " + dados.situacao;
+                checarCNAE(dados);
             } else {
                 document.getElementById(`NomeEmpresaCadastro-${idElemento}`).value = dados.nome;
                 document.getElementById(`NomeFantasiaEmpresa-${idElemento}`).value = dados.fantasia;
                 document.getElementById(`TipoEmpresaStatus-${idElemento}`).innerHTML = "Tipo: " + dados.tipo;
                 document.getElementById(`SituacaoEmpresaStatus-${idElemento}`).innerHTML = "Situação: " + dados.situacao;
+                checarCNAE(dados, idElemento);
             }
 
             // TUDO DAQUI PRA BAIXO FOI FEITO EXCLUSIVAMENTE PARA CONVERTER A SIGLA DE CADA ESTADO PARA O NOME COMPLETO

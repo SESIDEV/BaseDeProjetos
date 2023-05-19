@@ -7,7 +7,7 @@
     List<Prospeccao> prospsPlanejadas = ViewBag.ProspeccoesPlanejadas as List<Prospeccao>;
     List<Prospeccao> prospsAtivas = ViewBag.ProspeccoesAtivas as List<Prospeccao>;
 }
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script>
     var prospeccoesDetalhes = [];
     var empresasCarregadas = [];
@@ -77,7 +77,7 @@
         empresasCarregadas.push(idEmpresa);
     }
     
-    function ChecarCNPJ() {
+    function ChecarCNPJ() { //EXCLUSIVO PARA O CREATE PORQUE VERIFICA SE JÁ EXISTE NO BANCO (NO EDIT JÁ EXISTE)
         document.getElementById("valor_cnpj").value = document.getElementById("valor_cnpj").value.replace(/[^0-9]/g, '');
         $("#StatusCNPJ").html("Checando...");
         $.post('@Url.Action("SeExisteCnpj", "Empresas")', { cnpj: $("#valor_cnpj").val() },
