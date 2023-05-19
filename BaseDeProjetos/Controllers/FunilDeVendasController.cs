@@ -576,7 +576,7 @@ namespace BaseDeProjetos.Controllers
                 dict["Titulo"] = p.NomeProspeccao;
                 dict["Líder"] = p.Usuario.UserName;
                 dict["Status"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Status.GetDisplayName();
-                dict["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data.ToString("dd-MM-yyyy");
+                dict["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data.ToString("MM/yyyy");
                 dict["Empresa"] = p.Empresa.Nome;
                 dict["CNPJ"] = p.Empresa.CNPJ;
                 dict["Segmento"] = p.Empresa.Segmento.GetDisplayName();
@@ -585,7 +585,7 @@ namespace BaseDeProjetos.Controllers
                 dict["TipoContratacao"] = p.TipoContratacao.GetDisplayName();
                 dict["LinhaPesquisa"] = p.LinhaPequisa.GetDisplayName();
                 
-                if (p.valorProposta != 0) 
+                if (p.ValorProposta != 0) 
                 {
                     dict["Valor"] = p.ValorProposta;
                 }               
