@@ -54,6 +54,7 @@
     float numNaoConvertidas = prospeccoes.Count(p => p.Status.Any(s => s.Status == StatusProspeccao.NaoConvertida));
     float numCanceladas = prospeccoes.Count(p => p.Status.Any(s => s.Status == StatusProspeccao.Suspensa));
     float numProspeccoesEmAndamento = numProspeccoesTotais - numConvertidas - numNaoConvertidas - numCanceladas;
+    float numProspeccoesEmAndamentoComProposta = numPropostas - numConvertidas - numNaoConvertidas;
     float numEmpresas = prospeccoesNaoPlanejadas.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();
     float numEmpresasAtivas = prospeccoesAtivas.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();
     float numPlanejadas = prospeccoes.Count(p => p.Status.Any(s => s.Status == StatusProspeccao.Planejada));
@@ -355,7 +356,7 @@
                 colorByPoint: true,
                 data: [{
                     name: 'Em andamento',
-                    y: @(numProspeccoesEmAndamento),
+                    y: @(numProspeccoesEmAndamentoComProposta),
                 }, {
                     name: 'Convertidas',
                     y: @numConvertidas
