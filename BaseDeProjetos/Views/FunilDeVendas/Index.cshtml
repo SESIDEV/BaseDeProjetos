@@ -37,7 +37,12 @@
 			planejadas = ViewBag.Planejadas as List<Prospeccao>;
 		}
 	}	
-	
+
+	if (string.IsNullOrEmpty(casa))
+	{
+		casa = ViewBag.UsuarioCasa as string;
+	}
+
 	List<Instituto> institutos = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto))).Where(i => i != Instituto.Super).ToList();
 }
 
