@@ -364,7 +364,7 @@
 					}
 					else if (aba.ToLowerInvariant() == "concluidas")
 					{
-						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" href="@aba" aria-controls="prospeccao-ativas" aria-selected="false">Ativas</a>
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="@aba" aria-controls="prospeccao-ativas" aria-selected="false">Ativas</a>
 						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" href="comproposta" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta</a>
 						<a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-concluidas-tab" href="concluidas" role="tab" aria-controls="prospeccao-concluidas" aria-selected="true">Concluídas (@concluidas.Count())</a>
 						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" href="planejadas" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas</a>
