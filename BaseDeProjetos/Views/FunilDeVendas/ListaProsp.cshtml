@@ -29,7 +29,10 @@
                             <th class="cell">Projeto</th>
                             <th class="cell">Tipo Contratação</th>
                             <th class="cell">Status</th>
-                            <th class="cell">Temperatura</th>
+                            @if (@aba != "planejadas") 
+                            {
+                                <th class="cell">Temperatura</th>
+                            }                            
                             <th class="cell">Valor</th>
                             <th class="cell">Detalhes</th>
                         </tr>
@@ -97,13 +100,10 @@
                                 <td class="cell">
                                     <span>@prospeccao.Status.OrderBy(followup => followup.Data).Last().Status.GetDisplayName()</span>
                                 </td> @*Status*@
-                                @if (prospeccao.Status.OrderBy(followup => followup.Data).Last().Status != StatusProspeccao.Planejada)
+                                @if (prospeccao.Status.Any(f => f.Status == StatusProspeccao.Planejada))
                                 {
-                                    <td class="cell">
-                                        @if (prospeccao.Status.OrderBy(followup => followup.Data).Last().Status != StatusProspeccao.Planejada)
-                                        {
-                                            @FunilHelpers.VerificarTemperatura(subtracaoUltimoStatus)
-                                        }
+                                    <td class="cell">                
+                                        @FunilHelpers.VerificarTemperatura(subtracaoUltimoStatus)
                                     </td>
                                 }
                                 <td class="cell">
