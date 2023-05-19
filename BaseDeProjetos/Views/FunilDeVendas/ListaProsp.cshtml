@@ -100,7 +100,7 @@
                                 <td class="cell">
                                     <span>@prospeccao.Status.OrderBy(followup => followup.Data).Last().Status.GetDisplayName()</span>
                                 </td> @*Status*@
-                                @if (prospeccao.Status.Any(f => f.Status == StatusProspeccao.Planejada))
+                                @if (prospeccao.Status.OrderBy(followup => followup.Data).Last().Status != StatusProspeccao.Planejada)     
                                 {
                                     <td class="cell">                
                                         @FunilHelpers.VerificarTemperatura(subtracaoUltimoStatus)
