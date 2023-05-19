@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
-@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http;
 @{
 	ViewData["Title"] = "Funil de Vendas";
 	List<Prospeccao> ativas = ViewBag.Ativas as List<Prospeccao>;
@@ -12,23 +12,23 @@
 
 <partial name="Header" view-data="@ViewData" />
 <style>
-.button-flash {
-	animation: rainbow 2s infinite;
-}
+	.button-flash {
+		animation: rainbow 2s infinite;
+	}
 
-@@keyframes rainbow {
-	0% {
-		background-color: #ffc107;
+	@@keyframes rainbow {
+		0% {
+			background-color: #ffc107;
+		}
+		50% {
+			background-color: #ffdb6f;
+		}
+		100% {
+			background-color: #ffc107;
+		}
 	}
-	50% {
-		background-color: #ffdb6f;
-	}
-	100% {
-		background-color: #ffc107;
-	}
-}
 
-.bg-esfriando {
+	.bg-esfriando {
 		background-color: #fff462;
 	}
 
@@ -140,6 +140,7 @@
 	}
 
 </style>
+
 <script>
 	var prospeccoesDetalhes = [];
 
@@ -242,6 +243,7 @@
 		}
 	}
 </script>
+
 <div class="app-wrapper">
 	<div class="app-content pt-3 p-md-3 p-lg-4">
 		<div class="container-xl">
