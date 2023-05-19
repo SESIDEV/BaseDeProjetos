@@ -11,6 +11,8 @@
     }
 </style>
 @{
+    // TODO: Alguém me otimize/me refatore por favor 😶
+
     IEnumerable<BaseDeProjetos.Models.Prospeccao> Prospeccoes = ViewData["ListaProspeccoes"] as
             IEnumerable<BaseDeProjetos.Models.Prospeccao>;
     Dictionary<string, int> contagem = new Dictionary<string, int>();
@@ -24,8 +26,6 @@
             FunilHelpers.VerificarStatus(p, status)).ToList().Count();
         }
     }
-
-    //ATIVAS \/ \/ \/ \/ \/ \/
 
     var prospec_ativas = Prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).All(pa => pa.Status ==
     StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto || pa.Status ==
@@ -55,7 +55,7 @@
     decimal n_empresas = prospec_totais.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();
     decimal n_planejadas = Prospeccoes.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.Planejada)).Count();
 
-    //Novo Filtro:
+    // Novo Filtro:
     decimal n_empresas_ativas = prospec_ativas.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();
     var avancadas = Prospeccoes.Where(p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)).
     Where(p => p.Status.Any(k => k.Status > StatusProspeccao.ComProposta)). // lista de prospecção (selecionar com proposta)
@@ -147,8 +147,6 @@
                 <label class="form-check-label" for="botao_ativas">Mostrar apenas as ativas</label>
             </div>
         </div>
-
-
     </div>
 
     <div class="pb-4">

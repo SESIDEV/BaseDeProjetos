@@ -111,29 +111,44 @@ namespace BaseDeProjetos.Helpers
             }
         }
 
-        public static void CategorizarProspecçõesNaView(List<Prospeccao> lista, Usuario usuario, HttpContext HttpContext, dynamic ViewBag)
+        public static void CategorizarProspecçõesNaView(List<Prospeccao> lista, Usuario usuario, string aba, HttpContext HttpContext, dynamic ViewBag)
         {
 
-            List<Prospeccao> concluidos = lista.Where(prospeccao => prospeccao.Status.Any(followup => followup.Status == StatusProspeccao.Convertida ||
+            if (aba.ToLower() == "ativas") 
+            {
+                List<Prospeccao> ativas = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup => followup.Data).LastOrDefault().Status < StatusProspeccao.ComProposta).ToList();
+                ViewBag.Ativas = ativas;
+            }
+            else if (aba.ToLower() == "comproposta")
+            {
+                List<Prospeccao> emProposta = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup => followup.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList();
+                ViewBag.EmProposta = emProposta;
+            } 
+            else if (aba.ToLower() == "concluidas")
+            {
+                List<Prospeccao> concluidas = lista.Where(prospeccao => prospeccao.Status.Any(followup => followup.Status == StatusProspeccao.Convertida ||
                                                               followup.Status == StatusProspeccao.Suspensa ||
                                                               followup.Status == StatusProspeccao.NaoConvertida)).ToList();
-
-            List<Prospeccao> errados = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup => followup.Data).FirstOrDefault().Status != StatusProspeccao.ContatoInicial
-            && prospeccao.Status.OrderBy(followup => followup.Data).FirstOrDefault().Status != StatusProspeccao.Planejada).ToList();
-
-            List<Prospeccao> emProposta = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup => followup.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList();
-
-            List<Prospeccao> ativos = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup => followup.Data).LastOrDefault().Status < StatusProspeccao.ComProposta).ToList();
-
-            List<Prospeccao> planejados = usuario.Nivel == Nivel.Dev ?
-            lista.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).ToList() :
-            lista.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).Where(prosp => prosp.Usuario.UserName.ToString() == HttpContext.User.Identity.Name).ToList();
-
-            ViewBag.Erradas = errados;
-            ViewBag.Concluidas = concluidos;
-            ViewBag.Ativas = ativos;
-            ViewBag.EmProposta = emProposta;
-            ViewBag.Planejadas = planejados;
+                ViewBag.Concluidas = concluidas;
+            } 
+            else if (aba.ToLower() == "planejadas")
+            {
+                // Jesus cristo 😬
+                List<Prospeccao> planejadas = usuario.Nivel == Nivel.Dev ?
+                            lista.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).ToList() :
+                            lista.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).Where(prosp => prosp.Usuario.UserName.ToString() == HttpContext.User.Identity.Name).ToList();
+                ViewBag.Planejadas = planejadas;
+            } 
+            else if (aba.ToLower() == "erradas")
+            {
+                List<Prospeccao> erradas = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup => followup.Data).FirstOrDefault().Status != StatusProspeccao.ContatoInicial
+                            && prospeccao.Status.OrderBy(followup => followup.Data).FirstOrDefault().Status != StatusProspeccao.Planejada).ToList();
+                ViewBag.Erradas = erradas;
+            } 
+            else
+            {
+                return;
+            }            
         }
 
         public static List<Prospeccao> DefinirCasaParaVisualizar(string? casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, ViewDataDictionary ViewData)

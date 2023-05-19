@@ -29,8 +29,8 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: FunilDeVendas
-        [Route("FunilDeVendas/Index/{casa?}/{ano?}")]
-        public IActionResult Index(string casa, string sortOrder = "", string searchString = "", string ano = "")
+        [Route("FunilDeVendas/Index/{casa?}/{aba?}/{ano?}")]
+        public IActionResult Index(string casa, string aba, string sortOrder = "", string searchString = "", string ano = "")
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
@@ -45,15 +45,20 @@ namespace BaseDeProjetos.Controllers
                 }
 
                 List<Empresa> empresas = _context.Empresa.ToList();
-                List<Prospeccao> lista;
-                lista = FunilHelpers.DefinirCasaParaVisualizar(casa, usuario, _context, HttpContext, ViewData);
-                lista = FunilHelpers.VincularCasaProspeccao(usuario, lista);
-                lista = FunilHelpers.PeriodizarProspecções(ano, lista); // ANO DA PROSPEC
-                lista = FunilHelpers.OrdenarProspecções(sortOrder, lista); //SORT ORDEM ALFABETICA
-                lista = FunilHelpers.FiltrarProspecções(searchString, lista); //APENAS NA BUSCA
+                List<Prospeccao> prospeccoes;
+                prospeccoes = FunilHelpers.DefinirCasaParaVisualizar(casa, usuario, _context, HttpContext, ViewData);
+                prospeccoes = FunilHelpers.VincularCasaProspeccao(usuario, prospeccoes);
+                prospeccoes = FunilHelpers.PeriodizarProspecções(ano, prospeccoes); // ANO DA PROSPEC
+                prospeccoes = FunilHelpers.OrdenarProspecções(sortOrder, prospeccoes); //SORT ORDEM ALFABETICA
+                prospeccoes = FunilHelpers.FiltrarProspecções(searchString, prospeccoes); // APENAS NA BUSCA
                 FunilHelpers.SetarFiltrosNaView(HttpContext, ViewData, sortOrder, searchString);
-                FunilHelpers.CategorizarProspecçõesNaView(lista, usuario, HttpContext, ViewBag);
-                ViewData["ListaProspeccoes"] = lista.ToList();
+
+                if (!string.IsNullOrEmpty(aba))
+                {
+                    FunilHelpers.CategorizarProspecçõesNaView(prospeccoes, usuario, aba, HttpContext, ViewBag);
+                }
+                
+                ViewData["ListaProspeccoes"] = prospeccoes.ToList();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
                 ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
 

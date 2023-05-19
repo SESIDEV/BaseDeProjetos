@@ -2,12 +2,43 @@
 @using Microsoft.AspNetCore.Http;
 @{
 	ViewData["Title"] = "Funil de Vendas";
-	List<Prospeccao> ativas = ViewBag.Ativas as List<Prospeccao>;
-	List<Prospeccao> propostas = ViewBag.EmProposta as List<Prospeccao>;
-	List<Prospeccao> concluidas = ViewBag.Concluidas as List<Prospeccao>;
-	List<Prospeccao> planejadas = ViewBag.Planejadas as List<Prospeccao>;
-	List<Prospeccao> erradas = ViewBag.Erradas as List<Prospeccao>;
-	List<Instituto> institutos = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto))).Where(c => c != Instituto.Super).ToList();
+
+	var dadosDaRota = ViewContext.RouteData;
+	string aba = dadosDaRota.Values["aba"] as string;
+	string casa = dadosDaRota.Values["casa"] as string;
+	//aba = aba.ToLowerInvariant(); // Safeguard
+
+	List<Prospeccao> ativas = new List<Prospeccao>();
+	List<Prospeccao> comproposta = new List<Prospeccao>();
+	List<Prospeccao> concluidas = new List<Prospeccao>();
+	List<Prospeccao> erradas = new List<Prospeccao>();
+	List<Prospeccao> planejadas = new List<Prospeccao>();
+
+	if (!string.IsNullOrEmpty(aba))
+	{
+		if (aba.ToLowerInvariant() == "ativas")
+		{
+			ativas = ViewBag.Ativas as List<Prospeccao>;
+		}
+		else if (aba.ToLowerInvariant() == "comproposta")
+		{
+			comproposta = ViewBag.EmProposta as List<Prospeccao>;
+		}
+		else if (aba.ToLowerInvariant() == "concluidas")
+		{
+			concluidas = ViewBag.Concluidas as List<Prospeccao>;
+		} 
+		else if (aba.ToLowerInvariant() == "erradas")
+		{
+			erradas = ViewBag.Erradas as List<Prospeccao>;
+		}
+		else if (aba.ToLowerInvariant() == "planejadas")
+		{
+			planejadas = ViewBag.Planejadas as List<Prospeccao>;
+		}
+	}	
+	
+	List<Instituto> institutos = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto))).Where(i => i != Instituto.Super).ToList();
 }
 
 <partial name="Header" view-data="@ViewData" />
@@ -144,10 +175,10 @@
 <script>
 	var prospeccoesDetalhes = [];
 
-	function trocarModalNovaProsp(){
+	function trocarModalNovaProsp() {
 		document.getElementById("botaoToggleProspFollowUp").disabled = true
 		valorSelect = document.getElementById("selectCreateProsp").value
-		if(valorSelect != "-1"){
+		if (valorSelect != "-1") {
 			document.getElementById("botaoToggleProspFollowUp").dataset.bsTarget = `#CreateFollowupProspModal-${valorSelect}-Toggle`
 			fetch(`/FunildeVendas/RetornarModal?idProsp=${valorSelect}&tipo=CreateFollowup`).then(response => response.text())
 				.then(result => {
@@ -247,7 +278,6 @@
 <div class="app-wrapper">
 	<div class="app-content pt-3 p-md-3 p-lg-4">
 		<div class="container-xl">
-
 			<div class="row g-3 mb-4 align-items-center justify-content-between">
 				<div class="col-auto">
 					<h1 class="app-page-title mb-0">Prospecções</h1>
@@ -267,7 +297,6 @@
 										<button type="submit" class="btn app-btn-primary">Lista Completa</button>
 									</div>
 								</form>
-
 							</div>
 							<div class="col-auto">
 								<select class="form-select w-auto" id="ano" name="ano" onchange="updateLink()">
@@ -294,7 +323,6 @@
 								@await Component.InvokeAsync("ModalCreateProsp")
 								<div id="modalCreateFollowUpProspContainer"></div> <!-- CONTAINER PARA ARMAZENAR O MODAL CREATE FOLLOWUP TEMPORARIAMENTE -->
 							</div>
-
 							<div class="col-auto" id="container-ajuda">
 								<a type="button" class="btn button-flash text-white" data-bs-toggle="modal" href="#modalTutorialFdv" role="button">
 									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-octagon-fill" viewBox="0 0 16 16">
@@ -302,173 +330,120 @@
 									</svg> Tutorial!
 								</a>
 							</div>
-
 						</div>
 					</div>
 				</div>
 			</div>
 
-
 			<nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
-				<a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-dashboard-tab" data-bs-toggle="tab" href="#prospeccao-dashboard" role="tab" aria-controls="prospeccao-dashboard" aria-selected="true">Dashboard</a>
-				<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" data-bs-toggle="tab" href="#prospeccao-ativas" role="tab" aria-controls="prospeccao-ativas" aria-selected="false">Ativas (@ativas.Count())</a>
-				<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" data-bs-toggle="tab" href="#prospeccao-comproposta" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta (@propostas.Count())</a>
-				<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" data-bs-toggle="tab" href="#prospeccao-concluidas" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas (@concluidas.Count())</a>
-				<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" data-bs-toggle="tab" href="#prospeccao-planejadas" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas (@planejadas.Count())</a>
-				<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" data-bs-toggle="tab" href="#prospeccao-erradas" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas (@erradas.Count())</a>
+				@if (string.IsNullOrEmpty(aba))
+				{
+					<a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-dashboard-tab" data-bs-toggle="tab" href="#prospeccao-dashboard" role="tab" aria-controls="prospeccao-dashboard" aria-selected="true">Dashboard</a>
+				}
+				else
+				{
+					<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-dashboard-tab" aria-controls="prospeccao-dashboard" aria-selected="false">Dashboard</a>
+				}
+				@if (!string.IsNullOrEmpty(aba))
+				{
+					if (aba.ToLowerInvariant() == "ativas")
+					{
+						<a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-ativas-tab" href="@aba" aria-controls="prospeccao-ativas" aria-selected="true">Ativas (@ativas.Count())</a>
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" href="comproposta" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta</a>
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" href="concluidas" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas</a>
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" href="planejadas" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas</a>
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" href="erradas" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas</a>
+					} 
+					else if (aba.ToLowerInvariant() == "comproposta")
+					{
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" href="@aba" aria-controls="prospeccao-ativas" aria-selected="false">Ativas</a>
+						<a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-comproposta-tab" href="comproposta" role="tab" aria-controls="prospeccao-comproposta" aria-selected="true">Com Proposta (@comproposta.Count())</a>
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" href="concluidas" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas</a>
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" href="planejadas" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas</a>
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" href="erradas" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas</a>
+					}
+					else if (aba.ToLowerInvariant() == "concluidas")
+					{
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" href="@aba" aria-controls="prospeccao-ativas" aria-selected="false">Ativas</a>
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" href="comproposta" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta</a>
+						<a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-concluidas-tab" href="concluidas" role="tab" aria-controls="prospeccao-concluidas" aria-selected="true">Concluídas (@concluidas.Count())</a>
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" href="planejadas" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas</a>
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" href="erradas" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas</a>
+					}
+					else if (aba.ToLowerInvariant() == "planejadas")
+					{
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" href="@aba" aria-controls="prospeccao-ativas" aria-selected="false">Ativas</a>
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" href="comproposta" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta</a>
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" href="concluidas" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas</a>
+						<a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-planejadas-tab" href="planejadas" role="tab" aria-controls="prospeccao-planejadas" aria-selected="true">Planejadas (@planejadas.Count())</a>
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" href="erradas" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas</a>
+					}
+					else if (aba.ToLowerInvariant() == "erradas")
+					{
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" href="@aba" aria-controls="prospeccao-ativas" aria-selected="false">Ativas</a>
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" href="comproposta" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta</a>
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" href="concluidas" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas</a>
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" href="planejadas" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas</a>
+						<a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-erradas-tab" href="erradas" role="tab" aria-controls="prospeccao-erradas" aria-selected="true">Erradas (@erradas.Count())</a>
+					}
+					else
+					{
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" href="@aba" aria-controls="prospeccao-ativas" aria-selected="false">Ativas</a>
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" href="comproposta" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta</a>
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" href="concluidas" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas</a>
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" href="planejadas" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas</a>
+						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" href="erradas" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas</a>
+					}
+				} 
+				else
+				{
+					<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" href="ativas" aria-controls="prospeccao-ativas" aria-selected="false">Ativas</a>
+					<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" href="comproposta" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta</a>
+					<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" href="concluidas" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas</a>
+					<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" href="planejadas" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas</a>
+					<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" href="erradas" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas</a>
+				}
+
 			</nav>
 
-
 			<div class="tab-content" id="orders-table-tab-content">
-				<div class="tab-pane fade show active" id="prospeccao-dashboard" role="tabpanel" aria-labelledby="prospeccao-dashboard-tab">
-					<div class="app-card app-card-orders-table mb-5">
-						<div class="app-card-body">
-							<partial name="graph_funil" view-data="@ViewData" />							
-						</div>
-					</div>
-
-				</div>
-
-				@*// TODO: Loop*@
-
-				<div class="tab-pane fade" id="prospeccao-ativas" role="tabpanel" aria-labelledby="prospeccao-ativas-tab">
-					<div class="app-card app-card-orders-table shadow-sm mb-5">
-						<div class="app-card-body">
-							<div class="table-responsive">
-
-								<table class="table mb-0 text-left">
-									<thead>
-										<tr>
-											<th class="cell">Logo</th>
-											<th class="cell">Empresa</th>
-											<th class="cell">Origem</th>
-											<th class="cell">Líder</th>
-											<th class="cell">Projeto</th>
-											<th class="cell">Tipo Contratação</th>
-											<th class="cell">Status</th>
-											<th class="cell">Temperatura</th>
-											<th class="cell">Valor</th>
-											<th class="cell">Detalhes</th>
-										</tr>
-									</thead>
-									<tbody>
-										@await Html.PartialAsync("ListaProsp", @ativas)
-									</tbody>
-								</table>
+				@if (string.IsNullOrEmpty(aba))
+				{
+					<div class="tab-pane fade show active" id="prospeccao-dashboard" role="tabpanel" aria-labelledby="prospeccao-dashboard-tab">
+						<div class="app-card app-card-orders-table mb-5">
+							<div class="app-card-body">
+								<partial name="graph_funil" view-data="@ViewData" />
 							</div>
 						</div>
 					</div>
-				</div>
-
-				<div class="tab-pane fade" id="prospeccao-comproposta" role="tabpanel" aria-labelledby="prospeccao-comproposta-tab">
-					<div class="app-card app-card-orders-table shadow-sm mb-5">
-						<div class="app-card-body">
-							<div class="table-responsive">
-								<table class="table mb-0 text-left">
-									<thead>
-										<tr>
-											<th class="cell">Logo</th>
-											<th class="cell">Empresa</th>
-											<th class="cell">Origem</th>
-											<th class="cell">Líder</th>
-											<th class="cell">Projeto</th>
-											<th class="cell">Tipo Contratação</th>
-											<th class="cell">Status</th>
-											<th class="cell">Temperatura</th>
-											<th class="cell">Valor</th>
-											<th class="cell">Detalhes</th>
-										</tr>
-									</thead>
-									<tbody>
-										@await Html.PartialAsync("ListaProsp", @propostas)									
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="tab-pane fade" id="prospeccao-concluidas" role="tabpanel" aria-labelledby="prospeccao-concluidas-tab">
-					<div class="app-card app-card-orders-table shadow-sm mb-5">
-						<div class="app-card-body">
-							<div class="table-responsive">
-								<table class="table mb-0 text-left">
-									<thead>
-										<tr>
-											<th class="cell">Logo</th>
-											<th class="cell">Empresa</th>
-											<th class="cell">Origem</th>
-											<th class="cell">Líder</th>
-											<th class="cell">Projeto</th>
-											<th class="cell">Tipo Contratação</th>
-											<th class="cell">Status</th>
-											<th class="cell">Temperatura</th>
-											<th class="cell">Valor</th>
-											<th class="cell">Detalhes</th>
-										</tr>
-									</thead>
-									<tbody>
-										@await Html.PartialAsync("ListaProsp", @concluidas)
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="tab-pane fade" id="prospeccao-planejadas" role="tabpanel" aria-labelledby="prospeccao-planejadas-tab">
-					<div class="app-card app-card-orders-table shadow-sm mb-5">
-						<div class="app-card-body">
-							<div class="table-responsive">
-								<table class="table mb-0 text-left">
-									<thead>
-										<tr>
-											<th class="cell">Logo</th>
-											<th class="cell">Empresa</th>
-											<th class="cell">Origem</th>
-											<th class="cell">Líder</th>
-											<th class="cell">Projeto</th>
-											<th class="cell">Tipo Contratação</th>
-											<th class="cell">Status</th>
-											<th class="cell">Valor</th>
-											<th class="cell">Detalhes</th>
-										</tr>
-									</thead>
-									<tbody>
-										@await Html.PartialAsync("ListaProsp", @planejadas)
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="tab-pane fade" id="prospeccao-erradas" role="tabpanel" aria-labelledby="prospeccao-erradas-tab">
-					<div class="app-card app-card-orders-table shadow-sm mb-5">
-						<div class="app-card-body">
-							<div class="table-responsive">
-								<table class="table mb-0 text-left">
-									<thead>
-										<tr>
-											<th class="cell">Logo</th>
-											<th class="cell">Empresa</th>
-											<th class="cell">Líder</th>
-											<th class="cell">Projeto</th>
-											<th class="cell">Tipo Contratação</th>
-											<th class="cell">Status</th>
-											<th class="cell">Temperatura</th>
-											<th class="cell">Valor</th>
-											<th class="cell">Detalhes</th>
-										</tr>
-									</thead>
-									<tbody>
-										@await Html.PartialAsync("ListaProsp", @erradas)
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
+				}
+				else
+				{
+					if (aba.ToLowerInvariant() == "ativas")
+					{
+						@await Html.PartialAsync("ListaProsp", ativas)
+					}
+					else if (aba.ToLowerInvariant() == "comproposta")
+					{
+						@await Html.PartialAsync("ListaProsp", comproposta)
+					}
+					else if (aba.ToLowerInvariant() == "concluidas")
+					{
+						@await Html.PartialAsync("ListaProsp", concluidas)
+					}
+					else if (aba.ToLowerInvariant() == "planejadas")
+					{
+						@await Html.PartialAsync("ListaProsp", planejadas)
+					}
+					else if (aba.ToLowerInvariant() == "erradas")
+					{
+						@await Html.PartialAsync("ListaProsp", erradas)
+					}
+					else
+					{
+						
+					}
+				}
 			</div>
 		</div>
 	</div>
