@@ -37,7 +37,12 @@
 			planejadas = ViewBag.Planejadas as List<Prospeccao>;
 		}
 	}	
-	
+
+	if (string.IsNullOrEmpty(casa))
+	{
+		casa = ViewBag.UsuarioCasa as string;
+	}
+
 	List<Instituto> institutos = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto))).Where(i => i != Instituto.Super).ToList();
 }
 
@@ -342,7 +347,7 @@
 				}
 				else
 				{
-					<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-dashboard-tab" aria-controls="prospeccao-dashboard" aria-selected="false">Dashboard</a>
+					<a class="flex-sm-fill text-sm-center nav-link" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="" id="prospeccao-dashboard-tab" aria-controls="prospeccao-dashboard" aria-selected="false">Dashboard</a>	
 				}
 				@if (!string.IsNullOrEmpty(aba))
 				{

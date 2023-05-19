@@ -11,10 +11,7 @@
     }
 </style>
 @{
-    // TODO: Alguém me otimize/me refatore por favor 😶
-
-    IEnumerable<BaseDeProjetos.Models.Prospeccao> Prospeccoes = ViewData["ListaProspeccoes"] as
-            IEnumerable<BaseDeProjetos.Models.Prospeccao>;
+    IEnumerable<BaseDeProjetos.Models.Prospeccao> prospeccoes = ViewData["ListaProspeccoes"] as IEnumerable<BaseDeProjetos.Models.Prospeccao>;
     Dictionary<string, int> contagem = new Dictionary<string, int>();
 
     foreach (TipoContratacao contratacao in Enum.GetValues(typeof(TipoContratacao)))
@@ -22,115 +19,80 @@
         foreach (StatusProspeccao status in Enum.GetValues(typeof(StatusProspeccao)))
         {
             var key = contratacao.ToString() + "_" + status.ToString();
-            contagem[key] = Prospeccoes.Where(p => FunilHelpers.VerificarContratacao(p, contratacao) &&
+            contagem[key] = prospeccoes.Where(p => FunilHelpers.VerificarContratacao(p, contratacao) &&
             FunilHelpers.VerificarStatus(p, status)).ToList().Count();
         }
     }
 
-    var prospec_ativas = Prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).All(pa => pa.Status ==
-    StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto || pa.Status ==
-    StatusProspeccao.ComProposta));
-    var prospec_totais = Prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(pa => pa.Status !=
-    StatusProspeccao.Planejada));
+    var prospeccoesAtivas = prospeccoes.Where(
+        p => p.Status.OrderBy(k => k.Data).All(
+            f => f.Status == StatusProspeccao.ContatoInicial || f.Status == StatusProspeccao.Discussao_EsbocoProjeto || f.Status == StatusProspeccao.ComProposta));
+
+    var prospeccoesNaoPlanejadas = prospeccoes.Where(
+        p => p.Status.OrderBy(k => k.Data).Any(f => f.Status != StatusProspeccao.Planejada));
 
     foreach (TipoContratacao contratacao in Enum.GetValues(typeof(TipoContratacao)))
     {
         foreach (StatusProspeccao status in Enum.GetValues(typeof(StatusProspeccao)))
         {
             var key = contratacao.ToString() + "_" + status.ToString() + "_Ativas";
-            contagem[key] = prospec_ativas.Where(p => FunilHelpers.VerificarContratacao(p, contratacao) &&
+            contagem[key] = prospeccoesAtivas.Where(p => FunilHelpers.VerificarContratacao(p, contratacao) &&
             FunilHelpers.VerificarStatus(p, status)).ToList().Count();
         }
     }
 
-    decimal n_propostas = Prospeccoes.Where(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.ComProposta)).Count();
-    decimal n_propostas_ativas = Prospeccoes.Where(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.ComProposta) &&
-    p.Status.All(s => s.Status < StatusProspeccao.Convertida)).Count();
+    var prospeccoesAvancadas = prospeccoes.Where(
+        p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)).Where(
+            p => p.Status.Any(k => k.Status > StatusProspeccao.ComProposta)).Where(
+                p => (p.Status.First().Data - p.Status.FirstOrDefault(
+                    s => s.Status == StatusProspeccao.ComProposta).Data) > TimeSpan.Zero); // filtrar lista para obter datas positivas (maior que zero)
 
-    decimal n_convertidas = Prospeccoes.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.Convertida)).Count();
-    decimal n_nao_convertidas = Prospeccoes.Where(p => p.Status.Any(s => s.Status ==
-    StatusProspeccao.NaoConvertida)).Count();
-    decimal n_canceladas = Prospeccoes.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.Suspensa)).Count();
-    decimal n_prospeccoes_andamento = Prospeccoes.Count() - n_convertidas - n_nao_convertidas - n_canceladas;
-    decimal n_empresas = prospec_totais.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();
-    decimal n_planejadas = Prospeccoes.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.Planejada)).Count();
+    float numProspeccoesTotais = prospeccoes.Count();
+    float numPropostas = prospeccoes.Count(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.ComProposta));
+    float numPropostasAtivas = prospeccoes.Count(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.ComProposta) && p.Status.All(s => s.Status < StatusProspeccao.Convertida));
+    float numConvertidas = prospeccoes.Count(p => p.Status.Any(s => s.Status == StatusProspeccao.Convertida));
+    float numNaoConvertidas = prospeccoes.Count(p => p.Status.Any(s => s.Status == StatusProspeccao.NaoConvertida));
+    float numCanceladas = prospeccoes.Count(p => p.Status.Any(s => s.Status == StatusProspeccao.Suspensa));
+    float numProspeccoesEmAndamento = numProspeccoesTotais - numConvertidas - numNaoConvertidas - numCanceladas;
+    float numProspeccoesEmAndamentoComProposta = numPropostas - numConvertidas - numNaoConvertidas;
+    float numEmpresas = prospeccoesNaoPlanejadas.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();
+    float numEmpresasAtivas = prospeccoesAtivas.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();
+    float numPlanejadas = prospeccoes.Count(p => p.Status.Any(s => s.Status == StatusProspeccao.Planejada));
+    float numAvancadas = prospeccoesAvancadas.Count();
+    float numConvertidasENaoConvertidas = numConvertidas + numNaoConvertidas;
+    float numInfrutiferas = numCanceladas + numNaoConvertidas;
+    float valorTotalPropostasAtivas = 0;
+    float valorTotalPropostas = 0;
 
-    // Novo Filtro:
-    decimal n_empresas_ativas = prospec_ativas.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();
-    var avancadas = Prospeccoes.Where(p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)).
-    Where(p => p.Status.Any(k => k.Status > StatusProspeccao.ComProposta)). // lista de prospecção (selecionar com proposta)
-    Where(p => (p.Status.First().Data - p.Status.FirstOrDefault(s => s.Status == StatusProspeccao.ComProposta).Data) >
-    TimeSpan.Zero); // filtrar lista para obter datas positivas (maior que zero)
+    double taxaConversao = (numConvertidas / numConvertidasENaoConvertidas);    
+    double taxaInfrutiferas = numInfrutiferas / (numProspeccoesTotais - (numAvancadas - numConvertidas - numNaoConvertidas));
 
-    decimal valor_ativas2 = 0;
-    foreach (Prospeccao prosp in prospec_ativas)
-    { valor_ativas2 += prosp.ValorProposta; }
-
-    if (n_propostas_ativas > 0)
-    { valor_ativas2 = valor_ativas2 / n_propostas_ativas; }
-
-    decimal valor = 0;
-    foreach (Prospeccao prosp in Prospeccoes)
-    {
-        valor += prosp.ValorProposta;
+    foreach (Prospeccao prosp in prospeccoesAtivas)
+    { 
+        valorTotalPropostasAtivas += (float)prosp.ValorProposta; 
     }
 
-    if (n_propostas > 0)
+    if (numPropostasAtivas > 0) { valorTotalPropostasAtivas = valorTotalPropostasAtivas / numPropostasAtivas; }
+
+    foreach (Prospeccao prosp in prospeccoes)
     {
-        valor = valor / n_propostas;
+        valorTotalPropostas += (float)prosp.ValorProposta;
     }
 
-    string valor_ativas = valor_ativas2.ToString("C2");
-    string valor2 = valor.ToString("C2");
-
-    TimeSpan RetonarValorDiferencaTempo(List<Prospeccao> prosps)
+    if (numPropostas > 0)
     {
-        TimeSpan diff;
-        if (prosps.Count() > 0)
-        {
-            diff = prosps.Aggregate(new TimeSpan(0),
-            (inicial, prospeccao) => prospeccao.Status.FirstOrDefault(s => s.Status == StatusProspeccao.ComProposta).Data -
-            prospeccao.Status.First().Data,
-            diff => diff);
-
-            diff = new TimeSpan(diff.Ticks / prosps.Count());
-        }
-        else
-        {
-            diff = new TimeSpan(0);
-        }
-
-        return diff;
+        valorTotalPropostas = valorTotalPropostas / numPropostas;
     }
 
-    TimeSpan DiferencaTodas = RetonarValorDiferencaTempo(avancadas.ToList());
-    TimeSpan DiferencaAtivas = RetonarValorDiferencaTempo(prospec_ativas.Where(s => s.Status.Any(p => p.Status ==
-    StatusProspeccao.ComProposta)).ToList());
+    string valorAtivasString = valorTotalPropostasAtivas.ToString("C2");
+    string valorString = valorTotalPropostas.ToString("C2");
 
+    TimeSpan DiferencaTodas = FunilHelpers.RetornarValorDiferencaTempo(prospeccoesAvancadas.ToList());
+    TimeSpan DiferencaAtivas = FunilHelpers.RetornarValorDiferencaTempo(prospeccoesAtivas.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.ComProposta)).ToList());
 
-    decimal taxa_conversao;
-    try
-    {
-        taxa_conversao = (n_convertidas / (n_convertidas + n_nao_convertidas));
-    }
-    catch (Exception)
-    {
-        taxa_conversao = 1;
-    }
-
-    decimal infrutiferas;
-    try
-    {
-        infrutiferas = (n_canceladas + n_nao_convertidas) / (Prospeccoes.Count() - (avancadas.Count() - n_convertidas -
-        n_nao_convertidas));
-    }
-    catch (Exception)
-    {
-        infrutiferas = 0;
-    }
 }
 
-@if (Prospeccoes.Count() > 1)
+@if (numProspeccoesTotais > 1)
 {
     <div class="pb-4">
         <div class="app-card app-card-chart shadow-sm h-100">
@@ -158,7 +120,7 @@
                 <div class="app-card-body row text-center p-3 p-lg-4">
                     <div class="col-12">
                         <!--[Iury] IDs da checkbox \/ -->
-                    <h1 id="CheckboxProspAtivas1" class="display-3">@n_empresas</h1>
+                    <h1 id="CheckboxProspAtivas1" class="display-3">@numEmpresas</h1>
                         <small id="CheckboxProspAtivas2">Número de empresas prospectadas</small>
                         <hr />
                     </div>
@@ -169,11 +131,11 @@
                     </div>
                     <div class="col-4">
                         <!--[Iury] IDs da checkbox \/ -->
-                    <h4 id="CheckboxProspAtivas4">@prospec_totais.Count()</h4>
+                    <h4 id="CheckboxProspAtivas4">@prospeccoesNaoPlanejadas.Count()</h4>
                         <small id="CheckboxProspAtivas3">Contatos iniciais de prospecção</small>
                     </div>
                     <div class="col-4">
-                        <h4> @infrutiferas.ToString("P2")</h4>
+                        <h4> @taxaInfrutiferas.ToString("P2")</h4>
                         <small>
                             Percentual de prospecções infrutíferas
                         </small>
@@ -211,7 +173,7 @@
             </div>
             <div class="app-card-body row text-center p-3 p-lg-4">
                 <div class="col-12">
-                    <h1 class="display-3">@taxa_conversao.ToString("P2")</h1>
+                    <h1 class="display-3">@taxaConversao.ToString("P2")</h1>
                     <small>
                         Taxa de conversão de prospecções
                     </small>
@@ -219,9 +181,9 @@
                 </div>
                 <div class="col-4">
                     <!-- Quando transformar em calculado, remover o R$-->
-                    @if (valor > 0)
+                    @if (valorTotalPropostas > 0)
                     {
-                        <h4 id="CheckboxProspAtivas5">@valor.ToString("C2")</h4>
+                        <h4 id="CheckboxProspAtivas5">@valorTotalPropostas.ToString("C2")</h4>
                     }
                     else
                     {
@@ -232,13 +194,13 @@
                     </small>
                 </div>
                 <div class="col-4">
-                    <h4 id="CheckboxProspAtivas6">@n_propostas</h4>
+                    <h4 id="CheckboxProspAtivas6">@numPropostas</h4>
                     <small id="CheckboxProspAtivas9">
                         Propostas comerciais enviadas
                     </small>
                 </div>
                 <div class="col-4">
-                    <h4>@n_convertidas</h4>
+                    <h4>@numConvertidas</h4>
                     <small>
                         Projetos contratados
                     </small>
@@ -326,21 +288,21 @@
                 colorByPoint: true,
                 data: [{
                     name: 'Em andamento',
-                    y: @n_prospeccoes_andamento,
+                    y: @numProspeccoesEmAndamento,
                     drilldown: 'andamento'
                 }, {
                     name: 'Convertidas',
-                    y: @n_convertidas,
+                    y: @numConvertidas,
                     drilldown: null
                 },
                 {
                     name: 'Não Convertidas',
-                    y: @n_nao_convertidas,
+                    y: @numNaoConvertidas,
                     drilldown: null
                 },
                 {
                     name: 'Canceladas',
-                    y: @n_canceladas,
+                    y: @numCanceladas,
                     drilldown: null
                 },
                 ],
@@ -352,9 +314,9 @@
                         id: 'andamento',
                         data: [
                             ["Ativas",
-        @(n_prospeccoes_andamento)],
+        @(numProspeccoesEmAndamento)],
                             ["Com proposta",
-        @(n_propostas)]
+        @(numPropostas)]
                         ]
                     }]
             }
@@ -394,14 +356,14 @@
                 colorByPoint: true,
                 data: [{
                     name: 'Em andamento',
-                    y: @(n_propostas - n_convertidas - n_nao_convertidas),
+                    y: @(numProspeccoesEmAndamentoComProposta),
                 }, {
                     name: 'Convertidas',
-                    y: @n_convertidas
-                                }, {
+                    y: @numConvertidas
+                }, {
                     name: 'Não convertidas',
-                    y: @n_nao_convertidas
-                                }]
+                    y: @numNaoConvertidas
+                }]
             }]
         });
 
@@ -428,18 +390,18 @@
 
         function marcada() {
             if (document.getElementById("caixaSelecaoAtivas").checked) {
-                document.getElementById("CheckboxProspAtivas1").innerHTML = @n_empresas_ativas;
-                document.getElementById("CheckboxProspAtivas4").textContent = @prospec_ativas.Count();
-                document.getElementById("CheckboxProspAtivas5").textContent = "@valor_ativas";
-                document.getElementById("CheckboxProspAtivas6").textContent = @n_propostas_ativas;
+                document.getElementById("CheckboxProspAtivas1").innerHTML = @numEmpresasAtivas;
+                document.getElementById("CheckboxProspAtivas4").textContent = @prospeccoesAtivas.Count();
+                document.getElementById("CheckboxProspAtivas5").textContent = "@valorAtivasString";
+                document.getElementById("CheckboxProspAtivas6").textContent = @numPropostasAtivas;
                 document.getElementById("CheckboxProspAtivas7").textContent = "@Math.Abs(DiferencaAtivas.Days) dias";
                 alterarTextos(true)
                 chart1.update({ series: seriesativas });
             } else {
-                document.getElementById("CheckboxProspAtivas1").innerHTML = @n_empresas;
-                document.getElementById("CheckboxProspAtivas4").textContent = @prospec_totais.Count();
-                document.getElementById("CheckboxProspAtivas5").textContent = "@valor2";
-                document.getElementById("CheckboxProspAtivas6").textContent = @n_propostas;
+                document.getElementById("CheckboxProspAtivas1").innerHTML = @numEmpresas;
+                document.getElementById("CheckboxProspAtivas4").textContent = @prospeccoesNaoPlanejadas.Count();
+                document.getElementById("CheckboxProspAtivas5").textContent = "@valorString";
+                document.getElementById("CheckboxProspAtivas6").textContent = @numPropostas;
                 document.getElementById("CheckboxProspAtivas7").textContent = "@Math.Abs(DiferencaTodas.Days) dias";
                 alterarTextos(false)
                 chart1.update({ series: seriespadrao });

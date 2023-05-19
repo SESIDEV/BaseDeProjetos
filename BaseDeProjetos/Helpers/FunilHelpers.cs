@@ -236,6 +236,24 @@ namespace BaseDeProjetos.Helpers
             return lista.Where(producao => producao.Data.Year == Convert.ToInt32(ano)).ToList();
         }
 
+        public static TimeSpan RetornarValorDiferencaTempo(List<Prospeccao> prospeccoes)
+        {
+            TimeSpan intervaloDeTempo;
+            if (prospeccoes.Count() > 0)
+            {
+                intervaloDeTempo = prospeccoes.Aggregate(new TimeSpan(0),
+                (inicial, prospeccao) => prospeccao.Status.FirstOrDefault(s => s.Status == StatusProspeccao.ComProposta).Data - prospeccao.Status.First().Data, diff => diff);
+
+                intervaloDeTempo = new TimeSpan(intervaloDeTempo.Ticks / prospeccoes.Count());
+            }
+            else
+            {
+                intervaloDeTempo = new TimeSpan(0);
+            }
+
+            return intervaloDeTempo;
+        }
+
         public static List<Prospeccao> OrdenarProspecções(string sortOrder, List<Prospeccao> lista)
         {
             var prospeccoes = lista.AsQueryable<Prospeccao>();

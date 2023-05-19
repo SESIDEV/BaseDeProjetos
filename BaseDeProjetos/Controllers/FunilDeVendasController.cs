@@ -217,7 +217,9 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, Empresa, Contato, Casa, CaminhoPasta, Tags, Origem")] Prospeccao prospeccao)
         {
-            if (ModelState.IsValid)
+			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+			if (ModelState.IsValid)
             {
                 try
                 {
@@ -236,10 +238,10 @@ namespace BaseDeProjetos.Controllers
 
                 _context.Add(prospeccao);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
+                return RedirectToAction(nameof(Index), new { casa = usuario.Casa });
             }
             var errors = ModelState.Values.SelectMany(v => v.Errors);
-            return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
+            return RedirectToAction(nameof(Index), new { casa = usuario.Casa });
         }
         private async Task VincularUsuario(Prospeccao prospeccao)
         {
@@ -319,7 +321,9 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Empresa, Contato, Casa, Usuario, MembrosEquipe, ValorProposta, ValorEstimado, Status, CaminhoPasta, Tags, Origem")] Prospeccao prospeccao)
         {
-            if (id != prospeccao.Id)
+			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+			if (id != prospeccao.Id)
             {
                 return NotFound();
             }
@@ -342,7 +346,7 @@ namespace BaseDeProjetos.Controllers
                         throw; // Outro erro de banco, lançar para depuração
                     }
                 }
-                return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
+                return RedirectToAction(nameof(Index), new { casa = usuario.Casa });
             }
             return View(prospeccao);
         }
@@ -392,7 +396,9 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditarFollowUp(int id, [Bind("Id", "OrigemID", "Status", "Anotacoes", "Data", "Vencimento")] FollowUp followup, double valorProposta)
         {
-            if (id != followup.Id)
+			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+			if (id != followup.Id)
             {
                 return NotFound();
             }
@@ -402,7 +408,7 @@ namespace BaseDeProjetos.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction("Index", "FunilDeVendas");
+            return RedirectToAction("Index", "FunilDeVendas", new { casa = usuario.Casa });
         }
 
         // GET: FunilDeVendas/Delete/5
@@ -471,7 +477,7 @@ namespace BaseDeProjetos.Controllers
                 {
                     _context.FollowUp.Remove(followup);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction("Index", "Funil de Vendas");
+                    return RedirectToAction("Index", "Funil de Vendas", new { casa = usuario.Casa });
                 }
                 else
                 {
@@ -499,11 +505,13 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var prospeccao =  _context.Prospeccao.Where(prosp => prosp.Id == id).Include(f => f.Status).First();
+			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+			var prospeccao =  _context.Prospeccao.Where(prosp => prosp.Id == id).Include(f => f.Status).First();
 
             _context.Remove(prospeccao);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
+            return RedirectToAction(nameof(Index), new { casa = usuario.Casa });
         }
         private IActionResult CapturarErro(Exception e)
         {
