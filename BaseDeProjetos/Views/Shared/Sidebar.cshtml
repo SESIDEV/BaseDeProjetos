@@ -165,7 +165,7 @@
 										string casa_nome = Enum.GetName(typeof(Instituto), casa);
 										string id_casa = "collapse_" + casa_nome;
 
-										<li class="submenu-item"><a class="submenu-link" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa_nome">@casa_nome</a></li>
+										<li class="submenu-item"><a class="submenu-link" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa_nome" asp-route-aba="">@casa_nome</a></li>
 									}
 								</ul>
 							</div>
