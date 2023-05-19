@@ -584,10 +584,13 @@ namespace BaseDeProjetos.Controllers
                 dict["Casa"] = p.Casa.GetDisplayName();
                 dict["TipoContratacao"] = p.TipoContratacao.GetDisplayName();
                 dict["LinhaPesquisa"] = p.LinhaPequisa.GetDisplayName();
+                dict["ValorEstimado"] = p.ValorEstimado;
+                dict["ValorProposta"] = p.ValorProposta;
+                dict["ValorFinal"] = p.ValorProposta;
                 
-                if (p.ValorProposta != 0) 
+                if (p.ValorProposta == 0) 
                 {
-                    dict["Valor"] = p.ValorProposta;
+                    dict["ValorFinal"] = p.ValorEstimado;
                 }               
                 
                 listaFull.Add(dict);
