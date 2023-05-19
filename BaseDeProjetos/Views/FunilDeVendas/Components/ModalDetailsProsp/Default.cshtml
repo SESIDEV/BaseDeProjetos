@@ -30,15 +30,22 @@
                 <span>@Model.TipoContratacao.GetDisplayName()</span>
                 <h1 class="app-card-title">Status:</h1>
                 <span>@Model.Status.OrderBy(followup => followup.Data).Last().Status.GetDisplayName()</span>
-                <h1 class="app-card-title">Valor:</h1>
+                <h1 class="app-card-title">Valor Estimado:</h1>
+                <nobr>
+                    @if (Model.ValorEstimado != 0)
+                    {
+                        <span>R$ @Helpers.FormatarValoresDashboards((decimal)Model.ValorEstimado)</span>
+                    }
+                    else
+                    {
+                        <span>Valor não informado</span>
+                    }
+                </nobr>
+                <h1 class="app-card-title">Valor Proposta:</h1>
                 <nobr>
                     @if (Model.ValorProposta != 0)
                     {
                         <span>R$ @Helpers.FormatarValoresDashboards((decimal)Model.ValorProposta)</span>
-                    }
-                    else if (Model.ValorEstimado != 0)
-                    {
-                        <span>R$ @Helpers.FormatarValoresDashboards((decimal)Model.ValorEstimado)</span>
                     }
                     else
                     {
