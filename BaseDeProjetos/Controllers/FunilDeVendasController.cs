@@ -577,11 +577,9 @@ namespace BaseDeProjetos.Controllers
         }
 
         [AllowAnonymous]
-        public ActionResult PuxarDadosProspeccoes(string casa = "ISIQV")
+        public ActionResult PuxarDadosProspeccoes()
         {
-            Instituto casa_ = (Instituto)Enum.Parse(typeof(Instituto), casa);
-
-            List<Prospeccao> lista_prosp = _context.Prospeccao.Where(p => p.Casa == casa_).ToList();
+            List<Prospeccao> lista_prosp = _context.Prospeccao.ToList();
 
             List<Dictionary<string, object>> listaFull = new List<Dictionary<string, object>>();
 
@@ -608,6 +606,7 @@ namespace BaseDeProjetos.Controllers
                 dict["Segmento"] = p.Empresa.Segmento.GetDisplayName();
                 dict["Estado"] = p.Empresa.Estado.GetDisplayName();
                 dict["Casa"] = p.Casa.GetDisplayName();
+                dict["Origem"] = p.Origem.GetDisplayName();
                 dict["TipoContratacao"] = p.TipoContratacao.GetDisplayName();
                 dict["LinhaPesquisa"] = p.LinhaPequisa.GetDisplayName();
                 dict["ValorEstimado"] = p.ValorEstimado;
