@@ -24,12 +24,10 @@
         }
     }
 
-    var prospeccoesAtivas = prospeccoes.Where(
-        p => p.Status.OrderBy(k => k.Data).All(
-            f => f.Status == StatusProspeccao.ContatoInicial || f.Status == StatusProspeccao.Discussao_EsbocoProjeto || f.Status == StatusProspeccao.ComProposta));
-
-    var prospeccoesNaoPlanejadas = prospeccoes.Where(
-        p => p.Status.OrderBy(k => k.Data).Any(f => f.Status != StatusProspeccao.Planejada));
+    var prospeccoesAtivas = ViewData["ProspeccoesAtivas"] as List<Prospeccao>;
+    var prospeccoesTotais = ViewData["ProspeccoesTotais"] as List<Prospeccao>;
+    var prospeccoesNaoPlanejadas = ViewData["ProspeccoesNaoPlanejadas"] as List<Prospeccao>;
+    var prospeccoesAvancadas = ViewData["ProspeccoesAvancadas"] as List<Prospeccao>;
 
     foreach (TipoContratacao contratacao in Enum.GetValues(typeof(TipoContratacao)))
     {
@@ -40,12 +38,6 @@
             FunilHelpers.VerificarStatus(p, status)).ToList().Count();
         }
     }
-
-    var prospeccoesAvancadas = prospeccoes.Where(
-        p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)).Where(
-            p => p.Status.Any(k => k.Status > StatusProspeccao.ComProposta)).Where(
-                p => (p.Status.First().Data - p.Status.FirstOrDefault(
-                    s => s.Status == StatusProspeccao.ComProposta).Data) > TimeSpan.Zero); // filtrar lista para obter datas positivas (maior que zero)
 
     float numProspeccoesTotais = prospeccoes.Count();
     float numPropostas = prospeccoes.Count(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.ComProposta));

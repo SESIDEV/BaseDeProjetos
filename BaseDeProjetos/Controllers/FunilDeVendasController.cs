@@ -58,9 +58,22 @@ namespace BaseDeProjetos.Controllers
                     FunilHelpers.CategorizarProspecçõesNaView(prospeccoes, usuario, aba, HttpContext, ViewBag);
                 }
                 
-                ViewData["ListaProspeccoes"] = prospeccoes.ToList();
-                ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-                ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
+                if (string.IsNullOrEmpty(aba))
+                {
+                    ViewData["ListaProspeccoes"] = prospeccoes.ToList();
+                    ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+                    ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
+                    ViewData["ProspeccoesAtivas"] = prospeccoes.Where(
+                        p => p.Status.OrderBy(k => k.Data).All(
+                            pa => pa.Status == StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto || pa.Status == StatusProspeccao.ComProposta)).ToList();
+                    ViewData["ProspeccoesTotais"] = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(pa => pa.Status != StatusProspeccao.Planejada)).ToList();
+                    ViewData["ProspeccoesNaoPlanejadas"] = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(f => f.Status != StatusProspeccao.Planejada)).ToList();
+                    ViewData["ProspeccoesAvancadas"] = prospeccoes.Where(
+                        p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)).Where(
+                            p => p.Status.Any(k => k.Status > StatusProspeccao.ComProposta)).Where(
+                                p => (p.Status.First().Data - p.Status.FirstOrDefault(
+                                    s => s.Status == StatusProspeccao.ComProposta).Data) > TimeSpan.Zero).ToList(); // filtrar lista para obter datas positivas (maior que zero)
+                }      
 
                 return View();
             }
