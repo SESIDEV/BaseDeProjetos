@@ -593,6 +593,7 @@ namespace BaseDeProjetos.Controllers
                 dict["Segmento"] = p.Empresa.Segmento.GetDisplayName();
                 dict["Estado"] = p.Empresa.Estado.GetDisplayName();
                 dict["Casa"] = p.Casa.GetDisplayName();
+                dict["Origem"] = p.Origem.GetDisplayName();
                 dict["TipoContratacao"] = p.TipoContratacao.GetDisplayName();
                 dict["LinhaPesquisa"] = p.LinhaPequisa.GetDisplayName();
                 dict["ValorEstimado"] = p.ValorEstimado;
