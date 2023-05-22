@@ -596,10 +596,10 @@ namespace BaseDeProjetos.Controllers
                 dict["Estado"] = p.Empresa.Estado.GetDisplayName();
                 dict["Casa"] = p.Casa.GetDisplayName();
                 dict["TipoContratacao"] = p.TipoContratacao.GetDisplayName();
-                dict["LinhaPesquisa"] = p.LinhaPequisa.GetDisplayName();
                 dict["ValorEstimado"] = p.ValorEstimado;
                 dict["ValorProposta"] = p.ValorProposta;
                 dict["ValorFinal"] = p.ValorProposta;
+                dict["LinhaPesquisa"] = p.LinhaPequisa.GetDisplayName();
                 
                 if (p.ValorProposta == 0) 
                 {
