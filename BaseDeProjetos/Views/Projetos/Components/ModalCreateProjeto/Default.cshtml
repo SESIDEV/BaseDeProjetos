@@ -1,4 +1,4 @@
-﻿@model BaseDeProjetos.Models.Projeto
+@model BaseDeProjetos.Models.Projeto
 @using Microsoft.AspNetCore.Http
 @{
     ViewData["Title"] = "Adicionar Projeto";
@@ -14,7 +14,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modalCreateProjeto">Criar Novo Projeto</h1>
+                    <h1 class="modal-title fs-5" id="modalCreateProjeto">Dados gerais do projeto</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -105,7 +105,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modalCreateProjeto2">Criar Novo Projeto</h1>
+                    <h1 class="modal-title fs-5" id="modalCreateProjeto2">Dados contábeis do projeto</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -178,8 +178,6 @@
                 <div class="modal-footer">
                     <button type="button" class="btn app-btn-primary"
                         onclick="criarListaDeUsuarios.exibirMembrosSelecionados()">Adicionar</button>
-                    @*<button type="button" class="btn app-btn-secondary" data-bs-dismiss="modal"
-                        onclick="enviarMembrosParaInput()">Enviar</button>*@
                 </div>
             </div>
         </div>
