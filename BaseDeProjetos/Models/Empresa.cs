@@ -21,6 +21,9 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Estado da Empresa")]
         public virtual Estado Estado { get; set; }
 
+        [Display(Name = "Enquadramento CNAE")]
+        public bool Industrial { get; set; }
+
         public string EmpresaUnique
         {
             get => Nome + " - [" + CNPJ + "]";

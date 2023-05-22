@@ -41,20 +41,25 @@
                         @foreach (var prospeccao in Model)
                         {
                             <tr id="table-row-@prospeccao.Id">
-                                @if (prospeccao.Empresa.Logo != null)
-                                {
-                                    <td class="cell">
-                                        <img loading="lazy" src="@prospeccao.Empresa.Logo" id="logoEmpresa" alt="Logo da Empresa"
-                                             style="background-color:white">
-                                    </td>
-                                }
-                                else
-                                {
-                                    <td class="cell">
+                                <td class="cell">
+                                    @if (prospeccao.Empresa.Logo != null)
+                                    {
+                                        <img loading="lazy" src="@prospeccao.Empresa.Logo" id="logoEmpresa" alt="Logo da Empresa" style="background-color:white">
+                                    }
+                                    else
+                                    {
                                         <nobr id="logo_alt">Sem Logo</nobr>
-                                    </td>
-                                }
-                                <td class="cell">@prospeccao.Empresa.Nome</td> @*Empresa*@
+                                    }
+                                    @if (prospeccao.Empresa.Industrial == true)
+                                    {
+                                        <span class="translate-middle badge rounded-circle bg-danger" data-tippy-content="Esta empresa não possui CNAE Industrial">!</span>
+                                    }
+                                </td>
+                                <td class="cell">
+                                    <div>
+                                        @prospeccao.Empresa.Nome @*Empresa*@
+                                    </div>
+                                </td>
                                 <td class="cell">
                                     <div style="width: 40px; height: 40px;" class="position-relative">
                                         @if (prospeccao.Status.OrderBy(p => p.Data).First().Status == StatusProspeccao.Planejada)
