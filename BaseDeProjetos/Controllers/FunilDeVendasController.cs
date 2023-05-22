@@ -595,11 +595,12 @@ namespace BaseDeProjetos.Controllers
                 dict["Segmento"] = p.Empresa.Segmento.GetDisplayName();
                 dict["Estado"] = p.Empresa.Estado.GetDisplayName();
                 dict["Casa"] = p.Casa.GetDisplayName();
+                dict["ValEstimado"] = p.ValorEstimado;
                 dict["TipoContratacao"] = p.TipoContratacao.GetDisplayName();
-                dict["ValorEstimado"] = p.ValorEstimado;
-                dict["ValorProposta"] = p.ValorProposta;
-                dict["ValorFinal"] = p.ValorProposta;
+                dict["ValProposta"] = p.ValorProposta;
                 dict["LinhaPesquisa"] = p.LinhaPequisa.GetDisplayName();
+                dict["ValFinal"] = p.ValorProposta;
+                
                 
                 if (p.ValorProposta == 0) 
                 {
