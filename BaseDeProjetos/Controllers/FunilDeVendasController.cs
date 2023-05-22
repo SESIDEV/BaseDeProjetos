@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -57,12 +57,14 @@ namespace BaseDeProjetos.Controllers
                 {
                     FunilHelpers.CategorizarProspecçõesNaView(prospeccoes, usuario, aba, HttpContext, ViewBag);
                 }
-                
+
+
+                ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+                ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
+
                 if (string.IsNullOrEmpty(aba))
                 {
                     ViewData["ListaProspeccoes"] = prospeccoes.ToList();
-                    ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-                    ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
                     ViewData["ProspeccoesAtivas"] = prospeccoes.Where(
                         p => p.Status.OrderBy(k => k.Data).All(
                             pa => pa.Status == StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto || pa.Status == StatusProspeccao.ComProposta)).ToList();
