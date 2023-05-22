@@ -564,11 +564,21 @@ namespace BaseDeProjetos.Controllers
         }
 
         [AllowAnonymous]
-        public ActionResult PuxarDadosProspeccoes(string casa = "ISIQV")
+        public ActionResult PuxarDadosProspeccoes(int casa = 0)
         {
-            Instituto casa_ = (Instituto)Enum.Parse(typeof(Instituto), casa);
+            Instituto isi = (Instituto)Enum.Parse(typeof(Instituto), "ISIQV");
+            Instituto cis = (Instituto)Enum.Parse(typeof(Instituto), "CISHO");
 
-            List<Prospeccao> lista_prosp = _context.Prospeccao.Where(p => p.Casa == casa_).ToList();
+            List<Prospeccao> lista_prosp = new List<Prospeccao>();
+
+            switch(casa){
+                case 0:
+                    lista_prosp = _context.Prospeccao.Where(p => p.Casa == isi).ToList();
+                    break;
+                case 1:
+                    lista_prosp = _context.Prospeccao.Where(p => p.Casa == cis).ToList();
+                    break;
+            }
 
             List<Dictionary<string, object>> listaFull = new List<Dictionary<string, object>>();
 
