@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -268,8 +268,11 @@ namespace BaseDeProjetos.Controllers
                 _context.Add(projeto);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
+            } 
+            else
+            {
+                return NotFound();
             }
-            return View(projeto);
         }
 
         // GET: Projetos/Edit/5
