@@ -34,6 +34,18 @@
         crossorigin="anonymous"></script>
     <script src="~/plugins/popper.min.js"></script>
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <!-- Include tippy.js JavaScript -->
+    <script src="https://unpkg.com/%40popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.2/dist/tippy-bundle.umd.min.js"></script>
+
+    <!-- Initialize tooltips -->
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        tippy('[data-tippy-content]', {
+        placement: 'top'
+        });
+    });
+    </script>
 </head>
 
 <body class="app">

@@ -3,14 +3,16 @@ using System;
 using BaseDeProjetos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BaseDeProjetos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230522161015_CnaeIndustrial")]
+    partial class CnaeIndustrial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -332,48 +334,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasIndex("ProponenteId");
 
                     b.ToTable("Projeto");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.ProjetoIndicadores", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
-
-                    b.Property<bool>("Bolsista")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("ComprasMaterial")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("ComprasServico")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("IdProjeto")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
-
-                    b.Property<bool>("PrestacaoContas")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("Regramento")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("Relatorios")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("Repasse")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("SatisfacaoFimProjeto")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("SatisfacaoMetadeProjeto")
-                        .HasColumnType("tinyint(1)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdProjeto");
-
-                    b.ToTable("ProjetoIndicadores");
                 });
 
             modelBuilder.Entity("BaseDeProjetos.Models.Prospeccao", b =>
@@ -730,13 +690,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasOne("BaseDeProjetos.Models.Empresa", "Proponente")
                         .WithMany()
                         .HasForeignKey("ProponenteId");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.ProjetoIndicadores", b =>
-                {
-                    b.HasOne("BaseDeProjetos.Models.Projeto", "Projeto")
-                        .WithMany("Indicadores")
-                        .HasForeignKey("IdProjeto");
                 });
 
             modelBuilder.Entity("BaseDeProjetos.Models.Prospeccao", b =>
