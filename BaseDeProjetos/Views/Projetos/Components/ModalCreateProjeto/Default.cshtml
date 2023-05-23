@@ -1,7 +1,8 @@
-@model BaseDeProjetos.Models.Projeto
+﻿@model BaseDeProjetos.Models.Projeto
 @using Microsoft.AspNetCore.Http
 @{
     ViewData["Title"] = "Adicionar Projeto";
+    var nivelUsuario = ViewData["NivelUsuario"];
     if (!(Context.Session.GetString("_Casa") is null))
     {
         ViewData["Area"] = Context.Session.GetString("_Casa");
@@ -47,7 +48,7 @@
 
                     <div class="form-group">
                         <label asp-for="NomeProjeto" class="control-label"></label>
-                        <input asp-for="NomeProjeto" class="form-control" />
+                        <input asp-for="NomeProjeto" class="form-control" id="nomeProjeto" />
                         <span asp-validation-for="NomeProjeto" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -95,10 +96,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-target="#modalCreateProjeto2"
-                            data-bs-toggle="modal">
-                        Próximo
-                    </button>
+                    <button type="button" class="btn app-btn-primary" data-bs-target="#modalCreateProjeto2"
+                        data-bs-toggle="modal">Próximo</button>
                     @*<input type="submit" value="Concluir" class="btn app-btn-primary">*@
                 </div>
             </div>
@@ -146,7 +145,94 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-target="#modalCreateProjeto"
+                    <button type="button" class="btn app-btn-primary" data-bs-target="#modalCreateProjeto"
+                        data-bs-toggle="modal">Anterior</button>
+                    <!-- Apenas PMO, Dev ou Supervisor podem manipular essas informações -->
+                    @if (nivelUsuario.ToString() == "PMO" || nivelUsuario.ToString() == "Dev" || nivelUsuario.ToString() == "Supervisor")
+                    {
+                        <button type="button" class="btn app-btn-primary" data-bs-target="#modalCreateProjeto3"
+                                data-bs-toggle="modal" onclick="repopularnomeprojeto()">
+                            Próximo
+                        </button>
+                    }
+                    else
+                    {
+                        <input type="submit" value="Concluir" class="btn app-btn-primary">
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (nivelUsuario.ToString() == "PMO" || nivelUsuario.ToString() == "Dev" || nivelUsuario.ToString() == "Supervisor")
+    {
+    <div class="modal fade" id="modalCreateProjeto3" aria-hidden="true" aria-labelledby="modalCreateProjetoLabel3"
+        tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="modalCreateProjeto3">Quais indicadores estão válidos?</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label asp-for="NomeProjeto" class="control-label"></label>
+                            <input class="form-control" id="repopularNomeProjeto" readonly />
+                            <span asp-validation-for="NomeProjeto" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Indicadores[0].IdProjeto" class="control-label"></label>
+                            <input asp-for="Indicadores[0].IdProjeto" class="form-control" value="@unique_id" readonly />
+                            <span asp-validation-for="Indicadores[0].IdProjeto" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Indicadores[0].Id" class="control-label"></label>
+                            @{
+                                var unique_id_indicadores = $"proj_ind_{Guid.NewGuid()}";
+                            }
+                            <input asp-for="Indicadores[0].Id" class="form-control" value="@unique_id_indicadores" readonly />
+                        <span asp-validation-for="Indicadores[0].Id" class="text-danger"></span>
+                        </div>
+                        <hr />
+                        <h5>Indicadores:</h5>
+                        <div class="form-check">
+                            <input asp-for="Indicadores[0].Bolsista" class="form-check-input" type="checkbox" id="checkBolsista"/>
+                            <label asp-for="Indicadores[0].Bolsista" class="form-check-label" for="checkBolsista"></label>
+                        </div>
+                        <div class="form-check">
+                            <input asp-for="Indicadores[0].ComprasMaterial" class="form-check-input" type="checkbox" id="checkComprasMaterial" />
+                            <label asp-for="Indicadores[0].ComprasMaterial" class="form-check-label" for="checkComprasMaterial"></label>
+                        </div>
+                        <div class="form-check">
+                            <input asp-for="Indicadores[0].ComprasServico" class="form-check-input" type="checkbox" id="checkComprasServico" />
+                            <label asp-for="Indicadores[0].ComprasServico" class="form-check-label" for="checkComprasServico"></label>
+                        </div>
+                        <div class="form-check">
+                            <input asp-for="Indicadores[0].PrestacaoContas" class="form-check-input" type="checkbox" id="checkPrestacaoContas" />
+                            <label asp-for="Indicadores[0].PrestacaoContas" class="form-check-label" for="checkPrestacaoContas"></label>
+                        </div>
+                        <div class="form-check">
+                            <input asp-for="Indicadores[0].Regramento" class="form-check-input" type="checkbox" id="checkRegramento" />
+                            <label asp-for="Indicadores[0].Regramento" class="form-check-label" for="checkRegramento"></label>
+                        </div>
+                        <div class="form-check">
+                            <input asp-for="Indicadores[0].Relatorios" class="form-check-input" type="checkbox" id="checkRelatorios" />
+                            <label asp-for="Indicadores[0].Relatorios" class="form-check-label" for="checkRelatorios"></label>
+                        </div>
+                        <div class="form-check">
+                            <input asp-for="Indicadores[0].Repasse" class="form-check-input" type="checkbox" id="checkRepasse" />
+                            <label asp-for="Indicadores[0].Repasse" class="form-check-label" for="checkRepasse"></label>
+                        </div>
+                        <div class="form-check">
+                            <input asp-for="Indicadores[0].SatisfacaoMetadeProjeto" class="form-check-input" type="checkbox" id="checkSatisfacaoMetadeProjeto" />
+                            <label asp-for="Indicadores[0].SatisfacaoMetadeProjeto" class="form-check-label" for="checkSatisfacaoMetadeProjeto"></label>
+                        </div>
+                        <div class="form-check">
+                            <input asp-for="Indicadores[0].SatisfacaoFimProjeto" class="form-check-input" type="checkbox" id="checkSatisfacaoFimProjeto" />
+                            <label asp-for="Indicadores[0].SatisfacaoFimProjeto" class="form-check-label" for="checkSatisfacaoFimProjeto"></label>
+                        </div>                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn app-btn-primary" data-bs-target="#modalCreateProjeto2"
                             data-bs-toggle="modal">
                         Anterior
                     </button>
@@ -155,6 +241,7 @@
             </div>
         </div>
     </div>
+    }
 
     <div class="modal fade" id="modalMembrosEquipe" tabindex="-1" aria-labelledby="modalMembrosEquipeLabel"
          aria-hidden="true">
@@ -197,5 +284,5 @@
     let dnd = new DragAndDrop();
     let criarListaDeUsuarios = new ObterListaDeUsuariosJson();
     criarListaDeUsuarios.enviarMembrosParaInput();
-    criarListaDeUsuarios.exibirMembrosSelecionados();
+    criarListaDeUsuarios.exibirMembrosSelecionados();    
 </script>
