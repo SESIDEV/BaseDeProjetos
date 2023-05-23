@@ -13,7 +13,7 @@ namespace BaseDeProjetos.Models
 
         public Projeto(ProjetoIndicadores indicador)
         {
-            Indicadores = new List<ProjetoIndicadores> { indicador };
+            Indicadores = new List<ProjetoIndicadores>() { indicador };
         }
 
         [Key]
@@ -59,6 +59,6 @@ namespace BaseDeProjetos.Models
 
         public virtual Instituto Casa { get; set; }
 
-        public virtual List<ProjetoIndicadores> Indicadores { get; set; } = new List<ProjetoIndicadores> { new ProjetoIndicadores() };
+        public virtual List<ProjetoIndicadores> Indicadores { get; set; } = new List<ProjetoIndicadores>();
     }
 }
