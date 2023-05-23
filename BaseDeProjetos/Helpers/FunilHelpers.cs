@@ -242,7 +242,16 @@ namespace BaseDeProjetos.Helpers
             if (prospeccoes.Count() > 0)
             {
                 intervaloDeTempo = prospeccoes.Aggregate(new TimeSpan(0),
-                (inicial, prospeccao) => prospeccao.Status.FirstOrDefault(s => s.Status == StatusProspeccao.ComProposta).Data - prospeccao.Status.First().Data, diff => diff);
+                    (inicial, prospeccao) =>
+                    {
+                        var contatoInicialStatus = prospeccao.Status.FirstOrDefault(s => s.Status == StatusProspeccao.ContatoInicial);
+                        var comPropostaStatus = prospeccao.Status.FirstOrDefault(s => s.Status == StatusProspeccao.ComProposta);
+
+                        if (contatoInicialStatus != null && comPropostaStatus != null)
+                            return inicial + (comPropostaStatus.Data - contatoInicialStatus.Data);
+
+                        return inicial;
+                    }, diff => diff);
 
                 intervaloDeTempo = new TimeSpan(intervaloDeTempo.Ticks / prospeccoes.Count());
             }

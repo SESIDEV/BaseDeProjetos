@@ -1,6 +1,7 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BaseDeProjetos.ViewComponents.ProjetoViewComponents
@@ -9,7 +10,7 @@ namespace BaseDeProjetos.ViewComponents.ProjetoViewComponents
     {
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            return View(new Projeto());
+            return View(new Projeto(new ProjetoIndicadores()));
         }
     }
 }
