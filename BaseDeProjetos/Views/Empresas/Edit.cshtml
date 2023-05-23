@@ -29,7 +29,7 @@ addEventListener("load", () => {MostrarImagem();});
             </div>
             <div class="form-group">
                 <label class="control-label">Nome Fantasia</label>
-                <input id="NomeFantasiaEmpresa" class="form-control" value="" readonly/>
+                <input asp-for="NomeFantasia" id="NomeFantasiaEmpresa" class="form-control" value="" required/>
             </div>
             <div>
                 <label asp-for="Estado" class="control-label"></label>
