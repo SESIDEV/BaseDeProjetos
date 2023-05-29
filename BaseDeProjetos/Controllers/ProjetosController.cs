@@ -454,6 +454,18 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+
+        // POST
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletarMacroentrega(string id)
+        {
+            ProjetoIndicadores indicador = await _context.ProjetoIndicadores.FindAsync(id);
+            _context.ProjetoIndicadores.Remove(indicador);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
         // POST: Projetos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
