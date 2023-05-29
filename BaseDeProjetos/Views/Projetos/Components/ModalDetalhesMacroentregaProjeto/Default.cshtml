@@ -1,0 +1,155 @@
+﻿@model BaseDeProjetos.Models.Projeto
+@using Microsoft.AspNetCore.Http
+@using System.Globalization
+
+@{
+    var nivelUsuario = ViewData["NivelUsuario"];
+    ViewData["Title"] = "Edit";
+    if (!(Context.Session.GetString("_Casa") is null))
+    {
+        ViewData["Area"] = Context.Session.GetString("_Casa");
+    }
+}
+<!-- Modal -->
+<div class="modal fade" id="detalhesMacroentregaProjetoModal-@Model.Id" aria-hidden="true"
+     aria-labelledby="#detalhesMacroentregaProjetoModal-@Model.Id-Label" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="detalhesMacroentregaProjetoModal-@Model.Id-Label2">
+                    Adicionar indicadores para nova macroentrega
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="accordion" id="accordionFlushMacroentrega">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingOne">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                Dados do Projeto
+                            </button>
+                        </h2>
+                        <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushMacroentrega">
+                            <div class="accordion-body">
+                                <div class="form-group">
+                                    <label asp-for="Id" class="control-label"></label>
+                                    <input type="text" class="form-control" value="@Model.Id" readonly />
+                                </div>
+                                <div class="form-group">
+                                    <label> Nome do Projeto </label>
+                                    <input type="text" class="form-control" value="@Model.NomeProjeto" readonly />
+                                </div>
+                                <div class="form-group">
+                                    <label> Area de Pesquisa </label>
+                                    <input type="text" class="form-control" value="@Model.AreaPesquisa.GetDisplayName()" readonly />
+                                </div>
+                                <div class="form-group">
+                                    <label> Casa </label>
+                                    <input type="text" class="form-control" value="@Model.Casa" readonly />
+                                </div>
+                                <div class="form-group">
+                                    <label> Data de Inicio</label>
+                                    <input type="text" class="form-control" value="@Model.DataInicio.ToString("dd/MM/yyyy")" readonly />
+                                </div>
+                                <div class="form-group">
+                                    <label> Data de Encerramento </label>
+                                    <input type="text" class="form-control" value="@Model.DataEncerramento.ToString("dd/MM/yyyy")" readonly />
+                                </div>
+                                <div class="form-group">
+                                    <label> Empresa </label>
+                                    <input type="text" class="form-control" value="@Model.Empresa.Nome" readonly />
+                                </div>
+                                <div class="form-group">
+                                    <label> Estado </label>
+                                    <input type="text" class="form-control" value="@Model.Estado.GetDisplayName()" readonly />
+                                </div>
+                                <div class="form-group">
+                                    <label> Fonte de Fomento </label>
+                                    <input type="text" class="form-control" value="@Model.FonteFomento.GetDisplayName()" readonly />
+                                </div>
+                                <div class="form-group">
+                                    <label> Inovação </label>
+                                    <input type="text" class="form-control" value="@Model.Inovacao.GetDisplayName()" readonly />
+                                </div>
+                                <div class="form-group">
+                                    <label> Status do Projeto </label>
+                                    <input type="text" class="form-control" value="@Model.Status.GetDisplayName()" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                @if (Model.Indicadores != null && Model.Indicadores.Count > 0)
+                {
+                    int i = 1;
+                    foreach (var macroEntrega in @Model.Indicadores)
+                    {
+                        <div class="accordion" id="accordionIndicadoresProjeto-@macroEntrega.Id">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="heading@(macroEntrega.Id)">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse@(macroEntrega.Id)" aria-expanded="true" aria-controls="collapse@(macroEntrega.Id)">
+                                        Macroentrega @i
+                                    </button>
+                                </h2>
+                                <div id="collapse@(macroEntrega.Id)" class="accordion-collapse collapse" data-bs-parent="#accordionIndicadoresProjeto-@macroEntrega.Id">
+                                    <div class="accordion-body">
+                                        <div class="form-group">
+                                            <label class="control-label"> ID da macroentrega</label>
+                                            <input readonly asp-for="@macroEntrega.Id" class="form-control" />
+                                            <span asp-validation-for="@macroEntrega.Id" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-check">
+                                            <input readonly asp-for="@macroEntrega.Bolsista" class="form-check-input" type="checkbox" id="checkBolsista" />
+                                            <label asp-for="@macroEntrega.Bolsista" class="form-check-label"></label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input readonly asp-for="@macroEntrega.ComprasMaterial" class="form-check-input" type="checkbox" id="checkComprasMaterial" />
+                                            <label asp-for="@macroEntrega.ComprasMaterial" class="form-check-label" for="checkComprasMaterial"></label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input readonly asp-for="@macroEntrega.ComprasServico" class="form-check-input" type="checkbox" id="checkComprasServico" />
+                                            <label asp-for="@macroEntrega.ComprasServico" class="form-check-label"></label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input readonly asp-for="@macroEntrega.PrestacaoContas" class="form-check-input" type="checkbox" id="checkPrestacaoContas" />
+                                            <label asp-for="@macroEntrega.PrestacaoContas" class="form-check-label"></label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input readonly asp-for="@macroEntrega.Regramento" class="form-check-input" type="checkbox" id="checkRegramento" />
+                                            <label asp-for="@macroEntrega.Regramento" class="form-check-label"></label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input readonly asp-for="@macroEntrega.Relatorios" class="form-check-input" type="checkbox" id="checkRelatorios" />
+                                            <label asp-for="@macroEntrega.Relatorios" class="form-check-label" for="checkRelatorios"></label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input readonly asp-for="@macroEntrega.Repasse" class="form-check-input" type="checkbox" id="checkRepasse" />
+                                            <label asp-for="@macroEntrega.Repasse" class="form-check-label" for="checkRepasse"></label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input readonly asp-for="@macroEntrega.SatisfacaoMetadeProjeto" class="form-check-input" type="checkbox" id="checkSatisfacaoMetadeProjeto" />
+                                            <label asp-for="@macroEntrega.SatisfacaoMetadeProjeto" class="form-check-label" for="checkSatisfacaoMetadeProjeto"></label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input readonly asp-for="@macroEntrega.SatisfacaoFimProjeto" class="form-check-input" type="checkbox" id="checkSatisfacaoFimProjeto" />
+                                            <label asp-for="@macroEntrega.SatisfacaoFimProjeto" class="form-check-label" for="checkSatisfacaoFimProjeto"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        i++;
+                    }
+                }
+            </div>
+            <div class="modal-footer">
+                <input type="submit" class="btn-submit btn app-btn-primary">
+            </div>
+        </div>
+    </div>
+</div>
+
+
