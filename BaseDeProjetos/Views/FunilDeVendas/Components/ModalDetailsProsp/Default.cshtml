@@ -8,17 +8,13 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="modalDetalhes-@Model.Id-Label">Detalhes da Prospecção</h1>
-                <ul class="notification-meta list-inline mb-0">
-                    <li class="list-inline-item">
-                        <nobr>Id: @Model.Id</nobr>
-                    </li>
-                </ul>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body d-flex flex-column gap-1">
+                <h1 class="app-card-title">ID da Prospecção:</h1>
+                <span>@Model.Id</span>
                 <h1 class="app-card-title">Empresa:</h1>
                 <span>@Model.Empresa.Nome</span>
-                <br>
                 <h1 class="app-card-title">Líder</h1>
                 @if (Model.Usuario != null)
                 {
@@ -28,19 +24,14 @@
                 {
                     <span>Sem Líder</span>
                 }
-                <br>
                 <h1 class="app-card-title">Nome:</h1>
                 <span>@Model.NomeProspeccao</span>
-                <br>
                 <h1 class="app-card-title">Origem:</h1>
                 <span>@Model.Origem.GetDisplayName()</span>
-                <br>
                 <h1 class="app-card-title">Tipo de Contratação:</h1>
                 <span>@Model.TipoContratacao.GetDisplayName()</span>
-                <br>
                 <h1 class="app-card-title">Status:</h1>
                 <span>@Model.Status.OrderBy(followup => followup.Data).Last().Status.GetDisplayName()</span>
-                <br>
                 <h1 class="app-card-title">Valor Estimado:</h1>
                 <nobr>
                     @if (Model.ValorEstimado != 0)
@@ -52,7 +43,6 @@
                         <span>Valor não informado</span>
                     }
                 </nobr>
-                <br>
                 <h1 class="app-card-title">Valor Proposta:</h1>
                 <nobr>
                     @if (Model.ValorProposta != 0)
@@ -67,7 +57,6 @@
                 <hr>
                 <h1 class="app-card-title">Último Status:</h1>
                 <span>@Model.Status.OrderBy(p => p.Data).Last().Anotacoes</span>
-                <br>
                 <p>Data: @Model.Status.OrderBy(p => p.Data).Last().Data.ToString("dd/MM/yyyy",
                     CultureInfo.CreateSpecificCulture("pt-BR"))</p>
             </div>
