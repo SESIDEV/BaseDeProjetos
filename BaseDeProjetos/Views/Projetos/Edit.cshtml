@@ -110,19 +110,19 @@
                 </fieldset>
                 @* Estes campos serão utlizados futuramente, favor não apagar!
                 <fieldset>
-                    <legend>Equipe</legend>
-                    <div class="form-group">
-                        <label class="control-label"> Líder do Projeto</label>
-                        <select asp-for="Equipe[0].Id" class="form-control" asp-items="@ViewData["Equipe"] as SelectList">
-                            <option value="@(Model.Equipe.Count > 0?Model.Equipe[0].Id : "-1")" selected disabled> @Model.Equipe[0].UserName</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label"> Vice-Líder do Projeto</label>
-                        <select asp-for="Equipe[1].Id" class="form-control" asp-items="@ViewData["Equipe"] as SelectList">
-                            <option value="@(Model.Equipe.Count > 1?Model.Equipe[1].Id : "-1")" selected disabled> @Model.Equipe[1].UserName</option>
-                        </select>
-                    </div>
+                <legend>Equipe</legend>
+                <div class="form-group">
+                <label class="control-label"> Líder do Projeto</label>
+                <select asp-for="Equipe[0].Id" class="form-control" asp-items="@ViewData["Equipe"] as SelectList">
+                <option value="@(Model.Equipe.Count > 0?Model.Equipe[0].Id : "-1")" selected disabled> @Model.Equipe[0].UserName</option>
+                </select>
+                </div>
+                <div class="form-group">
+                <label class="control-label"> Vice-Líder do Projeto</label>
+                <select asp-for="Equipe[1].Id" class="form-control" asp-items="@ViewData["Equipe"] as SelectList">
+                <option value="@(Model.Equipe.Count > 1?Model.Equipe[1].Id : "-1")" selected disabled> @Model.Equipe[1].UserName</option>
+                </select>
+                </div>
                 </fieldset>
                 *@
             </div>

@@ -1,8 +1,8 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Projeto>
 @{
-    ViewData["Title"] = "Projetos";
-    List<Projeto> ativos = ViewBag.Ativos as List<Projeto>;
-    List<Projeto> encerrados = ViewBag.Encerrados as List<Projeto>;
+	ViewData["Title"] = "Projetos";
+	List<Projeto> ativos = ViewBag.Ativos as List<Projeto>;
+	List<Projeto> encerrados = ViewBag.Encerrados as List<Projeto>;
 }
 
 <partial name="Header" view-data="@ViewData" />
@@ -27,16 +27,16 @@
 		let buttonDetalhes = document.querySelector(buttonName)
 
 		if (!projetosDetalhes.includes(idProjeto)) {
-		buttonDetalhes.disabled = true;
-		buttonDetalhes.innerHTML = '<div class="spinner-border spinner-border-sm text-light" role="status"><span class="visually-hidden">Loading...</span></div>';		
+			buttonDetalhes.disabled = true;
+			buttonDetalhes.innerHTML = '<div class="spinner-border spinner-border-sm text-light" role="status"><span class="visually-hidden">Loading...</span></div>';
 			fetch(`/Projetos/RetornarModalDetalhes?idProjeto=${idProjeto}`)
 				.then(response => response.text())
 				.then(result => {
 					document.querySelector(`#modalDetailsProjeto-${idProjeto}-container`).innerHTML = result;
 					buttonDetalhes.innerHTML = 'Detalhes';
 					buttonDetalhes.disabled = false;
-				});				
-		}		
+				});
+		}
 	}
 
 	function carregarModaisProjeto(idProjeto) {

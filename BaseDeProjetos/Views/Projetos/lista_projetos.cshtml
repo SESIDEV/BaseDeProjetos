@@ -8,12 +8,14 @@
         align-items: center;
         padding: 20px;
     }
+
     #logoEmpresa {
         object-fit: contain;
         max-width: 180px;
         max-height: 180px;
         padding: 20px;
     }
+
     #box-btn-actions {
         width: 100%;
         justify-content: center;
@@ -35,7 +37,7 @@
 
     <div id="modalDetailsProjeto-@projeto.Id-container">
     </div>
-    
+
     <tr>
         @if (projeto.Empresa.Logo != null)
         {
@@ -52,9 +54,9 @@
         <td class="cell">
             @projeto.Status.GetDisplayName()
         </td>
-            
+
         <td class="cell">
-            @if(projeto.ValorAporteRecursos != 0 && projeto.ValorAporteRecursos > 0)
+            @if (projeto.ValorAporteRecursos != 0 && projeto.ValorAporteRecursos > 0)
             {
                 <span> R$ @Helpers.FormatarValoresDashboards((decimal)projeto.ValorAporteRecursos)</span>
             }
@@ -65,11 +67,11 @@
         </td>
         <td class="cell">
             @projeto.FonteFomento.GetDisplayName()
-        </td>        
+        </td>
         <td class="cell">
 
             <span>@projeto.DataEncerramento.ToString("dd/MM/yyyy")</span>
-            
+
         </td>
 
         <td class="cell">

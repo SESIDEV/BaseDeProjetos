@@ -3,7 +3,7 @@
 @using System.Globalization
 
 <div class="modal fade" id="modalDetalhes-@Model.Id" tabindex="-1" aria-labelledby="modalDetalhes-@Model.Id-Label"
-    aria-hidden="true">
+     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -30,12 +30,12 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><span
-                                    id="qtdMembros" class="m-1"></span><span class="m-1">Membros</span>
+                                    data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <span id="qtdMembros" class="m-1"></span><span class="m-1">Membros</span>
                             </button>
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
-                            data-bs-parent="#accordionExample">
+                             data-bs-parent="#accordionExample">
                             <div class="accordion-body">
                                 <ul id="lista"></ul>
                             </div>
@@ -45,11 +45,11 @@
             </div>
             <div class="modal-footer">
                 <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#editarProjetoModal-@Model.Id-Toggle"
-                    role="button">
+                   role="button">
                     Editar
                 </a>
                 <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#deletarProjetoModal-@Model.Id-Toggle"
-                    role="button">
+                   role="button">
                     Deletar
                 </a>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
@@ -59,7 +59,7 @@
 </div>
 
 @section Scripts {
-@{
-await Html.RenderPartialAsync("_ValidationScriptsPartial");
-}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

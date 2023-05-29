@@ -33,7 +33,8 @@
                 <div class="accordion" id="accordionExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Equipe do Projeto - <span id="qtdMembros" class="m-1"></span><span class="m-1">Membros</span>
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                Equipe do Projeto - <span id="qtdMembros" class="m-1"></span><span class="m-1">Membros</span>
                             </button>
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
@@ -42,7 +43,7 @@
                             </div>
                         </div>
                     </div>
-                </div>                
+                </div>
             </dd>
             <dt class="col-sm-3">
                 @Html.DisplayNameFor(model => model.AreaPesquisa)
@@ -128,13 +129,13 @@
         return lista.trim().split(";")
     }
 
-    function criarListaDeMembros(){
+    function criarListaDeMembros() {
         let lista = document.querySelector("#lista")
         let qtdMembros = document.querySelector("#qtdMembros")
         let listaUsuarios = TratandoListaDeUsuarios(listaDeMembros)
-        
+
         listaUsuarios.forEach((membro, indice) => {
-            if(indice < listaUsuarios.length){
+            if (indice < listaUsuarios.length) {
                 var usuario = document.createElement("li")
                 usuario.setAttribute("id", `${membro}`)
                 usuario.textContent = `${membro}`
@@ -146,7 +147,7 @@
         })
 
         qtdMembros.innerHTML = listaUsuarios.length - 1
-        
+
     }
     criarListaDeMembros()
 
