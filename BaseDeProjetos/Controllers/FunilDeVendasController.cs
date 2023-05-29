@@ -204,7 +204,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Atualizar(string id, [Bind("OrigemID, Data, Status, Anotacoes, MotivoNaoConversao")] FollowUp followup)
+        public async Task<IActionResult> Atualizar([Bind("OrigemID, Data, Status, Anotacoes, MotivoNaoConversao")] FollowUp followup)
         {
             if (ModelState.IsValid)
             {
@@ -217,7 +217,7 @@ namespace BaseDeProjetos.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction(nameof(Index), new { id = id });
+            return RedirectToAction(nameof(Index));
         }
         private void CriarFollowUp(FollowUp followup)
         {
