@@ -169,7 +169,7 @@
 
 <script>
     window.addEventListener('load', function(){
-        gerarOpcoesSelectPessoas(null,'pessoasSelect')
+        gerarOpcoesSelect(null,'pessoasSelect','Pessoas')
         
         fetch('/Pessoas/dados').then(response => response.json()).then(data => {
             localStorage.setItem('Pessoas', JSON.stringify(data));

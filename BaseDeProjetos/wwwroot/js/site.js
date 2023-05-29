@@ -155,36 +155,49 @@ function realocarCompetenciaNaView(element) {
     }
 }
 
-function gerarOpcoesSelectPessoas(nomeModal, idSelect) {
+function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar) {
+    let defRota = "";
+    let value = "";
+    let inner = "";
+    document.querySelector(`#loadingOpcoesSelect${rota}`).style.display = "block";
     document.querySelector(`#${idSelect}`).innerHTML = '';
     if (nomeModal == null){
         $(`#${idSelect}`).select2()
     } else {
         $(`#${idSelect}`).select2({dropdownParent: $(`#${nomeModal}`)})
     }
-    fetch('/FunilDeVendas/PuxarDadosUsuarios').then(response => response.json()).then(lista => {
+    switch(rota){
+        case "Pessoas":
+            defRota = '/FunilDeVendas/PuxarDadosUsuarios';
+            value = "Email";
+            inner = "UserName";
+            break;
+        case "Empresas":
+            defRota = '/Empresas/PuxarEmpresas'
+            value = "Id";
+            inner = "RazaoSocial";
+            break;
+        case "Tags":
+            defRota = '/FunilDeVendas/PuxarTagsProspecoes';
+            break;
+        default:
+            console.log(`Erro: ${rota} é uma rota inválida`);
+            break;
+    }
+    fetch(defRota).then(response => response.json()).then(lista => {
         lista.forEach(function (item){
             var opt = document.createElement("option");
-            opt.value = item['Email']
-            opt.innerHTML = item['UserName']
+            if(rota != "Tags"){opt.value = item[value]}
+            opt.innerHTML = item[inner]
             document.querySelector(`#${idSelect}`).appendChild(opt)
-    })})
+        })
+        document.querySelector(`#loadingOpcoesSelect${rota}`).style.display = "none";
+        document.querySelectorAll(".select2-container").forEach(input => {input.style.width = "100%"})
+    })
+    document.querySelector(`#${caixaId}`).style.display = "block";
+    document.querySelector(`#${botaoAlterar}`).style.display = "none";
 }
 
-function gerarOpcoesSelectTags(nomeModal, idSelect) {
-    document.querySelector(`#${idSelect}`).innerHTML = '';
-    if (nomeModal == null){
-        $(`#${idSelect}`).select2()
-    } else {
-        $(`#${idSelect}`).select2({dropdownParent: $(`#${nomeModal}`)})
-    }
-    fetch('/FunilDeVendas/PuxarTagsProspecoes').then(response => response.json()).then(lista => {
-        lista.forEach(function (item){
-            var opt = document.createElement("option");
-            opt.innerHTML = item
-            document.querySelector(`#${idSelect}`).appendChild(opt)
-    })})
-}
 function novaTag(){
     valor = document.querySelector(`.select2-search__field`).value
     document.querySelector(`.select2-search__field`).valorSalvo = valor
@@ -216,13 +229,17 @@ function procurarPessoa(select) {
 }
 
 function selectToText(idSelect, idText) {
-    let texto = ''
-    document.querySelector(`#select2-${idSelect}-container`).childNodes.forEach(p => texto += p.title + ';')
-    document.querySelector(`#${idText}`).value = texto
+    let listaRota = ["Pessoas", "Empresas"]
+    listaRota.forEach(function(rota) {
+        let texto = ''
+        document.querySelector(`#select2-${idSelect}${rota}-container`).childNodes.forEach(p => texto += p.title + ';')
+        document.querySelector(`#${idText}${rota}`).value = texto
+      })
+    
 }
 
-function textToSelect(nomeModal, idText, idSelect) {
-    gerarOpcoesSelectPessoas(nomeModal, idSelect)
+function textToSelect(nomeModal, idText, idSelect, rota, caixaId, botaoAlterar) {
+    gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar)
 
     botao_def = document.querySelector('#bloco_botao')
     listaSel = document.querySelector(`#${idText}`).value.split(";")
