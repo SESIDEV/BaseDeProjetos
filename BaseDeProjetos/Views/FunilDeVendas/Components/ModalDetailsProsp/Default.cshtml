@@ -28,31 +28,31 @@
                 <span>@Model.NomeProspeccao</span>
                 <h1 class="app-card-title">Origem:</h1>
                 <span>@Model.Origem.GetDisplayName()</span>
-                <h1 class="app-card-title">Tipo de Contratação:</h1>
-                <span>@Model.TipoContratacao.GetDisplayName()</span>
+                <h1 class="app-card-title">Linha de Pesquisa:</h1>
+                <span>@Model.LinhaPequisa.GetDisplayName()</span>
                 <h1 class="app-card-title">Status:</h1>
                 <span>@Model.Status.OrderBy(followup => followup.Data).Last().Status.GetDisplayName()</span>
                 <h1 class="app-card-title">Valor Estimado:</h1>
                 <nobr>
-                    @if (Model.ValorEstimado != 0)
-                    {
-                        <span>R$ @Helpers.FormatarValoresDashboards((decimal)Model.ValorEstimado)</span>
-                    }
-                    else
-                    {
-                        <span>Valor não informado</span>
-                    }
+                @if (Model.ValorEstimado != 0)
+                {
+                    <span>R$ @Helpers.FormatarValoresDashboards((decimal)Model.ValorEstimado)</span>
+                }
+                else
+                {
+                    <span>Valor não informado</span>
+                }
                 </nobr>
                 <h1 class="app-card-title">Valor Proposta:</h1>
                 <nobr>
-                    @if (Model.ValorProposta != 0)
-                    {
-                        <span>R$ @Helpers.FormatarValoresDashboards((decimal)Model.ValorProposta)</span>
-                    }
-                    else
-                    {
-                        <span>Valor não informado</span>
-                    }
+                @if (Model.ValorProposta != 0)
+                {
+                    <span>R$ @Helpers.FormatarValoresDashboards((decimal)Model.ValorProposta)</span>
+                }
+                else
+                {
+                    <span>Valor não informado</span>
+                }
                 </nobr>
                 <hr>
                 <h1 class="app-card-title">Último Status:</h1>
