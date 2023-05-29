@@ -1,7 +1,9 @@
 ﻿@model BaseDeProjetos.Models.Projeto
 @using BaseDeProjetos.Helpers
 @using System.Globalization
-
+@{
+    var nivelUsuario = ViewData["NivelUsuario"];
+}
 <div class="modal fade" id="modalDetalhes-@Model.Id" tabindex="-1" aria-labelledby="modalDetalhes-@Model.Id-Label"
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -44,11 +46,18 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#editarProjetoModal-@Model.Id-Toggle"
+                @if (nivelUsuario.ToString() == "PMO" || nivelUsuario.ToString() == "Dev" || nivelUsuario.ToString() == "Supervisor")
+                {
+                    <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#incluirMacroentregaProjetoModal-@Model.Id"
+                       role="button">
+                        Incluir Macroentrega
+                    </a>
+                }                
+                <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#editarProjetoModal-@Model.Id"
                    role="button">
                     Editar
                 </a>
-                <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#deletarProjetoModal-@Model.Id-Toggle"
+                <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#deletarProjetoModal-@Model.Id"
                    role="button">
                     Deletar
                 </a>
