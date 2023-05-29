@@ -49,7 +49,7 @@ namespace BaseDeProjetos.Models
         public virtual StatusProjeto Status { get; set; }
 
         [Display(AutoGenerateFilter = true, Name = "Duração do Projeto em meses")]
-        public virtual int DuracaoProjetoEmMeses { get; set; }
+        public virtual int DuracaoProjetoEmMeses { get; set; } // TODO: Não deveriamos inferir isso a partir da data de inicio e data de fim?
 
         [Display(AutoGenerateFilter = true, Name = "Valor Total do Projeto")]
         public virtual double ValorTotalProjeto { get; set; }

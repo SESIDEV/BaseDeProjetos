@@ -1,6 +1,7 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
+using MailSenderHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,40 @@ namespace BaseDeProjetos.Controllers
             _context = context;
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Atualizar([Bind("IdProjeto, Regramento, Repasse, ComprasServico, ComprasMaterial, Bolsista, SatisfacaoMetadeProjeto, SatisfacaoFimProjeto, Relatorios, PrestacaoContas")] ProjetoIndicadores indicadores)
+        {
+            if (ModelState.IsValid)
+            {
+                Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == indicadores.IdProjeto);
+
+                // Gerar id do indicador
+                string idIndicador = $"proj_ind_{Guid.NewGuid()}";
+                indicadores.Id = idIndicador;
+
+                // Atrelar o projeto ao indicador
+                indicadores.Projeto = projeto; 
+
+                // Criar o indicador da macroentrega no DB
+                await CriarIndicadores(indicadores);
+
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                return View("Error");
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        private async Task CriarIndicadores(ProjetoIndicadores indicadoresMacroentrega)
+        {
+            await _context.AddAsync(indicadoresMacroentrega);
+            await _context.SaveChangesAsync();
+        }
+
         public IActionResult PopularBase()
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -45,6 +80,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: Projetos
+        [HttpGet]
         public IActionResult Index(string casa, string sortOrder = "", string searchString = "", string ano = "")
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -161,14 +197,14 @@ namespace BaseDeProjetos.Controllers
 
         public IActionResult RetornarModal(string idProjeto, string tipo)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-            ViewData["NivelUsuario"] = usuario.Nivel;
-
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                if (tipo != null || tipo != "")
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewData["NivelUsuario"] = usuario.Nivel;
+
+                if (!string.IsNullOrEmpty(tipo))
                 {
                     return ViewComponent($"Modal{tipo}Projeto", new { id = idProjeto });
                 }
@@ -214,6 +250,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: Projetos/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(string id)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -243,6 +280,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: Projetos/Create
+        [HttpGet]
         public IActionResult Create()
         {
             if (HttpContext.User.Identity.IsAuthenticated)
