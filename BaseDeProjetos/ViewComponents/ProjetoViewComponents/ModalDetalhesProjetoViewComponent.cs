@@ -1,4 +1,6 @@
 ﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Helpers;
+using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -16,6 +18,8 @@ namespace BaseDeProjetos.ViewComponents.ProjetoViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync(string id)
         {
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewData["NivelUsuario"] = usuario.Nivel;
             var model = await _context.Projeto.FindAsync(id);
             return View(model);
         }
