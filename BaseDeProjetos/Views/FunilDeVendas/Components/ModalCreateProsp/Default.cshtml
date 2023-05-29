@@ -57,17 +57,13 @@
                     </div>
                     <div class="mb-2">
                         <label asp-for="MembrosEquipe" class="col-form-label" style="font-weight: 600">Membros</label>
-                        <input type="text" asp-for="MembrosEquipe" class="form-control d-none" id="membrosTextCreate" />
-                        <div class="input-group flex-nowrap">
-                            <span class="input-group-text" id="addon-wrapping">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                    class="bi bi-search" viewBox="0 0 16 16">
-                                    <path
-                                        d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                                </svg>
-                            </span>
-                            <select id="campoSelectCreate" class="form-select" multiple="true"
-                                onclick="gerarOpcoesSelectPessoas('criarProspModalToggle','campoSelectCreate')"></select>
+                        <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectPessoas">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <input asp-for="MembrosEquipe" class="form-control d-none" id="inputTextCreatePessoas" type="text"/>
+                        <button type="button" style="width: 100%;" id="botaoToggleCaixaRequestCreatePessoas" onclick="gerarOpcoesSelect('criarProspModalToggle','campoSelectCreatePessoas','Pessoas','caixaPesquisaCreatePessoas','botaoToggleCaixaRequestCreatePessoas')">Buscar</button>
+                        <div class="input-group flex-nowrap" id="caixaPesquisaCreatePessoas" style="display:none;">
+                            <select id="campoSelectCreatePessoas" class="form-select" multiple="true"></select>
                         </div>
                     </div>
                     <div class="mb-2">
@@ -84,9 +80,14 @@
                     </div>
                     <div class="mb-2">
                         <label asp-for="PotenciaisParceiros" class="col-form-label" style="font-weight: 600"></label>
-                        <input asp-for="PotenciaisParceiros" class="form-control" placeholder="Ex.: Pepsico; Coca-cola"
-                            autocomplete="off" />
-                        <span asp-validation-for="PotenciaisParceiros" class="text-danger"></span>
+                        <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectEmpresas">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <input asp-for="PotenciaisParceiros" class="form-control d-none"  id="inputTextCreateEmpresas" type="text"/>
+                        <button type="button" style="width: 100%;" id="botaoToggleCaixaRequestCreateEmpresas" onclick="gerarOpcoesSelect('criarProspModalToggle','campoSelectCreateEmpresas','Empresas','caixaPesquisaCreateEmpresas','botaoToggleCaixaRequestCreateEmpresas')">Buscar</button>
+                        <div class="input-group flex-nowrap" id="caixaPesquisaCreateEmpresas" style="display:none;">
+                            <select id="campoSelectCreateEmpresas" class="form-select" multiple="true" style="display:block;"></select>
+                        </div>
                     </div>
                     <div class="mb-2">
                         <label asp-for="CaminhoPasta" class="col-form-label" style="font-weight: 600"></label>
@@ -96,7 +97,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn app-btn-primary" data-bs-target="#criarProspModalToggle2"
-                        data-bs-toggle="modal" onclick="selectToText('campoSelectCreate', 'membrosTextCreate')">
+                        data-bs-toggle="modal" onclick="selectToText('campoSelectCreate', 'inputTextCreate')">
                         Próximo
                     </button>
                 </div>
@@ -181,10 +182,14 @@
                     </div>
                     <div class="col-form-label" style="font-weight: 600">
                         <label asp-for="Tags" class="control-label"></label>
+                        <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectTags">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
                         <input type="text" asp-for="Tags" class="form-control" id="tagsTextCreate"/>
-                        <div class="input-group flex-nowrap">
-                            <select id="campoTagsCreate" class="form-select" multiple="true" onclick="gerarOpcoesSelectTags('criarProspModalToggle3','campoTagsCreate')"></select>
-                            <span class="input-group-text" id="addon-wrapping" onclick="addTag('tagsTextCreate','campoTagsCreate')" onmouseover="novaTag()">
+                        <button type="button" style="width: 100%;" id="botaoToggleCaixaRequestCreateTags" onclick="gerarOpcoesSelect('criarProspModalToggle','campoSelectCreateTags','Tags','caixaPesquisaCreateTags','botaoToggleCaixaRequestCreateTags')">Adicionar</button>
+                        <div class="input-group flex-nowrap" id="caixaPesquisaCreateTags" style="display:none;">
+                            <select id="campoSelectCreateTags" class="form-select" multiple="true"></select>
+                            <span class="input-group-text" id="addon-wrapping" onclick="addTag('tagsTextCreate','campoSelectCreateTags')" onmouseover="novaTag()">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
                                     <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z"/>
                                 </svg>
@@ -212,12 +217,6 @@
                     </button>
                     <input type="submit" value="Concluir" class="btn-submit btn app-btn-primary">
                 </div>
-                <li class="select2-selection__choice d-none" title="NomeDefault" id="bloco_botao">
-                    <span class="select2-selection__choice__display">NomeDefault</span>
-                    <button type="button" class="select2-selection__choice__remove" tabindex="-1" title="Remove item" aria-label="Remove item">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </li>
             </div>
         </div>
     </div>

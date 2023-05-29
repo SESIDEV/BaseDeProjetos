@@ -307,7 +307,7 @@ namespace BaseDeProjetos.Controllers
             return _context.Empresa.Any(e => e.Id == id);
         }
 
-        public string PuxarEmpresas(bool estrangeiras = false)
+        public string PuxarEmpresas(bool estrangeiras = false) //APENAS UM OU OUTRO POR ENQUANTO
         {
             List<Empresa> lista_emp = _context.Empresa.ToList();
 
@@ -343,7 +343,9 @@ namespace BaseDeProjetos.Controllers
                 if (aprovado)
                 {
                     Dictionary<string, object> dict = new Dictionary<string, object>();
-                    dict["Nome"] = empresa.Nome;
+                    dict["Id"] = empresa.Id;
+                    dict["RazaoSocial"] = empresa.Nome;
+                    dict["NomeFantasia"] = empresa.NomeFantasia;
                     dict["Segmento"] = empresa.Segmento.GetDisplayName();
                     dict["Estado"] = empresa.Estado.GetDisplayName();
                     dict["CNPJ"] = empresa.CNPJ;
