@@ -5,7 +5,7 @@
 }
 
 <div class="modal fade" id="deletarProjetoModal-@Model.Id-Toggle" aria-hidden="true"
-    aria-labelledby="deletarProjetoModal-@Model.Id-ToggleLabel" tabindex="-1">
+     aria-labelledby="deletarProjetoModal-@Model.Id-ToggleLabel" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -18,7 +18,7 @@
             <div class="modal-footer">
                 <form asp-action="Delete" asp-route-id="Id" method="post">
                     <button type="button" class="btn app-btn-primary"
-                        data-bs-target="#deletarProjetoModal-@Model.Id-Toggle" data-bs-toggle="modal">
+                            data-bs-target="#deletarProjetoModal-@Model.Id-Toggle" data-bs-toggle="modal">
                         Voltar
                     </button>
                     <input type="hidden" asp-for="Id" />
@@ -30,7 +30,7 @@
 </div>
 
 @section Scripts {
-@{
-await Html.RenderPartialAsync("_ValidationScriptsPartial");
-}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
