@@ -11,12 +11,12 @@
 }
 
 <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
-    <div class="modal fade" id="editarProspModal-@Model.Id-Toggle" aria-hidden="true" aria-labelledby="editarProspModal-@Model.Id-ToggleLabel"
+    <div class="modal fade" id="editarProspModal-@Model.Id" aria-hidden="true" aria-labelledby="editarProspModal-@Model.Id-Label"
          tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="editarProspModal-@Model.Id-ToggleLabel">Dados da Prospecção</h1>
+                    <h1 class="modal-title fs-5" id="editarProspModal-@Model.Id-Label">Dados da Prospecção</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -89,12 +89,12 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="editarProspModal-@Model.Id-Toggle2" aria-hidden="true" aria-labelledby="editarProspModal-@Model.Id-ToggleLabel2"
+    <div class="modal fade" id="editarProspModal-@Model.Id-Toggle2" aria-hidden="true" aria-labelledby="editarProspModal-@Model.Id-Label2"
          tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="editarProspModal-@Model.Id-ToggleLabel2">Informações da Empresa</h1>
+                    <h1 class="modal-title fs-5" id="editarProspModal-@Model.Id-Label2">Informações da Empresa</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -132,7 +132,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn app-btn-primary" data-bs-target="#editarProspModal-@Model.Id-Toggle" data-bs-toggle="modal">
+                    <button type="button" class="btn app-btn-primary" data-bs-target="#editarProspModal-@Model.Id" data-bs-toggle="modal">
                         Anterior
                     </button>
                     <button type="button" class="btn app-btn-primary" data-bs-target="#editarProspModal-@Model.Id-Toggle3" data-bs-toggle="modal">
@@ -142,12 +142,12 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="editarProspModal-@Model.Id-Toggle3" aria-hidden="true" aria-labelledby="editarProspModal-@Model.Id-ToggleLabel3"
+    <div class="modal fade" id="editarProspModal-@Model.Id-Toggle3" aria-hidden="true" aria-labelledby="editarProspModal-@Model.Id-Label3"
          tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="editarProspModal-@Model.Id-ToggleLabel3">Informações do Contato Inicial</h1>
+              <h1 class="modal-title fs-5" id="editarProspModal-@Model.Id-Label3">Informações do Contato Inicial</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">

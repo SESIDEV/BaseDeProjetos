@@ -7,12 +7,12 @@
 <form asp-action="Edit" asp-route-id="@Model.Id">
     
     <input type="hidden" asp-for="Id" />
-    <div class="modal fade" id="EditEmpresaModal-@Model.Id-Toggle" aria-hidden="true"
-         aria-labelledby="EditEmpresaModal-@Model.Id-ToggleLabel" tabindex="-1">
+    <div class="modal fade" id="EditEmpresaModal-@Model.Id" aria-hidden="true"
+         aria-labelledby="EditEmpresaModal-@Model.Id-Label" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="EditEmpresaModal-@Model.Id-ToggleLabel">
+                    <h1 class="modal-title fs-5" id="EditEmpresaModal-@Model.Id-Label">
                         Editar Empresa
                     </h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -60,7 +60,7 @@
                 <div class="modal-footer">
                     <a asp-action="Index" class="btn app-btn-secondary">Voltar para Lista</a>
                     <input type="submit" value="Salvar" class="btn app-btn-primary"
-                           data-bs-target="#EditEmpresaModal-@Model.Id-Toggle" data-bs-toggle="modal">
+                           data-bs-target="#EditEmpresaModal-@Model.Id" data-bs-toggle="modal">
                 </div>
             </div>
         </div>

@@ -13,12 +13,12 @@
 
 <form asp-action="Edit" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="modal fade" id="editarProjetoModal-@Model.Id-Toggle" aria-hidden="true"
-         aria-labelledby="editarProjetoModal-@Model.Id-ToggleLabel" tabindex="-1">
+    <div class="modal fade" id="editarProjetoModal-@Model.Id" aria-hidden="true"
+         aria-labelledby="editarProjetoModal-@Model.Id-Label" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="editarProjetoModal-@Model.Id-ToggleLabel">Dados do Projeto</h1>
+                    <h1 class="modal-title fs-5" id="editarProjetoModal-@Model.Id-Label">Dados do Projeto</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -103,11 +103,11 @@
         </div>
     </div>
     <div class="modal fade" id="editarProjetoModal-@Model.Id-Toggle2" aria-hidden="true"
-         aria-labelledby="editarProjetoModal-@Model.Id-ToggleLabel2" tabindex="-1">
+         aria-labelledby="editarProjetoModal-@Model.Id-Label2" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="editarProjetoModal-@Model.Id-ToggleLabel2">
+                    <h1 class="modal-title fs-5" id="editarProjetoModal-@Model.Id-Label2">
                         Informações da Empresa
                     </h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -160,7 +160,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn app-btn-primary"
-                            data-bs-target="#editarProjetoModal-@Model.Id-Toggle" data-bs-toggle="modal">
+                            data-bs-target="#editarProjetoModal-@Model.Id" data-bs-toggle="modal">
                         Anterior
                     </button>
                     @if (nivelUsuario.ToString() == "Dev" || nivelUsuario.ToString() == "Supervisor" || nivelUsuario.ToString() == "PMO")
@@ -188,11 +188,11 @@
         </div>
     </div>
     <div class="modal fade" id="editarProjetoModal-@Model.Id-Toggle3" aria-hidden="true"
-         aria-labelledby="editarProjetoModal-@Model.Id-ToggleLabel3" tabindex="-1">
+         aria-labelledby="editarProjetoModal-@Model.Id-Label3" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="editarProjetoModal-@Model.Id-ToggleLabel3">
+                    <h1 class="modal-title fs-5" id="editarProjetoModal-@Model.Id-Label3">
                         Lista de Indicadores por Macroentrega
                     </h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

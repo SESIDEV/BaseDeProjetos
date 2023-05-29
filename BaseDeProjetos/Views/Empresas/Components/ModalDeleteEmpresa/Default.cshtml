@@ -4,12 +4,12 @@
     ViewData["Title"] = "deletar";
 }
 
-<div class="modal fade" id="deletarEmpresaModal-@Model.Id-Toggle" aria-hidden="true"
-     aria-labelledby="deletarEmpresaModal-@Model.Id-ToggleLabel" tabindex="-1">
+<div class="modal fade" id="deletarEmpresaModal-@Model.Id" aria-hidden="true"
+     aria-labelledby="deletarEmpresaModal-@Model.Id-Label" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title fs-5" id="deletarEmpresaModal-@Model.Id-ToggleLabel">Deletar Empresa</div>
+                <div class="modal-title fs-5" id="deletarEmpresaModal-@Model.Id-Label">Deletar Empresa</div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body d-flex flex-column gap-1">
@@ -45,7 +45,7 @@
             <div class="modal-footer">
                 <form asp-action="Delete" asp-route-id="Id" method="post">
                     <button type="button" class="btn app-btn-primary"
-                            data-bs-target="#deletarEmpresaModal-@Model.Id-Toggle" data-bs-toggle="modal">
+                            data-bs-target="#deletarEmpresaModal-@Model.Id" data-bs-toggle="modal">
                         Voltar
                     </button>
                     <input type="hidden" asp-for="Id" />
