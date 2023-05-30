@@ -1,7 +1,9 @@
 ﻿@model BaseDeProjetos.Models.Projeto
 @using BaseDeProjetos.Helpers
 @using System.Globalization
-
+@{
+    var nivelUsuario = ViewData["NivelUsuario"];
+}
 <div class="modal fade" id="modalDetalhes-@Model.Id" tabindex="-1" aria-labelledby="modalDetalhes-@Model.Id-Label"
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -20,9 +22,9 @@
                 <h1 class="app-card-title">Valor:</h1>
                 <span>R$ @Helpers.FormatarValoresDashboards((decimal)Model.ValorAporteRecursos)</span>
                 <h1 class="app-card-title">Data de Início:</h1>
-                <span>@Model.DataInicio</span>
+                <span>@Model.DataInicio.ToString("dd/MM/yyyy")</span>
                 <h1 class="app-card-title">Data de Encerramento:</h1>
-                <span>@Model.DataEncerramento</span>
+                <span>@Model.DataEncerramento.ToString("dd/MM/yyyy")</span>
                 <h1 class="app-card-title">Duração em Meses:</h1>
                 <span>@Model.DuracaoProjetoEmMeses</span>
                 <h1 class="app-card-title">Equipe do Projeto:</h1>
@@ -44,14 +46,29 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#editarProjetoModal-@Model.Id-Toggle"
-                   role="button">
-                    Editar
-                </a>
-                <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#deletarProjetoModal-@Model.Id-Toggle"
-                   role="button">
-                    Deletar
-                </a>
+                @if (nivelUsuario.ToString() == "PMO" || nivelUsuario.ToString() == "Dev" || nivelUsuario.ToString() == "Supervisor")
+                {
+                    <div class="d-flex">
+                        <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#incluirMacroentregaProjetoModal-@Model.Id"
+                           role="button">
+                            Incluir Macroentrega
+                        </a>
+                        <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#detalhesMacroentregaProjetoModal-@Model.Id"
+                           role="button">
+                            Visualizar Macroentregas
+                        </a>
+                    </div>
+                }
+                <div class="d-flex">
+                    <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#editarProjetoModal-@Model.Id"
+                       role="button">
+                        Editar
+                    </a>
+                    <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#deletarProjetoModal-@Model.Id"
+                       role="button">
+                        Deletar
+                    </a>
+                </div>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
             </div>
         </div>

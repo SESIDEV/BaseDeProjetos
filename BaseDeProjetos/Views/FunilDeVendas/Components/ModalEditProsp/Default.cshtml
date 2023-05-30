@@ -11,7 +11,7 @@
 }
 
 <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
-<div class="modal fade" id="editarProspModal-@Model.Id-Toggle" aria-hidden="true" aria-labelledby="editarProspModal-@Model.Id-ToggleLabel"
+<div class="modal fade" id="editarProspModal-@Model.Id" aria-hidden="true" aria-labelledby="editarProspModal-@Model.Id-ToggleLabel"
      tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -47,7 +47,7 @@
                         <span class="visually-hidden">Loading...</span>
                     </div>
                     <input asp-for="MembrosEquipe" class="form-control d-none" id="inputTextEditPessoas" type="text"/>
-                    <button type="button" style="width: 100%;" id="botaoToggleCaixaRequestEditPessoas" onclick="textToSelect('editarProspModal-@Model.Id-Toggle','inputTextEditPessoas','campoSelectEditPessoas','Pessoas','caixaPesquisaEditPessoas','botaoToggleCaixaRequestEditPessoas')">Alterar</button>
+                    <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestEditPessoas" onclick="textToSelect('editarProspModal-@Model.Id-Toggle','inputTextEditPessoas','campoSelectEditPessoas','Pessoas','caixaPesquisaEditPessoas','botaoToggleCaixaRequestEditPessoas')">Alterar</button>
                     <div class="input-group flex-nowrap" id="caixaPesquisaEditPessoas" style="display:none;">
                         <select id="campoSelectEditPessoas" class="form-select" multiple="true"></select>
                     </div>
@@ -68,7 +68,7 @@
                         <span class="visually-hidden">Loading...</span>
                     </div>
                     <input asp-for="PotenciaisParceiros" class="form-control d-none" id="inputTextEditEmpresas" type="text"/>
-                    <button type="button" style="width: 100%;" id="botaoToggleCaixaRequestEditEmpresas" onclick="textToSelect('editarProspModal-@Model.Id-Toggle','inputTextEditEmpresas','campoSelectEditEmpresas','Empresas','caixaPesquisaEditEmpresas','botaoToggleCaixaRequestEditEmpresas')">Alterar</button>
+                    <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestEditEmpresas" onclick="textToSelect('editarProspModal-@Model.Id-Toggle','inputTextEditEmpresas','campoSelectEditEmpresas','Empresas','caixaPesquisaEditEmpresas','botaoToggleCaixaRequestEditEmpresas')">Alterar</button>
                     <div class="input-group flex-nowrap" id="caixaPesquisaEditEmpresas" style="display:none;">
                         <select id="campoSelectEditEmpresas" class="form-select" multiple="true"></select>
                     </div>
@@ -86,14 +86,14 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn app-btn-primary" data-bs-target="#editarProspModal-@Model.Id-Toggle2" data-bs-toggle="modal" onclick="selectToText('campoSelectEdit', 'inputTextEdit')">
+                <button type="button" class="btn app-btn-primary" data-bs-target="#editarProspModal-@Model.Id-2" data-bs-toggle="modal" onclick="selectToText('campoSelectEdit', 'membrosTextEdit')">
                     Próximo
                 </button>
             </div>
         </div>
     </div>
 </div>
-<div class="modal fade" id="editarProspModal-@Model.Id-Toggle2" aria-hidden="true" aria-labelledby="editarProspModal-@Model.Id-ToggleLabel2"
+<div class="modal fade" id="editarProspModal-@Model.Id-2" aria-hidden="true" aria-labelledby="editarProspModal-@Model.Id-ToggleLabel2"
      tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -136,17 +136,17 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn app-btn-primary" data-bs-target="#editarProspModal-@Model.Id-Toggle" data-bs-toggle="modal">
+                <button type="button" class="btn app-btn-primary" data-bs-target="#editarProspModal-@Model.Id" data-bs-toggle="modal">
                     Anterior
                 </button>
-                <button type="button" class="btn app-btn-primary" data-bs-target="#editarProspModal-@Model.Id-Toggle3" data-bs-toggle="modal">
+                <button type="button" class="btn app-btn-primary" data-bs-target="#editarProspModal-@Model.Id-3" data-bs-toggle="modal">
                     Próximo
                 </button>
             </div>
         </div>
     </div>
 </div>
-<div class="modal fade" id="editarProspModal-@Model.Id-Toggle3" aria-hidden="true" aria-labelledby="editarProspModal-@Model.Id-ToggleLabel3"
+<div class="modal fade" id="editarProspModal-@Model.Id-3" aria-hidden="true" aria-labelledby="editarProspModal-@Model.Id-ToggleLabel3"
      tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -172,7 +172,7 @@
           }
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn app-btn-primary" data-bs-target="#editarProspModal-@Model.Id-Toggle2"
+          <button type="button" class="btn app-btn-primary" data-bs-target="#editarProspModal-@Model.Id-2"
             data-bs-toggle="modal">
             Anterior
           </button>

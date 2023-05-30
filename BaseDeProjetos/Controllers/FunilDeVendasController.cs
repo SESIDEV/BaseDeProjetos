@@ -1,4 +1,4 @@
-using BaseDeProjetos.Data;
+﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -75,7 +75,7 @@ namespace BaseDeProjetos.Controllers
                             p => p.Status.Any(k => k.Status > StatusProspeccao.ComProposta)).Where(
                                 p => (p.Status.First().Data - p.Status.FirstOrDefault(
                                     s => s.Status == StatusProspeccao.ComProposta).Data) > TimeSpan.Zero).ToList(); // filtrar lista para obter datas positivas (maior que zero)
-                }      
+                }
 
                 return View();
             }
@@ -204,7 +204,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Atualizar(string id, [Bind("OrigemID, Data, Status, Anotacoes, MotivoNaoConversao")] FollowUp followup)
+        public async Task<IActionResult> Atualizar([Bind("OrigemID, Data, Status, Anotacoes, MotivoNaoConversao")] FollowUp followup)
         {
             if (ModelState.IsValid)
             {
@@ -217,7 +217,7 @@ namespace BaseDeProjetos.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction(nameof(Index), new { id = id });
+            return RedirectToAction(nameof(Index));
         }
         private void CriarFollowUp(FollowUp followup)
         {

@@ -1,6 +1,7 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
+using MailSenderHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,40 @@ namespace BaseDeProjetos.Controllers
             _context = context;
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Atualizar([Bind("IdProjeto, Regramento, Repasse, ComprasServico, ComprasMaterial, Bolsista, SatisfacaoMetadeProjeto, SatisfacaoFimProjeto, Relatorios, PrestacaoContas")] ProjetoIndicadores indicadores)
+        {
+            if (ModelState.IsValid)
+            {
+                Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == indicadores.IdProjeto);
+
+                // Gerar id do indicador
+                string idIndicador = $"proj_ind_{Guid.NewGuid()}";
+                indicadores.Id = idIndicador;
+
+                // Atrelar o projeto ao indicador
+                indicadores.Projeto = projeto; 
+
+                // Criar o indicador da macroentrega no DB
+                await CriarIndicadores(indicadores);
+
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                return View("Error");
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        private async Task CriarIndicadores(ProjetoIndicadores indicadoresMacroentrega)
+        {
+            await _context.AddAsync(indicadoresMacroentrega);
+            await _context.SaveChangesAsync();
+        }
+
         public IActionResult PopularBase()
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -45,13 +80,15 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: Projetos
+        [HttpGet]
         public IActionResult Index(string casa, string sortOrder = "", string searchString = "", string ano = "")
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
                 ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewBag.usuarioNivel = usuario.Nivel; // Já vi não funcionar, porquê? :: hhenriques1999
+                ViewData["NivelUsuario"] = usuario.Nivel;
 
                 List<Empresa> empresas = _context.Empresa.ToList();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
@@ -162,7 +199,12 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                if (tipo != null || tipo != "")
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewData["NivelUsuario"] = usuario.Nivel;
+
+                if (!string.IsNullOrEmpty(tipo))
                 {
                     return ViewComponent($"Modal{tipo}Projeto", new { id = idProjeto });
                 }
@@ -208,6 +250,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: Projetos/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(string id)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -237,6 +280,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: Projetos/Create
+        [HttpGet]
         public IActionResult Create()
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -259,17 +303,29 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NomeProjeto,MembrosEquipe,Casa,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos, Empresa,")] Projeto projeto)
+        public async Task<IActionResult> Create([Bind("Id,NomeProjeto,MembrosEquipe,Casa,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos,Empresa,Indicadores")] Projeto projeto)
         {
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
+            List<Empresa> empresas = _context.Empresa.ToList();
+            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+
             if (ModelState.IsValid)
             {
+                // TODO: Puxar do banco se utilizando do usuário que está logado?? -hhenriques1999
                 Usuario lider = new Usuario() { UserName = "Preencher", NormalizedEmail = "usuario@firjan.com.br" };
+
                 projeto.Empresa = _context.Empresa.FirstOrDefault(e => e.Id == projeto.Empresa.Id);
                 _context.Add(projeto);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
+            } 
+            else
+            {
+                return NotFound();
             }
-            return View(projeto);
         }
 
         // GET: Projetos/Edit/5
@@ -280,7 +336,8 @@ namespace BaseDeProjetos.Controllers
                 Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
                 ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;
-
+                List<Empresa> empresas = _context.Empresa.ToList();
+                ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
                 ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
 
                 if (id == null)
@@ -325,7 +382,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Casa,NomeProjeto, MembrosEquipe,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos")] Projeto projeto)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Casa,NomeProjeto, MembrosEquipe,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos,Indicadores")] Projeto projeto)
         {
             if (id != projeto.Id)
             {
@@ -395,6 +452,18 @@ namespace BaseDeProjetos.Controllers
             {
                 return View("Forbidden");
             }
+        }
+
+
+        // POST
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletarMacroentrega(string id)
+        {
+            ProjetoIndicadores indicador = await _context.ProjetoIndicadores.FindAsync(id);
+            _context.ProjetoIndicadores.Remove(indicador);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // POST: Projetos/Delete/5

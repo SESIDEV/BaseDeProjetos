@@ -683,3 +683,11 @@ function travarBotao()
 }
 
 addEventListener("submit", travarBotao);
+
+// Não renomeie a função abaixo. Se for renomear, não utilize letra maiúscula.
+// Por quê? Não faço ideia. Javascript é um mistério sem solução e não gostou disso.
+function repopularnomeprojeto() {
+    let campoInput = document.querySelector("#nomeProjeto");
+    let inputRepopulado = document.querySelector("#repopularNomeProjeto");
+    inputRepopulado.value = campoInput.value;
+}
