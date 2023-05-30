@@ -61,7 +61,7 @@
                           <span class="visually-hidden">Loading...</span>
                         </div>
                         <input asp-for="MembrosEquipe" class="form-control d-none" id="inputTextCreatePessoas" type="text"/>
-                        <button type="button" style="width: 100%;" id="botaoToggleCaixaRequestCreatePessoas" onclick="gerarOpcoesSelect('criarProspModalToggle','campoSelectCreatePessoas','Pessoas','caixaPesquisaCreatePessoas','botaoToggleCaixaRequestCreatePessoas')">Buscar</button>
+                        <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestCreatePessoas" onclick="gerarOpcoesSelect('criarProspModalToggle','campoSelectCreatePessoas','Pessoas','caixaPesquisaCreatePessoas','botaoToggleCaixaRequestCreatePessoas')">Buscar</button>
                         <div class="input-group flex-nowrap" id="caixaPesquisaCreatePessoas" style="display:none;">
                             <select id="campoSelectCreatePessoas" class="form-select" multiple="true"></select>
                         </div>
@@ -84,7 +84,7 @@
                           <span class="visually-hidden">Loading...</span>
                         </div>
                         <input asp-for="PotenciaisParceiros" class="form-control d-none"  id="inputTextCreateEmpresas" type="text"/>
-                        <button type="button" style="width: 100%;" id="botaoToggleCaixaRequestCreateEmpresas" onclick="gerarOpcoesSelect('criarProspModalToggle','campoSelectCreateEmpresas','Empresas','caixaPesquisaCreateEmpresas','botaoToggleCaixaRequestCreateEmpresas')">Buscar</button>
+                        <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestCreateEmpresas" onclick="gerarOpcoesSelect('criarProspModalToggle','campoSelectCreateEmpresas','Empresas','caixaPesquisaCreateEmpresas','botaoToggleCaixaRequestCreateEmpresas')">Buscar</button>
                         <div class="input-group flex-nowrap" id="caixaPesquisaCreateEmpresas" style="display:none;">
                             <select id="campoSelectCreateEmpresas" class="form-select" multiple="true" style="display:block;"></select>
                         </div>
@@ -110,7 +110,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="criarProspModalToggleLabel2">Informações da Empresa</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button class="btn app-btn-primary" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-2" id="group">
