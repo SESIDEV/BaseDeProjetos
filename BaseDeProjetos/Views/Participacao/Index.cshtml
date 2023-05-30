@@ -1,0 +1,124 @@
+﻿@using System.Globalization;
+@model IEnumerable<ParticipacaoTotalViewModel>
+
+@{
+    ViewData["Title"] = "Participação";
+    var cultura = new CultureInfo("pt-BR");
+    int i = 1;
+}
+
+<partial name="Header" view-data="@ViewData" />
+<div class="app-wrapper">
+    <div class="app-content pt-3 p-md-3 p-lg-4">
+        <div class="container-xl">
+            <div class="row g-3 mb-4 align-items-center justify-content-between">
+                <div class="col-auto">
+                    <h1 class="app-page-title mb-0">Participação dos Pesquisadores</h1>
+                </div>
+            </div>
+
+            <div class="tab-pane fade show active" id="valores" role="tabpanel" aria-labelledby="valores-tab">
+                <div class="app-card app-card-orders-table shadow-sm mb-5">
+                    <div class="app-card-body">
+                        <div class="table-responsive">
+                            <table class="table mb-0 text-left">
+                                <thead>
+                                    <tr>
+                                        <th class="cell">Membro</th>
+                                        <th class="cell">Valor Total das Prospecções (Valor de Proposta)</th>
+                                        <th class="cell">Valor Médio das Prospecções (Valor de Proposta)</th>
+                                        <th class="cell">Quantidade de Prospecções</th>
+                                        <th class="cell">Detalhes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var participacaoTotal in @Model)
+                                    {
+                                        <tr>
+                                            <div class="modal fade" id="ModalDetalhesParticipacaoTotal-@participacaoTotal.Id" tabindex="-1" aria-labelledby="ModalDetalhesParticipacaoTotal-@participacaoTotal.Id-Label"
+                                                 aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-xl">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h1 class="modal-title fs-5" id="ModalDetalhesParticipacaoTotal-@participacaoTotal.Id-Label">Detalhes das Participações do Pesquisador</h1>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body d-flex flex-column gap-1">
+                                                            <h5>Lista de Projetos</h5>
+                                                            @{
+                                                                int index = 1;
+                                                                foreach (var participacaoUnitaria in participacaoTotal.Participacoes)
+                                                                {
+                                                                    <div class="accordion" id="accordionParticipacaoUni-@(participacaoUnitaria.Id)">
+                                                                        <div class="accordion-item">
+                                                                            <h2 class="accordion-header">
+                                                                            @* TODO: Incluir collapse pro texto depois *@
+                                                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@(index)" aria-expanded="true" aria-controls="collapse-@(index)">
+                                                                                    Projeto @(!string.IsNullOrEmpty(participacaoUnitaria.NomeProjeto) ? participacaoUnitaria.NomeProjeto : "Sem nome")
+                                                                                </button>
+                                                                            </h2>
+                                                                            <div id="collapse-@(index)" class="accordion-collapse collapse" data-bs-parent="#accordionParticipacaoUni-@(participacaoUnitaria.Id)">
+                                                                                <div class="accordion-body">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    index++;
+                                                                }                                                                
+                                                            }
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <a class="btn btn-outline-primary" data-bs-dismiss="modal" aria-label="Close" role="button">
+                                                                Fechar
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <td class="cell">
+                                                @participacaoTotal.Lider
+                                            </td>
+                                            <td class="cell">
+                                                R$ @participacaoTotal.ValorTotalProspeccoes.ToString("N", cultura)
+                                            </td>
+                                            <td class="cell">
+                                                R$ @participacaoTotal.ValorMedioProspeccoes.ToString("N", cultura)
+                                            </td>
+                                            <td class="cell">
+                                                @participacaoTotal.QuantidadeProspeccoes
+                                            </td>
+                                            <td class="cell">
+                                                <button type="button" id="button-@(participacaoTotal.Id)" onmouseover="carregarModalParticipacaoTotalDetalhes('@participacaoTotal.Id')" data-bs-target="#ModalDetalhesParticipacaoTotal-@participacaoTotal.Id"
+                                                        data-bs-toggle="modal" class="btn-sm app-btn-primary">
+                                                    Detalhes
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <partial name="Footer" />
+</div>
+
+<script>
+    function carregarModalParticipacaoTotalDetalhes(idParticipacao) {
+        let buttonDetalhes = document.querySelector(`#${idParticipacao}`);
+        buttonDetalhes.disabled = true;
+
+        fetch(`/Participacao/RetornarModal?idParticipacao=${idParticipacao}`)
+            .then(response => response.text())
+            .then(result => {
+                document.querySelector(`#ModalDetalhesParticipacaoTotal-${idParticipacao}-container`).innerHTML = result;
+                buttonDetalhes.innerHTML = 'Detalhes';
+                buttonDetalhes.disabled = false;
+                buttonDetalhes.removeAttribute("style");
+            });
+    }
+</script>
+
