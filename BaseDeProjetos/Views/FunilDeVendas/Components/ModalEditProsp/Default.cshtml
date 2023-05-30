@@ -43,14 +43,13 @@
                 </div>
                 <div class="mb-2">
                     <label asp-for="MembrosEquipe" class="col-form-label" style="font-weight: 600">Membros</label>
-                    <input type="text" asp-for="MembrosEquipe" class="form-control d-none" id="membrosTextEdit" />
-                    <div class="input-group flex-nowrap">
-                        <span class="input-group-text" id="addon-wrapping">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                            </svg>
-                        </span>
-                        <select id="campoSelectEdit" class="form-select" multiple="true" onclick="textToSelect('editarProspModal-@Model.Id-Toggle','membrosTextEdit','campoSelectEdit')"></select>
+                    <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectPessoas">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <input asp-for="MembrosEquipe" class="form-control d-none" id="inputTextEditPessoas" type="text"/>
+                    <button type="button" style="width: 100%;" id="botaoToggleCaixaRequestEditPessoas" onclick="textToSelect('editarProspModal-@Model.Id-Toggle','inputTextEditPessoas','campoSelectEditPessoas','Pessoas','caixaPesquisaEditPessoas','botaoToggleCaixaRequestEditPessoas')">Alterar</button>
+                    <div class="input-group flex-nowrap" id="caixaPesquisaEditPessoas" style="display:none;">
+                        <select id="campoSelectEditPessoas" class="form-select" multiple="true"></select>
                     </div>
                 </div>
                 <div class="mb-2">
@@ -65,9 +64,14 @@
                 </div>
                 <div class="mb-2">
                     <label asp-for="PotenciaisParceiros" class="col-form-label" style="font-weight: 600"></label>
-                    <input asp-for="PotenciaisParceiros" class="form-control"
-                           placeholder="Uma lista de potenciais parceiros, separados por PONTO E VIRGULA. Ex.: Pepsico; Coca-cola" />
-                    <span asp-validation-for="PotenciaisParceiros" class="text-danger"></span>
+                    <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectEmpresas">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <input asp-for="PotenciaisParceiros" class="form-control d-none" id="inputTextEditEmpresas" type="text"/>
+                    <button type="button" style="width: 100%;" id="botaoToggleCaixaRequestEditEmpresas" onclick="textToSelect('editarProspModal-@Model.Id-Toggle','inputTextEditEmpresas','campoSelectEditEmpresas','Empresas','caixaPesquisaEditEmpresas','botaoToggleCaixaRequestEditEmpresas')">Alterar</button>
+                    <div class="input-group flex-nowrap" id="caixaPesquisaEditEmpresas" style="display:none;">
+                        <select id="campoSelectEditEmpresas" class="form-select" multiple="true"></select>
+                    </div>
                 </div>
                 <div class="mb-2">
                     <label asp-for="CaminhoPasta" class="col-form-label" style="font-weight: 600"></label>
@@ -174,12 +178,6 @@
           </button>
                     <input type="submit" value="Salvar" class="btn btn-submit app-btn-primary" />
         </div>
-        <li class="select2-selection__choice d-none" title="NomeDefault" id="bloco_botao">
-            <button type="button" class="select2-selection__choice__remove" tabindex="-1" title="Remove item" aria-label="Remove item">
-                <span aria-hidden="true">×</span>
-            </button>
-            <span class="select2-selection__choice__display">NomeDefault</span>
-        </li>
       </div>
     </div>
 </div>
