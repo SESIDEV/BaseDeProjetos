@@ -31,8 +31,6 @@ namespace BaseDeProjetos.Controllers
                 List<Producao> Producoes;
 
                 Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
 
                 if (string.IsNullOrEmpty(casa))
                 {
@@ -64,10 +62,6 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
-
                 if (id == null)
                 {
                     return NotFound();
@@ -93,10 +87,6 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
-
                 List<Empresa> empresas = _context.Empresa.ToList();
                 List<Projeto> projetos = _context.Projeto.ToList();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
@@ -130,10 +120,6 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
-
                 if (id == null)
                 {
                     return NotFound();
@@ -196,10 +182,6 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
-
                 if (id == null)
                 {
                     return NotFound();

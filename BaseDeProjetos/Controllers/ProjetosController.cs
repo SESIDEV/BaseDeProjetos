@@ -85,11 +85,6 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel; // Já vi não funcionar, porquê? :: hhenriques1999
-                ViewData["NivelUsuario"] = usuario.Nivel;
-
                 List<Empresa> empresas = _context.Empresa.ToList();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
 
@@ -199,11 +194,6 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
-                ViewData["NivelUsuario"] = usuario.Nivel;
-
                 if (!string.IsNullOrEmpty(tipo))
                 {
                     return ViewComponent($"Modal{tipo}Projeto", new { id = idProjeto });
@@ -255,10 +245,6 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
-
                 if (id == null)
                 {
                     return NotFound();
@@ -287,9 +273,6 @@ namespace BaseDeProjetos.Controllers
             {
                 List<Empresa> empresas = _context.Empresa.ToList();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
                 return View();
             }
             else
@@ -305,10 +288,6 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,NomeProjeto,MembrosEquipe,Casa,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos,Empresa,Indicadores")] Projeto projeto)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-
             List<Empresa> empresas = _context.Empresa.ToList();
             ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
 
@@ -333,9 +312,6 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
                 List<Empresa> empresas = _context.Empresa.ToList();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
                 ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
@@ -429,11 +405,6 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
-
                 if (id == null)
                 {
                     return NotFound();

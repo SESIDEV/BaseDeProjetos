@@ -25,11 +25,8 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
                 List<Empresa> empresas = _context.Empresa.ToList();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
                 return View(await _context.Editais.ToListAsync());
             }
             else
@@ -42,11 +39,6 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
-
                 if (id == null)
                 {
                     return NotFound();
@@ -72,11 +64,6 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
-
                 return View();
             }
             else
@@ -105,11 +92,6 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
-
                 if (id == null)
                 {
                     return NotFound();
@@ -168,12 +150,6 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
-
                 if (id == null)
                 {
                     return NotFound();
