@@ -408,7 +408,7 @@
 							@if (Model.Pager.TemPaginaAnterior)
 							{
 								<li class="page-item">
-									<a class="page-link" asp-action="">Anterior</a>
+									<a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-aba="@aba" asp-route-numeroPagina="@(Model.Pager.PaginaAtual - 1)">Anterior</a>
 								</li>
 							}
 							else
