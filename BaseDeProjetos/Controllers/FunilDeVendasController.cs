@@ -30,8 +30,10 @@ namespace BaseDeProjetos.Controllers
 
         // GET: FunilDeVendas
         [Route("FunilDeVendas/Index/{casa?}/{aba?}/{ano?}")]
-        public IActionResult Index(string casa, string aba, string sortOrder = "", string searchString = "", string ano = "")
+        public IActionResult Index(string casa, string aba, string sortOrder = "", string searchString = "", string ano = "", int numeroPagina = 1)
         {
+            const int tamanhoPagina = 20;
+
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
@@ -46,18 +48,21 @@ namespace BaseDeProjetos.Controllers
 
                 List<Empresa> empresas = _context.Empresa.ToList();
                 List<Prospeccao> prospeccoes;
-                prospeccoes = FunilHelpers.DefinirCasaParaVisualizar(casa, usuario, _context, HttpContext, ViewData);
-                prospeccoes = FunilHelpers.VincularCasaProspeccao(usuario, prospeccoes);
-                prospeccoes = FunilHelpers.PeriodizarProspecções(ano, prospeccoes); // ANO DA PROSPEC
-                prospeccoes = FunilHelpers.OrdenarProspecções(sortOrder, prospeccoes); //SORT ORDEM ALFABETICA
-                prospeccoes = FunilHelpers.FiltrarProspecções(searchString, prospeccoes); // APENAS NA BUSCA
-                FunilHelpers.SetarFiltrosNaView(HttpContext, ViewData, sortOrder, searchString);
 
-                if (!string.IsNullOrEmpty(aba))
+                prospeccoes = ObterProspeccoesFunilFiltradas(casa, aba, sortOrder, searchString, ano, usuario);
+
+                int qtdProspeccoes = prospeccoes.Count();
+                int qtdPaginasTodo = (int)Math.Ceiling((double)qtdProspeccoes / tamanhoPagina);
+
+                List<Prospeccao> prospeccoesPagina = ObterProspeccoesPorPagina(prospeccoes, numeroPagina, tamanhoPagina);
+
+                var pager = new Pager(qtdProspeccoes, numeroPagina, tamanhoPagina, 50); // 50 paginas max
+
+                var model = new ProspeccoesViewModel
                 {
-                    FunilHelpers.CategorizarProspecçõesNaView(prospeccoes, usuario, aba, HttpContext, ViewBag);
-                }
-
+                    Prospeccoes = prospeccoesPagina,
+                    Pager = pager,
+                };
 
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
                 ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
@@ -77,13 +82,36 @@ namespace BaseDeProjetos.Controllers
                                     s => s.Status == StatusProspeccao.ComProposta).Data) > TimeSpan.Zero).ToList(); // filtrar lista para obter datas positivas (maior que zero)
                 }
 
-                return View();
+                return View(model);
             }
             else
             {
                 return View("Forbidden");
             }
         }
+
+        private List<Prospeccao> ObterProspeccoesPorPagina(List<Prospeccao> prospeccoes, int numeroPagina, int tamanhoPagina)
+        {
+            return prospeccoes.Skip((numeroPagina - 1) * tamanhoPagina).Take(tamanhoPagina).ToList();
+        }
+
+        private List<Prospeccao> ObterProspeccoesFunilFiltradas(string casa, string aba, string sortOrder, string searchString, string ano, Usuario usuario)
+        {
+            List<Prospeccao> prospeccoes = FunilHelpers.DefinirCasaParaVisualizar(casa, usuario, _context, HttpContext, ViewData);
+            prospeccoes = FunilHelpers.VincularCasaProspeccao(usuario, prospeccoes);
+            prospeccoes = FunilHelpers.PeriodizarProspecções(ano, prospeccoes); // ANO DA PROSPEC
+            prospeccoes = FunilHelpers.OrdenarProspecções(sortOrder, prospeccoes); //SORT ORDEM ALFABETICA
+            prospeccoes = FunilHelpers.FiltrarProspecções(searchString, prospeccoes); // APENAS NA BUSCA
+            FunilHelpers.SetarFiltrosNaView(HttpContext, ViewData, sortOrder, searchString);
+
+            if (!string.IsNullOrEmpty(aba))
+            {
+                prospeccoes = FunilHelpers.RetornarProspeccoesPorStatus(prospeccoes, usuario, aba, HttpContext);
+            }
+
+            return prospeccoes;
+        }
+
         // GET: FunilDeVendas/Details/5
         public async Task<IActionResult> Details(string id)
         {
