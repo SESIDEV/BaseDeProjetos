@@ -111,25 +111,25 @@ namespace BaseDeProjetos.Helpers
             }
         }
 
-        public static void CategorizarProspecçõesNaView(List<Prospeccao> lista, Usuario usuario, string aba, HttpContext HttpContext, dynamic ViewBag)
+        public static List<Prospeccao> RetornarProspeccoesPorStatus(List<Prospeccao> lista, Usuario usuario, string aba, HttpContext HttpContext)
         {
 
             if (aba.ToLowerInvariant() == "ativas") 
             {
                 List<Prospeccao> ativas = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup => followup.Data).LastOrDefault().Status < StatusProspeccao.ComProposta).ToList();
-                ViewBag.Ativas = ativas;
+                return ativas;
             }
             else if (aba.ToLowerInvariant() == "comproposta")
             {
                 List<Prospeccao> emProposta = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup => followup.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList();
-                ViewBag.EmProposta = emProposta;
+                return emProposta;
             } 
             else if (aba.ToLowerInvariant() == "concluidas")
             {
                 List<Prospeccao> concluidas = lista.Where(prospeccao => prospeccao.Status.Any(followup => followup.Status == StatusProspeccao.Convertida ||
                                                               followup.Status == StatusProspeccao.Suspensa ||
                                                               followup.Status == StatusProspeccao.NaoConvertida)).ToList();
-                ViewBag.Concluidas = concluidas;
+                return concluidas;
             } 
             else if (aba.ToLowerInvariant() == "planejadas")
             {
@@ -137,17 +137,17 @@ namespace BaseDeProjetos.Helpers
                 List<Prospeccao> planejadas = usuario.Nivel == Nivel.Dev ?
                             lista.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).ToList() :
                             lista.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).Where(prosp => prosp.Usuario.UserName.ToString() == HttpContext.User.Identity.Name).ToList();
-                ViewBag.Planejadas = planejadas;
+                return planejadas;
             } 
             else if (aba.ToLowerInvariant() == "erradas")
             {
                 List<Prospeccao> erradas = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup => followup.Data).FirstOrDefault().Status != StatusProspeccao.ContatoInicial
                             && prospeccao.Status.OrderBy(followup => followup.Data).FirstOrDefault().Status != StatusProspeccao.Planejada).ToList();
-                ViewBag.Erradas = erradas;
+                return erradas;
             } 
             else
             {
-                return;
+                return null;
             }            
         }
 
