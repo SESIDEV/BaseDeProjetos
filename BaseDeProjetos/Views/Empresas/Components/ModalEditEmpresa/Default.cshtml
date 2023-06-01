@@ -43,7 +43,7 @@
                     <div>
                         <label asp-for="Estado" class="control-label"></label>
                         <input id="EstadoEmpresaCadastro-@Model.Id" class="form-control" value="@Model.Estado.GetDisplayName()" readonly /> <!--VISUAL APENAS-->
-                        <input asp-for="Estado" id="EstadoEmpresaCadastroINT" value="@Model.Estado" style="display: none;" readonly />
+                        <input asp-for="Estado" id="EstadoEmpresaCadastroINT-@Model.Id" value="@Model.Estado" style="display: none;" readonly />
                     </div>
                     <hr />
                     <div class="form-group">
