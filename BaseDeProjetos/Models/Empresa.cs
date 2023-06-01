@@ -18,6 +18,9 @@ namespace BaseDeProjetos.Models
         [Display(Name = "CNPJ da Empresa")]
         public virtual string CNPJ { get; set; }
 
+        [Display(Name = "CNAE da Empresa")]
+        public virtual string CNAE { get; set; }
+
         [Display(Name = "Segmento da Empresa")]
         public virtual SegmentoEmpresa Segmento { get; set; }
 
