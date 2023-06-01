@@ -518,8 +518,12 @@ function validarCNPJ(idElemento=null) {
     }    
 }
 
-function checarCNAE(dados, idElemento=null){
-    let codcnae = dados.atividade_principal[0].code.slice(0, 2);
+function checarCNAE(idElemento=null, codcnae=""){
+    if(idElemento == null){
+        codcnae = document.getElementById("inputCnae").value.slice(0, 2);
+    } else {
+        codcnae = document.getElementById(`inputCnae-${idElemento}`).value.slice(0, 2);
+    }
 
     if(typeof(dictCNAE[codcnae]) != "undefined"){
 
@@ -564,16 +568,18 @@ function AplicarDadosAPI(idElemento) {
         res.json().then(dados => {
             if (idElemento == null) {
                 document.getElementById("NomeEmpresaCadastro").value = dados.nome;
+                document.getElementById("inputCnae").value = dados.atividade_principal[0].code;
                 document.getElementById("NomeFantasiaEmpresa").value = dados.fantasia;
                 document.getElementById("TipoEmpresaStatus").innerHTML = "Tipo: " + dados.tipo;
                 document.getElementById("SituacaoEmpresaStatus").innerHTML = "Situação: " + dados.situacao;
-                checarCNAE(dados);
+                checarCNAE();
             } else {
                 document.getElementById(`NomeEmpresaCadastro-${idElemento}`).value = dados.nome;
+                document.getElementById(`inputCnae-${idElemento}`).value = dados.atividade_principal[0].code;
                 document.getElementById(`NomeFantasiaEmpresa-${idElemento}`).value = dados.fantasia;
                 document.getElementById(`TipoEmpresaStatus-${idElemento}`).innerHTML = "Tipo: " + dados.tipo;
                 document.getElementById(`SituacaoEmpresaStatus-${idElemento}`).innerHTML = "Situação: " + dados.situacao;
-                checarCNAE(dados, idElemento);
+                checarCNAE(idElemento);
             }
 
             // TUDO DAQUI PRA BAIXO FOI FEITO EXCLUSIVAMENTE PARA CONVERTER A SIGLA DE CADA ESTADO PARA O NOME COMPLETO
