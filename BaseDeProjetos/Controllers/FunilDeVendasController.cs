@@ -40,6 +40,7 @@ namespace BaseDeProjetos.Controllers
 
                 ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;
+                ViewBag.searchString = searchString;
 
                 if (string.IsNullOrEmpty(casa))
                 {

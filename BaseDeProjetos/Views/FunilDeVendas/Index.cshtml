@@ -7,6 +7,7 @@
 	var dadosDaRota = ViewContext.RouteData;
 	string aba = dadosDaRota.Values["aba"] as string;
 	string casa = dadosDaRota.Values["casa"] as string;
+	string searchString = ViewBag.searchString as string;
 
 	if (string.IsNullOrEmpty(casa))
 	{
@@ -408,7 +409,7 @@
 							@if (Model.Pager.TemPaginaAnterior)
 							{
 								<li class="page-item">
-									<a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-aba="@aba" asp-route-numeroPagina="@(Model.Pager.PaginaAtual - 1)">Anterior</a>
+									<a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-aba="@aba" asp-route-SearchString="@searchString" asp-route-numeroPagina="@(Model.Pager.PaginaAtual - 1)">Anterior</a>
 								</li>
 							}
 							else
@@ -423,13 +424,13 @@
 								if (numeroPagina == Model.Pager.PaginaAtual)
 								{
 									<li class="page-item active">
-										<a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-aba="@aba" asp-route-numeroPagina="@(numeroPagina-1)">@numeroPagina</a>
+										<a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-aba="@aba" asp-route-SearchString="@searchString" asp-route-numeroPagina="@(numeroPagina-1)">@numeroPagina</a>
 									</li>
 								}
 								else
 								{
 									<li class="page-item">
-										<a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-aba="@aba" asp-route-numeroPagina="@numeroPagina">@numeroPagina</a>
+										<a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-aba="@aba" asp-route-SearchString="@searchString" asp-route-numeroPagina="@numeroPagina">@numeroPagina</a>
 									</li>
 								}
 							}
@@ -437,7 +438,7 @@
 							@if (Model.Pager.TemProximaPagina)
 							{
 								<li class="page-item">
-									<a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-aba="@aba" asp-route-numeroPagina="@(Model.Pager.PaginaAtual + 1)">Proximo</a>
+									<a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-SearchString="@searchString" asp-route-aba="@aba" asp-route-numeroPagina="@(Model.Pager.PaginaAtual + 1)">Proximo</a>
 								</li>
 							}
 							else
