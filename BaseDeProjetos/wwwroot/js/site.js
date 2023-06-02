@@ -376,6 +376,9 @@ function montarNetwork(pessoas, compFiltradas = null) {
 
        
         pessoas.filter(ps => ps['Email'] != user['id']).forEach(pessoaParalela => { // para cada pessoa na rede inteira
+            if (pessoaParalela['Competencia'] == null) {
+                return; // Skip the loop iteration if 'Competencia' is null
+            }
             let iterar = true;
             listaCompPessoaParalela = pessoaParalela['Competencia'].split(";").map(cp => dictCompetencias[cp])
             listaCompPessoa.every(compet => { // para cada competencia da pessoa do loop atual
