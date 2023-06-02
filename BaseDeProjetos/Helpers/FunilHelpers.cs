@@ -284,6 +284,7 @@ namespace BaseDeProjetos.Helpers
 
                 prospeccoes = prospeccoes.Where(p =>
                 ChecarSubstring(searchString, p.Empresa.Nome) ||
+                ChecarSubstring(searchString, p.Empresa.NomeFantasia) ||
                 ChecarSubstring(searchString, p.Usuario.UserName) ||
                 ChecarSubstring(searchString, p.NomeProspeccao) ||
                 ChecarSubstring(searchString, p.MembrosEquipe)

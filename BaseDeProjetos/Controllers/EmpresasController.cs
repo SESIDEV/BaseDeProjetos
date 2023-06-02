@@ -104,6 +104,7 @@ namespace BaseDeProjetos.Controllers
 
                 lista = lista.Where(e =>
                 e.Nome.ToLower().Contains(searchString.ToLower()) ||
+                e.NomeFantasia.ToLower().Contains(searchString.ToLower()) ||
                 e.CNPJ.ToLower().Contains(searchString.ToLower())).ToList();
 
             }
