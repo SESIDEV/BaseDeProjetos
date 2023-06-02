@@ -367,13 +367,15 @@ function montarNetwork(pessoas, compFiltradas = null) {
 
         user['id'] = p['Email']
         user['title'] = p['UserName']
-        user['image'] = p['Foto']
         user['comp'] = p['Competencia']
-
-        if ((p['Foto'] == null) || (p['Foto'] == "")) {
+        
+        if(p['Foto'].includes("data:image/jpeg;base64,")){
+            user['image'] = p['Foto']
+        } else if ((p['Foto'] == null) || (p['Foto'] == "")) {
             user['image'] = defuserpic
+        } else {
+            user['image'] = "data:image/jpeg;base64," + p['Foto']
         }
-
        
         pessoas.filter(ps => ps['Email'] != user['id']).forEach(pessoaParalela => { // para cada pessoa na rede inteira
             if (pessoaParalela['Competencia'] == null) {
