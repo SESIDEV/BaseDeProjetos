@@ -368,11 +368,11 @@ function montarNetwork(pessoas, compFiltradas = null) {
         user['id'] = p['Email']
         user['title'] = p['UserName']
         user['comp'] = p['Competencia']
-        
-        if(p['Foto'].includes("data:image/jpeg;base64,")){
-            user['image'] = p['Foto']
-        } else if ((p['Foto'] == null) || (p['Foto'] == "")) {
+
+        if ((p['Foto'] == null) || (p['Foto'] == "")) {
             user['image'] = defuserpic
+        } else if (p['Foto'].includes("data:image/jpeg;base64,")){
+            user['image'] = p['Foto']
         } else {
             user['image'] = "data:image/jpeg;base64," + p['Foto']
         }
