@@ -195,7 +195,9 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar) {
         document.querySelectorAll(".select2-container").forEach(input => {input.style.width = "100%"})
     })
     document.querySelector(`#${caixaId}`).style.display = "block";
-    document.querySelector(`#${botaoAlterar}`).style.display = "none";
+    if (botaoAlterar != null){
+        document.querySelector(`#${botaoAlterar}`).style.display = "none";
+    }
 }
 
 function novaTag(){
@@ -365,15 +367,20 @@ function montarNetwork(pessoas, compFiltradas = null) {
 
         user['id'] = p['Email']
         user['title'] = p['UserName']
-        user['image'] = p['Foto']
         user['comp'] = p['Competencia']
 
         if ((p['Foto'] == null) || (p['Foto'] == "")) {
             user['image'] = defuserpic
+        } else if (p['Foto'].includes("data:image/jpeg;base64,")){
+            user['image'] = p['Foto']
+        } else {
+            user['image'] = "data:image/jpeg;base64," + p['Foto']
         }
-
        
-        pessoas.filter(ps => ps['Email'] != user['id']).forEach(pessoaParalela => { // para cara pessoa na rede inteira
+        pessoas.filter(ps => ps['Email'] != user['id']).forEach(pessoaParalela => { // para cada pessoa na rede inteira
+            if (pessoaParalela['Competencia'] == null) {
+                return; // Skip the loop iteration if 'Competencia' is null
+            }
             let iterar = true;
             listaCompPessoaParalela = pessoaParalela['Competencia'].split(";").map(cp => dictCompetencias[cp])
             listaCompPessoa.every(compet => { // para cada competencia da pessoa do loop atual
@@ -396,9 +403,10 @@ function montarNetwork(pessoas, compFiltradas = null) {
 
         listaPessoas.push(user)
     })
-
-    ({ nodes, edges, network } = construirGrafo(nodes, listaPessoas, edges, listaLigacoes, network));
+    construirGrafo(nodes, listaPessoas, edges, listaLigacoes, network);
+    //({ nodes, edges, network } = construirGrafo(nodes, listaPessoas, edges, listaLigacoes, network));
 }
+
 const eqSet = (xs, ys) =>
     xs.size === ys.size &&
     [...xs].every((x) => ys.has(x));
@@ -471,7 +479,7 @@ function construirGrafo(nodes, listaPessoas, edges, listaLigacoes, network) {
     });
 
     redePessoas = network;
-    return { nodes, edges, network };
+    //return { nodes, edges, network };
 }
 
 function NaoEhNulaOuVazia(compFiltradas) {

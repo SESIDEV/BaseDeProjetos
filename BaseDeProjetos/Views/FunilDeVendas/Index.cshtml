@@ -1,4 +1,5 @@
-﻿@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
+﻿@model ProspeccoesViewModel
+@using BaseDeProjetos.Helpers;
 @using Microsoft.AspNetCore.Http;
 @{
 	ViewData["Title"] = "Funil de Vendas";
@@ -6,37 +7,6 @@
 	var dadosDaRota = ViewContext.RouteData;
 	string aba = dadosDaRota.Values["aba"] as string;
 	string casa = dadosDaRota.Values["casa"] as string;
-	//aba = aba.ToLowerInvariant(); // Safeguard
-
-	List<Prospeccao> ativas = new List<Prospeccao>();
-	List<Prospeccao> comproposta = new List<Prospeccao>();
-	List<Prospeccao> concluidas = new List<Prospeccao>();
-	List<Prospeccao> erradas = new List<Prospeccao>();
-	List<Prospeccao> planejadas = new List<Prospeccao>();
-
-	if (!string.IsNullOrEmpty(aba))
-	{
-		if (aba.ToLowerInvariant() == "ativas")
-		{
-			ativas = ViewBag.Ativas as List<Prospeccao>;
-		}
-		else if (aba.ToLowerInvariant() == "comproposta")
-		{
-			comproposta = ViewBag.EmProposta as List<Prospeccao>;
-		}
-		else if (aba.ToLowerInvariant() == "concluidas")
-		{
-			concluidas = ViewBag.Concluidas as List<Prospeccao>;
-		} 
-		else if (aba.ToLowerInvariant() == "erradas")
-		{
-			erradas = ViewBag.Erradas as List<Prospeccao>;
-		}
-		else if (aba.ToLowerInvariant() == "planejadas")
-		{
-			planejadas = ViewBag.Planejadas as List<Prospeccao>;
-		}
-	}	
 
 	if (string.IsNullOrEmpty(casa))
 	{
@@ -353,7 +323,7 @@
 				{
 					if (aba.ToLowerInvariant() == "ativas")
 					{
-						<a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-ativas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="ativas" aria-controls="prospeccao-ativas" aria-selected="true">Ativas (@ativas.Count())</a>
+						<a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-ativas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="ativas" aria-controls="prospeccao-ativas" aria-selected="true">Ativas (@Model.Prospeccoes.Count())</a>
 						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="comproposta" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta</a>
 						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="concluidas" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas</a>
 						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="planejadas" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas</a>
@@ -362,7 +332,7 @@
 					else if (aba.ToLowerInvariant() == "comproposta")
 					{
 						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="ativas" aria-controls="prospeccao-ativas" aria-selected="false">Ativas</a>
-						<a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-comproposta-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="comproposta" role="tab" aria-controls="prospeccao-comproposta" aria-selected="true">Com Proposta (@comproposta.Count())</a>
+						<a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-comproposta-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="comproposta" role="tab" aria-controls="prospeccao-comproposta" aria-selected="true">Com Proposta (@Model.Prospeccoes.Count())</a>
 						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="concluidas" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas</a>
 						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="planejadas" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas</a>
 						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="erradas" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas</a>
@@ -371,7 +341,7 @@
 					{
 						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="ativas" aria-controls="prospeccao-ativas" aria-selected="false">Ativas</a>
 						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="comproposta" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta</a>
-						<a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-concluidas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="concluidas" role="tab" aria-controls="prospeccao-concluidas" aria-selected="true">Concluídas (@concluidas.Count())</a>
+						<a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-concluidas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="concluidas" role="tab" aria-controls="prospeccao-concluidas" aria-selected="true">Concluídas (@Model.Prospeccoes.Count())</a>
 						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="planejadas" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas</a>
 						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="erradas" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas</a>
 					}
@@ -380,7 +350,7 @@
 						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="ativas" aria-controls="prospeccao-ativas" aria-selected="false">Ativas</a>
 						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="comproposta" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta</a>
 						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="concluidas" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas</a>
-						<a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-planejadas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="planejadas" role="tab" aria-controls="prospeccao-planejadas" aria-selected="true">Planejadas (@planejadas.Count())</a>
+						<a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-planejadas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="planejadas" role="tab" aria-controls="prospeccao-planejadas" aria-selected="true">Planejadas (@Model.Prospeccoes.Count())</a>
 						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="erradas" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas</a>
 					}
 					else if (aba.ToLowerInvariant() == "erradas")
@@ -389,7 +359,7 @@
 						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="comproposta" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta</a>
 						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="concluidas" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas</a>
 						<a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="planejadas" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas</a>
-						<a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-erradas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="erradas" role="tab" aria-controls="prospeccao-erradas" aria-selected="true">Erradas (@erradas.Count())</a>
+						<a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-erradas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="erradas" role="tab" aria-controls="prospeccao-erradas" aria-selected="true">Erradas (@Model.Prospeccoes.Count())</a>
 					}
 					else
 					{
@@ -424,32 +394,63 @@
 				}
 				else
 				{
-					if (aba.ToLowerInvariant() == "ativas")
-					{
-						@await Html.PartialAsync("ListaProsp", ativas)
-					}
-					else if (aba.ToLowerInvariant() == "comproposta")
-					{
-						@await Html.PartialAsync("ListaProsp", comproposta)
-					}
-					else if (aba.ToLowerInvariant() == "concluidas")
-					{
-						@await Html.PartialAsync("ListaProsp", concluidas)
-					}
-					else if (aba.ToLowerInvariant() == "planejadas")
-					{
-						@await Html.PartialAsync("ListaProsp", planejadas)
-					}
-					else if (aba.ToLowerInvariant() == "erradas")
-					{
-						@await Html.PartialAsync("ListaProsp", erradas)
-					}
-					else
-					{
-						
-					}
+					@await Html.PartialAsync("ListaProsp", Model);
 				}
 			</div>
+
+			@if (!string.IsNullOrEmpty(aba))
+			{
+				<nav class="app-pagination">
+					<ul class="pagination justify-content-center">
+
+						@if (Model.Pager.TotalPaginas > 1)
+						{
+							@if (Model.Pager.TemPaginaAnterior)
+							{
+								<li class="page-item">
+									<a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-aba="@aba" asp-route-numeroPagina="@(Model.Pager.PaginaAtual - 1)">Anterior</a>
+								</li>
+							}
+							else
+							{
+								<li class="page-item disabled">
+									<a class="page-link" asp-action="">Anterior</a>
+								</li>
+							}
+
+							@foreach (var numeroPagina in Model.Pager.Pages)
+							{
+								if (numeroPagina == Model.Pager.PaginaAtual)
+								{
+									<li class="page-item active">
+										<a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-aba="@aba" asp-route-numeroPagina="@(numeroPagina-1)">@numeroPagina</a>
+									</li>
+								}
+								else
+								{
+									<li class="page-item">
+										<a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-aba="@aba" asp-route-numeroPagina="@numeroPagina">@numeroPagina</a>
+									</li>
+								}
+							}
+
+							@if (Model.Pager.TemProximaPagina)
+							{
+								<li class="page-item">
+									<a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-aba="@aba" asp-route-numeroPagina="@(Model.Pager.PaginaAtual + 1)">Proximo</a>
+								</li>
+							}
+							else
+							{
+								<li class="page-item disabled">
+									<a class="page-link">Proximo</a>
+								</li>
+							}
+						}
+
+				</ul>
+			</nav>
+			}
 		</div>
 	</div>
 	<partial name="Footer" />

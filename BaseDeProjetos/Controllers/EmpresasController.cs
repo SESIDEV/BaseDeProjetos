@@ -104,6 +104,7 @@ namespace BaseDeProjetos.Controllers
 
                 lista = lista.Where(e =>
                 e.Nome.ToLower().Contains(searchString.ToLower()) ||
+                e.NomeFantasia.ToLower().Contains(searchString.ToLower()) ||
                 e.CNPJ.ToLower().Contains(searchString.ToLower())).ToList();
 
             }
@@ -228,7 +229,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Logo,Nome,CNPJ,Segmento,Estado,Industrial,CNAE")] Empresa empresa)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Logo,Nome,CNPJ,Segmento,Estado,Industrial,NomeFantasia,CNAE")] Empresa empresa)
         {
             if (id != empresa.Id)
             {

@@ -103,7 +103,10 @@
                                 </div>
                             </h4>
                         </div>
-                        <div class="app-card-body p-4 background_principal">
+                        <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectPessoas">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div id="campoPrincipal" class="app-card-body p-4 background_principal" style="display: none;">
                             <div class="chart-container network">
                                 <div id="chart-line" style="height: 700px;"></div><!--CAMPO PRINCIPAL-->
 
@@ -169,11 +172,12 @@
 
 <script>
     window.addEventListener('load', function(){
-        gerarOpcoesSelect(null,'pessoasSelect','Pessoas')
+        gerarOpcoesSelect(null,'pessoasSelect','Pessoas','campoPrincipal')
         
         fetch('/Pessoas/dados').then(response => response.json()).then(data => {
             localStorage.setItem('Pessoas', JSON.stringify(data));
-            montarNetwork(data)});
+            montarNetwork(data)
+        });
 
         listarCompetencias()
     });
