@@ -1,10 +1,11 @@
-﻿@model IEnumerable<BaseDeProjetos.Models.Prospeccao>
+﻿@model ProspeccoesViewModel
 @using System.Globalization
 @using BaseDeProjetos.Helpers
 @{
     var ptbr = new CultureInfo("pt-BR");
     var dadosDaRota = ViewContext.RouteData;
     string aba = dadosDaRota.Values["aba"] as string;
+    string casa = dadosDaRota.Values["casa"] as string;
     aba = aba.ToLowerInvariant();
 }
 <style>
@@ -38,7 +39,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var prospeccao in Model)
+                        @foreach (var prospeccao in Model.Prospeccoes)
                         {
                             <tr id="table-row-@prospeccao.Id">
                                 <td class="cell">
@@ -50,7 +51,7 @@
                                     {
                                         <nobr id="logo_alt">Sem Logo</nobr>
                                     }
-                                    @if (prospeccao.Empresa.Industrial == true)
+                                    @if (prospeccao.Empresa.Industrial == false)
                                     {
                                         <span class="translate-middle badge rounded-circle bg-danger" data-tippy-content="Esta empresa não possui CNAE Industrial">!</span>
                                     }
@@ -134,7 +135,7 @@
                             </tr>
                         }
                     </tbody>
-                </table>
+                </table>               
             </div>
         </div>
     </div>

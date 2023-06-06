@@ -28,22 +28,23 @@
                     <h6 id="TipoEmpresaStatus-@Model.Id">Tipo:</h6>
                     <h6 id="SituacaoEmpresaStatus-@Model.Id">Situação:</h6>
                     <div style="display: flex; align-items: baseline;">
-                        <h6 id="BoolCnaeIndustrial">CNAE Industrial:</h6>
+                        <h6 id="BoolCnaeIndustrial-@Model.Id" onload="checarCNAE()">CNAE Industrial:</h6>
                         <i id="checkCNAE-@Model.Id" class="fa" style="display:none; color:rgb(255, 255, 255); margin-left:1%"></i>
-                        <input asp-for="Industrial" id="BoolCnaeIndustrial-@Model.Id" value="" style="display: none;" readonly />
+                        <input asp-for="CNAE" id="inputCnae-@Model.Id" value="@Model.CNAE" style="display: none;" readonly />
+                        <input asp-for="Industrial" id="BoolCnaeIndustrial-@Model.Id" value="@Model.Industrial" style="display: none;" readonly />
                     </div>
                     <div class="form-group">
                         <label asp-for="Nome" class="control-label"></label>
                         <input asp-for="Nome" id="NomeEmpresaCadastro-@Model.Id" class="form-control" value="@Model.Nome" readonly />
                     </div>
                     <div class="form-group">
-                        <label class="control-label">Nome Fantasia</label>
-                        <input id="NomeFantasiaEmpresa-@Model.Id" class="form-control" value="" />
+                        <label asp-for="NomeFantasia" class="control-label">Nome Fantasia</label>
+                        <input asp-for="NomeFantasia" id="NomeFantasiaEmpresa-@Model.Id" class="form-control" value="@Model.NomeFantasia" />
                     </div>
-                    <div>
+                    <div class="form-group">
                         <label asp-for="Estado" class="control-label"></label>
                         <input id="EstadoEmpresaCadastro-@Model.Id" class="form-control" value="@Model.Estado.GetDisplayName()" readonly /> <!--VISUAL APENAS-->
-                        <input asp-for="Estado" id="EstadoEmpresaCadastroINT" value="@Model.Estado" style="display: none;" readonly />
+                        <input asp-for="Estado" id="EstadoEmpresaCadastroINT-@Model.Id" value="@Model.Estado" style="display: none;" readonly />
                     </div>
                     <hr />
                     <div class="form-group">
