@@ -118,6 +118,11 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+
                 List<Empresa> empresas = _context.Empresa.ToList();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
                 ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
@@ -147,6 +152,11 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+
                 List<Empresa> empresas = _context.Empresa.ToList();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
                 return View();
@@ -161,6 +171,11 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+
                 userId = HttpContext.User.Identity.Name;
                 Instituto usuarioCasa = _context.Users.FirstOrDefault(u => u.UserName == userId).Casa;
 
@@ -202,6 +217,11 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+
                 ViewData["origem"] = id;
                 ViewData["prosp"] = _context.Prospeccao.FirstOrDefault(p => p.Id == id);
                 return View("CriarFollowUp");
@@ -312,6 +332,10 @@ namespace BaseDeProjetos.Controllers
             {
                 CriarSelectListsDaView();
 
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+
                 if (id == null)
                 {
                     return NotFound();
@@ -391,6 +415,11 @@ namespace BaseDeProjetos.Controllers
         }
         public async Task<IActionResult> EditarFollowUp(int? id) // RETONAR VIEW
         {
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
             if (id == null)
             {
                 return NotFound();
@@ -431,6 +460,11 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+
                 if (id == null)
                 {
                     return NotFound();

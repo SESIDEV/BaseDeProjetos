@@ -1,5 +1,4 @@
 ﻿using BaseDeProjetos.Data;
-using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -27,10 +26,11 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
+                Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
                 if (usuario.Nivel == Nivel.PMO || usuario.Nivel == Nivel.Dev)
                 {
+                    ViewBag.usuarioCasa = usuario.Casa;
+                    ViewBag.usuarioNivel = usuario.Nivel;
 
                     List<IndicadoresFinanceiros> listaIndicadoresFinanceiros = await _context.IndicadoresFinanceiros.ToListAsync();
                     if (string.IsNullOrEmpty(casa))
@@ -101,6 +101,9 @@ namespace BaseDeProjetos.Controllers
                 Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
                 if (usuario.Nivel == Nivel.PMO || usuario.Nivel == Nivel.Dev)
                 {
+                    ViewBag.usuarioCasa = usuario.Casa;
+                    ViewBag.usuarioNivel = usuario.Nivel;
+
                     if (id == null)
                     {
                         return NotFound();
@@ -134,6 +137,9 @@ namespace BaseDeProjetos.Controllers
                 Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
                 if (usuario.Nivel == Nivel.PMO || usuario.Nivel == Nivel.Dev)
                 {
+                    ViewBag.usuarioCasa = usuario.Casa;
+                    ViewBag.usuarioNivel = usuario.Nivel;
+
                     return View();
                 }
                 else
@@ -168,9 +174,12 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
                 if (usuario.Nivel == Nivel.PMO || usuario.Nivel == Nivel.Dev)
                 {
+                    ViewBag.usuarioCasa = usuario.Casa;
+                    ViewBag.usuarioNivel = usuario.Nivel;
+
                     if (id == null)
                     {
                         return NotFound();
@@ -237,6 +246,9 @@ namespace BaseDeProjetos.Controllers
                 Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
                 if (usuario.Nivel == Nivel.PMO || usuario.Nivel == Nivel.Dev)
                 {
+                    ViewBag.usuarioCasa = usuario.Casa;
+                    ViewBag.usuarioNivel = usuario.Nivel;
+
                     if (id == null)
                     {
                         return NotFound();

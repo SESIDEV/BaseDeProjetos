@@ -43,6 +43,9 @@ namespace BaseDeProjetos.Controllers
             {
                 Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
 
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+
                 ObterDadosReceita();
 
                 var prospeccoes = _context.Prospeccao

@@ -150,7 +150,12 @@ namespace BaseDeProjetos.Controllers
 		[HttpGet]
 		public IActionResult Index()
         {
+			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
 			var participacoes = GetParticipacoesTotaisUsuarios();
+
+			ViewBag.usuarioCasa = usuario.Casa;
+			ViewBag.usuarioNivel = usuario.Nivel;
 
 			return View(participacoes);
         }
