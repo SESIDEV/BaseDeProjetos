@@ -1,0 +1,557 @@
+﻿@model IEnumerable<BaseDeProjetos.Models.IndicadoresFinanceiros>
+
+@{
+    ViewData["Title"] = "Indicadores";
+
+    Dictionary<string, int> QuantidadeDeProspeccaoPorPotencialParceiro = ViewBag.QuantidadeDeProspeccaoPorPotencialParceiro;
+
+    Dictionary<string, int> QuantidadeDeProspeccoesPorEmpresa = ViewBag.QuantidadeDeProspeccoesPorEmpresa;
+    Dictionary<string, string> ValorSomaProspeccoesPorEmpresa = ViewBag.ValorSomaDeProspeccoesPorEmpresa;
+    Dictionary<string, int> QuantidadeProspeccaoPorEstado = ViewBag.QuantidadeProspeccaoPorEstado;
+
+    Dictionary<string, int> QuantidadeDeProspeccoesPorPesquisador = ViewBag.QuantidadeDeProspeccoesPorPesquisador;
+    Dictionary<string, string> ValorSomaProspeccoesPorPesquisador = ViewBag.ValorSomaProspeccoesPorPesquisador;
+
+    Dictionary<string, int> QuantidadeDeProspeccoesPorTipoContratacao = ViewBag.QuantidadeDeProspeccoesPorTipoContratacao;
+    Dictionary<string, string> ValorSomaProspeccoesPorTipoContratacao = ViewBag.ValorSomaProspeccoesPorTipoContratacao;
+
+    Dictionary<string, int> QuantidadeDeProspeccoesPorLinhaDePesquisa = ViewBag.QuantidadeDeProspeccoesPorLinhaDePesquisa;
+    Dictionary<string, string> ValorSomaProspeccoesPorLinhaDePesquisa = ViewBag.ValorSomaProspeccoesPorLinhaDePesquisa;
+
+    Dictionary<string, int> QuantidadeDeProspeccoesPorCasa = ViewBag.QuantidadeDeProspeccoesPorCasa;
+    Dictionary<string, string> ValorSomaProspeccoesPorCasa = ViewBag.ValorSomaProspeccoesPorCasa;
+}
+<style>
+    #content-main {
+        margin-left: 20%;
+        width: 80vw;
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    h1 {
+        margin-left: 20%;
+    }
+</style>
+
+<partial name="Header" view-data="@ViewData" />
+
+<h1>Indicadores ISI</h1>
+
+<div id="content-main">
+    <!--Prospecção por Potencias Linha de Pesquisa-->
+    <div class="card" style="width: 36rem;">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item text-center">
+                <b>Prospecção</b>
+            </li>
+            <li class="list-group-item text-center">
+                <b>Linha de Pesquisa</b>
+            </li>
+        </ul>
+
+        <!-- Inicio card: Prospecções por Linha de Pesquisa -->
+        <div class="text-center w-100 p-2">
+            <button class="btn btn-primary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-prospeccoes-linha-de-pesquisa" aria-expanded="false" aria-controls="collapse-prospeccoes-linha-de-pesquisa">
+                Prospecções por Linha de Pesquisa
+            </button>
+        </div>
+
+        <div class="collapse" id="collapse-prospeccoes-linha-de-pesquisa">
+            <div class="card card-body">
+                <div class="card-body d-flex justify-content-between gap-3">
+                    <p class="list-group-item card-text">Esse valor indica o número de prospecções por <b>Linha De Pesquisa</b></p>
+                </div>
+                <hr />
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Linha de Pesquisa</th>
+                                <th scope="col">Qtd Prospecções</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dict in QuantidadeDeProspeccoesPorLinhaDePesquisa)
+                            {
+                                <tr>
+                                    <td>@dict.Key</td>
+                                    <td>@dict.Value</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+        <!-- Fim card: Prospecções por Linha de Pesquisa -->
+        <!-- Inicio card: Valor por Linha de Pesquisa -->
+        <div class="text-center w-100 p-2">
+            <button class="btn btn-primary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-prospeccoes-linha-de-pesquisa-valor" aria-expanded="false" aria-controls="collapse-prospeccoes-linha-de-pesquisa-valor">
+                Valor por Linha de Pesquisa
+            </button>
+        </div>
+
+        <div class="collapse" id="collapse-prospeccoes-linha-de-pesquisa-valor">
+            <div class="card card-body">
+                <div class="card-body d-flex justify-content-between gap-3">
+                    <p class="list-group-item card-text">Esse valor indica a soma dos valores das prospecções por <b>Linha de Pesquisa</b></p>
+                </div>
+                <hr />
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Empresa</th>
+                                <th scope="col">Valor Por Empresa</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dict in ValorSomaProspeccoesPorLinhaDePesquisa)
+                            {
+                                <tr>
+                                    <td>@dict.Key</td>
+                                    <td>@dict.Value</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+        <!-- Fim card: Valor por Potenciais Parceitos -->
+    </div>
+
+    <!--Prospecção por Empresas-->
+    <div class="card" style="width: 36rem;">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item text-center">
+                <b>Prospecção</b>
+            </li>
+            <li class="list-group-item text-center">
+                <b>Empresas</b>
+            </li>
+        </ul>
+
+        <!-- Inicio card: Prospecções por Empresas -->
+        <div class="text-center w-100 p-2">
+            <button class="btn btn-primary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-prospeccoes-por-empresas" aria-expanded="false" aria-controls="collapse-prospeccoes-por-empresas">
+                Prospecções por Empresas
+            </button>
+        </div>
+
+        <div class="collapse" id="collapse-prospeccoes-por-empresas">
+            <div class="card card-body">
+                <div class="card-body d-flex justify-content-between gap-3">
+                    <p class="list-group-item card-text">Esse valor indica o número de prospecções por <b>Empresa</b></p>
+                </div>
+                <hr />
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Empresa</th>
+                                <th scope="col">Qtd Prospecções</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dict in QuantidadeDeProspeccoesPorEmpresa)
+                            {
+                                <tr>
+                                    <td>@dict.Key</td>
+                                    <td>@dict.Value</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+        <!-- Fim card: Prospecções por Empresas -->
+        <!-- Inicio card: Prospecções por Empresas -->
+        <div class="text-center w-100 p-2">
+            <button class="btn btn-primary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-valores-soma-prospeccoes-por-empresas" aria-expanded="false" aria-controls="collapse-valores-soma-prospeccoes-por-empresas">
+                Valor de Prospecção Por Empresa
+            </button>
+        </div>
+
+        <div class="collapse" id="collapse-valores-soma-prospeccoes-por-empresas">
+            <div class="card card-body">
+                <div class="card-body d-flex justify-content-between gap-3">
+                    <p class="list-group-item card-text">Esse valor indica a soma de valor de proposta de prospecção por <b>Empresa</b></p>
+                </div>
+                <hr />
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Empresa</th>
+                                <th scope="col">Valor Por Empresa</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dict in ValorSomaProspeccoesPorEmpresa)
+                            {
+                                <tr>
+                                    <td>@dict.Key</td>
+                                    <td>@dict.Value</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+        <!-- Inicio card: Prospecções por Empresas -->
+        <div class="text-center w-100 p-2">
+            <button class="btn btn-primary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-quantidade-prospeccoes-por-estado-empresa" aria-expanded="false" aria-controls="collapse-quantidade-prospeccoes-por-estado-empresa">
+                Quantidade de Prospecção Por Estado da Empresa
+            </button>
+        </div>
+
+        <div class="collapse" id="collapse-quantidade-prospeccoes-por-estado-empresa">
+            <div class="card card-body">
+                <div class="card-body d-flex justify-content-between gap-3">
+                    <p class="list-group-item card-text">Esse valor indica a quantidade de prospecão por Estado das <b>Empresas</b></p>
+                </div>
+                <hr />
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Quantidade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dict in QuantidadeProspeccaoPorEstado)
+                            {
+                                <tr>
+                                    <td>@dict.Key</td>
+                                    <td>@dict.Value</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Prospecção por Pesquisador-->
+    <div class="card" style="width: 36rem;">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item text-center">
+                <b>Prospecção</b>
+            </li>
+            <li class="list-group-item text-center">
+                <b>Pesquisador</b>
+            </li>
+        </ul>
+
+        <!-- Inicio card: Prospecções por Pesquisador -->
+        <div class="text-center w-100 p-2">
+            <button class="btn btn-primary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-prospeccoes-por-pesquisador" aria-expanded="false" aria-controls="collapse-prospeccoes-por-pesquisador">
+                Prospecções por Pesquisador
+            </button>
+        </div>
+
+        <div class="collapse" id="collapse-prospeccoes-por-pesquisador">
+            <div class="card card-body">
+                <div class="card-body d-flex justify-content-between gap-3">
+                    <p class="list-group-item card-text">Esse valor indica o número de prospecções por <b>Pesquisador</b></p>
+                </div>
+                <hr />
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Pesquisador</th>
+                                <th scope="col">Qtd Prospecções</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dict in QuantidadeDeProspeccoesPorPesquisador)
+                            {
+                                <tr>
+                                    <td>@dict.Key</td>
+                                    <td>@dict.Value</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+        <!-- Fim card: Prospecções por Pesquisador -->
+        <!-- Inicio card: Prospecções por Pesquisador -->
+        <div class="text-center w-100 p-2">
+            <button class="btn btn-primary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-valores-soma-prospeccoes-por-pesquisador" aria-expanded="false" aria-controls="collapse-valores-soma-prospeccoes-por-pesquisador">
+                Valor de Prospecção Por Pesquisador
+            </button>
+        </div>
+
+        <div class="collapse" id="collapse-valores-soma-prospeccoes-por-pesquisador">
+            <div class="card card-body">
+                <div class="card-body d-flex justify-content-between gap-3">
+                    <p class="list-group-item card-text">Esse valor indica a soma de valor de proposta de prospecção por <b>Pesquisador</b></p>
+                </div>
+                <hr />
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Pesquisador</th>
+                                <th scope="col">Valor Por Pesquisador</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dict in ValorSomaProspeccoesPorPesquisador)
+                            {
+                                <tr>
+                                    <td>@dict.Key</td>
+                                    <td>@dict.Value</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!--Prospecção por Tipo Contratação-->
+    <div class="card" style="width: 36rem;">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item text-center">
+                <b>Prospecção</b>
+            </li>
+            <li class="list-group-item text-center">
+                <b>Tipo Contratação</b>
+            </li>
+        </ul>
+
+        <!-- Inicio card: Prospecções por Tipo Contratação -->
+        <div class="text-center w-100 p-2">
+            <button class="btn btn-primary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-prospeccoes-por-tipo-contratacao" aria-expanded="false" aria-controls="collapse-prospeccoes-por-tipo-contratacao">
+                Prospecções por Tipo Contratação
+            </button>
+        </div>
+
+        <div class="collapse" id="collapse-prospeccoes-por-tipo-contratacao">
+            <div class="card card-body">
+                <div class="card-body d-flex justify-content-between gap-3">
+                    <p class="list-group-item card-text">Esse valor indica o número de prospecções por <b>Tipo de Contratação</b></p>
+                </div>
+                <hr />
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Tipo Contratação</th>
+                                <th scope="col">Qtd Prospecções</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dict in QuantidadeDeProspeccoesPorTipoContratacao)
+                            {
+                                <tr>
+                                    <td>@dict.Key</td>
+                                    <td>@dict.Value</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+        <!-- Fim card: Prospecções por Tipo Contratação -->
+        <!-- Inicio card: Prospecções por Tipo Contratação -->
+        <div class="text-center w-100 p-2">
+            <button class="btn btn-primary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-valores-soma-prospeccoes-por-tipo-contratacao" aria-expanded="false" aria-controls="collapse-valores-soma-prospeccoes-por-tipo-contratacao">
+                Valor de Prospecção Por Tipo Contratação
+            </button>
+        </div>
+
+        <div class="collapse" id="collapse-valores-soma-prospeccoes-por-tipo-contratacao">
+            <div class="card card-body">
+                <div class="card-body d-flex justify-content-between gap-3">
+                    <p class="list-group-item card-text">Esse valor indica a soma de valor de proposta de prospecção por <b>Tipo Contratação</b></p>
+                </div>
+                <hr />
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Pesquisador</th>
+                                <th scope="col">Valor Por Tipo Contratação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dict in ValorSomaProspeccoesPorTipoContratacao)
+                            {
+                                <tr>
+                                    <td>@dict.Key</td>
+                                    <td>@dict.Value</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!--Prospecção por Tipo Casa-->
+    <div class="card" style="width: 36rem;">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item text-center">
+                <b>Prospecção</b>
+            </li>
+            <li class="list-group-item text-center">
+                <b>Casa</b>
+            </li>
+        </ul>
+
+        <!-- Inicio card: Prospecções por Tipo Contratação -->
+        <div class="text-center w-100 p-2">
+            <button class="btn btn-primary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-prospeccoes-por-casa" aria-expanded="false" aria-controls="collapse-prospeccoes-por-casa">
+                Prospecções por Casa
+            </button>
+        </div>
+
+        <div class="collapse" id="collapse-prospeccoes-por-casa">
+            <div class="card card-body">
+                <div class="card-body d-flex justify-content-between gap-3">
+                    <p class="list-group-item card-text">Esse valor indica o número de prospecções por <b>Casa</b></p>
+                </div>
+                <hr />
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Casa</th>
+                                <th scope="col">Qtd Prospecções</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dict in QuantidadeDeProspeccoesPorCasa)
+                            {
+                                <tr>
+                                    <td>@dict.Key</td>
+                                    <td>@dict.Value</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+        <!-- Fim card: Prospecções por Casa -->
+        <!-- Inicio card: Prospecções por Casa -->
+        <div class="text-center w-100 p-2">
+            <button class="btn btn-primary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-valores-soma-prospeccoes-por-casa" aria-expanded="false" aria-controls="collapse-valores-soma-prospeccoes-por-casa">
+                Valor de Prospecção Por Casa
+            </button>
+        </div>
+
+        <div class="collapse" id="collapse-valores-soma-prospeccoes-por-casa">
+            <div class="card card-body">
+                <div class="card-body d-flex justify-content-between gap-3">
+                    <p class="list-group-item card-text">Esse valor indica a soma de valor de proposta de prospecção por <b>Casa</b></p>
+                </div>
+                <hr />
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Casa</th>
+                                <th scope="col">Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dict in ValorSomaProspeccoesPorCasa)
+                            {
+                                <tr>
+                                    <td>@dict.Key</td>
+                                    <td>@dict.Value</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!--Prospecção por Tipo Casa-->
+    <div class="card" style="width: 36rem;">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item text-center">
+                <b>Prospecção</b>
+            </li>
+            <li class="list-group-item text-center">
+                <b>Potenciais Parceiros</b>
+            </li>
+        </ul>
+
+        <!-- Inicio card: Prospecções por Tipo Contratação -->
+        <div class="text-center w-100 p-2">
+            <button class="btn btn-primary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-prospeccoes-por-parceiros" aria-expanded="false" aria-controls="collapse-prospeccoes-por-parceiros">
+                Prospecções por Potencial Parceiro
+            </button>
+        </div>
+
+        <div class="collapse" id="collapse-prospeccoes-por-parceiros">
+            <div class="card card-body">
+                <div class="card-body d-flex justify-content-between gap-3">
+                    <p class="list-group-item card-text">Esse valor indica o número de prospecções por <b>Potenciais Parceiros</b></p>
+                </div>
+                <hr />
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Parceiro</th>
+                                <th scope="col">Qtd Prospecções</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dict in QuantidadeDeProspeccaoPorPotencialParceiro)
+                            {
+                                <tr>
+                                    <td>@dict.Key</td>
+                                    <td>@dict.Value</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+        <!-- Fim card: Prospecções por Casa -->
+    </div>
+</div>
+
+<partial name="Footer" />
