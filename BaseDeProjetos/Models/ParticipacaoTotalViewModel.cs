@@ -12,7 +12,10 @@ namespace BaseDeProjetos.Models
         public int QuantidadeProspeccoes { get; set; }
 
         public List<ParticipacaoViewModel> Participacoes { get; set; }
-    }
+		public int QuantidadeProjetos { get; set; }
+		public decimal ValorTotalProjetos { get; set; }
+		public decimal ValorMedioProjetos { get; internal set; }
+	}
 
     public class ParticipacaoViewModel
     {

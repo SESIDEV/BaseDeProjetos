@@ -28,6 +28,9 @@
                                         <th class="cell">Valor Total das Prospecções (Valor de Proposta)</th>
                                         <th class="cell">Valor Médio das Prospecções (Valor de Proposta)</th>
                                         <th class="cell">Quantidade de Prospecções</th>
+                                        <th class="cell">Valor Total dos Projetos</th>
+                                        <th class="cell">Valor Médio dos Projetos</th>
+                                        <th class="cell">Quantidade de Projetos</th>
                                         <th class="cell">Detalhes</th>
                                     </tr>
                                 </thead>
@@ -54,7 +57,7 @@
                                                                             <h2 class="accordion-header">
                                                                             @* TODO: Incluir collapse pro texto depois *@
                                                                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@(index)" aria-expanded="true" aria-controls="collapse-@(index)">
-                                                                                    Projeto @(!string.IsNullOrEmpty(participacaoUnitaria.NomeProjeto) ? participacaoUnitaria.NomeProjeto : "Sem nome")
+                                                                                    Projeto @participacaoUnitaria.NomeProjeto
                                                                                 </button>
                                                                             </h2>
                                                                             <div id="collapse-@(index)" class="accordion-collapse collapse" data-bs-parent="#accordionParticipacaoUni-@(participacaoUnitaria.Id)">
@@ -86,6 +89,15 @@
                                             </td>
                                             <td class="cell">
                                                 @participacaoTotal.QuantidadeProspeccoes
+                                            </td>
+                                            <td class="cell">
+                                                R$ @participacaoTotal.ValorTotalProjetos.ToString("N", cultura)
+                                            </td>
+                                            <td class="cell">
+                                                R$ @participacaoTotal.ValorMedioProjetos.ToString("N", cultura)
+                                            </td>
+                                            <td class="cell">
+                                                @participacaoTotal.QuantidadeProjetos
                                             </td>
                                             <td class="cell">
                                                 <button type="button" id="button-@(participacaoTotal.Id)" onmouseover="carregarModalParticipacaoTotalDetalhes('@participacaoTotal.Id')" data-bs-target="#ModalDetalhesParticipacaoTotal-@participacaoTotal.Id"
