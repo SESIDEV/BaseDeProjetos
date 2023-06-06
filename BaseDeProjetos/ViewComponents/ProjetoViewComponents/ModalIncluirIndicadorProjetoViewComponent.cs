@@ -4,20 +4,19 @@ using System.Threading.Tasks;
 
 namespace BaseDeProjetos.ViewComponents.ProjetoViewComponents
 {
-    public class ModalDetalhesMacroentregaProjetoViewComponent : ViewComponent
+    public class ModalIncluirIndicadorProjetoViewComponent : ViewComponent
     {
         private readonly ApplicationDbContext _context;
 
-        public ModalDetalhesMacroentregaProjetoViewComponent(ApplicationDbContext context)
+        public ModalIncluirIndicadorProjetoViewComponent(ApplicationDbContext context)
         {
             _context = context;
         }
 
         public async Task<IViewComponentResult> InvokeAsync(string id)
         {
-            var model = await _context.Projeto.FindAsync(id);
-            return View(model);
-        }
-
+            ViewData["Projeto"] = await _context.Projeto.FindAsync(id);
+            return View();
+        }        
     }
 }

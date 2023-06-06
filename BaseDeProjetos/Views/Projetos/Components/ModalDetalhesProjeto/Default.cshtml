@@ -49,13 +49,13 @@
                 @if (nivelUsuario.ToString() == "PMO" || nivelUsuario.ToString() == "Dev" || nivelUsuario.ToString() == "Supervisor")
                 {
                     <div class="d-flex">
-                        <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#incluirMacroentregaProjetoModal-@Model.Id"
+                        <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#incluirIndicadorProjetoModal-@Model.Id"
                            role="button">
-                            Incluir Macroentrega
+                            Incluir Indicador
                         </a>
-                        <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#detalhesMacroentregaProjetoModal-@Model.Id"
+                        <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#detalhesIndicadorProjetoModal-@Model.Id"
                            role="button">
-                            Visualizar Macroentregas
+                            Visualizar Indicadores
                         </a>
                     </div>
                 }
