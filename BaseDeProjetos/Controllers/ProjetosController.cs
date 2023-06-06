@@ -85,7 +85,10 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                List<Empresa> empresas = _context.Empresa.ToList();
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewData["NivelUsuario"] = usuario.Nivel;
+
+				List<Empresa> empresas = _context.Empresa.ToList();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
 
                 SetarFiltros(sortOrder, searchString);
