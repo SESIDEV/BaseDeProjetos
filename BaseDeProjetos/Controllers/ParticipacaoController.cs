@@ -61,14 +61,19 @@ namespace BaseDeProjetos.Controllers
             participacao.Participacoes = new List<ParticipacaoViewModel>();
 
             List<Prospeccao> prospeccoesUsuario = _context.Prospeccao.Where(p => p.Usuario == usuario).ToList();
+            List<Projeto> projetosUsuario = _context.Projeto.Where(p => p.MembrosEquipe.Contains(usuario.UserName)).ToList();
 
             AtribuirParticipacoesIndividuais(participacao, prospeccoesUsuario);
 
-            decimal valorTotal;
+            decimal valorTotalProspeccoes;
+            decimal valorTotalProjetos;
             int quantidadeProspeccoes;
+            int quantidadeProjetos;
 
-            participacao.ValorTotalProspeccoes = valorTotal = prospeccoesUsuario.Sum(p => p.ValorProposta);
+            participacao.ValorTotalProspeccoes = valorTotalProspeccoes = prospeccoesUsuario.Sum(p => p.ValorProposta);
+            participacao.ValorTotalProjetos = valorTotalProjetos = (decimal)projetosUsuario.Sum(p => p.ValorTotalProjeto);
             participacao.QuantidadeProspeccoes = quantidadeProspeccoes = prospeccoesUsuario.Count();
+            participacao.QuantidadeProjetos = quantidadeProjetos = projetosUsuario.Count();
             participacao.Lider = usuario;
 
             // Evita divisão por 0
@@ -78,7 +83,16 @@ namespace BaseDeProjetos.Controllers
             }
             else
             {
-                participacao.ValorMedioProspeccoes = valorTotal / quantidadeProspeccoes;
+                participacao.ValorMedioProspeccoes = valorTotalProspeccoes / quantidadeProspeccoes;
+            }
+
+            if (projetosUsuario.Count() == 0)
+            {
+                participacao.ValorMedioProjetos = 0;
+            }
+            else
+            {
+                participacao.ValorMedioProjetos = valorTotalProjetos / quantidadeProjetos;
             }
 
             return participacao;
@@ -88,11 +102,21 @@ namespace BaseDeProjetos.Controllers
         {
             foreach (var prospeccao in prospeccoesUsuario)
             {
+                var nomeProjeto = !string.IsNullOrEmpty(prospeccao.NomeProspeccao) ? prospeccao.NomeProspeccao : prospeccao.Empresa.Nome;
+
+                // Tratar prospecções que tem "projeto" no nome (...)
+                // i.e: Remover na hora de apresentar o nome casos em que temos "Projeto projeto XYZ"
+                if (nomeProjeto != null && nomeProjeto != "" && nomeProjeto.ToLowerInvariant().Contains("projeto"))
+                {
+                    nomeProjeto.Replace("projeto", "");
+                    nomeProjeto.Replace("Projeto", "");
+                }
+
                 ParticipacaoViewModel participacaoUnitaria = new ParticipacaoViewModel()
                 {
                     Id = Guid.NewGuid(),
-                    NomeProjeto = prospeccao.NomeProspeccao,
-                    ValorNominal = (prospeccao.ValorProposta != 0) ? (prospeccao.ValorProposta) : prospeccao.ValorEstimado
+                    NomeProjeto = nomeProjeto,
+                    ValorNominal = prospeccao.ValorProposta
                 };
                 participacao.Participacoes.Add(participacaoUnitaria);
             }
@@ -100,8 +124,18 @@ namespace BaseDeProjetos.Controllers
 
         private List<ParticipacaoTotalViewModel> GetParticipacoesTotaisUsuarios()
 		{
-			// TODO: Harcoded ISIQV/CISHO
-			List<Usuario> usuarios = _context.Users.Where(u=> u.Casa == Instituto.ISIQV || u.Casa == Instituto.CISHO).ToList();
+            Usuario usuarioAtivo = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            List<Usuario> usuarios;
+
+			if (usuarioAtivo.Casa == Instituto.ISIQV || usuarioAtivo.Casa == Instituto.CISHO)
+            {
+				usuarios = _context.Users.Where(u => u.Casa == Instituto.ISIQV || u.Casa == Instituto.CISHO).ToList();
+			}
+            else
+            {
+                usuarios = _context.Users.Where(u => u.Casa == usuarioAtivo.Casa).ToList();
+			}
+
 			List<ParticipacaoTotalViewModel> participacoes = new List<ParticipacaoTotalViewModel>();
 			
 			foreach (var usuario in usuarios)
