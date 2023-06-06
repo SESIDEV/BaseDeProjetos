@@ -117,20 +117,3 @@
     </div>
     <partial name="Footer" />
 </div>
-
-<script>
-    function carregarModalParticipacaoTotalDetalhes(idParticipacao) {
-        let buttonDetalhes = document.querySelector(`#${idParticipacao}`);
-        buttonDetalhes.disabled = true;
-
-        fetch(`/Participacao/RetornarModal?idParticipacao=${idParticipacao}`)
-            .then(response => response.text())
-            .then(result => {
-                document.querySelector(`#ModalDetalhesParticipacaoTotal-${idParticipacao}-container`).innerHTML = result;
-                buttonDetalhes.innerHTML = 'Detalhes';
-                buttonDetalhes.disabled = false;
-                buttonDetalhes.removeAttribute("style");
-            });
-    }
-</script>
-
