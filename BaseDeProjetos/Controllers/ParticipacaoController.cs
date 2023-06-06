@@ -108,8 +108,8 @@ namespace BaseDeProjetos.Controllers
                 // i.e: Remover na hora de apresentar o nome casos em que temos "Projeto projeto XYZ"
                 if (nomeProjeto != null && nomeProjeto != "" && nomeProjeto.ToLowerInvariant().Contains("projeto"))
                 {
-                    nomeProjeto.Replace("projeto", "");
-                    nomeProjeto.Replace("Projeto", "");
+                    nomeProjeto = nomeProjeto.Replace("projeto", "");
+                    nomeProjeto = nomeProjeto.Replace("Projeto", "");
                 }
 
                 ParticipacaoViewModel participacaoUnitaria = new ParticipacaoViewModel()
