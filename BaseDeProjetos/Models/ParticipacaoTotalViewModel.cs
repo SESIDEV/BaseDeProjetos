@@ -10,12 +10,16 @@ namespace BaseDeProjetos.Models
         public decimal ValorTotalProspeccoes { get; set; }
         public decimal ValorMedioProspeccoes { get; set; }
         public int QuantidadeProspeccoes { get; set; }
-
+        public decimal TaxaConversaoProposta { get; set; }
         public List<ParticipacaoViewModel> Participacoes { get; set; }
 		public int QuantidadeProjetos { get; set; }
 		public decimal ValorTotalProjetos { get; set; }
-		public decimal ValorMedioProjetos { get; internal set; }
-	}
+		public decimal ValorMedioProjetos { get; set; }
+        public int QuantidadeProspeccoesComProposta { get; set; }
+        public decimal TaxaConversaoProjeto { get; set; }
+        public int QuantidadeProspeccoesProjetizadas { get; set; }
+        public decimal Rank { get; set; }
+    }
 
     public class ParticipacaoViewModel
     {
@@ -32,6 +36,6 @@ namespace BaseDeProjetos.Models
         public decimal ValorLider { get; set; }
         public decimal ValorNominal { get; set; }
         public string NomeProjeto { get; set; }
-
+        public string MembrosEquipe { get; set; }
     }
 }

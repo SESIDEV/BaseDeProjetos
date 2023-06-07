@@ -1,4 +1,5 @@
 ﻿@using System.Globalization;
+@using BaseDeProjetos.Models;
 @model IEnumerable<ParticipacaoTotalViewModel>
 
 @{
@@ -25,12 +26,16 @@
                                 <thead>
                                     <tr>
                                         <th class="cell">Membro</th>
-                                        <th class="cell">Valor Total das Prospecções (Valor de Proposta)</th>
-                                        <th class="cell">Valor Médio das Prospecções (Valor de Proposta)</th>
+                                        <th class="cell">Valor Total das Prospecções</th>
+                                        <th class="cell">Valor Médio das Prospecções</th>
                                         <th class="cell">Quantidade de Prospecções</th>
-                                        <th class="cell">Valor Total dos Projetos</th>
+                                        <th class="cell">Quantidade de Prospecções Projetizadas</th>
+                                        <th class="cell">Taxa de Proposição</th>
+                                        <th class="cell">Taxa de Conversão</th>
+@*                                        <th class="cell">Valor Total dos Projetos</th>
                                         <th class="cell">Valor Médio dos Projetos</th>
-                                        <th class="cell">Quantidade de Projetos</th>
+                                        <th class="cell">Quantidade de Projetos</th>*@
+                                        @*<th class="cell">Rank</th>*@
                                         <th class="cell">Detalhes</th>
                                     </tr>
                                 </thead>
@@ -62,7 +67,21 @@
                                                                             </h2>
                                                                             <div id="collapse-@(index)" class="accordion-collapse collapse" data-bs-parent="#accordionParticipacaoUni-@(participacaoUnitaria.Id)">
                                                                                 <div class="accordion-body">
-                                                                                </div>
+                                                                                    <h5>Membros da Equipe:</h5>
+                                                                                    @(!string.IsNullOrEmpty(participacaoUnitaria.MembrosEquipe) ? participacaoUnitaria.MembrosEquipe.Replace(";", " ") : "Não há membros cadastrados")
+                                                                                    <h5>Divisão de Integrantes:</h5>
+                                                                                    Pesquisadores: @(participacaoUnitaria.QuantidadePesquisadores) [fictício]
+                                                                                    Bolsistas: @(participacaoUnitaria.QuantidadeBolsistas) [fictício]
+                                                                                    Estagiários: @(participacaoUnitaria.QuantidadeEstagiarios) [fictício]
+                                                                                    <h5>Valor do Projeto:</h5>
+                                                                                    @(participacaoUnitaria.ValorNominal != 0 ? $"R${participacaoUnitaria.ValorNominal.ToString("N", cultura)}" : "Sem valor especificado")
+                                                                                    <hr>
+                                                                                    <h5>Valor do Lider:</h5>
+                                                                                    @(participacaoUnitaria.ValorLider != 0 ? $"R${participacaoUnitaria.ValorLider.ToString("N", cultura)}" : "Sem valor pro líder")
+                                                                                    <h5>Valor dos Pesquisadores:</h5>
+                                                                                    @(participacaoUnitaria.ValorPesquisadores != 0 ? $"R${participacaoUnitaria.ValorPesquisadores.ToString("N", cultura)}" : "Sem valor para os pesquisadores")
+                                                                                    </div>
+
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -82,7 +101,7 @@
                                                 @participacaoTotal.Lider
                                             </td>
                                             <td class="cell">
-                                                R$ @participacaoTotal.ValorTotalProspeccoes.ToString("N", cultura)
+                                                R$ @participacaoTotal.ValorTotalProspeccoes.ToString("N", cultura) (@participacaoTotal.Rank.ToString("N", cultura)%)
                                             </td>
                                             <td class="cell">
                                                 R$ @participacaoTotal.ValorMedioProspeccoes.ToString("N", cultura)
@@ -91,6 +110,15 @@
                                                 @participacaoTotal.QuantidadeProspeccoes
                                             </td>
                                             <td class="cell">
+                                                @participacaoTotal.QuantidadeProspeccoesProjetizadas
+                                            </td>
+                                            <td class="cell">
+                                                @participacaoTotal.TaxaConversaoProposta.ToString("N", cultura)%
+                                            </td>
+                                            <td class="cell">
+                                                @participacaoTotal.TaxaConversaoProjeto.ToString("N", cultura)%
+                                            </td>
+@*                                            <td class="cell">
                                                 R$ @participacaoTotal.ValorTotalProjetos.ToString("N", cultura)
                                             </td>
                                             <td class="cell">
@@ -98,10 +126,9 @@
                                             </td>
                                             <td class="cell">
                                                 @participacaoTotal.QuantidadeProjetos
-                                            </td>
+                                            </td>*@
                                             <td class="cell">
-                                                <button type="button" id="button-@(participacaoTotal.Id)" onmouseover="carregarModalParticipacaoTotalDetalhes('@participacaoTotal.Id')" data-bs-target="#ModalDetalhesParticipacaoTotal-@participacaoTotal.Id"
-                                                        data-bs-toggle="modal" class="btn-sm app-btn-primary">
+                                                <button type="button" data-bs-target="#ModalDetalhesParticipacaoTotal-@participacaoTotal.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary">
                                                     Detalhes
                                                 </button>
                                             </td>
