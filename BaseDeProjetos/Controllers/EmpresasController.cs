@@ -185,7 +185,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Logo,Nome,CNPJ,Segmento,Estado,Industrial,NomeFantasia,CNAE")] Empresa empresa)
+        public async Task<IActionResult> Create([Bind("Id,Logo,Nome,CNPJ,Segmento,Estado,Industrial,NomeFantasia")] Empresa empresa)
         {
             if (ModelState.IsValid)
             {
@@ -229,7 +229,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Logo,Nome,CNPJ,Segmento,Estado,Industrial,NomeFantasia,CNAE")] Empresa empresa)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Logo,Nome,CNPJ,Segmento,Estado,Industrial,NomeFantasia")] Empresa empresa)
         {
             if (id != empresa.Id)
             {
