@@ -21,6 +21,13 @@ namespace BaseDeProjetos.Controllers
 			_logger = logger;
 		}
 
+        /// <summary>
+        /// Efetua o cálculo relativo à participação de cada tipo de membro de acordo com a quantidade de membros de uma equipe
+        /// </summary>
+        /// <param name="pesquisadores">Número de Pesquisadores no Projeto</param>
+        /// <param name="bolsistas">Número de Bolsistas no Projeto</param>
+        /// <param name="estagiarios">Número de Estagiários no Projeto</param>
+        /// <returns></returns>
         private Dictionary<string,decimal> CalculoParticipacao(int pesquisadores, int bolsistas, int estagiarios)
         {
             int numeroMembros = 1 + pesquisadores + bolsistas + estagiarios;
@@ -47,24 +54,47 @@ namespace BaseDeProjetos.Controllers
             };
         }
 
+        /// <summary>
+        /// Método para cálculo da porcentagem relativa ao estagiário
+        /// </summary>
+        /// <param name="numeroMembros">Número de membros no projeto</param>
+        /// <param name="estagiarios">Número de estagiários no projeto</param>
+        /// <returns></returns>
         private decimal CalculoValorEstagiario(decimal numeroMembros, decimal estagiarios)
         {
             decimal resultado = (1 - 1 / numeroMembros) * 1 / 10 * (1 / (estagiarios + 1));
             return resultado;
         }
 
+        /// <summary>
+        /// Método para cálculo da porcentagem relativa ao bolsista
+        /// </summary>
+        /// <param name="numeroMembros">Número de membros no projeto</param>
+        /// <param name="bolsistas">Número de bolsistas no projeto</param>
+        /// <returns></returns>
         private decimal CalculoValorBolsista(decimal numeroMembros, decimal bolsistas)
         {
             decimal resultado = (1 - (1 / numeroMembros)) * 3 / 10 * (1 / (bolsistas + 1));
             return resultado;
         }
 
+        /// <summary>
+        /// Método para calculo da porcentagem relativa ao pesquisador
+        /// </summary>
+        /// <param name="numeroMembros">Número de membros no projeto</param>
+        /// <param name="pesquisadores">Número de pesquisadores no projeto</param>
+        /// <returns></returns>
         private decimal CalculoValorPesquisador(decimal numeroMembros, decimal pesquisadores)
         {
             decimal resultado = (1 - (1 / numeroMembros)) * 3 / 5 * (1 / (pesquisadores + 1));
             return resultado;
         }
 
+        /// <summary>
+        /// Obtém uma participação de acordo com um usuário específico.
+        /// </summary>
+        /// <param name="usuario">Usuário do sistema a ter participações retornadas</param>
+        /// <returns></returns>
         private ParticipacaoTotalViewModel GetParticipacaoTotalUsuario(Usuario usuario)
         {
             ParticipacaoTotalViewModel participacao = new ParticipacaoTotalViewModel() { Participacoes = new List<ParticipacaoViewModel>() };
@@ -122,6 +152,11 @@ namespace BaseDeProjetos.Controllers
             return participacao;
         }
 
+        /// <summary>
+        /// Realiza a atribuição de uma participação de acordo com as prospecções de um usuário.
+        /// </summary>
+        /// <param name="participacao">Objeto para as participação total de um usuário (ou genérico)</param>
+        /// <param name="prospeccoesUsuario">Prospecções de um usuário</param>
         private void AtribuirParticipacoesIndividuais(ParticipacaoTotalViewModel participacao, List<Prospeccao> prospeccoesUsuario)
         {
             foreach (var prospeccao in prospeccoesUsuario)
@@ -183,6 +218,10 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        /// <summary>
+        /// Obtém uma lista de participações de todos os usuários, com base na casa do usuário que está acessando.
+        /// </summary>
+        /// <returns></returns>
         private List<ParticipacaoTotalViewModel> GetParticipacoesTotaisUsuarios()
 		{
             Usuario usuarioAtivo = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
@@ -225,6 +264,10 @@ namespace BaseDeProjetos.Controllers
             return View(participacoes);
         }
 
+        /// <summary>
+        /// Atribui os rankings as participações passadas por parâmetro, para que sejam exibidas na View. Valores de 0 a 1, multiplicados por 100.
+        /// </summary>
+        /// <param name="participacoes">Lista de participações (normalmente de um usuário específico mas pode ser genérica)</param>
         private static void RankearParticipacoes(List<ParticipacaoTotalViewModel> participacoes)
         {
             decimal maxTotalProsp = participacoes.Max(p => p.ValorTotalProspeccoes);
