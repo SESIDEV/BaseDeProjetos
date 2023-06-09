@@ -1,4 +1,4 @@
-using BaseDeProjetos.Data;
+﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -126,7 +126,7 @@ namespace BaseDeProjetos.Controllers
         {
             foreach (var prospeccao in prospeccoesUsuario)
             {
-                var nomeProjeto = !string.IsNullOrEmpty(prospeccao.NomeProspeccao) ? prospeccao.NomeProspeccao : prospeccao.Empresa.Nome;
+                var nomeProjeto = !string.IsNullOrEmpty(prospeccao.NomeProspeccao) ? prospeccao.NomeProspeccao : $"{prospeccao.Empresa.Nome} (Empresa)";
 
                 // Tratar prospecções que tem "projeto" no nome (...)
                 // i.e: Remover na hora de apresentar o nome casos em que temos "Projeto projeto XYZ"
