@@ -307,7 +307,10 @@ namespace BaseDeProjetos.Models
         Suspensa = 8,
 
         [Display(Name = "Planejada")]
-        Planejada = 9
+        Planejada = 9,
+
+        [Display(Name = "Agregada")]
+        Agregada = 10
     }
     public enum StatusProjeto
     {
