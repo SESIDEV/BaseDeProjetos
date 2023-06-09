@@ -91,11 +91,28 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        /// <summary>
+        /// Obtém as prospecções específicas de uma página
+        /// </summary>
+        /// <param name="prospeccoes">Lista contendo prospecções a serem paginadas</param>
+        /// <param name="numeroPagina">Número da página que se deseja obter as prospeções</param>
+        /// <param name="tamanhoPagina">Quantidade de prospecções por página</param>
+        /// <returns></returns>
         private List<Prospeccao> ObterProspeccoesPorPagina(List<Prospeccao> prospeccoes, int numeroPagina, int tamanhoPagina)
         {
             return prospeccoes.Skip((numeroPagina - 1) * tamanhoPagina).Take(tamanhoPagina).ToList();
         }
 
+        /// <summary>
+        /// Retorna uma lista de prospecções filtradas de acordo com os parâmetros
+        /// </summary>
+        /// <param name="casa">Casa das prospecções</param>
+        /// <param name="aba">Aba da View/Status as quais as prospecções devem obedecer</param>
+        /// <param name="sortOrder">Forma de ordenação das prospecções</param>
+        /// <param name="searchString">Parâmetro de busca para filtro das prospecções</param>
+        /// <param name="ano">Ano das prospecções</param>
+        /// <param name="usuario">Usuário das prospecções</param>
+        /// <returns></returns>
         private List<Prospeccao> ObterProspeccoesFunilFiltradas(string casa, string aba, string sortOrder, string searchString, string ano, Usuario usuario)
         {
             List<Prospeccao> prospeccoes = FunilHelpers.DefinirCasaParaVisualizar(casa, usuario, _context, HttpContext, ViewData);
@@ -167,6 +184,12 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        /// <summary>
+        /// Planeja uma prospecção quando criada à partir do Módulo de Empresas
+        /// </summary>
+        /// <param name="id">ID da Empresa</param>
+        /// <param name="userId">ID do Usuário</param>
+        /// <returns></returns>
         public IActionResult Planejar(int id, string userId)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -248,6 +271,11 @@ namespace BaseDeProjetos.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        /// <summary>
+        /// Cria um followup no Banco de Dados
+        /// </summary>
+        /// <param name="followup">Followup específico a ser criado no Banco de Dados</param>
         private void CriarFollowUp(FollowUp followup)
         {
             _context.Add(followup);
@@ -287,6 +315,12 @@ namespace BaseDeProjetos.Controllers
             var errors = ModelState.Values.SelectMany(v => v.Errors);
             return RedirectToAction(nameof(Index), new { casa = usuario.Casa });
         }
+
+        /// <summary>
+        /// Vincula o usuário logado a uma prospecção
+        /// </summary>
+        /// <param name="prospeccao">Prospecção que se deseja vincular ao usuário logado</param>
+        /// <returns></returns>
         private async Task VincularUsuario(Prospeccao prospeccao)
         {
             string userId = HttpContext.User.Identity.Name;
@@ -294,6 +328,14 @@ namespace BaseDeProjetos.Controllers
             prospeccao.Usuario = user;
         }
 
+
+        // TODO: Conceito SOLID quebrado, desmembrar?
+        /// <summary>
+        /// Valida e cadastra uma empresa a uma prospecção
+        /// </summary>
+        /// <param name="prospeccao">Prospecção a ter uma empresa cadastrada</param>
+        /// <returns></returns>
+        /// <exception cref="Exception">Erro a ser lançado caso não seja possível cadastrar a empresa/seja uma empresa inválida</exception>
         public Prospeccao ValidarEmpresa(Prospeccao prospeccao)
         {
             if (prospeccao.Empresa.Nome != null && prospeccao.Empresa.CNPJ != null && prospeccao.Empresa.Id == -1)
@@ -353,11 +395,16 @@ namespace BaseDeProjetos.Controllers
                 return View("Forbidden");
             }
         }
+
+        /// <summary>
+        /// Cria uma selectlist para a View(?)
+        /// </summary>
         private void CriarSelectListsDaView()
         {
             ViewData["Empresas"] = new SelectList(_context.Empresa.ToList(), "Id", "EmpresaUnique");
             ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
         }
+
         // POST: FunilDeVendas/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -395,6 +442,12 @@ namespace BaseDeProjetos.Controllers
             return View(prospeccao);
         }
 
+        /// <summary>
+        /// Método auxiliar para editar dados de uma prospecção
+        /// </summary>
+        /// <param name="id">Inutilizado</param>
+        /// <param name="prospeccao">Prospecção a ter seus dados editados</param>
+        /// <returns></returns>
         private Prospeccao EditarDadosDaProspecção(string id, Prospeccao prospeccao)
         {
             Empresa Empresa_antigo = _context.Empresa.FirstOrDefault(e => e.Id == prospeccao.Empresa.Id);
@@ -413,6 +466,7 @@ namespace BaseDeProjetos.Controllers
             _context.Update(prospeccao);
             return prospeccao;
         }
+
         public async Task<IActionResult> EditarFollowUp(int? id) // RETONAR VIEW
         {
             Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
@@ -535,13 +589,16 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Valida as condições de remoção de uma prospecção
+        /// </summary>
+        /// <param name="prospeccao">Prospecção a se validada</param>
+        /// <param name="dono">Usuario líder da prospecção</param>
+        /// <param name="ativo">Usuário ativo (HttpContext)</param>
+        /// <returns></returns>
         private bool verificarCondicoesRemocao(Prospeccao prospeccao, Usuario dono, Usuario ativo)
         {
-
             return prospeccao.Status.Count() > 1 && dono == ativo;
-
-
         }
 
         // POST: FunilDeVendas/Delete/5
@@ -557,6 +614,12 @@ namespace BaseDeProjetos.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index), new { casa = usuario.Casa });
         }
+
+        /// <summary>
+        /// Função auxiliar de captura e retorno de erro para View de Erro
+        /// </summary>
+        /// <param name="e">Exceção</param>
+        /// <returns></returns>
         private IActionResult CapturarErro(Exception e)
         {
             ErrorViewModel erro = new ErrorViewModel
@@ -566,6 +629,12 @@ namespace BaseDeProjetos.Controllers
             return View("Error", erro);
         }
 
+        /// <summary>
+        /// Retorna um modal de acordo com os parâmetros
+        /// </summary>
+        /// <param name="idProsp">ID da prospecção</param>
+        /// <param name="tipo">Tipo de Modal a ser retornado</param>
+        /// <returns></returns>
         public IActionResult RetornarModal(string idProsp, string tipo)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -584,9 +653,15 @@ namespace BaseDeProjetos.Controllers
             {
                 return View("Forbidden");
             }
-
         }
 
+        /// <summary>
+        /// Retorna o modal de editar followup
+        /// </summary>
+        /// <param name="idProsp">ID da Prospecção a ter um followup editado</param>
+        /// <param name="idFollowup">ID do Followup a ser editado</param>
+        /// <param name="tipo">Tipo de Modal</param>
+        /// <returns></returns>
         public IActionResult RetornarModalEditFollowup(string idProsp, string idFollowup, string tipo)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -607,6 +682,11 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        /// <summary>
+        /// Retorna os dados de todas as prospeções cadastradas no sistema em formato JSON.
+        /// OBS: Método permite acesso não autenticado vide tag: [AllowAnonymous] 
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         public ActionResult PuxarDadosProspeccoes()
         {
@@ -644,7 +724,6 @@ namespace BaseDeProjetos.Controllers
                 dict["ValorProposta"] = p.ValorProposta;
                 dict["ValorFinal"] = p.ValorProposta;
                 
-                
                 if (p.ValorProposta == 0) 
                 {
                     dict["ValorFinal"] = p.ValorEstimado;
@@ -656,6 +735,10 @@ namespace BaseDeProjetos.Controllers
             return Json(listaFull);
         }
 
+        /// <summary>
+        /// Wrapper para função helper de retorno de dados de usuários
+        /// </summary>
+        /// <returns></returns>
         public string PuxarDadosUsuarios()
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -669,6 +752,10 @@ namespace BaseDeProjetos.Controllers
 
         }
 
+        /// <summary>
+        /// Wrapper para função helper de retorno de tags de prospecções
+        /// </summary>
+        /// <returns></returns>
         public string PuxarTagsProspecoes()
         {
             if (HttpContext.User.Identity.IsAuthenticated)
