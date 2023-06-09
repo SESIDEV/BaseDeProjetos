@@ -35,7 +35,7 @@
 @*                                        <th class="cell">Valor Total dos Projetos</th>
                                         <th class="cell">Valor Médio dos Projetos</th>
                                         <th class="cell">Quantidade de Projetos</th>*@
-                                        @*<th class="cell">Rank</th>*@
+                                        <th class="cell">Rank</th>
                                         <th class="cell">Detalhes</th>
                                     </tr>
                                 </thead>
@@ -109,16 +109,16 @@
                                                 @participacaoTotal.Lider
                                             </td>
                                             <td class="cell">
-                                                R$ @participacaoTotal.ValorTotalProspeccoes.ToString("N", cultura) (@participacaoTotal.Rank.ToString("N", cultura)%)
+                                                R$ @participacaoTotal.ValorTotalProspeccoes.ToString("N", cultura) (@participacaoTotal.RankPorIndicador["RankValorTotalProspeccoes"].ToString("N", cultura)%)
                                             </td>
                                             <td class="cell">
-                                                R$ @participacaoTotal.ValorMedioProspeccoes.ToString("N", cultura)
+                                                R$ @participacaoTotal.ValorMedioProspeccoes.ToString("N", cultura) (@participacaoTotal.RankPorIndicador["RankValorMedioProspeccoes"].ToString("N", cultura)%)
                                             </td>
                                             <td class="cell">
-                                                @participacaoTotal.QuantidadeProspeccoes
+                                                @participacaoTotal.QuantidadeProspeccoes (@participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoes"].ToString("N", cultura)%)
                                             </td>
                                             <td class="cell">
-                                                @participacaoTotal.QuantidadeProspeccoesProjetizadas
+                                                @participacaoTotal.QuantidadeProspeccoesProjetizadas (@participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoesProjetizadas"].ToString("N", cultura)%)
                                             </td>
                                             <td class="cell">
                                                 @participacaoTotal.TaxaConversaoProposta.ToString("N", cultura)%
@@ -135,6 +135,9 @@
                                             <td class="cell">
                                                 @participacaoTotal.QuantidadeProjetos
                                             </td>*@
+                                            <td class="cell">
+                                                @participacaoTotal.Rank.ToString("N", cultura)%
+                                            </td>
                                             <td class="cell">
                                                 <button type="button" data-bs-target="#ModalDetalhesParticipacaoTotal-@participacaoTotal.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary">
                                                     Detalhes
