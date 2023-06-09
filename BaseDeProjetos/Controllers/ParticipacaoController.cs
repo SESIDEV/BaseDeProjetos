@@ -212,10 +212,21 @@ namespace BaseDeProjetos.Controllers
 		[HttpGet]
 		public IActionResult Index()
         {
-			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-			var participacoes = GetParticipacoesTotaisUsuarios();
+            var participacoes = GetParticipacoesTotaisUsuarios();
+            RankearParticipacoes(participacoes);
 
+            participacoes = participacoes.OrderByDescending(p => p.Rank).ToList();
+
+            ViewBag.usuarioCasa = usuario.Casa;
+            ViewBag.usuarioNivel = usuario.Nivel;
+
+            return View(participacoes);
+        }
+
+        private static void RankearParticipacoes(List<ParticipacaoTotalViewModel> participacoes)
+        {
             decimal maxTotalProsp = participacoes.Max(p => p.ValorTotalProspeccoes);
             decimal maxValorMedioProsp = participacoes.Max(p => p.ValorMedioProspeccoes);
             decimal maxQtdProspeccoes = participacoes.Max(p => p.QuantidadeProspeccoes);
@@ -223,21 +234,25 @@ namespace BaseDeProjetos.Controllers
 
             foreach (var participacao in participacoes)
             {
-                decimal calculoRank = (participacao.ValorTotalProspeccoes / maxTotalProsp) + 
-                    (participacao.ValorMedioProspeccoes / maxValorMedioProsp) + 
-                    (participacao.QuantidadeProspeccoes / maxQtdProspeccoes) + 
+                participacao.RankPorIndicador = new Dictionary<string, decimal>();
+
+                decimal calculoRank = (participacao.ValorTotalProspeccoes / maxTotalProsp) +
+                    (participacao.ValorMedioProspeccoes / maxValorMedioProsp) +
+                    (participacao.QuantidadeProspeccoes / maxQtdProspeccoes) +
                     (participacao.QuantidadeProspeccoesProjetizadas / maxQtdProspProjetizadas);
                 calculoRank = calculoRank / 4;
-
                 participacao.Rank = calculoRank * 100;
+
+                decimal rankValorTotalProspeccoes = participacao.ValorTotalProspeccoes / maxTotalProsp;
+                decimal rankValorMedioProspeccoes = participacao.ValorMedioProspeccoes / maxValorMedioProsp;
+                decimal rankQuantidadeProspeccoes = participacao.QuantidadeProspeccoes / maxQtdProspeccoes;
+                decimal rankQuantidadeProspeccoesProjetizadas = participacao.QuantidadeProspeccoesProjetizadas / maxQtdProspProjetizadas;
+
+                participacao.RankPorIndicador["RankValorTotalProspeccoes"] = rankValorTotalProspeccoes;
+                participacao.RankPorIndicador["RankValorMedioProspeccoes"] = rankValorMedioProspeccoes;
+                participacao.RankPorIndicador["RankQuantidadeProspeccoes"] = rankQuantidadeProspeccoes;
+                participacao.RankPorIndicador["RankQuantidadeProspeccoesProjetizadas"] = rankQuantidadeProspeccoesProjetizadas;
             }
-
-            participacoes = participacoes.OrderByDescending(p => p.Rank).ToList();
-
-			ViewBag.usuarioCasa = usuario.Casa;
-			ViewBag.usuarioNivel = usuario.Nivel;
-
-			return View(participacoes);
         }
     }
 }
