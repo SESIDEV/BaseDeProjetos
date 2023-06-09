@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace BaseDeProjetos.Models
@@ -37,5 +37,8 @@ namespace BaseDeProjetos.Models
         public decimal ValorNominal { get; set; }
         public string NomeProjeto { get; set; }
         public string MembrosEquipe { get; set; }
+        public decimal ValorPorBolsista { get; internal set; }
+        public decimal ValorPorEstagiario { get; internal set; }
+        public decimal ValorPorPesquisador { get; internal set; }
     }
 }

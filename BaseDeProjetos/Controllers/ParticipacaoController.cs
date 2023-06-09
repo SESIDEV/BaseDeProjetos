@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -40,7 +40,10 @@ namespace BaseDeProjetos.Controllers
                 { "totalPesquisadores", totalPesquisadores }, 
                 { "totalBolsistas", totalBolsistas }, 
                 { "totalEstagiarios", totalEstagiarios }, 
-                { "totalLider", totalLider } 
+                { "totalLider", totalLider },
+                { "valorPorPesquisador", valorPorPesquisador },
+                { "valorPorBolsista", valorPorBolsista },
+                { "valorPorEstagiario", valorPorEstagiario },
             };
         }
 
@@ -151,6 +154,11 @@ namespace BaseDeProjetos.Controllers
 
                 var valorLider = calculoParticipantes["totalLider"] * prospeccao.ValorProposta;
                 var valorPesquisadores = calculoParticipantes["totalPesquisadores"] * prospeccao.ValorProposta;
+                var valorBolsistas = calculoParticipantes["totalBolsistas"] * prospeccao.ValorProposta;
+                var valorEstagiarios = calculoParticipantes["totalEstagiarios"] * prospeccao.ValorProposta;
+                var valorPorBolsista = calculoParticipantes["valorPorBolsista"] * prospeccao.ValorProposta;
+                var valorPorPesquisador = calculoParticipantes["valorPorPesquisador"] * prospeccao.ValorProposta;
+                var valorPorEstagiario = calculoParticipantes["valorPorEstagiario"] * prospeccao.ValorProposta;
 
                 ParticipacaoViewModel participacaoUnitaria = new ParticipacaoViewModel()
                 {
@@ -160,6 +168,11 @@ namespace BaseDeProjetos.Controllers
                     MembrosEquipe = prospeccao.MembrosEquipe,
                     ValorLider = valorLider,
                     ValorPesquisadores = valorPesquisadores,
+                    ValorBolsistas = valorBolsistas,
+                    ValorEstagiarios = valorEstagiarios,
+                    ValorPorBolsista = valorPorBolsista,
+                    ValorPorEstagiario = valorPorEstagiario,
+                    ValorPorPesquisador = valorPorPesquisador,
                     QuantidadeBolsistas = pesqBolsTemp,
                     QuantidadeEstagiarios = estagTemp,
                     QuantidadePesquisadores = pesqNormTemp,

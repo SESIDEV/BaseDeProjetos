@@ -83,7 +83,6 @@ namespace BaseDeProjetos.Models
             get => Data.Year;
             set { }
         }
-
         public virtual StatusProspeccao Status { get; set; }
         public virtual MotivosNaoConversao MotivoNaoConversao { get; set; }
         public DateTime Vencimento { get; set; } = DateTime.Now.AddDays(14);

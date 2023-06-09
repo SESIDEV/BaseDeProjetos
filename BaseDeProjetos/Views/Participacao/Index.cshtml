@@ -71,7 +71,9 @@
                                                                                     @(!string.IsNullOrEmpty(participacaoUnitaria.MembrosEquipe) ? participacaoUnitaria.MembrosEquipe.Replace(";", " ") : "Não há membros cadastrados")
                                                                                     <h5>Divisão de Integrantes:</h5>
                                                                                     Pesquisadores: @(participacaoUnitaria.QuantidadePesquisadores) [fictício]
+                                                                                    <br>
                                                                                     Bolsistas: @(participacaoUnitaria.QuantidadeBolsistas) [fictício]
+                                                                                    <br>
                                                                                     Estagiários: @(participacaoUnitaria.QuantidadeEstagiarios) [fictício]
                                                                                     <h5>Valor do Projeto:</h5>
                                                                                     @(participacaoUnitaria.ValorNominal != 0 ? $"R${participacaoUnitaria.ValorNominal.ToString("N", cultura)}" : "Sem valor especificado")
@@ -79,9 +81,15 @@
                                                                                     <h5>Valor do Lider:</h5>
                                                                                     @(participacaoUnitaria.ValorLider != 0 ? $"R${participacaoUnitaria.ValorLider.ToString("N", cultura)}" : "Sem valor pro líder")
                                                                                     <h5>Valor dos Pesquisadores:</h5>
-                                                                                    @(participacaoUnitaria.ValorPesquisadores != 0 ? $"R${participacaoUnitaria.ValorPesquisadores.ToString("N", cultura)}" : "Sem valor para os pesquisadores")
+                                                                                    @(participacaoUnitaria.ValorPesquisadores != 0 ? $"R${participacaoUnitaria.ValorPesquisadores.ToString("N", cultura)}" : "Sem valor para os pesquisadores") / 
+                                                                                    @(participacaoUnitaria.ValorPorPesquisador != 0 ? $"R${participacaoUnitaria.ValorPorPesquisador.ToString("N", cultura)}" : "Sem valor por pesquisador")
+                                                                                    <h5>Valor dos Bolsistas:</h5>
+                                                                                    @(participacaoUnitaria.ValorBolsistas != 0 ? $"R${participacaoUnitaria.ValorBolsistas.ToString("N", cultura)}" : "Sem valor para os bolsistas") /
+                                                                                    @(participacaoUnitaria.ValorPorBolsista != 0 ? $"R${participacaoUnitaria.ValorPorBolsista.ToString("N", cultura)}" : "Sem valor por bolsista")
+                                                                                    <h5>Valor dos Estagiários:</h5>
+                                                                                    @(participacaoUnitaria.ValorEstagiarios != 0 ? $"R${participacaoUnitaria.ValorEstagiarios.ToString("N", cultura)}" : "Sem valor para os estagiários") /
+                                                                                    @(participacaoUnitaria.ValorPorEstagiario != 0 ? $"R${participacaoUnitaria.ValorPorEstagiario.ToString("N", cultura)}" : "Sem valor por estagiário")
                                                                                     </div>
-
                                                                             </div>
                                                                         </div>
                                                                     </div>
