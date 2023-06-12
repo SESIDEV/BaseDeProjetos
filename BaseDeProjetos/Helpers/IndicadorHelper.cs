@@ -113,7 +113,7 @@ namespace BaseDeProjetos.Helpers
 
             }
 
-            return quantidadeDeProspeccoesPorCasa.OrderByDescending(p => p.Value).ToDictionary(k => k.Key, v => v.Value);
+            return quantidadeDeProspeccoesPorCasa.OrderByDescending(p => p.Value).Take(10).ToDictionary(k => k.Key, v => v.Value);
         }
         public Dictionary<string, string> ValorSomaProspeccoes(Func<Prospeccao, object> propriedade)
         {
@@ -140,7 +140,7 @@ namespace BaseDeProjetos.Helpers
 
             }
 
-            return valorDeProspeccoesPorCasa.OrderByDescending(o => o.Value).ToDictionary(e => e.Key, v =>
+            return valorDeProspeccoesPorCasa.OrderByDescending(o => o.Value).Take(10).ToDictionary(e => e.Key, v =>
             {
                 return Helpers.FormatarValoresDashboards(v.Value);
             });
