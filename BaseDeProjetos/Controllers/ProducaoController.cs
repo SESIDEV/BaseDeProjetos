@@ -24,7 +24,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: Producao
-        public IActionResult Index(string casa, string searchString = "", string ano = "")
+        public async Task<IActionResult> Index(string casa, string searchString = "", string ano = "")
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
@@ -39,13 +39,13 @@ namespace BaseDeProjetos.Controllers
                     casa = usuario.Casa.ToString();
                 }
 
-                Producoes = FunilHelpers.DefinirCasaParaVisualizarEmProducao(casa, usuario, _context, HttpContext, ViewData);
+                Producoes = await FunilHelpers.DefinirCasaParaVisualizarEmProducao(casa, usuario, _context, HttpContext, ViewData);
                 Producoes = FunilHelpers.VincularCasaProducao(usuario, Producoes);
                 Producoes = FunilHelpers.PeriodizarProduções(ano, Producoes);
                 Producoes = FunilHelpers.FiltrarProduções(searchString, Producoes);
 
-                List<Empresa> empresas = _context.Empresa.ToList();
-                List<Projeto> projetos = _context.Projeto.ToList();
+                List<Empresa> empresas = await _context.Empresa.ToListAsync();
+                List<Projeto> projetos = await _context.Projeto.ToListAsync();
 
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
                 ViewData["Projetos"] = new SelectList(projetos, "Id", "NomeProjeto");

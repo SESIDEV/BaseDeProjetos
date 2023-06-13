@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using BaseDeProjetos.Models;
 using System.Linq;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace BaseDeProjetos.ViewComponents.FunilDeVendasViewComponents
 {
@@ -19,7 +20,7 @@ namespace BaseDeProjetos.ViewComponents.FunilDeVendasViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            List<Prospeccao> prosp = _context.Prospeccao.ToList();
+            List<Prospeccao> prosp = await _context.Prospeccao.ToListAsync();
 
             ViewData["prospPlan"] = prosp;
 

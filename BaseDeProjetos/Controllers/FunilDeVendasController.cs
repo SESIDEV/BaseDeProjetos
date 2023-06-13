@@ -10,8 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Controllers
@@ -30,7 +28,7 @@ namespace BaseDeProjetos.Controllers
 
         // GET: FunilDeVendas
         [Route("FunilDeVendas/Index/{casa?}/{aba?}/{ano?}")]
-        public IActionResult Index(string casa, string aba, string sortOrder = "", string searchString = "", string ano = "", int numeroPagina = 1)
+        public async Task<IActionResult> Index(string casa, string aba, string sortOrder = "", string searchString = "", string ano = "", int numeroPagina = 1)
         {
             const int tamanhoPagina = 20;
 
@@ -47,15 +45,15 @@ namespace BaseDeProjetos.Controllers
                     casa = usuario.Casa.ToString();
                 }
 
-                List<Empresa> empresas = _context.Empresa.ToList();
+                List<Empresa> empresas = await _context.Empresa.ToListAsync();
                 List<Prospeccao> prospeccoes;
 
-                prospeccoes = ObterProspeccoesFunilFiltradas(casa, aba, sortOrder, searchString, ano, usuario);
+                prospeccoes = await ObterProspeccoesFunilFiltradas(casa, aba, sortOrder, searchString, ano, usuario);
 
                 int qtdProspeccoes = prospeccoes.Count();
                 int qtdPaginasTodo = (int)Math.Ceiling((double)qtdProspeccoes / tamanhoPagina);
 
-                List<Prospeccao> prospeccoesPagina = ObterProspeccoesPorPagina(prospeccoes, numeroPagina, tamanhoPagina);
+                List<Prospeccao> prospeccoesPagina = ObterProspeccoesPorPagina(prospeccoes, numeroPagina, tamanhoPagina);               
 
                 var pager = new Pager(qtdProspeccoes, numeroPagina, tamanhoPagina, 50); // 50 paginas max
 
@@ -66,7 +64,7 @@ namespace BaseDeProjetos.Controllers
                 };
 
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-                ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
+                ViewData["Equipe"] = new SelectList(await _context.Users.ToListAsync(), "Id", "UserName");
 
                 if (string.IsNullOrEmpty(aba))
                 {
@@ -96,19 +94,21 @@ namespace BaseDeProjetos.Controllers
             return prospeccoes.Skip((numeroPagina - 1) * tamanhoPagina).Take(tamanhoPagina).ToList();
         }
 
-        private List<Prospeccao> ObterProspeccoesFunilFiltradas(string casa, string aba, string sortOrder, string searchString, string ano, Usuario usuario)
+        private async Task<List<Prospeccao>> ObterProspeccoesFunilFiltradas(string casa, string aba, string sortOrder, string searchString, string ano, Usuario usuario)
         {
-            List<Prospeccao> prospeccoes = FunilHelpers.DefinirCasaParaVisualizar(casa, usuario, _context, HttpContext, ViewData);
-            prospeccoes = FunilHelpers.VincularCasaProspeccao(usuario, prospeccoes);
+            List<Prospeccao> prospeccoes = await FunilHelpers.DefinirCasaParaVisualizar(casa, usuario, _context, HttpContext, ViewData);
+
             prospeccoes = FunilHelpers.PeriodizarProspecções(ano, prospeccoes); // ANO DA PROSPEC
             prospeccoes = FunilHelpers.OrdenarProspecções(sortOrder, prospeccoes); //SORT ORDEM ALFABETICA
             prospeccoes = FunilHelpers.FiltrarProspecções(searchString, prospeccoes); // APENAS NA BUSCA
+
             FunilHelpers.SetarFiltrosNaView(HttpContext, ViewData, sortOrder, searchString);
 
             if (!string.IsNullOrEmpty(aba))
             {
                 prospeccoes = FunilHelpers.RetornarProspeccoesPorStatus(prospeccoes, usuario, aba, HttpContext);
             }
+            
 
             return prospeccoes;
         }
@@ -123,9 +123,9 @@ namespace BaseDeProjetos.Controllers
                 ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;
 
-                List<Empresa> empresas = _context.Empresa.ToList();
+                List<Empresa> empresas = await _context.Empresa.ToListAsync();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-                ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
+                ViewData["Equipe"] = new SelectList(await _context.Users.ToListAsync(), "Id", "UserName");
 
                 if (id == null)
                 {
@@ -148,7 +148,7 @@ namespace BaseDeProjetos.Controllers
             }
         }
         // GET: FunilDeVendas/Create
-        public IActionResult Create(int id)
+        public async Task<IActionResult> Create(int id)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
@@ -157,7 +157,7 @@ namespace BaseDeProjetos.Controllers
                 ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;
 
-                List<Empresa> empresas = _context.Empresa.ToList();
+                List<Empresa> empresas = await _context.Empresa.ToListAsync();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
                 return View();
             }
@@ -167,7 +167,7 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
-        public IActionResult Planejar(int id, string userId)
+        public async Task<IActionResult> Planejar(int id, string userId)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
@@ -182,8 +182,8 @@ namespace BaseDeProjetos.Controllers
                 Prospeccao prosp = new Prospeccao
                 {
                     Id = $"prosp_{DateTime.Now.Ticks}",
-                    Empresa = _context.Empresa.FirstOrDefault(E => E.Id == id),
-                    Usuario = _context.Users.FirstOrDefault(u => u.UserName == userId),
+                    Empresa = await _context.Empresa.FirstOrDefaultAsync(e => e.Id == id),
+                    Usuario = await _context.Users.FirstOrDefaultAsync(u => u.UserName == userId),
                     Casa = usuarioCasa,
                     LinhaPequisa = LinhaPesquisa.Indefinida,
                     CaminhoPasta = ""
@@ -201,8 +201,8 @@ namespace BaseDeProjetos.Controllers
                 }
             };
 
-                _context.Add(prosp);
-                _context.SaveChanges();
+                await _context.AddAsync(prosp);
+                await _context.SaveChangesAsync();
                 return RedirectToAction("Index", "Empresas");
             }
             else
@@ -213,7 +213,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         [HttpGet]
-        public IActionResult Atualizar(string id)
+        public async Task<IActionResult> Atualizar(string id)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
@@ -223,7 +223,7 @@ namespace BaseDeProjetos.Controllers
                 ViewBag.usuarioNivel = usuario.Nivel;
 
                 ViewData["origem"] = id;
-                ViewData["prosp"] = _context.Prospeccao.FirstOrDefault(p => p.Id == id);
+                ViewData["prosp"] = await _context.Prospeccao.FirstOrDefaultAsync(p => p.Id == id);
                 return View("CriarFollowUp");
             }
             else
@@ -237,21 +237,21 @@ namespace BaseDeProjetos.Controllers
         {
             if (ModelState.IsValid)
             {
-                Prospeccao prospeccao_origem = _context.Prospeccao.FirstOrDefault(p => p.Id == followup.OrigemID);
+                Prospeccao prospeccao_origem = await _context.Prospeccao.FirstOrDefaultAsync(p => p.Id == followup.OrigemID);
                 followup.Origem = prospeccao_origem;
 
-                CriarFollowUp(followup);
+                await CriarFollowUp(followup);
 
                 bool enviou = MailHelper.NotificarProspecção(followup, _mailer);
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "FunilDeVendas");
         }
-        private void CriarFollowUp(FollowUp followup)
+        private async Task CriarFollowUp(FollowUp followup)
         {
-            _context.Add(followup);
-            _context.SaveChanges();
+            await _context.AddAsync(followup);
+            await _context.SaveChangesAsync();
         }
 
         // POST: FunilDeVendas/Create
@@ -280,12 +280,12 @@ namespace BaseDeProjetos.Controllers
 
                 bool enviou = MailHelper.NotificarProspecção(prospeccao.Status[0], _mailer);
 
-                _context.Add(prospeccao);
+                await _context.AddAsync(prospeccao);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { casa = usuario.Casa });
+                return RedirectToAction("Index", "FunilDeVendas", new { casa = usuario.Casa, aba = "" });
             }
             var errors = ModelState.Values.SelectMany(v => v.Errors);
-            return RedirectToAction(nameof(Index), new { casa = usuario.Casa });
+            return RedirectToAction("Index", "FunilDeVendas", new { casa = usuario.Casa, aba = "" });
         }
         private async Task VincularUsuario(Prospeccao prospeccao)
         {
@@ -330,7 +330,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                CriarSelectListsDaView();
+                await CriarSelectListsDaView();
 
                 Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
                 ViewBag.usuarioCasa = usuario.Casa;
@@ -353,10 +353,10 @@ namespace BaseDeProjetos.Controllers
                 return View("Forbidden");
             }
         }
-        private void CriarSelectListsDaView()
+        private async Task CriarSelectListsDaView()
         {
-            ViewData["Empresas"] = new SelectList(_context.Empresa.ToList(), "Id", "EmpresaUnique");
-            ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
+            ViewData["Empresas"] = new SelectList(await _context.Empresa.ToListAsync(), "Id", "EmpresaUnique");
+            ViewData["Equipe"] = new SelectList(await _context.Users.ToListAsync(), "Id", "UserName");
         }
         // POST: FunilDeVendas/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
@@ -376,8 +376,8 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {
-                    prospeccao = EditarDadosDaProspecção(id, prospeccao);
-                    _context.SaveChanges(); // Essa linha já foi async, talvez seja possível que isso permita ressurgências...
+                    prospeccao = await EditarDadosDaProspecção(id, prospeccao);
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -390,20 +390,20 @@ namespace BaseDeProjetos.Controllers
                         throw; // Outro erro de banco, lançar para depuração
                     }
                 }
-                return RedirectToAction(nameof(Index), new { casa = usuario.Casa });
+                return RedirectToAction("Index", "FunilDeVendas", new { casa = usuario.Casa });
             }
             return View(prospeccao);
         }
 
-        private Prospeccao EditarDadosDaProspecção(string id, Prospeccao prospeccao)
+        private async Task<Prospeccao> EditarDadosDaProspecção(string id, Prospeccao prospeccao)
         {
-            Empresa Empresa_antigo = _context.Empresa.FirstOrDefault(e => e.Id == prospeccao.Empresa.Id);
-            Usuario lider = _context.Users.First(p => p.Id == prospeccao.Usuario.Id);
+            Empresa Empresa_antigo = await _context.Empresa.FirstOrDefaultAsync(e => e.Id == prospeccao.Empresa.Id);
+            Usuario lider = await _context.Users.FirstAsync(p => p.Id == prospeccao.Usuario.Id);
             prospeccao.Usuario = lider;
 
             if (prospeccao.Empresa.Id != Empresa_antigo.Id) // Empresa existente
             {
-                Empresa empresa = _context.Empresa.FirstOrDefault(e => e.Id == prospeccao.Empresa.Id);
+                Empresa empresa = await _context.Empresa.FirstOrDefaultAsync(e => e.Id == prospeccao.Empresa.Id);
                 if (empresa != null)
                 {
                     prospeccao.Empresa = empresa;
@@ -515,7 +515,7 @@ namespace BaseDeProjetos.Controllers
             {
                 //Verifica se o usuário está apto para remover o followup
                 Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                Prospeccao prospeccao = _context.Prospeccao.FirstOrDefault(p => p.Id == followup.OrigemID);
+                Prospeccao prospeccao = await _context.Prospeccao.FirstOrDefaultAsync(p => p.Id == followup.OrigemID);
 
                 if (verificarCondicoesRemocao(prospeccao, usuario, followup.Origem.Usuario) || usuario.Casa == Instituto.Super)
                 {
@@ -551,7 +551,7 @@ namespace BaseDeProjetos.Controllers
         {
 			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-			var prospeccao =  _context.Prospeccao.Where(prosp => prosp.Id == id).Include(f => f.Status).First();
+			var prospeccao =  await _context.Prospeccao.Where(prosp => prosp.Id == id).Include(f => f.Status).FirstAsync();
 
             _context.Remove(prospeccao);
             await _context.SaveChangesAsync();
@@ -566,11 +566,11 @@ namespace BaseDeProjetos.Controllers
             return View("Error", erro);
         }
 
-        public IActionResult RetornarModal(string idProsp, string tipo)
+        public async Task<IActionResult> RetornarModal(string idProsp, string tipo)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                CriarSelectListsDaView();
+                await CriarSelectListsDaView();
                 if (tipo != null || tipo != "")
                 {
                     return ViewComponent($"Modal{tipo}Prosp", new { id = idProsp });
@@ -587,11 +587,11 @@ namespace BaseDeProjetos.Controllers
 
         }
 
-        public IActionResult RetornarModalEditFollowup(string idProsp, string idFollowup, string tipo)
+        public async Task<IActionResult> RetornarModalEditFollowup(string idProsp, string idFollowup, string tipo)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                CriarSelectListsDaView();
+                await CriarSelectListsDaView();
                 if (tipo != null || tipo != "")
                 {
                     return ViewComponent($"Modal{tipo}Prosp", new { id = idProsp, id2 = idFollowup });
@@ -608,9 +608,9 @@ namespace BaseDeProjetos.Controllers
         }
 
         [AllowAnonymous]
-        public ActionResult PuxarDadosProspeccoes()
+        public async Task<ActionResult> PuxarDadosProspeccoes()
         {
-            List<Prospeccao> lista_prosp = _context.Prospeccao.ToList();
+            List<Prospeccao> lista_prosp = await _context.Prospeccao.ToListAsync();
 
             List<Dictionary<string, object>> listaFull = new List<Dictionary<string, object>>();
 

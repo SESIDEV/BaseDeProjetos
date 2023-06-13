@@ -6,6 +6,8 @@ using System.Linq;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace BaseDeProjetos.Helpers
 {
@@ -151,7 +153,7 @@ namespace BaseDeProjetos.Helpers
             }            
         }
 
-        public static List<Prospeccao> DefinirCasaParaVisualizar(string? casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, ViewDataDictionary ViewData)
+        public static async Task<List<Prospeccao>> DefinirCasaParaVisualizar(string? casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, ViewDataDictionary ViewData)
         {
             Instituto enum_casa;
 
@@ -159,7 +161,7 @@ namespace BaseDeProjetos.Helpers
 
             if (usuario.Nivel == Nivel.Dev)
             {
-                List<Prospeccao> lista = _context.Prospeccao.ToList();
+                List<Prospeccao> lista = await _context.Prospeccao.ToListAsync();
                 prospeccoes.AddRange(lista);
             }
 
@@ -170,7 +172,7 @@ namespace BaseDeProjetos.Helpers
                 {
                     HttpContext.Session.SetString("_Casa", casa);
                     enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
-                    List<Prospeccao> lista = _context.Prospeccao.Where(prospeccao => prospeccao.Casa.Equals(enum_casa)).ToList();
+                    List<Prospeccao> lista = await _context.Prospeccao.Where(prospeccao => prospeccao.Casa.Equals(enum_casa)).ToListAsync();
 
                     prospeccoes.AddRange(lista);
 
@@ -181,7 +183,7 @@ namespace BaseDeProjetos.Helpers
             return prospeccoes.ToList();
         }
 
-        public static List<Producao> DefinirCasaParaVisualizarEmProducao(string? casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, ViewDataDictionary ViewData)
+        public static async Task<List<Producao>> DefinirCasaParaVisualizarEmProducao(string? casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, ViewDataDictionary ViewData)
         {
             Instituto enum_casa;
 
@@ -189,7 +191,7 @@ namespace BaseDeProjetos.Helpers
 
             if (usuario.Nivel == Nivel.Dev)
             {
-                List<Producao> lista = _context.Producao.ToList();
+                List<Producao> lista = await _context.Producao.ToListAsync();
                 producoes.AddRange(lista);
             }
 
@@ -200,7 +202,7 @@ namespace BaseDeProjetos.Helpers
                 {
                     HttpContext.Session.SetString("_Casa", casa);
                     enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
-                    List<Producao> lista = _context.Producao.Where(producao => producao.Casa.Equals(enum_casa)).ToList();
+                    List<Producao> lista = await _context.Producao.Where(producao => producao.Casa.Equals(enum_casa)).ToListAsync();
 
                     producoes.AddRange(lista);
 
