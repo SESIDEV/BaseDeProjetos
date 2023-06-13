@@ -1,4 +1,4 @@
-using BaseDeProjetos.Data;
+﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -190,7 +190,8 @@ namespace BaseDeProjetos.Controllers
 
                 // Tratar prospecções que tem "projeto" no nome (...)
                 // i.e: Remover na hora de apresentar o nome casos em que temos "Projeto projeto XYZ"
-                if (nomeProjeto != null && nomeProjeto != "" && nomeProjeto.ToLowerInvariant().Contains("projeto"))
+                // TODO: Transformar em REGEX
+                if (!string.IsNullOrEmpty(nomeProjeto) && nomeProjeto.ToLowerInvariant().Contains("projeto") && !nomeProjeto.ToLowerInvariant().Contains("projetos"))
                 {
                     nomeProjeto = nomeProjeto.Replace("projeto", "");
                     nomeProjeto = nomeProjeto.Replace("Projeto", "");
