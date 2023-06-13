@@ -323,7 +323,7 @@ namespace BaseDeProjetos.Controllers
             {
                 participacao.RankPorIndicador = new Dictionary<string, decimal>();
 
-                decimal calculoRank = (participacao.ValorTotalProspeccoes / maxTotalProsp) +
+                decimal calculoRank = (participacao.ValorTotalProspeccoes * participacao.TaxaConversaoProposta / 100 / maxTotalProsp) +
                     (participacao.ValorMedioProspeccoes / maxValorMedioProsp) +
                     (participacao.QuantidadeProspeccoes / maxQtdProspeccoes) +
                     (participacao.QuantidadeProspeccoesProjetizadas / maxQtdProspProjetizadas);
