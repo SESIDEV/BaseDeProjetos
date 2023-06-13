@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -224,11 +224,7 @@ namespace BaseDeProjetos.Controllers
                 var valorPorPesquisador = calculoParticipantes["valorPorPesquisador"] * prospeccao.ValorProposta;
                 var valorPorEstagiario = calculoParticipantes["valorPorEstagiario"] * prospeccao.ValorProposta;
 
-                if (prospeccao.Status.Any(f => f.Status == StatusProspeccao.ComProposta)) 
-                {
-                    prospConvertida = false;
-                } 
-                else if (prospeccao.Status.Any(f => f.Status == StatusProspeccao.Convertida && f.Status != StatusProspeccao.Suspensa))
+                if (prospeccao.Status.Any(f => f.Status == StatusProspeccao.Convertida))
                 {
                     prospConvertida = true;
                 }
