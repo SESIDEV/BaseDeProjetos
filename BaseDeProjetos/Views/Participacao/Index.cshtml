@@ -19,9 +19,7 @@
             display: block;
             width: 80px;
             padding: 5px 0;
-            background-color: #aa0000;
             box-shadow: 0 5px 10px rgba(0,0,0,.1);
-            color: white;
             font: 700 .7em sans-serif;
             text-shadow: 0 1px 1px rgba(0,0,0,.2);
             text-transform: uppercase;
@@ -34,13 +32,36 @@
         right: -1.5em;
     }
 
-
-
         .ribbon-top-right span {
             left: -25px;
             top: 30px;
             transform: rotate(45deg);
         }
+
+    .ribbon-red span {
+        color: white;
+        background-color: #aa0000;
+    }
+
+    .ribbon-blue span {
+        color: white;
+        background-color: #0088ff;
+    }
+
+    .ribbon-yellow span {
+        color: black;
+        background-color: #FFC90E;
+    }
+
+    .ribbon-green span {
+        color: white;
+        background-color: #22B14C;
+    }
+
+    .ribbon-orange span {
+        color: white;
+        background-color: orangered;
+    }
 </style>
 
 <partial name="Header" view-data="@ViewData" />
@@ -63,10 +84,13 @@
                                         <th class="cell">Membro</th>
                                         <th class="cell">Valor Total das Prospecções</th>
                                         <th class="cell">Valor Médio das Prospecções</th>
-                                        <th class="cell">Quantidade de Prospecções</th>
-                                        <th class="cell">Quantidade de Prospecções Projetizadas</th>
-                                        <th class="cell">Taxa de Proposição</th>
-                                        <th class="cell">Taxa de Conversão</th>
+                                        <th class="cell">Valor Total das Propostas</th>
+                                        <th class="cell">Valor Médio das Propostas</th>
+                                        <th class="cell">Total de Prospecções</th>
+                                        <th class="cell">Prospecções Em Proposta</th>
+                                        <th class="cell">Prospecções Convertidas</th>
+                                        <th class="cell">Taxa de Propostas</th>
+                                        <th class="cell">Taxa de Convertidas</th>
                                         <th class="cell">Rank</th>
                                         <th class="cell">Detalhes</th>
                                     </tr>
@@ -83,75 +107,18 @@
                                                             <h1 class="modal-title fs-5" id="ModalDetalhesParticipacaoTotal-@participacaoTotal.Id-Label">Detalhes das Participações do Pesquisador</h1>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
-                                                            <div class="modal-body d-flex flex-column gap-1" style="background: #f5f6fe;">
+                                                        <div class="modal-body d-flex flex-column gap-1" style="background: #f5f6fe;">
                                                             <h5>Lista de Prospecções</h5>
                                                             @{
-                                                                int index = 1;
                                                                 var participacoes = participacaoTotal.Participacoes;
 
                                                                 participacoes.Sort((p1, p2) => p1.Convertida.CompareTo(p2.Convertida));
                                                                 participacoes.Sort((p1, p2) => decimal.Compare(p1.ValorNominal, p2.ValorNominal));
+
                                                                 <div class="row g-4">
                                                                     @foreach (var participacaoUnitaria in participacoes)
                                                                     {
-                                                                        <div class="col-6 col-md-4 col-xl-3 col-xxl-3">
-                                                                            <div class="app-card app-card-doc h-100 shadow-sm">
-                                                                                @if (participacaoUnitaria.Convertida)
-                                                                                {
-                                                                                    <div class="ribbon ribbon-top-right"><span>Convertida</span></div>
-                                                                                }
-                                                                                <div class="app-card-body p-3">
-                                                                                    <h4 class="app-doc-title truncate mb-0">
-                                                                                        @participacaoUnitaria.NomeProjeto
-                                                                                    </h4>
-                                                                                    <div class="app-doc-meta">
-                                                                                        <ul class="list-unstyled mb-0">
-                                                                                            <li>
-                                                                                                <span style="display:block; font-weight:bold" >
-                                                                                                    Empresa:                                                                                                
-                                                                                                </span>@(participacaoUnitaria.EmpresaProjeto)
-                                                                                            </li>
-                                                                                            <li>
-                                                                                                <span style="display:block; font-weight:bold" >
-                                                                                                    Valor:
-                                                                                                </span>@(participacaoUnitaria.ValorNominal != 0 ? $"R${participacaoUnitaria.ValorNominal.ToString("N", cultura)}" : "Sem valor especificado")
-                                                                                            </li>
-                                                                                            @if (participacaoUnitaria.ValorNominal > 0) {
-                                                                                                <li>
-                                                                                                    <span style="display:block; font-weight:bold" >
-                                                                                                        Valor do Líder:
-                                                                                                    </span>@(participacaoUnitaria.ValorLider != 0 ? $"R${participacaoUnitaria.ValorLider.ToString("N", cultura)}" : "Sem valor pro líder")
-                                                                                                </li>
-                                                                                                <li>
-                                                                                                    <span style="display:block; font-weight:bold" >
-                                                                                                        Valor dos Pesquisadores (@participacaoUnitaria.QuantidadePesquisadores):
-                                                                                                    </span>@(participacaoUnitaria.ValorPesquisadores != 0 ? $"R${participacaoUnitaria.ValorPesquisadores.ToString("N", cultura)}" : "Sem valor para os pesquisadores") /
-                                                                                                    @(participacaoUnitaria.ValorPorPesquisador != 0 ? $"R${participacaoUnitaria.ValorPorPesquisador.ToString("N", cultura)}" : "Sem valor por pesquisador")
-                                                                                                </li>
-                                                                                                <li>
-                                                                                                    <span style="display:block; font-weight:bold" >
-                                                                                                        Valor dos Bolsistas (@participacaoUnitaria.QuantidadeBolsistas):
-                                                                                                    </span>@(participacaoUnitaria.ValorBolsistas != 0 ? $"R${participacaoUnitaria.ValorBolsistas.ToString("N", cultura)}" : "Sem valor para os bolsistas") /
-                                                                                                    @(participacaoUnitaria.ValorPorBolsista != 0 ? $"R${participacaoUnitaria.ValorPorBolsista.ToString("N", cultura)}" : "Sem valor por bolsista")
-                                                                                                </li>
-                                                                                                <li>
-                                                                                                    <span style="display:block; font-weight:bold" >
-                                                                                                        Valor dos Estagiários (@participacaoUnitaria.QuantidadeEstagiarios):
-                                                                                                    </span>@(participacaoUnitaria.ValorEstagiarios != 0 ? $"R${participacaoUnitaria.ValorEstagiarios.ToString("N", cultura)}" : "Sem valor para os estagiários") /
-                                                                                                    @(participacaoUnitaria.ValorPorEstagiario != 0 ? $"R${participacaoUnitaria.ValorPorEstagiario.ToString("N", cultura)}" : "Sem valor por estagiário")
-                                                                                                </li>
-                                                                                            }
-                                                                                            <li>
-                                                                                                <span style="display:block; font-weight:bold" >
-                                                                                                    Convertida:
-                                                                                                </span>@(participacaoUnitaria.Convertida ? "Sim" : "Não")
-                                                                                            </li>
-                                                                                        </ul>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        index++;
+                                                                        @await Html.PartialAsync("ListaParticipacoesUnitarias", participacaoUnitaria, ViewData)
                                                                     }
                                                                 </div>
                                                             }
@@ -174,7 +141,16 @@
                                                 R$ @participacaoTotal.ValorMedioProspeccoes.ToString("N", cultura) (@participacaoTotal.RankPorIndicador["RankValorMedioProspeccoes"].ToString("N", cultura))
                                             </td>
                                             <td class="cell">
+                                                R$ @participacaoTotal.ValorTotalProspeccoesComProposta.ToString("N", cultura) (@participacaoTotal.RankPorIndicador["RankValorTotalProspeccoesComProposta"].ToString("N", cultura))
+                                            </td>
+                                            <td class="cell">
+                                                R$ @participacaoTotal.ValorMedioProspeccoesComProposta.ToString("N", cultura) (@participacaoTotal.RankPorIndicador["RankValorMedioProspeccoesComProposta"].ToString("N", cultura))
+                                            </td>
+                                            <td class="cell">
                                                 @participacaoTotal.QuantidadeProspeccoes (@participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoes"].ToString("N", cultura))
+                                            </td>
+                                            <td class="cell">
+                                                @participacaoTotal.QuantidadeProspeccoesComProposta (@participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoesComProposta"].ToString("N", cultura))
                                             </td>
                                             <td class="cell">
                                                 @participacaoTotal.QuantidadeProspeccoesProjetizadas (@participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoesProjetizadas"].ToString("N", cultura))
@@ -185,15 +161,6 @@
                                             <td class="cell">
                                                 @participacaoTotal.TaxaConversaoProjeto.ToString("N", cultura)%
                                             </td>
-                                            @*                                            <td class="cell">
-                                        R$ @participacaoTotal.ValorTotalProjetos.ToString("N", cultura)
-                                        </td>
-                                        <td class="cell">
-                                        R$ @participacaoTotal.ValorMedioProjetos.ToString("N", cultura)
-                                        </td>
-                                        <td class="cell">
-                                        @participacaoTotal.QuantidadeProjetos
-                                        </td>*@
                                             <td class="cell">
                                                 @participacaoTotal.Rank.ToString("N", cultura)
                                             </td>

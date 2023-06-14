@@ -130,8 +130,9 @@ namespace BaseDeProjetos.Controllers
             AtribuirParticipacoesIndividuais(participacao, prospeccoesUsuario);
 
             decimal valorTotalProspeccoes;
+            decimal valorTotalProspeccoesComProposta;
             decimal valorMedioProspeccoes;
-            decimal valorTotalProjetos;
+            decimal valorMedioProspeccoesComProposta;
             decimal taxaConversaoProposta;
             decimal taxaConversaoProjeto;
             int quantidadeProspeccoes;
@@ -140,7 +141,7 @@ namespace BaseDeProjetos.Controllers
             int quantidadeProjetos;
 
             participacao.ValorTotalProspeccoes = valorTotalProspeccoes = prospeccoesUsuario.Sum(p => p.ValorProposta);
-            participacao.ValorTotalProjetos = valorTotalProjetos = (decimal)projetosUsuario.Sum(p => p.ValorTotalProjeto);
+            participacao.ValorTotalProspeccoesComProposta = valorTotalProspeccoesComProposta = prospeccoesUsuarioComProposta.Sum(p => p.ValorProposta);
             participacao.QuantidadeProspeccoes = quantidadeProspeccoes = prospeccoesUsuario.Count();
             participacao.QuantidadeProspeccoesComProposta = quantidadeProspeccoesComProposta = prospeccoesUsuarioComProposta.Count();
             participacao.QuantidadeProspeccoesProjetizadas = quantidadeProspeccoesProjetizadas = prospeccoesUsuarioProjetizadas.Count();
@@ -152,6 +153,7 @@ namespace BaseDeProjetos.Controllers
             if (prospeccoesUsuario.Count() == 0)
             {
                 participacao.ValorMedioProspeccoes = 0;
+                participacao.ValorMedioProspeccoesComProposta = 0;
                 participacao.TaxaConversaoProposta = 0;
                 participacao.TaxaConversaoProjeto = 0;
             }
@@ -159,17 +161,14 @@ namespace BaseDeProjetos.Controllers
             {
                 participacao.TaxaConversaoProposta = taxaConversaoProposta = (quantidadeProspeccoesComProposta / (decimal)quantidadeProspeccoes) * 100;
                 participacao.ValorMedioProspeccoes = valorMedioProspeccoes = valorTotalProspeccoes / quantidadeProspeccoes;
+
+                if (quantidadeProspeccoesComProposta > 0)
+                {
+                    participacao.ValorMedioProspeccoesComProposta = valorMedioProspeccoesComProposta = valorTotalProspeccoesComProposta / quantidadeProspeccoesComProposta;
+                }      
+                
                 participacao.TaxaConversaoProjeto = taxaConversaoProjeto = (quantidadeProspeccoesProjetizadas / (decimal)quantidadeProspeccoes) * 100;
                 participacao.Rank = valorTotalProspeccoes + valorMedioProspeccoes + quantidadeProspeccoes + quantidadeProspeccoesProjetizadas;
-            }
-
-            if (projetosUsuario.Count() == 0)
-            {
-                participacao.ValorMedioProjetos = 0;
-            }
-            else
-            {
-                participacao.ValorMedioProjetos = valorTotalProjetos / quantidadeProjetos;
             }
 
             return participacao;
@@ -184,7 +183,12 @@ namespace BaseDeProjetos.Controllers
         {
             foreach (var prospeccao in prospeccoesUsuario)
             {
-                bool prospConvertida;
+                bool prospConvertida = false;
+                bool prospPlanejada = false;
+                bool prospSuspensa = false;
+                bool prospNaoConvertida = false;
+                bool prospEmDiscussao = false;
+                bool prospComProposta = false;
 
                 string nomeProjeto = !string.IsNullOrEmpty(prospeccao.NomeProspeccao) ? prospeccao.NomeProspeccao : $"{prospeccao.Empresa.Nome} (Empresa)";
 
@@ -225,21 +229,54 @@ namespace BaseDeProjetos.Controllers
                 var valorPorPesquisador = calculoParticipantes["valorPorPesquisador"] * prospeccao.ValorProposta;
                 var valorPorEstagiario = calculoParticipantes["valorPorEstagiario"] * prospeccao.ValorProposta;
 
-                if (prospeccao.Status.Any(f => f.Status == StatusProspeccao.Convertida))
+                
+
+                if (prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida)
                 {
                     prospConvertida = true;
                 }
+                else if (prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Planejada)
+                {
+                    prospPlanejada = true;                    
+                }
+                else if (prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Suspensa) 
+                {
+                    prospSuspensa = true;
+                }
+                else if (prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.NaoConvertida)
+                {
+                    prospNaoConvertida = true;
+                }
+                else if (prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.ContatoInicial ||
+                    prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Discussao_EsbocoProjeto)
+                {
+                    prospEmDiscussao = true;
+                }
+                else if (prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.ComProposta)
+                {
+                    prospComProposta = true;
+                }
                 else
                 {
+                    prospSuspensa = false;
                     prospConvertida = false;
+                    prospPlanejada = false;
+                    prospNaoConvertida = false;
+                    prospEmDiscussao = false;
+                    prospComProposta = false;
                 }
-
-                ParticipacaoViewModel participacaoUnitaria = new ParticipacaoViewModel()
+                                
+                participacao.Participacoes.Add(new ParticipacaoViewModel()
                 {
                     Id = Guid.NewGuid(),
                     NomeProjeto = nomeProjeto,
                     EmpresaProjeto = prospeccao.Empresa.Nome,
+                    ComProposta = prospComProposta,
+                    EmDiscussao = prospEmDiscussao,
+                    NaoConvertida = prospNaoConvertida,
                     Convertida = prospConvertida,
+                    Planejada = prospPlanejada,
+                    Suspensa = prospSuspensa,
                     ValorNominal = prospeccao.ValorProposta,
                     MembrosEquipe = prospeccao.MembrosEquipe,
                     ValorLider = valorLider,
@@ -253,9 +290,7 @@ namespace BaseDeProjetos.Controllers
                     QuantidadeEstagiarios = estagTemp,
                     QuantidadePesquisadores = pesqNormTemp,
                     QuantidadeMembros = pesqBolsTemp + estagTemp + pesqNormTemp + 1 // 1 == Líder
-                };
-
-                participacao.Participacoes.Add(participacaoUnitaria);
+                });
             }
         }
 
@@ -281,6 +316,7 @@ namespace BaseDeProjetos.Controllers
 			
 			foreach (var usuario in usuarios)
 			{
+
                 var participacao = await GetParticipacaoTotalUsuario(usuario);
 				participacoes.Add(participacao);
 			}
@@ -295,9 +331,12 @@ namespace BaseDeProjetos.Controllers
             Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
             var participacoes = await GetParticipacoesTotaisUsuarios();
-            RankearParticipacoes(participacoes);
 
-            participacoes = participacoes.OrderByDescending(p => p.Rank).ToList();
+            if (participacoes.Count > 0)
+            {
+                RankearParticipacoes(participacoes);
+                participacoes = participacoes.OrderByDescending(p => p.Rank).ToList();
+            }            
 
 			ViewBag.usuarioFoto = usuario.Foto;
 			ViewBag.usuarioCasa = usuario.Casa;
@@ -312,9 +351,15 @@ namespace BaseDeProjetos.Controllers
         /// <param name="participacoes">Lista de participações (normalmente de um usuário específico mas pode ser genérica)</param>
         private static void RankearParticipacoes(List<ParticipacaoTotalViewModel> participacoes)
         {
+            decimal rankValorTotalProspeccoesComProposta = 0;
+            decimal rankValorMedioProspeccoesComProposta = 0;
+
             decimal maxTotalProsp = participacoes.Max(p => p.ValorTotalProspeccoes);
             decimal maxValorMedioProsp = participacoes.Max(p => p.ValorMedioProspeccoes);
+            decimal maxValorMedioProspComProposta = participacoes.Max(p => p.ValorMedioProspeccoesComProposta);
+            decimal maxTotalProspComProposta = participacoes.Max(p => p.ValorTotalProspeccoesComProposta);
             decimal maxQtdProspeccoes = participacoes.Max(p => p.QuantidadeProspeccoes);
+            decimal maxQtdProspeccoesComProposta = participacoes.Max(p => p.QuantidadeProspeccoesComProposta);
             decimal maxQtdProspProjetizadas = participacoes.Max(p => p.QuantidadeProspeccoesProjetizadas);
             decimal maxConversaoProjeto = participacoes.Max(p => p.TaxaConversaoProjeto);
             decimal maxConversaoProposta = participacoes.Max(p => p.TaxaConversaoProposta);
@@ -335,12 +380,27 @@ namespace BaseDeProjetos.Controllers
 
                 decimal rankValorTotalProspeccoes = participacao.ValorTotalProspeccoes / maxTotalProsp;
                 decimal rankValorMedioProspeccoes = participacao.ValorMedioProspeccoes / maxValorMedioProsp;
+
+                if (maxTotalProspComProposta != 0)
+                {
+                    rankValorTotalProspeccoesComProposta = participacao.ValorTotalProspeccoesComProposta / maxTotalProspComProposta;
+                }
+                
+                if (maxValorMedioProspComProposta != 0)
+                {
+                    rankValorMedioProspeccoesComProposta = participacao.ValorTotalProspeccoesComProposta / maxValorMedioProspComProposta;
+                }
+                
                 decimal rankQuantidadeProspeccoes = participacao.QuantidadeProspeccoes / maxQtdProspeccoes;
                 decimal rankQuantidadeProspeccoesProjetizadas = participacao.QuantidadeProspeccoesProjetizadas / maxQtdProspProjetizadas;
+                decimal rankQuantidadeProspeccoesComProposta = participacao.QuantidadeProspeccoesComProposta / maxQtdProspeccoesComProposta;
 
                 participacao.RankPorIndicador["RankValorTotalProspeccoes"] = rankValorTotalProspeccoes;
+                participacao.RankPorIndicador["RankValorTotalProspeccoesComProposta"] = rankValorTotalProspeccoesComProposta;
                 participacao.RankPorIndicador["RankValorMedioProspeccoes"] = rankValorMedioProspeccoes;
+                participacao.RankPorIndicador["RankValorMedioProspeccoesComProposta"] = rankValorMedioProspeccoesComProposta;
                 participacao.RankPorIndicador["RankQuantidadeProspeccoes"] = rankQuantidadeProspeccoes;
+                participacao.RankPorIndicador["RankQuantidadeProspeccoesComProposta"] = rankQuantidadeProspeccoesComProposta;
                 participacao.RankPorIndicador["RankQuantidadeProspeccoesProjetizadas"] = rankQuantidadeProspeccoesProjetizadas;
             }
         }
