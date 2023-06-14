@@ -28,5 +28,6 @@
     "formatacao",
     "js",
     "performance"
-  ]
+  ],
+  "terminal.integrated.cursorStyle": "line"
 }

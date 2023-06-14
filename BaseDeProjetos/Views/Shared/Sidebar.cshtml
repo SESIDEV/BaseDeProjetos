@@ -374,8 +374,9 @@
                                     {
                                         string casa_nome = Enum.GetName(typeof(Instituto), casa);
                                         <li class="submenu-item"><a class="submenu-link" asp-action="Index" asp-controller="Indicadores" asp-route-casa="@casa_nome">@casa_nome</a></li>
+                                        
                                     }
-                                    <a asp-controller="Indicadores" asp-action="IndicadoresDashBoard">Teste</a>
+                                    <li class="submenu-item"><a class="submenu-link" asp-controller="Indicadores" asp-action="IndicadoresDashBoard">Prospecções</a></li>
                                 </ul>
                             </div>
                         }
