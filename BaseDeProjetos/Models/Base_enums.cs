@@ -203,7 +203,6 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Danificado (sem condições de uso) ou extraviado")]
         Subs_DanificadoExtraviado
     }
-
     public enum Competencia
     {
         [Display(Name = "...")]
@@ -307,7 +306,10 @@ namespace BaseDeProjetos.Models
         Suspensa = 8,
 
         [Display(Name = "Planejada")]
-        Planejada = 9
+        Planejada = 9,
+
+        [Display(Name = "Agregada")]
+        Agregada = 10
     }
     public enum StatusProjeto
     {
@@ -356,7 +358,6 @@ namespace BaseDeProjetos.Models
         Produto,
         Processo
     }
-
     //TODO: Separar tipos diferentes
     public enum TipoProducao
     {
@@ -484,7 +485,6 @@ namespace BaseDeProjetos.Models
 
 
     }
-
     public enum Origem
     {
         [Display(Name = "Recebida")]
@@ -492,8 +492,7 @@ namespace BaseDeProjetos.Models
 
         [Display(Name = "Iniciada")]
         Iniciada
-    }
-    
+    }    
     public enum Instituto
     {
         [Display(Name = "ISI - Química Verde")]
