@@ -1,0 +1,388 @@
+﻿@model IEnumerable<BaseDeProjetos.Models.IndicadoresFinanceiros>
+
+@{
+    ViewData["Title"] = "Indicadores";
+
+    Dictionary<string, int> QuantidadeDeProspeccaoPorPotencialParceiro = ViewBag.QuantidadeDeProspeccaoPorPotencialParceiro;
+
+    Dictionary<string, int> QuantidadeDeProspeccoesPorCasa = ViewBag.QuantidadeDeProspeccoesPorCasa;
+    Dictionary<string, string> ValorSomaProspeccoesPorCasa = ViewBag.ValorSomaProspeccoesPorCasa;
+
+    Dictionary<string, int> QuantidadeDeProspeccoesPorEmpresa = ViewBag.QuantidadeDeProspeccoesPorEmpresa;
+    Dictionary<string, string> ValorSomaProspeccoesPorEmpresa = ViewBag.ValorSomaDeProspeccoesPorEmpresa;
+
+    Dictionary<string, int> QuantidadeDeProspeccoesPorLinhaDePesquisa = ViewBag.QuantidadeDeProspeccoesPorLinhaDePesquisa;
+    Dictionary<string, string> ValorSomaProspeccoesPorLinhaDePesquisa = ViewBag.ValorSomaProspeccoesPorLinhaDePesquisa;
+
+    Dictionary<string, int> QuantidadeDeProspeccoesPorPesquisador = ViewBag.QuantidadeDeProspeccoesPorPesquisador;
+    Dictionary<string, string> ValorSomaProspeccoesPorPesquisador = ViewBag.ValorSomaProspeccoesPorPesquisador;
+
+    Dictionary<string, int> QuantidadeDeProspeccoesPorTipoContratacao = ViewBag.QuantidadeDeProspeccoesPorTipoContratacao;
+    Dictionary<string, string> ValorSomaProspeccoesPorTipoContratacao = ViewBag.ValorSomaProspeccoesPorTipoContratacao;
+
+    Dictionary<string, int> QuantidadeProspeccaoPorEstado = ViewBag.QuantidadeProspeccaoPorEstado;
+
+}
+<style>
+    .hideDiv {
+        display: none;
+    }
+
+    .content-main {
+        width: 80vw;
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    h1 {
+        margin-left: 20%;
+    }
+</style>
+
+<partial name="Header" view-data="@ViewData" />
+
+
+
+<div class="container" style="margin-left:20%; min-height: 80vh;">
+    <div class="content-main" style="margin-bottom: 1rem;">
+        <div class="w-100">
+            <h3>
+                Indicadores ISI
+                <br />
+                <br />
+                <small class="text-body-secondary">
+                    Clique no indicador para visualizar a quantidade de prospecções e valor acumulado!
+                </small>
+            </h3>
+        </div>
+
+        <div class="card p-2">
+            <button type="button" class="btn btn-success" onclick="exibirDiv('CASA-DIV', 'CASA')" data-original-text="CASA" id="CASA">CASA</button>
+        </div>
+
+        <div class="card p-2">
+            <button type="button" class="btn btn-success" onclick="exibirDiv('EMPRESA-DIV', 'EMPRESA')" data-original-text="EMPRESA" id="EMPRESA">EMPRESA</button>
+        </div>
+
+        <div class="card p-2">
+            <button type="button" class="btn btn-success" onclick="exibirDiv('LINHA-DE-PESQUISA-DIV', 'LINHA-DE-PESQUISA')" data-original-text="LINHA-DE-PESQUISA" id="LINHA-DE-PESQUISA">LINHA DE PESQUISA</button>
+        </div>
+
+        <div class="card p-2">
+            <button type="button" class="btn btn-success" onclick="exibirDiv('PESQUISADOR-DIV', 'PESQUISADOR')" data-original-text="PESQUISADOR" id="PESQUISADOR">PESQUISADOR</button>
+        </div>
+
+        <div class="card p-2">
+            <button type="button" class="btn btn-success" onclick="exibirDiv('TIPO-CONTRATACAO-DIV', 'TIPO-CONTRATACAO')" data-original-text="TIPO-CONTRATACAO" id="TIPO-CONTRATACAO">TIPO CONTRATAÇÃO</button>
+        </div>
+
+    </div>
+
+    <div class="container minha-div hideDiv" id="CASA-DIV">
+        <div class="row" style="width:75vw;">
+            <div class="col">
+                <table class="table table-success table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Quantidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in QuantidadeDeProspeccoesPorCasa)
+                        {
+                            <tr>
+                                <td>@item.Key</td>
+                                <td>@item.Value</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="col">
+                <table class="table table-success table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in ValorSomaProspeccoesPorCasa)
+                        {
+                            <tr>
+                                <td>@item.Key</td>
+                                <td>@item.Value</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="container minha-div hideDiv" id="EMPRESA-DIV">
+        <div class="row" style="width:75vw;">
+            <div class="col">
+                <table class="table table-success table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Quantidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in QuantidadeDeProspeccoesPorEmpresa)
+                        {
+                            <tr>
+                                <td>@item.Key</td>
+                                <td>@item.Value</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="col">
+                <table class="table table-success table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in ValorSomaProspeccoesPorEmpresa)
+                        {
+                            <tr>
+                                <td>@item.Key</td>
+                                <td>@item.Value</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="container minha-div hideDiv" id="LINHA-DE-PESQUISA-DIV">
+        <div class="row" style="width:75vw;">
+            <div class="col">
+                <table class="table table-success table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Quantidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in QuantidadeDeProspeccoesPorLinhaDePesquisa)
+                        {
+                            <tr>
+                                <td>@item.Key</td>
+                                <td>@item.Value</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="col">
+                <table class="table table-success table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in ValorSomaProspeccoesPorLinhaDePesquisa)
+                        {
+                            <tr>
+                                <td>@item.Key</td>
+                                <td>@item.Value</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="container minha-div hideDiv" id="PESQUISADOR-DIV">
+        <div class="row" style="width:75vw;">
+            <div class="col">
+                <table class="table table-success table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Quantidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in QuantidadeDeProspeccoesPorPesquisador)
+                        {
+                            <tr>
+                                <td>@item.Key</td>
+                                <td>@item.Value</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="col">
+                <table class="table table-success table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in ValorSomaProspeccoesPorPesquisador)
+                        {
+                            <tr>
+                                <td>@item.Key</td>
+                                <td>@item.Value</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="container minha-div hideDiv" id="TIPO-CONTRATACAO-DIV">
+        <div class="row" style="width:75vw;">
+            <div class="col">
+                <table class="table table-success table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Quantidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in QuantidadeDeProspeccoesPorTipoContratacao)
+                        {
+                            <tr>
+                                <td>@item.Key</td>
+                                <td>@item.Value</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="col">
+                <table class="table table-success table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in ValorSomaProspeccoesPorTipoContratacao)
+                        {
+                            <tr>
+                                <td>@item.Key</td>
+                                <td>@item.Value</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<br />
+
+<partial name="Footer" />
+
+<script>
+    // Variável para armazenar o ID da div atualmente exibida
+    var divAtual = null;
+
+    // Função para ocultar todas as divs
+    function ocultarTodasDivs() {
+        var divs = document.querySelectorAll('.minha-div'); // Classe atribuída às divs
+
+        // Ocultar todas as divs
+        divs.forEach(function (div) {
+            div.style.display = 'none';
+        });
+
+        // Limpar a div atualmente exibida
+        divAtual = null;
+    }
+
+    function removerEstiloOcultar() {
+        var buttons = document.querySelectorAll('button');
+        buttons.forEach(function (button) {
+            var originalText = button.getAttribute('data-original-text');
+            if (button.innerText == 'Ocultar') {
+                button.innerText = originalText;
+                button.style.backgroundColor = '';
+            }
+        });
+    }
+
+
+    // Função para exibir ou ocultar a div correspondente ao botão clicado
+    function exibirDiv(divId, btnId) {
+
+        removerEstiloOcultar();
+
+        var div = document.getElementById(divId);
+        var btn = document.getElementById(btnId);
+
+        // Verificar se a div atualmente exibida é a mesma div que foi clicada
+        if (divAtual === divId) {
+            // Se for a mesma div, ocultar a div
+            div.style.display = 'none';
+            divAtual = null;
+
+            // Restaurar o texto e o estilo padrão do botão
+            btn.innerText = button.getAttribute('data-original-text');
+            btn.style.backgroundColor = '';
+        } else {
+            ocultarTodasDivs(); // Ocultar todas as divs
+
+
+            // Exibir a div correspondente ao botão clicado
+            if (div) {
+                div.style.display = 'block';
+                divAtual = divId; // Armazenar o ID da div atualmente exibida
+
+                // Alterar o texto e o estilo do botão atual
+                btn.innerText = 'Ocultar';
+                btn.style.backgroundColor = 'red';
+            }
+        }
+    }
+
+</script>
