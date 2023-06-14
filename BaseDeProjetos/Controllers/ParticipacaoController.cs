@@ -316,16 +316,21 @@ namespace BaseDeProjetos.Controllers
             decimal maxValorMedioProsp = participacoes.Max(p => p.ValorMedioProspeccoes);
             decimal maxQtdProspeccoes = participacoes.Max(p => p.QuantidadeProspeccoes);
             decimal maxQtdProspProjetizadas = participacoes.Max(p => p.QuantidadeProspeccoesProjetizadas);
+            decimal maxConversaoProjeto = participacoes.Max(p => p.TaxaConversaoProjeto);
+            decimal maxConversaoProposta = participacoes.Max(p => p.TaxaConversaoProposta);
 
             foreach (var participacao in participacoes)
             {
                 participacao.RankPorIndicador = new Dictionary<string, decimal>();
 
-                decimal calculoRank = (participacao.ValorTotalProspeccoes * participacao.TaxaConversaoProposta / 100 / maxTotalProsp) +
+                decimal calculoRank = (participacao.ValorTotalProspeccoes / maxTotalProsp) +
                     (participacao.ValorMedioProspeccoes / maxValorMedioProsp) +
                     (participacao.QuantidadeProspeccoes / maxQtdProspeccoes) +
-                    (participacao.QuantidadeProspeccoesProjetizadas / maxQtdProspProjetizadas);
-                calculoRank = calculoRank / 4;
+                    (participacao.QuantidadeProspeccoesProjetizadas / maxQtdProspProjetizadas) +
+                    (participacao.TaxaConversaoProjeto / maxConversaoProjeto) +
+                    (participacao.TaxaConversaoProposta / maxConversaoProposta);
+                calculoRank = calculoRank / 6;
+
                 participacao.Rank = calculoRank;
 
                 decimal rankValorTotalProspeccoes = participacao.ValorTotalProspeccoes / maxTotalProsp;
