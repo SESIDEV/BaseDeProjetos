@@ -36,6 +36,7 @@ namespace BaseDeProjetos.Controllers
             {
                 Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
+                ViewBag.usuarioFoto = usuario.Foto;
                 ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;
                 ViewBag.searchString = searchString;

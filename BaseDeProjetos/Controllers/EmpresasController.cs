@@ -32,7 +32,8 @@ namespace BaseDeProjetos.Controllers
             {
                 Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-                ViewBag.usuarioCasa = usuario.Casa;
+				ViewBag.usuarioFoto = usuario.Foto;
+				ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;
 
                 ViewBag.Prospeccoes = _context.Prospeccao.Where(P => P.Status.All(S => S.Status != StatusProspeccao.NaoConvertida &&

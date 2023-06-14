@@ -299,7 +299,8 @@ namespace BaseDeProjetos.Controllers
 
             participacoes = participacoes.OrderByDescending(p => p.Rank).ToList();
 
-            ViewBag.usuarioCasa = usuario.Casa;
+			ViewBag.usuarioFoto = usuario.Foto;
+			ViewBag.usuarioCasa = usuario.Casa;
             ViewBag.usuarioNivel = usuario.Nivel;
 
             return View(participacoes);
