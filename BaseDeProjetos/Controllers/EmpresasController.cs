@@ -69,6 +69,11 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        /// <summary>
+        /// Verifica e retorna ?um json? caso o CNPJ passado como string para a rota exista
+        /// </summary>
+        /// <param name="cnpj">CNPJ da Empresa a ser buscada</param>
+        /// <returns></returns>
         public JsonResult SeExisteCnpj(string cnpj)
         {
             if (HttpContext.User.Identity.IsAuthenticated) // Não expor o banco a ataques
@@ -82,6 +87,12 @@ namespace BaseDeProjetos.Controllers
             }
 
         }
+
+        /// <summary>
+        /// Retorna os dados de um CNPJ utilizando a ?API da Receita Federal?
+        /// </summary>
+        /// <param name="query">Conteúdos da query a ser realizada para a API</param>
+        /// <returns></returns>
         public async Task<string> DadosAPI(string query)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -96,23 +107,36 @@ namespace BaseDeProjetos.Controllers
                 return "403 Forbidden";
             }
         }
-        private static List<Empresa> FiltrarEmpresas(string searchString, List<Empresa> lista)
+
+        /// <summary>
+        /// Obtém uma lista de empresas de acordo com o termo de busca
+        /// </summary>
+        /// <param name="searchString">Busca a ser realizada</param>
+        /// <param name="empresas">Lista de empresas filtradas</param>
+        /// <returns></returns>
+        private static List<Empresa> FiltrarEmpresas(string searchString, List<Empresa> empresas)
         {
 
             if (!string.IsNullOrEmpty(searchString))
             {
                 searchString = searchString.ToLower();
 
-                lista = lista.Where(e =>
+                empresas = empresas.Where(e =>
                 e.Nome.ToLower().Contains(searchString.ToLower()) ||
                 e.NomeFantasia.ToLower().Contains(searchString.ToLower()) ||
                 e.CNPJ.ToLower().Contains(searchString.ToLower())).ToList();
 
             }
 
-            return lista;
+            return empresas;
         }
 
+        /// <summary>
+        /// Retorna um modal de acordo com os parâmetros passados
+        /// </summary>
+        /// <param name="idEmpresa">ID da Empresa</param>
+        /// <param name="tipo">Tipo de Modal a ser retornado</param>
+        /// <returns></returns>
         public IActionResult RetornarModal(int idEmpresa, string tipo)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -186,7 +210,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Logo,Nome,CNPJ,Segmento,Estado,Industrial,NomeFantasia,CNAE")] Empresa empresa)
+        public async Task<IActionResult> Create([Bind("Id,Logo,Nome,CNPJ,Segmento,Estado,Industrial,NomeFantasia")] Empresa empresa)
         {
             if (ModelState.IsValid)
             {
@@ -230,7 +254,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Logo,Nome,CNPJ,Segmento,Estado,Industrial,NomeFantasia,CNAE")] Empresa empresa)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Logo,Nome,CNPJ,Segmento,Estado,Industrial,NomeFantasia")] Empresa empresa)
         {
             if (id != empresa.Id)
             {
@@ -304,12 +328,22 @@ namespace BaseDeProjetos.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /// <summary>
+        /// Verifica se uma empresa existe no Banco de Dados
+        /// </summary>
+        /// <param name="id">ID da empresa</param>
+        /// <returns></returns>
         private bool EmpresaExists(int id)
         {
             return _context.Empresa.Any(e => e.Id == id);
         }
 
-        public string PuxarEmpresas(bool estrangeiras = false) //APENAS UM OU OUTRO POR ENQUANTO
+        /// <summary>
+        /// Retorna um JSON com os dados das Empresas cadastradas
+        /// </summary>
+        /// <param name="estrangeiras">Parâmetro para definir se as empresa a serem retornadas ?são as estrangeiras ou não?</param>
+        /// <returns></returns>
+        public string PuxarEmpresas(bool estrangeiras = false) // APENAS UM OU OUTRO POR ENQUANTO
         {
             List<Empresa> lista_emp = _context.Empresa.ToList();
 

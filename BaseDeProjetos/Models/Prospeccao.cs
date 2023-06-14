@@ -38,12 +38,15 @@ namespace BaseDeProjetos.Models
         public virtual LinhaPesquisa LinhaPequisa { get; set; }
         public virtual List<FollowUp> Status { get; set; } = new List<FollowUp>();
         public virtual Instituto Casa { get; set; }
+        
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "R{0:C2}")]
         [Display(Name = "Valor da Proposta (R$)")]
         public virtual decimal ValorProposta { get; set; } = 0;
+
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "R{0:C2}")]
         [Display(Name = "Valor Estimado da Prospecção (R$)")]
         public virtual decimal ValorEstimado { get; set; } = 0;
+        
         public bool Equals([AllowNull] Prospeccao other)
         {
             if (other is null) return false;
@@ -59,6 +62,9 @@ namespace BaseDeProjetos.Models
         
         [Display(Name = "Origem")]
         public virtual Origem Origem { get; set; }
+
+        public virtual bool Ancora { get; set; }
+        public virtual String Agregadas { get; set; }
 
     }
 

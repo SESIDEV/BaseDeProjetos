@@ -407,9 +407,7 @@ function montarNetwork(pessoas, compFiltradas = null) {
     //({ nodes, edges, network } = construirGrafo(nodes, listaPessoas, edges, listaLigacoes, network));
 }
 
-const eqSet = (xs, ys) =>
-    xs.size === ys.size &&
-    [...xs].every((x) => ys.has(x));
+const eqSet = (xs, ys) => xs.size === ys.size && [...xs].every((x) => ys.has(x));
 
 function isSuperset(set, subset) {
     for (var elem of subset) {
@@ -526,41 +524,41 @@ function validarCNPJ(idElemento=null) {
     }    
 }
 
-function checarCNAE(idElemento=null, codcnae=""){
-    if(idElemento == null){
-        codcnae = document.getElementById("inputCnae").value.slice(0, 2);
-    } else {
-        codcnae = document.getElementById(`inputCnae-${idElemento}`).value.slice(0, 2);
-    }
+function checarCNAE(listaCNAE, idElemento=null){
+    possuiIndustrial = false;
+    listaCNAE.forEach(codcnae => {
+        
+        if(typeof(dictCNAE[codcnae]) != "undefined"){
 
-    if(typeof(dictCNAE[codcnae]) != "undefined"){
+            if(idElemento == null){
+                document.getElementById("BoolCnaeIndustrial").value = "1";
+                document.getElementById("checkCNAE").style.color = "green";
+                document.getElementById("checkCNAE").classList.value = "fa fa-check";
+                document.getElementById("checkCNAE").style.display = "block";
+            } else {
+                document.getElementById(`BoolCnaeIndustrial-${idElemento}`).value = "1";
+                document.getElementById(`checkCNAE-${idElemento}`).style.color = "green";
+                document.getElementById(`checkCNAE-${idElemento}`).classList.value = "fa fa-check";
+                document.getElementById(`checkCNAE-${idElemento}`).style.display = "block";
+            }
 
-        if(idElemento == null){
-            document.getElementById("BoolCnaeIndustrial").value = "1";
-            document.getElementById("checkCNAE").style.color = "green";
-            document.getElementById("checkCNAE").classList.value = "fa fa-check";
-            document.getElementById("checkCNAE").style.display = "block";
+            possuiIndustrial = true;
+    
         } else {
-            document.getElementById(`BoolCnaeIndustrial-${idElemento}`).value = "1";
-            document.getElementById(`checkCNAE-${idElemento}`).style.color = "green";
-            document.getElementById(`checkCNAE-${idElemento}`).classList.value = "fa fa-check";
-            document.getElementById(`checkCNAE-${idElemento}`).style.display = "block";
+    
+            if(idElemento == null){
+                document.getElementById("BoolCnaeIndustrial").value = "0";
+                document.getElementById("checkCNAE").style.color = "red";
+                document.getElementById("checkCNAE").classList.value = "fa fa-close";
+                document.getElementById("checkCNAE").style.display = "block";
+            } else {
+                document.getElementById(`BoolCnaeIndustrial-${idElemento}`).value = "0";
+                document.getElementById(`checkCNAE-${idElemento}`).style.color = "red";
+                document.getElementById(`checkCNAE-${idElemento}`).classList.value = "fa fa-close";
+                document.getElementById(`checkCNAE-${idElemento}`).style.display = "block";
+            }
         }
-
-    } else {
-
-        if(idElemento == null){
-            document.getElementById("BoolCnaeIndustrial").value = "0";
-            document.getElementById("checkCNAE").style.color = "red";
-            document.getElementById("checkCNAE").classList.value = "fa fa-close";
-            document.getElementById("checkCNAE").style.display = "block";
-        } else {
-            document.getElementById(`BoolCnaeIndustrial-${idElemento}`).value = "0";
-            document.getElementById(`checkCNAE-${idElemento}`).style.color = "red";
-            document.getElementById(`checkCNAE-${idElemento}`).classList.value = "fa fa-close";
-            document.getElementById(`checkCNAE-${idElemento}`).style.display = "block";
-        }
-    }
+    });
 }
 
 function AplicarDadosAPI(idElemento) {
@@ -574,20 +572,21 @@ function AplicarDadosAPI(idElemento) {
     
     fetch(url).then(res => {
         res.json().then(dados => {
+            listaCNAE = [];
+            listaCNAE.push(dados.atividade_principal[0].code);
+            dados.atividades_secundarias.forEach(ativ => {listaCNAE.push(ativ.code);});
             if (idElemento == null) {
                 document.getElementById("NomeEmpresaCadastro").value = dados.nome;
-                document.getElementById("inputCnae").value = dados.atividade_principal[0].code;
                 document.getElementById("NomeFantasiaEmpresa").value = dados.fantasia;
                 document.getElementById("TipoEmpresaStatus").innerHTML = "Tipo: " + dados.tipo;
                 document.getElementById("SituacaoEmpresaStatus").innerHTML = "Situação: " + dados.situacao;
-                checarCNAE();
+                checarCNAE(listaCNAE);
             } else {
                 document.getElementById(`NomeEmpresaCadastro-${idElemento}`).value = dados.nome;
-                document.getElementById(`inputCnae-${idElemento}`).value = dados.atividade_principal[0].code;
                 document.getElementById(`NomeFantasiaEmpresa-${idElemento}`).value = dados.fantasia;
                 document.getElementById(`TipoEmpresaStatus-${idElemento}`).innerHTML = "Tipo: " + dados.tipo;
                 document.getElementById(`SituacaoEmpresaStatus-${idElemento}`).innerHTML = "Situação: " + dados.situacao;
-                checarCNAE(idElemento);
+                checarCNAE(listaCNAE, idElemento);
             }
 
             // TUDO DAQUI PRA BAIXO FOI FEITO EXCLUSIVAMENTE PARA CONVERTER A SIGLA DE CADA ESTADO PARA O NOME COMPLETO

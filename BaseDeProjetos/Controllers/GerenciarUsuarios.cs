@@ -19,6 +19,11 @@ namespace BaseDeProjetos.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Verifica se um usuário (de acordo com uma string) existe no Banco de Dados
+        /// </summary>
+        /// <param name="nomeUsuario">Nome do Usuário</param>
+        /// <returns></returns>
         public Usuario UsuarioExiste(string nomeUsuario)
         {
             string usuarioLogado = nomeUsuario;
@@ -30,7 +35,12 @@ namespace BaseDeProjetos.Controllers
             return usuario;
         }
 
-        public List<Usuario> VerificarEmailAtivo(string statusEmailUsuario)
+        /// <summary>
+        /// Verifica e retorna quais usuários possuem email ativo
+        /// </summary>
+        /// <param name="statusEmailUsuario">Status que se deseja obter (1 confirmado, 0 não confirmado)</param>
+        /// <returns></returns>
+        public List<Usuario> VerificarStatusEmailUsuario(string statusEmailUsuario)
         {
             var listaUsuarios = _context.Users.ToList();
 
@@ -51,6 +61,11 @@ namespace BaseDeProjetos.Controllers
 
         }
 
+        /// <summary>
+        /// Verifica o nível de um usuário
+        /// </summary>
+        /// <param name="usuario">Usuário a ser passado como parâmetro</param>
+        /// <returns></returns>
         public bool VerificarNivelUsuario(Usuario usuario)
         {
 
@@ -64,6 +79,8 @@ namespace BaseDeProjetos.Controllers
             }
 
         }
+
+
         [Route("GerenciarUsuarios")]
         [Route("GerenciarUsuarios/Index")]
         [Route("GerenciarUsuarios/Index/{id?}")]
@@ -79,7 +96,7 @@ namespace BaseDeProjetos.Controllers
             if (usuario != null && VerificarNivelUsuario(usuario))
             {
 
-                lista = VerificarEmailAtivo(statusEmailUsuario);
+                lista = VerificarStatusEmailUsuario(statusEmailUsuario);
 
             }
 
@@ -162,13 +179,11 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
-
             if (ModelState.IsValid)
             {
 
                 try
                 {
-
                     var usuarioExiste = await _context.Users.FindAsync(id);
                     _context.Users.Remove(usuarioExiste);
                     _context.Add(usuarioEditado);

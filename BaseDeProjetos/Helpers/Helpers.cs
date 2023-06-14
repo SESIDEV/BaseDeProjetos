@@ -8,6 +8,12 @@ namespace BaseDeProjetos.Helpers
 {
     public static class Helpers
     {
+
+        /// <summary>
+        /// Formata um valor decimal para melhor visualização em Dashboard
+        /// </summary>
+        /// <param name="valor">Valor a ser formatado</param>
+        /// <returns></returns>
         public static string FormatarValoresDashboards(decimal valor)
         {
             if (valor >= 100000000)
@@ -30,6 +36,11 @@ namespace BaseDeProjetos.Helpers
             return valor.ToString("#,0");
         }
 
+        /// <summary>
+        /// Retorna Email, Nome de Usuário, Foto e Competência dos usuários com email cadastrado em formato JSON
+        /// </summary>
+        /// <param name="_context"></param>
+        /// <returns></returns>
         public static string PuxarDadosUsuarios(ApplicationDbContext _context){
             
             var usuarios = _context.Users.Where(u => u.Email != null && u.EmailConfirmed == true).Select(u => new {u.Email, u.UserName, u.Foto, u.Competencia}).ToList();
@@ -40,6 +51,11 @@ namespace BaseDeProjetos.Helpers
 
         }
 
+        /// <summary>
+        /// Retorna as tags não nulas de uma prospecção em JSON
+        /// </summary>
+        /// <param name="_context"></param>
+        /// <returns></returns>
         public static string PuxarTagsProspecoes(ApplicationDbContext _context)
         {
 
@@ -51,6 +67,11 @@ namespace BaseDeProjetos.Helpers
 
         }
 
+        /// <summary>
+        /// Retorna os dados de uma empresa, onde os nomes não são nulos, em JSON
+        /// </summary>
+        /// <param name="_context"></param>
+        /// <returns></returns>
         public static string PuxarDadosEmpresas(ApplicationDbContext _context)
         {
 
@@ -62,6 +83,11 @@ namespace BaseDeProjetos.Helpers
 
         }
 
+        /// <summary>
+        /// Retorna em JSON os dados de uma produção, onde o nome não é nulo, selecionando: Casa, Titulo, Descrição, Autores, Status de Publicação, Data, Local e DOI
+        /// </summary>
+        /// <param name="_context"></param>
+        /// <returns></returns>
         public static string PuxarDadosProducoes(ApplicationDbContext _context)
         {
 

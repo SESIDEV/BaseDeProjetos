@@ -213,11 +213,23 @@ namespace BaseDeProjetos.Helpers
             return producoes.ToList();
         }
 
+        /// <summary>
+        /// Retorna o objeto usuário do Banco de Dados, de acordo com o usuário logado do HttpContext
+        /// </summary>
+        /// <param name="_context"></param>
+        /// <param name="HttpContext">Contexto HTTP (digamos, dados do Browser)</param>
+        /// <returns></returns>
         public static Usuario ObterUsuarioAtivo(ApplicationDbContext _context, HttpContext HttpContext)
         {
             return _context.Users.ToList().FirstOrDefault(usuario => usuario.UserName == HttpContext.User.Identity.Name);
         }
 
+        /// <summary>
+        /// Periodiza as prospecções de acordo com o ano no parâmetro
+        /// </summary>
+        /// <param name="ano">Ano que se deseja</param>
+        /// <param name="lista">Lista de prospecções a serem periodizadas</param>
+        /// <returns></returns>
         public static List<Prospeccao> PeriodizarProspecções(string ano, List<Prospeccao> lista)
         {
             if (ano.Equals("Todos") || string.IsNullOrEmpty(ano))
@@ -228,6 +240,12 @@ namespace BaseDeProjetos.Helpers
             return lista.Where(prospeccao => prospeccao.Status.Any(followup => followup.Data.Year == Convert.ToInt32(ano))).ToList();
         }
 
+        /// <summary>
+        /// Periodiza produções de acordo com o ano no parâmetro
+        /// </summary>
+        /// <param name="ano">Ano que se deseja</param>
+        /// <param name="lista">Lista de produções a serem periodizadas</param>
+        /// <returns></returns>
         public static List<Producao> PeriodizarProduções(string ano, List<Producao> lista)
         {
             if (ano.Equals("Todos") || string.IsNullOrEmpty(ano))
@@ -237,6 +255,7 @@ namespace BaseDeProjetos.Helpers
 
             return lista.Where(producao => producao.Data.Year == Convert.ToInt32(ano)).ToList();
         }
+
 
         public static TimeSpan RetornarValorDiferencaTempo(List<Prospeccao> prospeccoes)
         {
@@ -265,9 +284,15 @@ namespace BaseDeProjetos.Helpers
             return intervaloDeTempo;
         }
 
+        /// <summary>
+        /// Ordena uma lista de prospecções de acordo com o parâmetro de ordenação
+        /// </summary>
+        /// <param name="sortOrder">Tipo de ordenação</param>
+        /// <param name="lista">Lista de prospecções a serem ordenadas</param>
+        /// <returns></returns>
         public static List<Prospeccao> OrdenarProspecções(string sortOrder, List<Prospeccao> lista)
         {
-            var prospeccoes = lista.AsQueryable<Prospeccao>();
+            var prospeccoes = lista.AsQueryable();
             prospeccoes = sortOrder switch
             {
                 "name_desc" => prospeccoes.OrderByDescending(s => s.Empresa.Nome),
@@ -277,6 +302,13 @@ namespace BaseDeProjetos.Helpers
             };
             return prospeccoes.ToList();
         }
+
+        /// <summary>
+        /// Filtra prospecções de acordo com um termo de busca
+        /// </summary>
+        /// <param name="searchString">Termo de busca (nome de empresa, nome de usuário, etc)</param>
+        /// <param name="prospeccoes">Lista de prospecções a serem filtradas</param>
+        /// <returns></returns>
         public static List<Prospeccao> FiltrarProspecções(string searchString, List<Prospeccao> prospeccoes)
         {
 
@@ -297,6 +329,12 @@ namespace BaseDeProjetos.Helpers
             return prospeccoes;
         }
 
+        /// <summary>
+        /// Verfica se um termo de busca está presente dentro de um campo específico
+        /// </summary>
+        /// <param name="searchString">Termo de busca</param>
+        /// <param name="campo">Campo a ser verificado</param>
+        /// <returns></returns>
         private static bool ChecarSubstring(string searchString, string campo)
         {
             if (campo != null)
@@ -309,6 +347,12 @@ namespace BaseDeProjetos.Helpers
             }
         }
 
+        /// <summary>
+        /// Filtra produções de acordo com um termo de busca
+        /// </summary>
+        /// <param name="searchString">Termo de busca</param>
+        /// <param name="producoes">Lista de produções a serem filtradas</param>
+        /// <returns></returns>
         public static List<Producao> FiltrarProduções(string searchString, List<Producao> producoes)
         {
 
@@ -337,6 +381,13 @@ namespace BaseDeProjetos.Helpers
 
             return producoes;
         }
+
+        /// <summary>
+        /// Verifica se uma prospecção bate com o tipo de contratação passado por parâmetro
+        /// </summary>
+        /// <param name="prospeccao">Prospecção a ser verificada</param>
+        /// <param name="tipoContratacao">Tipo de Contratação</param>
+        /// <returns></returns>
         public static bool VerificarContratacao(Prospeccao prospeccao, TipoContratacao tipoContratacao)
         {
             switch (tipoContratacao)
@@ -360,6 +411,12 @@ namespace BaseDeProjetos.Helpers
             }
         }
 
+        /// <summary>
+        /// Verifica se uma prospecção possui um determinado status
+        /// </summary>
+        /// <param name="prospeccao">Prospecção a se verificar</param>
+        /// <param name="status">Status específico</param>
+        /// <returns></returns>
         public static bool VerificarStatus(Prospeccao prospeccao, StatusProspeccao status)
         {
             if (prospeccao.Status.Count == 0)

@@ -94,6 +94,9 @@ namespace BaseDeProjetos.Controllers
 
         }
 
+        /// <summary>
+        /// Obtém os dados da receita de cada instituto, atribuindo-os ao ViewData
+        /// </summary>
         private void ObterDadosReceita()
         {
 
@@ -123,10 +126,6 @@ namespace BaseDeProjetos.Controllers
                     ViewData["Data"] = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == usuario.Casa).ToList().LastOrDefault().Data;
                     ViewData["quali"] = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == usuario.Casa).ToList().LastOrDefault().QualiSeguranca;
                 }
-
-
-
-
             }
             catch (Exception)
             {
@@ -153,6 +152,11 @@ namespace BaseDeProjetos.Controllers
             return p.Status.OrderBy(k => k.Data).LastOrDefault().Status <= StatusProspeccao.ComProposta;
         }
 
+        /// <summary>
+        /// Retorna o valor da receita para um determinado Instituto
+        /// </summary>
+        /// <param name="casa">Instituto a se obter o valor</param>
+        /// <returns></returns>
         private decimal ReceitaCasa(Instituto casa)
         {
             IQueryable<decimal> valores = _context.Projeto.
@@ -168,6 +172,11 @@ namespace BaseDeProjetos.Controllers
             return sum;
         }
 
+        /// <summary>
+        /// Retorna a receita dado um projeto
+        /// </summary>
+        /// <param name="p">Projeto a se obter a receita</param>
+        /// <returns></returns>
         private static decimal CalcularReceita(Projeto p)
         {
             decimal valor_aportado = 0M;
