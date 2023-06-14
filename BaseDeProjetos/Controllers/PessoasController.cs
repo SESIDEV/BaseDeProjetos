@@ -37,7 +37,10 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Wrapper para retornar os dados dos usuários
+        /// </summary>
+        /// <returns></returns>
         public string dados()
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -47,6 +50,10 @@ namespace BaseDeProjetos.Controllers
 
         }
 
+        /// <summary>
+        /// Wrapper para retornar o nome do Usuário logado (ativo)
+        /// </summary>
+        /// <returns></returns>
         public string usuarioAtivo()
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -61,6 +68,10 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        /// <summary>
+        /// Retorna um JSON contendo as competências disponíveis para cada Pessoa
+        /// </summary>
+        /// <returns></returns>
         public string dictCompetencias()
         {
             IDictionary<string, string> competencias = new Dictionary<string, string>()

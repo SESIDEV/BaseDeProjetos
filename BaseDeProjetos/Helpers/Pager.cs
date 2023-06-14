@@ -13,6 +13,13 @@ namespace BaseDeProjetos.Helpers
 
         public List<int> Pages { get; set; }
 
+        /// <summary>
+        /// Construtor para o Pager (Paginação)
+        /// </summary>
+        /// <param name="itensTotais">Quantidade de items totais numa página</param>
+        /// <param name="paginaAtual">Número da página atual</param>
+        /// <param name="tamanhoDaPagina">Quantidade máxima de itens numa página</param>
+        /// <param name="maximoDePaginas">Número máximo de páginas</param>
         public Pager(int itensTotais, int paginaAtual, int tamanhoDaPagina, int maximoDePaginas)
         {
             ItensTotais = itensTotais;

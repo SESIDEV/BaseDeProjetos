@@ -86,6 +86,12 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        /// <summary>
+        /// Filtra os indicadores financeiros de acordo com a casa do usuário passado por parâmetro
+        /// </summary>
+        /// <param name="usuario">?Usuário ativo?</param>
+        /// <param name="listaIndicadoresFinanceiros">Indicadores financeiros</param>
+        /// <returns></returns>
         public static List<IndicadoresFinanceiros> VincularCasaAosIndicadoresFinanceiros(Usuario usuario, List<IndicadoresFinanceiros> listaIndicadoresFinanceiros)
         {
 
@@ -101,6 +107,11 @@ namespace BaseDeProjetos.Controllers
 
         }
 
+        /// <summary>
+        /// Define a casa a qual os indicadores financeiros devem ser filtrados
+        /// </summary>
+        /// <param name="casa">Nome do instituto</param>
+        /// <returns></returns>
         private List<IndicadoresFinanceiros> DefinirCasaParaVisualizar(string? casa)
         {
             Instituto enum_casa;
@@ -126,6 +137,7 @@ namespace BaseDeProjetos.Controllers
 
             return listaIndicadores.ToList();
         }
+
         // GET: IndicadoresFinanceiros/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -318,6 +330,11 @@ namespace BaseDeProjetos.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /// <summary>
+        /// Verifica se um indicador financeiro existe no Banco de Dados
+        /// </summary>
+        /// <param name="id">ID do Indicador Financeiro</param>
+        /// <returns></returns>
         private bool IndicadoresFinanceirosExists(int id)
         {
             return _context.IndicadoresFinanceiros.Any(e => e.Id == id);
