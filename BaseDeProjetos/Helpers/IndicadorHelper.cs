@@ -1,4 +1,5 @@
-﻿using BaseDeProjetos.Data;
+﻿using BaseDeProjetos.Controllers;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
 using System;
 using System.Collections.Generic;
@@ -17,81 +18,20 @@ namespace BaseDeProjetos.Helpers
 
         public List<Prospeccao> ListaDeProspeccoes { get => _dbContext.Prospeccao.Where(p => p.Status.FirstOrDefault().Status != StatusProspeccao.Planejada).ToList(); }
 
-        private List<string> TratarListaPotenciaisParceiros()
-        {
-            List<string> potenciaisParceiros = new List<string>();
 
-            foreach (string item in ListaDeProspeccoes.Where(p => p.PotenciaisParceiros != null).Select(p => p.PotenciaisParceiros).ToList())
-            {
-                if (item != null)
-                {
-                    foreach (string elemento in item.Split(","))
-                    {
-                        potenciaisParceiros.Add(elemento.ToLower());
-                    };
-                }
-            }
-
-            return potenciaisParceiros;
-        }
-        public Dictionary<string, int> QuantidadeDeProspeccaoPorPotencialParceiro()
-        {
-            List<string> potenciaisParceiros = TratarListaPotenciaisParceiros();
-
-            List<Prospeccao> prospeccoes = ListaDeProspeccoes.Where(p => p.PotenciaisParceiros != null).ToList();
-
-            Dictionary<string, int> dict = new Dictionary<string, int>
-            {
-                {"Parceiro", 1}
-            };
-
-
-            return dict;
-
-        }
-        public decimal ValorSomaProspeccaoPorPotenciaisParceiros(List<Prospeccao> lista)
-        {
-            decimal valorSoma = 0;
-
-            lista.GroupBy(v => v.ValorProposta);
-
-            foreach (Prospeccao prospeccao in lista)
-            {
-                valorSoma += prospeccao.ValorProposta;
-            }
-
-            return valorSoma;
-        }
-
-        public Dictionary<string, int> QuantidadeProspeccaoPorEstado(Func<Prospeccao, object> propriedade)
-        {
-            var listaProsps = ListaDeProspeccoes;
-
-            var listGroup = listaProsps.GroupBy(propriedade).ToList();
-
-            Dictionary<string, int> dict = new Dictionary<string, int>();
-
-            foreach (var prospeccao in listGroup)
-            {
-                if (prospeccao.Count() > 0)
-                {
-                    dict.Add(prospeccao.Key.ToString(), prospeccao.Count());
-                }
-                else
-                {
-                    dict.Add(prospeccao.Key.ToString(), 0);
-                }
-            }
-
-            return dict.OrderByDescending(d => d.Value).ToDictionary(k => k.Key, v => v.Value);
-        }
         public Dictionary<string, int> QuantidadeDeProspeccoes(Func<Prospeccao, object> propriedade)
         {
             List<Prospeccao> listaProsps = ListaDeProspeccoes;
 
-            var listaEmGrupo = listaProsps.GroupBy(propriedade);
+			// Verificar se a propriedade é do tipo Usuario
+			if (propriedade.Invoke(listaProsps.FirstOrDefault()) is Usuario)
+			{
+				listaProsps = listaProsps.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
+			}
 
-            Dictionary<string, int> quantidadeDeProspeccoesPorCasa = new Dictionary<string, int>();
+			var listaEmGrupo = listaProsps.GroupBy(propriedade);
+
+			Dictionary<string, int> quantidadeDeProspeccoesPorCasa = new Dictionary<string, int>();
 
 
             foreach (var p in listaEmGrupo)
@@ -119,7 +59,13 @@ namespace BaseDeProjetos.Helpers
         {
             var listaProsps = ListaDeProspeccoes;
 
-            var listaEmGrupo = listaProsps.GroupBy(propriedade);
+			// Verificar se a propriedade é do tipo Usuario
+			if (propriedade.Invoke(listaProsps.FirstOrDefault()) is Usuario)
+			{
+				listaProsps = listaProsps.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
+			}
+
+			var listaEmGrupo = listaProsps.GroupBy(propriedade);
 
             Dictionary<string, decimal> valorDeProspeccoesPorCasa = new Dictionary<string, decimal>();
 
