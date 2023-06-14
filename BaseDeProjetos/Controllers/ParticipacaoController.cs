@@ -123,8 +123,8 @@ namespace BaseDeProjetos.Controllers
             ParticipacaoTotalViewModel participacao = new ParticipacaoTotalViewModel() { Participacoes = new List<ParticipacaoViewModel>() };
 
             List<Prospeccao> prospeccoesUsuario = await _context.Prospeccao.Where(p => p.Usuario == usuario).ToListAsync();
-            List<Prospeccao> prospeccoesUsuarioComProposta = await _context.Prospeccao.Where(p => p.Usuario == usuario && p.Status.Any(f => f.Status == StatusProspeccao.ComProposta)).ToListAsync();
-            List<Prospeccao> prospeccoesUsuarioProjetizadas = await _context.Prospeccao.Where(p => p.Usuario == usuario && p.Status.Any(f => f.Status == StatusProspeccao.Convertida && f.Status != StatusProspeccao.Suspensa)).ToListAsync();
+            List<Prospeccao> prospeccoesUsuarioComProposta = await _context.Prospeccao.Where(p => p.Usuario == usuario && p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToListAsync();
+            List<Prospeccao> prospeccoesUsuarioProjetizadas = await _context.Prospeccao.Where(p => p.Usuario == usuario && p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida).ToListAsync();
             List<Projeto> projetosUsuario = await _context.Projeto.Where(p => p.MembrosEquipe.Contains(usuario.UserName)).ToListAsync();
 
             AtribuirParticipacoesIndividuais(participacao, prospeccoesUsuario);
