@@ -204,6 +204,22 @@ namespace BaseDeProjetos.Models
         Subs_DanificadoExtraviado
     }
 
+    public enum Cargo
+    {
+        [Display(Name = "Estagiário - Nível Técnico")]
+        EstagiarioNivelTecnico,
+        [Display(Name = "Estagiário - Nível Superior")]
+        EstagiarioNivelSuperior,
+        [Display(Name = "Pesquisador Bolsista")]
+        PesquisadorBolsista,
+        [Display(Name = "Pesquisador QMS")]
+        PesquisadorQMS,
+        [Display(Name = "PMO")]
+        PMO,
+        [Display(Name = "Gestor/Supervisor")]
+        Super,
+    }
+
     public enum Competencia
     {
         [Display(Name = "...")]
