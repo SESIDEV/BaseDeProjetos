@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text.Json;
 using BaseDeProjetos.Data;
+using BaseDeProjetos.Models;
 
 namespace BaseDeProjetos.Helpers
 {
@@ -70,6 +72,32 @@ namespace BaseDeProjetos.Helpers
             return producoesJson;
 
         }
-    }
+
+		public static Tuple<string, string> ObterNomeCasaAbreviado(Instituto casa)
+		{
+			string nomeCasa = Enum.GetName(typeof(Instituto), casa);
+
+			if (nomeCasa == "CISHO")
+			{
+				return new Tuple<string, string>("CIS-SO", nomeCasa);
+			}
+			else if (nomeCasa == "ISIQV")
+			{
+				return new Tuple<string, string>("ISI-QV", nomeCasa);
+			}
+			else if (nomeCasa == "ISISVP")
+			{
+				return new Tuple<string, string>("ISI-SVP", nomeCasa);
+			}
+			else if (nomeCasa == "ISIII")
+			{
+				return new Tuple<string, string>("ISI-II", nomeCasa);
+			}
+			else
+			{
+				return new Tuple<string, string>(nomeCasa, nomeCasa);
+			}
+		}
+	}
 
 }
