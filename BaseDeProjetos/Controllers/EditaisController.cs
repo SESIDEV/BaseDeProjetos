@@ -28,7 +28,8 @@ namespace BaseDeProjetos.Controllers
                 Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
                 List<Empresa> empresas = _context.Empresa.ToList();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-                ViewBag.usuarioCasa = usuario.Casa;
+				ViewBag.usuarioFoto = usuario.Foto;
+				ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;
                 return View(await _context.Editais.ToListAsync());
             }

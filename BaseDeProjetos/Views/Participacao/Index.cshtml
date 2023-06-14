@@ -7,6 +7,42 @@
     var cultura = new CultureInfo("pt-BR");
 }
 
+<style>
+    .ribbon {
+        width: 60px;
+        height: 90px;
+        position: absolute;
+    }
+
+        .ribbon span {
+            position: absolute;
+            display: block;
+            width: 80px;
+            padding: 5px 0;
+            background-color: #aa0000;
+            box-shadow: 0 5px 10px rgba(0,0,0,.1);
+            color: white;
+            font: 700 .7em sans-serif;
+            text-shadow: 0 1px 1px rgba(0,0,0,.2);
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+    /* top right*/
+    .ribbon-top-right {
+        top: -1.0em;
+        right: -1.5em;
+    }
+
+
+
+        .ribbon-top-right span {
+            left: -25px;
+            top: 30px;
+            transform: rotate(45deg);
+        }
+</style>
+
 <partial name="Header" view-data="@ViewData" />
 <div class="app-wrapper">
     <div class="app-content pt-3 p-md-3 p-lg-4">
@@ -31,9 +67,6 @@
                                         <th class="cell">Quantidade de Prospecções Projetizadas</th>
                                         <th class="cell">Taxa de Proposição</th>
                                         <th class="cell">Taxa de Conversão</th>
-@*                                        <th class="cell">Valor Total dos Projetos</th>
-                                        <th class="cell">Valor Médio dos Projetos</th>
-                                        <th class="cell">Quantidade de Projetos</th>*@
                                         <th class="cell">Rank</th>
                                         <th class="cell">Detalhes</th>
                                     </tr>
@@ -50,7 +83,7 @@
                                                             <h1 class="modal-title fs-5" id="ModalDetalhesParticipacaoTotal-@participacaoTotal.Id-Label">Detalhes das Participações do Pesquisador</h1>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
-                                                        <div class="modal-body d-flex flex-column gap-1">
+                                                            <div class="modal-body d-flex flex-column gap-1" style="background: #f5f6fe;">
                                                             <h5>Lista de Prospecções</h5>
                                                             @{
                                                                 int index = 1;
@@ -58,49 +91,69 @@
 
                                                                 participacoes.Sort((p1, p2) => p1.Convertida.CompareTo(p2.Convertida));
                                                                 participacoes.Sort((p1, p2) => decimal.Compare(p1.ValorNominal, p2.ValorNominal));
-                                                                
-                                                                foreach (var participacaoUnitaria in participacoes)
-                                                                {                                                                    
-                                                                    <div class="accordion" id="accordionParticipacaoUni-@(participacaoUnitaria.Id)">
-                                                                        <div class="accordion-item">
-                                                                            <h2 class="accordion-header">
-                                                                                @* TODO: Incluir collapse pro texto depois *@
-                                                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@(index)" aria-expanded="true" aria-controls="collapse-@(index)">
-                                                                                    Projeto @participacaoUnitaria.NomeProjeto | @(participacaoUnitaria.ValorNominal != 0 ? $"R${participacaoUnitaria.ValorNominal.ToString("N", cultura)}" : "Sem valor especificado")
-                                                                                </button>
-                                                                            </h2>
-                                                                            <div id="collapse-@(index)" class="accordion-collapse collapse" data-bs-parent="#accordionParticipacaoUni-@(participacaoUnitaria.Id)">
-                                                                                <div class="accordion-body">
-                                                                                    <h5>Empresa:</h5>
-                                                                                    @(participacaoUnitaria.EmpresaProjeto)
-                                                                                    <h5>Membros da Equipe:</h5>
-                                                                                    @(!string.IsNullOrEmpty(participacaoUnitaria.MembrosEquipe) ? participacaoUnitaria.MembrosEquipe.Replace(";", " ") : "Não há membros cadastrados")
-                                                                                    <h5>Divisão de Integrantes:</h5>
-                                                                                    Pesquisadores: @(participacaoUnitaria.QuantidadePesquisadores) [fictício]
-                                                                                    <br>
-                                                                                    Bolsistas: @(participacaoUnitaria.QuantidadeBolsistas) [fictício]
-                                                                                    <br>
-                                                                                    Estagiários: @(participacaoUnitaria.QuantidadeEstagiarios) [fictício]
-                                                                                    <h5>Valor do Projeto:</h5>
-                                                                                    @(participacaoUnitaria.ValorNominal != 0 ? $"R${participacaoUnitaria.ValorNominal.ToString("N", cultura)}" : "Sem valor especificado")
-                                                                                    <hr>
-                                                                                    <h5>Valor do Lider:</h5>
-                                                                                    @(participacaoUnitaria.ValorLider != 0 ? $"R${participacaoUnitaria.ValorLider.ToString("N", cultura)}" : "Sem valor pro líder")
-                                                                                    <h5>Valor dos Pesquisadores:</h5>
-                                                                                    @(participacaoUnitaria.ValorPesquisadores != 0 ? $"R${participacaoUnitaria.ValorPesquisadores.ToString("N", cultura)}" : "Sem valor para os pesquisadores") / 
-                                                                                    @(participacaoUnitaria.ValorPorPesquisador != 0 ? $"R${participacaoUnitaria.ValorPorPesquisador.ToString("N", cultura)}" : "Sem valor por pesquisador")
-                                                                                    <h5>Valor dos Bolsistas:</h5>
-                                                                                    @(participacaoUnitaria.ValorBolsistas != 0 ? $"R${participacaoUnitaria.ValorBolsistas.ToString("N", cultura)}" : "Sem valor para os bolsistas") /
-                                                                                    @(participacaoUnitaria.ValorPorBolsista != 0 ? $"R${participacaoUnitaria.ValorPorBolsista.ToString("N", cultura)}" : "Sem valor por bolsista")
-                                                                                    <h5>Valor dos Estagiários:</h5>
-                                                                                    @(participacaoUnitaria.ValorEstagiarios != 0 ? $"R${participacaoUnitaria.ValorEstagiarios.ToString("N", cultura)}" : "Sem valor para os estagiários") /
-                                                                                    @(participacaoUnitaria.ValorPorEstagiario != 0 ? $"R${participacaoUnitaria.ValorPorEstagiario.ToString("N", cultura)}" : "Sem valor por estagiário")
+                                                                <div class="row g-4">
+                                                                    @foreach (var participacaoUnitaria in participacoes)
+                                                                    {
+                                                                        <div class="col-6 col-md-4 col-xl-3 col-xxl-3">
+                                                                            <div class="app-card app-card-doc h-100 shadow-sm">
+                                                                                @if (participacaoUnitaria.Convertida)
+                                                                                {
+                                                                                    <div class="ribbon ribbon-top-right"><span>Convertida</span></div>
+                                                                                }
+                                                                                <div class="app-card-body p-3">
+                                                                                    <h4 class="app-doc-title truncate mb-0">
+                                                                                        @participacaoUnitaria.NomeProjeto
+                                                                                    </h4>
+                                                                                    <div class="app-doc-meta">
+                                                                                        <ul class="list-unstyled mb-0">
+                                                                                            <li>
+                                                                                                <span style="display:block; font-weight:bold" >
+                                                                                                    Empresa:                                                                                                
+                                                                                                </span>@(participacaoUnitaria.EmpresaProjeto)
+                                                                                            </li>
+                                                                                            <li>
+                                                                                                <span style="display:block; font-weight:bold" >
+                                                                                                    Valor:
+                                                                                                </span>@(participacaoUnitaria.ValorNominal != 0 ? $"R${participacaoUnitaria.ValorNominal.ToString("N", cultura)}" : "Sem valor especificado")
+                                                                                            </li>
+                                                                                            @if (participacaoUnitaria.ValorNominal > 0) {
+                                                                                                <li>
+                                                                                                    <span style="display:block; font-weight:bold" >
+                                                                                                        Valor do Líder:
+                                                                                                    </span>@(participacaoUnitaria.ValorLider != 0 ? $"R${participacaoUnitaria.ValorLider.ToString("N", cultura)}" : "Sem valor pro líder")
+                                                                                                </li>
+                                                                                                <li>
+                                                                                                    <span style="display:block; font-weight:bold" >
+                                                                                                        Valor dos Pesquisadores (@participacaoUnitaria.QuantidadePesquisadores):
+                                                                                                    </span>@(participacaoUnitaria.ValorPesquisadores != 0 ? $"R${participacaoUnitaria.ValorPesquisadores.ToString("N", cultura)}" : "Sem valor para os pesquisadores") /
+                                                                                                    @(participacaoUnitaria.ValorPorPesquisador != 0 ? $"R${participacaoUnitaria.ValorPorPesquisador.ToString("N", cultura)}" : "Sem valor por pesquisador")
+                                                                                                </li>
+                                                                                                <li>
+                                                                                                    <span style="display:block; font-weight:bold" >
+                                                                                                        Valor dos Bolsistas (@participacaoUnitaria.QuantidadeBolsistas):
+                                                                                                    </span>@(participacaoUnitaria.ValorBolsistas != 0 ? $"R${participacaoUnitaria.ValorBolsistas.ToString("N", cultura)}" : "Sem valor para os bolsistas") /
+                                                                                                    @(participacaoUnitaria.ValorPorBolsista != 0 ? $"R${participacaoUnitaria.ValorPorBolsista.ToString("N", cultura)}" : "Sem valor por bolsista")
+                                                                                                </li>
+                                                                                                <li>
+                                                                                                    <span style="display:block; font-weight:bold" >
+                                                                                                        Valor dos Estagiários (@participacaoUnitaria.QuantidadeEstagiarios):
+                                                                                                    </span>@(participacaoUnitaria.ValorEstagiarios != 0 ? $"R${participacaoUnitaria.ValorEstagiarios.ToString("N", cultura)}" : "Sem valor para os estagiários") /
+                                                                                                    @(participacaoUnitaria.ValorPorEstagiario != 0 ? $"R${participacaoUnitaria.ValorPorEstagiario.ToString("N", cultura)}" : "Sem valor por estagiário")
+                                                                                                </li>
+                                                                                            }
+                                                                                            <li>
+                                                                                                <span style="display:block; font-weight:bold" >
+                                                                                                    Convertida:
+                                                                                                </span>@(participacaoUnitaria.Convertida ? "Sim" : "Não")
+                                                                                            </li>
+                                                                                        </ul>
                                                                                     </div>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
-                                                                    </div>
-                                                                    index++;
-                                                                }
+                                                                        index++;
+                                                                    }
+                                                                </div>
                                                             }
                                                         </div>
                                                         <div class="modal-footer">
@@ -132,15 +185,15 @@
                                             <td class="cell">
                                                 @participacaoTotal.TaxaConversaoProjeto.ToString("N", cultura)%
                                             </td>
-@*                                            <td class="cell">
-                                                R$ @participacaoTotal.ValorTotalProjetos.ToString("N", cultura)
-                                            </td>
-                                            <td class="cell">
-                                                R$ @participacaoTotal.ValorMedioProjetos.ToString("N", cultura)
-                                            </td>
-                                            <td class="cell">
-                                                @participacaoTotal.QuantidadeProjetos
-                                            </td>*@
+                                            @*                                            <td class="cell">
+                                        R$ @participacaoTotal.ValorTotalProjetos.ToString("N", cultura)
+                                        </td>
+                                        <td class="cell">
+                                        R$ @participacaoTotal.ValorMedioProjetos.ToString("N", cultura)
+                                        </td>
+                                        <td class="cell">
+                                        @participacaoTotal.QuantidadeProjetos
+                                        </td>*@
                                             <td class="cell">
                                                 @participacaoTotal.Rank.ToString("N", cultura)
                                             </td>

@@ -190,7 +190,8 @@ namespace BaseDeProjetos.Controllers
 
                 // Tratar prospecções que tem "projeto" no nome (...)
                 // i.e: Remover na hora de apresentar o nome casos em que temos "Projeto projeto XYZ"
-                if (nomeProjeto != null && nomeProjeto != "" && nomeProjeto.ToLowerInvariant().Contains("projeto"))
+                // TODO: Transformar em REGEX
+                if (!string.IsNullOrEmpty(nomeProjeto) && nomeProjeto.ToLowerInvariant().Contains("projeto") && !nomeProjeto.ToLowerInvariant().Contains("projetos"))
                 {
                     nomeProjeto = nomeProjeto.Replace("projeto", "");
                     nomeProjeto = nomeProjeto.Replace("Projeto", "");
@@ -224,11 +225,7 @@ namespace BaseDeProjetos.Controllers
                 var valorPorPesquisador = calculoParticipantes["valorPorPesquisador"] * prospeccao.ValorProposta;
                 var valorPorEstagiario = calculoParticipantes["valorPorEstagiario"] * prospeccao.ValorProposta;
 
-                if (prospeccao.Status.Any(f => f.Status == StatusProspeccao.ComProposta)) 
-                {
-                    prospConvertida = false;
-                } 
-                else if (prospeccao.Status.Any(f => f.Status == StatusProspeccao.Convertida && f.Status != StatusProspeccao.Suspensa))
+                if (prospeccao.Status.Any(f => f.Status == StatusProspeccao.Convertida))
                 {
                     prospConvertida = true;
                 }
@@ -302,7 +299,8 @@ namespace BaseDeProjetos.Controllers
 
             participacoes = participacoes.OrderByDescending(p => p.Rank).ToList();
 
-            ViewBag.usuarioCasa = usuario.Casa;
+			ViewBag.usuarioFoto = usuario.Foto;
+			ViewBag.usuarioCasa = usuario.Casa;
             ViewBag.usuarioNivel = usuario.Nivel;
 
             return View(participacoes);
