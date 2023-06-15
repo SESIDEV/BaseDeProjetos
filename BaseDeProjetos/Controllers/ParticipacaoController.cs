@@ -119,7 +119,6 @@ namespace BaseDeProjetos.Controllers
         /// <param name="usuario">Usuário do sistema a ter participações retornadas</param>
         /// <returns></returns>
         private async Task<ParticipacaoTotalViewModel> GetParticipacaoTotalUsuario(Usuario usuario, string mes, string ano)
-        private async Task<ParticipacaoTotalViewModel> GetParticipacaoTotalUsuario(Usuario usuario, string mes, string ano)
         {
             ParticipacaoTotalViewModel participacao = new ParticipacaoTotalViewModel() { Participacoes = new List<ParticipacaoViewModel>() };
 
