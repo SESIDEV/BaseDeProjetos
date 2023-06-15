@@ -345,6 +345,9 @@ namespace BaseDeProjetos.Controllers
         {
             Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
+            ViewData["mes"] = mes;
+            ViewData["ano"] = ano;
+
             var participacoes = await GetParticipacoesTotaisUsuarios(mes, ano);
 
             if (participacoes.Count > 0)

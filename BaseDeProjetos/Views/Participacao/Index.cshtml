@@ -58,19 +58,82 @@
         background-color: #22B14C;
     }
 
+    .ribbon-green-yellow span {
+        color: gold;
+        background-color: #22B14C;
+    }
+
     .ribbon-orange span {
         color: white;
         background-color: orangered;
     }
 </style>
 
+<script>
+    function zerarInputMes(event) {
+        let input = event.target;
+        let mesSelecionado = input.value;
+
+        let valorMinimo = 1;
+
+        if (mesSelecionado < valorMinimo) {
+            input.value = null;
+            input.placeholder = "Sem filtro";
+        }
+    }
+
+    function zerarInputAno(event) {
+        let input = event.target;
+        let anoSelecionado = input.value;
+
+        let valorMaximo = 2023;
+
+        if (anoSelecionado > valorMaximo) {
+            input.value = null;
+            input.placeholder = "Sem filtro";
+        } else if (anoSelecionado == 1) {
+            input.value = null;
+            input.placeholder = "Sem filtro";
+        } else if (anoSelecionado == -1) {
+            input.value = 2023;
+            input.placeholder = "2023";
+        }
+    }
+</script>
+
 <partial name="Header" view-data="@ViewData" />
 <div class="app-wrapper">
     <div class="app-content pt-3 p-md-3 p-lg-4">
         <div class="container-xl">
             <div class="row g-3 mb-4 align-items-center justify-content-between">
-                <div class="col-auto">
-                    <h1 class="app-page-title mb-0">Participação dos Pesquisadores</h1>
+                <div class="d-flex" style="justify-content: space-between">
+                    <div class="d-flex flex-column">
+                        <h1 class="app-page-title mb-0">Participação dos Pesquisadores</h1>
+                        @if (!string.IsNullOrEmpty(ViewData["ano"] as string) || !string.IsNullOrEmpty(ViewData["mes"] as string))
+                        {
+                            if (string.IsNullOrEmpty(ViewData["mes"] as string))
+                            {
+                                <h3 class="app-page-title text-muted mb-0">Filtro: @(ViewData["ano"] as string)</h3>
+                            }
+                            else
+                            {
+                                <h3 class="app-page-title text-muted mb-0">Filtro: @(ViewData["ano"] as string)/@(ViewData["mes"] as string)</h3>
+                            }
+                            
+                        }
+                    </div>
+                    
+                    <form class="d-flex flex-row align-items-end gap-2" asp-controller="Participacao" asp-action="Index" method="get">
+                        <div class="form-group">
+                            <label for="mes">Mês:</label>
+                            <input id="mes" name="mes" class="form-control" type="number" placeholder="@DateTime.Now.Month" value="@DateTime.Now.Month" max="12" oninput="zerarInputMes(event)" />
+                        </div>
+                        <div class="form-group">
+                            <label for="ano">Ano:</label>
+                            <input id="ano" name="ano" class="form-control" type="number" placeholder="@DateTime.Now.Year" value="@DateTime.Now.Year" oninput="zerarInputAno(event)" />
+                        </div>
+                        <button type="submit" class="btn app-btn-primary">Filtrar</button>
+                    </form>
                 </div>
             </div>
 
