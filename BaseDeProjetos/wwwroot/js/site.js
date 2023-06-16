@@ -226,11 +226,11 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar) {
             opt.innerHTML = item[inner]
             document.querySelector(`#${idSelect}`).appendChild(opt)
         })
+        document.querySelector(`#loadingOpcoesSelect${rota}-${idItem}`).style.display = "none";
+        document.querySelector(`#${caixaId}`).style.display = "block";
     })
     document.querySelectorAll(".select2-container").forEach(input => {input.style.width = "100%"})
     if (botaoAlterar != null){document.querySelector(`#${botaoAlterar}`).style.display = "none";}
-    document.querySelector(`#loadingOpcoesSelect${rota}-${idItem}`).style.display = "none";
-    document.querySelector(`#${caixaId}`).style.display = "block";
 }
 
 function novaTag(){
