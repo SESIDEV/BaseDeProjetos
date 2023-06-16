@@ -75,7 +75,7 @@ namespace BaseDeProjetos
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddSession();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
 
             services.Configure<CookiePolicyOptions>(options =>
@@ -93,6 +93,7 @@ namespace BaseDeProjetos
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+                app.UseBrowserLink();
             }
             else
             {
