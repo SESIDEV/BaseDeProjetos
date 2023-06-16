@@ -56,7 +56,9 @@ namespace BaseDeProjetos.Controllers
             {
                 Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
 
-                ViewBag.QuantidadeProspeccaoPorEstado = indicadores.QuantidadeProspeccaoPorEstado(p => p.Empresa.Estado.GetDisplayName());
+
+                ViewBag.QuantidadeDeProspeccoesPorCasa = indicadores.QuantidadeDeProspeccoes(p => p.Casa.GetDisplayName());
+                ViewBag.ValorSomaProspeccoesPorCasa = indicadores.ValorSomaProspeccoes(p => p.Casa.GetDisplayName());
 
                 ViewBag.QuantidadeDeProspeccoesPorEmpresa = indicadores.QuantidadeDeProspeccoes(p => p.Empresa.Nome);
                 ViewBag.ValorSomaDeProspeccoesPorEmpresa = indicadores.ValorSomaProspeccoes(p => p.Empresa.Nome);
@@ -68,12 +70,8 @@ namespace BaseDeProjetos.Controllers
                 ViewBag.ValorSomaProspeccoesPorTipoContratacao = indicadores.ValorSomaProspeccoes(p => p.TipoContratacao.GetDisplayName());
 
                 ViewBag.QuantidadeDeProspeccoesPorLinhaDePesquisa = indicadores.QuantidadeDeProspeccoes(p => p.LinhaPequisa.GetDisplayName());
-                ViewBag.ValorSomaProspeccoesPorLinhaDePesquisa = indicadores.ValorSomaProspeccoes(p => p.LinhaPequisa.GetDisplayName());
+                ViewBag.ValorSomaProspeccoesPorLinhaDePesquisa = indicadores.ValorSomaProspeccoes(p => p.LinhaPequisa.GetDisplayName());                               
 
-                ViewBag.QuantidadeDeProspeccoesPorCasa = indicadores.QuantidadeDeProspeccoes(p => p.Casa.GetDisplayName());
-                ViewBag.ValorSomaProspeccoesPorCasa = indicadores.ValorSomaProspeccoes(p => p.Casa.GetDisplayName());
-
-                ViewBag.QuantidadeDeProspeccaoPorPotencialParceiro = indicadores.QuantidadeDeProspeccaoPorPotencialParceiro();
 
                 ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;

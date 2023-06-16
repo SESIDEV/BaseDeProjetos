@@ -376,6 +376,7 @@
 											Tuple<string, string> casa_nome = Helpers.ObterNomeCasaAbreviado(casa);
 											<li class="submenu-item"><a class="submenu-link" asp-action="Index" asp-controller="Indicadores" asp-route-casa="@casa_nome.Item2">@casa_nome.Item1</a></li>
 										}
+										<li class="submenu-item"><a class="submenu-link" asp-action="IndicadoresDashBoard" asp-controller="Indicadores">Prospecções</a></li>
 									</ul>
 								</div>
 							} else
@@ -401,6 +402,7 @@
 											Tuple<string, string> casa_nome = Helpers.ObterNomeCasaAbreviado(casa);
 											<li class="submenu-item"><a class="submenu-link" asp-action="Index" asp-controller="Indicadores" asp-route-casa="@casa_nome.Item2">@casa_nome.Item1</a></li>
 										}
+										<li class="submenu-item"><a class="submenu-link" asp-action="IndicadoresDashBoard" asp-controller="Indicadores">Prospecções</a></li>
 									</ul>
 								</div>
 							}
