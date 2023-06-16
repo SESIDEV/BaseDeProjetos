@@ -463,7 +463,7 @@ namespace BaseDeProjetos.Controllers
                     prospeccao.Empresa = empresa;
                 }
             }
-            prospeccao.Empresa = Empresa_antigo;
+
             _context.Update(prospeccao);
             return prospeccao;
         }
