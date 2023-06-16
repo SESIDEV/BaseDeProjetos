@@ -187,7 +187,9 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar) {
     let defRota = "";
     let value = "";
     let inner = "";
-    document.querySelector(`#loadingOpcoesSelect${rota}`).style.display = "block";
+    let idItem = nomeModal.replace("editarProspModal-","");
+    document.querySelector(`#${caixaId}`).style.display = "none";
+    document.querySelector(`#loadingOpcoesSelect${rota}-${idItem}`).style.display = "block";
     document.querySelector(`#${idSelect}`).innerHTML = '';
     if (nomeModal == null){
         $(`#${idSelect}`).select2()
@@ -224,10 +226,10 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar) {
             opt.innerHTML = item[inner]
             document.querySelector(`#${idSelect}`).appendChild(opt)
         })
-        document.querySelectorAll(".select2-container").forEach(input => {input.style.width = "100%"})
     })
+    document.querySelectorAll(".select2-container").forEach(input => {input.style.width = "100%"})
     if (botaoAlterar != null){document.querySelector(`#${botaoAlterar}`).style.display = "none";}
-    document.querySelector(`#loadingOpcoesSelect${rota}`).style.display = "none";
+    document.querySelector(`#loadingOpcoesSelect${rota}-${idItem}`).style.display = "none";
     document.querySelector(`#${caixaId}`).style.display = "block";
 }
 
