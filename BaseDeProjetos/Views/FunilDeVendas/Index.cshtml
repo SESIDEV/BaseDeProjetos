@@ -261,19 +261,23 @@
 				<div class="col-auto">
 					<div class="page-utilities">
 						<div class="row g-2 justify-content-start justify-content-md-end align-items-center">
-							@if(true){<div class="col-auto"> <!--se a rota não for Index-->
+							<div class="col-auto">
+								<!--se a rota não for Index-->
 								<form class="table-search-form row gx-1 align-items-center">
 									<div class="col-auto">
 										<input type="text" id="search-orders" name="SearchString" value='@ViewData["CurrentFilter"]' class="form-control search-orders" placeholder="Buscar..." autocomplete="off">
 									</div>
-									<div class="col-auto">
-										<button type="submit" class="btn app-btn-primary">Pesquisar</button>
-									</div>
+									@if (!string.IsNullOrEmpty(aba))
+									{
+										<div class="col-auto">
+											<button type="submit" class="btn app-btn-primary">Pesquisar</button>
+										</div>
+									}									
 									<div class="col-auto">
 										<button type="submit" class="btn app-btn-primary">Lista Completa</button>
 									</div>
 								</form>
-							</div>}
+							</div>							
 							<div class="col-auto">
 								<select class="form-select w-auto" id="ano" name="ano" onchange="updateLink()">
 								<option value="Todos">Todos</option>
