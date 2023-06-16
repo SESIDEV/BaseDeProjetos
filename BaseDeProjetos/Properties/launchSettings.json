@@ -13,6 +13,7 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation",
         "SENDGRID_APIKEY": "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"
       }
     },
@@ -22,6 +23,7 @@
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation",
         "SENDGRID_APIKEY": "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"
       }
     }
