@@ -207,17 +207,19 @@ namespace BaseDeProjetos.Models
     public enum Cargo
     {
         [Display(Name = "Estagiário - Nível Técnico")]
-        EstagiarioNivelTecnico,
+        EstagiarioNivelTecnico, // 0
         [Display(Name = "Estagiário - Nível Superior")]
-        EstagiarioNivelSuperior,
+        EstagiarioNivelSuperior, // 1
         [Display(Name = "Pesquisador Bolsista")]
-        PesquisadorBolsista,
+        PesquisadorBolsista, // 2
         [Display(Name = "Pesquisador QMS")]
-        PesquisadorQMS,
+        PesquisadorQMS, // 3 
         [Display(Name = "PMO")]
-        PMO,
+        PMO, // 4
         [Display(Name = "Gestor/Supervisor")]
-        Super,
+        Super, // 5
+        [Display(Name = "Desligado")]
+        Desligado, // 6
     }
 
     public enum Competencia
