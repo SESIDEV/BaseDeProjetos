@@ -55,9 +55,14 @@ namespace BaseDeProjetos.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private async Task CriarIndicadores(ProjetoIndicadores indicadoresMacroentrega)
+        /// <summary>
+        /// Cria os indicadores no Banco de Dados
+        /// </summary>
+        /// <param name="indicadoresProjeto"></param>
+        /// <returns></returns>
+        private async Task CriarIndicadores(ProjetoIndicadores indicadoresProjeto)
         {
-            await _context.AddAsync(indicadoresMacroentrega);
+            await _context.AddAsync(indicadoresProjeto);
             await _context.SaveChangesAsync();
         }
 
@@ -94,7 +99,7 @@ namespace BaseDeProjetos.Controllers
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
 
                 SetarFiltros(sortOrder, searchString);
-                IQueryable<Projeto> projetos = DefinirCasa(casa);
+                IQueryable<Projeto> projetos = ObterProjetosPorCasa(casa);
                 projetos = PeriodizarProjetos(ano, projetos);
                 CategorizarStatusProjetos(projetos);
                 GerarIndicadores(casa, _context);
@@ -106,6 +111,11 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        /// <summary>
+        /// Configura os filtros para a ordenação e busca de acordo com os parâmetros passados
+        /// </summary>
+        /// <param name="sortOrder">Filtro de ordenação</param>
+        /// <param name="searchString">Filtro de termo de busca</param>
         private void SetarFiltros(string sortOrder = "", string searchString = "")
         {
             //Filtros e ordenadores
@@ -131,12 +141,22 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        /// <summary>
+        /// Categoriza na View (ViewBag) os projetos como Ativos ou Encerrados
+        /// </summary>
+        /// <param name="projetos">Projetos a serem categorizados</param>
         private void CategorizarStatusProjetos(IQueryable<Projeto> projetos)
         {
             ViewBag.Ativos = projetos.Where(p => p.Status == StatusProjeto.EmExecucao || p.Status == StatusProjeto.Contratado).ToList();
             ViewBag.Encerrados = projetos.Where(p => p.Status == StatusProjeto.Concluido || p.Status == StatusProjeto.Cancelado).ToList();
         }
 
+        /// <summary>
+        /// Retorna uma lista de projetos até um ano limite especificado
+        /// </summary>
+        /// <param name="ano">Ano limite</param>
+        /// <param name="lista">Lista contendo projetos a serem filtrados e retornados</param>
+        /// <returns></returns>
         private IQueryable<Projeto> PeriodizarProjetos(string ano, IQueryable<Projeto> lista)
         {
             if (ano.Equals("Todos") || string.IsNullOrEmpty(ano))
@@ -148,6 +168,11 @@ namespace BaseDeProjetos.Controllers
             return lista.Where(s => s.DataEncerramento.Year >= ano_limite);
         }
 
+        /// <summary>
+        /// Define na ViewBag indicadores para o módulo de projetos
+        /// </summary>
+        /// <param name="casa"></param>
+        /// <param name="_context"></param>
         private void GerarIndicadores(string casa, ApplicationDbContext _context)
         {
             ViewBag.n_projs = _context.Projeto.Where(p => p.Status == StatusProjeto.EmExecucao).Count();
@@ -161,7 +186,12 @@ namespace BaseDeProjetos.Controllers
             ViewBag.Embrapii_prosps = _context.Prospeccao.ToList<Prospeccao>();
         }
 
-        private IQueryable<Projeto> DefinirCasa(string casa)
+        /// <summary>
+        /// Retorna uma lista contendo todos os projetos, filtrados pelo Instituto especificado
+        /// </summary>
+        /// <param name="casa">Nome do Instituto</param>
+        /// <returns></returns>
+        private IQueryable<Projeto> ObterProjetosPorCasa(string casa)
         {
             Instituto enum_casa;
 
@@ -195,6 +225,12 @@ namespace BaseDeProjetos.Controllers
             return lista;
         }
 
+        /// <summary>
+        /// Retorna um modal específico a partir dos parâmetros especificados
+        /// </summary>
+        /// <param name="idProjeto">ID do Projeto</param>
+        /// <param name="tipo">Tipo de Modal a ser retornado</param>
+        /// <returns></returns>
         public IActionResult RetornarModal(string idProjeto, string tipo)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -220,6 +256,11 @@ namespace BaseDeProjetos.Controllers
 
         }
 
+        /// <summary>
+        /// Retorna o modal de detalhes dado o ID de um projeto
+        /// </summary>
+        /// <param name="idProjeto">ID do projeto</param>
+        /// <returns></returns>
         public IActionResult RetornarModalDetalhes(string idProjeto)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -232,6 +273,11 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        /// <summary>
+        /// Verifica se um projeto existe no banco de dados
+        /// </summary>
+        /// <param name="id">ID do projeto</param>
+        /// <returns></returns>
         private bool ValidarProjetoId(string id)
         {
             if (id == null)
@@ -477,6 +523,11 @@ namespace BaseDeProjetos.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /// <summary>
+        /// Verifica se um projeto existe no Banco de Dados
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         private bool ProjetoExists(string id)
         {
             return _context.Projeto.Any(e => e.Id == id);
@@ -545,6 +596,11 @@ namespace BaseDeProjetos.Controllers
             }
 
         }
+
+        /// <summary>
+        /// Retorna um JSON contendo a lista de usuários, ?a partir do usuário logado?
+        /// </summary>
+        /// <returns></returns>
         public JsonResult ListaUsuarios()
         {
             if (HttpContext.User.Identity.IsAuthenticated)

@@ -194,6 +194,12 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        /// <summary>
+        /// Retorna um modal de acordo com os parâmetros passados
+        /// </summary>
+        /// <param name="idEdital">ID do Edital</param>
+        /// <param name="tipo">Tipo de Modal a ser retornado (Edit, Create, etc...)</param>
+        /// <returns>ViewComponent com os conteúdos do Modal</returns>
         public IActionResult RetornarModal(string idEdital, string tipo)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -224,22 +230,31 @@ namespace BaseDeProjetos.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /// <summary>
+        /// Verifica se um edital existe no Banco de Dados
+        /// </summary>
+        /// <param name="id">ID do Edital</param>
+        /// <returns></returns>
         private bool EditaisExists(int id)
         {
             return _context.Editais.Any(e => e.Id == id);
         }
 
+        /// <summary>
+        /// Cria uma prospeccção à partir de um edital
+        /// </summary>
+        /// <param name="id">ID do Edital</param>
+        /// <returns></returns>
         public IActionResult ProspectarEdital(int id)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
                 Editais Edital = _context.Editais.FirstOrDefault(e => e.Id == id);
-                string prospeccaoId = $"proj_{DateTime.Now.Ticks}";
+                string prospeccaoId = $"prosp_{DateTime.Now.Ticks}";
 
                 Submissao submissao = new Submissao
                 {
-
                     ComEmpresa = false,
                     Edital = Edital,
                     EditalId = Edital.Id.ToString(),
@@ -250,25 +265,19 @@ namespace BaseDeProjetos.Controllers
                         Status = new List<FollowUp> {
                         new FollowUp
                         {
-
                             OrigemID = prospeccaoId,
                             Data = DateTime.Today,
                             Anotacoes = $"Prospecção iniciada a partir do edital {Edital.Name}",
                             Status = StatusProspeccao.ContatoInicial
-
                         }
                     },
                         Casa = usuario.Casa
-
                     },
                     ProspeccaoId = prospeccaoId,
                     Proponente = "",
                     ProjetoProposto = "",
                     ResponsavelSubmissao = usuario.UserName,
                     StatusSubmissao = StatusSubmissaoEdital.emAnalise
-
-
-
                 };
                 _context.Add(submissao);
                 _context.SaveChanges();
@@ -279,6 +288,5 @@ namespace BaseDeProjetos.Controllers
                 return View("Forbidden");
             }
         }
-
     }
 }

@@ -1,9 +1,11 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
+using BaseDeProjetos.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,25 +29,18 @@ namespace BaseDeProjetos.Controllers
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
-                if (usuario.Nivel == Nivel.PMO || usuario.Nivel == Nivel.Dev)
-                {
-                    ViewBag.usuarioCasa = usuario.Casa;
-                    ViewBag.usuarioNivel = usuario.Nivel;
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
 
-                    List<IndicadoresFinanceiros> listaIndicadoresFinanceiros = await _context.IndicadoresFinanceiros.ToListAsync();
-                    if (string.IsNullOrEmpty(casa))
-                    {
-                        casa = usuario.Casa.ToString();
-
-                    }
-                    List<IndicadoresFinanceiros> lista = DefinirCasaParaVisualizar(casa);
-                    lista = VincularCasaAosIndicadoresFinanceiros(usuario, listaIndicadoresFinanceiros);
-                    return View(lista.ToList());
-                }
-                else
+                List<IndicadoresFinanceiros> listaIndicadoresFinanceiros = await _context.IndicadoresFinanceiros.ToListAsync();
+                if (string.IsNullOrEmpty(casa))
                 {
-                    return View("Forbidden");
+                    casa = usuario.Casa.ToString();
+
                 }
+                List<IndicadoresFinanceiros> lista = DefinirCasaParaVisualizar(casa);
+                lista = VincularCasaAosIndicadoresFinanceiros(usuario, listaIndicadoresFinanceiros);
+                return View(lista.ToList());
             }
             else
             {
@@ -53,6 +48,48 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        public ActionResult IndicadoresDashBoard()
+        {
+            IndicadorHelper indicadores = new IndicadorHelper(_context);
+
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
+
+
+                ViewBag.QuantidadeDeProspeccoesPorCasa = indicadores.QuantidadeDeProspeccoes(p => p.Casa.GetDisplayName());
+                ViewBag.ValorSomaProspeccoesPorCasa = indicadores.ValorSomaProspeccoes(p => p.Casa.GetDisplayName());
+
+                ViewBag.QuantidadeDeProspeccoesPorEmpresa = indicadores.QuantidadeDeProspeccoes(p => p.Empresa.Nome);
+                ViewBag.ValorSomaDeProspeccoesPorEmpresa = indicadores.ValorSomaProspeccoes(p => p.Empresa.Nome);
+
+                ViewBag.QuantidadeDeProspeccoesPorPesquisador = indicadores.QuantidadeDeProspeccoes(p => p.Usuario);
+                ViewBag.ValorSomaProspeccoesPorPesquisador = indicadores.ValorSomaProspeccoes(p => p.Usuario);
+
+                ViewBag.QuantidadeDeProspeccoesPorTipoContratacao = indicadores.QuantidadeDeProspeccoes(p => p.TipoContratacao.GetDisplayName());
+                ViewBag.ValorSomaProspeccoesPorTipoContratacao = indicadores.ValorSomaProspeccoes(p => p.TipoContratacao.GetDisplayName());
+
+                ViewBag.QuantidadeDeProspeccoesPorLinhaDePesquisa = indicadores.QuantidadeDeProspeccoes(p => p.LinhaPequisa.GetDisplayName());
+                ViewBag.ValorSomaProspeccoesPorLinhaDePesquisa = indicadores.ValorSomaProspeccoes(p => p.LinhaPequisa.GetDisplayName());                               
+
+
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+                return View("IndicadoresDashBoard");
+
+            }
+            else
+            {
+                return View("Forbideden");
+            }
+        }
+
+        /// <summary>
+        /// Filtra os indicadores financeiros de acordo com a casa do usuário passado por parâmetro
+        /// </summary>
+        /// <param name="usuario">?Usuário ativo?</param>
+        /// <param name="listaIndicadoresFinanceiros">Indicadores financeiros</param>
+        /// <returns></returns>
         public static List<IndicadoresFinanceiros> VincularCasaAosIndicadoresFinanceiros(Usuario usuario, List<IndicadoresFinanceiros> listaIndicadoresFinanceiros)
         {
 
@@ -68,6 +105,11 @@ namespace BaseDeProjetos.Controllers
 
         }
 
+        /// <summary>
+        /// Define a casa a qual os indicadores financeiros devem ser filtrados
+        /// </summary>
+        /// <param name="casa">Nome do instituto</param>
+        /// <returns></returns>
         private List<IndicadoresFinanceiros> DefinirCasaParaVisualizar(string? casa)
         {
             Instituto enum_casa;
@@ -93,6 +135,7 @@ namespace BaseDeProjetos.Controllers
 
             return listaIndicadores.ToList();
         }
+
         // GET: IndicadoresFinanceiros/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -285,6 +328,11 @@ namespace BaseDeProjetos.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /// <summary>
+        /// Verifica se um indicador financeiro existe no Banco de Dados
+        /// </summary>
+        /// <param name="id">ID do Indicador Financeiro</param>
+        /// <returns></returns>
         private bool IndicadoresFinanceirosExists(int id)
         {
             return _context.IndicadoresFinanceiros.Any(e => e.Id == id);
