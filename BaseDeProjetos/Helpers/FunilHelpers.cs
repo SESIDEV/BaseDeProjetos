@@ -6,6 +6,7 @@ using System.Linq;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Castle.Core.Internal;
 
 namespace BaseDeProjetos.Helpers
 {
@@ -116,33 +117,39 @@ namespace BaseDeProjetos.Helpers
 
             if (aba.ToLowerInvariant() == "ativas") 
             {
-                List<Prospeccao> ativas = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup => followup.Data).LastOrDefault().Status < StatusProspeccao.ComProposta).ToList();
+                List<Prospeccao> ativas = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
+                    followup.Data).LastOrDefault().Status < StatusProspeccao.ComProposta).ToList();
                 return ativas;
             }
             else if (aba.ToLowerInvariant() == "comproposta")
             {
-                List<Prospeccao> emProposta = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup => followup.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList();
+                List<Prospeccao> emProposta = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
+                    followup.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList();
                 return emProposta;
             } 
             else if (aba.ToLowerInvariant() == "concluidas")
             {
-                List<Prospeccao> concluidas = lista.Where(prospeccao => prospeccao.Status.Any(followup => followup.Status == StatusProspeccao.Convertida ||
-                                                              followup.Status == StatusProspeccao.Suspensa ||
-                                                              followup.Status == StatusProspeccao.NaoConvertida)).ToList();
+                List<Prospeccao> concluidas = lista.Where(prospeccao => prospeccao.Status.Any(followup =>
+                    followup.Status == StatusProspeccao.Convertida ||
+                    followup.Status == StatusProspeccao.Suspensa ||
+                    followup.Status == StatusProspeccao.NaoConvertida
+                )).ToList();
                 return concluidas;
             } 
             else if (aba.ToLowerInvariant() == "planejadas")
             {
                 // Jesus cristo 😬
                 List<Prospeccao> planejadas = usuario.Nivel == Nivel.Dev ?
-                            lista.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).ToList() :
-                            lista.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).Where(prosp => prosp.Usuario.UserName.ToString() == HttpContext.User.Identity.Name).ToList();
+                    lista.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).ToList() :
+                    lista.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).Where(prosp => prosp.Usuario.UserName.ToString() == HttpContext.User.Identity.Name).ToList();
                 return planejadas;
             } 
             else if (aba.ToLowerInvariant() == "erradas")
             {
-                List<Prospeccao> erradas = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup => followup.Data).FirstOrDefault().Status != StatusProspeccao.ContatoInicial
-                            && prospeccao.Status.OrderBy(followup => followup.Data).FirstOrDefault().Status != StatusProspeccao.Planejada).ToList();
+                List<Prospeccao> erradas = lista.Where(prospeccao =>
+                    prospeccao.Status.OrderBy(followup => followup.Data).FirstOrDefault().Status != StatusProspeccao.ContatoInicial &&
+                    prospeccao.Status.OrderBy(followup => followup.Data).FirstOrDefault().Status != StatusProspeccao.Planejada
+                ).ToList();
                 return erradas;
             } 
             else
@@ -209,6 +216,50 @@ namespace BaseDeProjetos.Helpers
             }
 
             return producoes.ToList();
+        }
+
+        public static void AddAgregadas(ApplicationDbContext _context, Prospeccao prospeccao)
+        {
+            if(!prospeccao.Agregadas.IsNullOrEmpty()){
+                var listaAggIds = prospeccao.Agregadas.Split(";"); //separa os Ids
+
+                foreach (string AggId in listaAggIds) //itera pelas agregadas
+                {
+                    AddStatusAgregada(_context, AggId);
+                }
+            }
+        }
+
+        private static void AddStatusAgregada(ApplicationDbContext _context, string AggId)
+        {
+            var prospAgg = _context.Prospeccao.Where(prosp => prosp.Id == AggId).First();
+
+            FollowUp statusAgg = new FollowUp(); //cria o status agregada
+            statusAgg.Status = StatusProspeccao.Agregada;
+            statusAgg.Data = DateTime.Today;
+            statusAgg.Anotacoes = "Esta prospecção foi agregada à um grupo.";
+
+            prospAgg.Status.Add(statusAgg); //adiciona o status ao final da lista de followups
+        }
+
+        public static void RepassarStatusAoCancelarAncora(ApplicationDbContext _context, Prospeccao prospeccao)
+        {
+            if(!prospeccao.Agregadas.IsNullOrEmpty()){
+                if (prospeccao.Ancora){ //verifica o bool
+                    var listaAggIds = prospeccao.Agregadas.Split(";"); //separa os Ids
+
+                    foreach (string AggId in listaAggIds) //itera pelas agregadas
+                    {
+                        var prospAgg = _context.Prospeccao.Where(prosp => prosp.Id == AggId).First();
+                        var AggUltimoStatus = prospAgg.Status.Last().Data;
+                        var AggOrigemId = prospAgg.Status.Last().OrigemID;
+                        var statusMaisRecentes = prospeccao.Status.Where(s => s.Data > AggUltimoStatus).ToList();
+                        statusMaisRecentes.ForEach(s => s.OrigemID = AggOrigemId);
+                        prospAgg.Status.AddRange(statusMaisRecentes);
+                    }
+                }
+                prospeccao.Ancora = false; //reverte o bool
+            }
         }
 
         public static Usuario ObterUsuarioAtivo(ApplicationDbContext _context, HttpContext HttpContext)
@@ -285,6 +336,7 @@ namespace BaseDeProjetos.Helpers
                 prospeccoes = prospeccoes.Where(p =>
                 ChecarSubstring(searchString, p.Empresa.Nome) ||
                 ChecarSubstring(searchString, p.Empresa.NomeFantasia) ||
+                ChecarSubstring(searchString, p.Id) ||
                 ChecarSubstring(searchString, p.Usuario.UserName) ||
                 ChecarSubstring(searchString, p.NomeProspeccao) ||
                 ChecarSubstring(searchString, p.MembrosEquipe)

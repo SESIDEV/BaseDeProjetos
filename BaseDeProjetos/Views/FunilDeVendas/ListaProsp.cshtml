@@ -26,7 +26,7 @@
                             <th class="cell">Logo</th>
                             <th class="cell">Empresa</th>
                             <th class="cell">Origem</th>
-                            <th class="cell">Líder</th>
+                            <th class="cell">Equipe</th>
                             <th class="cell">Projeto</th>
                             <th class="cell">Tipo Contratação</th>
                             <th class="cell">Status</th>
@@ -85,6 +85,12 @@
                                     else
                                     {
                                         <span class="badge bg-danger">Sem Líder</span>
+                                    }
+                                    @if(prospeccao.MembrosEquipe != null){
+                                        foreach (var item in prospeccao.MembrosEquipe.Split(";"))
+                                        {
+                                            if(item == ""){} else {<span class="badge bg-info">@item</span>}
+                                        }
                                     }
                                 </td>
                                 <td class="cell">

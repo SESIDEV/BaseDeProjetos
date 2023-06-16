@@ -376,7 +376,7 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {
-                    prospeccao = EditarDadosDaProspecção(id, prospeccao);
+                    prospeccao = EditarDadosDaProspecção(prospeccao);
                     _context.SaveChanges(); // Essa linha já foi async, talvez seja possível que isso permita ressurgências...
                 }
                 catch (DbUpdateConcurrencyException)
@@ -395,21 +395,19 @@ namespace BaseDeProjetos.Controllers
             return View(prospeccao);
         }
 
-        private Prospeccao EditarDadosDaProspecção(string id, Prospeccao prospeccao)
+        private Prospeccao EditarDadosDaProspecção(Prospeccao prospeccao)
         {
-            Empresa Empresa_antigo = _context.Empresa.FirstOrDefault(e => e.Id == prospeccao.Empresa.Id);
+            Empresa Empresa_antigo = _context.Empresa.First(e => e.Id == prospeccao.Empresa.Id);
+            prospeccao.Empresa = Empresa_antigo;
             Usuario lider = _context.Users.First(p => p.Id == prospeccao.Usuario.Id);
             prospeccao.Usuario = lider;
 
-            if (prospeccao.Empresa.Id != Empresa_antigo.Id) // Empresa existente
-            {
-                Empresa empresa = _context.Empresa.FirstOrDefault(e => e.Id == prospeccao.Empresa.Id);
-                if (empresa != null)
-                {
-                    prospeccao.Empresa = empresa;
-                }
+            Prospeccao prospAntiga = _context.Prospeccao.AsNoTracking().First(p => p.Id == prospeccao.Id);
+
+            if(prospAntiga.Ancora == true && prospeccao.Ancora == false){ // compara a versão antiga com a nova que irá para o Update()
+                FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
             }
-            prospeccao.Empresa = Empresa_antigo;
+            
             _context.Update(prospeccao);
             return prospeccao;
         }
@@ -551,7 +549,9 @@ namespace BaseDeProjetos.Controllers
         {
 			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-			var prospeccao =  _context.Prospeccao.Where(prosp => prosp.Id == id).Include(f => f.Status).First();
+			var prospeccao =  _context.Prospeccao.Where(prosp => prosp.Id == id).Include(f => f.Status).First(); // o First converte de IQuerable para objeto Prospeccao
+
+            if(prospeccao.Ancora){FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);}
 
             _context.Remove(prospeccao);
             await _context.SaveChangesAsync();
@@ -649,6 +649,29 @@ namespace BaseDeProjetos.Controllers
                 {
                     dict["ValorFinal"] = p.ValorEstimado;
                 }               
+                
+                listaFull.Add(dict);
+            }
+
+            return Json(listaFull);
+        }
+
+        public ActionResult PuxarDadosProspeccoes2() //para puxar em selectList
+        {
+            List<Prospeccao> lista_prosp = _context.Prospeccao.ToList();
+
+            List<Dictionary<string, object>> listaFull = new List<Dictionary<string, object>>();
+
+            foreach (var p in lista_prosp)
+            {
+                Dictionary<string, object> dict = new Dictionary<string, object>();
+                
+                if(p.NomeProspeccao != null){
+                    dict["idProsp"] = p.Id;
+                    dict["Titulo"] = p.NomeProspeccao;
+                } else {
+                    continue;
+                }
                 
                 listaFull.Add(dict);
             }

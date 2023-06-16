@@ -76,7 +76,7 @@ function FiltroEmpresaEstrangeira(){
 
     if (checkBox.checked == true) {
 
-        cnpj.value = 00000000000000;
+        cnpj.value = "00000000000000";
         campo1.style.display = "none"
         estado_int.value = 26;
         campo2.style.display = "none"
@@ -155,6 +155,34 @@ function realocarCompetenciaNaView(element) {
     }
 }
 
+function loadAncora(alavanca, iconAncora, campoAgg) {
+    icon = document.querySelector(`#${iconAncora}`);
+    agg = document.querySelector(`#${campoAgg}`);
+    if(alavanca.value == "False"){
+        alavanca.checked = false;
+        icon.style.color = "rgba(111, 111, 111, 0.2)";
+        agg.classList.add("d-none");
+    } else {
+        alavanca.checked = true;
+        icon.style.color = "rgba(111, 111, 111, 1)";
+        agg.classList.remove("d-none");
+    }
+}
+
+function checkAncora(alavanca, iconAncora, campoAgg) {
+    icon = document.querySelector(`#${iconAncora}`);
+    agg = document.querySelector(`#${campoAgg}`);
+    if(alavanca.checked){
+        alavanca.value = "True";
+        icon.style.color = "rgba(111, 111, 111, 1)";
+        agg.classList.remove("d-none");
+    } else {
+        alavanca.value = "False";
+        icon.style.color = "rgba(111, 111, 111, 0.2)";
+        agg.classList.add("d-none");
+    }
+}
+
 function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar) {
     let defRota = "";
     let value = "";
@@ -173,12 +201,17 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar) {
             inner = "UserName";
             break;
         case "Empresas":
-            defRota = '/Empresas/PuxarEmpresas'
+            defRota = '/Empresas/PuxarEmpresas';
             value = "Id";
             inner = "RazaoSocial";
             break;
         case "Tags":
             defRota = '/FunilDeVendas/PuxarTagsProspecoes';
+            break;
+        case "Prospeccoes":
+            defRota = '/FunilDeVendas/PuxarDadosProspeccoes2';
+            value = "idProsp";
+            inner = "Titulo";
             break;
         default:
             console.log(`Erro: ${rota} é uma rota inválida`);
