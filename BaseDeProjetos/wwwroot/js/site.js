@@ -264,10 +264,17 @@ function procurarPessoa(select) {
 }
 
 function selectToText(lista, id) {
+    console.log(lista)
+    console.log(id)
     lista.forEach(function(rota) {
+        console.log(rota)
         let texto = ''
-        document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`).childNodes.forEach(p => texto += p.title + ';')
-        document.querySelector(`inputTextEdit${rota}-${id}`).value = texto
+        if(document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`) != null){
+            document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`).childNodes.forEach(p => texto += p.title + ';')
+            document.querySelector(`inputTextEdit${rota}-${id}`).value = texto
+        } else {
+            return;
+        }
       })
 }
 
