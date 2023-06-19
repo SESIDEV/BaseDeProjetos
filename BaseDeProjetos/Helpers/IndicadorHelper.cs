@@ -26,7 +26,7 @@ namespace BaseDeProjetos.Helpers
 
 			if(ano != null)
             {
-                listaProsps = listaProsps.Where(p => p.Status.FirstOrDefault().Data.Year == ano).ToList();
+                listaProsps = listaProsps.Where(p => p.Status.LastOrDefault().Data.Year == ano).ToList();
 
                 if (listaProsps == null)
                 {
@@ -77,7 +77,7 @@ namespace BaseDeProjetos.Helpers
 
             if (ano != null)
             {
-                listaProsps = listaProsps.Where(p => p.Status.FirstOrDefault().Data.Year == ano).ToList();
+                listaProsps = listaProsps.Where(p => p.Status.LastOrDefault().Data.Year == ano).ToList();
 
                 if (listaProsps == null)
                 {
