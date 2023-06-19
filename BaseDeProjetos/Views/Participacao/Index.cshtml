@@ -86,7 +86,7 @@
         let input = event.target;
         let anoSelecionado = input.value;
 
-        let valorMaximo = 2023;
+        let valorMaximo = new Date().getFullYear();
 
         if (anoSelecionado > valorMaximo) {
             input.value = null;
@@ -95,8 +95,8 @@
             input.value = null;
             input.placeholder = "Sem filtro";
         } else if (anoSelecionado == -1) {
-            input.value = 2023;
-            input.placeholder = "2023";
+            input.value = new Date().getFullYear();
+            input.placeholder = new Date().getFullYear().toString();
         }
     }
 </script>
