@@ -271,7 +271,7 @@ function selectToText(lista, id) {
         let texto = ''
         if(document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`) != null){
             document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`).childNodes.forEach(p => texto += p.title + ';')
-            document.querySelector(`inputTextEdit${rota}-${id}`).value = texto
+            document.querySelector(`#inputTextEdit${rota}-${id}`).value = texto
         } else {
             return;
         }
