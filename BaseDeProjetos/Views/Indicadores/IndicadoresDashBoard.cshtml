@@ -356,7 +356,7 @@
         buttons.forEach(function (button) {
             var originalText = button.getAttribute('data-original-text');
             if (button.innerText == 'Ocultar') {
-                button.innerText = originalText;
+                button.innerText = originalText.split("-").join(" ");
                 button.style.backgroundColor = '';
             }
         });

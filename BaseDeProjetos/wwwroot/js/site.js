@@ -187,7 +187,9 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar) {
     let defRota = "";
     let value = "";
     let inner = "";
-    document.querySelector(`#loadingOpcoesSelect${rota}`).style.display = "block";
+    let idItem = nomeModal.replace("editarProspModal-","");
+    document.querySelector(`#${caixaId}`).style.display = "none";
+    document.querySelector(`#loadingOpcoesSelect${rota}-${idItem}`).style.display = "block";
     document.querySelector(`#${idSelect}`).innerHTML = '';
     if (nomeModal == null){
         $(`#${idSelect}`).select2()
@@ -224,13 +226,11 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar) {
             opt.innerHTML = item[inner]
             document.querySelector(`#${idSelect}`).appendChild(opt)
         })
-        document.querySelector(`#loadingOpcoesSelect${rota}`).style.display = "none";
-        document.querySelectorAll(".select2-container").forEach(input => {input.style.width = "100%"})
+        document.querySelector(`#loadingOpcoesSelect${rota}-${idItem}`).style.display = "none";
+        document.querySelector(`#${caixaId}`).style.display = "block";
     })
-    document.querySelector(`#${caixaId}`).style.display = "block";
-    if (botaoAlterar != null){
-        document.querySelector(`#${botaoAlterar}`).style.display = "none";
-    }
+    document.querySelectorAll(".select2-container").forEach(input => {input.style.width = "100%"})
+    if (botaoAlterar != null){document.querySelector(`#${botaoAlterar}`).style.display = "none";}
 }
 
 function novaTag(){
@@ -263,14 +263,12 @@ function procurarPessoa(select) {
     redePessoas.focus(select.value, { scale: 3, animation: { duration: 400 } })
 }
 
-function selectToText(idSelect, idText) {
-    let listaRota = ["Pessoas", "Empresas"]
-    listaRota.forEach(function(rota) {
+function selectToText(lista, id) {
+    lista.forEach(function(rota) {
         let texto = ''
-        document.querySelector(`#select2-${idSelect}${rota}-container`).childNodes.forEach(p => texto += p.title + ';')
-        document.querySelector(`#${idText}${rota}`).value = texto
+        document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`).childNodes.forEach(p => texto += p.title + ';')
+        document.querySelector(`inputTextEdit${rota}-${id}`).value = texto
       })
-    
 }
 
 function textToSelect(nomeModal, idText, idSelect, rota, caixaId, botaoAlterar) {
