@@ -263,14 +263,12 @@ function procurarPessoa(select) {
     redePessoas.focus(select.value, { scale: 3, animation: { duration: 400 } })
 }
 
-function selectToText(idSelect, idText) {
-    let listaRota = ["Pessoas", "Empresas"]
-    listaRota.forEach(function(rota) {
+function selectToText(lista, id) {
+    lista.forEach(function(rota) {
         let texto = ''
-        document.querySelector(`#select2-${idSelect}${rota}-container`).childNodes.forEach(p => texto += p.title + ';')
-        document.querySelector(`#${idText}${rota}`).value = texto
+        document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`).childNodes.forEach(p => texto += p.title + ';')
+        document.querySelector(`inputTextEdit${rota}-${id}`).value = texto
       })
-    
 }
 
 function textToSelect(nomeModal, idText, idSelect, rota, caixaId, botaoAlterar) {
