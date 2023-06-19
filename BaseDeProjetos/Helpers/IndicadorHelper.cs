@@ -1,6 +1,7 @@
 ﻿using BaseDeProjetos.Controllers;
 using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace BaseDeProjetos.Helpers
             _dbContext = dbContext;
         }
 
-        public List<Prospeccao> ListaDeProspeccoes { get => _dbContext.Prospeccao.Where(p => p.Status.FirstOrDefault().Status != StatusProspeccao.Planejada).ToList(); }
+         public List<Prospeccao> ListaDeProspeccoes => _dbContext.Prospeccao.Where(p => p.Status.OrderByDescending(k => k.Data).Any(pa => pa.Status != StatusProspeccao.Planejada)).ToList();
 
 
         public Dictionary<string, int> QuantidadeDeProspeccoes(Func<Prospeccao, object> propriedade, int? ano)
@@ -70,9 +71,9 @@ namespace BaseDeProjetos.Helpers
 
             return quantidadeDeProspeccoesPorCasa.OrderByDescending(p => p.Value).Take(10).ToDictionary(k => k.Key, v => v.Value);
         }
-        public Dictionary<string, string> ValorSomaProspeccoes(Func<Prospeccao?, object>? propriedade, int? ano)
+        public Dictionary<string, string> ValorSomaProspeccoes(Func<Prospeccao, object> propriedade, int? ano)
         {
-            var listaProsps = ListaDeProspeccoes;
+            List<Prospeccao> listaProsps = ListaDeProspeccoes;
 
             if (ano != null)
             {
