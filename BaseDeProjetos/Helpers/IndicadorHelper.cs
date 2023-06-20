@@ -18,14 +18,10 @@ namespace BaseDeProjetos.Helpers
         }
 
         public List<Prospeccao> ListaDeProspeccoes => _dbContext.Prospeccao
-           .Where(p => p.Status
-           .OrderByDescending(k => k.Data)
-           .All(
-               pa => pa.Status != StatusProspeccao.Planejada ||
-               pa.Status != StatusProspeccao.Convertida ||
-               pa.Status != StatusProspeccao.NaoConvertida ||
-               pa.Status != StatusProspeccao.Suspensa))
-           .ToList();
+           .Where(p => 
+           p.Status.OrderByDescending(k => k.Data).FirstOrDefault().Status == StatusProspeccao.ContatoInicial ||
+           p.Status.OrderByDescending(k => k.Data).FirstOrDefault().Status == StatusProspeccao.ComProposta)
+            .ToList();
 
 
         public Dictionary<string, int> QuantidadeDeProspeccoes(Func<Prospeccao, object> propriedade, int? ano)
