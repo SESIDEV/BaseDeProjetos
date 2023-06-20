@@ -155,9 +155,11 @@ function realocarCompetenciaNaView(element) {
     }
 }
 
-function loadAncora(alavanca, iconAncora, campoAgg) {
+function loadAncora(toggleId, iconAncora, campoAgg) {
+    alavanca = document.querySelector(`#${toggleId}`);
     icon = document.querySelector(`#${iconAncora}`);
     agg = document.querySelector(`#${campoAgg}`);
+
     if(alavanca.value == "False"){
         alavanca.checked = false;
         icon.style.color = "rgba(111, 111, 111, 0.2)";
@@ -183,13 +185,12 @@ function checkAncora(alavanca, iconAncora, campoAgg) {
     }
 }
 
-function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar) {
+function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon) {
     let defRota = "";
     let value = "";
     let inner = "";
-    let idItem = nomeModal.replace("editarProspModal-","");
     document.querySelector(`#${caixaId}`).style.display = "none";
-    document.querySelector(`#loadingOpcoesSelect${rota}-${idItem}`).style.display = "block";
+    document.querySelector(`#${loadingIcon}`).style.display = "block";
     document.querySelector(`#${idSelect}`).innerHTML = '';
     if (nomeModal == null){
         $(`#${idSelect}`).select2()
@@ -226,7 +227,7 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar) {
             opt.innerHTML = item[inner]
             document.querySelector(`#${idSelect}`).appendChild(opt)
         })
-        document.querySelector(`#loadingOpcoesSelect${rota}-${idItem}`).style.display = "none";
+        document.querySelector(`#${loadingIcon}`).style.display = "none";
         document.querySelector(`#${caixaId}`).style.display = "block";
     })
     document.querySelectorAll(".select2-container").forEach(input => {input.style.width = "100%"})

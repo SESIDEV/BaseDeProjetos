@@ -449,6 +449,10 @@ namespace BaseDeProjetos.Controllers
 
             Prospeccao prospAntiga = _context.Prospeccao.AsNoTracking().First(p => p.Id == prospeccao.Id);
 
+            if(prospAntiga.Ancora == false && prospeccao.Ancora == true){ // compara a versão antiga com a nova que irá para o Update()
+                FunilHelpers.AddAgregadas(_context, prospeccao);
+            }
+
             if(prospAntiga.Ancora == true && prospeccao.Ancora == false){ // compara a versão antiga com a nova que irá para o Update()
                 FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
             }
@@ -739,7 +743,7 @@ namespace BaseDeProjetos.Controllers
                 
                 if(p.NomeProspeccao != null){
                     dict["idProsp"] = p.Id;
-                    dict["Titulo"] = p.NomeProspeccao;
+                    dict["Titulo"] = p.NomeProspeccao + "[" + p.Empresa.NomeFantasia + "]";
                 } else {
                     continue;
                 }
