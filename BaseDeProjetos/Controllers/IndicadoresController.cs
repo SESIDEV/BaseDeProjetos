@@ -71,7 +71,7 @@ namespace BaseDeProjetos.Controllers
                 ViewBag.ValorSomaProspeccoesPorTipoContratacao = indicadores.ValorSomaProspeccoes(p => p?.TipoContratacao.GetDisplayName(), ano);
 
                 ViewBag.QuantidadeDeProspeccoesPorLinhaDePesquisa = indicadores.QuantidadeDeProspeccoes(p => p?.LinhaPequisa.GetDisplayName(), ano);
-                ViewBag.ValorSomaProspeccoesPorLinhaDePesquisa = indicadores.ValorSomaProspeccoes(p => p?.LinhaPequisa.GetDisplayName(), ano);                               
+                ViewBag.ValorSomaProspeccoesPorLinhaDePesquisa = indicadores.ValorSomaProspeccoes(p => p?.LinhaPequisa.GetDisplayName(), ano);
 
 
                 ViewBag.usuarioCasa = usuario.Casa;
