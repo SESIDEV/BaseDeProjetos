@@ -2,6 +2,7 @@
 using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,12 +18,9 @@ namespace BaseDeProjetos.Helpers
             _dbContext = dbContext;
         }
 
-        public List<Prospeccao> ListaDeProspeccoes => _dbContext.Prospeccao
-           .Where(p => 
-           p.Status.OrderByDescending(k => k.Data).FirstOrDefault().Status == StatusProspeccao.ContatoInicial ||
-           p.Status.OrderByDescending(k => k.Data).FirstOrDefault().Status == StatusProspeccao.ComProposta ||
-           p.Status.OrderByDescending(k => k.Data).FirstOrDefault().Status == StatusProspeccao.Discussao_EsbocoProjeto)
-            .ToList();
+        public List<Prospeccao> ListaDeProspeccoes => _dbContext.Prospeccao.Where(prospeccao =>
+        prospeccao.Status.OrderBy(followup =>
+                    followup.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
 
 
         public Dictionary<string, int> QuantidadeDeProspeccoes(Func<Prospeccao, object> propriedade, int? ano)
@@ -31,7 +29,7 @@ namespace BaseDeProjetos.Helpers
 
             if (ano != null)
             {
-                listaProsps = listaProsps.Where(p => p.Status.LastOrDefault().Data.Year == ano).ToList();
+                listaProsps = listaProsps.Where(p => p.Status.First().Data.Year == ano).ToList();
 
                 if (listaProsps == null)
                 {
@@ -54,13 +52,24 @@ namespace BaseDeProjetos.Helpers
 
             Dictionary<string, int> quantidadeDeProspeccoesPorCasa = new Dictionary<string, int>();
 
-
             foreach (var p in listaEmGrupo)
             {
 
-                if (!quantidadeDeProspeccoesPorCasa.ContainsKey(p.Key.ToString()))
+                if (quantidadeDeProspeccoesPorCasa.ContainsKey(p.Key.ToString()))
                 {
 
+                    if (p.Count().GetType() == typeof(int))
+                    {
+                        quantidadeDeProspeccoesPorCasa[p.Key.ToString()] += p.Count();
+                    }
+                    else
+                    {
+                        quantidadeDeProspeccoesPorCasa[p.Key.ToString()] += 0;
+                    }
+
+                }
+                else
+                {
                     if (p.Count().GetType() == typeof(int))
                     {
                         quantidadeDeProspeccoesPorCasa.Add(p.Key.ToString(), p.Count());
@@ -69,7 +78,6 @@ namespace BaseDeProjetos.Helpers
                     {
                         quantidadeDeProspeccoesPorCasa.Add(p.Key.ToString(), 0);
                     }
-
                 }
 
             }
@@ -82,7 +90,7 @@ namespace BaseDeProjetos.Helpers
 
             if (ano != null)
             {
-                listaProsps = listaProsps.Where(p => p.Status.LastOrDefault().Data.Year == ano).ToList();
+                listaProsps = listaProsps.Where(p => p.Status.First().Data.Year == ano).ToList();
 
                 if (listaProsps == null)
                 {
@@ -113,17 +121,28 @@ namespace BaseDeProjetos.Helpers
 
             foreach (var p in listaEmGrupo)
             {
-                if (!valorDeProspeccoesPorCasa.ContainsKey(p.Key.ToString()))
+                if (valorDeProspeccoesPorCasa.ContainsKey(p.Key.ToString()))
+                {
+                    if (p.Count().GetType() == typeof(int))
+                    { 
+                        valorDeProspeccoesPorCasa[p.Key.ToString()] += p.Sum(v => v.ValorProposta) + p.Sum(v => v.ValorEstimado);
+                    }
+                    else
+                    {
+                        valorDeProspeccoesPorCasa[p.Key.ToString()] += (decimal)0.0;
+                    }
+
+                }
+                else
                 {
                     if (p.Count().GetType() == typeof(int))
                     {
-                        valorDeProspeccoesPorCasa.Add(p.Key.ToString(), (decimal)p.Sum(v => v.ValorProposta));
+                        valorDeProspeccoesPorCasa.Add(p.Key.ToString(), p.Sum(v => v.ValorProposta) + p.Sum(v => v.ValorEstimado));
                     }
                     else
                     {
                         valorDeProspeccoesPorCasa.Add(p.Key.ToString(), (decimal)0.0);
                     }
-
                 }
 
             }
