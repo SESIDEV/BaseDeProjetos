@@ -1,6 +1,7 @@
 ﻿using BaseDeProjetos.Controllers;
 using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,30 +17,35 @@ namespace BaseDeProjetos.Helpers
             _dbContext = dbContext;
         }
 
-        public List<Prospeccao> ListaDeProspeccoes { get => _dbContext.Prospeccao.Where(p => p.Status.FirstOrDefault().Status != StatusProspeccao.Planejada).ToList(); }
+        public List<Prospeccao> ListaDeProspeccoes => _dbContext.Prospeccao
+           .Where(p => 
+           p.Status.OrderByDescending(k => k.Data).FirstOrDefault().Status == StatusProspeccao.ContatoInicial ||
+           p.Status.OrderByDescending(k => k.Data).FirstOrDefault().Status == StatusProspeccao.ComProposta ||
+           p.Status.OrderByDescending(k => k.Data).FirstOrDefault().Status == StatusProspeccao.Discussao_EsbocoProjeto)
+            .ToList();
 
 
         public Dictionary<string, int> QuantidadeDeProspeccoes(Func<Prospeccao, object> propriedade, int? ano)
         {
             List<Prospeccao> listaProsps = ListaDeProspeccoes;
 
-			if(ano != null)
+            if (ano != null)
             {
-                listaProsps = listaProsps.Where(p => p.Status.FirstOrDefault().Data.Year == ano).ToList();
+                listaProsps = listaProsps.Where(p => p.Status.LastOrDefault().Data.Year == ano).ToList();
 
                 if (listaProsps == null)
                 {
                     return new Dictionary<string, int>() { };
                 }
-            }            
+            }
 
             // Verificar se a propriedade é do tipo Usuario
             if (propriedade.Invoke(listaProsps.FirstOrDefault()) is Usuario)
-			{
-				listaProsps = listaProsps.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
-			}           
+            {
+                listaProsps = listaProsps.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
+            }
 
-			var listaEmGrupo = listaProsps.GroupBy(propriedade);
+            var listaEmGrupo = listaProsps.GroupBy(propriedade);
 
             if (listaEmGrupo == null)
             {
@@ -70,32 +76,32 @@ namespace BaseDeProjetos.Helpers
 
             return quantidadeDeProspeccoesPorCasa.OrderByDescending(p => p.Value).Take(10).ToDictionary(k => k.Key, v => v.Value);
         }
-        public Dictionary<string, string> ValorSomaProspeccoes(Func<Prospeccao?, object>? propriedade, int? ano)
+        public Dictionary<string, string> ValorSomaProspeccoes(Func<Prospeccao, object> propriedade, int? ano)
         {
-            var listaProsps = ListaDeProspeccoes;
+            List<Prospeccao> listaProsps = ListaDeProspeccoes;
 
             if (ano != null)
             {
-                listaProsps = listaProsps.Where(p => p.Status.FirstOrDefault().Data.Year == ano).ToList();
+                listaProsps = listaProsps.Where(p => p.Status.LastOrDefault().Data.Year == ano).ToList();
 
                 if (listaProsps == null)
                 {
-                    
+
                     return new Dictionary<string, string>() { };
                 }
             }
-            if(propriedade == null)
+            if (propriedade == null)
             {
                 return new Dictionary<string, string>() { };
             }
 
             // Verificar se a propriedade é do tipo Usuario
             if (propriedade.Invoke(listaProsps.FirstOrDefault()) is Usuario)
-			{
-				listaProsps = listaProsps.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
-			}
+            {
+                listaProsps = listaProsps.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
+            }
 
-			var listaEmGrupo = listaProsps.GroupBy(propriedade);
+            var listaEmGrupo = listaProsps.GroupBy(propriedade);
 
             if (listaEmGrupo == null)
             {
