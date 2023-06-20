@@ -279,8 +279,8 @@ function selectToText(lista, id) {
       })
 }
 
-function textToSelect(nomeModal, idText, idSelect, rota, caixaId, botaoAlterar) {
-    gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar)
+function textToSelect(nomeModal, idText, idSelect, rota, caixaId, botaoAlterar, loadingIcon) {
+    gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon)
 
     botao_def = document.querySelector('#bloco_botao')
     listaSel = document.querySelector(`#${idText}`).value.split(";")
