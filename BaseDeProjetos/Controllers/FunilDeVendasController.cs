@@ -456,6 +456,10 @@ namespace BaseDeProjetos.Controllers
             if(prospAntiga.Ancora == true && prospeccao.Ancora == false){ // compara a versão antiga com a nova que irá para o Update()
                 FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
             }
+
+            if(prospAntiga.Agregadas != prospeccao.Agregadas){
+                FunilHelpers.DelAgregadas(_context, prospeccao);
+            }
             
             _context.Update(prospeccao);
             return prospeccao;
