@@ -22,6 +22,10 @@
     Dictionary<string, int> TopDezQuantidadeProspeccao = ViewBag.TopDezQuantidadeProspeccao;
     Dictionary<string, string> TopDezValorProspeccao = ViewBag.TopDezValorProspeccao;
 
+    Dictionary<string, string> ValorSomaProspeccoesPorPesquisadorComProposta = ViewBag.ValorSomaProspeccoesPorPesquisadorComProposta;
+
+    Dictionary<string, decimal> TaxaDeConversaoDosPesquisadores = ViewBag.TaxaDeConversaoDosPesquisadores;
+
 }
 
 <style>
@@ -341,13 +345,57 @@
             </div>
 
         </div>
+        <div id="PESQUISADOR-DIV-COM-PROPOSTA">
+            <div class="row" style="width:75vw;">
+                <div class="col">
+                    <table class="table mb-0 text-left table-success table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="cell">Nome</th>
+                                <th scope="col" class="cell">Taxa de Conversão</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in TaxaDeConversaoDosPesquisadores)
+                            {
+                                <tr>
+                                    <td>@item.Key</td>
+                                    <td>@item.Value %</td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col">
+                    <table class="table mb-0 text-left table-success table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="cell">Nome</th>
+                                <th scope="col" class="cell">Valor Proposta</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in ValorSomaProspeccoesPorPesquisadorComProposta)
+                            {
+                                <tr>
+                                    <td>@item.Key</td>
+                                    <td>R$ @item.Value</td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
     <partial name="Footer" />
 </div>
 
 <script>
-
-    window.addEventListener('click', console.log(window.location));
 
     var anoSelect = document.getElementById('anoSelect');
 
@@ -364,7 +412,6 @@
 
             window.location.href = newUrl;
         }
-
 
     });
 
