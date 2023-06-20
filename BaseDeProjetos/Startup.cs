@@ -4,6 +4,7 @@ using MailSenderApp.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
@@ -59,7 +60,13 @@ namespace BaseDeProjetos
             services.AddDistributedMemoryCache();
             services.AddLocalization(options => options.ResourcesPath = "Resources");
 
-            services.Configure<RequestLocalizationOptions>(
+			services.Configure<IdentityOptions>(options =>
+			{
+				options.User.AllowedUserNameCharacters =
+					"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
+			});
+
+			services.Configure<RequestLocalizationOptions>(
                 options =>
                     {
                         var supportedCultures = new List<CultureInfo>
