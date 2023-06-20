@@ -17,17 +17,22 @@ namespace BaseDeProjetos.Helpers
             _dbContext = dbContext;
         }
 
-         public List<Prospeccao> ListaDeProspeccoes => _dbContext.Prospeccao
-            .Where(p => p.Status
-            .OrderByDescending(k => k.Data)
-            .Any(pa => pa.Status != StatusProspeccao.Planejada || pa.Status != StatusProspeccao.Convertida || pa.Status != StatusProspeccao.NaoConvertida || pa.Status != StatusProspeccao.Suspensa)).ToList();
+        public List<Prospeccao> ListaDeProspeccoes => _dbContext.Prospeccao
+           .Where(p => p.Status
+           .OrderByDescending(k => k.Data)
+           .All(
+               pa => pa.Status != StatusProspeccao.Planejada ||
+               pa.Status != StatusProspeccao.Convertida ||
+               pa.Status != StatusProspeccao.NaoConvertida ||
+               pa.Status != StatusProspeccao.Suspensa))
+           .ToList();
 
 
         public Dictionary<string, int> QuantidadeDeProspeccoes(Func<Prospeccao, object> propriedade, int? ano)
         {
             List<Prospeccao> listaProsps = ListaDeProspeccoes;
 
-			if(ano != null)
+            if (ano != null)
             {
                 listaProsps = listaProsps.Where(p => p.Status.LastOrDefault().Data.Year == ano).ToList();
 
@@ -35,15 +40,15 @@ namespace BaseDeProjetos.Helpers
                 {
                     return new Dictionary<string, int>() { };
                 }
-            }            
+            }
 
             // Verificar se a propriedade é do tipo Usuario
             if (propriedade.Invoke(listaProsps.FirstOrDefault()) is Usuario)
-			{
-				listaProsps = listaProsps.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
-			}           
+            {
+                listaProsps = listaProsps.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
+            }
 
-			var listaEmGrupo = listaProsps.GroupBy(propriedade);
+            var listaEmGrupo = listaProsps.GroupBy(propriedade);
 
             if (listaEmGrupo == null)
             {
@@ -84,22 +89,22 @@ namespace BaseDeProjetos.Helpers
 
                 if (listaProsps == null)
                 {
-                    
+
                     return new Dictionary<string, string>() { };
                 }
             }
-            if(propriedade == null)
+            if (propriedade == null)
             {
                 return new Dictionary<string, string>() { };
             }
 
             // Verificar se a propriedade é do tipo Usuario
             if (propriedade.Invoke(listaProsps.FirstOrDefault()) is Usuario)
-			{
-				listaProsps = listaProsps.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
-			}
+            {
+                listaProsps = listaProsps.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
+            }
 
-			var listaEmGrupo = listaProsps.GroupBy(propriedade);
+            var listaEmGrupo = listaProsps.GroupBy(propriedade);
 
             if (listaEmGrupo == null)
             {
