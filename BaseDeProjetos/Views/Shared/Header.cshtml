@@ -187,14 +187,20 @@
 									@*<li><a class="dropdown-item" href="account.html">Account</a></li>
 										<li><a class="dropdown-item" href="settings.html">Settings</a></li>
 										<li><hr class="dropdown-divider"></li> *@
+									
 									@if (SignInManager.IsSignedIn(User))
 									{
+										<li>
+											<form asp-area="Identity" asp-page="/Account/Manage/ChangePassword">
+												<button type="submit" class="dropdown-item">Mudar senha</button>
+											</form>
+										</li>
 										<li>
 											<form asp-area="Identity" asp-page="/Account/Logout"
 										asp-route-returnUrl='@Url.Action("Index", "Home", new { area = "" })'>
 												<button type="submit" class="dropdown-item">Sair</button>
 											</form>
-										</li>
+										</li>										
 									}
 								</ul>
 							</div>
