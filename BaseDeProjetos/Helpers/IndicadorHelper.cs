@@ -20,7 +20,8 @@ namespace BaseDeProjetos.Helpers
         public List<Prospeccao> ListaDeProspeccoes => _dbContext.Prospeccao
            .Where(p => 
            p.Status.OrderByDescending(k => k.Data).FirstOrDefault().Status == StatusProspeccao.ContatoInicial ||
-           p.Status.OrderByDescending(k => k.Data).FirstOrDefault().Status == StatusProspeccao.ComProposta)
+           p.Status.OrderByDescending(k => k.Data).FirstOrDefault().Status == StatusProspeccao.ComProposta ||
+           p.Status.OrderByDescending(k => k.Data).FirstOrDefault().Status == StatusProspeccao.Discussao_EsbocoProjeto)
             .ToList();
 
 
