@@ -89,9 +89,7 @@ function FiltroEmpresaEstrangeira() {
         estado_int.value = 0;
         campo2.style.display = "block"
         nome.setAttribute('readonly')
-
     }
-
 }
 
 function ChecarPatente() {
@@ -189,14 +187,21 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
     let defRota = "";
     let value = "";
     let inner = "";
-    document.querySelector(`#${caixaId}`).style.display = "none";
-    document.querySelector(`#${loadingIcon}`).style.display = "block";
-    document.querySelector(`#${idSelect}`).innerHTML = '';
+
+    const caixa = document.querySelector(`#${caixaId}`);
+    const loading = document.querySelector(`#${loadingIcon}`);
+    const select = document.querySelector(`#${idSelect}`);
+
+    caixa.style.display = "none";
+    loading.style.display = "block";
+    select.innerHTML = '';
+
     if (nomeModal == null) {
-        $(`#${idSelect}`).select2()
+        $(`#${idSelect}`).select2();
     } else {
-        $(`#${idSelect}`).select2({ dropdownParent: $(`#${nomeModal}`) })
+        $(`#${idSelect}`).select2({ dropdownParent: $(`#${nomeModal}`) });
     }
+
     switch (rota) {
         case "Pessoas":
             defRota = '/FunilDeVendas/PuxarDadosUsuarios';
@@ -220,19 +225,32 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
             console.log(`Erro: ${rota} é uma rota inválida`);
             break;
     }
-    fetch(defRota).then(response => response.json()).then(lista => {
-        lista.forEach(function (item) {
-            var opt = document.createElement("option");
-            if (rota != "Tags") { opt.value = item[value] }
-            opt.innerHTML = item[inner]
-            document.querySelector(`#${idSelect}`).appendChild(opt)
-        })
-        document.querySelector(`#${loadingIcon}`).style.display = "none";
-        document.querySelector(`#${caixaId}`).style.display = "block";
-    })
-    document.querySelectorAll(".select2-container").forEach(input => { input.style.width = "100%" })
-    if (botaoAlterar != null) { document.querySelector(`#${botaoAlterar}`).style.display = "none"; }
+
+    fetch(defRota)
+        .then(response => response.json())
+        .then(lista => {
+            lista.forEach(function (item) {
+                const opt = document.createElement("option");
+                if (rota !== "Tags") {
+                    opt.value = item[value];
+                }
+                opt.innerHTML = item[inner];
+                select.appendChild(opt);
+            });
+
+            loading.style.display = "none";
+            caixa.style.display = "block";
+        });
+
+    document.querySelectorAll(".select2-container").forEach(input => {
+        input.style.width = "100%";
+    });
+
+    if (botaoAlterar != null) {
+        document.querySelector(`#${botaoAlterar}`).style.display = "none";
+    }
 }
+
 
 function novaTag() {
     valor = document.querySelector(`.select2-search__field`).value
@@ -240,62 +258,71 @@ function novaTag() {
 }
 
 function addTag(campoInput, idSelect) {
-    valor = document.querySelector(`.select2-search__field`).valorSalvo
-    valorAntigo = document.querySelector(`#${campoInput}`).value
+    const valor = document.querySelector('.select2-search__field').valorSalvo;
+    const valorAntigo = document.querySelector(`#${campoInput}`).value;
 
-    if (valorAntigo == '') {
-        valorNovo = "#" + valor
+    let valorNovo;
+    if (valorAntigo === '') {
+        valorNovo = `#${valor}`;
     } else {
-        valorNovo = valorAntigo + ";" + "#" + valor
+        valorNovo = `${valorAntigo};#${valor}`;
     }
 
-    document.querySelector(`#${campoInput}`).value = valorNovo
-    botao_def = document.querySelector('#bloco_botao')
-    botao_copy = botao_def.cloneNode(true)
-    botao_copy.removeAttribute('id')
-    botao_copy.title = valor
-    botao_copy.children[0].innerHTML = "#" + valor
-    botao_copy.classList.remove('d-none')
-    document.querySelector(`#select2-${idSelect}-container`).appendChild(botao_copy)
-    document.querySelector(`.select2-search__field`).value = ''
+    document.querySelector(`#${campoInput}`).value = valorNovo;
+
+    const botao_def = document.querySelector('#bloco_botao');
+    const botao_copy = botao_def.cloneNode(true);
+    botao_copy.removeAttribute('id');
+    botao_copy.title = valor;
+    botao_copy.children[0].innerHTML = `#${valor}`;
+    botao_copy.classList.remove('d-none');
+    document.querySelector(`#select2-${idSelect}-container`).appendChild(botao_copy);
+    document.querySelector('.select2-search__field').value = '';
 }
+
 
 function procurarPessoa(select) {
     redePessoas.focus(select.value, { scale: 3, animation: { duration: 400 } })
 }
 
 function selectToText(lista, id) {
-    console.log(lista)
-    console.log(id)
-    lista.forEach(function (rota) {
-        console.log(rota)
-        let texto = ''
-        if (document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`) != null) {
-            document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`).childNodes.forEach(p => texto += p.title + ';')
-            document.querySelector(`#inputTextEdit${rota}-${id}`).value = texto
+    console.log(lista);
+    console.log(id);
+
+    lista.forEach(function(rota) {
+        console.log(rota);
+        let texto = '';
+        const container = document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`);
+        const inputText = document.querySelector(`#inputTextEdit${rota}-${id}`);
+
+        if (container !== null) {
+            container.childNodes.forEach(p => texto += p.title + ';');
+            inputText.value = texto;
         } else {
             return;
         }
-    })
+    });
 }
 
 function textToSelect(nomeModal, idText, idSelect, rota, caixaId, botaoAlterar, loadingIcon) {
-    gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon)
+    gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon);
 
-    botao_def = document.querySelector('#bloco_botao')
-    listaSel = document.querySelector(`#${idText}`).value.split(";")
+    const botaoDef = document.querySelector('#bloco_botao');
+    const listaSel = document.querySelector(`#${idText}`).value.split(";");
+
     listaSel.forEach(p => {
-        if (p == '') { } else {
-            botao_copy = botao_def.cloneNode(true)
-            botao_copy.removeAttribute('id')
-            botao_copy.title = p
-            botao_copy.children[1].innerHTML = p
-            botao_copy.classList.remove('d-none')
+        if (p !== '') {
+            const botaoCopy = botaoDef.cloneNode(true);
+            botaoCopy.removeAttribute('id');
+            botaoCopy.title = p;
+            botaoCopy.children[1].innerHTML = p;
+            botaoCopy.classList.remove('d-none');
 
-            document.querySelector(`#select2-${idSelect}-container`).appendChild(botao_copy)
+            document.querySelector(`#select2-${idSelect}-container`).appendChild(botaoCopy);
         }
-    })
+    });
 }
+
 
 function Base64(id) {
     imagem = document.getElementById(`logo_imagem-${id}`).files[0];
