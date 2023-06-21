@@ -13,58 +13,58 @@
 redePessoas = null
 
 var dictCNAE = {
-    "02" : "PRODUÇÃO FLORESTAL (EXTRAÇÃO DE MADEIRA, PRODUÇÃO DE CARVÃO, COLETA DE LÁTEX | CNAE: 210107, 210108, 220901, 220902, 220904)",
-    "05" : "EXTRAÇÃO DE CARVÃO MINERAL",
-    "06" : "EXTRAÇÃO DE PETRÓLEO E GÁS NATURAL",
-    "07" : "EXTRAÇÃO DE MINERAIS METÁLICOS",
-    "08" : "EXTRAÇÃO DE MINERAIS NÃO-METÁLICOS",
-    "09" : "ATIVIDADES DE APOIO À EXTRAÇÃO DE MINERAIS",
-    "10" : "FABRICAÇÃO DE PRODUTOS ALIMENTÍCIOS",
-    "11" : "FABRICAÇÃO DE BEBIDAS",
-    "12" : "FABRICAÇÃO DE PRODUTOS DO FUMO",
-    "13" : "FABRICAÇÃO DE PRODUTOS TÊXTEIS",
-    "14" : "CONFECÇÃO DE ARTIGOS DE VESTUÁRIOS E ACESSÓRIOS",
-    "15" : "PREPARAÇÃO DE COUROS E FABRICAÇÃO DE ARTEFATOS DE COURO, ARTIGOS PARA VIAGEM E CALÇADOS",
-    "16" : "FABRICAÇÃO DE PRODUTOS DE MADEIRA",
-    "17" : "FABRICAÇÃO DE CELULOSE, PAPEL E PRODUTOS DE PAPEL",
-    "18" : "IMPRESSÃO E REPRODUÇÃO DE GRAVAÇÕES",
-    "19" : "FABRICAÇÃO DE COQUE, DE PRODUTOS DERIVADOS DO PETRÓLEO E DE BIOCOMBUSTÍVEL",
-    "20" : "FABRICAÇÃO DE PRODUTOS QUÍMICOS",
-    "21" : "FABRICAÇÃO DE PRODUTOS FARMOQUÍMICOS E FARMACÊUTICOS",
-    "22" : "FABRICAÇÃO DE PRODUTOS DE BORRACHA E DE MATERIAL PLÁSTICO",
-    "23" : "FABRICAÇÃO DE PRODUTOS DE MINERAIS NÃO-METÁLICOS",
-    "24" : "METALURGIA",
-    "25" : "FABRICAÇÃO DE PRODUTOS DE METAL, EXCETO MÁQUINAS E EQUIPAMENTOS",
-    "26" : "FARBICAÇÃO DE EQUIPAMENTOS DE INFORMÁTICA, PRODUTOS ELETRÔNICOS E ÓPTICOS",
-    "27" : "FABRICAÇÃO DE MÁQUINAS, APARELHOS E MATERIAIS ELÉTRICOS",
-    "28" : "FABRICAÇÃO DE MÁQUINAS E EQUIPAMENTOS",
-    "29" : "FABRICAÇÃO DE VEÍCULOS AUTOMOTORES, REBOQUES E CARROCERIAS",
-    "30" : "FABRICAÇÃO DE OUTROS EQUIPAMENTOS DE TRANSPORTE, EXCETO VEÍCULOS AUTOMOTORES",
-    "31" : "FABRICAÇÃO DE MÓVEIS",
-    "32" : "FABRICAÇÃO DE PRODUTOS DIVERSOS",
-    "33" : "MANUTENÇÃO, REPARAÇÃO E INSTALAÇÃO DE MÁQUINAS E EQUIPAMENTOS",
-    "35" : "ELETRICIDADE, GÁS E OUTRAS UTILIDADES",
-    "36" : "CAPTAÇÃO, TRATAMENTO E DISTRIBUIÇÃO DE ÁGUA",
-    "37" : "ESGOTO E ATIVIDADES RELACIONADAS",
-    "38" : "COLETA, TRATAMENTO E DISPOSIÇÃO DE RESÍDUOS",
-    "39" : "DESCONTAMINAÇÃO E OUTROS SERVIÇOS DE GESTÃO DE RESÍDUOS",
-    "41" : "CONSTRUÇÃO DE EDIFÍCIOS",
-    "42" : "OBRAS DE INFRA-ESTRUTURA",
-    "43" : "SERVIÇOS ESPECIALIZADOS PARA CONSTRUÇÃO",
-    "45" : "REPARAÇÃO DE VEÍCULOS AUTOMOTORES E MOTOCICLETAS",
-    "49" : "TRANSPORTE TERRESTRE",
-    "52" : "ARMAZENAMENTO E ATIVIDADES AUXILIARES DOS TRANSPORTES (CONCESSIONÁRIAS DE RODÓVIAS, PONTE, TÚNEIS E SERVIÇOS RELACIONADOS – CNAE 5221400)",
-    "53" : "CORREIO E OUTRAS ATIVIDADES DE ENTREGA",
-    "56" : "ALIMENTAÇÃO (FORNECIMENTO DE ALIMENTOS PREPARADOS PREPONDERANTEMENTE PARA EMPRESAS – CNAE: 5620101)",
-    "59" : "ATIVIDADES CINEMATOGRÁFICAS, PRODUÇÃO DE VÍDEOS E DE PROGRAMAS DE TELEVISÃO; GRAVAÇÃO DE SOM E EDUCAÇÃO DE MÚSICA (ESTÚDIOS CINEMATOGRÁFICOS – CNAE: 5911101)",
-    "60" : "TELECOMUNICAÇÕES",
-    "71" : "SERVIÇOS DE ARQUITETURA E ENGENHARIA; TESTES E ANÁLISES TÉCNICAS (SERVIÇOS DE ENGENHARIA – CNAE: 7112000, SERVIÇO SOCIAL DA INDÚSTRIA – SESI – SERVIÇOS DE PERÍCIA TÉCNICA RELACIONADOS À SEGURANÇA DO TRABALHO – SERVIÇO SOCIAL DA INDÚSTRIA, CNAE: 7119704",
-    "77" : "ALUGUÉIS NÃO-IMOBILIÁRIOS E GESTÃO DE ATIVOS INTANGÍVEIS NÃOFINANCEIROS (ALUGUEL DE ANDAÍMES, CNAE: 7732202)",
-    "85" : "EDUCAÇÃO (SERVIÇO NACIONAL DE APRENDIZAGEM DA INDÚTRIA – SENAI – OUTRAS ATIVIDADES DE ENSINO NÃO ESPECIFICADAS ANTERIORMENTE – CNAE: 8599699)",
-    "91" : "ATIVIDADES LIGADAS AO PATRIMÔNIO CULTURAL E AMBIENTAL (RESTAURAÇÃO E CONSERVAÇÃO DE LUGARES E PRÉDIOS HISTÓRICOS, CNAE: 9102302)"
+    "02": "PRODUÇÃO FLORESTAL (EXTRAÇÃO DE MADEIRA, PRODUÇÃO DE CARVÃO, COLETA DE LÁTEX | CNAE: 210107, 210108, 220901, 220902, 220904)",
+    "05": "EXTRAÇÃO DE CARVÃO MINERAL",
+    "06": "EXTRAÇÃO DE PETRÓLEO E GÁS NATURAL",
+    "07": "EXTRAÇÃO DE MINERAIS METÁLICOS",
+    "08": "EXTRAÇÃO DE MINERAIS NÃO-METÁLICOS",
+    "09": "ATIVIDADES DE APOIO À EXTRAÇÃO DE MINERAIS",
+    "10": "FABRICAÇÃO DE PRODUTOS ALIMENTÍCIOS",
+    "11": "FABRICAÇÃO DE BEBIDAS",
+    "12": "FABRICAÇÃO DE PRODUTOS DO FUMO",
+    "13": "FABRICAÇÃO DE PRODUTOS TÊXTEIS",
+    "14": "CONFECÇÃO DE ARTIGOS DE VESTUÁRIOS E ACESSÓRIOS",
+    "15": "PREPARAÇÃO DE COUROS E FABRICAÇÃO DE ARTEFATOS DE COURO, ARTIGOS PARA VIAGEM E CALÇADOS",
+    "16": "FABRICAÇÃO DE PRODUTOS DE MADEIRA",
+    "17": "FABRICAÇÃO DE CELULOSE, PAPEL E PRODUTOS DE PAPEL",
+    "18": "IMPRESSÃO E REPRODUÇÃO DE GRAVAÇÕES",
+    "19": "FABRICAÇÃO DE COQUE, DE PRODUTOS DERIVADOS DO PETRÓLEO E DE BIOCOMBUSTÍVEL",
+    "20": "FABRICAÇÃO DE PRODUTOS QUÍMICOS",
+    "21": "FABRICAÇÃO DE PRODUTOS FARMOQUÍMICOS E FARMACÊUTICOS",
+    "22": "FABRICAÇÃO DE PRODUTOS DE BORRACHA E DE MATERIAL PLÁSTICO",
+    "23": "FABRICAÇÃO DE PRODUTOS DE MINERAIS NÃO-METÁLICOS",
+    "24": "METALURGIA",
+    "25": "FABRICAÇÃO DE PRODUTOS DE METAL, EXCETO MÁQUINAS E EQUIPAMENTOS",
+    "26": "FARBICAÇÃO DE EQUIPAMENTOS DE INFORMÁTICA, PRODUTOS ELETRÔNICOS E ÓPTICOS",
+    "27": "FABRICAÇÃO DE MÁQUINAS, APARELHOS E MATERIAIS ELÉTRICOS",
+    "28": "FABRICAÇÃO DE MÁQUINAS E EQUIPAMENTOS",
+    "29": "FABRICAÇÃO DE VEÍCULOS AUTOMOTORES, REBOQUES E CARROCERIAS",
+    "30": "FABRICAÇÃO DE OUTROS EQUIPAMENTOS DE TRANSPORTE, EXCETO VEÍCULOS AUTOMOTORES",
+    "31": "FABRICAÇÃO DE MÓVEIS",
+    "32": "FABRICAÇÃO DE PRODUTOS DIVERSOS",
+    "33": "MANUTENÇÃO, REPARAÇÃO E INSTALAÇÃO DE MÁQUINAS E EQUIPAMENTOS",
+    "35": "ELETRICIDADE, GÁS E OUTRAS UTILIDADES",
+    "36": "CAPTAÇÃO, TRATAMENTO E DISTRIBUIÇÃO DE ÁGUA",
+    "37": "ESGOTO E ATIVIDADES RELACIONADAS",
+    "38": "COLETA, TRATAMENTO E DISPOSIÇÃO DE RESÍDUOS",
+    "39": "DESCONTAMINAÇÃO E OUTROS SERVIÇOS DE GESTÃO DE RESÍDUOS",
+    "41": "CONSTRUÇÃO DE EDIFÍCIOS",
+    "42": "OBRAS DE INFRA-ESTRUTURA",
+    "43": "SERVIÇOS ESPECIALIZADOS PARA CONSTRUÇÃO",
+    "45": "REPARAÇÃO DE VEÍCULOS AUTOMOTORES E MOTOCICLETAS",
+    "49": "TRANSPORTE TERRESTRE",
+    "52": "ARMAZENAMENTO E ATIVIDADES AUXILIARES DOS TRANSPORTES (CONCESSIONÁRIAS DE RODÓVIAS, PONTE, TÚNEIS E SERVIÇOS RELACIONADOS – CNAE 5221400)",
+    "53": "CORREIO E OUTRAS ATIVIDADES DE ENTREGA",
+    "56": "ALIMENTAÇÃO (FORNECIMENTO DE ALIMENTOS PREPARADOS PREPONDERANTEMENTE PARA EMPRESAS – CNAE: 5620101)",
+    "59": "ATIVIDADES CINEMATOGRÁFICAS, PRODUÇÃO DE VÍDEOS E DE PROGRAMAS DE TELEVISÃO; GRAVAÇÃO DE SOM E EDUCAÇÃO DE MÚSICA (ESTÚDIOS CINEMATOGRÁFICOS – CNAE: 5911101)",
+    "60": "TELECOMUNICAÇÕES",
+    "71": "SERVIÇOS DE ARQUITETURA E ENGENHARIA; TESTES E ANÁLISES TÉCNICAS (SERVIÇOS DE ENGENHARIA – CNAE: 7112000, SERVIÇO SOCIAL DA INDÚSTRIA – SESI – SERVIÇOS DE PERÍCIA TÉCNICA RELACIONADOS À SEGURANÇA DO TRABALHO – SERVIÇO SOCIAL DA INDÚSTRIA, CNAE: 7119704",
+    "77": "ALUGUÉIS NÃO-IMOBILIÁRIOS E GESTÃO DE ATIVOS INTANGÍVEIS NÃOFINANCEIROS (ALUGUEL DE ANDAÍMES, CNAE: 7732202)",
+    "85": "EDUCAÇÃO (SERVIÇO NACIONAL DE APRENDIZAGEM DA INDÚTRIA – SENAI – OUTRAS ATIVIDADES DE ENSINO NÃO ESPECIFICADAS ANTERIORMENTE – CNAE: 8599699)",
+    "91": "ATIVIDADES LIGADAS AO PATRIMÔNIO CULTURAL E AMBIENTAL (RESTAURAÇÃO E CONSERVAÇÃO DE LUGARES E PRÉDIOS HISTÓRICOS, CNAE: 9102302)"
 }
 
-function FiltroEmpresaEstrangeira(){
+function FiltroEmpresaEstrangeira() {
 
     let checkBox = document.getElementById("empresa_estrangeira_check");
     let cnpj = document.getElementById("valor_cnpj");
@@ -91,16 +91,16 @@ function FiltroEmpresaEstrangeira(){
         nome.setAttribute('readonly')
 
     }
-    
+
 }
 
-function ChecarPatente(){
+function ChecarPatente() {
 
     let valor = document.querySelector('#select_tipo').value
-    if (valor == 8){
+    if (valor == 8) {
         document.querySelector('#campos-patente').style = 'display:block'
     }
-    else{
+    else {
         document.querySelector('#campos-patente').style = 'display:none'
     }
 }
@@ -115,11 +115,11 @@ function CasasFunil() {
     const lista_caixas = [caixa1, caixa2, caixa3, caixa4];
     let caixas_ativas = []
 
-    lista_caixas.forEach(elemento => {if (elemento.checked == true){caixas_ativas.push(elemento)}});
+    lista_caixas.forEach(elemento => { if (elemento.checked == true) { caixas_ativas.push(elemento) } });
 
     let outras_casas = ""
 
-    for (let i = 1; i < caixas_ativas.length; i++){
+    for (let i = 1; i < caixas_ativas.length; i++) {
         outras_casas += "-" + caixas_ativas[i]?.value
     }
 
@@ -160,7 +160,7 @@ function loadAncora(toggleId, iconAncora, campoAgg) {
     icon = document.querySelector(`#${iconAncora}`);
     agg = document.querySelector(`#${campoAgg}`);
 
-    if(alavanca.value == "False"){
+    if (alavanca.value == "False") {
         alavanca.checked = false;
         icon.style.color = "rgba(111, 111, 111, 0.2)";
         agg.classList.add("d-none");
@@ -174,7 +174,7 @@ function loadAncora(toggleId, iconAncora, campoAgg) {
 function checkAncora(alavanca, iconAncora, campoAgg) {
     icon = document.querySelector(`#${iconAncora}`);
     agg = document.querySelector(`#${campoAgg}`);
-    if(alavanca.checked){
+    if (alavanca.checked) {
         alavanca.value = "True";
         icon.style.color = "rgba(111, 111, 111, 1)";
         agg.classList.remove("d-none");
@@ -192,12 +192,12 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
     document.querySelector(`#${caixaId}`).style.display = "none";
     document.querySelector(`#${loadingIcon}`).style.display = "block";
     document.querySelector(`#${idSelect}`).innerHTML = '';
-    if (nomeModal == null){
+    if (nomeModal == null) {
         $(`#${idSelect}`).select2()
     } else {
-        $(`#${idSelect}`).select2({dropdownParent: $(`#${nomeModal}`)})
+        $(`#${idSelect}`).select2({ dropdownParent: $(`#${nomeModal}`) })
     }
-    switch(rota){
+    switch (rota) {
         case "Pessoas":
             defRota = '/FunilDeVendas/PuxarDadosUsuarios';
             value = "Email";
@@ -221,20 +221,20 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
             break;
     }
     fetch(defRota).then(response => response.json()).then(lista => {
-        lista.forEach(function (item){
+        lista.forEach(function (item) {
             var opt = document.createElement("option");
-            if(rota != "Tags"){opt.value = item[value]}
+            if (rota != "Tags") { opt.value = item[value] }
             opt.innerHTML = item[inner]
             document.querySelector(`#${idSelect}`).appendChild(opt)
         })
         document.querySelector(`#${loadingIcon}`).style.display = "none";
         document.querySelector(`#${caixaId}`).style.display = "block";
     })
-    document.querySelectorAll(".select2-container").forEach(input => {input.style.width = "100%"})
-    if (botaoAlterar != null){document.querySelector(`#${botaoAlterar}`).style.display = "none";}
+    document.querySelectorAll(".select2-container").forEach(input => { input.style.width = "100%" })
+    if (botaoAlterar != null) { document.querySelector(`#${botaoAlterar}`).style.display = "none"; }
 }
 
-function novaTag(){
+function novaTag() {
     valor = document.querySelector(`.select2-search__field`).value
     document.querySelector(`.select2-search__field`).valorSalvo = valor
 }
@@ -267,16 +267,16 @@ function procurarPessoa(select) {
 function selectToText(lista, id) {
     console.log(lista)
     console.log(id)
-    lista.forEach(function(rota) {
+    lista.forEach(function (rota) {
         console.log(rota)
         let texto = ''
-        if(document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`) != null){
+        if (document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`) != null) {
             document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`).childNodes.forEach(p => texto += p.title + ';')
             document.querySelector(`#inputTextEdit${rota}-${id}`).value = texto
         } else {
             return;
         }
-      })
+    })
 }
 
 function textToSelect(nomeModal, idText, idSelect, rota, caixaId, botaoAlterar, loadingIcon) {
@@ -368,7 +368,7 @@ function updateLink() {
     else {
         location.href = baseUrl + params + select;
     }
-    
+
 }
 
 function montarNetwork(pessoas, compFiltradas = null) {
@@ -410,12 +410,12 @@ function montarNetwork(pessoas, compFiltradas = null) {
 
         if ((p['Foto'] == null) || (p['Foto'] == "")) {
             user['image'] = defuserpic
-        } else if (p['Foto'].includes("data:image/jpeg;base64,")){
+        } else if (p['Foto'].includes("data:image/jpeg;base64,")) {
             user['image'] = p['Foto']
         } else {
             user['image'] = "data:image/jpeg;base64," + p['Foto']
         }
-       
+
         pessoas.filter(ps => ps['Email'] != user['id']).forEach(pessoaParalela => { // para cada pessoa na rede inteira
             if (pessoaParalela['Competencia'] == null) {
                 return; // Skip the loop iteration if 'Competencia' is null
@@ -423,19 +423,19 @@ function montarNetwork(pessoas, compFiltradas = null) {
             let iterar = true;
             listaCompPessoaParalela = pessoaParalela['Competencia'].split(";").map(cp => dictCompetencias[cp])
             listaCompPessoa.every(compet => { // para cada competencia da pessoa do loop atual
-            if (listaCompPessoaParalela.includes(compet)) {
-                let setUsuario = new Set([user['id'],pessoaParalela['Email']]);
-                let ligacoes = listaLigacoes.map(p=> new Set(Object.values(p)))
-                console.log(ligacoes)
-                if (ligacoes.filter(p2=> eqSet(p2,setUsuario)).length == 0){
-                        listaLigacoes.push({from: user['id'], to: pessoaParalela['Email']})
+                if (listaCompPessoaParalela.includes(compet)) {
+                    let setUsuario = new Set([user['id'], pessoaParalela['Email']]);
+                    let ligacoes = listaLigacoes.map(p => new Set(Object.values(p)))
+                    console.log(ligacoes)
+                    if (ligacoes.filter(p2 => eqSet(p2, setUsuario)).length == 0) {
+                        listaLigacoes.push({ from: user['id'], to: pessoaParalela['Email'] })
                         iterar = false;
                         return;
-                    } 
-            }
-           
+                    }
+                }
+
             })
-            if (iterar == false){
+            if (iterar == false) {
                 return
             }
         })
@@ -468,8 +468,8 @@ function construirGrafo(nodes, listaPessoas, edges, listaLigacoes, network) {
         edges: edges,
     };
 
-	var options = {
-		nodes: {
+    var options = {
+        nodes: {
             shape: "circularImage",
             borderWidth: 5,
             size: 20,
@@ -489,7 +489,7 @@ function construirGrafo(nodes, listaPessoas, edges, listaLigacoes, network) {
             dragView: false,
             zoomView: false,
         },
-        physics:{
+        physics: {
             enabled: true,
         }
     };
@@ -536,10 +536,10 @@ function converterCompetencias() {
 
 }
 
-function statusPatente(){
+function statusPatente() {
 
     let status = document.querySelector("#StatusPub").value
-    if (status != 5){
+    if (status != 5) {
         document.querySelector("#NumPatente").readOnly = true;
     } else {
         document.querySelector("#NumPatente").readOnly = false;
@@ -547,7 +547,7 @@ function statusPatente(){
 
 }
 
-function validarCNPJ(idElemento=null) {
+function validarCNPJ(idElemento = null) {
     let cnpj;
     if (idElemento == null) {
         document.getElementById("valor_cnpj").value = document.getElementById("valor_cnpj").value.replace(/[^0-9]/g, '');
@@ -560,16 +560,16 @@ function validarCNPJ(idElemento=null) {
         alert("CNPJ inválido");
     } else {
         AplicarDadosAPI(idElemento);
-    }    
+    }
 }
 
-function checarCNAE(listaCNAE, idElemento=null){
+function checarCNAE(listaCNAE, idElemento = null) {
     possuiIndustrial = false;
     listaCNAE.forEach(codcnae => {
-        
-        if(typeof(dictCNAE[codcnae]) != "undefined"){
 
-            if(idElemento == null){
+        if (typeof (dictCNAE[codcnae]) != "undefined") {
+
+            if (idElemento == null) {
                 document.getElementById("BoolCnaeIndustrial").value = "1";
                 document.getElementById("checkCNAE").style.color = "green";
                 document.getElementById("checkCNAE").classList.value = "fa fa-check";
@@ -582,10 +582,10 @@ function checarCNAE(listaCNAE, idElemento=null){
             }
 
             possuiIndustrial = true;
-    
+
         } else {
-    
-            if(idElemento == null){
+
+            if (idElemento == null) {
                 document.getElementById("BoolCnaeIndustrial").value = "0";
                 document.getElementById("checkCNAE").style.color = "red";
                 document.getElementById("checkCNAE").classList.value = "fa fa-close";
@@ -608,12 +608,12 @@ function AplicarDadosAPI(idElemento) {
         cnpj = document.querySelector(`#valor_cnpj-${idElemento}`).value;
     }
     let url = window.location.origin + "/Empresas/DadosAPI?query=" + cnpj;
-    
+
     fetch(url).then(res => {
         res.json().then(dados => {
             listaCNAE = [];
             listaCNAE.push(dados.atividade_principal[0].code);
-            dados.atividades_secundarias.forEach(ativ => {listaCNAE.push(ativ.code);});
+            dados.atividades_secundarias.forEach(ativ => { listaCNAE.push(ativ.code); });
             if (idElemento == null) {
                 document.getElementById("NomeEmpresaCadastro").value = dados.nome;
                 document.getElementById("NomeFantasiaEmpresa").value = dados.fantasia;
@@ -714,20 +714,18 @@ function AplicarDadosAPI(idElemento) {
             indices.add('AL', 25)
 
             // ESSA LINHA BUSCA O NOME A PARTIR DA SIGLA DEVOLVIDA PELA API --------\/
-            if (idElemento == null)
-            {
+            if (idElemento == null) {
                 document.getElementById("EstadoEmpresaCadastroINT").value = indices.find(dados.uf);
             }
-            else
-            {
+            else {
                 document.getElementById(`EstadoEmpresaCadastroINT-${idElemento}`).value = indices.find(dados.uf);
             }
 
-    })}) 
+        })
+    })
 }
 
-function travarBotao()
-{
+function travarBotao() {
     botoes = document.querySelectorAll(".btn-submit");
     botoes.forEach(botao => {
         botao.disabled = true;
