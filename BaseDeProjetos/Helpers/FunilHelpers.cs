@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Castle.Core.Internal;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Helpers
 {
