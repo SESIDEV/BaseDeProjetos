@@ -121,9 +121,9 @@ namespace BaseDeProjetos.Controllers
                 searchString = searchString.ToLower();
 
                 empresas = empresas.Where(e =>
-                e.Nome.ToLower().Contains(searchString.ToLower()) ||
-                e.NomeFantasia.ToLower().Contains(searchString.ToLower()) ||
-                e.CNPJ.ToLower().Contains(searchString.ToLower())).ToList();
+                e.Nome != null && e.Nome.ToLower().Contains(searchString.ToLower()) ||
+                e.NomeFantasia != null && e.NomeFantasia.ToLower().Contains(searchString.ToLower()) ||
+                e.CNPJ != null && e.CNPJ.ToLower().Contains(searchString.ToLower())).ToList();
 
             }
 
