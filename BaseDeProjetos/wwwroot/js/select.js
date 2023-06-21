@@ -3,9 +3,9 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
     let value = "";
     let inner = "";
 
-    const caixa = document.querySelector(`#${caixaId}`);
-    const loading = document.querySelector(`#${loadingIcon}`);
-    const select = document.querySelector(`#${idSelect}`);
+    let caixa = document.querySelector(`#${caixaId}`);
+    let loading = document.querySelector(`#${loadingIcon}`);
+    let select = document.querySelector(`#${idSelect}`);
 
     caixa.style.display = "none";
     loading.style.display = "block";
@@ -45,7 +45,7 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
         .then(response => response.json())
         .then(lista => {
             lista.forEach(function (item) {
-                const opt = document.createElement("option");
+                let opt = document.createElement("option");
                 if (rota !== "Tags") {
                     opt.value = item[value];
                 }
@@ -72,8 +72,8 @@ function novaTag() {
 }
 
 function addTag(campoInput, idSelect) {
-    const valor = document.querySelector('.select2-search__field').valorSalvo;
-    const valorAntigo = document.querySelector(`#${campoInput}`).value;
+    let valor = document.querySelector('.select2-search__field').valorSalvo;
+    let valorAntigo = document.querySelector(`#${campoInput}`).value;
 
     let valorNovo;
     if (valorAntigo === '') {
@@ -84,8 +84,8 @@ function addTag(campoInput, idSelect) {
 
     document.querySelector(`#${campoInput}`).value = valorNovo;
 
-    const botao_def = document.querySelector('#bloco_botao');
-    const botao_copy = botao_def.cloneNode(true);
+    let botao_def = document.querySelector('#bloco_botao');
+    let botao_copy = botao_def.cloneNode(true);
     botao_copy.removeAttribute('id');
     botao_copy.title = valor;
     botao_copy.children[0].innerHTML = `#${valor}`;
@@ -97,12 +97,12 @@ function addTag(campoInput, idSelect) {
 function textToSelect(nomeModal, idText, idSelect, rota, caixaId, botaoAlterar, loadingIcon) {
     gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon);
 
-    const botaoDef = document.querySelector('#bloco_botao');
-    const listaSel = document.querySelector(`#${idText}`).value.split(";");
+    let botaoDef = document.querySelector('#bloco_botao');
+    let listaSel = document.querySelector(`#${idText}`).value.split(";");
 
     listaSel.forEach(p => {
         if (p !== '') {
-            const botaoCopy = botaoDef.cloneNode(true);
+            let botaoCopy = botaoDef.cloneNode(true);
             botaoCopy.removeAttribute('id');
             botaoCopy.title = p;
             botaoCopy.children[1].innerHTML = p;
