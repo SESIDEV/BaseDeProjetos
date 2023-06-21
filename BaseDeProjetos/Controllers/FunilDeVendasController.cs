@@ -451,19 +451,28 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private async Task<Prospeccao> EditarDadosDaProspecção(string id, Prospeccao prospeccao)
         {
-            Empresa Empresa_antigo = await _context.Empresa.FirstOrDefaultAsync(e => e.Id == prospeccao.Empresa.Id);
+            Empresa Empresa_antigo = await _context.Empresa.FirstAsync(e => e.Id == prospeccao.Empresa.Id);
+            prospeccao.Empresa = Empresa_antigo;
             Usuario lider = await _context.Users.FirstAsync(p => p.Id == prospeccao.Usuario.Id);
             prospeccao.Usuario = lider;
 
-            if (prospeccao.Empresa.Id != Empresa_antigo.Id) // Empresa existente
-            {
-                Empresa empresa = await _context.Empresa.FirstOrDefaultAsync(e => e.Id == prospeccao.Empresa.Id);
-                if (empresa != null)
-                {
-                    prospeccao.Empresa = empresa;
-                }
+            Prospeccao prospAntiga = await _context.Prospeccao.AsNoTracking().FirstAsync(p => p.Id == prospeccao.Id);
+
+            if (prospAntiga.Ancora == false && prospeccao.Ancora == true)
+            { // compara a versão antiga com a nova que irá para o Update()
+                FunilHelpers.AddAgregadas(_context, prospeccao);
             }
 
+            if (prospAntiga.Ancora == true && prospeccao.Ancora == false) 
+            { // compara a versão antiga com a nova que irá para o Update()
+                FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
+            }
+
+            if (prospAntiga.Agregadas != prospeccao.Agregadas)
+            {
+                FunilHelpers.DelAgregadas(_context, prospeccao);
+            }
+            
             _context.Update(prospeccao);
             return prospeccao;
         }
@@ -609,7 +618,12 @@ namespace BaseDeProjetos.Controllers
         {
 			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-			var prospeccao =  await _context.Prospeccao.Where(prosp => prosp.Id == id).Include(f => f.Status).FirstAsync();
+			var prospeccao =  await _context.Prospeccao.Where(prosp => prosp.Id == id).Include(f => f.Status).FirstAsync(); // o First converte de IQuerable para objeto Prospeccao
+
+            if (prospeccao.Ancora)
+            {
+                FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
+            }
 
             _context.Remove(prospeccao);
             await _context.SaveChangesAsync();
@@ -736,10 +750,29 @@ namespace BaseDeProjetos.Controllers
             return Json(listaFull);
         }
 
-        /// <summary>
-        /// Wrapper para função helper de retorno de dados de usuários
-        /// </summary>
-        /// <returns></returns>
+        public ActionResult PuxarDadosProspeccoes2() //para puxar em selectList
+        {
+            List<Prospeccao> lista_prosp = _context.Prospeccao.ToList();
+
+            List<Dictionary<string, object>> listaFull = new List<Dictionary<string, object>>();
+
+            foreach (var p in lista_prosp)
+            {
+                Dictionary<string, object> dict = new Dictionary<string, object>();
+                
+                if(p.NomeProspeccao != null){
+                    dict["idProsp"] = p.Id;
+                    dict["Titulo"] = p.NomeProspeccao + "[" + p.Empresa.NomeFantasia + "]";
+                } else {
+                    continue;
+                }
+                
+                listaFull.Add(dict);
+            }
+
+            return Json(listaFull);
+        }
+
         public string PuxarDadosUsuarios()
         {
             if (HttpContext.User.Identity.IsAuthenticated)

@@ -76,7 +76,7 @@ function FiltroEmpresaEstrangeira(){
 
     if (checkBox.checked == true) {
 
-        cnpj.value = 00000000000000;
+        cnpj.value = "00000000000000";
         campo1.style.display = "none"
         estado_int.value = 26;
         campo2.style.display = "none"
@@ -155,11 +155,42 @@ function realocarCompetenciaNaView(element) {
     }
 }
 
-function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar) {
+function loadAncora(toggleId, iconAncora, campoAgg) {
+    alavanca = document.querySelector(`#${toggleId}`);
+    icon = document.querySelector(`#${iconAncora}`);
+    agg = document.querySelector(`#${campoAgg}`);
+
+    if(alavanca.value == "False"){
+        alavanca.checked = false;
+        icon.style.color = "rgba(111, 111, 111, 0.2)";
+        agg.classList.add("d-none");
+    } else {
+        alavanca.checked = true;
+        icon.style.color = "rgba(111, 111, 111, 1)";
+        agg.classList.remove("d-none");
+    }
+}
+
+function checkAncora(alavanca, iconAncora, campoAgg) {
+    icon = document.querySelector(`#${iconAncora}`);
+    agg = document.querySelector(`#${campoAgg}`);
+    if(alavanca.checked){
+        alavanca.value = "True";
+        icon.style.color = "rgba(111, 111, 111, 1)";
+        agg.classList.remove("d-none");
+    } else {
+        alavanca.value = "False";
+        icon.style.color = "rgba(111, 111, 111, 0.2)";
+        agg.classList.add("d-none");
+    }
+}
+
+function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon) {
     let defRota = "";
     let value = "";
     let inner = "";
-    document.querySelector(`#loadingOpcoesSelect${rota}`).style.display = "block";
+    document.querySelector(`#${caixaId}`).style.display = "none";
+    document.querySelector(`#${loadingIcon}`).style.display = "block";
     document.querySelector(`#${idSelect}`).innerHTML = '';
     if (nomeModal == null){
         $(`#${idSelect}`).select2()
@@ -173,12 +204,17 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar) {
             inner = "UserName";
             break;
         case "Empresas":
-            defRota = '/Empresas/PuxarEmpresas'
+            defRota = '/Empresas/PuxarEmpresas';
             value = "Id";
             inner = "RazaoSocial";
             break;
         case "Tags":
             defRota = '/FunilDeVendas/PuxarTagsProspecoes';
+            break;
+        case "Prospeccoes":
+            defRota = '/FunilDeVendas/PuxarDadosProspeccoes2';
+            value = "idProsp";
+            inner = "Titulo";
             break;
         default:
             console.log(`Erro: ${rota} é uma rota inválida`);
@@ -191,13 +227,11 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar) {
             opt.innerHTML = item[inner]
             document.querySelector(`#${idSelect}`).appendChild(opt)
         })
-        document.querySelector(`#loadingOpcoesSelect${rota}`).style.display = "none";
-        document.querySelectorAll(".select2-container").forEach(input => {input.style.width = "100%"})
+        document.querySelector(`#${loadingIcon}`).style.display = "none";
+        document.querySelector(`#${caixaId}`).style.display = "block";
     })
-    document.querySelector(`#${caixaId}`).style.display = "block";
-    if (botaoAlterar != null){
-        document.querySelector(`#${botaoAlterar}`).style.display = "none";
-    }
+    document.querySelectorAll(".select2-container").forEach(input => {input.style.width = "100%"})
+    if (botaoAlterar != null){document.querySelector(`#${botaoAlterar}`).style.display = "none";}
 }
 
 function novaTag(){
@@ -230,18 +264,23 @@ function procurarPessoa(select) {
     redePessoas.focus(select.value, { scale: 3, animation: { duration: 400 } })
 }
 
-function selectToText(idSelect, idText) {
-    let listaRota = ["Pessoas", "Empresas"]
-    listaRota.forEach(function(rota) {
+function selectToText(lista, id) {
+    console.log(lista)
+    console.log(id)
+    lista.forEach(function(rota) {
+        console.log(rota)
         let texto = ''
-        document.querySelector(`#select2-${idSelect}${rota}-container`).childNodes.forEach(p => texto += p.title + ';')
-        document.querySelector(`#${idText}${rota}`).value = texto
+        if(document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`) != null){
+            document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`).childNodes.forEach(p => texto += p.title + ';')
+            document.querySelector(`#inputTextEdit${rota}-${id}`).value = texto
+        } else {
+            return;
+        }
       })
-    
 }
 
-function textToSelect(nomeModal, idText, idSelect, rota, caixaId, botaoAlterar) {
-    gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar)
+function textToSelect(nomeModal, idText, idSelect, rota, caixaId, botaoAlterar, loadingIcon) {
+    gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon)
 
     botao_def = document.querySelector('#bloco_botao')
     listaSel = document.querySelector(`#${idText}`).value.split(";")

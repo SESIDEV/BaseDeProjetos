@@ -62,7 +62,7 @@
                           <span class="visually-hidden">Loading...</span>
                         </div>
                         <input asp-for="MembrosEquipe" class="form-control d-none" id="inputTextCreatePessoas" type="text"/>
-                        <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestCreatePessoas" onclick="gerarOpcoesSelect('criarProspModalToggle','campoSelectCreatePessoas','Pessoas','caixaPesquisaCreatePessoas','botaoToggleCaixaRequestCreatePessoas')">Buscar</button>
+                        <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestCreatePessoas" onclick="gerarOpcoesSelect('criarProspModalToggle','campoSelectCreatePessoas','Pessoas','caixaPesquisaCreatePessoas','botaoToggleCaixaRequestCreatePessoas','loadingOpcoesSelectPessoas')">Buscar</button>
                         <div class="input-group flex-nowrap" id="caixaPesquisaCreatePessoas" style="display:none;">
                             <select id="campoSelectCreatePessoas" class="form-select" multiple="true"></select>
                         </div>
@@ -85,7 +85,7 @@
                           <span class="visually-hidden">Loading...</span>
                         </div>
                         <input asp-for="PotenciaisParceiros" class="form-control d-none"  id="inputTextCreateEmpresas" type="text"/>
-                        <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestCreateEmpresas" onclick="gerarOpcoesSelect('criarProspModalToggle','campoSelectCreateEmpresas','Empresas','caixaPesquisaCreateEmpresas','botaoToggleCaixaRequestCreateEmpresas')">Buscar</button>
+                        <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestCreateEmpresas" onclick="gerarOpcoesSelect('criarProspModalToggle','campoSelectCreateEmpresas','Empresas','caixaPesquisaCreateEmpresas','botaoToggleCaixaRequestCreateEmpresas','loadingOpcoesSelectEmpresas')">Buscar</button>
                         <div class="input-group flex-nowrap" id="caixaPesquisaCreateEmpresas" style="display:none;">
                             <select id="campoSelectCreateEmpresas" class="form-select" multiple="true" style="display:block;"></select>
                         </div>
@@ -187,7 +187,7 @@
                           <span class="visually-hidden">Loading...</span>
                         </div>
                         <input type="text" asp-for="Tags" class="form-control" id="tagsTextCreate"/>
-                        <button type="button" style="width: 100%;" id="botaoToggleCaixaRequestCreateTags" onclick="gerarOpcoesSelect('criarProspModalToggle','campoSelectCreateTags','Tags','caixaPesquisaCreateTags','botaoToggleCaixaRequestCreateTags')">Adicionar</button>
+                        <button type="button" style="width: 100%;" id="botaoToggleCaixaRequestCreateTags" onclick="gerarOpcoesSelect('criarProspModalToggle','campoSelectCreateTags','Tags','caixaPesquisaCreateTags','botaoToggleCaixaRequestCreateTags','loadingOpcoesSelectTags')">Adicionar</button>
                         <div class="input-group flex-nowrap" id="caixaPesquisaCreateTags" style="display:none;">
                             <select id="campoSelectCreateTags" class="form-select" multiple="true"></select>
                             <span class="input-group-text" id="addon-wrapping" onclick="addTag('tagsTextCreate','campoSelectCreateTags')" onmouseover="novaTag()">

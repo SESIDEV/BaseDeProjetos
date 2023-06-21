@@ -1,6 +1,8 @@
 ﻿using BaseDeProjetos.Controllers;
 using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,30 +18,58 @@ namespace BaseDeProjetos.Helpers
             _dbContext = dbContext;
         }
 
-        public List<Prospeccao> ListaDeProspeccoes { get => _dbContext.Prospeccao.Where(p => p.Status.FirstOrDefault().Status != StatusProspeccao.Planejada).ToList(); }
+        public List<Prospeccao> ListaDeProspeccoes => _dbContext.Prospeccao.Where(prospeccao =>
+        prospeccao.Status.OrderBy(followup =>
+                    followup.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
 
 
-        public Dictionary<string, int> QuantidadeDeProspeccoes(Func<Prospeccao, object> propriedade)
+        public Dictionary<string, int> QuantidadeDeProspeccoes(Func<Prospeccao, object> propriedade, int? ano)
         {
             List<Prospeccao> listaProsps = ListaDeProspeccoes;
 
-			// Verificar se a propriedade é do tipo Usuario
-			if (propriedade.Invoke(listaProsps.FirstOrDefault()) is Usuario)
-			{
-				listaProsps = listaProsps.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
-			}
+            if (ano != null)
+            {
+                listaProsps = listaProsps.Where(p => p.Status.First().Data.Year == ano).ToList();
 
-			var listaEmGrupo = listaProsps.GroupBy(propriedade);
+                if (listaProsps == null)
+                {
+                    return new Dictionary<string, int>() { };
+                }
+            }
 
-			Dictionary<string, int> quantidadeDeProspeccoesPorCasa = new Dictionary<string, int>();
+            // Verificar se a propriedade é do tipo Usuario
+            if (propriedade.Invoke(listaProsps.FirstOrDefault()) is Usuario)
+            {
+                listaProsps = listaProsps.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
+            }
 
+            var listaEmGrupo = listaProsps.GroupBy(propriedade);
+
+            if (listaEmGrupo == null)
+            {
+                return new Dictionary<string, int>() { };
+            }
+
+            Dictionary<string, int> quantidadeDeProspeccoesPorCasa = new Dictionary<string, int>();
 
             foreach (var p in listaEmGrupo)
             {
 
-                if (!quantidadeDeProspeccoesPorCasa.ContainsKey(p.Key.ToString()))
+                if (quantidadeDeProspeccoesPorCasa.ContainsKey(p.Key.ToString()))
                 {
 
+                    if (p.Count().GetType() == typeof(int))
+                    {
+                        quantidadeDeProspeccoesPorCasa[p.Key.ToString()] += p.Count();
+                    }
+                    else
+                    {
+                        quantidadeDeProspeccoesPorCasa[p.Key.ToString()] += 0;
+                    }
+
+                }
+                else
+                {
                     if (p.Count().GetType() == typeof(int))
                     {
                         quantidadeDeProspeccoesPorCasa.Add(p.Key.ToString(), p.Count());
@@ -48,40 +78,71 @@ namespace BaseDeProjetos.Helpers
                     {
                         quantidadeDeProspeccoesPorCasa.Add(p.Key.ToString(), 0);
                     }
-
                 }
 
             }
 
             return quantidadeDeProspeccoesPorCasa.OrderByDescending(p => p.Value).Take(10).ToDictionary(k => k.Key, v => v.Value);
         }
-        public Dictionary<string, string> ValorSomaProspeccoes(Func<Prospeccao, object> propriedade)
+        public Dictionary<string, string> ValorSomaProspeccoes(Func<Prospeccao, object> propriedade, int? ano)
         {
-            var listaProsps = ListaDeProspeccoes;
+            List<Prospeccao> listaProsps = ListaDeProspeccoes;
 
-			// Verificar se a propriedade é do tipo Usuario
-			if (propriedade.Invoke(listaProsps.FirstOrDefault()) is Usuario)
-			{
-				listaProsps = listaProsps.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
-			}
+            if (ano != null)
+            {
+                listaProsps = listaProsps.Where(p => p.Status.First().Data.Year == ano).ToList();
 
-			var listaEmGrupo = listaProsps.GroupBy(propriedade);
+                if (listaProsps == null)
+                {
+
+                    return new Dictionary<string, string>() { };
+                }
+            }
+            if (propriedade == null)
+            {
+                return new Dictionary<string, string>() { };
+            }
+
+            // Verificar se a propriedade é do tipo Usuario
+            if (propriedade.Invoke(listaProsps.FirstOrDefault()) is Usuario)
+            {
+                listaProsps = listaProsps.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
+            }
+
+            var listaEmGrupo = listaProsps.GroupBy(propriedade);
+
+            if (listaEmGrupo == null)
+            {
+                return new Dictionary<string, string>() { };
+            }
+
 
             Dictionary<string, decimal> valorDeProspeccoesPorCasa = new Dictionary<string, decimal>();
 
             foreach (var p in listaEmGrupo)
             {
-                if (!valorDeProspeccoesPorCasa.ContainsKey(p.Key.ToString()))
+                if (valorDeProspeccoesPorCasa.ContainsKey(p.Key.ToString()))
+                {
+                    if (p.Count().GetType() == typeof(int))
+                    { 
+                        valorDeProspeccoesPorCasa[p.Key.ToString()] += p.Sum(v => v.ValorProposta) + p.Sum(v => v.ValorEstimado);
+                    }
+                    else
+                    {
+                        valorDeProspeccoesPorCasa[p.Key.ToString()] += (decimal)0.0;
+                    }
+
+                }
+                else
                 {
                     if (p.Count().GetType() == typeof(int))
                     {
-                        valorDeProspeccoesPorCasa.Add(p.Key.ToString(), (decimal)p.Sum(v => v.ValorProposta));
+                        valorDeProspeccoesPorCasa.Add(p.Key.ToString(), p.Sum(v => v.ValorProposta) + p.Sum(v => v.ValorEstimado));
                     }
                     else
                     {
                         valorDeProspeccoesPorCasa.Add(p.Key.ToString(), (decimal)0.0);
                     }
-
                 }
 
             }
