@@ -1,8 +1,4 @@
-﻿using BaseDeProjetos.Controllers;
-using BaseDeProjetos.Data;
-using BaseDeProjetos.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using BaseDeProjetos.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,16 +7,13 @@ namespace BaseDeProjetos.Helpers
 {
     public class IndicadorHelper
     {
-        private readonly ApplicationDbContext _dbContext;
 
-        public IndicadorHelper(ApplicationDbContext dbContext)
+        public IndicadorHelper(List<Prospeccao> listaDeProspeccoes)
         {
-            _dbContext = dbContext;
+            ListaDeProspeccoes = listaDeProspeccoes;
         }
 
-        public List<Prospeccao> ListaDeProspeccoes => _dbContext.Prospeccao.Where(prospeccao =>
-        prospeccao.Status.OrderBy(followup =>
-                    followup.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
+        public List<Prospeccao> ListaDeProspeccoes { get; set; }
 
 
         public Dictionary<string, int> QuantidadeDeProspeccoes(Func<Prospeccao, object> propriedade, int? ano)
@@ -124,7 +117,7 @@ namespace BaseDeProjetos.Helpers
                 if (valorDeProspeccoesPorCasa.ContainsKey(p.Key.ToString()))
                 {
                     if (p.Count().GetType() == typeof(int))
-                    { 
+                    {
                         valorDeProspeccoesPorCasa[p.Key.ToString()] += p.Sum(v => v.ValorProposta) + p.Sum(v => v.ValorEstimado);
                     }
                     else
@@ -151,6 +144,75 @@ namespace BaseDeProjetos.Helpers
             {
                 return Helpers.FormatarValoresDashboards(v.Value);
             });
+        }
+        public Dictionary<string, decimal> CalcularTaxaDeConversao(Func<Prospeccao, object> propriedade, int? ano)
+        {
+            var listaProsp = ListaDeProspeccoes;
+
+            if (ano != null)
+            {
+                listaProsp = listaProsp.Where(p => p.Status.First().Data.Year == ano).ToList();
+
+                if (listaProsp == null)
+                {
+
+                    return new Dictionary<string, decimal>() { };
+                }
+            }
+
+            Dictionary<string, decimal> taxaDeConversaoPorPesquisador = new Dictionary<string, decimal>();
+            // Verificar se a propriedade é do tipo Usuario
+            if (propriedade.Invoke(ListaDeProspeccoes.FirstOrDefault()) is Usuario)
+            {
+                ListaDeProspeccoes = ListaDeProspeccoes.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
+            }
+                        
+
+            var listaEmGrupo = ListaDeProspeccoes.GroupBy(propriedade);
+                        
+
+            foreach (var p in listaEmGrupo)
+            {
+                if (p.Count().GetType() == typeof(int))
+                {
+                    int convertidas = p.Where(k => k.Status.LastOrDefault().Status == StatusProspeccao.Convertida).Count();
+                    int naoConvertidas = p.Where(k => k.Status.LastOrDefault().Status == StatusProspeccao.NaoConvertida).Count();
+
+                    if(convertidas > 0 && naoConvertidas > 0)
+                    {
+                        decimal taxa = 100 * convertidas / (convertidas + naoConvertidas);
+                        
+                        taxaDeConversaoPorPesquisador.Add(p.Key.ToString(), taxa);
+                    }
+                    
+                }
+                else
+                {
+                    taxaDeConversaoPorPesquisador[p.Key.ToString()] += (decimal)0.0;
+                }
+
+                //if (taxaDeConversaoPorPesquisador.ContainsKey(p.Key.ToString()))
+                //{
+
+
+                //}
+                //else
+                //{
+                //    if (p.Count().GetType() == typeof(int))
+                //    {
+                //        taxaDeConversaoPorPesquisador.Add(p.Key.ToString(), p.Sum(v => v.ValorProposta) + p.Sum(v => v.ValorEstimado));
+                //    }
+                //    else
+                //    {
+                //        taxaDeConversaoPorPesquisador.Add(p.Key.ToString(), (decimal)0.0);
+                //    }
+                //}
+
+            }
+
+            return taxaDeConversaoPorPesquisador.OrderByDescending(v => v.Value).ToDictionary(p => p.Key, k => k.Value);
+
+
         }
     }
 }
