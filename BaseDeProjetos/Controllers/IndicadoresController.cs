@@ -55,16 +55,18 @@ namespace BaseDeProjetos.Controllers
         prospeccao.Status.OrderBy(followup =>
                     followup.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList());
 
-            IndicadorHelper indicadoresProspeccoesComProposta = new IndicadorHelper(_context.Prospeccao.Where(prospeccao => 
+            IndicadorHelper indicadoresProspeccoesComProposta = new IndicadorHelper(_context.Prospeccao.Where(prospeccao =>
             prospeccao.Status.OrderBy(followup => followup.Data).LastOrDefault().Status == StatusProspeccao.ComProposta || prospeccao.Status.OrderBy(followup => followup.Data).LastOrDefault().Status == StatusProspeccao.Convertida || prospeccao.Status.OrderBy(followup => followup.Data).LastOrDefault().Status == StatusProspeccao.NaoConvertida).ToList());
 
             List<Prospeccao> listaParaTaxaDeConversao = _context.Prospeccao.ToList();
 
-            if(ano != null)
+            if (ano != null)
             {
-                listaParaTaxaDeConversao = _context.Prospeccao.Where(p => p.Status.First().Data.Year == ano).ToList();
-            }
+                // Consultar as prospecções com base no ID do usuário e no ano
+                List<Prospeccao> listaProspeccoesLeon2023 = _context.Prospeccao
+                    .Where(p => p.Status.Any(f => f.Data.Year == ano)).ToList();
 
+            }
 
             IndicadorHelper indicadorTaxaDeConversao = new IndicadorHelper(listaParaTaxaDeConversao);
 
@@ -91,7 +93,6 @@ namespace BaseDeProjetos.Controllers
                 ViewBag.ValorSomaProspeccoesPorPesquisadorComProposta = indicadoresProspeccoesComProposta.ValorSomaProspeccoes(p => p?.Usuario, ano);
 
                 ViewBag.TaxaDeConversaoDosPesquisadores = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.Usuario, ano);
-
 
                 ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;
