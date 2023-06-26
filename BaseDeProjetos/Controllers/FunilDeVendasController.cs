@@ -747,7 +747,7 @@ namespace BaseDeProjetos.Controllers
                 
                 if(p.NomeProspeccao != null){
                     dict["idProsp"] = p.Id;
-                    dict["Titulo"] = p.NomeProspeccao + "[" + p.Empresa.NomeFantasia + "]";
+                    dict["Titulo"] = p.NomeProspeccao + " [" + p.Empresa.NomeFantasia + "]";
                 } else {
                     continue;
                 }

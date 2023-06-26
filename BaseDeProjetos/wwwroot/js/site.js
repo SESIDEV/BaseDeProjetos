@@ -206,7 +206,7 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
         case "Empresas":
             defRota = '/Empresas/PuxarEmpresas';
             value = "Id";
-            inner = "RazaoSocial";
+            inner = "NomeFantasia";
             break;
         case "Tags":
             defRota = '/FunilDeVendas/PuxarTagsProspecoes';
