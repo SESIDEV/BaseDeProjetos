@@ -55,16 +55,10 @@ namespace BaseDeProjetos.Controllers
         prospeccao.Status.OrderBy(followup =>
                     followup.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList());
 
-            IndicadorHelper indicadoresProspeccoesComProposta = new IndicadorHelper(_context.Prospeccao.Where(prospeccao => 
+            IndicadorHelper indicadoresProspeccoesComProposta = new IndicadorHelper(_context.Prospeccao.Where(prospeccao =>
             prospeccao.Status.OrderBy(followup => followup.Data).LastOrDefault().Status == StatusProspeccao.ComProposta || prospeccao.Status.OrderBy(followup => followup.Data).LastOrDefault().Status == StatusProspeccao.Convertida || prospeccao.Status.OrderBy(followup => followup.Data).LastOrDefault().Status == StatusProspeccao.NaoConvertida).ToList());
 
             List<Prospeccao> listaParaTaxaDeConversao = _context.Prospeccao.ToList();
-
-            if(ano != null)
-            {
-                listaParaTaxaDeConversao = _context.Prospeccao.Where(p => p.Status.First().Data.Year == ano).ToList();
-            }
-
 
             IndicadorHelper indicadorTaxaDeConversao = new IndicadorHelper(listaParaTaxaDeConversao);
 
@@ -92,6 +86,13 @@ namespace BaseDeProjetos.Controllers
 
                 ViewBag.TaxaDeConversaoDosPesquisadores = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.Usuario, ano);
 
+                ViewBag.TaxaDeConversaoDasCasas = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.Casa.GetDisplayName(), ano);
+
+                ViewBag.TaxaDeConversaoDasEmpresas = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.Empresa.Nome, ano);
+
+                ViewBag.TaxaDeConversaoDosTiposDeContratacao = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.TipoContratacao.GetDisplayName(), ano);
+
+                ViewBag.TaxaDeConversaoDasLinhasDePesquisa = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.LinhaPequisa.GetDisplayName(), ano);
 
                 ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;
