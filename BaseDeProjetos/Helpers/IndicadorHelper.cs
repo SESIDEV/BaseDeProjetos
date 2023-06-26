@@ -150,16 +150,19 @@ namespace BaseDeProjetos.Helpers
             List<Prospeccao> listaProsp = ListaDeProspeccoes;
 
             Dictionary<string, decimal> taxaDeConversaoPorPesquisador = new Dictionary<string, decimal>();
-            // Verificar se a propriedade é do tipo Usuario
-            if (propriedade.Invoke(ListaDeProspeccoes.FirstOrDefault()) is Usuario)
-            {
-                ListaDeProspeccoes = ListaDeProspeccoes.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
-            }
+
 
             if (ano != null)
             {
                 listaProsp = ListaDeProspeccoes.Where(p => p.Status.Any(f => f.Data.Year == ano)).ToList();
             }
+
+            if (propriedade.Invoke(ListaDeProspeccoes.FirstOrDefault()) is Usuario)
+            {
+                listaProsp = ListaDeProspeccoes.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
+            }
+
+            
 
             var listaEmGrupo = listaProsp.GroupBy(propriedade);
 
