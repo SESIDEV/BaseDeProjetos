@@ -94,6 +94,14 @@ namespace BaseDeProjetos.Controllers
 
                 ViewBag.TaxaDeConversaoDosPesquisadores = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.Usuario, ano);
 
+                ViewBag.TaxaDeConversaoDasCasas = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.Casa, ano);
+
+                ViewBag.TaxaDeConversaoDasEmpresas = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.Empresa.Nome, ano);
+
+                ViewBag.TaxaDeConversaoDosTiposDeContratacao = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.TipoContratacao, ano);
+
+                ViewBag.TaxaDeConversaoDasLinhasDePesquisa = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.LinhaPequisa, ano);
+
                 ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;
                 return View("IndicadoresDashBoard");
