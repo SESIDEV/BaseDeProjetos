@@ -60,14 +60,6 @@ namespace BaseDeProjetos.Controllers
 
             List<Prospeccao> listaParaTaxaDeConversao = _context.Prospeccao.ToList();
 
-            if (ano != null)
-            {
-                // Consultar as prospecções com base no ID do usuário e no ano
-                List<Prospeccao> listaProspeccoesLeon2023 = _context.Prospeccao
-                    .Where(p => p.Status.Any(f => f.Data.Year == ano)).ToList();
-
-            }
-
             IndicadorHelper indicadorTaxaDeConversao = new IndicadorHelper(listaParaTaxaDeConversao);
 
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -94,13 +86,13 @@ namespace BaseDeProjetos.Controllers
 
                 ViewBag.TaxaDeConversaoDosPesquisadores = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.Usuario, ano);
 
-                ViewBag.TaxaDeConversaoDasCasas = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.Casa, ano);
+                ViewBag.TaxaDeConversaoDasCasas = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.Casa.GetDisplayName(), ano);
 
                 ViewBag.TaxaDeConversaoDasEmpresas = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.Empresa.Nome, ano);
 
-                ViewBag.TaxaDeConversaoDosTiposDeContratacao = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.TipoContratacao, ano);
+                ViewBag.TaxaDeConversaoDosTiposDeContratacao = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.TipoContratacao.GetDisplayName(), ano);
 
-                ViewBag.TaxaDeConversaoDasLinhasDePesquisa = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.LinhaPequisa, ano);
+                ViewBag.TaxaDeConversaoDasLinhasDePesquisa = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.LinhaPequisa.GetDisplayName(), ano);
 
                 ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;

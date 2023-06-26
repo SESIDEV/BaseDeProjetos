@@ -22,7 +22,7 @@ namespace BaseDeProjetos.Helpers
 
             if (ano != null)
             {
-                listaProsps = listaProsps.Where(p => p.Status.First().Data.Year == ano).ToList();
+                listaProsps = ListaDeProspeccoes.Where(p => p.Status.Any(f => f.Data.Year == ano)).ToList();
 
                 if (listaProsps == null)
                 {
@@ -33,7 +33,7 @@ namespace BaseDeProjetos.Helpers
             // Verificar se a propriedade é do tipo Usuario
             if (propriedade.Invoke(listaProsps.FirstOrDefault()) is Usuario)
             {
-                listaProsps = listaProsps.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
+                listaProsps = ListaDeProspeccoes.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
             }
 
             var listaEmGrupo = listaProsps.GroupBy(propriedade);
@@ -83,7 +83,7 @@ namespace BaseDeProjetos.Helpers
 
             if (ano != null)
             {
-                listaProsps = listaProsps.Where(p => p.Status.First().Data.Year == ano).ToList();
+                listaProsps = ListaDeProspeccoes.Where(p => p.Status.Any(f => f.Data.Year == ano)).ToList();
 
                 if (listaProsps == null)
                 {
@@ -99,7 +99,7 @@ namespace BaseDeProjetos.Helpers
             // Verificar se a propriedade é do tipo Usuario
             if (propriedade.Invoke(listaProsps.FirstOrDefault()) is Usuario)
             {
-                listaProsps = listaProsps.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
+                listaProsps = ListaDeProspeccoes.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
             }
 
             var listaEmGrupo = listaProsps.GroupBy(propriedade);
@@ -161,7 +161,7 @@ namespace BaseDeProjetos.Helpers
                 listaProsp = ListaDeProspeccoes.Where(p => p.Status.Any(f => f.Data.Year == ano)).ToList();
             }
 
-            var listaEmGrupo = ListaDeProspeccoes.GroupBy(propriedade);
+            var listaEmGrupo = listaProsp.GroupBy(propriedade);
 
             foreach (var p in listaEmGrupo)
             {
