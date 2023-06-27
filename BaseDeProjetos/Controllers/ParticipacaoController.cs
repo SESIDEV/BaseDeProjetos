@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -123,6 +123,13 @@ namespace BaseDeProjetos.Controllers
             ParticipacaoTotalViewModel participacao = new ParticipacaoTotalViewModel() { Participacoes = new List<ParticipacaoViewModel>() };
 
             List<Prospeccao> prospeccoesUsuario = await _context.Prospeccao.Where(p => p.Usuario == usuario).ToListAsync();
+
+            // Evitar exibir usuários sem prospecção
+            if (prospeccoesUsuario.Count == 0)
+            {
+                return null;
+            }
+
             List<Prospeccao> prospeccoesUsuarioComProposta = await _context.Prospeccao.Where(p => p.Usuario == usuario && p.Status.Any(f => f.Status == StatusProspeccao.ComProposta)).ToListAsync();
             List<Prospeccao> prospeccoesUsuarioConvertidas = await _context.Prospeccao.Where(p => p.Usuario == usuario && p.Status.Any(f => f.Status == StatusProspeccao.Convertida)).ToListAsync();
 
@@ -142,6 +149,12 @@ namespace BaseDeProjetos.Controllers
                     prospeccoesUsuarioComProposta = prospeccoesUsuarioComProposta.Where(p => p.Status.Any(f => f.Data.Year == int.Parse(ano) && f.Data.Month == int.Parse(mes))).ToList();
                     prospeccoesUsuarioConvertidas = prospeccoesUsuarioConvertidas.Where(p => p.Status.Any(f => f.Data.Year == int.Parse(ano) && f.Data.Month == int.Parse(mes))).ToList();
                 } 
+            }
+
+            // Evitar exibir usuários sem prospecção
+            if (prospeccoesUsuario.Count == 0)
+            {
+                return null;
             }
 
             await AtribuirParticipacoesIndividuais(participacao, prospeccoesUsuario);
@@ -357,9 +370,12 @@ namespace BaseDeProjetos.Controllers
 			
 			foreach (var usuario in usuarios)
 			{
-
                 var participacao = await GetParticipacaoTotalUsuario(usuario, mes, ano);
-				participacoes.Add(participacao);
+
+                if (participacao != null)
+                {
+				    participacoes.Add(participacao);
+                }
 			}
 
 			return participacoes;
