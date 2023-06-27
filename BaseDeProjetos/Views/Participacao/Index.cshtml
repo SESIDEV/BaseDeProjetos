@@ -5,10 +5,13 @@
 @{
     ViewData["Title"] = "Participação";
     var cultura = new CultureInfo("pt-BR");
-    var mes = ViewData["mes"] as string;
-    var ano = ViewData["ano"] as string;
-}
 
+    var mesInicio = ViewData["mesInicio"] as string;
+    var anoInicio = ViewData["anoInicio"] as string;
+    var mesFim = ViewData["mesFim"] as string;
+    var anoFim = ViewData["anoFim"] as string;
+}
+ 
 <style>
     .ribbon {
         width: 60px;
@@ -111,27 +114,25 @@
                 <div class="d-flex" style="justify-content: space-between">
                     <div class="d-flex flex-column">
                         <h1 class="app-page-title mb-0">Participação dos Pesquisadores</h1>
-                        @if (!string.IsNullOrEmpty(ano) || !string.IsNullOrEmpty(mes))
-                        {
-                            if (string.IsNullOrEmpty(mes))
-                            {
-                                <h3 class="app-page-title text-muted mb-0">Filtro: @(ano)</h3>
-                            }
-                            else
-                            {
-                                <h3 class="app-page-title text-muted mb-0">Filtro: @(ano)/@(mes)</h3>
-                            }
-                        }
                     </div>
 
                     <form class="d-flex flex-row align-items-end gap-2" asp-controller="Participacao" asp-action="Index" method="get">
                         <div class="form-group">
-                            <label for="mes">Mês:</label>
-                            <input id="mes" name="mes" class="form-control" type="number" placeholder="@(string.IsNullOrEmpty(mes) ? "Sem filtro" : mes)" value="@(string.IsNullOrEmpty(mes) ? null : mes)" max="12" oninput="zerarInputMes(event)" />
+                            <label for="mesInicio">Mês Inicial:</label>
+                            <input id="mesInicio" name="mesInicio" class="form-control" type="number" placeholder="@(string.IsNullOrEmpty(mesInicio) ? "Sem filtro" : mesInicio)" value="@(string.IsNullOrEmpty(mesInicio) ? null : mesInicio)" max="12" oninput="zerarInputMes(event)" />
                         </div>
                         <div class="form-group">
-                            <label for="ano">Ano:</label>
-                            <input id="ano" name="ano" class="form-control" type="number" placeholder="@(string.IsNullOrEmpty(ano) ? "Sem filtro" : ano)" value="@(string.IsNullOrEmpty(ano) ? null : ano)" oninput="zerarInputAno(event)" />
+                            <label for="anoInicio">Ano Inicial:</label>
+                            <input id="anoInicio" name="anoInicio" class="form-control" type="number" placeholder="@(string.IsNullOrEmpty(anoInicio) ? "Sem filtro" : anoInicio)" value="@(string.IsNullOrEmpty(anoInicio) ? null : anoInicio)" oninput="zerarInputAno(event)" />
+                        </div>
+                        até
+                        <div class="form-group">
+                            <label for="mesFim">Mês Final:</label>
+                            <input id="mesFim" name="mesFim" class="form-control" type="number" placeholder="@(string.IsNullOrEmpty(mesFim) ? "Sem filtro" : mesFim)" value="@(string.IsNullOrEmpty(mesFim) ? null : mesFim)" max="12" oninput="zerarInputMes(event)" />
+                        </div>
+                        <div class="form-group">
+                            <label for="ano">Ano Final:</label>
+                            <input id="anoFim" name="anoFim" class="form-control" type="number" placeholder="@(string.IsNullOrEmpty(anoFim) ? "Sem filtro" : anoFim)" value="@(string.IsNullOrEmpty(anoFim) ? null : anoFim)" oninput="zerarInputAno(event)" />
                         </div>
                         <button type="submit" class="btn app-btn-primary">Filtrar</button>
                     </form>
