@@ -1,4 +1,4 @@
-using BaseDeProjetos.Data;
+﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -188,7 +188,6 @@ namespace BaseDeProjetos.Controllers
             participacao.QuantidadeProspeccoesProjeto = quantidadeProspeccoesProjetizadas = prospeccoesUsuarioConvertidas.Count();
             participacao.Lider = usuario;
             
-
             // Evita divisão por 0
             if (prospeccoesUsuario.Count() == 0)
             {
@@ -412,7 +411,15 @@ namespace BaseDeProjetos.Controllers
 
 			foreach (var participacao in participacoes)
             {
-                participacao.Rank = participacao.Rank / mediaValorRank;
+                if (mediaValorRank != 0)
+                {
+                    participacao.Rank = participacao.Rank / mediaValorRank;
+                }
+                else
+                {
+                    participacao.Rank = 0;
+                }
+                
             }
 		}
 
