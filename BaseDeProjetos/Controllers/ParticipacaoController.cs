@@ -134,10 +134,8 @@ namespace BaseDeProjetos.Controllers
             List<Prospeccao> prospeccoesUsuarioComProposta = await _context.Prospeccao.Where(p => p.Usuario == usuario && p.Status.Any(f => f.Status == StatusProspeccao.ComProposta)).ToListAsync();
             List<Prospeccao> prospeccoesUsuarioConvertidas = await _context.Prospeccao.Where(p => p.Usuario == usuario && p.Status.Any(f => f.Status == StatusProspeccao.Convertida)).ToListAsync();
 
-            // Filtro, ano necessáriamente precisa estar preenchido para periodização
             if (!string.IsNullOrEmpty(anoFim) && !string.IsNullOrEmpty(mesFim))
             {
-                // Filtrar somente ano
                 if (!string.IsNullOrEmpty(mesInicio) && !string.IsNullOrEmpty(anoInicio))
                 {
                     prospeccoesUsuario = prospeccoesUsuario.Where(p => p.Status.Any(f => f.Data.Year >= int.Parse(anoInicio) && f.Data.Year <= int.Parse(anoFim) && f.Data.Month >= int.Parse(mesInicio) && f.Data.Month <= int.Parse(mesFim))).ToList();
@@ -163,7 +161,7 @@ namespace BaseDeProjetos.Controllers
             decimal valorTotalProspeccoes = 0;
             decimal valorTotalProspeccoesComProposta;
             decimal valorMedioProspeccoes;
-            decimal valorMedioProspeccoesComProposta;
+            decimal valorMedioProspeccoesComProposta = 0;
             decimal taxaConversaoProposta;
             decimal taxaConversaoProjeto;
             int quantidadeProspeccoes;
@@ -199,7 +197,7 @@ namespace BaseDeProjetos.Controllers
             }
             else
             {
-                participacao.TaxaConversaoProposta = taxaConversaoProposta = (quantidadeProspeccoesComProposta / (decimal)quantidadeProspeccoes) * 100;
+                participacao.TaxaConversaoProposta = taxaConversaoProposta = (quantidadeProspeccoesComProposta / (decimal)quantidadeProspeccoes);
                 participacao.ValorMedioProspeccoes = valorMedioProspeccoes = valorTotalProspeccoes / quantidadeProspeccoes;
 
                 if (quantidadeProspeccoesComProposta > 0)
@@ -207,8 +205,8 @@ namespace BaseDeProjetos.Controllers
                     participacao.ValorMedioProspeccoesComProposta = valorMedioProspeccoesComProposta = valorTotalProspeccoesComProposta / quantidadeProspeccoesComProposta;
                 }      
                 
-                participacao.TaxaConversaoProjeto = taxaConversaoProjeto = (quantidadeProspeccoesProjetizadas / (decimal)quantidadeProspeccoes) * 100;
-                participacao.Rank = valorTotalProspeccoes + valorMedioProspeccoes + quantidadeProspeccoes + quantidadeProspeccoesProjetizadas;
+                participacao.TaxaConversaoProjeto = taxaConversaoProjeto = (quantidadeProspeccoesProjetizadas / (decimal)quantidadeProspeccoes);
+                participacao.Rank = taxaConversaoProposta * valorMedioProspeccoesComProposta * quantidadeProspeccoesComProposta;
             }
 
             return participacao;
@@ -421,13 +419,12 @@ namespace BaseDeProjetos.Controllers
                 else
                 {
                     participacao.Rank = 0;
-                }
-                
+                }                
             }
 		}
 
 		/// <summary>
-		/// Atribui os rankings as participações passadas por parâmetro, para que sejam exibidas na View. Valores de 0 a 1, multiplicados por 100.
+		/// Atribui os rankings as participações passadas por parâmetro, para que sejam exibidas na View. Valores de 0 a 1
 		/// </summary>
 		/// <param name="participacoes">Lista de participações (normalmente de um usuário específico mas pode ser genérica)</param>
 		private static void RankearParticipacoes(List<ParticipacaoTotalViewModel> participacoes)
@@ -451,51 +448,9 @@ namespace BaseDeProjetos.Controllers
             {
                 participacao.RankPorIndicador = new Dictionary<string, decimal>();
 
-                decimal calculoRank = 0;
                 decimal rankQuantidadeProspeccoesComProposta = 0;
 				decimal rankValorTotalProspeccoes = 0;
 				decimal rankValorMedioProspeccoes = 0;
-
-                //if (maxValorTotalProsp != 0)
-                //            {
-                //                calculoRank += participacao.ValorTotalProspeccoes / maxValorTotalProsp;
-                //            }
-                //            if (maxValorMedioProsp != 0)
-                //            {
-                //                calculoRank += participacao.ValorMedioProspeccoes / maxValorMedioProsp;
-                //            }
-                //            if (maxQtdProspeccoes != 0)
-                //            {
-                //                calculoRank += participacao.QuantidadeProspeccoes / maxQtdProspeccoes;
-                //            }
-                //            if (maxQtdProspProjetizadas != 0)
-                //            {
-                //                calculoRank += participacao.QuantidadeProspeccoesProjeto / maxQtdProspProjetizadas;
-                //            }
-
-                calculoRank = participacao.QuantidadeProspeccoesComProposta * participacao.ValorMedioProspeccoesComProposta * participacao.TaxaConversaoProjeto / 100;
-
-                //if (maxQtdProspeccoesComProposta != 0)
-                //{
-                //    calculoRank += participacao.QuantidadeProspeccoesComProposta / maxQtdProspeccoesComProposta;
-                //}
-                //if (maxValorMedioProspComProposta != 0)
-                //{
-                //    calculoRank += participacao.ValorMedioProspeccoesComProposta / maxValorMedioProspComProposta;
-                //}
-                //if (maxConversaoProjeto != 0)
-                //{
-                //    calculoRank += participacao.TaxaConversaoProjeto / maxConversaoProjeto;
-                //}
-
-                //            if (maxConversaoProposta != 0)
-                //            {
-                //                calculoRank += participacao.TaxaConversaoProposta / maxConversaoProposta;
-                //            }
-
-                //calculoRank /= 6;
-
-                participacao.Rank = calculoRank;
 
 				if (maxValorTotalProsp != 0)
                 {

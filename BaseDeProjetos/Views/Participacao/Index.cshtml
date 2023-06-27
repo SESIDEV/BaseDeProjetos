@@ -1,5 +1,6 @@
 ﻿@using System.Globalization;
 @using BaseDeProjetos.Models;
+@using BaseDeProjetos.Helpers;
 @model IEnumerable<ParticipacaoTotalViewModel>
 
 @{
@@ -11,7 +12,7 @@
     var mesFim = ViewData["mesFim"] as string;
     var anoFim = ViewData["anoFim"] as string;
 }
- 
+
 <style>
     .ribbon {
         width: 60px;
@@ -147,16 +148,16 @@
                                 <thead>
                                     <tr>
                                         <th class="cell">Membro</th>
-                                        <th class="cell">Valor Total das Prospecções</th>
-                                        <th class="cell">Valor Médio das Prospecções</th>
-                                        <th class="cell">Valor Total das Propostas</th>
-                                        <th class="cell">Valor Médio das Propostas</th>
-                                        <th class="cell">Total de Prospecções</th>
+                                        <th class="cell">Valor Total (Prospecção)</th>
+                                        <th class="cell">Valor Médio (Prospecção)</th>
+                                        <th class="cell">Quantidade (Prospecção)</th>
+                                        <th class="cell">Valor Total (Em Proposta)</th>
+                                        <th class="cell">Valor Médio (Em Proposta)</th>                                        
                                         <th class="cell">Prospecções Em Proposta</th>
                                         <th class="cell">Prospecções Convertidas</th>
                                         <th class="cell">Taxa de Propostas</th>
                                         <th class="cell">Taxa de Conversão</th>
-                                        <th class="cell">Rank</th>
+                                        <th class="cell">Índice</th>
                                         <th class="cell">Detalhes</th>
                                     </tr>
                                 </thead>
@@ -196,76 +197,139 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <td class="cell">
+                                            <td class="cell" style="text-overflow:clip">
                                                 @participacaoTotal.Lider
                                             </td>
                                             <td class="cell">
-                                                R$ @participacaoTotal.ValorTotalProspeccoes.ToString("N", cultura) (@participacaoTotal.RankPorIndicador["RankValorTotalProspeccoes"].ToString("N", cultura))
+                                                <div class="d-flex flex-row align-items-center gap-2">
+                                                    @{
+                                                        var rankValorTotalProspeccoes = participacaoTotal.RankPorIndicador["RankValorTotalProspeccoes"];
+                                                    }
+                                                    @Helpers.PrintarValorIndicadorParticipacao(rankValorTotalProspeccoes)
+                                                    R$ @participacaoTotal.ValorTotalProspeccoes.ToString("N", cultura) (@rankValorTotalProspeccoes.ToString("N", cultura))
+                                                </div>
                                             </td>
                                             <td class="cell">
-                                                R$ @participacaoTotal.ValorMedioProspeccoes.ToString("N", cultura) (@participacaoTotal.RankPorIndicador["RankValorMedioProspeccoes"].ToString("N", cultura))
+                                                <div class="d-flex flex-row align-items-center gap-2">
+                                                @{
+                                                    var rankValorMedioProspeccoes = participacaoTotal.RankPorIndicador["RankValorMedioProspeccoes"];
+                                                }
+                                                @Helpers.PrintarValorIndicadorParticipacao(rankValorMedioProspeccoes)
+                                                R$ @participacaoTotal.ValorMedioProspeccoes.ToString("N", cultura) (@rankValorMedioProspeccoes.ToString("N", cultura))
+                                                </div>
                                             </td>
                                             <td class="cell">
-                                                R$ @participacaoTotal.ValorTotalProspeccoesComProposta.ToString("N", cultura) (@participacaoTotal.RankPorIndicador["RankValorTotalProspeccoesComProposta"].ToString("N", cultura))
+                                                <div class="d-flex flex-row align-items-center gap-2">
+                                                @{
+                                                    var rankQuantidadeProspeccoes = @participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoes"];
+                                                }
+                                                @Helpers.PrintarValorIndicadorParticipacao(rankQuantidadeProspeccoes)
+                                                @participacaoTotal.QuantidadeProspeccoes (@rankQuantidadeProspeccoes.ToString("N", cultura))
+                                                </div>
                                             </td>
                                             <td class="cell">
-                                                R$ @participacaoTotal.ValorMedioProspeccoesComProposta.ToString("N", cultura) (@participacaoTotal.RankPorIndicador["RankValorMedioProspeccoesComProposta"].ToString("N", cultura))
+                                                <div class="d-flex flex-row align-items-center gap-2">
+                                                    @{
+                                                        var rankValorTotalProspeccoesComProposta = participacaoTotal.RankPorIndicador["RankValorTotalProspeccoesComProposta"];
+                                                    }
+                                                    @Helpers.PrintarValorIndicadorParticipacao(rankValorTotalProspeccoesComProposta)
+                                                    R$ @participacaoTotal.ValorTotalProspeccoesComProposta.ToString("N", cultura) (@rankValorTotalProspeccoesComProposta.ToString("N", cultura))
+                                                </div>
                                             </td>
                                             <td class="cell">
-                                                @participacaoTotal.QuantidadeProspeccoes (@participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoes"].ToString("N", cultura))
-                                            </td>
-                                            <td class="cell">
-                                                @participacaoTotal.QuantidadeProspeccoesComProposta (@participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoesComProposta"].ToString("N", cultura))
-                                            </td>
-                                            <td class="cell">
-                                                @participacaoTotal.QuantidadeProspeccoesProjeto (@participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoesProjeto"].ToString("N", cultura))
-                                            </td>
-                                            <td class="cell">
-                                                @participacaoTotal.TaxaConversaoProposta.ToString("N", cultura)%
-                                            </td>
-                                            <td class="cell">
-                                                @participacaoTotal.TaxaConversaoProjeto.ToString("N", cultura)%
+                                                <div class="d-flex align-items-center flex-row gap-2">
+                                                    @{
+                                                        var rankValorMedioProposta = participacaoTotal.RankPorIndicador["RankValorMedioProspeccoesComProposta"];
+                                                    }
+                                                    @Helpers.PrintarValorIndicadorParticipacao(rankValorMedioProposta)
+                                                    R$ @participacaoTotal.ValorMedioProspeccoesComProposta.ToString("N", cultura) (@rankValorMedioProposta.ToString("N", cultura))
+                                                </div>
                                             </td>
                                             <td class="cell">
                                                 @{
-                                                decimal rank = participacaoTotal.Rank;
-                                                decimal rankMedio = (decimal)ViewData["medValorRank"];
-                                                <div class="d-flex flex-row align-items-center gap-2">
-                                                @if (rank > rankMedio)
-                                                {
-                                                    if (rank > (rankMedio * 8))
-                                                    {
-                                                        <svg style="color: green" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-up" viewBox="0 0 16 16">
-                                                            <path fill-rule="evenodd" d="M7.646 2.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 3.707 2.354 9.354a.5.5 0 1 1-.708-.708l6-6z" />
-                                                            <path fill-rule="evenodd" d="M7.646 6.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 7.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
-                                                        </svg>
-                                                    }
-                                                    else
-                                                    {
-                                                        <svg style="color: seagreen" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
-                                                            <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
-                                                        </svg>
-                                                    }
+                                                    var rankProspeccoesComProposta = participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoesComProposta"];
                                                 }
-                                                else
-                                                {
-                                                    if (rank < (rankMedio / 8))
-                                                    {
-                                                        <svg style="color:red" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-down" viewBox="0 0 16 16">
-                                                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-                                                            <path fill-rule="evenodd" d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-                                                        </svg>
+                                                @Helpers.PrintarValorIndicadorParticipacao(rankProspeccoesComProposta)
+                                                @participacaoTotal.QuantidadeProspeccoesComProposta
+                                                (@rankProspeccoesComProposta.ToString("N", cultura))
+                                            </td>
+                                            <td class="cell">
+                                                <div class="d-flex align-items-center flex-row gap-2">
+                                                    @{
+                                                        var rankProspeccoesProjeto = participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoesProjeto"];
                                                     }
-                                                    else
-                                                    {
-                                                        <svg style="color: darkred" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
-                                                            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-                                                        </svg>
-                                                    }
-                                                }
-
-                                                @participacaoTotal.Rank.ToString("N", cultura)
+                                                    @Helpers.PrintarValorIndicadorParticipacao(rankProspeccoesProjeto)
+                                                    @participacaoTotal.QuantidadeProspeccoesProjeto
+                                                    (@rankProspeccoesProjeto.ToString("N", cultura))
                                                 </div>
+                                            </td>
+                                            <td class="cell">
+                                                <div class="d-flex flex-row align-items-center gap-2">
+                                                    @{
+                                                        var taxaConversaoProposta = participacaoTotal.TaxaConversaoProposta;
+                                                    }
+                                                    @Helpers.PrintarValorIndicadorParticipacao(taxaConversaoProposta)
+                                                    @((taxaConversaoProposta * 100).ToString("N", cultura))%
+                                                </div>
+                                            </td>
+                                            <td class="cell">
+                                                <div class="d-flex flex-row align-items-center gap-2">
+                                                    @{
+                                                        var taxaConversaoProjeto = participacaoTotal.TaxaConversaoProjeto;
+                                                    }
+                                                    @Helpers.PrintarValorIndicadorParticipacao(taxaConversaoProjeto)
+                                                    @((taxaConversaoProjeto * 100).ToString("N", cultura))%
+                                                </div>
+                                            </td>
+                                            <td class="cell">
+                                                @{
+                                                    decimal rank = participacaoTotal.Rank;
+                                                    decimal rankMedio = (decimal)ViewData["medValorRank"];
+                                                    <div class="d-flex flex-row align-items-center gap-2">
+                                                        @if (rank > rankMedio)
+                                                        {
+                                                            if (rank > rankMedio * 2)
+                                                            {
+                                                                <svg style="color: green" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-up" viewBox="0 0 16 16">
+                                                                    <path fill-rule="evenodd" d="M7.646 2.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 3.707 2.354 9.354a.5.5 0 1 1-.708-.708l6-6z" />
+                                                                    <path fill-rule="evenodd" d="M7.646 6.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 7.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
+                                                                </svg>
+                                                            }
+                                                            else
+                                                            {
+                                                                if (rank - 1 > 1)
+                                                                {
+                                                                    <svg style="color: seagreen" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
+                                                                        <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
+                                                                    </svg>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <svg style="color: dodgerblue" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-bar-contract" viewBox="0 0 16 16">
+                                                                        <path fill-rule="evenodd" d="M3.646 14.854a.5.5 0 0 0 .708 0L8 11.207l3.646 3.647a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 0 0 0 .708zm0-13.708a.5.5 0 0 1 .708 0L8 4.793l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708zM1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
+                                                                    </svg>
+                                                                }
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            if (rank < -(rankMedio * 2))
+                                                            {
+                                                                <svg style="color:red" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-down" viewBox="0 0 16 16">
+                                                                    <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                                                    <path fill-rule="evenodd" d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                                                </svg>
+                                                            }
+                                                            else
+                                                            {
+                                                                <svg style="color: darkred" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                                                                    <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                                                </svg>
+                                                            }
+                                                        }
+
+                                                        @((participacaoTotal.Rank - 1).ToString("N", cultura))
+                                                    </div>
                                                 }
                                             </td>
                                             <td class="cell">
