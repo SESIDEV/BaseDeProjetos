@@ -5,6 +5,8 @@
 @{
     ViewData["Title"] = "Participação";
     var cultura = new CultureInfo("pt-BR");
+    var mes = ViewData["mes"] as string;
+    var ano = ViewData["ano"] as string;
 }
 
 <style>
@@ -109,28 +111,27 @@
                 <div class="d-flex" style="justify-content: space-between">
                     <div class="d-flex flex-column">
                         <h1 class="app-page-title mb-0">Participação dos Pesquisadores</h1>
-                        @if (!string.IsNullOrEmpty(ViewData["ano"] as string) || !string.IsNullOrEmpty(ViewData["mes"] as string))
+                        @if (!string.IsNullOrEmpty(ano) || !string.IsNullOrEmpty(mes))
                         {
-                            if (string.IsNullOrEmpty(ViewData["mes"] as string))
+                            if (string.IsNullOrEmpty(mes))
                             {
-                                <h3 class="app-page-title text-muted mb-0">Filtro: @(ViewData["ano"] as string)</h3>
+                                <h3 class="app-page-title text-muted mb-0">Filtro: @(ano)</h3>
                             }
                             else
                             {
-                                <h3 class="app-page-title text-muted mb-0">Filtro: @(ViewData["ano"] as string)/@(ViewData["mes"] as string)</h3>
+                                <h3 class="app-page-title text-muted mb-0">Filtro: @(ano)/@(mes)</h3>
                             }
-
                         }
                     </div>
 
                     <form class="d-flex flex-row align-items-end gap-2" asp-controller="Participacao" asp-action="Index" method="get">
                         <div class="form-group">
                             <label for="mes">Mês:</label>
-                            <input id="mes" name="mes" class="form-control" type="number" placeholder="@DateTime.Now.Month" value="@DateTime.Now.Month" max="12" oninput="zerarInputMes(event)" />
+                            <input id="mes" name="mes" class="form-control" type="number" placeholder="@(string.IsNullOrEmpty(mes) ? "Sem filtro" : mes)" value="@(string.IsNullOrEmpty(mes) ? null : mes)" max="12" oninput="zerarInputMes(event)" />
                         </div>
                         <div class="form-group">
                             <label for="ano">Ano:</label>
-                            <input id="ano" name="ano" class="form-control" type="number" placeholder="@DateTime.Now.Year" value="@DateTime.Now.Year" oninput="zerarInputAno(event)" />
+                            <input id="ano" name="ano" class="form-control" type="number" placeholder="@(string.IsNullOrEmpty(ano) ? "Sem filtro" : ano)" value="@(string.IsNullOrEmpty(ano) ? null : ano)" oninput="zerarInputAno(event)" />
                         </div>
                         <button type="submit" class="btn app-btn-primary">Filtrar</button>
                     </form>
