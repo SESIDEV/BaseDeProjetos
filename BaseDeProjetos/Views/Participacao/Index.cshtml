@@ -119,10 +119,10 @@
                             {
                                 <h3 class="app-page-title text-muted mb-0">Filtro: @(ViewData["ano"] as string)/@(ViewData["mes"] as string)</h3>
                             }
-                            
+
                         }
                     </div>
-                    
+
                     <form class="d-flex flex-row align-items-end gap-2" asp-controller="Participacao" asp-action="Index" method="get">
                         <div class="form-group">
                             <label for="mes">Mês:</label>
@@ -153,7 +153,7 @@
                                         <th class="cell">Prospecções Em Proposta</th>
                                         <th class="cell">Prospecções Convertidas</th>
                                         <th class="cell">Taxa de Propostas</th>
-                                        <th class="cell">Taxa de Convertidas</th>
+                                        <th class="cell">Taxa de Conversão</th>
                                         <th class="cell">Rank</th>
                                         <th class="cell">Detalhes</th>
                                     </tr>
@@ -216,7 +216,7 @@
                                                 @participacaoTotal.QuantidadeProspeccoesComProposta (@participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoesComProposta"].ToString("N", cultura))
                                             </td>
                                             <td class="cell">
-                                                @participacaoTotal.QuantidadeProspeccoesProjetizadas (@participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoesProjetizadas"].ToString("N", cultura))
+                                                @participacaoTotal.QuantidadeProspeccoesProjeto (@participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoesProjeto"].ToString("N", cultura))
                                             </td>
                                             <td class="cell">
                                                 @participacaoTotal.TaxaConversaoProposta.ToString("N", cultura)%
@@ -225,7 +225,46 @@
                                                 @participacaoTotal.TaxaConversaoProjeto.ToString("N", cultura)%
                                             </td>
                                             <td class="cell">
+                                                @{
+                                                decimal rank = participacaoTotal.Rank;
+                                                decimal rankMedio = (decimal)ViewData["medValorRank"];
+                                                <div class="d-flex flex-row align-items-center gap-2">
+                                                @if (rank > rankMedio)
+                                                {
+                                                    if (rank > (rankMedio * 8))
+                                                    {
+                                                        <svg style="color: green" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-up" viewBox="0 0 16 16">
+                                                            <path fill-rule="evenodd" d="M7.646 2.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 3.707 2.354 9.354a.5.5 0 1 1-.708-.708l6-6z" />
+                                                            <path fill-rule="evenodd" d="M7.646 6.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 7.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
+                                                        </svg>
+                                                    }
+                                                    else
+                                                    {
+                                                        <svg style="color: seagreen" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
+                                                            <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
+                                                        </svg>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (rank < (rankMedio / 8))
+                                                    {
+                                                        <svg style="color:red" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-down" viewBox="0 0 16 16">
+                                                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                                            <path fill-rule="evenodd" d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                                        </svg>
+                                                    }
+                                                    else
+                                                    {
+                                                        <svg style="color: darkred" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                                                            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                                        </svg>
+                                                    }
+                                                }
+
                                                 @participacaoTotal.Rank.ToString("N", cultura)
+                                                </div>
+                                                }
                                             </td>
                                             <td class="cell">
                                                 <button type="button" data-bs-target="#ModalDetalhesParticipacaoTotal-@participacaoTotal.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary">
