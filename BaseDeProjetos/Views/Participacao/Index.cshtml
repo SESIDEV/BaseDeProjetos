@@ -200,20 +200,34 @@
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body d-flex flex-column gap-1" style="background: #f5f6fe;">
-                                                            <h5>Lista de Prospecções</h5>
-                                                            @{
-                                                                var participacoes = participacaoTotal.Participacoes;
+                                                            <div class="accordion" id="accordionProspeccoes">
+                                                                <div class="accordion-item">
+                                                                    <h2 class="accordion-header" id="headingProspeccoes">
+                                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProspeccoes"
+                                                                                aria-expanded="false" aria-controls="collapseProspeccoes">
+                                                                            Lista de Prospecções
+                                                                        </button>
+                                                                    </h2>
+                                                                    <div id="collapseProspeccoes" class="accordion-collapse collapse" aria-labelledby="headingProspeccoes"
+                                                                         data-bs-parent="#accordionProspeccoes">
+                                                                        <div class="accordion-body">
+                                                                            @{
+                                                                                var participacoes = participacaoTotal.Participacoes;
 
-                                                                participacoes.Sort((p1, p2) => p1.Convertida.CompareTo(p2.Convertida));
-                                                                participacoes.Sort((p1, p2) => decimal.Compare(p1.ValorNominal, p2.ValorNominal));
+                                                                                participacoes.Sort((p1, p2) => p1.Convertida.CompareTo(p2.Convertida));
+                                                                                participacoes.Sort((p1, p2) => decimal.Compare(p1.ValorNominal, p2.ValorNominal));
 
-                                                                <div class="row g-4">
-                                                                    @foreach (var participacaoUnitaria in participacoes)
-                                                                    {
-                                                                        @await Html.PartialAsync("ListaParticipacoesUnitarias", participacaoUnitaria, ViewData)
-                                                                    }
+                                                                                <div class="row g-4">
+                                                                                    @foreach (var participacaoUnitaria in participacoes)
+                                                                                    {
+                                                                                        @await Html.PartialAsync("ListaParticipacoesUnitarias", participacaoUnitaria, ViewData)
+                                                                                    }
+                                                                                </div>
+                                                                            }
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-                                                            }
+                                                            </div>                                                            
                                                         </div>
                                                         <div class="modal-footer">
                                                             <a class="btn btn-outline-primary" data-bs-dismiss="modal" aria-label="Close" role="button">
