@@ -203,10 +203,10 @@ namespace BaseDeProjetos.Controllers
                 if (quantidadeProspeccoesComProposta > 0)
                 {
                     participacao.ValorMedioProspeccoesComProposta = valorMedioProspeccoesComProposta = valorTotalProspeccoesComProposta / quantidadeProspeccoesComProposta;
-                }      
+                }
                 
                 participacao.TaxaConversaoProjeto = taxaConversaoProjeto = (quantidadeProspeccoesProjetizadas / (decimal)quantidadeProspeccoes);
-                participacao.Rank = taxaConversaoProposta * valorMedioProspeccoesComProposta * quantidadeProspeccoesComProposta;
+                participacao.Indice = taxaConversaoProposta * valorMedioProspeccoesComProposta * quantidadeProspeccoesComProposta;
             }
 
             return participacao;
@@ -395,8 +395,9 @@ namespace BaseDeProjetos.Controllers
             {
                 RankearParticipacoes(participacoes);
                 AcertarValorRankParticipacoes(participacoes);
-                ViewData["medValorRank"] = participacoes.Average(p => p.Rank);
-                participacoes = participacoes.OrderByDescending(p => p.Rank).ToList();
+                ObterRankingsMedios(participacoes);
+                
+                participacoes = participacoes.OrderByDescending(p => p.Indice).ToList();
             }            
 
 			ViewBag.usuarioFoto = usuario.Foto;
@@ -406,19 +407,43 @@ namespace BaseDeProjetos.Controllers
             return View(participacoes);
         }
 
-		private void AcertarValorRankParticipacoes(List<ParticipacaoTotalViewModel> participacoes)
-		{
-            decimal mediaValorRank = participacoes.Average(p => p.Rank);
+        private void ObterRankingsMedios(List<ParticipacaoTotalViewModel> participacoes)
+        {
+            decimal rankMedio = participacoes.Average(p => p.Rank);
+            decimal rankMedioIndice = participacoes.Average(p => p.Indice);
 
-			foreach (var participacao in participacoes)
+            decimal rankMedioValorTotalProspeccao = participacoes.Average(p => p.RankPorIndicador["RankValorTotalProspeccoes"]);
+            decimal rankMedioValorTotalProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador["RankValorTotalProspeccoesComProposta"]);
+            decimal rankMedioValorMedioProspeccoes = participacoes.Average(p => p.RankPorIndicador["RankValorMedioProspeccoes"]);
+            decimal rankMedioValorMedioProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador["RankValorMedioProspeccoesComProposta"]);
+            decimal rankMedioQuantidadeProspeccoes = participacoes.Average(p => p.RankPorIndicador["RankQuantidadeProspeccoes"]);
+            decimal rankMedioQuantidadeProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador["RankQuantidadeProspeccoesComProposta"]);
+            decimal rankMedioQuantidadeProspeccoesProjeto = participacoes.Average(p => p.RankPorIndicador["RankQuantidadeProspeccoesProjeto"]);
+
+            ViewData[nameof(rankMedio)] = rankMedio;
+            ViewData[nameof(rankMedioIndice)] = rankMedioIndice;
+            ViewData[nameof(rankMedioValorTotalProspeccao)] = rankMedioValorTotalProspeccao;
+            ViewData[nameof(rankMedioValorTotalProspeccoesComProposta)] = rankMedioValorTotalProspeccoesComProposta;
+            ViewData[nameof(rankMedioValorMedioProspeccoes)] = rankMedioValorMedioProspeccoes;
+            ViewData[nameof(rankMedioValorMedioProspeccoesComProposta)] = rankMedioValorMedioProspeccoesComProposta;
+            ViewData[nameof(rankMedioQuantidadeProspeccoes)] = rankMedioQuantidadeProspeccoes;
+            ViewData[nameof(rankMedioQuantidadeProspeccoesComProposta)] = rankMedioQuantidadeProspeccoesComProposta;
+            ViewData[nameof(rankMedioQuantidadeProspeccoesProjeto)] = rankMedioQuantidadeProspeccoesProjeto;
+        }
+
+        private void AcertarValorRankParticipacoes(List<ParticipacaoTotalViewModel> participacoes)
+		{
+            decimal mediaValorIndice = participacoes.Average(p => p.Indice);
+
+            foreach (var participacao in participacoes)
             {
-                if (mediaValorRank != 0)
+                if (mediaValorIndice != 0)
                 {
-                    participacao.Rank = participacao.Rank / mediaValorRank;
+                    participacao.Indice = participacao.Indice / mediaValorIndice;
                 }
                 else
                 {
-                    participacao.Rank = 0;
+                    participacao.Indice = 0;
                 }                
             }
 		}
@@ -433,6 +458,16 @@ namespace BaseDeProjetos.Controllers
             decimal rankValorMedioProspeccoesComProposta = 0;
             decimal rankQuantidadeProspeccoesProjeto = 0;
             decimal rankQuantidadeProspeccoes = 0;
+
+            decimal medValorTotalProsp = participacoes.Average(p => p.ValorTotalProspeccoes);
+            decimal medValorMedioProsp = participacoes.Average(p => p.ValorMedioProspeccoes);
+            decimal medValorMedioProspComProposta = participacoes.Average(p => p.ValorMedioProspeccoesComProposta);
+            decimal medTotalProspComProposta = participacoes.Average(p => p.ValorTotalProspeccoesComProposta);
+            decimal medQtdProspeccoes = (decimal)participacoes.Average(p => p.QuantidadeProspeccoes);
+            decimal medQtdProspeccoesComProposta = (decimal)participacoes.Average(p => p.QuantidadeProspeccoesComProposta);
+            decimal medQtdProspProjetizadas = (decimal)participacoes.Average(p => p.QuantidadeProspeccoesProjeto);
+            decimal medConversaoProjeto = participacoes.Average(p => p.TaxaConversaoProjeto);
+            decimal medConversaoProposta = participacoes.Average(p => p.TaxaConversaoProposta);
 
             decimal maxValorTotalProsp = participacoes.Max(p => p.ValorTotalProspeccoes);
             decimal maxValorMedioProsp = participacoes.Max(p => p.ValorMedioProspeccoes);
@@ -451,34 +486,70 @@ namespace BaseDeProjetos.Controllers
                 decimal rankQuantidadeProspeccoesComProposta = 0;
 				decimal rankValorTotalProspeccoes = 0;
 				decimal rankValorMedioProspeccoes = 0;
+                decimal calculoRank = 0;
 
-				if (maxValorTotalProsp != 0)
+                if (maxValorTotalProsp != 0)
                 {
-					rankValorTotalProspeccoes = participacao.ValorTotalProspeccoes / maxValorTotalProsp;
-				}
+                    calculoRank += participacao.ValorTotalProspeccoes / maxValorTotalProsp;
+                }
                 if (maxValorMedioProsp != 0)
                 {
-					rankValorMedioProspeccoes = participacao.ValorMedioProspeccoes / maxValorMedioProsp;
-				}
-                if (maxTotalProspComProposta != 0)
-                {
-                    rankValorTotalProspeccoesComProposta = participacao.ValorTotalProspeccoesComProposta / maxTotalProspComProposta;
-                }
-                if (maxValorMedioProspComProposta != 0)
-                {
-                    rankValorMedioProspeccoesComProposta = participacao.ValorMedioProspeccoesComProposta / maxValorMedioProspComProposta;
+                    calculoRank += participacao.ValorMedioProspeccoes / maxValorMedioProsp;
                 }
                 if (maxQtdProspeccoes != 0)
                 {
-                    rankQuantidadeProspeccoes = participacao.QuantidadeProspeccoes / maxQtdProspeccoes;
-                }           
+                    calculoRank += participacao.QuantidadeProspeccoes / maxQtdProspeccoes;
+                }
                 if (maxQtdProspProjetizadas != 0)
                 {
-                    rankQuantidadeProspeccoesProjeto = participacao.QuantidadeProspeccoesProjeto / maxQtdProspProjetizadas;
+                    calculoRank += participacao.QuantidadeProspeccoesProjeto / maxQtdProspProjetizadas;
                 }
                 if (maxQtdProspeccoesComProposta != 0)
                 {
-                    rankQuantidadeProspeccoesComProposta = participacao.QuantidadeProspeccoesComProposta / maxQtdProspeccoesComProposta;
+                    calculoRank += participacao.QuantidadeProspeccoesComProposta / maxQtdProspeccoesComProposta;
+                }
+                if (maxValorMedioProspComProposta != 0)
+                {
+                    calculoRank += participacao.ValorMedioProspeccoesComProposta / maxValorMedioProspComProposta;
+                }
+                if (maxConversaoProjeto != 0)
+                {
+                    calculoRank += participacao.TaxaConversaoProjeto / maxConversaoProjeto;
+                }
+                if (maxConversaoProposta != 0)
+                {
+                    calculoRank += participacao.TaxaConversaoProposta / maxConversaoProposta;
+                }
+
+                participacao.Rank = calculoRank /= 6;
+
+                if (medValorTotalProsp != 0)
+                {
+					rankValorTotalProspeccoes = participacao.ValorTotalProspeccoes / medValorTotalProsp;
+				}
+                if (medValorMedioProsp != 0)
+                {
+					rankValorMedioProspeccoes = participacao.ValorMedioProspeccoes / medValorMedioProsp;
+				}
+                if (medTotalProspComProposta != 0)
+                {
+                    rankValorTotalProspeccoesComProposta = participacao.ValorTotalProspeccoesComProposta / medTotalProspComProposta;
+                }
+                if (medValorMedioProspComProposta != 0)
+                {
+                    rankValorMedioProspeccoesComProposta = participacao.ValorMedioProspeccoesComProposta / medValorMedioProspComProposta;
+                }
+                if (medQtdProspeccoes != 0)
+                {
+                    rankQuantidadeProspeccoes = participacao.QuantidadeProspeccoes / medQtdProspeccoes;
+                }           
+                if (medQtdProspProjetizadas != 0)
+                {
+                    rankQuantidadeProspeccoesProjeto = participacao.QuantidadeProspeccoesProjeto / medQtdProspProjetizadas;
+                }
+                if (medQtdProspeccoesComProposta != 0)
+                {
+                    rankQuantidadeProspeccoesComProposta = participacao.QuantidadeProspeccoesComProposta / medQtdProspeccoesComProposta;
                 }
 
                 participacao.RankPorIndicador["RankValorTotalProspeccoes"] = rankValorTotalProspeccoes;
