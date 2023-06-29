@@ -46,7 +46,6 @@
 
     function carregarModaisProspeccao(idProspeccao) {
         // O nome precisa bater com o nome da view, no sentido que, o sufixo será "ProspViewComponent". Em outras palavras, está acoplado.
-
         modaisDisponiveis = ["Edit", "Delete", "History", "CreateFollowup"];
         modaisDisponiveis.forEach((tipo) => {
             carregarModalProspeccao(idProspeccao, tipo)
@@ -56,7 +55,7 @@
     }
 
     function carregarModalEmpresa(idEmpresa, tipo) {
-        console.log(idEmpresa)
+        // TODO: Travar botões
         if (!empresasCarregadas.includes(idEmpresa)) {
             if (tipo) {
                 fetch(`/Empresas/RetornarModal?idEmpresa=${idEmpresa}&tipo=${tipo}`)
@@ -69,7 +68,7 @@
     }
 
     function carregarModaisEmpresa(idEmpresa) {
-        console.log(idEmpresa)
+        // TODO: Travar botões
         modaisDisponiveis = ["Edit", "Delete"];
         modaisDisponiveis.forEach((tipo) => {
             carregarModalEmpresa(idEmpresa, tipo)
