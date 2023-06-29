@@ -20,9 +20,11 @@
                 <div class="modal-body">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
-                        <label asp-for="CNPJ" class="control-label"></label><span>   (Apenas números)</span>
-                        <input onload="validarCNPJ('@Model.Id')" asp-for="CNPJ" id="valor_cnpj-@Model.Id" class="form-control" maxlength="14" required />
-                        <button class="btn app-btn-primary" onclick="validarCNPJ('@Model.Id')" type="button">Buscar</button>
+                        <label asp-for="CNPJ" class="control-label"></label>(Apenas números)
+                        <div class="d-flex gap-2 flex-row">
+                            <input onload="validarCNPJ('@Model.Id')" asp-for="CNPJ" id="valor_cnpj-@Model.Id" class="form-control" maxlength="14" required />
+                            <button class="btn app-btn-primary" onclick="validarCNPJ('@Model.Id')" type="button">Buscar</button>
+                        </div>
                     </div>
                     <hr />
                     <h6 id="TipoEmpresaStatus-@Model.Id">Tipo:</h6>
