@@ -140,7 +140,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                if (tipo != null && tipo != "")
+                if (tipo != null || tipo != "")
                 {
                     return ViewComponent($"Modal{tipo}Empresa", new { id = idEmpresa });
                 }
