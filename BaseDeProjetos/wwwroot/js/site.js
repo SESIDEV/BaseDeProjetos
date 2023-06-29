@@ -564,10 +564,11 @@ function validarCNPJ(idElemento = null) {
 }
 
 function checarCNAE(listaCNAE, idElemento = null) {
-    possuiIndustrial = false;
-    listaCNAE.forEach(codcnae => {
 
-        if (typeof (dictCNAE[codcnae]) != "undefined") {
+    for (let i = 0; i < listaCNAE.length; i++) {
+        var codcnae = listaCNAE[i];
+
+        if (typeof (dictCNAE[codcnae.slice(0, 2)]) != "undefined") {
 
             if (idElemento == null) {
                 document.getElementById("BoolCnaeIndustrial").value = "1";
@@ -581,7 +582,7 @@ function checarCNAE(listaCNAE, idElemento = null) {
                 document.getElementById(`checkCNAE-${idElemento}`).style.display = "block";
             }
 
-            possuiIndustrial = true;
+            break;
 
         } else {
 
@@ -597,7 +598,7 @@ function checarCNAE(listaCNAE, idElemento = null) {
                 document.getElementById(`checkCNAE-${idElemento}`).style.display = "block";
             }
         }
-    });
+    };
 }
 
 function AplicarDadosAPI(idElemento) {
@@ -613,7 +614,9 @@ function AplicarDadosAPI(idElemento) {
         res.json().then(dados => {
             listaCNAE = [];
             listaCNAE.push(dados.atividade_principal[0].code);
-            dados.atividades_secundarias.forEach(ativ => { listaCNAE.push(ativ.code); });
+            dados.atividades_secundarias.forEach(ativ => {
+                listaCNAE.push(ativ.code);
+            });
             if (idElemento == null) {
                 document.getElementById("NomeEmpresaCadastro").value = dados.nome;
                 document.getElementById("NomeFantasiaEmpresa").value = dados.fantasia;
