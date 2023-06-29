@@ -21,5 +21,7 @@ namespace BaseDeProjetos.Models
         public decimal Indice { get; set; }
         public decimal Rank { get; set; }
         public Dictionary<string, decimal> RankPorIndicador { get; set; }
+        public List<string> Labels { get; set; }
+        public List<decimal> Valores { get; set; }
     }
 }

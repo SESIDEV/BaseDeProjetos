@@ -1,0 +1,59 @@
+﻿@using System.Globalization;
+@using Newtonsoft.Json
+@model BaseDeProjetos.Models.ParticipacaoTotalViewModel
+@{
+    var cultura = new CultureInfo("pt-BR");
+}
+
+<script>
+    $(document).ready(function () {
+        function renderChart() {
+            let labels = @Html.Raw(JsonConvert.SerializeObject(Model.Labels));
+            let values = @Html.Raw(JsonConvert.SerializeObject(Model.Valores));
+
+            let name = 'participacao-@Model.Id';
+            console.log(name);
+
+            let chart = Highcharts.chart(name, {
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: 'Monthly Average Temperature'
+                },
+                subtitle: {
+                    text: 'Test'
+                },
+                xAxis: {
+                    categories: labels
+                },
+                yAxis: {
+                    title: {
+                        text: 'Temperature (°C)'
+                    }
+                },
+                plotOptions: {
+                    line: {
+                        dataLabels: {
+                            enabled: true
+                        },
+                        enableMouseTracking: false
+                    }
+                },
+                series: [{
+                    name: 'Valor de Proposta x Mes',
+                    data: values
+                }]
+            });
+        }
+
+        renderChart();
+    });
+</script>
+
+<figure class="highcharts-figure">
+    <div id="participacao-@(Model.Id)"></div>
+</figure>
+
+
+

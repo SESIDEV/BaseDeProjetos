@@ -4,6 +4,7 @@ using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -130,6 +131,31 @@ namespace BaseDeProjetos.Controllers
             {
                 return null;
             }
+            else
+            {
+                DateTime dataInicial = prospeccoesUsuario.Min(p => p.Status.Min(f => f.Data));
+                DateTime dataIterada = dataInicial;
+                DateTime dataAtual = DateTime.Now;
+                List<string> mesAno = new List<string>();
+                List<decimal> valoresProposta = new List<decimal>();
+
+                while (dataIterada <= dataAtual)
+                {
+                    string dataFormatada = $"{dataIterada.ToString("MMM")} {dataIterada.Year}";
+                    mesAno.Add(dataFormatada);
+                    decimal valorSomado = prospeccoesUsuario.FindAll(p => p.Status.Any(f => f.Data.Year <= dataIterada.Year && f.Data.Month <= dataIterada.Month)).Sum(p => p.ValorProposta);
+                    valoresProposta.Add(valorSomado);
+                    dataIterada = dataIterada.AddMonths(1);
+                }
+
+                participacao.Valores = valoresProposta;
+                participacao.Labels = mesAno;
+
+                var x = JsonConvert.SerializeObject(valoresProposta);
+                var y = JsonConvert.SerializeObject(mesAno);
+            }
+
+           
 
             List<Prospeccao> prospeccoesUsuarioComProposta = await _context.Prospeccao.Where(p => p.Usuario == usuario && p.Status.Any(f => f.Status == StatusProspeccao.ComProposta)).ToListAsync();
             List<Prospeccao> prospeccoesUsuarioConvertidas = await _context.Prospeccao.Where(p => p.Usuario == usuario && p.Status.Any(f => f.Status == StatusProspeccao.Convertida)).ToListAsync();
