@@ -56,11 +56,11 @@
                         <input asp-for="Logo" id="img_b64-@Model.Id" class="control-label" style="display: none;" value="@Model.Logo" onchange="MostrarImagem('@Model.Id')" readonly>
                     </div>
                     <img id="img_preview-@Model.Id" src="" width="300" style="margin-top:5px;">
+                    <a asp-action="Index" class="btn app-btn-secondary">Voltar para Lista</a>
+                    <input type="submit" value="Salvar" class="btn app-btn-primary" data-bs-target="#EditEmpresaModal-@Model.Id" data-bs-toggle="modal">
                 </div>
                 <div class="modal-footer">
-                    <a asp-action="Index" class="btn app-btn-secondary">Voltar para Lista</a>
-                    <input type="submit" value="Salvar" class="btn app-btn-primary"
-                           data-bs-target="#EditEmpresaModal-@Model.Id" data-bs-toggle="modal">
+                    teste
                 </div>
             </div>
         </div>
