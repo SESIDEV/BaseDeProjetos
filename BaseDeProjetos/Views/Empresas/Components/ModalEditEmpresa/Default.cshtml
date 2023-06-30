@@ -5,7 +5,6 @@
 }
 
 <form asp-action="Edit" asp-route-id="@Model.Id">
-    
     <input type="hidden" asp-for="Id" />
     <div class="modal fade" id="EditEmpresaModal-@Model.Id" aria-hidden="true"
          aria-labelledby="EditEmpresaModal-@Model.Id-Label" tabindex="-1">
@@ -66,8 +65,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" data-bs-dismiss="modal" class="btn app-btn-secondary">Voltar para Lista</button>
-                    <input type="submit" value="Salvar" class="btn app-btn-primary"
-                           data-bs-target="#EditEmpresaModal-@Model.Id" data-bs-toggle="modal">
+                    <input type="submit" value="Salvar" class="btn app-btn-primary" data-bs-target="#EditEmpresaModal-@Model.Id" data-bs-toggle="modal">
                 </div>
             </div>
         </div>
