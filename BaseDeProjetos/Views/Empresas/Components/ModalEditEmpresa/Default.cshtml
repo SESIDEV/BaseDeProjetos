@@ -59,7 +59,6 @@
                     <div class="form-group">
                         <label asp-for="Logo" class="control-label"></label>
                         <input type="file" class="form-control" id="logo_imagem-@Model.Id" onchange="Base64('@(Model.Id)')" />
-                        <input asp-for="Logo" id="img_b64-@Model.Id" class="form-control" style="display: none;" value="@Model.Logo" onchange="MostrarImagem('@Model.Id')">
                     </div>
                     <img id="img_preview-@Model.Id" src="@Model.Logo" width="300" style="margin-top:5px;">
                 </div>
@@ -70,6 +69,8 @@
             </div>
         </div>
     </div>
+    <input asp-for="Logo" id="img_b64-@Model.Id" class="form-control" style="display: none;" value="@Model.Logo" onchange="MostrarImagem('@Model.Id')">
+
 </form>
 
 @section Scripts {
