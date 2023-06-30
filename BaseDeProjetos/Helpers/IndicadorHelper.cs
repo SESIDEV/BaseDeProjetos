@@ -22,7 +22,7 @@ namespace BaseDeProjetos.Helpers
 
             if (ano != null)
             {
-                listaProsps = listaProsps.Where(p => p.Status.First().Data.Year == ano).ToList();
+                listaProsps = ListaDeProspeccoes.Where(p => p.Status.Any(f => f.Data.Year == ano)).ToList();
 
                 if (listaProsps == null)
                 {
@@ -33,7 +33,7 @@ namespace BaseDeProjetos.Helpers
             // Verificar se a propriedade é do tipo Usuario
             if (propriedade.Invoke(listaProsps.FirstOrDefault()) is Usuario)
             {
-                listaProsps = listaProsps.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
+                listaProsps = ListaDeProspeccoes.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
             }
 
             var listaEmGrupo = listaProsps.GroupBy(propriedade);
@@ -83,7 +83,7 @@ namespace BaseDeProjetos.Helpers
 
             if (ano != null)
             {
-                listaProsps = listaProsps.Where(p => p.Status.First().Data.Year == ano).ToList();
+                listaProsps = ListaDeProspeccoes.Where(p => p.Status.Any(f => f.Data.Year == ano)).ToList();
 
                 if (listaProsps == null)
                 {
@@ -99,7 +99,7 @@ namespace BaseDeProjetos.Helpers
             // Verificar se a propriedade é do tipo Usuario
             if (propriedade.Invoke(listaProsps.FirstOrDefault()) is Usuario)
             {
-                listaProsps = listaProsps.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
+                listaProsps = ListaDeProspeccoes.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
             }
 
             var listaEmGrupo = listaProsps.GroupBy(propriedade);
@@ -147,73 +147,56 @@ namespace BaseDeProjetos.Helpers
         }
         public Dictionary<string, decimal> CalcularTaxaDeConversao(Func<Prospeccao, object> propriedade, int? ano)
         {
-            var listaProsp = ListaDeProspeccoes;
+            List<Prospeccao> listaProsp = ListaDeProspeccoes;
+
+            Dictionary<string, decimal> taxaDeConversaoPorPesquisador = new Dictionary<string, decimal>();
+
 
             if (ano != null)
             {
-                listaProsp = listaProsp.Where(p => p.Status.First().Data.Year == ano).ToList();
-
-                if (listaProsp == null)
-                {
-
-                    return new Dictionary<string, decimal>() { };
-                }
+                listaProsp = ListaDeProspeccoes.Where(p => p.Status.Any(f => f.Data.Year == ano)).ToList();
             }
 
-            Dictionary<string, decimal> taxaDeConversaoPorPesquisador = new Dictionary<string, decimal>();
-            // Verificar se a propriedade é do tipo Usuario
             if (propriedade.Invoke(ListaDeProspeccoes.FirstOrDefault()) is Usuario)
             {
-                ListaDeProspeccoes = ListaDeProspeccoes.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
+                listaProsp = ListaDeProspeccoes.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
             }
-                        
 
-            var listaEmGrupo = ListaDeProspeccoes.GroupBy(propriedade);
-                        
+            
+
+            var listaEmGrupo = listaProsp.GroupBy(propriedade);
 
             foreach (var p in listaEmGrupo)
             {
                 if (p.Count().GetType() == typeof(int))
                 {
-                    int convertidas = p.Where(k => k.Status.LastOrDefault().Status == StatusProspeccao.Convertida).Count();
-                    int naoConvertidas = p.Where(k => k.Status.LastOrDefault().Status == StatusProspeccao.NaoConvertida).Count();
+                    int convertidas = p.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida).Count();
 
-                    if(convertidas > 0 && naoConvertidas > 0)
+                    int naoConvertidas = p.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.NaoConvertida).Count();
+
+                    if (convertidas > 0 && naoConvertidas > 0)
                     {
-                        decimal taxa = 100 * convertidas / (convertidas + naoConvertidas);
-                        
-                        taxaDeConversaoPorPesquisador.Add(p.Key.ToString(), taxa);
+                        decimal taxa = (100 * convertidas) / (convertidas + naoConvertidas);
+
+                        if (taxaDeConversaoPorPesquisador.ContainsKey(p.Key.ToString()))
+                        {
+                            taxaDeConversaoPorPesquisador[p.Key.ToString()] += taxa;
+                        }
+                        else
+                        {
+                            taxaDeConversaoPorPesquisador.Add(p.Key.ToString(), taxa);
+
+                        }
                     }
-                    
+
                 }
-                else
-                {
-                    taxaDeConversaoPorPesquisador[p.Key.ToString()] += (decimal)0.0;
-                }
-
-                //if (taxaDeConversaoPorPesquisador.ContainsKey(p.Key.ToString()))
-                //{
-
-
-                //}
-                //else
-                //{
-                //    if (p.Count().GetType() == typeof(int))
-                //    {
-                //        taxaDeConversaoPorPesquisador.Add(p.Key.ToString(), p.Sum(v => v.ValorProposta) + p.Sum(v => v.ValorEstimado));
-                //    }
-                //    else
-                //    {
-                //        taxaDeConversaoPorPesquisador.Add(p.Key.ToString(), (decimal)0.0);
-                //    }
-                //}
-
             }
 
             return taxaDeConversaoPorPesquisador.OrderByDescending(v => v.Value).ToDictionary(p => p.Key, k => k.Value);
 
 
         }
+
     }
 }
 

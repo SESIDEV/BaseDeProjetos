@@ -46,7 +46,6 @@
 
     function carregarModaisProspeccao(idProspeccao) {
         // O nome precisa bater com o nome da view, no sentido que, o sufixo será "ProspViewComponent". Em outras palavras, está acoplado.
-
         modaisDisponiveis = ["Edit", "Delete", "History", "CreateFollowup"];
         modaisDisponiveis.forEach((tipo) => {
             carregarModalProspeccao(idProspeccao, tipo)
@@ -56,7 +55,7 @@
     }
 
     function carregarModalEmpresa(idEmpresa, tipo) {
-        console.log(idEmpresa)
+        // TODO: Travar botões
         if (!empresasCarregadas.includes(idEmpresa)) {
             if (tipo) {
                 fetch(`/Empresas/RetornarModal?idEmpresa=${idEmpresa}&tipo=${tipo}`)
@@ -69,7 +68,7 @@
     }
 
     function carregarModaisEmpresa(idEmpresa) {
-        console.log(idEmpresa)
+        // TODO: Travar botões
         modaisDisponiveis = ["Edit", "Delete"];
         modaisDisponiveis.forEach((tipo) => {
             carregarModalEmpresa(idEmpresa, tipo)
@@ -158,10 +157,10 @@
                             </div>
                             <div class="col-12 col-lg-auto text-center text-lg-start">
                                 @*<div class="notification-type mb-2"><span class="badge bg-info">Project</span></div>*@
-                                <h4 class="notification-title mb-1">@empresa.Nome</h4>
+                                <h4 class="notification-title mb-1">@empresa.NomeFantasia</h4>
 
                                 <ul class="notification-meta list-inline mb-0">
-                                    <li class="list-inline-item">Nome Fantasia: @empresa.NomeFantasia</li>
+                                    <li class="list-inline-item">Razão Social: @empresa.Nome</li>
                                     <li class="list-inline-item">|</li>
                                     <li class="list-inline-item">
                                         @{

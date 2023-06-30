@@ -183,6 +183,54 @@ function checkAncora(alavanca, iconAncora, campoAgg) {
     }
 }
 
+function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon) {
+    let defRota = "";
+    let value = "";
+    let inner = "";
+    document.querySelector(`#${caixaId}`).style.display = "none";
+    document.querySelector(`#${loadingIcon}`).style.display = "block";
+    document.querySelector(`#${idSelect}`).innerHTML = '';
+    if (nomeModal == null) {
+        $(`#${idSelect}`).select2()
+    } else {
+        $(`#${idSelect}`).select2({ dropdownParent: $(`#${nomeModal}`) })
+    }
+    switch (rota) {
+        case "Pessoas":
+            defRota = '/FunilDeVendas/PuxarDadosUsuarios';
+            value = "Email";
+            inner = "UserName";
+            break;
+        case "Empresas":
+            defRota = '/Empresas/PuxarEmpresas';
+            value = "Id";
+            inner = "NomeFantasia";
+            break;
+        case "Tags":
+            defRota = '/FunilDeVendas/PuxarTagsProspecoes';
+            break;
+        case "Prospeccoes":
+            defRota = '/FunilDeVendas/PuxarDadosProspeccoes2';
+            value = "idProsp";
+            inner = "Titulo";
+            break;
+        default:
+            console.log(`Erro: ${rota} é uma rota inválida`);
+            break;
+    }
+    fetch(defRota).then(response => response.json()).then(lista => {
+        lista.forEach(function (item) {
+            var opt = document.createElement("option");
+            if (rota != "Tags") { opt.value = item[value] }
+            opt.innerHTML = item[inner]
+            document.querySelector(`#${idSelect}`).appendChild(opt)
+        })
+        document.querySelector(`#${loadingIcon}`).style.display = "none";
+        document.querySelector(`#${caixaId}`).style.display = "block";
+    })
+    document.querySelectorAll(".select2-container").forEach(input => { input.style.width = "100%" })
+    if (botaoAlterar != null) { document.querySelector(`#${botaoAlterar}`).style.display = "none"; }
+}
 
 
 
@@ -481,10 +529,11 @@ function validarCNPJ(idElemento = null) {
 }
 
 function checarCNAE(listaCNAE, idElemento = null) {
-    possuiIndustrial = false;
-    listaCNAE.forEach(codcnae => {
 
-        if (typeof (dictCNAE[codcnae]) != "undefined") {
+    for (let i = 0; i < listaCNAE.length; i++) {
+        var codcnae = listaCNAE[i];
+
+        if (typeof (dictCNAE[codcnae.slice(0, 2)]) != "undefined") {
 
             if (idElemento == null) {
                 document.getElementById("BoolCnaeIndustrial").value = "1";
@@ -498,7 +547,7 @@ function checarCNAE(listaCNAE, idElemento = null) {
                 document.getElementById(`checkCNAE-${idElemento}`).style.display = "block";
             }
 
-            possuiIndustrial = true;
+            break;
 
         } else {
 
@@ -514,7 +563,7 @@ function checarCNAE(listaCNAE, idElemento = null) {
                 document.getElementById(`checkCNAE-${idElemento}`).style.display = "block";
             }
         }
-    });
+    };
 }
 
 function AplicarDadosAPI(idElemento) {
@@ -530,7 +579,9 @@ function AplicarDadosAPI(idElemento) {
         res.json().then(dados => {
             listaCNAE = [];
             listaCNAE.push(dados.atividade_principal[0].code);
-            dados.atividades_secundarias.forEach(ativ => { listaCNAE.push(ativ.code); });
+            dados.atividades_secundarias.forEach(ativ => {
+                listaCNAE.push(ativ.code);
+            });
             if (idElemento == null) {
                 document.getElementById("NomeEmpresaCadastro").value = dados.nome;
                 document.getElementById("NomeFantasiaEmpresa").value = dados.fantasia;
