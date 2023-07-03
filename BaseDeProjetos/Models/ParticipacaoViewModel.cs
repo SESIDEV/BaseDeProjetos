@@ -19,9 +19,9 @@ namespace BaseDeProjetos.Models
         public string NomeProjeto { get; set; }
         public string EmpresaProjeto { get; set; }
         public string MembrosEquipe { get; set; }
-        public decimal ValorPorBolsista { get; internal set; }
-        public decimal ValorPorEstagiario { get; internal set; }
-        public decimal ValorPorPesquisador { get; internal set; }
+        public decimal ValorPorBolsista { get; set; }
+        public decimal ValorPorEstagiario { get; set; }
+        public decimal ValorPorPesquisador { get; set; }
         public bool Convertida { get; set; }
         public bool Planejada { get; set; }
         public bool Suspensa { get; set; }

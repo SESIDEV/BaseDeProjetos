@@ -183,6 +183,7 @@
                                         <th class="cell">Prospecções Convertidas</th>
                                         <th class="cell">Taxa de Propostas</th>
                                         <th class="cell">Taxa de Conversão</th>
+                                        <th class="cell">Propositividade</th>
                                         <th class="cell">Fator de Contribuição Financeira</th>
                                         <th class="cell">Média dos Fatores</th>
                                         <th class="cell">Detalhes</th>
@@ -338,6 +339,17 @@
                                                     }
                                                     @Helpers.PrintarValorIndicadorParticipacao(taxaConversaoProjeto)
                                                     @((taxaConversaoProjeto * 100).ToString("N", cultura))%
+                                                </div>
+                                            </td>
+                                            <td class="cell">
+                                                    @{
+                                                        var rankPropositividade = participacaoTotal.RankPorIndicador["RankPropositividade"];
+                                                        var rankMedioPropositividade = (decimal)ViewData["rankMedioPropositividade"];
+                                                        var taxaPropositividade = participacaoTotal.Propositividade;
+                                                    }
+                                                <div data-text="(@rankPropositividade.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2">
+                                                    @Helpers.PrintarValorIndicadorParticipacao(taxaPropositividade, rankMedioPropositividade)
+                                                    @((taxaPropositividade).ToString("N", cultura))
                                                 </div>
                                             </td>
                                             <td class="cell">
