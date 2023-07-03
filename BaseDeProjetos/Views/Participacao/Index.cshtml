@@ -176,6 +176,7 @@
                                         <th class="cell">Valor Total (Prospecção)</th>
                                         <th class="cell">Valor Médio (Prospecção)</th>
                                         <th class="cell">Quantidade (Prospecção)</th>
+                                        <th class="cell">Quantidade (Prospecção como Membro)</th>
                                         <th class="cell">Valor Total (Em Proposta)</th>
                                         <th class="cell">Valor Médio (Em Proposta)</th>                                        
                                         <th class="cell">Prospecções Em Proposta</th>
@@ -269,6 +270,16 @@
                                                 <div data-text="(@rankQuantidadeProspeccoes.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
                                                     @Helpers.PrintarValorIndicadorParticipacao(rankQuantidadeProspeccoes, rankMedioQuantidadeProspeccoes)
                                                     @participacaoTotal.QuantidadeProspeccoes 
+                                                </div>
+                                            </td>
+                                            <td class="cell">
+                                                @{
+                                                    var rankQuantidadeProspeccoesMembro = participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoesMembro"];
+                                                    var rankMedioQuantidadeProspeccoesMembro = (decimal)ViewData["rankMedioQuantidadeProspeccoesMembro"];
+                                                }
+                                                <div data-text="(@rankQuantidadeProspeccoesMembro.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
+                                                    @Helpers.PrintarValorIndicadorParticipacao(rankQuantidadeProspeccoesMembro, rankMedioQuantidadeProspeccoesMembro)
+                                                    @participacaoTotal.QuantidadeProspeccoesMembro
                                                 </div>
                                             </td>
                                             <td class="cell">

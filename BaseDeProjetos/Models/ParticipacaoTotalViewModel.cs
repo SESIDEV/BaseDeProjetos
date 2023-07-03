@@ -16,6 +16,7 @@ namespace BaseDeProjetos.Models
         public decimal ValorTotalProspeccoesComProposta { get; set; }
         public decimal ValorMedioProspeccoesComProposta { get; set; }
         public int QuantidadeProspeccoesComProposta { get; set; }
+        public int QuantidadeProspeccoesMembro { get; set; }
         public decimal TaxaConversaoProjeto { get; set; }
         public int QuantidadeProspeccoesProjeto { get; set; }
         public decimal Indice { get; set; }

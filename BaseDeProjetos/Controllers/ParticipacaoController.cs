@@ -125,6 +125,8 @@ namespace BaseDeProjetos.Controllers
             ParticipacaoTotalViewModel participacao = new ParticipacaoTotalViewModel() { Participacoes = new List<ParticipacaoViewModel>() };
 
             List<Prospeccao> prospeccoesUsuario = await _context.Prospeccao.Where(p => p.Usuario == usuario).ToListAsync();
+            List<Prospeccao> prospeccoesUsuarioMembro = await _context.Prospeccao.Where(p => p.MembrosEquipe.Contains(usuario.UserName)).ToListAsync();
+
 
             // Evitar exibir usuários sem prospecção
             if (prospeccoesUsuario.Count == 0)
@@ -154,8 +156,6 @@ namespace BaseDeProjetos.Controllers
                 var x = JsonConvert.SerializeObject(valoresProposta);
                 var y = JsonConvert.SerializeObject(mesAno);
             }
-
-           
 
             List<Prospeccao> prospeccoesUsuarioComProposta = await _context.Prospeccao.Where(p => p.Usuario == usuario && p.Status.Any(f => f.Status == StatusProspeccao.ComProposta)).ToListAsync();
             List<Prospeccao> prospeccoesUsuarioConvertidas = await _context.Prospeccao.Where(p => p.Usuario == usuario && p.Status.Any(f => f.Status == StatusProspeccao.Convertida)).ToListAsync();
@@ -191,6 +191,7 @@ namespace BaseDeProjetos.Controllers
             decimal taxaConversaoProposta;
             decimal taxaConversaoProjeto;
             int quantidadeProspeccoes;
+            int quantidadeProspeccoesMembro;
             int quantidadeProspeccoesComProposta;
             int quantidadeProspeccoesProjetizadas;
 
@@ -211,6 +212,8 @@ namespace BaseDeProjetos.Controllers
             participacao.QuantidadeProspeccoes = quantidadeProspeccoes = prospeccoesUsuario.Count();
             participacao.QuantidadeProspeccoesComProposta = quantidadeProspeccoesComProposta = prospeccoesUsuarioComProposta.Count();
             participacao.QuantidadeProspeccoesProjeto = quantidadeProspeccoesProjetizadas = prospeccoesUsuarioConvertidas.Count();
+            participacao.QuantidadeProspeccoesMembro = quantidadeProspeccoesMembro = prospeccoesUsuarioMembro.Count();
+
             participacao.Lider = usuario;
             
             // Evita divisão por 0
@@ -445,6 +448,7 @@ namespace BaseDeProjetos.Controllers
             decimal rankMedioQuantidadeProspeccoes = participacoes.Average(p => p.RankPorIndicador["RankQuantidadeProspeccoes"]);
             decimal rankMedioQuantidadeProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador["RankQuantidadeProspeccoesComProposta"]);
             decimal rankMedioQuantidadeProspeccoesProjeto = participacoes.Average(p => p.RankPorIndicador["RankQuantidadeProspeccoesProjeto"]);
+            decimal rankMedioQuantidadeProspeccoesMembro = participacoes.Average(p => p.RankPorIndicador["RankQuantidadeProspeccoesMembro"]);
 
             ViewData[nameof(rankMedio)] = rankMedio;
             ViewData[nameof(rankMedioIndice)] = rankMedioIndice;
@@ -455,6 +459,7 @@ namespace BaseDeProjetos.Controllers
             ViewData[nameof(rankMedioQuantidadeProspeccoes)] = rankMedioQuantidadeProspeccoes;
             ViewData[nameof(rankMedioQuantidadeProspeccoesComProposta)] = rankMedioQuantidadeProspeccoesComProposta;
             ViewData[nameof(rankMedioQuantidadeProspeccoesProjeto)] = rankMedioQuantidadeProspeccoesProjeto;
+            ViewData[nameof(rankMedioQuantidadeProspeccoesMembro)] = rankMedioQuantidadeProspeccoesMembro;
         }
 
         private void AcertarValorRankParticipacoes(List<ParticipacaoTotalViewModel> participacoes)
@@ -484,12 +489,14 @@ namespace BaseDeProjetos.Controllers
             decimal rankValorMedioProspeccoesComProposta = 0;
             decimal rankQuantidadeProspeccoesProjeto = 0;
             decimal rankQuantidadeProspeccoes = 0;
+            decimal rankQuantidadeProspeccoesMembro = 0;
 
             decimal medValorTotalProsp = participacoes.Average(p => p.ValorTotalProspeccoes);
             decimal medValorMedioProsp = participacoes.Average(p => p.ValorMedioProspeccoes);
             decimal medValorMedioProspComProposta = participacoes.Average(p => p.ValorMedioProspeccoesComProposta);
             decimal medTotalProspComProposta = participacoes.Average(p => p.ValorTotalProspeccoesComProposta);
             decimal medQtdProspeccoes = (decimal)participacoes.Average(p => p.QuantidadeProspeccoes);
+            decimal medQtdProspeccoesMembro = (decimal)participacoes.Average(p => p.QuantidadeProspeccoesMembro);
             decimal medQtdProspeccoesComProposta = (decimal)participacoes.Average(p => p.QuantidadeProspeccoesComProposta);
             decimal medQtdProspProjetizadas = (decimal)participacoes.Average(p => p.QuantidadeProspeccoesProjeto);
             decimal medConversaoProjeto = participacoes.Average(p => p.TaxaConversaoProjeto);
@@ -501,6 +508,7 @@ namespace BaseDeProjetos.Controllers
             decimal maxTotalProspComProposta = participacoes.Max(p => p.ValorTotalProspeccoesComProposta);
             decimal maxQtdProspeccoes = participacoes.Max(p => p.QuantidadeProspeccoes);
             decimal maxQtdProspeccoesComProposta = participacoes.Max(p => p.QuantidadeProspeccoesComProposta);
+            decimal maxQtdProspeccoesMembro = participacoes.Max(p => p.QuantidadeProspeccoesMembro);
             decimal maxQtdProspProjetizadas = participacoes.Max(p => p.QuantidadeProspeccoesProjeto);
             decimal maxConversaoProjeto = participacoes.Max(p => p.TaxaConversaoProjeto);
             decimal maxConversaoProposta = participacoes.Max(p => p.TaxaConversaoProposta);
@@ -546,8 +554,13 @@ namespace BaseDeProjetos.Controllers
                 {
                     calculoRank += participacao.TaxaConversaoProposta / maxConversaoProposta;
                 }
+                // TODO: CONFIRMAR \\//
+                if (maxQtdProspeccoesMembro != 0)
+                {
+                    calculoRank += participacao.QuantidadeProspeccoesMembro / maxQtdProspeccoesMembro;
+                }
 
-                participacao.Rank = calculoRank /= 6;
+                participacao.Rank = calculoRank /= 7;
 
                 if (medValorTotalProsp != 0)
                 {
@@ -577,6 +590,10 @@ namespace BaseDeProjetos.Controllers
                 {
                     rankQuantidadeProspeccoesComProposta = participacao.QuantidadeProspeccoesComProposta / medQtdProspeccoesComProposta;
                 }
+                if (medQtdProspeccoesMembro != 0)
+                {
+                    rankQuantidadeProspeccoesMembro = participacao.QuantidadeProspeccoesMembro / medQtdProspeccoesMembro;
+                }
 
                 participacao.RankPorIndicador["RankValorTotalProspeccoes"] = rankValorTotalProspeccoes;
                 participacao.RankPorIndicador["RankValorTotalProspeccoesComProposta"] = rankValorTotalProspeccoesComProposta;
@@ -585,6 +602,7 @@ namespace BaseDeProjetos.Controllers
                 participacao.RankPorIndicador["RankQuantidadeProspeccoes"] = rankQuantidadeProspeccoes;
                 participacao.RankPorIndicador["RankQuantidadeProspeccoesComProposta"] = rankQuantidadeProspeccoesComProposta;
                 participacao.RankPorIndicador["RankQuantidadeProspeccoesProjeto"] = rankQuantidadeProspeccoesProjeto;
+                participacao.RankPorIndicador["RankQuantidadeProspeccoesMembro"] = rankQuantidadeProspeccoesMembro;
             }
         }
     }
