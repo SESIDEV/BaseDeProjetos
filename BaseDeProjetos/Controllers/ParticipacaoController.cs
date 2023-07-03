@@ -431,7 +431,7 @@ namespace BaseDeProjetos.Controllers
                 AcertarValorRankParticipacoes(participacoes);
                 ObterRankingsMedios(participacoes);
                 
-                participacoes = participacoes.OrderByDescending(p => p.Indice).ToList();
+                participacoes = participacoes.OrderByDescending(p => p.Rank).ToList();
             }            
 
 			ViewBag.usuarioFoto = usuario.Foto;
