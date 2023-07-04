@@ -237,32 +237,6 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
     if (botaoAlterar != null) { document.querySelector(`#${botaoAlterar}`).style.display = "none"; }
 }
 
-function novaTag() {
-    valor = document.querySelector(`.select2-search__field`).value
-    document.querySelector(`.select2-search__field`).valorSalvo = valor
-}
-
-function addTag(campoInput, idSelect) {
-    valor = document.querySelector(`.select2-search__field`).valorSalvo
-    valorAntigo = document.querySelector(`#${campoInput}`).value
-
-    if (valorAntigo == '') {
-        valorNovo = "#" + valor
-    } else {
-        valorNovo = valorAntigo + ";" + "#" + valor
-    }
-
-    document.querySelector(`#${campoInput}`).value = valorNovo
-    botao_def = document.querySelector('#bloco_botao') //ALTERAR ISSO AQUI (DELETAR BLOCO_BOTAO TBM)
-    botao_copy = botao_def.cloneNode(true)
-    botao_copy.removeAttribute('id')
-    botao_copy.title = valor
-    botao_copy.children[0].innerHTML = "#" + valor
-    botao_copy.classList.remove('d-none')
-    document.querySelector(`#select2-${idSelect}-container`).appendChild(botao_copy)
-    document.querySelector(`.select2-search__field`).value = ''
-}
-
 function procurarPessoa(select) {
     redePessoas.focus(select.value, { scale: 3, animation: { duration: 400 } })
 }
