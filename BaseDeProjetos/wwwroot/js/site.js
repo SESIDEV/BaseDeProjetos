@@ -185,7 +185,7 @@ function checkAncora(alavanca, iconAncora, campoAgg) {
     }
 }
 
-function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon) {
+function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon, idText="", fillValues=false) {
     let defRota = "";
     let value = "";
     let inner = "";
@@ -229,6 +229,9 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
         })
         document.querySelector(`#${loadingIcon}`).style.display = "none";
         document.querySelector(`#${caixaId}`).style.display = "block";
+        if(fillValues){
+            carregarValoresInputParaSelect(idText, idSelect)
+        }
     })
     document.querySelectorAll(".select2-container").forEach(input => { input.style.width = "100%" })
     if (botaoAlterar != null) { document.querySelector(`#${botaoAlterar}`).style.display = "none"; }
@@ -250,7 +253,7 @@ function addTag(campoInput, idSelect) {
     }
 
     document.querySelector(`#${campoInput}`).value = valorNovo
-    botao_def = document.querySelector('#bloco_botao')
+    botao_def = document.querySelector('#bloco_botao') //ALTERAR ISSO AQUI (DELETAR BLOCO_BOTAO TBM)
     botao_copy = botao_def.cloneNode(true)
     botao_copy.removeAttribute('id')
     botao_copy.title = valor
@@ -279,21 +282,21 @@ function selectToText(lista, id) {
     })
 }
 
-function textToSelect(nomeModal, idText, idSelect, rota, caixaId, botaoAlterar, loadingIcon) {
-    gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon)
-
-    botao_def = document.querySelector('#bloco_botao')
-    listaSel = document.querySelector(`#${idText}`).value.split(";")
+function carregarValoresInputParaSelect(idText, idSelect){
+    let listaOptions = [];
+    let select = document.querySelector(`#${idSelect}`);
+    let options = select.options;
+    let listaSel = document.querySelector(`#${idText}`).value.split(";");
     listaSel.forEach(p => {
         if (p == '') { } else {
-            botao_copy = botao_def.cloneNode(true)
-            botao_copy.removeAttribute('id')
-            botao_copy.title = p
-            botao_copy.children[1].innerHTML = p
-            botao_copy.classList.remove('d-none')
-
-            document.querySelector(`#select2-${idSelect}-container`).appendChild(botao_copy)
+            for (var i = 0; i < options.length; i++) {
+                if (options[i].innerText === p) {
+                    listaOptions.push(options[i].value);
+                }
+            }
         }
+    $(`#${idSelect}`).val(listaOptions);
+    $(`#${idSelect}`).trigger('change');
     })
 }
 
