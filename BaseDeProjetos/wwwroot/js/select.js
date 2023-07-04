@@ -66,34 +66,6 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
     }
 }
 
-function novaTag() {
-    valor = document.querySelector(`.select2-search__field`).value
-    document.querySelector(`.select2-search__field`).valorSalvo = valor
-}
-
-function addTag(campoInput, idSelect) {
-    let valor = document.querySelector('.select2-search__field').valorSalvo;
-    let valorAntigo = document.querySelector(`#${campoInput}`).value;
-
-    let valorNovo;
-    if (valorAntigo === '') {
-        valorNovo = `#${valor}`;
-    } else {
-        valorNovo = `${valorAntigo};#${valor}`;
-    }
-
-    document.querySelector(`#${campoInput}`).value = valorNovo;
-
-    let botao_def = document.querySelector('#bloco_botao');
-    let botao_copy = botao_def.cloneNode(true);
-    botao_copy.removeAttribute('id');
-    botao_copy.title = valor;
-    botao_copy.children[0].innerHTML = `#${valor}`;
-    botao_copy.classList.remove('d-none');
-    document.querySelector(`#select2-${idSelect}-container`).appendChild(botao_copy);
-    document.querySelector('.select2-search__field').value = '';
-}
-
 function textToSelect(nomeModal, idText, idSelect, rota, caixaId, botaoAlterar, loadingIcon) {
     gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon);
 
