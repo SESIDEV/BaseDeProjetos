@@ -53,7 +53,7 @@
                         <span class="visually-hidden">Loading...</span>
                     </div>
                     <input asp-for="MembrosEquipe" class="form-control d-none" id="inputTextEditPessoas-@Model.Id" type="text"/>
-                    <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestEditPessoas-@Model.Id" onclick="gerarOpcoesSelect('editarProspModal-@Model.Id','campoSelectEditPessoas-@Model.Id','Pessoas','caixaPesquisaEditPessoas-@Model.Id','botaoToggleCaixaRequestEditPessoas-@Model.Id','loadingOpcoesSelectPessoas-@Model.Id','inputTextEditPessoas-@Model.Id',true)">Alterar</button>
+                    <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestEditPessoas-@Model.Id" onclick="gerarOpcoesSelect('editarProspModal-@Model.Id','campoSelectEditPessoas-@Model.Id','Pessoas','caixaPesquisaEditPessoas-@Model.Id','botaoToggleCaixaRequestEditPessoas-@Model.Id','loadingOpcoesSelectPessoas-@Model.Id', 'selectLiderProsp-@Model.Id','inputTextEditPessoas-@Model.Id',true)">Alterar</button>
                     <div class="input-group flex-nowrap" id="caixaPesquisaEditPessoas-@Model.Id" style="display:none;">
                         <select id="campoSelectEditPessoas-@Model.Id" class="form-select" multiple="true"></select>
                     </div>
@@ -74,7 +74,7 @@
                         <span class="visually-hidden">Loading...</span>
                     </div>
                     <input asp-for="PotenciaisParceiros" class="form-control d-none" id="inputTextEditEmpresas-@Model.Id" type="text"/>
-                    <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestEditEmpresas-@Model.Id" onclick="gerarOpcoesSelect('editarProspModal-@Model.Id','campoSelectEditEmpresas-@Model.Id','Empresas','caixaPesquisaEditEmpresas-@Model.Id','botaoToggleCaixaRequestEditEmpresas-@Model.Id','loadingOpcoesSelectEmpresas-@Model.Id','inputTextEditEmpresas-@Model.Id',true)">Alterar</button>
+                    <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestEditEmpresas-@Model.Id" onclick="gerarOpcoesSelect('editarProspModal-@Model.Id','campoSelectEditEmpresas-@Model.Id','Empresas','caixaPesquisaEditEmpresas-@Model.Id','botaoToggleCaixaRequestEditEmpresas-@Model.Id','loadingOpcoesSelectEmpresas-@Model.Id', 'selectLiderProsp-@Model.Id','inputTextEditEmpresas-@Model.Id',true)">Alterar</button>
                     <div class="input-group flex-nowrap" id="caixaPesquisaEditEmpresas-@Model.Id" style="display:none;">
                         <select id="campoSelectEditEmpresas-@Model.Id" class="form-select" multiple="true"></select>
                     </div>
@@ -86,7 +86,7 @@
                 </div>
                 <div class="mb-2">
                     <label class="control-label"> Líder da Prospecção</label>
-                    <select asp-for="Usuario.Id" class="form-control" asp-items='@ViewData["Equipe"] as SelectList'>
+                    <select asp-for="Usuario.Id" class="form-control" asp-items='@ViewData["Equipe"] as SelectList' id="selectLiderProsp-@Model.Id">
                         <option value="@Model.Usuario" selected disabled>@Model.Usuario.UserName</option>
                     </select>
                 </div>
