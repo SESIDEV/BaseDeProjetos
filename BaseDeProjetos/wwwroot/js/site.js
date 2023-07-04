@@ -185,7 +185,7 @@ function checkAncora(alavanca, iconAncora, campoAgg) {
     }
 }
 
-function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon, userLider=null, idText="", fillValues=false) {
+function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon, userLider=null, idText="", fillValues=false) { // os últimos 3 é exclusivo para a rota de Pessoas, e os últimos 2 são para tratar no Edit
     let defRota = "";
     let value = "";
     let inner = "";
