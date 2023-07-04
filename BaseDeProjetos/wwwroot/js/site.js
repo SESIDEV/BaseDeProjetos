@@ -212,6 +212,7 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
             break;
         case "Tags":
             defRota = '/FunilDeVendas/PuxarTagsProspecoes';
+            inner = "Tags";
             break;
         case "Prospeccoes":
             defRota = '/FunilDeVendas/PuxarDadosProspeccoes2';
@@ -249,10 +250,24 @@ function procurarPessoa(select) {
 
 function selectToText(lista, id) {
     lista.forEach(function (rota) {
-        let texto = ''
+        let texto = '';
+        let idProsp = '';
         if (document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`) != null) {
-            document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`).childNodes.forEach(p => texto += p.title + ';')
-            document.querySelector(`#inputTextEdit${rota}-${id}`).value = texto
+            document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`).childNodes.forEach(caixa => {
+                valorTexto = caixa.title.replace(" []","");
+
+                let selecoes = document.querySelector(`#campoSelect${rota}Prospeccoes-${id}`).childNodes; // loop para buscar os Ids das prosps na caixa select original
+                for (let i = 0; i < selecoes.length; i++) {
+                    let val = selecoes[i];
+                    if (val.innerText === valorTexto) {
+                      idProsp = val.value;
+                      break;
+                    }
+                }
+                
+                texto += idProsp + ';'
+            })
+        document.querySelector(`#inputTextEdit${rota}-${id}`).value = texto
         } else {
             return;
         }
