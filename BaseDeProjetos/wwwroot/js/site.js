@@ -185,10 +185,11 @@ function checkAncora(alavanca, iconAncora, campoAgg) {
     }
 }
 
-function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon, idText="", fillValues=false) {
+function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon, userLider=null, idText="", fillValues=false) {
     let defRota = "";
     let value = "";
     let inner = "";
+    let lider = "";
     document.querySelector(`#${caixaId}`).style.display = "none";
     document.querySelector(`#${loadingIcon}`).style.display = "block";
     document.querySelector(`#${idSelect}`).innerHTML = '';
@@ -202,6 +203,7 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
             defRota = '/FunilDeVendas/PuxarDadosUsuarios';
             value = "Email";
             inner = "UserName";
+            lider = document.querySelector(`#${userLider}`).selectedOptions[0].text;
             break;
         case "Empresas":
             defRota = '/Empresas/PuxarEmpresas';
@@ -222,15 +224,19 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
     }
     fetch(defRota).then(response => response.json()).then(lista => {
         lista.forEach(function (item) {
-            var opt = document.createElement("option");
-            if (rota != "Tags") { opt.value = item[value] }
-            opt.innerHTML = item[inner]
-            document.querySelector(`#${idSelect}`).appendChild(opt)
+            if (rota == "Pessoas" && item[inner] == lider){
+                // nao faca nada
+            } else {
+                var opt = document.createElement("option");
+                if (rota != "Tags") { opt.value = item[value] }
+                opt.innerHTML = item[inner]
+                document.querySelector(`#${idSelect}`).appendChild(opt)
+            }
         })
         document.querySelector(`#${loadingIcon}`).style.display = "none";
         document.querySelector(`#${caixaId}`).style.display = "block";
         if(fillValues){
-            carregarValoresInputParaSelect(idText, idSelect)
+            carregarValoresInputParaSelect(idText, idSelect, rota)
         }
     })
     document.querySelectorAll(".select2-container").forEach(input => { input.style.width = "100%" })
@@ -256,7 +262,7 @@ function selectToText(lista, id) {
     })
 }
 
-function carregarValoresInputParaSelect(idText, idSelect){
+function carregarValoresInputParaSelect(idText, idSelect, rota=""){
     let listaOptions = [];
     let select = document.querySelector(`#${idSelect}`);
     let options = select.options;
