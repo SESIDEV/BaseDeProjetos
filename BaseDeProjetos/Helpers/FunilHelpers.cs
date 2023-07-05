@@ -219,14 +219,15 @@ namespace BaseDeProjetos.Helpers
             return producoes.ToList();
         }
 
-        public static void AddAgregadas(ApplicationDbContext _context, Prospeccao prospeccao)
+        public static void AddAgregadas(ApplicationDbContext _context, Prospeccao prospAntiga, Prospeccao prospeccao)
         {
             if(!prospeccao.Agregadas.IsNullOrEmpty()){
-                var listaAggIds = prospeccao.Agregadas.Split(";"); //separa os Ids
+                var listaIdsAggAntiga = prospAntiga.Agregadas?.Split(";") ?? Array.Empty<string>(); //puxa os dados das agregadas da prosp antiga
+                var listaIdsAggNova = prospeccao.Agregadas.Split(";"); //separa os Ids das agregadas da prosp nova
 
-                foreach (string AggId in listaAggIds) //itera pelas agregadas
+                foreach (string AggId in listaIdsAggNova) //itera pelas agregadas
                 {
-                    if(AggId != ""){
+                    if(AggId != "" && !listaIdsAggAntiga.Contains(AggId)){
                         var prospAgg = _context.Prospeccao.Where(prosp => prosp.Id == AggId).First();
 
                         FollowUp statusAgg = new FollowUp{
@@ -241,52 +242,53 @@ namespace BaseDeProjetos.Helpers
             }
         }
 
-        public static void DelAgregadas(ApplicationDbContext _context, Prospeccao prospeccao)
-        {         
-            var listaAggNova = prospeccao.Agregadas.Split(";"); //separa os Ids
-            var prospAntiga = _context.Prospeccao.AsNoTracking().Where(prosp => prosp.Id == prospeccao.Id).First();
-            var listaAggAntiga = prospAntiga.Agregadas.Split(";");
-            var listaRemovidas = new List<string>(); // lista dos ids que não estão presentes na nova lista
+        public static void DelAgregadas(ApplicationDbContext _context, Prospeccao prospAntiga, Prospeccao prospeccao)
+        {
+            if (!prospAntiga.Agregadas.IsNullOrEmpty()){
+                var listaAggAntiga = prospAntiga.Agregadas.Split(";");
+                var listaAggNova = prospeccao.Agregadas.Split(";"); //separa os Ids
+                var listaRemovidas = new List<string>(); // lista dos ids que não estão presentes na nova lista
 
-            foreach (string AggId in listaAggAntiga) // itera pelas agregadas da lista antiga
-            {
-                if(AggId != ""){
-                    
-                    if(!listaAggNova.Contains(AggId)){
-                        listaRemovidas.Add(AggId);
+                foreach (string AggId in listaAggAntiga) // itera pelas agregadas da lista antiga
+                {
+                    if(AggId != ""){
+                        
+                        if(!listaAggNova.Contains(AggId)){
+                            listaRemovidas.Add(AggId);
+                        }
                     }
                 }
-            }
 
-            if(!listaRemovidas.IsNullOrEmpty()){ // itera pelas removidas
-                foreach (string ids in listaRemovidas){
-                    var antigaAgg = _context.Prospeccao.AsNoTracking().Where(prosp => prosp.Id == ids).First(); // seleciona a prosp antiga referente ao Id do loop
-                    var AggUltimoStatusData = antigaAgg.Status.Last().Data; // salva a data do último followup
-                    var AggOrigemId = antigaAgg.Status.Last().OrigemID; // salva o id de origem da prosp
-                    var statusMaisRecentes = prospeccao.Status.Where(s => s.Data > AggUltimoStatusData).ToList(); // busca por status da prosp atual que sejam de datas posteriores ao último status da antiga agregada
-                    
-                    if(statusMaisRecentes.IsNullOrEmpty()){// se não houver diferença de status, add um novo status
-                        FollowUp statusDeagg = new FollowUp{
-                            Status = antigaAgg.Status.OrderByDescending(d => d.Data).ToList()[1].Status, // retorna ao status anterior ao agregado
-                            Data = DateTime.Today,
-                            Anotacoes = "Esta prospecção foi desagregada de um grupo."
-                        };
+                if(!listaRemovidas.IsNullOrEmpty()){ // itera pelas removidas
+                    foreach (string ids in listaRemovidas){
+                        var antigaAgg = _context.Prospeccao.Where(prosp => prosp.Id == ids).First(); // seleciona a prosp antiga referente ao Id do loop (PODE DAR PROBLEMA SE A PROSP NAO EXISTIR MAIS)
+                        var AggUltimoStatusData = antigaAgg.Status.Last().Data; // salva a data do último followup
+                        var statusMaisRecentes = prospeccao.Status.Where(s => s.Data > AggUltimoStatusData).ToList(); // busca por status da prosp atual que sejam de datas posteriores ao último status da antiga agregada
                         
-                        antigaAgg.Status.Add(statusDeagg); //adiciona o status ao final da lista de followups
-                    } else {
-                        List<FollowUp> listaCopia = new List<FollowUp>(statusMaisRecentes.Count);
-
-                        statusMaisRecentes.ForEach(s => {
-                            var copiaStatus = new FollowUp{
-                                OrigemID = AggOrigemId, // salva o id de origem da prosp
-                                Anotacoes = s.Anotacoes,
-                                AnoFiscal = s.AnoFiscal,
-                                Status = s.Status,
-                                Data = s.Data
+                        if(statusMaisRecentes.IsNullOrEmpty()){// se não houver diferença de status, add um novo status
+                            FollowUp statusDeagg = new FollowUp{
+                                Status = antigaAgg.Status.OrderByDescending(d => d.Data).ToList()[1].Status, // retorna ao status anterior ao agregado
+                                Data = DateTime.Today,
+                                Anotacoes = "Esta prospecção foi desagregada de um grupo."
                             };
-                            listaCopia.Add(copiaStatus);
-                        });
-                        antigaAgg.Status.AddRange(listaCopia);
+                            
+                            antigaAgg.Status.Add(statusDeagg); //adiciona o status ao final da lista de followups
+                        } else {
+                            List<FollowUp> listaCopia = new List<FollowUp>(statusMaisRecentes.Count);
+
+                            statusMaisRecentes.ForEach(s => {
+                                var copiaStatus = new FollowUp{
+                                    OrigemID = ids, // essa é a própria id do loop, da prosp que está sendo removida
+                                    Anotacoes = s.Anotacoes,
+                                    AnoFiscal = s.AnoFiscal,
+                                    Status = s.Status,
+                                    Data = s.Data
+                                };
+                                listaCopia.Add(copiaStatus);
+                            });
+                            antigaAgg.Status.AddRange(listaCopia);
+                        }
+                        _context.Entry(antigaAgg).State = EntityState.Detached;
                     }
                 }
             }
@@ -299,32 +301,33 @@ namespace BaseDeProjetos.Helpers
 
                 foreach (string AggId in listaAggIds) //itera pelas agregadas
                 {
-                    var prospAgg = _context.Prospeccao.Where(prosp => prosp.Id == AggId).First();
-                    var AggUltimoStatusData = prospAgg.Status.Last().Data;
-                    var AggOrigemId = prospAgg.Status.Last().OrigemID;
-                    var statusMaisRecentes = prospeccao.Status.Where(s => s.Data > AggUltimoStatusData).ToList();
-                    if(statusMaisRecentes.IsNullOrEmpty()){// se não houver diferença de status, add um novo status
-                        FollowUp statusDeagg = new FollowUp{
-                            Status = prospAgg.Status.OrderByDescending(d => d.Data).ToList()[1].Status, // retorna ao status anterior ao agregado
-                            Data = DateTime.Today,
-                            Anotacoes = "Esta prospecção foi desagregada de um grupo."
-                        };
-                        
-                        prospAgg.Status.Add(statusDeagg); //adiciona o status ao final da lista de followups
-                    } else {
-                        List<FollowUp> listaCopia = new List<FollowUp>(statusMaisRecentes.Count);
-
-                        statusMaisRecentes.ForEach(s => {
-                            var copiaStatus = new FollowUp{
-                                OrigemID = AggOrigemId, // salva o id de origem da prosp
-                                Anotacoes = s.Anotacoes,
-                                AnoFiscal = s.AnoFiscal,
-                                Status = s.Status,
-                                Data = s.Data
+                    if(AggId != ""){
+                        var prospAgg = _context.Prospeccao.Where(prosp => prosp.Id == AggId).First();
+                        var AggUltimoStatusData = prospAgg.Status.Last().Data;
+                        var statusMaisRecentes = prospeccao.Status.Where(s => s.Data > AggUltimoStatusData).ToList();
+                        if(statusMaisRecentes.IsNullOrEmpty()){// se não houver diferença de status, add um novo status
+                            FollowUp statusDeagg = new FollowUp{
+                                Status = prospAgg.Status.OrderByDescending(d => d.Data).ToList()[1].Status, // retorna ao status anterior ao agregado
+                                Data = DateTime.Today,
+                                Anotacoes = "Esta prospecção foi desagregada de um grupo."
                             };
-                            listaCopia.Add(copiaStatus);
-                        });
-                        prospAgg.Status.AddRange(listaCopia);
+                            
+                            prospAgg.Status.Add(statusDeagg); //adiciona o status ao final da lista de followups
+                        } else {
+                            List<FollowUp> listaCopia = new List<FollowUp>(statusMaisRecentes.Count);
+
+                            statusMaisRecentes.ForEach(s => {
+                                var copiaStatus = new FollowUp{
+                                    OrigemID = AggId, // essa é a própria id do loop, da prosp que está sendo removida
+                                    Anotacoes = s.Anotacoes,
+                                    AnoFiscal = s.AnoFiscal,
+                                    Status = s.Status,
+                                    Data = s.Data
+                                };
+                                listaCopia.Add(copiaStatus);
+                            });
+                            prospAgg.Status.AddRange(listaCopia);
+                        }
                     }
                 }
             }

@@ -185,7 +185,7 @@ function checkAncora(alavanca, iconAncora, campoAgg) {
     }
 }
 
-function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon, userLider=null, idText="", fillValues=false) { // os últimos 3 é exclusivo para a rota de Pessoas, e os últimos 2 são para tratar no Edit
+function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon, idText="", fillValues=false, userLider=null) { // os últimos 3 é exclusivo para a rota de Pessoas, e os últimos 2 são para tratar no Edit
     let defRota = "";
     let value = "";
     let inner = "";
@@ -242,30 +242,32 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
     })
     document.querySelectorAll(".select2-container").forEach(input => { input.style.width = "100%" })
     if (botaoAlterar != null) { document.querySelector(`#${botaoAlterar}`).style.display = "none"; }
+    document.querySelector(`#check${rota}`).checked = true;
 }
 
 function procurarPessoa(select) {
     redePessoas.focus(select.value, { scale: 3, animation: { duration: 400 } })
 }
 
-function selectToText(lista, id) {
+function selectToText(checkAlterados, id) {
+    let lista = [];
+    document.querySelectorAll(`.${checkAlterados}`).forEach(function (check){ //funcao para indicar quais campos select foram alterados (pra não verificar todos sem necessidade)
+        if(check.checked == true){lista.push(check.value)}
+    })
     lista.forEach(function (rota) {
         let texto = '';
-        let idProsp = '';
         if (document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`) != null) {
             document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`).childNodes.forEach(caixa => {
-                valorTexto = caixa.title.replace(" []","");
+                valorTexto = caixa.title;
 
-                let selecoes = document.querySelector(`#campoSelect${rota}Prospeccoes-${id}`).childNodes; // loop para buscar os Ids das prosps na caixa select original
+                let selecoes = document.querySelector(`#campoSelectEdit${rota}-${id}`).childNodes; // loop para buscar os Ids das prosps na caixa select original
                 for (let i = 0; i < selecoes.length; i++) {
                     let val = selecoes[i];
-                    if (val.innerText === valorTexto) {
-                      idProsp = val.value;
-                      break;
+                    if (val.innerText === valorTexto.replace(/\s+/g, ' ')) {
+                        texto += val.value + ';';
+                        break;
                     }
                 }
-                
-                texto += idProsp + ';'
             })
         document.querySelector(`#inputTextEdit${rota}-${id}`).value = texto
         } else {
@@ -274,17 +276,49 @@ function selectToText(lista, id) {
     })
 }
 
-function carregarValoresInputParaSelect(idText, idSelect, rota=""){
+function carregarValoresInputParaSelect(idText, idSelect, rota){
     let listaOptions = [];
     let select = document.querySelector(`#${idSelect}`);
     let options = select.options;
     let listaSel = document.querySelector(`#${idText}`).value.split(";");
+
     listaSel.forEach(p => {
         if (p == '') { } else {
             for (var i = 0; i < options.length; i++) {
-                if (options[i].innerText === p) {
-                    listaOptions.push(options[i].value);
-                }
+                
+                
+                    switch (rota) {
+                        case "Pessoas":
+                            //value = Email;
+                            //innerHTML = UserName;
+                            if (options[i].innerText === p) { // possiveis erros futuros
+                                listaOptions.push(options[i].innerHTML); // considerar trocar para Id
+                            }
+                            break;
+                        case "Empresas":
+                            //value = Id;
+                            //innerHTML = NomeFantasia;
+                            if (options[i].innerText === p) { // possiveis erros futuros
+                                listaOptions.push(options[i].innerHTML); // considerar trocar para Id
+                            }
+                            break;
+                        case "Tags":
+                            if (options[i].value === p) {
+                                listaOptions.push(options[i].value);
+                            }
+                            break;
+                        case "Prospeccoes":
+                            //value = Id;
+                            //innerHTML = Titulo;
+                            if (options[i].value === p) {
+                                listaOptions.push(options[i].value);
+                            }
+                            break;
+                        default:
+                            console.log(`Erro: ${rota} é uma rota inválida`);
+                            break;
+                    }
+                
             }
         }
     $(`#${idSelect}`).val(listaOptions);
