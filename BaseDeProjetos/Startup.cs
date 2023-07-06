@@ -11,8 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -42,16 +40,16 @@ namespace BaseDeProjetos
                 // This line split "server=localhost:[port]" in "server=localhost;port=[port]
                 ConStr = ConStr.Replace(":", ";port=");
 
-
-
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseMySql(ConStr, mysqlOptions => { mysqlOptions.ServerVersion(new Version(5, 7, 9), ServerType.MySql); }).UseLazyLoadingProxies());
+                    options.UseMySql(ConStr, ServerVersion.AutoDetect(ConStr))
+                        .UseLazyLoadingProxies());
             }
             else
             {
                 string conn = Configuration.GetConnectionString("DefaultConnection");
                 services.AddDbContext<ApplicationDbContext>(options =>
-                        options.UseMySql(conn, mysqlOptions => { mysqlOptions.ServerVersion(new Version(5, 7, 9), ServerType.MySql); }).UseLazyLoadingProxies());
+                        options.UseMySql(conn, ServerVersion.AutoDetect(conn))
+                        .UseLazyLoadingProxies());
             }
             services.AddDefaultIdentity<Usuario>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
