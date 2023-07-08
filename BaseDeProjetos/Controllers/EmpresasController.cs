@@ -59,7 +59,7 @@ namespace BaseDeProjetos.Controllers
                     HttpContext.Session.SetString("_CurrentFilter", searchString);
                 }
 
-                var empresas = FiltrarEmpresas(searchString, _context.Empresa.OrderBy(e => e.Nome).ToList());
+                var empresas = FiltrarEmpresas(searchString, _context.Empresa.OrderBy(e => e.NomeFantasia).ToList());
 
                 return View(empresas);
             }

@@ -51,28 +51,48 @@ namespace BaseDeProjetos.Controllers
         [Route("Indicadores/IndicadoresDashBoard/{ano?}")]
         public ActionResult IndicadoresDashBoard(int? ano)
         {
-            IndicadorHelper indicadores = new IndicadorHelper(_context);
+            IndicadorHelper indicadoresProspeccoesTotal = new IndicadorHelper(_context.Prospeccao.Where(prospeccao =>
+        prospeccao.Status.OrderBy(followup =>
+                    followup.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList());
+
+            IndicadorHelper indicadoresProspeccoesComProposta = new IndicadorHelper(_context.Prospeccao.Where(prospeccao =>
+            prospeccao.Status.OrderBy(followup => followup.Data).LastOrDefault().Status == StatusProspeccao.ComProposta || prospeccao.Status.OrderBy(followup => followup.Data).LastOrDefault().Status == StatusProspeccao.Convertida || prospeccao.Status.OrderBy(followup => followup.Data).LastOrDefault().Status == StatusProspeccao.NaoConvertida).ToList());
+
+            List<Prospeccao> listaParaTaxaDeConversao = _context.Prospeccao.ToList();
+
+            IndicadorHelper indicadorTaxaDeConversao = new IndicadorHelper(listaParaTaxaDeConversao);
 
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
 
 
-                ViewBag.QuantidadeDeProspeccoesPorCasa = indicadores.QuantidadeDeProspeccoes(p => p?.Casa.GetDisplayName(), ano);
-                ViewBag.ValorSomaProspeccoesPorCasa = indicadores.ValorSomaProspeccoes(p => p?.Casa.GetDisplayName(), ano);
+                ViewBag.QuantidadeDeProspeccoesPorCasa = indicadoresProspeccoesTotal.QuantidadeDeProspeccoes(p => p?.Casa.GetDisplayName(), ano);
+                ViewBag.ValorSomaProspeccoesPorCasa = indicadoresProspeccoesTotal.ValorSomaProspeccoes(p => p?.Casa.GetDisplayName(), ano);
 
-                ViewBag.QuantidadeDeProspeccoesPorEmpresa = indicadores.QuantidadeDeProspeccoes(p => p?.Empresa.Nome, ano);
-                ViewBag.ValorSomaDeProspeccoesPorEmpresa = indicadores.ValorSomaProspeccoes(p => p?.Empresa.Nome, ano);
+                ViewBag.QuantidadeDeProspeccoesPorEmpresa = indicadoresProspeccoesTotal.QuantidadeDeProspeccoes(p => p?.Empresa.Nome, ano);
+                ViewBag.ValorSomaDeProspeccoesPorEmpresa = indicadoresProspeccoesTotal.ValorSomaProspeccoes(p => p?.Empresa.Nome, ano);
 
-                ViewBag.QuantidadeDeProspeccoesPorPesquisador = indicadores.QuantidadeDeProspeccoes(p => p?.Usuario, ano);
-                ViewBag.ValorSomaProspeccoesPorPesquisador = indicadores.ValorSomaProspeccoes(p => p?.Usuario, ano);
+                ViewBag.QuantidadeDeProspeccoesPorPesquisador = indicadoresProspeccoesTotal.QuantidadeDeProspeccoes(p => p?.Usuario, ano);
+                ViewBag.ValorSomaProspeccoesPorPesquisador = indicadoresProspeccoesTotal.ValorSomaProspeccoes(p => p?.Usuario, ano);
 
-                ViewBag.QuantidadeDeProspeccoesPorTipoContratacao = indicadores.QuantidadeDeProspeccoes(p => p?.TipoContratacao.GetDisplayName(), ano);
-                ViewBag.ValorSomaProspeccoesPorTipoContratacao = indicadores.ValorSomaProspeccoes(p => p?.TipoContratacao.GetDisplayName(), ano);
+                ViewBag.QuantidadeDeProspeccoesPorTipoContratacao = indicadoresProspeccoesTotal.QuantidadeDeProspeccoes(p => p?.TipoContratacao.GetDisplayName(), ano);
+                ViewBag.ValorSomaProspeccoesPorTipoContratacao = indicadoresProspeccoesTotal.ValorSomaProspeccoes(p => p?.TipoContratacao.GetDisplayName(), ano);
 
-                ViewBag.QuantidadeDeProspeccoesPorLinhaDePesquisa = indicadores.QuantidadeDeProspeccoes(p => p?.LinhaPequisa.GetDisplayName(), ano);
-                ViewBag.ValorSomaProspeccoesPorLinhaDePesquisa = indicadores.ValorSomaProspeccoes(p => p?.LinhaPequisa.GetDisplayName(), ano);
+                ViewBag.QuantidadeDeProspeccoesPorLinhaDePesquisa = indicadoresProspeccoesTotal.QuantidadeDeProspeccoes(p => p?.LinhaPequisa.GetDisplayName(), ano);
+                ViewBag.ValorSomaProspeccoesPorLinhaDePesquisa = indicadoresProspeccoesTotal.ValorSomaProspeccoes(p => p?.LinhaPequisa.GetDisplayName(), ano);
 
+                ViewBag.ValorSomaProspeccoesPorPesquisadorComProposta = indicadoresProspeccoesComProposta.ValorSomaProspeccoes(p => p?.Usuario, ano);
+
+                ViewBag.TaxaDeConversaoDosPesquisadores = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.Usuario, ano);
+
+                ViewBag.TaxaDeConversaoDasCasas = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.Casa.GetDisplayName(), ano);
+
+                ViewBag.TaxaDeConversaoDasEmpresas = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.Empresa.Nome, ano);
+
+                ViewBag.TaxaDeConversaoDosTiposDeContratacao = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.TipoContratacao.GetDisplayName(), ano);
+
+                ViewBag.TaxaDeConversaoDasLinhasDePesquisa = indicadorTaxaDeConversao.CalcularTaxaDeConversao(p => p?.LinhaPequisa.GetDisplayName(), ano);
 
                 ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;

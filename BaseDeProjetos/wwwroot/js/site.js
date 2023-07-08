@@ -62,8 +62,58 @@ var dictCNAE = {
     "77": "ALUGUÉIS NÃO-IMOBILIÁRIOS E GESTÃO DE ATIVOS INTANGÍVEIS NÃOFINANCEIROS (ALUGUEL DE ANDAÍMES, CNAE: 7732202)",
     "85": "EDUCAÇÃO (SERVIÇO NACIONAL DE APRENDIZAGEM DA INDÚTRIA – SENAI – OUTRAS ATIVIDADES DE ENSINO NÃO ESPECIFICADAS ANTERIORMENTE – CNAE: 8599699)",
     "91": "ATIVIDADES LIGADAS AO PATRIMÔNIO CULTURAL E AMBIENTAL (RESTAURAÇÃO E CONSERVAÇÃO DE LUGARES E PRÉDIOS HISTÓRICOS, CNAE: 9102302)"
+    "02": "PRODUÇÃO FLORESTAL (EXTRAÇÃO DE MADEIRA, PRODUÇÃO DE CARVÃO, COLETA DE LÁTEX | CNAE: 210107, 210108, 220901, 220902, 220904)",
+    "05": "EXTRAÇÃO DE CARVÃO MINERAL",
+    "06": "EXTRAÇÃO DE PETRÓLEO E GÁS NATURAL",
+    "07": "EXTRAÇÃO DE MINERAIS METÁLICOS",
+    "08": "EXTRAÇÃO DE MINERAIS NÃO-METÁLICOS",
+    "09": "ATIVIDADES DE APOIO À EXTRAÇÃO DE MINERAIS",
+    "10": "FABRICAÇÃO DE PRODUTOS ALIMENTÍCIOS",
+    "11": "FABRICAÇÃO DE BEBIDAS",
+    "12": "FABRICAÇÃO DE PRODUTOS DO FUMO",
+    "13": "FABRICAÇÃO DE PRODUTOS TÊXTEIS",
+    "14": "CONFECÇÃO DE ARTIGOS DE VESTUÁRIOS E ACESSÓRIOS",
+    "15": "PREPARAÇÃO DE COUROS E FABRICAÇÃO DE ARTEFATOS DE COURO, ARTIGOS PARA VIAGEM E CALÇADOS",
+    "16": "FABRICAÇÃO DE PRODUTOS DE MADEIRA",
+    "17": "FABRICAÇÃO DE CELULOSE, PAPEL E PRODUTOS DE PAPEL",
+    "18": "IMPRESSÃO E REPRODUÇÃO DE GRAVAÇÕES",
+    "19": "FABRICAÇÃO DE COQUE, DE PRODUTOS DERIVADOS DO PETRÓLEO E DE BIOCOMBUSTÍVEL",
+    "20": "FABRICAÇÃO DE PRODUTOS QUÍMICOS",
+    "21": "FABRICAÇÃO DE PRODUTOS FARMOQUÍMICOS E FARMACÊUTICOS",
+    "22": "FABRICAÇÃO DE PRODUTOS DE BORRACHA E DE MATERIAL PLÁSTICO",
+    "23": "FABRICAÇÃO DE PRODUTOS DE MINERAIS NÃO-METÁLICOS",
+    "24": "METALURGIA",
+    "25": "FABRICAÇÃO DE PRODUTOS DE METAL, EXCETO MÁQUINAS E EQUIPAMENTOS",
+    "26": "FARBICAÇÃO DE EQUIPAMENTOS DE INFORMÁTICA, PRODUTOS ELETRÔNICOS E ÓPTICOS",
+    "27": "FABRICAÇÃO DE MÁQUINAS, APARELHOS E MATERIAIS ELÉTRICOS",
+    "28": "FABRICAÇÃO DE MÁQUINAS E EQUIPAMENTOS",
+    "29": "FABRICAÇÃO DE VEÍCULOS AUTOMOTORES, REBOQUES E CARROCERIAS",
+    "30": "FABRICAÇÃO DE OUTROS EQUIPAMENTOS DE TRANSPORTE, EXCETO VEÍCULOS AUTOMOTORES",
+    "31": "FABRICAÇÃO DE MÓVEIS",
+    "32": "FABRICAÇÃO DE PRODUTOS DIVERSOS",
+    "33": "MANUTENÇÃO, REPARAÇÃO E INSTALAÇÃO DE MÁQUINAS E EQUIPAMENTOS",
+    "35": "ELETRICIDADE, GÁS E OUTRAS UTILIDADES",
+    "36": "CAPTAÇÃO, TRATAMENTO E DISTRIBUIÇÃO DE ÁGUA",
+    "37": "ESGOTO E ATIVIDADES RELACIONADAS",
+    "38": "COLETA, TRATAMENTO E DISPOSIÇÃO DE RESÍDUOS",
+    "39": "DESCONTAMINAÇÃO E OUTROS SERVIÇOS DE GESTÃO DE RESÍDUOS",
+    "41": "CONSTRUÇÃO DE EDIFÍCIOS",
+    "42": "OBRAS DE INFRA-ESTRUTURA",
+    "43": "SERVIÇOS ESPECIALIZADOS PARA CONSTRUÇÃO",
+    "45": "REPARAÇÃO DE VEÍCULOS AUTOMOTORES E MOTOCICLETAS",
+    "49": "TRANSPORTE TERRESTRE",
+    "52": "ARMAZENAMENTO E ATIVIDADES AUXILIARES DOS TRANSPORTES (CONCESSIONÁRIAS DE RODÓVIAS, PONTE, TÚNEIS E SERVIÇOS RELACIONADOS – CNAE 5221400)",
+    "53": "CORREIO E OUTRAS ATIVIDADES DE ENTREGA",
+    "56": "ALIMENTAÇÃO (FORNECIMENTO DE ALIMENTOS PREPARADOS PREPONDERANTEMENTE PARA EMPRESAS – CNAE: 5620101)",
+    "59": "ATIVIDADES CINEMATOGRÁFICAS, PRODUÇÃO DE VÍDEOS E DE PROGRAMAS DE TELEVISÃO; GRAVAÇÃO DE SOM E EDUCAÇÃO DE MÚSICA (ESTÚDIOS CINEMATOGRÁFICOS – CNAE: 5911101)",
+    "60": "TELECOMUNICAÇÕES",
+    "71": "SERVIÇOS DE ARQUITETURA E ENGENHARIA; TESTES E ANÁLISES TÉCNICAS (SERVIÇOS DE ENGENHARIA – CNAE: 7112000, SERVIÇO SOCIAL DA INDÚSTRIA – SESI – SERVIÇOS DE PERÍCIA TÉCNICA RELACIONADOS À SEGURANÇA DO TRABALHO – SERVIÇO SOCIAL DA INDÚSTRIA, CNAE: 7119704",
+    "77": "ALUGUÉIS NÃO-IMOBILIÁRIOS E GESTÃO DE ATIVOS INTANGÍVEIS NÃOFINANCEIROS (ALUGUEL DE ANDAÍMES, CNAE: 7732202)",
+    "85": "EDUCAÇÃO (SERVIÇO NACIONAL DE APRENDIZAGEM DA INDÚTRIA – SENAI – OUTRAS ATIVIDADES DE ENSINO NÃO ESPECIFICADAS ANTERIORMENTE – CNAE: 8599699)",
+    "91": "ATIVIDADES LIGADAS AO PATRIMÔNIO CULTURAL E AMBIENTAL (RESTAURAÇÃO E CONSERVAÇÃO DE LUGARES E PRÉDIOS HISTÓRICOS, CNAE: 9102302)"
 }
 
+function FiltroEmpresaEstrangeira() {
 function FiltroEmpresaEstrangeira() {
 
     let checkBox = document.getElementById("empresa_estrangeira_check");
@@ -92,14 +142,18 @@ function FiltroEmpresaEstrangeira() {
 
     }
 
+
 }
 
+function ChecarPatente() {
 function ChecarPatente() {
 
     let valor = document.querySelector('#select_tipo').value
     if (valor == 8) {
+    if (valor == 8) {
         document.querySelector('#campos-patente').style = 'display:block'
     }
+    else {
     else {
         document.querySelector('#campos-patente').style = 'display:none'
     }
@@ -185,10 +239,11 @@ function checkAncora(alavanca, iconAncora, campoAgg) {
     }
 }
 
-function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon) {
+function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon, idText="", fillValues=false, userLider=null) { // os últimos 3 é exclusivo para a rota de Pessoas, e os últimos 2 são para tratar no Edit
     let defRota = "";
     let value = "";
     let inner = "";
+    let lider = "";
     document.querySelector(`#${caixaId}`).style.display = "none";
     document.querySelector(`#${loadingIcon}`).style.display = "block";
     document.querySelector(`#${idSelect}`).innerHTML = '';
@@ -202,14 +257,16 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
             defRota = '/FunilDeVendas/PuxarDadosUsuarios';
             value = "Email";
             inner = "UserName";
+            lider = document.querySelector(`#${userLider}`).selectedOptions[0].text;
             break;
         case "Empresas":
             defRota = '/Empresas/PuxarEmpresas';
             value = "Id";
-            inner = "RazaoSocial";
+            inner = "NomeFantasia";
             break;
         case "Tags":
             defRota = '/FunilDeVendas/PuxarTagsProspecoes';
+            inner = "Tags";
             break;
         case "Prospeccoes":
             defRota = '/FunilDeVendas/PuxarDadosProspeccoes2';
@@ -222,78 +279,104 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
     }
     fetch(defRota).then(response => response.json()).then(lista => {
         lista.forEach(function (item) {
-            var opt = document.createElement("option");
-            if (rota != "Tags") { opt.value = item[value] }
-            opt.innerHTML = item[inner]
-            document.querySelector(`#${idSelect}`).appendChild(opt)
+            if (rota == "Pessoas" && item[inner] == lider){
+                // nao faca nada
+            } else {
+                var opt = document.createElement("option");
+                if (rota != "Tags") { opt.value = item[value] }
+                opt.innerHTML = item[inner]
+                document.querySelector(`#${idSelect}`).appendChild(opt)
+            }
         })
         document.querySelector(`#${loadingIcon}`).style.display = "none";
         document.querySelector(`#${caixaId}`).style.display = "block";
+        if(fillValues){
+            carregarValoresInputParaSelect(idText, idSelect, rota)
+        }
     })
     document.querySelectorAll(".select2-container").forEach(input => { input.style.width = "100%" })
     if (botaoAlterar != null) { document.querySelector(`#${botaoAlterar}`).style.display = "none"; }
-}
-
-function novaTag() {
-    valor = document.querySelector(`.select2-search__field`).value
-    document.querySelector(`.select2-search__field`).valorSalvo = valor
-}
-
-function addTag(campoInput, idSelect) {
-    valor = document.querySelector(`.select2-search__field`).valorSalvo
-    valorAntigo = document.querySelector(`#${campoInput}`).value
-
-    if (valorAntigo == '') {
-        valorNovo = "#" + valor
-    } else {
-        valorNovo = valorAntigo + ";" + "#" + valor
-    }
-
-    document.querySelector(`#${campoInput}`).value = valorNovo
-    botao_def = document.querySelector('#bloco_botao')
-    botao_copy = botao_def.cloneNode(true)
-    botao_copy.removeAttribute('id')
-    botao_copy.title = valor
-    botao_copy.children[0].innerHTML = "#" + valor
-    botao_copy.classList.remove('d-none')
-    document.querySelector(`#select2-${idSelect}-container`).appendChild(botao_copy)
-    document.querySelector(`.select2-search__field`).value = ''
+    document.querySelector(`#check${rota}`).checked = true;
 }
 
 function procurarPessoa(select) {
     redePessoas.focus(select.value, { scale: 3, animation: { duration: 400 } })
 }
 
-function selectToText(lista, id) {
-    console.log(lista)
-    console.log(id)
+function selectToText(checkAlterados, id) {
+    let lista = [];
+    document.querySelectorAll(`.${checkAlterados}`).forEach(function (check){ //funcao para indicar quais campos select foram alterados (pra não verificar todos sem necessidade)
+        if(check.checked == true){lista.push(check.value)}
+    })
     lista.forEach(function (rota) {
-        console.log(rota)
-        let texto = ''
+        let texto = '';
         if (document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`) != null) {
-            document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`).childNodes.forEach(p => texto += p.title + ';')
-            document.querySelector(`#inputTextEdit${rota}-${id}`).value = texto
+            document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`).childNodes.forEach(caixa => {
+                valorTexto = caixa.title;
+
+                let selecoes = document.querySelector(`#campoSelectEdit${rota}-${id}`).childNodes; // loop para buscar os Ids das prosps na caixa select original
+                for (let i = 0; i < selecoes.length; i++) {
+                    let val = selecoes[i];
+                    if (val.innerText === valorTexto.replace(/\s+/g, ' ')) {
+                        texto += val.value + ';';
+                        break;
+                    }
+                }
+            })
+        document.querySelector(`#inputTextEdit${rota}-${id}`).value = texto
         } else {
             return;
         }
     })
 }
 
-function textToSelect(nomeModal, idText, idSelect, rota, caixaId, botaoAlterar, loadingIcon) {
-    gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon)
+function carregarValoresInputParaSelect(idText, idSelect, rota){
+    let listaOptions = [];
+    let select = document.querySelector(`#${idSelect}`);
+    let options = select.options;
+    let listaSel = document.querySelector(`#${idText}`).value.split(";");
 
-    botao_def = document.querySelector('#bloco_botao')
-    listaSel = document.querySelector(`#${idText}`).value.split(";")
     listaSel.forEach(p => {
         if (p == '') { } else {
-            botao_copy = botao_def.cloneNode(true)
-            botao_copy.removeAttribute('id')
-            botao_copy.title = p
-            botao_copy.children[1].innerHTML = p
-            botao_copy.classList.remove('d-none')
-
-            document.querySelector(`#select2-${idSelect}-container`).appendChild(botao_copy)
+            for (var i = 0; i < options.length; i++) {
+                
+                
+                    switch (rota) {
+                        case "Pessoas":
+                            //value = Email;
+                            //innerHTML = UserName;
+                            if (options[i].innerText === p) { // possiveis erros futuros
+                                listaOptions.push(options[i].innerHTML); // considerar trocar para Id
+                            }
+                            break;
+                        case "Empresas":
+                            //value = Id;
+                            //innerHTML = NomeFantasia;
+                            if (options[i].innerText === p) { // possiveis erros futuros
+                                listaOptions.push(options[i].innerHTML); // considerar trocar para Id
+                            }
+                            break;
+                        case "Tags":
+                            if (options[i].value === p) {
+                                listaOptions.push(options[i].value);
+                            }
+                            break;
+                        case "Prospeccoes":
+                            //value = Id;
+                            //innerHTML = Titulo;
+                            if (options[i].value === p) {
+                                listaOptions.push(options[i].value);
+                            }
+                            break;
+                        default:
+                            console.log(`Erro: ${rota} é uma rota inválida`);
+                            break;
+                    }
+                
+            }
         }
+    $(`#${idSelect}`).val(listaOptions);
+    $(`#${idSelect}`).trigger('change');
     })
 }
 
@@ -564,10 +647,11 @@ function validarCNPJ(idElemento = null) {
 }
 
 function checarCNAE(listaCNAE, idElemento = null) {
-    possuiIndustrial = false;
-    listaCNAE.forEach(codcnae => {
 
-        if (typeof (dictCNAE[codcnae]) != "undefined") {
+    for (let i = 0; i < listaCNAE.length; i++) {
+        var codcnae = listaCNAE[i];
+
+        if (typeof (dictCNAE[codcnae.slice(0, 2)]) != "undefined") {
 
             if (idElemento == null) {
                 document.getElementById("BoolCnaeIndustrial").value = "1";
@@ -581,7 +665,7 @@ function checarCNAE(listaCNAE, idElemento = null) {
                 document.getElementById(`checkCNAE-${idElemento}`).style.display = "block";
             }
 
-            possuiIndustrial = true;
+            break;
 
         } else {
 
@@ -597,7 +681,7 @@ function checarCNAE(listaCNAE, idElemento = null) {
                 document.getElementById(`checkCNAE-${idElemento}`).style.display = "block";
             }
         }
-    });
+    };
 }
 
 function AplicarDadosAPI(idElemento) {
@@ -613,7 +697,9 @@ function AplicarDadosAPI(idElemento) {
         res.json().then(dados => {
             listaCNAE = [];
             listaCNAE.push(dados.atividade_principal[0].code);
-            dados.atividades_secundarias.forEach(ativ => { listaCNAE.push(ativ.code); });
+            dados.atividades_secundarias.forEach(ativ => {
+                listaCNAE.push(ativ.code);
+            });
             if (idElemento == null) {
                 document.getElementById("NomeEmpresaCadastro").value = dados.nome;
                 document.getElementById("NomeFantasiaEmpresa").value = dados.fantasia;

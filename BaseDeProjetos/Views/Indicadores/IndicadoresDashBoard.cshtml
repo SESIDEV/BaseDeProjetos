@@ -22,6 +22,14 @@
     Dictionary<string, int> TopDezQuantidadeProspeccao = ViewBag.TopDezQuantidadeProspeccao;
     Dictionary<string, string> TopDezValorProspeccao = ViewBag.TopDezValorProspeccao;
 
+    Dictionary<string, string> ValorSomaProspeccoesPorPesquisadorComProposta = ViewBag.ValorSomaProspeccoesPorPesquisadorComProposta;
+
+    Dictionary<string, decimal> TaxaDeConversaoDosPesquisadores = ViewBag.TaxaDeConversaoDosPesquisadores;
+    Dictionary<string, decimal> TaxaDeConversaoDasCasas = ViewBag.TaxaDeConversaoDasCasas;
+    Dictionary<string, decimal> TaxaDeConversaoDasEmpresas = ViewBag.TaxaDeConversaoDasEmpresas;
+    Dictionary<string, decimal> TaxaDeConversaoDosTiposDeContratacao = ViewBag.TaxaDeConversaoDosTiposDeContratacao;
+    Dictionary<string, decimal> TaxaDeConversaoDasLinhasDePesquisa = ViewBag.TaxaDeConversaoDasLinhasDePesquisa;
+
 }
 
 <style>
@@ -68,7 +76,7 @@
             </select>
 
 
-            <div class="d-flex flex-row gap-2 mb-2">
+            <div class="d-flex flex-rowb gap-2 mb-2">
                 <div class="card p-2">
                     <button type="button" class="btn app-btn-primary" onclick="exibirDiv('CASA-DIV', 'CASA')" data-original-text="CASA" id="CASA">CASA</button>
                 </div>
@@ -105,148 +113,8 @@
 
             </div>
 
-            <div class="indicador hideDiv" id="CASA-DIV">
-                <div class="row" style="width:75vw;">
-                    <div class="col">
-                        <table class="table mb-0 text-left table-success table-striped">
-                            <thead>
-                                <tr>
-                                    <th scope="col" class="cell">Nome</th>
-                                    <th scope="col" class="cell">Quantidade</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                @foreach (var item in QuantidadeDeProspeccoesPorCasa)
-                                {
-                                    <tr>
-                                        <td>@item.Key</td>
-                                        <td>@item.Value</td>
-                                    </tr>
-                                }
-
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="col">
-                        <table class="table mb-0 text-left table-success table-striped">
-                            <thead>
-                                <tr>
-                                    <th scope="col" class="cell">Nome</th>
-                                    <th scope="col" class="cell">Valor</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                @foreach (var item in ValorSomaProspeccoesPorCasa)
-                                {
-                                    <tr>
-                                        <td>@item.Key</td>
-                                        <td>R$ @item.Value</td>
-                                    </tr>
-                                }
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="indicador hideDiv" id="EMPRESA-DIV">
-                <div class="row" style="width:75vw;">
-                    <div class="col">
-                        <table class="table mb-0 text-left table-success table-striped">
-                            <thead>
-                                <tr>
-                                    <th scope="col" class="cell">Nome</th>
-                                    <th scope="col" class="cell">Quantidade</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                @foreach (var item in QuantidadeDeProspeccoesPorEmpresa)
-                                {
-                                    <tr>
-                                        <td>@item.Key</td>
-                                        <td>@item.Value</td>
-                                    </tr>
-                                }
-
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="col">
-                        <table class="table mb-0 text-left table-success table-striped">
-                            <thead>
-                                <tr>
-                                    <th scope="col" class="cell">Nome</th>
-                                    <th scope="col" class="cell">Valor</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                @foreach (var item in ValorSomaProspeccoesPorEmpresa)
-                                {
-                                    <tr>
-                                        <td>@item.Key</td>
-                                        <td>R$ @item.Value</td>
-                                    </tr>
-                                }
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="indicador hideDiv" id="LINHA-DE-PESQUISA-DIV">
-                <div class="row" style="width:75vw;">
-                    <div class="col">
-                        <table class="table mb-0 text-left table-success table-striped">
-                            <thead>
-                                <tr>
-                                    <th scope="col" class="cell">Nome</th>
-                                    <th scope="col" class="cell">Quantidade</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                @foreach (var item in QuantidadeDeProspeccoesPorLinhaDePesquisa)
-                                {
-                                    <tr>
-                                        <td>@item.Key</td>
-                                        <td>@item.Value</td>
-                                    </tr>
-                                }
-
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="col">
-                        <table class="table mb-0 text-left table-success table-striped">
-                            <thead>
-                                <tr>
-                                    <th scope="col" class="cell">Nome</th>
-                                    <th scope="col" class="cell">Valor</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                @foreach (var item in ValorSomaProspeccoesPorLinhaDePesquisa)
-                                {
-                                    <tr>
-                                        <td>@item.Key</td>
-                                        <td>R$ @item.Value</td>
-                                    </tr>
-                                }
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
             <div class="indicador hideDiv" id="PESQUISADOR-DIV">
+                
                 <div class="row" style="width:75vw;">
                     <div class="col">
                         <table class="table mb-0 text-left table-success table-striped">
@@ -291,9 +159,277 @@
                         </table>
                     </div>
                 </div>
+
+                <div class="row mt-3" style="width:75vw;">
+                    <div class="col">
+                        <table class="table mb-0 text-left table-success table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="cell">Nome</th>
+                                    <th scope="col" class="cell">Taxa de Conversão</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in TaxaDeConversaoDosPesquisadores)
+                                {
+                                    <tr>
+                                        <td>@item.Key</td>
+                                        <td>@item.Value %</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col">
+                        <table class="table mb-0 text-left table-success table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="cell">Nome</th>
+                                    <th scope="col" class="cell">Valor Proposta</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in ValorSomaProspeccoesPorPesquisadorComProposta)
+                                {
+                                    <tr>
+                                        <td>@item.Key</td>
+                                        <td>R$ @item.Value</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="indicador hideDiv" id="CASA-DIV">
+                
+                <div class="row" style="width:75vw;">
+                    <div class="col">
+                        <table class="table mb-0 text-left table-success table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="cell">Nome</th>
+                                    <th scope="col" class="cell">Quantidade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in QuantidadeDeProspeccoesPorCasa)
+                                {
+                                    <tr>
+                                        <td>@item.Key</td>
+                                        <td>@item.Value</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col">
+                        <table class="table mb-0 text-left table-success table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="cell">Nome</th>
+                                    <th scope="col" class="cell">Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in ValorSomaProspeccoesPorCasa)
+                                {
+                                    <tr>
+                                        <td>@item.Key</td>
+                                        <td>R$ @item.Value</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row mt-3" style="width:75vw;">
+                    <div class="col">
+                        <table class="table mb-0 text-left table-success table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="cell">Nome</th>
+                                    <th scope="col" class="cell">Taxa de Conversão</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in TaxaDeConversaoDasCasas)
+                                {
+                                    <tr>
+                                        <td>@item.Key</td>
+                                        <td>@item.Value %</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col">
+                    </div>
+                </div>
+            </div>
+
+            <div class="indicador hideDiv" id="EMPRESA-DIV">
+                
+                <div class="row" style="width:75vw;">
+                    <div class="col">
+                        <table class="table mb-0 text-left table-success table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="cell">Nome</th>
+                                    <th scope="col" class="cell">Quantidade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in QuantidadeDeProspeccoesPorEmpresa)
+                                {
+                                    <tr>
+                                        <td>@item.Key</td>
+                                        <td>@item.Value</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col">
+                        <table class="table mb-0 text-left table-success table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="cell">Nome</th>
+                                    <th scope="col" class="cell">Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in ValorSomaProspeccoesPorEmpresa)
+                                {
+                                    <tr>
+                                        <td>@item.Key</td>
+                                        <td>R$ @item.Value</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row mt-3" style="width:75vw;">
+                    <div class="col">
+                        <table class="table mb-0 text-left table-success table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="cell">Nome</th>
+                                    <th scope="col" class="cell">Taxa de Conversão</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in TaxaDeConversaoDasEmpresas)
+                                {
+                                    <tr>
+                                        <td>@item.Key</td>
+                                        <td>@item.Value %</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col">
+                    </div>
+                </div>
+            </div>
+
+            <div class="indicador hideDiv" id="LINHA-DE-PESQUISA-DIV">
+                
+                <div class="row" style="width:75vw;">
+                    <div class="col">
+                        <table class="table mb-0 text-left table-success table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="cell">Nome</th>
+                                    <th scope="col" class="cell">Quantidade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in QuantidadeDeProspeccoesPorLinhaDePesquisa)
+                                {
+                                    <tr>
+                                        <td>@item.Key</td>
+                                        <td>@item.Value</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col">
+                        <table class="table mb-0 text-left table-success table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="cell">Nome</th>
+                                    <th scope="col" class="cell">Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in ValorSomaProspeccoesPorLinhaDePesquisa)
+                                {
+                                    <tr>
+                                        <td>@item.Key</td>
+                                        <td>R$ @item.Value</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row mt-3" style="width:75vw;">
+                    <div class="col">
+                        <table class="table mb-0 text-left table-success table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="cell">Nome</th>
+                                    <th scope="col" class="cell">Taxa de Conversão</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in TaxaDeConversaoDasLinhasDePesquisa)
+                                {
+                                    <tr>
+                                        <td>@item.Key</td>
+                                        <td>@item.Value %</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col">
+                    </div>
+                </div>
             </div>
 
             <div class="indicador hideDiv" id="TIPO-CONTRATACAO-DIV">
+                
                 <div class="row" style="width:75vw;">
                     <div class="col">
                         <table class="table mb-0 text-left table-success table-striped">
@@ -338,18 +474,44 @@
                         </table>
                     </div>
                 </div>
+
+                <div class="row mt-3" style="width:75vw;">
+                    <div class="col">
+                        <table class="table mb-0 text-left table-success table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="cell">Nome</th>
+                                    <th scope="col" class="cell">Taxa de Conversão</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in TaxaDeConversaoDosTiposDeContratacao)
+                                {
+                                    <tr>
+                                        <td>@item.Key</td>
+                                        <td>@item.Value %</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col">
+                    </div>
+                </div>
             </div>
 
         </div>
-    </div>
+        </div>
+        
     <partial name="Footer" />
 </div>
 
 <script>
 
-    window.addEventListener('click', console.log(window.location));
-
     var anoSelect = document.getElementById('anoSelect');
+    var div_taxa_conversao = document.querySelector('#PESQUISADOR-DIV-COM-PROPOSTA');
 
     anoSelect.addEventListener('change', function () {
         var selectedValue = this.value;
@@ -364,7 +526,6 @@
 
             window.location.href = newUrl;
         }
-
 
     });
 
@@ -429,6 +590,7 @@
         if (divAtual === divId) {
             // Se for a mesma div, ocultar a div
             div.style.display = 'none';
+            div_taxa_conversao.style.display = 'none';
             divAtual = null;
 
             // Restaurar o texto e o estilo padrão do botão
@@ -442,6 +604,7 @@
             if (div) {
                 div.style.display = 'block';
                 divAtual = divId; // Armazenar o ID da div atualmente exibida
+                div_taxa_conversao.style.display = 'block';
 
                 // Alterar o texto e o estilo do botão atual
                 btn.innerText = 'Ocultar';

@@ -259,6 +259,8 @@ namespace BaseDeProjetos.Controllers
         [HttpPost]
         public async Task<IActionResult> Atualizar([Bind("OrigemID, Data, Status, Anotacoes, MotivoNaoConversao")] FollowUp followup)
         {
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
             if (ModelState.IsValid)
             {
                 Prospeccao prospeccao_origem = await _context.Prospeccao.FirstOrDefaultAsync(p => p.Id == followup.OrigemID);
@@ -270,7 +272,7 @@ namespace BaseDeProjetos.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction("Index", "FunilDeVendas");
+            return RedirectToAction(nameof(Index), new { casa = usuario.Casa });
         }
 
         /// <summary>
@@ -458,19 +460,13 @@ namespace BaseDeProjetos.Controllers
 
             Prospeccao prospAntiga = await _context.Prospeccao.AsNoTracking().FirstAsync(p => p.Id == prospeccao.Id);
 
-            if (prospAntiga.Ancora == false && prospeccao.Ancora == true)
-            { // compara a versão antiga com a nova que irá para o Update()
-                FunilHelpers.AddAgregadas(_context, prospeccao);
-            }
-
-            if (prospAntiga.Ancora == true && prospeccao.Ancora == false) 
-            { // compara a versão antiga com a nova que irá para o Update()
+            if(prospAntiga.Ancora == true && prospeccao.Ancora == false){ // compara a versão antiga com a nova que irá para o Update()
                 FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
             }
 
-            if (prospAntiga.Agregadas != prospeccao.Agregadas)
-            {
-                FunilHelpers.DelAgregadas(_context, prospeccao);
+            if(prospAntiga.Agregadas != prospeccao.Agregadas){
+                FunilHelpers.AddAgregadas(_context, prospAntiga, prospeccao);
+                FunilHelpers.DelAgregadas(_context, prospAntiga, prospeccao);
             }
             
             _context.Update(prospeccao);
@@ -762,7 +758,7 @@ namespace BaseDeProjetos.Controllers
                 
                 if(p.NomeProspeccao != null){
                     dict["idProsp"] = p.Id;
-                    dict["Titulo"] = p.NomeProspeccao + "[" + p.Empresa.NomeFantasia + "]";
+                    dict["Titulo"] = p.NomeProspeccao + " [" + p.Empresa.NomeFantasia + "]";
                 } else {
                     continue;
                 }
