@@ -58,9 +58,10 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="Logo" class="control-label"></label>
-                        <input type="file" class="form-control" id="logo_imagem-@Model.Id" onchange="Base64('@(Model.Id)')" />
+                        <input class="form-control" type="file" id="logoInput-@Model.Id" accept="image/*" onchange="previewBase64('logoInput-@Model.Id', 'img-preview-@Model.Id', 'logoBase64-@Model.Id')" />
+                        <input type="hidden" asp-for="Logo" id="logoBase64-@Model.Id"/>
                     </div>
-                    <img id="img_preview-@Model.Id" src="@Model.Logo" width="300" style="margin-top:5px;">
+                    <img id="img-preview-@Model.Id" width="300" style="margin-top:5px;">
                 </div>
                 <div class="modal-footer">
                     <button type="button" data-bs-dismiss="modal" class="btn app-btn-secondary">Voltar para Lista</button>
@@ -69,7 +70,6 @@
             </div>
         </div>
     </div>
-    <input asp-for="Logo" id="img_b64-@Model.Id" class="form-control" style="display: none;" value="@Model.Logo" onchange="MostrarImagem('@Model.Id')">
 
 </form>
 
