@@ -198,10 +198,10 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
     } else {
         $(`#${idSelect}`).select2({ dropdownParent: $(`#${nomeModal}`) })
     }
-    switch (rota) {
+    switch (rota) { //====================================================== \/\/\/ SWITCH PRINCIPAL \/\/\/ ===============================================================
         case "Pessoas":
             defRota = '/FunilDeVendas/PuxarDadosUsuarios';
-            value = "UserName"; //trocar para Email ? (este é o valor que vai para o banco)
+            value = "UserName"; //trocar para Email ?
             inner = "UserName";
             lider = document.querySelector(`#${userLider}`).selectedOptions[0].text;
             break;
@@ -223,7 +223,7 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
         default:
             console.log(`Erro: ${rota} é uma rota inválida`);
             break;
-    }
+    }               //====================================================== /\/\/\ SWITCH PRINCIPAL /\/\/\ ===============================================================
     fetch(defRota).then(response => response.json()).then(lista => {
         lista.forEach(function (item) {
             if (rota == "Pessoas" && item[inner] == lider){
@@ -252,20 +252,19 @@ function procurarPessoa(select) {
 
 function selectToText(checkAlterados, id) {
     let lista = [];
-    document.querySelectorAll(`.${checkAlterados}`).forEach(function (check){ //funcao para indicar quais campos select foram alterados (pra não verificar todos sem necessidade)
+    document.querySelectorAll(`.${checkAlterados}`).forEach(function (check){ //funcao para indicar quais campos select foram alterados (pra não verificar todos a toa)
         if(check.checked == true){lista.push(check.value)}
     })
     lista.forEach(function (rota) {
         let texto = '';
         if (document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`) != null) {
             document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`).childNodes.forEach(caixa => {
-                valorTexto = caixa.title;
 
-                let selecoes = document.querySelector(`#campoSelectEdit${rota}-${id}`).childNodes; // loop para buscar os Ids das prosps na caixa select original
+                let selecoes = document.querySelector(`#campoSelectEdit${rota}-${id}`).childNodes; // buscar as options na tag select original para trazer os valores (.value)
                 for (let i = 0; i < selecoes.length; i++) {
-                    let val = selecoes[i];
-                    if (val.innerText === valorTexto.replace(/\s+/g, ' ')) {
-                        texto += val.value + ';';
+                    let option = selecoes[i];
+                    if (option.innerText === caixa.title.replace(/\s+/g, ' ')) { // compara o texto selecionado com o texto da option no loop
+                        texto += option.value + ';'; // concatena os valores dos textos selecionados
                         break;
                     }
                 }
@@ -279,15 +278,14 @@ function selectToText(checkAlterados, id) {
 
 function carregarValoresInputParaSelect(idText, idSelect){
     let listaOptions = [];
-    let select = document.querySelector(`#${idSelect}`); // todos os valores carregados
-    let options = select.options;
-    let listaSel = document.querySelector(`#${idText}`).value.split(";"); // todos os valores salvos no item
+    let selectOptions = document.querySelector(`#${idSelect}`).options; // todos os valores carregados do fetch
+    let listaValoresText = document.querySelector(`#${idText}`).value.split(";"); // todos os valores salvos no item
 
-    listaSel.forEach(p => {
-        if (p == '') { } else {
-            for (var i = 0; i < options.length; i++) {
-                if (options[i].innerText === p) {
-                    listaOptions.push(options[i].value); // a funcao .val() do select2 detecta somente o .value da option
+    listaValoresText.forEach(txt => { //QUANDO TODOS OS VALORES DO BANCO ESTIVEREM TRATADOS, NAO SERA MAIS NECESSARIO ITERAR PELOS VALORES EM TXT PARAR FAZER O TRIGGER NO SELECT2
+        if (txt == '') { } else {
+            for (var i = 0; i < selectOptions.length; i++) {
+                if (selectOptions[i].value === txt) {
+                    listaOptions.push(selectOptions[i].value); // a funcao .val() do select2 detecta somente o .value da option
                 }                
             }
         }

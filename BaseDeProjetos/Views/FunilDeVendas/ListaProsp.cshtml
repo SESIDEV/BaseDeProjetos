@@ -45,17 +45,19 @@
                         {
                             <tr id="table-row-@prospeccao.Id">
                                 <td class="cell">
-                                    @if (prospeccao.NomeProspeccao != null)
-                                    {
-                                        <span>@prospeccao.NomeProspeccao</span> @*Projeto*@
-                                    }
-                                    else
-                                    {
-                                        <span>A definir</span> @*Projeto*@
-                                    }
-                                    @if(prospeccao.Ancora == true){
-                                        <span class="translate-middle badge rounded-pill bg-warning" data-tippy-content='@FunilHelpers.MostrarAgregadas(agregadas, prospeccao.Agregadas)'>@prospeccao.Agregadas.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Length</span>
-                                    }
+                                    <div style="display: flex;align-items: center;">
+                                        @if (prospeccao.NomeProspeccao != null)
+                                        {
+                                            <span style="margin-right: 10px;">@prospeccao.NomeProspeccao</span> @*Projeto*@
+                                        }
+                                        else
+                                        {
+                                            <span>A definir</span> @*Projeto*@
+                                        }
+                                        @if(prospeccao.Ancora == true){
+                                            <span class="translate-middle badge rounded-pill bg-warning" data-tippy-content='@FunilHelpers.MostrarAgregadas(agregadas, prospeccao.Agregadas)'>+@prospeccao.Agregadas.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Length</span>
+                                        }
+                                    </div>
                                 </td>
                                 <td class="cell">
                                     @if (prospeccao.Empresa.Logo != null)
@@ -73,7 +75,7 @@
                                 </td>
                                 <td class="cell">
                                     <div>
-                                        @prospeccao.Empresa.Nome @*Empresa*@
+                                        @prospeccao.Empresa.NomeFantasia @*Empresa*@
                                     </div>
                                 </td>
                                 <td class="cell">
