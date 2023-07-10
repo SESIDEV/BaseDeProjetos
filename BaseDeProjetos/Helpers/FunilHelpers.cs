@@ -307,7 +307,7 @@ namespace BaseDeProjetos.Helpers
                     }
                 }
 
-                return empresas.Replace(";", "\n");
+                return empresas.Replace(";", "<br>");
             } else {
                 return "";
             }

@@ -25,9 +25,8 @@
                 <table class="table mb-0 text-left">
                     <thead>
                         <tr>
+                            <th class="cell" style="text-align: center;">Empresa</th>
                             <th class="cell">Projeto</th>
-                            <th class="cell">Logo</th>
-                            <th class="cell">Empresa</th>
                             <th class="cell">Equipe</th>
                             <th class="cell">Tipo Contratação</th>
                             <th class="cell">Status</th>
@@ -45,6 +44,31 @@
                         {
                             <tr id="table-row-@prospeccao.Id">
                                 <td class="cell">
+                                    <div class="d-flex gap-2 flex-column align-items-center">
+                                        <div> @*ICONES*@
+                                            @if (prospeccao.Empresa.Industrial == false){
+                                                <span class="translate-top-left badge rounded-circle bg-danger" data-tippy-content="<span style='text-align: center'>Esta empresa não possui<br>CNAE Industrial</span>">!</span>
+                                            }
+                                            @if(prospeccao.Ancora == true){
+                                                <span class="translate-top-right badge rounded-pill bg-warning" data-tippy-content='@FunilHelpers.MostrarAgregadas(agregadas, prospeccao.Agregadas)'>+@prospeccao.Agregadas.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Length</span>
+                                            }
+                                        </div>
+                                        <div> @*LOGO*@
+                                            @if (prospeccao.Empresa.Logo != null)
+                                            {
+                                                <img style="border: 2px solid #999; border-radius: 10px;" loading="lazy" src="@prospeccao.Empresa.Logo" id="logoEmpresa" alt="Logo da Empresa" style="background-color:white" width="175%">
+                                            }
+                                            else
+                                            {
+                                                <nobr id="logo_alt">Sem Logo</nobr>
+                                            }
+                                        </div>
+                                        <div> @*NOME EMPRESA*@
+                                            @prospeccao.Empresa.NomeFantasia
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="cell">
                                     <div style="display: flex;align-items: center;">
                                         @if (prospeccao.NomeProspeccao != null)
                                         {
@@ -54,28 +78,6 @@
                                         {
                                             <span>A definir</span> @*Projeto*@
                                         }
-                                        @if(prospeccao.Ancora == true){
-                                            <span class="translate-middle badge rounded-pill bg-warning" data-tippy-content='@FunilHelpers.MostrarAgregadas(agregadas, prospeccao.Agregadas)'>+@prospeccao.Agregadas.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Length</span>
-                                        }
-                                    </div>
-                                </td>
-                                <td class="cell">
-                                    @if (prospeccao.Empresa.Logo != null)
-                                    {
-                                        <img loading="lazy" src="@prospeccao.Empresa.Logo" id="logoEmpresa" alt="Logo da Empresa" style="background-color:white">
-                                    }
-                                    else
-                                    {
-                                        <nobr id="logo_alt">Sem Logo</nobr>
-                                    }
-                                    @if (prospeccao.Empresa.Industrial == false)
-                                    {
-                                        <span class="translate-middle badge rounded-circle bg-danger" data-tippy-content="Esta empresa não possui CNAE Industrial">!</span>
-                                    }
-                                </td>
-                                <td class="cell">
-                                    <div>
-                                        @prospeccao.Empresa.NomeFantasia @*Empresa*@
                                     </div>
                                 </td>
                                 <td class="cell">
