@@ -70,7 +70,7 @@ function FiltroEmpresaEstrangeira() {
     let cnpj = document.getElementById("valor_cnpj");
     let campo1 = document.getElementById("cadastro_campo1");
     let campo2 = document.getElementById("cadastro_campo2");
-    let nome = document.getElementById("NomeEmpresaCadastro");
+    let nome = document.getElementById("RazaoSocialEmpresaCadastro");
     let estado_int = document.getElementById("EstadoEmpresaCadastroINT");
 
 
@@ -80,7 +80,7 @@ function FiltroEmpresaEstrangeira() {
         campo1.style.display = "none"
         estado_int.value = 26;
         campo2.style.display = "none"
-        nome.removeAttribute('readonly')
+        nome.style.display = "none"
 
     } else {
 
@@ -88,7 +88,7 @@ function FiltroEmpresaEstrangeira() {
         campo1.style.display = "block"
         estado_int.value = 0;
         campo2.style.display = "block"
-        nome.setAttribute('readonly')
+        nome.style.display = "block"
 
     }
 
@@ -614,14 +614,14 @@ function AplicarDadosAPI(idElemento) {
                 listaCNAE.push(ativ.code);
             });
             if (idElemento == null) {
-                document.getElementById("NomeEmpresaCadastro").value = dados.nome;
-                document.getElementById("NomeFantasiaEmpresa").value = dados.fantasia;
+                document.getElementById("RazaoSocialEmpresaCadastro").value = dados.nome;
+                document.getElementById("NomeEmpresa").value = dados.fantasia;
                 document.getElementById("TipoEmpresaStatus").innerHTML = "Tipo: " + dados.tipo;
                 document.getElementById("SituacaoEmpresaStatus").innerHTML = "Situação: " + dados.situacao;
                 checarCNAE(listaCNAE);
             } else {
-                document.getElementById(`NomeEmpresaCadastro-${idElemento}`).value = dados.nome;
-                document.getElementById(`NomeFantasiaEmpresa-${idElemento}`).value = dados.fantasia;
+                document.getElementById(`RazaoSocialEmpresaCadastro-${idElemento}`).value = dados.nome;
+                document.getElementById(`NomeEmpresa-${idElemento}`).value = dados.fantasia;
                 document.getElementById(`TipoEmpresaStatus-${idElemento}`).innerHTML = "Tipo: " + dados.tipo;
                 document.getElementById(`SituacaoEmpresaStatus-${idElemento}`).innerHTML = "Situação: " + dados.situacao;
                 checarCNAE(listaCNAE, idElemento);
