@@ -64,6 +64,29 @@ var dictCNAE = {
     "91": "ATIVIDADES LIGADAS AO PATRIMÔNIO CULTURAL E AMBIENTAL (RESTAURAÇÃO E CONSERVAÇÃO DE LUGARES E PRÉDIOS HISTÓRICOS, CNAE: 9102302)"
 }
 
+function previewBase64(inputId, imgId, base64Id) {
+    var input = document.getElementById(inputId);
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var imgPreview = document.getElementById(imgId);
+            imgPreview.src = e.target.result;
+            converterParaBase64(input.files[0], base64Id);
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function converterParaBase64(file, id) {
+    var reader = new FileReader();
+    reader.onloadend = function () {
+        var base64String = reader.result;
+        var logoBase64Input = document.getElementById(id);
+        logoBase64Input.value = base64String;
+    };
+    reader.readAsDataURL(file);
+}
+
 function FiltroEmpresaEstrangeira() {
 
     let checkBox = document.getElementById("empresa_estrangeira_check");
@@ -72,7 +95,6 @@ function FiltroEmpresaEstrangeira() {
     let campo2 = document.getElementById("cadastro_campo2");
     let nome = document.getElementById("RazaoSocialEmpresaCadastro");
     let estado_int = document.getElementById("EstadoEmpresaCadastroINT");
-
 
     if (checkBox.checked == true) {
 
@@ -671,8 +693,6 @@ function AplicarDadosAPI(idElemento) {
             } else {
                 document.getElementById(`EstadoEmpresaCadastro-${idElemento}`).value = siglas.find(dados.uf);
             }
-
-
 
             // CONVERTER A SIGLA DE CADA ESTADO PARA O ÍNDICE DO ENUM
             function Dicionario2() {
