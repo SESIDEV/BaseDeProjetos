@@ -28,15 +28,11 @@
                     <hr />
                     <h6 style="display: none;" id="TipoEmpresaStatus-@Model.Id">Tipo:</h6>
                     <h6 style="display: none;" id="SituacaoEmpresaStatus-@Model.Id">Situação:</h6>
-
-                    @if (Model.Industrial)
-                    {
                     <div style="display: none; align-items: baseline;">
                         <h6 id="BoolCnaeIndustrial-@Model.Id">CNAE Industrial:</h6>
                         <i id="checkCNAE-@Model.Id" class="fa" style="display:none; color:rgb(255, 255, 255); margin-left:1%"></i>
                         <input asp-for="Industrial" id="BoolCnaeIndustrial-@Model.Id" value="@Model.Industrial" style="display: none;" readonly />
                     </div>
-                    }
                     
                     <div class="form-group">
                         <label asp-for="Nome" class="control-label"></label>
@@ -59,6 +55,7 @@
                     <div class="form-group">
                         <label asp-for="Logo" class="control-label"></label>
                         <input type="file" class="form-control" id="logo_imagem-@Model.Id" onchange="Base64('@(Model.Id)')" />
+                        <input asp-for="Logo" id="img_b64-@Model.Id" class="form-control" style="display: none;" value="@Model.Logo" onchange="MostrarImagem('@Model.Id')">
                     </div>
                     <img id="img_preview-@Model.Id" src="@Model.Logo" width="300" style="margin-top:5px;">
                 </div>
@@ -69,7 +66,6 @@
             </div>
         </div>
     </div>
-    <input asp-for="Logo" id="img_b64-@Model.Id" class="form-control" style="display: none;" value="@Model.Logo" onchange="MostrarImagem('@Model.Id')">
 
 </form>
 
