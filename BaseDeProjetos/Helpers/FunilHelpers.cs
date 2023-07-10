@@ -303,7 +303,7 @@ namespace BaseDeProjetos.Helpers
                 foreach (var p in aggTodas)
                 {
                     if(agg.Contains(p.Id)){
-                        empresas += p.Empresa.NomeFantasia + ";";
+                        empresas += p.Empresa.Nome + ";";
                     }
                 }
 
@@ -451,8 +451,8 @@ namespace BaseDeProjetos.Helpers
                 searchString = searchString.ToLower();
 
                 prospeccoes = prospeccoes.Where(p =>
+                ChecarSubstring(searchString, p.Empresa.RazaoSocial) ||
                 ChecarSubstring(searchString, p.Empresa.Nome) ||
-                ChecarSubstring(searchString, p.Empresa.NomeFantasia) ||
                 ChecarSubstring(searchString, p.Id) ||
                 ChecarSubstring(searchString, p.Usuario.UserName) ||
                 ChecarSubstring(searchString, p.NomeProspeccao) ||
