@@ -146,14 +146,11 @@ function FiltroEmpresaEstrangeira() {
 }
 
 function ChecarPatente() {
-function ChecarPatente() {
 
     let valor = document.querySelector('#select_tipo').value
     if (valor == 8) {
-    if (valor == 8) {
         document.querySelector('#campos-patente').style = 'display:block'
     }
-    else {
     else {
         document.querySelector('#campos-patente').style = 'display:none'
     }
