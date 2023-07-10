@@ -294,6 +294,25 @@ namespace BaseDeProjetos.Helpers
             }
         }
 
+        public static string MostrarAgregadas(List<Prospeccao> aggTodas, string agregadas)
+        {
+            if(!aggTodas.IsNullOrEmpty()){
+                string empresas = "";
+                List<string> agg = agregadas.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+                foreach (var p in aggTodas)
+                {
+                    if(agg.Contains(p.Id)){
+                        empresas += p.Empresa.NomeFantasia + ";";
+                    }
+                }
+
+                return empresas.Replace(";", "\n");
+            } else {
+                return "";
+            }
+        }
+
         public static void RepassarStatusAoCancelarAncora(ApplicationDbContext _context, Prospeccao prospeccao)
         {
             if(!prospeccao.Agregadas.IsNullOrEmpty()){
@@ -331,6 +350,7 @@ namespace BaseDeProjetos.Helpers
                     }
                 }
             }
+            prospeccao.Agregadas = "";
         }
 
         public static Usuario ObterUsuarioAtivo(ApplicationDbContext _context, HttpContext HttpContext)

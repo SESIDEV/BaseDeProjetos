@@ -65,6 +65,7 @@ namespace BaseDeProjetos.Controllers
 
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
                 ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
+                ViewData["ProspeccoesAgregadas"] = _context.Prospeccao.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
 
                 if (string.IsNullOrEmpty(aba))
                 {
@@ -451,9 +452,7 @@ namespace BaseDeProjetos.Controllers
 
             if(prospAntiga.Ancora == true && prospeccao.Ancora == false){ // compara a versão antiga com a nova que irá para o Update()
                 FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
-            }
-
-            if(prospAntiga.Agregadas != prospeccao.Agregadas){
+            } else if(prospAntiga.Agregadas != prospeccao.Agregadas){
                 FunilHelpers.AddAgregadas(_context, prospAntiga, prospeccao);
                 FunilHelpers.DelAgregadas(_context, prospAntiga, prospeccao);
             }
