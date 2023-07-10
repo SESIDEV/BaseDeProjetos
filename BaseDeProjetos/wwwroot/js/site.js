@@ -212,6 +212,7 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
             break;
         case "Tags":
             defRota = '/FunilDeVendas/PuxarTagsProspecoes';
+            value = "Tags"; // talvez quebre ??
             inner = "Tags";
             break;
         case "Prospeccoes":
@@ -275,53 +276,21 @@ function selectToText(checkAlterados, id) {
     })
 }
 
-function carregarValoresInputParaSelect(idText, idSelect, rota){
+function carregarValoresInputParaSelect(idText, idSelect){
     let listaOptions = [];
-    let select = document.querySelector(`#${idSelect}`);
+    let select = document.querySelector(`#${idSelect}`); // todos os valores carregados
     let options = select.options;
-    let listaSel = document.querySelector(`#${idText}`).value.split(";");
+    let listaSel = document.querySelector(`#${idText}`).value.split(";"); // todos os valores salvos no item
 
     listaSel.forEach(p => {
         if (p == '') { } else {
             for (var i = 0; i < options.length; i++) {
-                
-                
-                    switch (rota) {
-                        case "Pessoas":
-                            //value = Email;
-                            //innerHTML = UserName;
-                            if (options[i].innerText === p) { // possiveis erros futuros
-                                listaOptions.push(options[i].innerHTML); // considerar trocar para Id
-                            }
-                            break;
-                        case "Empresas":
-                            //value = Id;
-                            //innerHTML = NomeFantasia;
-                            if (options[i].innerText === p) { // possiveis erros futuros
-                                listaOptions.push(options[i].innerHTML); // considerar trocar para Id
-                            }
-                            break;
-                        case "Tags":
-                            if (options[i].value === p) {
-                                listaOptions.push(options[i].value);
-                            }
-                            break;
-                        case "Prospeccoes":
-                            //value = Id;
-                            //innerHTML = Titulo;
-                            if (options[i].value === p) {
-                                listaOptions.push(options[i].value);
-                            }
-                            break;
-                        default:
-                            console.log(`Erro: ${rota} é uma rota inválida`);
-                            break;
-                    }
-                
+                if (options[i].innerText === p) {
+                    listaOptions.push(options[i].value); // a funcao .val() do select2 detecta somente o .value da option
+                }                
             }
         }
-    $(`#${idSelect}`).val(listaOptions);
-    $(`#${idSelect}`).trigger('change');
+    $(`#${idSelect}`).val(listaOptions).trigger('change');
     })
 }
 
