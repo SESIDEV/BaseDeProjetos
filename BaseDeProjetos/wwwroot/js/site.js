@@ -226,8 +226,9 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
     }
     fetch(defRota).then(response => response.json()).then(lista => {
         lista.forEach(function (item) {
-            //if (rota == "Pessoas" && item[inner] == lider){} else
-            {
+            if (rota == "Pessoas" && item[inner] == lider){
+                //nao faca nada
+            } else {
                 var opt = document.createElement("option");
                 if (rota != "Tags") { opt.value = item[value] }
                 opt.innerHTML = item[inner]
