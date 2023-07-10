@@ -201,7 +201,7 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
     switch (rota) {
         case "Pessoas":
             defRota = '/FunilDeVendas/PuxarDadosUsuarios';
-            value = "Email";
+            value = "UserName"; //trocar para Email ? (este é o valor que vai para o banco)
             inner = "UserName";
             lider = document.querySelector(`#${userLider}`).selectedOptions[0].text;
             break;
@@ -225,8 +225,8 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
     }
     fetch(defRota).then(response => response.json()).then(lista => {
         lista.forEach(function (item) {
-            //if (rota == "Pessoas" && item[inner] == lider){}
-            if(true){
+            //if (rota == "Pessoas" && item[inner] == lider){} else
+            {
                 var opt = document.createElement("option");
                 if (rota != "Tags") { opt.value = item[value] }
                 opt.innerHTML = item[inner]
