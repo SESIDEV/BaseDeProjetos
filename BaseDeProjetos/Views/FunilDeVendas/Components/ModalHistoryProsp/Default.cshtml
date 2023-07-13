@@ -9,6 +9,10 @@
         ViewData["Area"] = Context.Session.GetString("_Casa");
     }
 }
+@foreach (var followup in Model.Status.OrderBy(s => s.Data).ToList())
+{
+    @await Component.InvokeAsync("ModalEditFollowupProsp", new { id = Model.Id, id2 = followup.Id })
+}
 
 <!-- Modal -->
 <div class="modal fade" id="historyProspModal-@Model.Id" tabindex="-1"
@@ -25,10 +29,7 @@
                     {
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="panelsFollowups-heading-@followup.Id">
-                                <button class="accordion-button collapsed"
-                                onclick="carregarModalEditarFollowup('@Model.Id','@followup.Id','EditFollowup')"
-                                type="button" data-bs-toggle="collapse"
-                                data-bs-target="#panelsFollowups-collapse-@followup.Id" aria-expanded="true"
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsFollowups-collapse-@followup.Id" aria-expanded="true"
                                 aria-controls="panelsFollowups-collapse-@followup.Id">
                                     <div style="font-weight: 600">@followup.Data.ToString("dd/MM/yyyy",
                                     CultureInfo.CreateSpecificCulture("pt-BR")) - @(followup.Status.GetDisplayName())
