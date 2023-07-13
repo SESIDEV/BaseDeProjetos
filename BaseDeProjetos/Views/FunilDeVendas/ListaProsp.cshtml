@@ -18,6 +18,18 @@
     }
 </style>
 
+<div class="app-card app-card-orders-table shadow-sm mb-5">
+    @foreach (var prospeccao in Model.Prospeccoes) 
+    {
+        @* ["Edit", "Delete", "History", "CreateFollowup", "EditFollowup", "Detalhes"] *@
+        @await Component.InvokeAsync("ModalEditProsp", new { id = prospeccao.Id })
+        @await Component.InvokeAsync("ModalDeleteProsp", new { id = prospeccao.Id })
+        @await Component.InvokeAsync("ModalDetailsProsp", new { id = prospeccao.Id })
+        @await Component.InvokeAsync("ModalHistoryProsp", new { id = prospeccao.Id }) 
+        @await Component.InvokeAsync("ModalCreateFollowupProsp", new { id = prospeccao.Id })
+    }
+</div>
+
 <div class="tab-pane fade show active" id="prospeccao-@aba" role="tabpanel" aria-labelledby="prospeccao-@aba-tab">
     <div class="app-card app-card-orders-table shadow-sm mb-5">
         <div class="app-card-body">
@@ -142,7 +154,7 @@
                                     </div>
                                 </td>
                                 <td class="cell">
-                                    <button type="button" id="button-@prospeccao.Id" onmouseover="carregarModaisFunil('@prospeccao.Id')" data-bs-target="#modalDetalhes-@prospeccao.Id"
+                                    <button type="button" id="button-@prospeccao.Id" data-bs-target="#modalDetalhes-@prospeccao.Id"
                                             data-bs-toggle="modal" class="btn-sm app-btn-primary">
                                         Detalhes
                                     </button>

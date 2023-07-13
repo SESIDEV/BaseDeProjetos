@@ -17,9 +17,8 @@ namespace BaseDeProjetos.ViewComponents.FunilDeVendasViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync(string id)
         {
-            // Adaptar para create
             ViewData["prospeccao"] = await _context.Prospeccao.FindAsync(id);
-            return View();
+            return View(new FollowUp());
         }
     }
 }
