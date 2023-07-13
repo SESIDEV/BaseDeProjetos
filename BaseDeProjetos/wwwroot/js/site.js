@@ -225,7 +225,7 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
             defRota = '/FunilDeVendas/PuxarDadosUsuarios';
             value = "UserName"; //trocar para Email ?
             inner = "UserName";
-            lider = document.querySelector(`#${userLider}`).selectedOptions[0].text;
+            if(userLider != null){lider = document.querySelector(`#${userLider}`).selectedOptions[0].text;};
             break;
         case "Empresas":
             defRota = '/Empresas/PuxarEmpresas';
