@@ -18,7 +18,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-2">
+                    <div class="mb-2 d-none">
                         <label asp-for="Id" class="col-form-label" style="font-weight: 600"></label>
                         @{
                             var unique_id = $"prosp_{DateTime.Now.Ticks}";
