@@ -217,7 +217,7 @@ function gerarOpcoesSelect(rota, modelId="", fillValues=false) { // os últimos 
     let caixaId = `caixaPesquisa${rota}${modelId}`;
     let botaoAlterar = `botaoToggleCaixaRequest${rota}${modelId}`;
     let loadingIcon = `loadingOpcoesSelect${rota}${modelId}`;
-    let idText = `inputText${rota}`;
+    let idText = `inputText${rota}${modelId}`;
 
     document.querySelector(`#${caixaId}`).style.display = "none";
     document.querySelector(`#${loadingIcon}`).style.display = "block";
