@@ -213,11 +213,11 @@ function gerarOpcoesSelect(rota, modelId="", fillValues=false) { // os últimos 
     let value = "";
     let inner = "";
     let lider = "";
-    let idSelect = `campoSelectEdit${rota}${modelId}`;
-    let caixaId = `caixaPesquisaEdit${rota}${modelId}`;
-    let botaoAlterar = `botaoToggleCaixaRequestEdit${rota}${modelId}`;
+    let idSelect = `campoSelect${rota}${modelId}`;
+    let caixaId = `caixaPesquisa${rota}${modelId}`;
+    let botaoAlterar = `botaoToggleCaixaRequest${rota}${modelId}`;
     let loadingIcon = `loadingOpcoesSelect${rota}${modelId}`;
-    let idText = `inputTextEdit${rota}`;
+    let idText = `inputText${rota}`;
 
     document.querySelector(`#${caixaId}`).style.display = "none";
     document.querySelector(`#${loadingIcon}`).style.display = "block";
