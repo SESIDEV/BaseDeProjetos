@@ -59,10 +59,10 @@
                                     <div class="d-flex gap-2 flex-column align-items-center">
                                         <div> @*ICONES*@
                                             @if (prospeccao.Empresa.Industrial == false){
-                                                <span class="translate-top-left badge rounded-circle bg-danger" data-tippy-content="<center>Esta empresa não possui<br>CNAE Industrial</center>">!</span>
+                                                <span id="tip_ind" class="translate-top-left badge rounded-circle bg-danger" data-tippy-content="<center>Esta empresa não possui<br>CNAE Industrial</center>">!</span>
                                             }
                                             @if(prospeccao.Ancora == true){
-                                                <span class="translate-top-right badge rounded-pill bg-warning" data-tippy-content='@FunilHelpers.MostrarAgregadas(agregadas, prospeccao.Agregadas)'>+@prospeccao.Agregadas.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Length</span>
+                                                <span id="tip_agg" class="translate-top-right badge rounded-pill bg-warning" data-tippy-content='@FunilHelpers.MostrarAgregadas(agregadas, prospeccao.Agregadas)'>+@prospeccao.Agregadas.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Length</span>
                                             }
                                         </div>
                                         <div> @*LOGO*@

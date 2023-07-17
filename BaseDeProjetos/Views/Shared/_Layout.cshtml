@@ -39,24 +39,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 
-    <!-- Tippy.js -->
-    <script src="https://unpkg.com/tippy.js@6.3.2/dist/tippy-bundle.umd.min.js"></script>
-
     <!-- Popper JS -->
-    <script src="https://unpkg.com/@@popperjs/core@2"></script>
+    <script src="https://unpkg.com/%40popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
 
-    <!--Icons--->
+    <!-- Tippy.js -->
+    <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
+
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <!-- Initialize tooltips -->
-    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        tippy('[data-tippy-content]', {
-        placement: 'top',
-        allowHTML: true
-        });
-    });
-    </script>
+
 </head>
 <body class="app">
     @{
@@ -76,5 +68,11 @@
     @RenderBody()
 
     @RenderSection("Scripts", required: false)
+    
+    <!-- Initialize tooltips -->
+    <script>
+        tippy('#tip_ind', {allowHTML: true, placement: 'left'});
+        tippy('#tip_agg', {allowHTML: true, placement: 'right'});
+    </script>
 </body>
 </html>
