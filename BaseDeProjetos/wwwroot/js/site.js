@@ -207,25 +207,32 @@ function checkAncora(alavanca, iconAncora, campoAgg) {
     }
 }
 
-function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon, idText="", fillValues=false, userLider=null) { // os últimos 3 é exclusivo para a rota de Pessoas, e os últimos 2 são para tratar no Edit
+function gerarOpcoesSelect(rota, modelId="", fillValues=false) { // os últimos 2 parâmetros para tratar no Edit
+
     let defRota = "";
     let value = "";
     let inner = "";
     let lider = "";
+    let idSelect = `campoSelectEdit${rota}${modelId}`;
+    let caixaId = `caixaPesquisaEdit${rota}${modelId}`;
+    let botaoAlterar = `botaoToggleCaixaRequestEdit${rota}${modelId}`;
+    let loadingIcon = `loadingOpcoesSelect${rota}${modelId}`;
+    let idText = `inputTextEdit${rota}`;
+
     document.querySelector(`#${caixaId}`).style.display = "none";
     document.querySelector(`#${loadingIcon}`).style.display = "block";
     document.querySelector(`#${idSelect}`).innerHTML = '';
-    if (nomeModal == null) {
+    if (modelId == "") {
         $(`#${idSelect}`).select2()
     } else {
-        $(`#${idSelect}`).select2({ dropdownParent: $(`#${nomeModal}`) })
+        $(`#${idSelect}`).select2({ dropdownParent: $(`#editarProspModal${modelId}`) })
     }
     switch (rota) { //====================================================== \/\/\/ SWITCH PRINCIPAL \/\/\/ ===============================================================
         case "Pessoas":
             defRota = '/FunilDeVendas/PuxarDadosUsuarios';
             value = "UserName"; //trocar para Email ?
             inner = "UserName";
-            if(userLider != null){lider = document.querySelector(`#${userLider}`).selectedOptions[0].text;};
+            if(document.querySelector(`#selectLiderProsp${modelId}`) != null){lider = document.querySelector(`#selectLiderProsp${modelId}`).selectedOptions[0].text;};
             break;
         case "Empresas":
             defRota = '/Empresas/PuxarEmpresas';
@@ -265,24 +272,26 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
     })
     document.querySelectorAll(".select2-container").forEach(input => { input.style.width = "100%" })
     if (botaoAlterar != null) { document.querySelector(`#${botaoAlterar}`).style.display = "none"; }
-    document.querySelector(`#check${rota}`).checked = true;
+    document.querySelector(`#check${rota}${modelId}`).checked = true;
 }
 
 function procurarPessoa(select) {
     redePessoas.focus(select.value, { scale: 3, animation: { duration: 400 } })
 }
 
-function selectToText(checkAlterados, id) {
+function selectToText(id="") {
     let lista = [];
+    let checkAlterados = `changeCheck${id}`
+
     document.querySelectorAll(`.${checkAlterados}`).forEach(function (check){ //funcao para indicar quais campos select foram alterados (pra não verificar todos a toa)
         if(check.checked == true){lista.push(check.value)}
     })
     lista.forEach(function (rota) {
         let texto = '';
-        if (document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`) != null) {
-            document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`).childNodes.forEach(caixa => {
+        if (document.querySelector(`#select2-campoSelect${rota}${id}-container`) != null) {
+            document.querySelector(`#select2-campoSelect${rota}${id}-container`).childNodes.forEach(caixa => {
 
-                let selecoes = document.querySelector(`#campoSelectEdit${rota}-${id}`).childNodes; // buscar as options na tag select original para trazer os valores (.value)
+                let selecoes = document.querySelector(`#campoSelect${rota}${id}`).childNodes; // buscar as options na tag select original para trazer os valores (.value)
                 for (let i = 0; i < selecoes.length; i++) {
                     let option = selecoes[i];
                     if (option.innerText === caixa.title.replace(/\s+/g, ' ')) { // compara o texto selecionado com o texto da option no loop
@@ -291,7 +300,7 @@ function selectToText(checkAlterados, id) {
                     }
                 }
             })
-        document.querySelector(`#inputTextEdit${rota}-${id}`).value = texto
+        document.querySelector(`#inputText${rota}${id}`).value = texto
         } else {
             return;
         }
@@ -315,18 +324,18 @@ function carregarValoresInputParaSelect(idText, idSelect){
     })
 }
 
-function Base64(id) {
-    imagem = document.getElementById(`logo_imagem-${id}`).files[0];
+function Base64(id="") {
+    imagem = document.getElementById(`logo_imagem${id}`).files[0];
     r = new FileReader();
     r.readAsDataURL(imagem);
     r.onload = function () {
-        document.getElementById(`img_preview-${id}`).src = r.result
-        document.getElementById(`img_b64-${id}`).value = r.result
+        document.getElementById(`img_preview${id}`).src = r.result
+        document.getElementById(`img_b64${id}`).value = r.result
     }
 }
 
-function MostrarImagem(id) {
-    document.getElementById(`img_preview-${id}`).src = document.getElementById(`img_b64-${id}`).value
+function MostrarImagem(id="") {
+    document.getElementById(`img_preview${id}`).src = document.getElementById(`img_b64${id}`).value
 }
 
 function listarCompetencias() {
@@ -565,15 +574,10 @@ function statusPatente() {
 
 }
 
-function validarCNPJ(idElemento = null) {
-    let cnpj;
-    if (idElemento == null) {
-        document.getElementById("valor_cnpj").value = document.getElementById("valor_cnpj").value.replace(/[^0-9]/g, '');
-        cnpj = document.getElementById("valor_cnpj").value;
-    } else {
-        document.getElementById(`valor_cnpj-${idElemento}`).value = document.getElementById(`valor_cnpj-${idElemento}`).value.replace(/[^0-9]/g, '');
-        cnpj = document.getElementById(`valor_cnpj-${idElemento}`).value;
-    }
+function validarCNPJ(idElemento = "") {
+    document.getElementById(`valor_cnpj${idElemento}`).value = document.getElementById(`valor_cnpj${idElemento}`).value.replace(/[^0-9]/g, '');
+    let cnpj = document.getElementById(`valor_cnpj${idElemento}`).value;
+    
     if (isNaN(cnpj) || cnpj.length < 14) {
         alert("CNPJ inválido");
     } else {
@@ -581,51 +585,28 @@ function validarCNPJ(idElemento = null) {
     }
 }
 
-function checarCNAE(listaCNAE, idElemento = null) {
+function checarCNAE(listaCNAE, idElemento = "") {
 
     for (let i = 0; i < listaCNAE.length; i++) {
         var codcnae = listaCNAE[i];
 
         if (typeof (dictCNAE[codcnae.slice(0, 2)]) != "undefined") {
-
-            if (idElemento == null) {
-                document.getElementById("BoolCnaeIndustrial").value = "1";
-                document.getElementById("checkCNAE").style.color = "green";
-                document.getElementById("checkCNAE").classList.value = "fa fa-check";
-                document.getElementById("checkCNAE").style.display = "block";
-            } else {
-                document.getElementById(`BoolCnaeIndustrial-${idElemento}`).value = "1";
-                document.getElementById(`checkCNAE-${idElemento}`).style.color = "green";
-                document.getElementById(`checkCNAE-${idElemento}`).classList.value = "fa fa-check";
-                document.getElementById(`checkCNAE-${idElemento}`).style.display = "block";
-            }
-
+            document.getElementById(`BoolCnaeIndustrial${idElemento}`).value = "1";
+            document.getElementById(`checkCNAE${idElemento}`).style.color = "green";
+            document.getElementById(`checkCNAE${idElemento}`).classList.value = "fa fa-check";
+            document.getElementById(`checkCNAE${idElemento}`).style.display = "block";
             break;
-
         } else {
-
-            if (idElemento == null) {
-                document.getElementById("BoolCnaeIndustrial").value = "0";
-                document.getElementById("checkCNAE").style.color = "red";
-                document.getElementById("checkCNAE").classList.value = "fa fa-close";
-                document.getElementById("checkCNAE").style.display = "block";
-            } else {
-                document.getElementById(`BoolCnaeIndustrial-${idElemento}`).value = "0";
-                document.getElementById(`checkCNAE-${idElemento}`).style.color = "red";
-                document.getElementById(`checkCNAE-${idElemento}`).classList.value = "fa fa-close";
-                document.getElementById(`checkCNAE-${idElemento}`).style.display = "block";
-            }
+            document.getElementById(`BoolCnaeIndustrial${idElemento}`).value = "0";
+            document.getElementById(`checkCNAE${idElemento}`).style.color = "red";
+            document.getElementById(`checkCNAE${idElemento}`).classList.value = "fa fa-close";
+            document.getElementById(`checkCNAE${idElemento}`).style.display = "block";
         }
     };
 }
 
 function AplicarDadosAPI(idElemento) {
-    let cnpj;
-    if (idElemento == null) {
-        cnpj = document.querySelector("#valor_cnpj").value;
-    } else {
-        cnpj = document.querySelector(`#valor_cnpj-${idElemento}`).value;
-    }
+    let cnpj = document.querySelector(`#valor_cnpj${idElemento}`).value;
     let url = window.location.origin + "/Empresas/DadosAPI?query=" + cnpj;
 
     fetch(url).then(res => {
@@ -635,19 +616,11 @@ function AplicarDadosAPI(idElemento) {
             dados.atividades_secundarias.forEach(ativ => {
                 listaCNAE.push(ativ.code);
             });
-            if (idElemento == null) {
-                document.getElementById("RazaoSocialEmpresaCadastro").value = dados.nome;
-                document.getElementById("NomeEmpresa").value = dados.fantasia;
-                document.getElementById("TipoEmpresaStatus").innerHTML = "Tipo: " + dados.tipo;
-                document.getElementById("SituacaoEmpresaStatus").innerHTML = "Situação: " + dados.situacao;
-                checarCNAE(listaCNAE);
-            } else {
-                document.getElementById(`RazaoSocialEmpresaCadastro-${idElemento}`).value = dados.nome;
-                document.getElementById(`NomeEmpresa-${idElemento}`).value = dados.fantasia;
-                document.getElementById(`TipoEmpresaStatus-${idElemento}`).innerHTML = "Tipo: " + dados.tipo;
-                document.getElementById(`SituacaoEmpresaStatus-${idElemento}`).innerHTML = "Situação: " + dados.situacao;
-                checarCNAE(listaCNAE, idElemento);
-            }
+            document.getElementById(`RazaoSocialEmpresaCadastro${idElemento}`).value = dados.nome;
+            document.getElementById(`NomeEmpresa${idElemento}`).value = dados.fantasia;
+            document.getElementById(`TipoEmpresaStatus${idElemento}`).innerHTML = "Tipo: " + dados.tipo;
+            document.getElementById(`SituacaoEmpresaStatus${idElemento}`).innerHTML = "Situação: " + dados.situacao;
+            checarCNAE(listaCNAE, idElemento);
 
             // TUDO DAQUI PRA BAIXO FOI FEITO EXCLUSIVAMENTE PARA CONVERTER A SIGLA DE CADA ESTADO PARA O NOME COMPLETO
             function Dicionario() {
@@ -688,11 +661,7 @@ function AplicarDadosAPI(idElemento) {
             siglas.add('AL', 'Alagoas')
 
             // ESSA LINHA BUSCA O ÍNDICE A PARTIR DA SIGLA DEVOLVIDA PELA API --------\/
-            if (idElemento == null) {
-                document.getElementById("EstadoEmpresaCadastro").value = siglas.find(dados.uf);
-            } else {
-                document.getElementById(`EstadoEmpresaCadastro-${idElemento}`).value = siglas.find(dados.uf);
-            }
+            document.getElementById(`EstadoEmpresaCadastro${idElemento}`).value = siglas.find(dados.uf);
 
             // CONVERTER A SIGLA DE CADA ESTADO PARA O ÍNDICE DO ENUM
             function Dicionario2() {
@@ -733,13 +702,7 @@ function AplicarDadosAPI(idElemento) {
             indices.add('AL', 25)
 
             // ESSA LINHA BUSCA O NOME A PARTIR DA SIGLA DEVOLVIDA PELA API --------\/
-            if (idElemento == null) {
-                document.getElementById("EstadoEmpresaCadastroINT").value = indices.find(dados.uf);
-            }
-            else {
-                document.getElementById(`EstadoEmpresaCadastroINT-${idElemento}`).value = indices.find(dados.uf);
-            }
-
+            document.getElementById(`EstadoEmpresaCadastroINT${idElemento}`).value = indices.find(dados.uf);
         })
     })
 }

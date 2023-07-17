@@ -72,9 +72,9 @@
                         </div>
                         <div class="form-group">
                             <label asp-for="Imagem" class="control-label"></label>
-                            <input type="file" class="form-control" id="logo_imagem-@Model.Id" onchange="Base64('@Model.Id')" />
+                            <input type="file" class="form-control" id="logo_imagem-@Model.Id" onchange="Base64('-@Model.Id')" />
                             <input asp-for="Imagem" id="img_b64-@Model.Id" class="control-label" style="display: none;" value=""
-                                onchange="MostrarImagem('@Model.Id')" readonly>
+                                onchange="MostrarImagem('-@Model.Id')" readonly>
                             <span asp-validation-for="Imagem" class="text-danger"></span>
                         </div>
                         <img id="img_preview-@Model.Id" src="" width="300" style="margin-top:5px;">

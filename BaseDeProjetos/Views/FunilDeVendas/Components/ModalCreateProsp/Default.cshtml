@@ -60,10 +60,10 @@
                         <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectPessoas">
                           <span class="visually-hidden">Loading...</span>
                         </div>
-                        <input asp-for="MembrosEquipe" class="form-control d-none" id="inputTextCreatePessoas" type="text"/>
-                        <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestCreatePessoas" onclick="gerarOpcoesSelect('criarProspModalToggle','campoSelectCreatePessoas','Pessoas','caixaPesquisaCreatePessoas','botaoToggleCaixaRequestCreatePessoas','loadingOpcoesSelectPessoas')">Buscar</button>
-                        <div class="input-group flex-nowrap" id="caixaPesquisaCreatePessoas" style="display:none;">
-                            <select id="campoSelectCreatePessoas" class="form-select" multiple="true"></select>
+                        <input asp-for="MembrosEquipe" class="form-control d-none" id="inputTextPessoas" type="text"/>
+                        <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestPessoas" onclick="gerarOpcoesSelect('Pessoas')">Buscar</button>
+                        <div class="input-group flex-nowrap" id="caixaPesquisaPessoas" style="display:none;">
+                            <select id="campoSelectPessoas" class="form-select" multiple="true"></select>
                         </div>
                     </div>
                     <div class="mb-2">
@@ -83,10 +83,10 @@
                         <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectEmpresas">
                           <span class="visually-hidden">Loading...</span>
                         </div>
-                        <input asp-for="PotenciaisParceiros" class="form-control d-none"  id="inputTextCreateEmpresas" type="text"/>
-                        <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestCreateEmpresas" onclick="gerarOpcoesSelect('criarProspModalToggle','campoSelectCreateEmpresas','Empresas','caixaPesquisaCreateEmpresas','botaoToggleCaixaRequestCreateEmpresas','loadingOpcoesSelectEmpresas')">Buscar</button>
-                        <div class="input-group flex-nowrap" id="caixaPesquisaCreateEmpresas" style="display:none;">
-                            <select id="campoSelectCreateEmpresas" class="form-select" multiple="true" style="display:block;"></select>
+                        <input asp-for="PotenciaisParceiros" class="form-control d-none"  id="inputTextEmpresas" type="text"/>
+                        <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestEmpresas" onclick="gerarOpcoesSelect('Empresas')">Buscar</button>
+                        <div class="input-group flex-nowrap" id="caixaPesquisaEmpresas" style="display:none;">
+                            <select id="campoSelectEmpresas" class="form-select" multiple="true" style="display:block;"></select>
                         </div>
                     </div>
                     <div class="mb-2">
@@ -97,7 +97,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn app-btn-primary" data-bs-target="#criarProspModalToggle2"
-                        data-bs-toggle="modal" onclick="selectToText('campoSelectCreate', 'inputTextCreate')">
+                        data-bs-toggle="modal" onclick="selectToText()">
                         Próximo
                     </button>
                 </div>
@@ -185,11 +185,11 @@
                         <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectTags">
                           <span class="visually-hidden">Loading...</span>
                         </div>
-                        <input type="text" asp-for="Tags" class="form-control" id="tagsTextCreate"/>
-                        <button type="button" style="width: 100%;" id="botaoToggleCaixaRequestCreateTags" onclick="gerarOpcoesSelect('criarProspModalToggle','campoSelectCreateTags','Tags','caixaPesquisaCreateTags','botaoToggleCaixaRequestCreateTags','loadingOpcoesSelectTags')">Adicionar</button>
-                        <div class="input-group flex-nowrap" id="caixaPesquisaCreateTags" style="display:none;">
-                            <select id="campoSelectCreateTags" class="form-select" multiple="true"></select>
-                            <span class="input-group-text" id="addon-wrapping" onclick="addTag('tagsTextCreate','campoSelectCreateTags')" onmouseover="novaTag()">
+                        <input type="text" asp-for="Tags" class="form-control" id="tagsText"/>
+                        <button type="button" style="width: 100%;" id="botaoToggleCaixaRequestTags" onclick="gerarOpcoesSelect('Tags')">Adicionar</button>
+                        <div class="input-group flex-nowrap" id="caixaPesquisaTags" style="display:none;">
+                            <select id="campoSelectTags" class="form-select" multiple="true"></select>
+                            <span class="input-group-text" id="addon-wrapping" onclick="addTag('tagsText','campoSelectTags')" onmouseover="novaTag()">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
                                     <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z"/>
                                 </svg>
