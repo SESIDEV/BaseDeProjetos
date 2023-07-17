@@ -62,16 +62,16 @@
                                     </div>
                                     <div class="form-group">
                                         <label> Casa </label>
-                                        <input type="text" class="form-control" value="@prosp.Casa" readonly />
+                                        <input type="text" class="form-control" value="@prosp.Casa.GetDisplayName()" readonly />
                                     </div>
                                     <div class="form-group">
                                         <label> Tipo de Contratação </label>
-                                        <input type="text" class="form-control" value="@prosp.TipoContratacao" readonly />
+                                        <input type="text" class="form-control" value="@prosp.TipoContratacao.GetDisplayName()" readonly />
                                     </div>
                                     <div class="form-group">
                                         <label> Status </label>
                                         <input type="text" class="form-control"
-                                            value="@prosp.Status.OrderBy(p=> p.Data).Last().Status.ToString()" readonly />
+                                            value="@prosp.Status.OrderBy(p=> p.Data).Last().Status.GetDisplayName()" readonly />
                                     </div>
                                     <div class="form-group">
                                         <label> Contato da prospecção</label>
