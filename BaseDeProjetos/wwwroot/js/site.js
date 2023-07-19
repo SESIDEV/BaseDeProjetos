@@ -591,13 +591,13 @@ function checarCNAE(listaCNAE, idElemento = "") {
         var codcnae = listaCNAE[i];
 
         if (typeof (dictCNAE[codcnae.slice(0, 2)]) != "undefined") {
-            document.getElementById(`BoolCnaeIndustrial${idElemento}`).value = "1";
+            document.getElementById(`BoolCnaeIndustrial${idElemento}`).value = "True";
             document.getElementById(`checkCNAE${idElemento}`).style.color = "green";
             document.getElementById(`checkCNAE${idElemento}`).classList.value = "fa fa-check";
             document.getElementById(`checkCNAE${idElemento}`).style.display = "block";
             break;
         } else {
-            document.getElementById(`BoolCnaeIndustrial${idElemento}`).value = "0";
+            document.getElementById(`BoolCnaeIndustrial${idElemento}`).value = "False";
             document.getElementById(`checkCNAE${idElemento}`).style.color = "red";
             document.getElementById(`checkCNAE${idElemento}`).classList.value = "fa fa-close";
             document.getElementById(`checkCNAE${idElemento}`).style.display = "block";

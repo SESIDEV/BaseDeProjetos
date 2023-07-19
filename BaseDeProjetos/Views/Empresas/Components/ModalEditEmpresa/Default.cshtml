@@ -31,7 +31,7 @@
                     <div style="display: flex; align-items: baseline;">
                         <h6>CNAE Industrial:</h6>
                         <i id="checkCNAE-@Model.Id" class="fa" style="display:none; color:rgb(255, 255, 255); margin-left:1%"></i>
-                        <input asp-for="Industrial" id="BoolCnaeIndustrial-@Model.Id" value="@Model.Industrial" style="display: none;" readonly />
+                        <input asp-for="Industrial" type="text" id="BoolCnaeIndustrial-@Model.Id" value="@Model.Industrial" class="d-none" readonly />
                     </div>
                     
                     <div class="form-group">
