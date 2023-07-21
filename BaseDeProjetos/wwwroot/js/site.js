@@ -121,12 +121,12 @@ function ChecarTipoProducao(id="") {
     let valor = document.querySelector(`#select_tipo${id}`).value
 
     switch(valor){
-        case 8: //patente
+        case "8": //patente
             document.querySelector(`#campos_patente${id}`).style = 'display:block';
             document.querySelector(`#campos_status${id}`).style = 'display:block';
             document.querySelector(`#campos_doi${id}`).style = 'display:block';
             break;
-        case 9: //fatos_relevantes
+        case "9": //fatos_relevantes
             document.querySelector(`#campos_patente${id}`).style = 'display:none';
             document.querySelector(`#campos_status${id}`).style = 'display:none';
             document.querySelector(`#campos_doi${id}`).style = 'display:none';
