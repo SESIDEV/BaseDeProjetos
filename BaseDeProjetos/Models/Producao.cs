@@ -16,10 +16,10 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Título")]
         public virtual string Titulo { get; set; }
 
-        [Display(Name = "Resumo")]
+        [Display(Name = "Descrição/Resumo")]
         public virtual string Descricao { get; set; }
 
-        [Display(Name = "Autores/Inventores/Participantes")]
+        [Display(Name = "Autores/Participantes")]
         public virtual string Autores { get; set; }
 
         [Display(Name = "Status")]
