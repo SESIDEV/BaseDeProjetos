@@ -95,6 +95,9 @@
                         <span asp-validation-for="CaminhoPasta" class="text-danger"></span>
                     </div>
                 </div>
+                <input style="display:none" type="checkbox" disabled class="changeCheck-@Model.Id" value="Pessoas" id="checkPessoas-@Model.Id">
+                <input style="display:none" type="checkbox" disabled class="changeCheck-@Model.Id" value="Empresas" id="checkEmpresas-@Model.Id">
+                <input style="display:none" type="checkbox" disabled class="changeCheck-@Model.Id" value="Prospeccoes" id="checkProspeccoes-@Model.Id">
                 <div class="modal-footer">
                     <button type="button" class="btn app-btn-primary" data-bs-target="#criarProspModalToggle2"
                         data-bs-toggle="modal" onclick="selectToText()">
@@ -145,7 +148,6 @@
                         <input type="email" asp-for="Contato.Email" class="form-control" />
                         <span asp-validation-for="Contato.Email" class="text-danger"></span>
                     </div>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn app-btn-primary" data-bs-target="#criarProspModalToggle"
