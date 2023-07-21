@@ -122,19 +122,19 @@ function ChecarTipoProducao(id="") {
 
     switch(valor){
         case 8: //patente
-            document.querySelector('#campos_patente').style = 'display:block';
-            document.querySelector('#campos_status').style = 'display:block';
-            document.querySelector('#campos_doi').style = 'display:block';
+            document.querySelector(`#campos_patente${id}`).style = 'display:block';
+            document.querySelector(`#campos_status${id}`).style = 'display:block';
+            document.querySelector(`#campos_doi${id}`).style = 'display:block';
             break;
         case 9: //fatos_relevantes
-            document.querySelector('#campos_patente').style = 'display:none';
-            document.querySelector('#campos_status').style = 'display:none';
-            document.querySelector('#campos_doi').style = 'display:none';
+            document.querySelector(`#campos_patente${id}`).style = 'display:none';
+            document.querySelector(`#campos_status${id}`).style = 'display:none';
+            document.querySelector(`#campos_doi${id}`).style = 'display:none';
             break;
         default: //demais pubs
-            document.querySelector('#campos-patente').style = 'display:none';
-            document.querySelector('#campos_status').style = 'display:block';
-            document.querySelector('#campos_doi').style = 'display:block';
+            document.querySelector(`#campos-patente${id}`).style = 'display:none';
+            document.querySelector(`#campos_status${id}`).style = 'display:block';
+            document.querySelector(`#campos_doi${id}`).style = 'display:block';
             break;
     }
 }
@@ -575,13 +575,13 @@ function converterCompetencias() {
 
 }
 
-function statusPatente() {
+function statusPatente(id="") {
 
-    let status = document.querySelector("#StatusPub").value
+    let status = document.querySelector(`#StatusPub${id}`).value
     if (status != 5) {
-        document.querySelector("#NumPatente").readOnly = true;
+        document.querySelector(`#NumPatente${id}`).readOnly = true;
     } else {
-        document.querySelector("#NumPatente").readOnly = false;
+        document.querySelector(`#NumPatente${id}`).readOnly = false;
     }
 
 }
