@@ -116,14 +116,26 @@ function FiltroEmpresaEstrangeira() {
 
 }
 
-function ChecarPatente() {
+function ChecarTipoProducao(id="") {
 
-    let valor = document.querySelector('#select_tipo').value
-    if (valor == 8) {
-        document.querySelector('#campos-patente').style = 'display:block'
-    }
-    else {
-        document.querySelector('#campos-patente').style = 'display:none'
+    let valor = document.querySelector(`#select_tipo${id}`).value
+
+    switch(valor){
+        case 8: //patente
+            document.querySelector('#campos_patente').style = 'display:block';
+            document.querySelector('#campos_status').style = 'display:block';
+            document.querySelector('#campos_doi').style = 'display:block';
+            break;
+        case 9: //fatos_relevantes
+            document.querySelector('#campos_patente').style = 'display:none';
+            document.querySelector('#campos_status').style = 'display:none';
+            document.querySelector('#campos_doi').style = 'display:none';
+            break;
+        default: //demais pubs
+            document.querySelector('#campos-patente').style = 'display:none';
+            document.querySelector('#campos_status').style = 'display:block';
+            document.querySelector('#campos_doi').style = 'display:block';
+            break;
     }
 }
 

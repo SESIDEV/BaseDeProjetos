@@ -133,7 +133,7 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Tratamento de Efluentes")]
         TratamentEfluentes,
     }
-    public enum GrupoPublicacao
+    public enum GrupoProducao
     {
         [Display(Name = "Trabalho em Eventos", GroupName = "Produção Bibliográfica")]
         Trabalho,
@@ -160,7 +160,10 @@ namespace BaseDeProjetos.Models
         Relatorio,
 
         [Display(Name = "Patente", GroupName = "Produção Técnica, Patentes e Registros")]
-        Patente = 8,
+        Patente = 8, //precisa ser 8 por causa do JS
+
+        [Display(Name = "Fatos Relevantes", GroupName = "Outros")]
+        Fatos,
 
     }
     public enum Titulacao

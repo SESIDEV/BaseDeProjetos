@@ -21,8 +21,8 @@
                     <div class="form-group">
                         <div class="form-group">
                             <label asp-for="Grupo" class="control-label"></label>
-                            <select id="select_tipo" asp-for="Grupo" class="form-control" onchange="ChecarPatente()"
-                                asp-items="Html.GetEnumSelectList<GrupoPublicacao>().OrderBy(p=>p.Text)"></select>
+                            <select id="select_tipo" asp-for="Grupo" class="form-control" onchange="ChecarTipoProducao()"
+                                asp-items="Html.GetEnumSelectList<GrupoProducao>().OrderBy(p=>p.Text)"></select>
                             <span asp-validation-for="Grupo" class="text-danger"></span>
                         </div>
                         <div class="form-group">
@@ -46,7 +46,7 @@
                             <input asp-for="Autores" class="form-control" />
                             <span asp-validation-for="Autores" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
+                        <div id='campos_status' class="form-group">
                             <label asp-for="StatusPub" class="control-label"></label>
                             <select asp-for="StatusPub" class="form-control" onchange="statusPatente()"
                                 asp-items="Html.GetEnumSelectList<StatusPub>()"></select>
@@ -62,7 +62,7 @@
                             <input asp-for="Local" class="form-control" />
                             <span asp-validation-for="Local" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
+                        <div id='campos_doi' class="form-group">
                             <label asp-for="DOI" class="control-label"></label>
                             <input asp-for="DOI" class="form-control" />
                             <span asp-validation-for="DOI" class="text-danger"></span>
@@ -75,7 +75,7 @@
                             <span asp-validation-for="Imagem" class="text-danger"></span>
                         </div>
                         <img id="img_preview" src="" width="300" style="margin-top:5px;">
-                        <div id='campos-patente' style='display:none'>
+                        <div id='campos_patente' style='display:none'>
                             <hr>
                             <div class="form-group">
                                 <label asp-for="Projeto" class="control-label"></label>
