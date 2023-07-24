@@ -7,7 +7,7 @@ namespace BaseDeProjetos.Models
     {
         public virtual int Id { get; set; }
 
-        [Display(Name = "Tipo de Publicação")]
+        [Display(Name = "Tipo de Produção")]
         public virtual GrupoProducao Grupo { get; set; }
 
         [Display(Name = "Instituto")]

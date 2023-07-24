@@ -162,8 +162,19 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Patente", GroupName = "Produção Técnica, Patentes e Registros")]
         Patente = 8, //precisa ser 8 por causa do JS
 
-        [Display(Name = "Fatos Relevantes", GroupName = "Outros")]
-        Fatos,
+        [Display(Name = "Participação em Eventos/Palestras", GroupName = "Outros")]
+        Participacao,
+
+        [Display(Name = "Visita Técnica", GroupName = "Outros")]
+        Visita,
+
+        [Display(Name = "Cooperação", GroupName = "Outros")]
+        Cooperacao,
+
+        [Display(Name = "Prêmio", GroupName = "Outros")]
+        Premio,
+
+
 
     }
     public enum Titulacao
