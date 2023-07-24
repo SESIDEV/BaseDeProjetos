@@ -126,7 +126,7 @@ function ChecarTipoProducao(id="") {
             document.querySelector(`#campos_status${id}`).style = 'display:block';
             document.querySelector(`#campos_doi${id}`).style = 'display:block';
             break;
-        case "9": //fatos_relevantes
+        case "9": case "10": case "11": case "12": //fatos_relevantes
             document.querySelector(`#campos_patente${id}`).style = 'display:none';
             document.querySelector(`#campos_status${id}`).style = 'display:none';
             document.querySelector(`#campos_doi${id}`).style = 'display:none';
