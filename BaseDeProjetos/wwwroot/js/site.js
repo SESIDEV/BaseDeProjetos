@@ -132,7 +132,7 @@ function ChecarTipoProducao(id="") {
             document.querySelector(`#campos_doi${id}`).style = 'display:none';
             break;
         default: //demais pubs
-            document.querySelector(`#campos-patente${id}`).style = 'display:none';
+            document.querySelector(`#campos_patente${id}`).style = 'display:none';
             document.querySelector(`#campos_status${id}`).style = 'display:block';
             document.querySelector(`#campos_doi${id}`).style = 'display:block';
             break;
