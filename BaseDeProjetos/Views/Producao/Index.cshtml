@@ -98,7 +98,7 @@
 											@Html.DisplayFor(modelItem => producao.Grupo)
 										</li>
 										<!-- Verificar condição para mudar exibição no futuro, talvez?-->
-										@if(producao.Grupo != GrupoProducao.Fatos){
+										@if(producao.Grupo != GrupoProducao.Participacao && producao.Grupo != GrupoProducao.Cooperacao && producao.Grupo != GrupoProducao.Premio && producao.Grupo != GrupoProducao.Visita){
 										<li>
 											<span class="text-muted">Status:</span>
 											@Html.DisplayFor(modelItem => producao.StatusPub)
