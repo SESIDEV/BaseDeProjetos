@@ -153,14 +153,14 @@
 		document.getElementById("botaoToggleProspFollowUp").disabled = true
 		valorSelect = document.getElementById("selectCreateProsp").value
 		if (valorSelect != "-1") {
-			document.getElementById("botaoToggleProspFollowUp").dataset.bsTarget = `#CreateFollowupProspModal-${valorSelect}-Toggle`
+			document.getElementById("botaoToggleProspFollowUp").dataset.bsTarget = `#CreateFollowupProspModal-${valorSelect}` // target do modal da prosp  planejada
 			fetch(`/FunildeVendas/RetornarModal?idProsp=${valorSelect}&tipo=CreateFollowup`).then(response => response.text())
 				.then(result => {
 					document.querySelector(`#modalCreateFollowUpProspContainer`).innerHTML = result
 					document.getElementById("botaoToggleProspFollowUp").disabled = false
 				})
 		} else {
-			document.getElementById("botaoToggleProspFollowUp").dataset.bsTarget = "#criarProspModalToggle"
+			document.getElementById("botaoToggleProspFollowUp").dataset.bsTarget = "#criarProspModalToggle" // target do modal da prosp sem planejada
 			document.getElementById("botaoToggleProspFollowUp").disabled = false
 		}
 	}
