@@ -43,7 +43,7 @@
                                     <hr />
                                     Vence em: @followup.Vencimento.ToString("dd/MM/yyyy",
                                 CultureInfo.CreateSpecificCulture("pt-BR"))
-                                    <a class="btn btn-outline-danger" href="../RemoverFollowUp/@followup.Id">Remover</a> |
+                                    <a class="btn btn-outline-danger" asp-controller="FunilDeVendas" asp-action="RemoverFollowUp" asp-route-id="@followup.Id">Remover</a> |
                                     <button type="button" class="btn app-btn-secondary" data-bs-toggle="modal"
                                     data-bs-target="#EditFollowupProspModal-@Model.Id">Editar</button>
                                     <!-- O Model ID aqui se refere a prospeccao, é extremamente importante que esses IDs batam assim como no ViewComponent, caso o bootstrap alegue undefined para o backdrop, tente verificar esses dois IDs -->
