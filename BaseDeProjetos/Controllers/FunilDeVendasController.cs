@@ -567,16 +567,16 @@ namespace BaseDeProjetos.Controllers
                 Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
                 Prospeccao prospeccao = _context.Prospeccao.FirstOrDefault(p => p.Id == followup.OrigemID);
 
-                if (verificarCondicoesRemocao(prospeccao, usuario, followup.Origem.Usuario) || usuario.Casa == Instituto.Super)
+                if (verificarCondicoesRemocao(prospeccao, usuario, followup.Origem.Usuario) || usuario.Nivel == Nivel.Dev)
                 {
                     _context.FollowUp.Remove(followup);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction("Index", "Funil de Vendas", new { casa = usuario.Casa });
+                    return RedirectToAction("Index", "FunilDeVendas", new { casa = usuario.Casa });
                 }
                 else
                 {
                     // TODO: Colocar isso no frontend em vez de jogar uma exceção na cara do usuário
-                    throw new InvalidOperationException("Não é possível remover todas os followups de uma prospecção");
+                    throw new InvalidOperationException("Provável erro na função verificarCondicoesRemocao() no Controller");
                 }
             }
             else
@@ -592,9 +592,9 @@ namespace BaseDeProjetos.Controllers
         /// <param name="dono">Usuario líder da prospecção</param>
         /// <param name="ativo">Usuário ativo (HttpContext)</param>
         /// <returns></returns>
-        private bool verificarCondicoesRemocao(Prospeccao prospeccao, Usuario dono, Usuario ativo)
+        private bool verificarCondicoesRemocao(Prospeccao prospeccao, Usuario ativoNaSessao, Usuario donoProsp)
         {
-            return prospeccao.Status.Count() > 1 && dono == ativo;
+            return prospeccao.Status.Count() > 1 && ativoNaSessao == donoProsp;
         }
 
         // POST: FunilDeVendas/Delete/5
