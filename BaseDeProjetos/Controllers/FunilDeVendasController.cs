@@ -452,9 +452,15 @@ namespace BaseDeProjetos.Controllers
 
             Prospeccao prospAntiga = _context.Prospeccao.AsNoTracking().First(p => p.Id == prospeccao.Id);
 
-            if(prospAntiga.Ancora == true && prospeccao.Ancora == false){ // compara a versão antiga com a nova que irá para o Update()
-                FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
-            } else if(prospAntiga.Agregadas != prospeccao.Agregadas){
+            // tudo abaixo compara a versão antiga com a nova que irá para o Update()
+
+            if(prospAntiga.Ancora == true && prospeccao.Ancora == false){ // verifica se a âncora foi cancelada
+                FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao); 
+            
+            } else if(prospeccao.Ancora == true && string.IsNullOrEmpty(prospeccao.Agregadas)){ // verifica se o campo agg está vazio
+                throw new InvalidOperationException("Não é possível adicionar uma Âncora sem nenhuma agregada.");
+
+            } else if(prospAntiga.Agregadas != prospeccao.Agregadas){ // verifica se alguma agregada foi alterada
                 FunilHelpers.AddAgregadas(_context, prospAntiga, prospeccao);
                 FunilHelpers.DelAgregadas(_context, prospAntiga, prospeccao);
             }
