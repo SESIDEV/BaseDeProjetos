@@ -45,22 +45,11 @@
     </div>
 
     <tr>
-        @if (projeto.Empresa.Logo != null)
-        {
-            <td class="cell"><img loading="lazy" src="@projeto.Empresa.Logo" id="logoEmpresa" alt="Logo da Empresa" style="background-color:white"></td>
-        }
-        else
-        {
-            <td class="cell"><nobr id="logo_alt">Sem Logo</nobr></td>
-        }
-        <td class="cell">@projeto.Empresa.Nome</td> @*Empresa*@
-        <td class="cell">
-            @projeto.NomeProjeto
-        </td>
-        <td class="cell">
-            @projeto.Status.GetDisplayName()
-        </td>
-
+        <td class="cell">@projeto.Empresa.Nome</td>
+        <td class="cell">@projeto.NomeProjeto</td>
+        <td class="cell">@projeto.Status.GetDisplayName()</td>
+        <td class="cell">@projeto.DataInicio.ToString("dd/MM/yyyy")</td>
+        <td class="cell">@projeto.DataEncerramento.ToString("dd/MM/yyyy")</td>
         <td class="cell">
             @if (projeto.ValorAporteRecursos != 0 && projeto.ValorAporteRecursos > 0)
             {
@@ -73,12 +62,7 @@
         </td>
         <td class="cell">
             @projeto.FonteFomento.GetDisplayName()
-        </td>
-        <td class="cell">
-
-            <span>@projeto.DataEncerramento.ToString("dd/MM/yyyy")</span>
-
-        </td>
+        </td>        
 
         <td class="cell">
             <button type="button" data-bs-target="#modalDetalhes-@projeto.Id" id="button-@projeto.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary" onmouseover="carregarModaisProjeto('@projeto.Id')">Detalhes</button>
