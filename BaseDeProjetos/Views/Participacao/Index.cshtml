@@ -7,6 +7,8 @@
     ViewData["Title"] = "Participação";
     var cultura = new CultureInfo("pt-BR");
 
+    Random random = new Random();
+
     var mesInicio = ViewData["mesInicio"] as string;
     var anoInicio = ViewData["anoInicio"] as string;
     var mesFim = ViewData["mesFim"] as string;
@@ -174,8 +176,8 @@
                                     <tr>
                                         <th class="cell">Membro</th>
                                         <th class="cell">Valor Total (Prospecção)</th>
-                                        <th class="cell">Valor Médio (Prospecção)</th>
                                         <th class="cell">Quantidade (Prospecção)</th>
+                                        <th class="cell">Valor Médio (Prospecção)</th>
                                         <th class="cell">Quantidade (Prospecção como Membro)</th>
                                         <th class="cell">Valor Total (Em Proposta)</th>
                                         <th class="cell">Valor Médio (Em Proposta)</th>                                        
@@ -241,7 +243,8 @@
                                                 </div>
                                             </div>
                                             <td class="cell" style="overflow:hidden; max-width:100px">
-                                                @participacaoTotal.Lider
+                                                Membro @random.Next()
+                                                @*@participacaoTotal.Lider*@
                                             </td>
                                             <td class="cell">
                                                 @{
@@ -255,22 +258,22 @@
                                             </td>
                                             <td class="cell">
                                                 @{
-                                                    var rankValorMedioProspeccoes = participacaoTotal.RankPorIndicador["RankValorMedioProspeccoes"];
-                                                    var rankMedioValorMedioProspeccoes = (decimal)ViewData["rankMedioValorMedioProspeccoes"];
-                                                }
-                                                <div data-text="(@rankValorMedioProspeccoes.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                    @Helpers.PrintarValorIndicadorParticipacao(rankValorMedioProspeccoes, rankMedioValorMedioProspeccoes)
-                                                    R$ @participacaoTotal.ValorMedioProspeccoes.ToString("N", cultura)
-                                                </div>
-                                            </td>
-                                            <td class="cell">
-                                                @{
                                                     var rankQuantidadeProspeccoes = participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoes"];
                                                     var rankMedioQuantidadeProspeccoes = (decimal)ViewData["rankMedioQuantidadeProspeccoes"];
                                                 }
                                                 <div data-text="(@rankQuantidadeProspeccoes.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
                                                     @Helpers.PrintarValorIndicadorParticipacao(rankQuantidadeProspeccoes, rankMedioQuantidadeProspeccoes)
                                                     @participacaoTotal.QuantidadeProspeccoes 
+                                                </div>
+                                            </td>
+                                            <td class="cell">
+                                                @{
+                                                    var rankValorMedioProspeccoes = participacaoTotal.RankPorIndicador["RankValorMedioProspeccoes"];
+                                                    var rankMedioValorMedioProspeccoes = (decimal)ViewData["rankMedioValorMedioProspeccoes"];
+                                                }
+                                                <div data-text="(@rankValorMedioProspeccoes.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
+                                                    @Helpers.PrintarValorIndicadorParticipacao(rankValorMedioProspeccoes, rankMedioValorMedioProspeccoes)
+                                                    R$ @participacaoTotal.ValorMedioProspeccoes.ToString("N", cultura)
                                                 </div>
                                             </td>
                                             <td class="cell">

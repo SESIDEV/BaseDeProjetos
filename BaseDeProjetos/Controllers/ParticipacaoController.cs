@@ -123,8 +123,9 @@ namespace BaseDeProjetos.Controllers
         private async Task<ParticipacaoTotalViewModel> GetParticipacaoTotalUsuario(Usuario usuario, string mesInicio, string anoInicio, string mesFim, string anoFim)
         {
             ParticipacaoTotalViewModel participacao = new ParticipacaoTotalViewModel() { Participacoes = new List<ParticipacaoViewModel>() };
-
-            List<Prospeccao> prospeccoesUsuario = await _context.Prospeccao.Where(p => p.Usuario == usuario).ToListAsync();
+            // Líder e Membro
+            List<Prospeccao> prospeccoesUsuario = await _context.Prospeccao.Where(p => p.Usuario == usuario || p.MembrosEquipe.Contains(usuario.UserName)).ToListAsync();
+            // Somente membro
             List<Prospeccao> prospeccoesUsuarioMembro = await _context.Prospeccao.Where(p => p.MembrosEquipe.Contains(usuario.UserName)).ToListAsync();
 
 
@@ -238,8 +239,17 @@ namespace BaseDeProjetos.Controllers
                 {
                     participacao.Propositividade = valorMedioProspeccoesComProposta / valorMedioProspeccoes;
                 }
-                
-                participacao.TaxaConversaoProjeto = taxaConversaoProjeto = (quantidadeProspeccoesProjetizadas / (decimal)quantidadeProspeccoes);
+
+                if (quantidadeProspeccoesComProposta != 0)
+                {
+                    participacao.TaxaConversaoProjeto = taxaConversaoProjeto = (quantidadeProspeccoesProjetizadas / (decimal)quantidadeProspeccoesComProposta);
+                }
+                else
+                {
+                    participacao.TaxaConversaoProjeto = taxaConversaoProjeto = 0;
+                }
+
+                // TODO: Preciso de valores de despesa do ISI
                 participacao.Indice = taxaConversaoProposta * valorMedioProspeccoesComProposta * quantidadeProspeccoesComProposta;
             }
 
