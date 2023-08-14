@@ -205,9 +205,8 @@
                 </div>
             </div>
 
-            <div class="row g-4 mb-4">
-                <div class="col-12 col-lg-12">
-                    <div class="app-card app-card-chart h-100 shadow-sm">
+            <div class="d-flex flex-row gap-4">
+                <div class="app-card app-card-chart w-50 shadow-sm">
                         <div class="app-card-header p-3">
                             <div class="row justify-content-between align-items-center">
                                 <div class="col-auto">
@@ -234,50 +233,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-12 col-lg-12" style="display:none">
-                    <figure class="highcharts-figure">
-                        <div id="container"></div>
-                        <p class="highcharts-description">
-                            Sankey charts are used to visualize data flow and volume
-                            between nodes. The wider lines indicate larger volumes.
-                        </p>
-                    </figure>
-                    @*<div class="app-card app-card-chart h-100 shadow-sm">
-                    <div class="app-card-header p-3">
-                    <div class="row justify-content-between align-items-center">
-                    <div class="col-auto">
-                    <h4 class="app-card-title">Line Chart Example</h4>
-                    </div>
-                    <div class="col-auto">
-                    <div class="card-header-action">
-                    <a href="charts.html">More charts</a>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    <div class="app-card-body p-3 p-lg-4">
-                    <div class="mb-3 d-flex">
-                    <select class="form-select form-select-sm ms-auto d-inline-flex w-auto">
-                    <option value="1" selected>This week</option>
-                    <option value="2">Today</option>
-                    <option value="3">This Month</option>
-                    <option value="3">This Year</option>
-                    </select>
-                    </div>
-                    <div class="chart-container">
-                    <canvas id="canvas-linechart" ></canvas>
-                    </div>
-                    </div>
-                    </div>*@
-                </div>
-
-
-            </div>
-            <div class="row g-4 mb-4">
-                <div class="col-12 col-lg-6">
-                    <div class="app-card app-card-progress-list h-100 shadow-sm">
+                    <div class="app-card app-card-progress-list w-50 shadow-sm">
                         <div class="app-card-header p-3">
                             <div class="row justify-content-between align-items-center">
                                 <div class="col-auto">
@@ -366,6 +322,55 @@
 
                         </div>
                     </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-12 col-lg-6">
+                    
+                </div>
+
+                <div class="col-12 col-lg-12" style="display:none">
+                    <figure class="highcharts-figure">
+                        <div id="container"></div>
+                        <p class="highcharts-description">
+                            Sankey charts are used to visualize data flow and volume
+                            between nodes. The wider lines indicate larger volumes.
+                        </p>
+                    </figure>
+                    @*<div class="app-card app-card-chart h-100 shadow-sm">
+                    <div class="app-card-header p-3">
+                    <div class="row justify-content-between align-items-center">
+                    <div class="col-auto">
+                    <h4 class="app-card-title">Line Chart Example</h4>
+                    </div>
+                    <div class="col-auto">
+                    <div class="card-header-action">
+                    <a href="charts.html">More charts</a>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+                    <div class="app-card-body p-3 p-lg-4">
+                    <div class="mb-3 d-flex">
+                    <select class="form-select form-select-sm ms-auto d-inline-flex w-auto">
+                    <option value="1" selected>This week</option>
+                    <option value="2">Today</option>
+                    <option value="3">This Month</option>
+                    <option value="3">This Year</option>
+                    </select>
+                    </div>
+                    <div class="chart-container">
+                    <canvas id="canvas-linechart" ></canvas>
+                    </div>
+                    </div>
+                    </div>*@
+                </div>
+
+
+            </div>
+            <div class="row g-4 mb-4">
+                <div class="col-12 col-lg-6">
+                    
                 </div>
                 @*Não remover, pode ser útil para exibir algo no futuro*@
                 @*<div class="col-12 col-lg-6">
@@ -607,81 +612,9 @@
         }
     }
 
-    var sankeyChart = Highcharts.chart('container',
-        {
-            title: {
-                text: 'Highcharts Sankey Diagram'
-            },
-            accessibility: {
-                point: {
-                    valueDescriptionFormat: '{index}. {point.from} to {point.to}, {point.weight}.'
-                }
-            },
-            series: [{
-                keys: ['from', 'to', 'weight'],
-                data: [
-                    ['Brazil', 'Portugal', 5],
-                    ['Brazil', 'France', 1],
-                    ['Brazil', 'Spain', 1],
-                    ['Brazil', 'England', 1],
-                    ['Canada', 'Portugal', 1],
-                    ['Canada', 'France', 5],
-                    ['Canada', 'England', 1],
-                    ['Mexico', 'Portugal', 1],
-                    ['Mexico', 'France', 1],
-                    ['Mexico', 'Spain', 5],
-                    ['Mexico', 'England', 1],
-                    ['USA', 'Portugal', 1],
-                    ['USA', 'France', 1],
-                    ['USA', 'Spain', 1],
-                    ['USA', 'England', 5],
-                    ['Portugal', 'Angola', 2],
-                    ['Portugal', 'Senegal', 1],
-                    ['Portugal', 'Morocco', 1],
-                    ['Portugal', 'South Africa', 3],
-                    ['France', 'Angola', 1],
-                    ['France', 'Senegal', 3],
-                    ['France', 'Mali', 3],
-                    ['France', 'Morocco', 3],
-                    ['France', 'South Africa', 1],
-                    ['Spain', 'Senegal', 1],
-                    ['Spain', 'Morocco', 3],
-                    ['Spain', 'South Africa', 1],
-                    ['England', 'Angola', 1],
-                    ['England', 'Senegal', 1],
-                    ['England', 'Morocco', 2],
-                    ['England', 'South Africa', 7],
-                    ['South Africa', 'China', 5],
-                    ['South Africa', 'India', 1],
-                    ['South Africa', 'Japan', 3],
-                    ['Angola', 'China', 5],
-                    ['Angola', 'India', 1],
-                    ['Angola', 'Japan', 3],
-                    ['Senegal', 'China', 5],
-                    ['Senegal', 'India', 1],
-                    ['Senegal', 'Japan', 3],
-                    ['Mali', 'China', 5],
-                    ['Mali', 'India', 1],
-                    ['Mali', 'Japan', 3],
-                    ['Morocco', 'China', 5],
-                    ['Morocco', 'India', 1],
-                    ['Morocco', 'Japan', 3]
-                ],
-                type: 'sankey',
-                name: 'Sankey demo series'
-            }]
-
-        });
-
     // Gerar os charts ao carregar
     window.addEventListener('load', function () {
-
-        //var lineChart = document.getElementById('canvas-linechart').getContext('2d');
-        //window.myLine = new Chart(lineChart, lineChartConfig);
-
         var barChart = document.getElementById('canvas-barchart').getContext('2d');
         window.myBar = new Chart(barChart, barChartConfig);
-
-
     });
 </script>
