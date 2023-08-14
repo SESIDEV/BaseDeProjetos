@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Producao>
 @addTagHelper *, BaseDeProjetos.Models.Producao
+@using BaseDeProjetos.Models
 
 @{
 	SelectList ListProjetos = ViewData["Projetos"] as SelectList;
@@ -93,17 +94,18 @@
 										@*<li><span>Descrição:</span>@Html.DisplayFor(modelItem =>
 									item.Descricao)</li>*@
 										<li>
-											<span style="display:block" class="text-muted">
-												Tipo de Publicação:
-											</span>@Html.DisplayFor(modelItem => producao.Grupo)
+											<span class="text-muted">Tipo de Produção:</span>
+											@Html.DisplayFor(modelItem => producao.Grupo)
 										</li>
 										<!-- Verificar condição para mudar exibição no futuro, talvez?-->
+										@if(producao.Grupo != GrupoProducao.Participacao && producao.Grupo != GrupoProducao.Cooperacao && producao.Grupo != GrupoProducao.Premio && producao.Grupo != GrupoProducao.Visita){
 										<li>
 											<span class="text-muted">Status:</span>
 											@Html.DisplayFor(modelItem => producao.StatusPub)
 										</li>
+										}
 										<li>
-											<span class="text-muted">Publicado em:</span>
+											<span class="text-muted">Data:</span>
 											@Html.DisplayFor(modelItem => producao.Data.Month)/@Html.DisplayFor(modelItem => producao.Data.Year)
 										</li>
 										<li>

@@ -59,7 +59,7 @@ namespace BaseDeProjetos.Controllers
                     HttpContext.Session.SetString("_CurrentFilter", searchString);
                 }
 
-                var empresas = FiltrarEmpresas(searchString, _context.Empresa.OrderBy(e => e.NomeFantasia).ToList());
+                var empresas = FiltrarEmpresas(searchString, _context.Empresa.OrderBy(e => e.Nome).ToList());
 
                 return View(empresas);
             }
@@ -122,8 +122,8 @@ namespace BaseDeProjetos.Controllers
                 searchString = searchString.ToLower();
 
                 empresas = empresas.Where(e =>
+                e.RazaoSocial != null && e.RazaoSocial.ToLower().Contains(searchString.ToLower()) ||
                 e.Nome != null && e.Nome.ToLower().Contains(searchString.ToLower()) ||
-                e.NomeFantasia != null && e.NomeFantasia.ToLower().Contains(searchString.ToLower()) ||
                 e.CNPJ != null && e.CNPJ.ToLower().Contains(searchString.ToLower())).ToList();
 
             }
@@ -210,7 +210,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Logo,Nome,CNPJ,Segmento,Estado,Industrial,NomeFantasia")] Empresa empresa)
+        public async Task<IActionResult> Create([Bind("Id,Logo,RazaoSocial,CNPJ,Segmento,Estado,Industrial,Nome")] Empresa empresa)
         {
             if (ModelState.IsValid)
             {
@@ -254,7 +254,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Logo,Nome,CNPJ,Segmento,Estado,Industrial,NomeFantasia")] Empresa empresa)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Logo,RazaoSocial,CNPJ,Segmento,Estado,Industrial,Nome")] Empresa empresa)
         {
             if (id != empresa.Id)
             {
@@ -380,8 +380,8 @@ namespace BaseDeProjetos.Controllers
                 {
                     Dictionary<string, object> dict = new Dictionary<string, object>();
                     dict["Id"] = empresa.Id;
-                    dict["RazaoSocial"] = empresa.Nome;
-                    dict["NomeFantasia"] = empresa.NomeFantasia;
+                    dict["RazaoSocial"] = empresa.RazaoSocial;
+                    dict["NomeFantasia"] = empresa.Nome;
                     dict["Segmento"] = empresa.Segmento.GetDisplayName();
                     dict["Estado"] = empresa.Estado.GetDisplayName();
                     dict["CNPJ"] = empresa.CNPJ;

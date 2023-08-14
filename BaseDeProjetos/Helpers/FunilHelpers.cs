@@ -295,6 +295,25 @@ namespace BaseDeProjetos.Helpers
             }
         }
 
+        public static string MostrarAgregadas(List<Prospeccao> aggTodas, string agregadas)
+        {
+            if(!aggTodas.IsNullOrEmpty()){
+                string empresas = "";
+                List<string> agg = agregadas.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+                foreach (var p in aggTodas)
+                {
+                    if(agg.Contains(p.Id)){
+                        empresas += p.Empresa.Nome + ";";
+                    }
+                }
+
+                return empresas.Replace(";", "<br>");
+            } else {
+                return "";
+            }
+        }
+
         public static void RepassarStatusAoCancelarAncora(ApplicationDbContext _context, Prospeccao prospeccao)
         {
             if(!prospeccao.Agregadas.IsNullOrEmpty()){
@@ -332,6 +351,7 @@ namespace BaseDeProjetos.Helpers
                     }
                 }
             }
+            prospeccao.Agregadas = "";
         }
 
         public static Usuario ObterUsuarioAtivo(ApplicationDbContext _context, HttpContext HttpContext)
@@ -432,8 +452,8 @@ namespace BaseDeProjetos.Helpers
                 searchString = searchString.ToLower();
 
                 prospeccoes = prospeccoes.Where(p =>
+                ChecarSubstring(searchString, p.Empresa.RazaoSocial) ||
                 ChecarSubstring(searchString, p.Empresa.Nome) ||
-                ChecarSubstring(searchString, p.Empresa.NomeFantasia) ||
                 ChecarSubstring(searchString, p.Id) ||
                 ChecarSubstring(searchString, p.Usuario.UserName) ||
                 ChecarSubstring(searchString, p.NomeProspeccao) ||

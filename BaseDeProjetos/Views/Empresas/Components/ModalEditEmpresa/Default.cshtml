@@ -21,30 +21,26 @@
                     <div class="form-group">
                         <label asp-for="CNPJ" class="control-label"></label>(Apenas números)
                         <div class="d-flex gap-2 flex-row">
-                            <input onload="validarCNPJ('@Model.Id')" asp-for="CNPJ" id="valor_cnpj-@Model.Id" class="form-control" maxlength="14" required />
-                            <button class="btn app-btn-primary" onclick="validarCNPJ('@Model.Id')" type="button">Buscar</button>
+                            <input asp-for="CNPJ" id="valor_cnpj-@Model.Id" class="form-control" maxlength="14" required />
+                            <button class="btn app-btn-primary" onclick="validarCNPJ('-@Model.Id')" type="button">Buscar</button>
                         </div>
                     </div>
                     <hr />
-                    <h6 style="display: none;" id="TipoEmpresaStatus-@Model.Id">Tipo:</h6>
-                    <h6 style="display: none;" id="SituacaoEmpresaStatus-@Model.Id">Situação:</h6>
-
-                    @if (Model.Industrial)
-                    {
-                    <div style="display: none; align-items: baseline;">
-                        <h6 id="BoolCnaeIndustrial-@Model.Id">CNAE Industrial:</h6>
+                    <h6 id="TipoEmpresaStatus-@Model.Id">Tipo:</h6>
+                    <h6 id="SituacaoEmpresaStatus-@Model.Id">Situação:</h6>
+                    <div style="display: flex; align-items: baseline;">
+                        <h6>CNAE Industrial:</h6>
                         <i id="checkCNAE-@Model.Id" class="fa" style="display:none; color:rgb(255, 255, 255); margin-left:1%"></i>
-                        <input asp-for="Industrial" id="BoolCnaeIndustrial-@Model.Id" value="@Model.Industrial" style="display: none;" readonly />
+                        <input asp-for="Industrial" type="text" id="BoolCnaeIndustrial-@Model.Id" value="@Model.Industrial" class="d-none" readonly />
                     </div>
-                    }
                     
                     <div class="form-group">
-                        <label asp-for="Nome" class="control-label"></label>
-                        <input asp-for="Nome" id="NomeEmpresaCadastro-@Model.Id" class="form-control" value="@Model.Nome" readonly />
+                        <label asp-for="RazaoSocial" class="control-label"></label>
+                        <input asp-for="RazaoSocial" id="RazaoSocialEmpresaCadastro-@Model.Id" class="form-control" value="@Model.RazaoSocial" readonly />
                     </div>
                     <div class="form-group">
-                        <label asp-for="NomeFantasia" class="control-label">Nome Fantasia</label>
-                        <input asp-for="NomeFantasia" id="NomeFantasiaEmpresa-@Model.Id" class="form-control" value="@Model.NomeFantasia" />
+                        <label asp-for="Nome" class="control-label"></label>
+                        <input asp-for="Nome" id="NomeEmpresa-@Model.Id" class="form-control" value="@Model.Nome" />
                     </div>
                     <div class="form-group">
                         <label asp-for="Estado" class="control-label"></label>
@@ -58,9 +54,10 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="Logo" class="control-label"></label>
-                        <input type="file" class="form-control" id="logo_imagem-@Model.Id" onchange="Base64('@(Model.Id)')" />
+                        <input class="form-control" type="file" id="logoInput-@Model.Id" accept="image/*" onchange="previewBase64('logoInput-@Model.Id', 'img-preview-@Model.Id', 'logoBase64-@Model.Id')" />
+                        <input type="hidden" asp-for="Logo" id="logoBase64-@Model.Id"/>
                     </div>
-                    <img id="img_preview-@Model.Id" src="@Model.Logo" width="300" style="margin-top:5px;">
+                    <img id="img-preview-@Model.Id" width="300" style="margin-top:5px;">
                 </div>
                 <div class="modal-footer">
                     <button type="button" data-bs-dismiss="modal" class="btn app-btn-secondary">Voltar para Lista</button>
@@ -69,7 +66,6 @@
             </div>
         </div>
     </div>
-    <input asp-for="Logo" id="img_b64-@Model.Id" class="form-control" style="display: none;" value="@Model.Logo" onchange="MostrarImagem('@Model.Id')">
 
 </form>
 

@@ -7,7 +7,6 @@
     List<Prospeccao> prospsPlanejadas = ViewBag.ProspeccoesPlanejadas as List<Prospeccao>;
     List<Prospeccao> prospsAtivas = ViewBag.ProspeccoesAtivas as List<Prospeccao>;
 }
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script>
     var prospeccoesDetalhes = [];
     var empresasCarregadas = [];
@@ -54,24 +53,31 @@
         prospeccoesDetalhes.push(idProspeccao);
     }
 
-    function carregarModalEmpresa(idEmpresa, tipo) {
-        // TODO: Travar botões
+    function carregarModalEmpresa(idEmpresa, tipo, buttonEmpresaId) {
+        let buttonEmpresa = document.querySelector(buttonEmpresaId);
         if (!empresasCarregadas.includes(idEmpresa)) {
             if (tipo) {
+                let oldButtonEmpresaInnerHTML = buttonEmpresa.innerHTML;
+                buttonEmpresa.disabled = true;
+		        buttonEmpresa.innerHTML = '<div class="spinner-border spinner-border-sm text-light" role="status"><span class="visually-hidden">Loading...</span></div>';		
+
                 fetch(`/Empresas/RetornarModal?idEmpresa=${idEmpresa}&tipo=${tipo}`)
                     .then(response => response.text())
                     .then(result => {
                         document.querySelector(`#modal${tipo}Empresa-${idEmpresa}-container`).innerHTML = result;
+                        buttonEmpresa.disabled = false;
+                        buttonEmpresa.removeAttribute("style");
+                        buttonEmpresa.innerHTML = oldButtonEmpresaInnerHTML;
                     });
             }
         }
     }
 
     function carregarModaisEmpresa(idEmpresa) {
-        // TODO: Travar botões
         modaisDisponiveis = ["Edit", "Delete"];
         modaisDisponiveis.forEach((tipo) => {
-            carregarModalEmpresa(idEmpresa, tipo)
+            buttonEmpresaId = `#button-${idEmpresa}-${tipo}`;
+            carregarModalEmpresa(idEmpresa, tipo, buttonEmpresaId);
         })
         empresasCarregadas.push(idEmpresa);
     }
@@ -157,10 +163,10 @@
                             </div>
                             <div class="col-12 col-lg-auto text-center text-lg-start">
                                 @*<div class="notification-type mb-2"><span class="badge bg-info">Project</span></div>*@
-                                <h4 class="notification-title mb-1">@empresa.NomeFantasia</h4>
+                                <h4 class="notification-title mb-1">@empresa.Nome</h4>
 
                                 <ul class="notification-meta list-inline mb-0">
-                                    <li class="list-inline-item">Razão Social: @empresa.Nome</li>
+                                    <li class="list-inline-item">Razão Social: @empresa.RazaoSocial</li>
                                     <li class="list-inline-item">|</li>
                                     <li class="list-inline-item">
                                         @{
@@ -182,7 +188,7 @@
                             @if(empresa.Industrial == false){
                             <div class="col-lg"></div> <!--Empty column to push the div bellow to the right-->
                             <div class="col-lg-auto text-center">
-                                <span style="font-size:100%" class="badge bg-danger rounded-pill" data-tippy-content="Esta empresa não possui CNAE Industrial">
+                                <span id="tip_ind" style="font-size:100%" class="badge bg-danger rounded-pill" data-tippy-content="Esta empresa não possui CNAE Industrial">
                                     <i class="fa fa-exclamation-circle"></i>
                                 </span>
                             </div>}
@@ -203,7 +209,7 @@
                             <div id="flush-collapse-@empresa.Id-one" class="accordion-collapse collapse" aria-labelledby="flush-heading-@empresa.Id-one" data-bs-parent="#accordionEmpresa-@empresa.Id">
                                 <div class="accordion-body">
                                     <div>
-                                        <button type="button" id="button-@empresa.Id" class="btn app-btn-primary" data-bs-target="#EditEmpresaModal-@empresa.Id" data-bs-toggle="modal" class="btn app-btn-primary" onmouseover="carregarModaisEmpresa('@empresa.Id')">   
+                                        <button type="button" id="button-@empresa.Id-Edit" class="btn app-btn-primary" data-bs-target="#EditEmpresaModal-@empresa.Id" data-bs-toggle="modal" class="btn app-btn-primary" onmouseover="carregarModaisEmpresa('@empresa.Id')">   
                                         Editar
                                         </button>
                                         <a type="button" class="btn app-btn-primary" asp-controller="FunilDeVendas" asp-action="Planejar" asp-route-id="@empresa.Id">
@@ -215,7 +221,7 @@
                                                 Detalhes
                                             </button>
                                         </a>*@
-                                        <button type="button" id="button-@empresa.Id" data-bs-target="#deletarEmpresaModal-@empresa.Id"
+                                        <button type="button" id="button-@empresa.Id-Delete" data-bs-target="#deletarEmpresaModal-@empresa.Id"
                                         data-bs-toggle="modal" class="btn app-btn-primary" onmouseover="carregarModaisEmpresa('@empresa.Id')">Deletar</button>
                                     </div>
                                 </div>
