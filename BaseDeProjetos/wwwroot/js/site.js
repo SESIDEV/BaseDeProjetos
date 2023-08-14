@@ -61,7 +61,7 @@ var dictCNAE = {
     "71": "SERVIÇOS DE ARQUITETURA E ENGENHARIA; TESTES E ANÁLISES TÉCNICAS (SERVIÇOS DE ENGENHARIA – CNAE: 7112000, SERVIÇO SOCIAL DA INDÚSTRIA – SESI – SERVIÇOS DE PERÍCIA TÉCNICA RELACIONADOS À SEGURANÇA DO TRABALHO – SERVIÇO SOCIAL DA INDÚSTRIA, CNAE: 7119704",
     "77": "ALUGUÉIS NÃO-IMOBILIÁRIOS E GESTÃO DE ATIVOS INTANGÍVEIS NÃOFINANCEIROS (ALUGUEL DE ANDAÍMES, CNAE: 7732202)",
     "85": "EDUCAÇÃO (SERVIÇO NACIONAL DE APRENDIZAGEM DA INDÚTRIA – SENAI – OUTRAS ATIVIDADES DE ENSINO NÃO ESPECIFICADAS ANTERIORMENTE – CNAE: 8599699)",
-    "91": "ATIVIDADES LIGADAS AO PATRIMÔNIO CULTURAL E AMBIENTAL (RESTAURAÇÃO E CONSERVAÇÃO DE LUGARES E PRÉDIOS HISTÓRICOS, CNAE: 9102302)"
+    "91": "ATIVIDADES LIGADAS AO PATRIMÔNIO CULTURAL E AMBIENTAL (RESTAURAÇÃO E CONSERVAÇÃO DE LUGARES E PRÉDIOS HISTÓRICOS, CNAE: 9102302)",
     "02": "PRODUÇÃO FLORESTAL (EXTRAÇÃO DE MADEIRA, PRODUÇÃO DE CARVÃO, COLETA DE LÁTEX | CNAE: 210107, 210108, 220901, 220902, 220904)",
     "05": "EXTRAÇÃO DE CARVÃO MINERAL",
     "06": "EXTRAÇÃO DE PETRÓLEO E GÁS NATURAL",
@@ -114,7 +114,6 @@ var dictCNAE = {
 }
 
 function FiltroEmpresaEstrangeira() {
-function FiltroEmpresaEstrangeira() {
 
     let checkBox = document.getElementById("empresa_estrangeira_check");
     let cnpj = document.getElementById("valor_cnpj");
@@ -146,14 +145,10 @@ function FiltroEmpresaEstrangeira() {
 }
 
 function ChecarPatente() {
-function ChecarPatente() {
-
     let valor = document.querySelector('#select_tipo').value
-    if (valor == 8) {
     if (valor == 8) {
         document.querySelector('#campos-patente').style = 'display:block'
     }
-    else {
     else {
         document.querySelector('#campos-patente').style = 'display:none'
     }
