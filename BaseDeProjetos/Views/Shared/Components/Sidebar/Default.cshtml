@@ -20,9 +20,10 @@
 
 <script>
 	window.onload = () => {
+		let loadAnimGraficoParticipacao = document.getElementById("participacao");
+		loadAnimGraficoParticipacao.innerHTML = "<div class='d-flex justify-content-center align-items-center'><div class='spinner-border'></div></div>"
 		puxarDadosParticipacao().then(data => 
 		{
-			console.log(data);
 			carregarGraficoParticipacao(data);
 		}).catch(error => 
 		{
