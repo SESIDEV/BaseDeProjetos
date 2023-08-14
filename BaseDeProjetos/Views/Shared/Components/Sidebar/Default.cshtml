@@ -18,13 +18,93 @@
 
 }
 
+<script>
+	window.onload = () => {
+		puxarDadosParticipacao().then(data => 
+		{
+			console.log(data);
+			carregarGraficoParticipacao(data);
+		}).catch(error => 
+		{
+			console.log(error);
+		});
+
+	}
+
+	function carregarGraficoParticipacao(dadosParticipacao) {
+		const rankings = dadosParticipacao["RankPorIndicador"];
+		Highcharts.chart('participacao', {
+
+		chart: {
+			polar: true,
+			type: 'line'
+		},
+
+		title: {
+			text: 'Gráfico de Participação'
+		},
+
+		pane: {
+			startAngle: 0,
+			endAngle: 360
+		},
+
+		xAxis: {
+			categories: ['Valor Total das Prospecções', 'Quantidade de Prospecções', 'Valor Médio (Prospecções)', 'Valor Total das Prospecções (Em Proposta)', 'Valor Médio das Prospecções (Em Proposta)', 'Prospecções em Proposta', 'Prospecções Convertidas', 'Taxa de Conversão em Proposta', 'Taxa de Conversão em Projeto', 'Propositividade', 'Fator de Contribuição Financeira'],
+			tickmarkPlacement: 'on',
+			labels: {
+            	enabled: false
+        	}
+		},
+
+		yAxis: {
+			gridLineInterpolation: 'polygon',
+			lineWidth: 0,
+			min: 0,
+			max: 1,
+			tickInterval: 0.25, // Sets the interval between grid lines
+        	endOnTick: false,
+        	showLastLabel: true
+		},
+
+		series: [{
+			name: 'Values',
+			data: 
+				[
+					rankings['RankValorTotalProspeccoes'],
+					rankings['RankQuantidadeProspeccoes'],
+					rankings['RankValorMedioProspeccoes'],
+					rankings['RankValorTotalProspeccoesComProposta'],
+					rankings['RankValorMedioProspeccoesComProposta'],
+					rankings['RankQuantidadeProspeccoesComProposta'],
+					rankings['RankQuantidadeProspeccoesProjeto'], 
+					dadosParticipacao['TaxaConversaoProposta'], 
+					dadosParticipacao['TaxaConversaoProjeto'], 
+					rankings['Propositividade'], 
+					rankings['Indice']
+				],
+			pointPlacement: 'on'
+		}]
+		});
+	}
+
+	async function puxarDadosParticipacao() {
+		const response = await fetch(`${location.origin}/Participacao/RetornarDadosGrafico/`);
+		const data = await response.json();
+		return data;
+	}
+</script>
+
+
 <div id="app-sidepanel" class="app-sidepanel">
 	<div id="sidepanel-drop" class="sidepanel-drop"></div>
 	<div class="sidepanel-inner d-flex flex-column">
 		<a href="#" id="sidepanel-close" class="sidepanel-close d-xl-none">&times;</a>
 		<div class="app-branding">
-			@*<a class="app-logo" href="index.html"><img class="logo-icon me-2" src="~/assets/images/placeholderlogo.png" alt="logo">*@<span class="logo-text">SGI</span>@*</a>*@
+			<span class="logo-text">SGI</span>
+		</div>
 
+		<div id="participacao">
 		</div>
 
 		<nav id="app-nav-main" class="app-nav app-nav-main flex-grow-1">
@@ -480,3 +560,4 @@
 		</div>
 	</div>
 </div>
+
