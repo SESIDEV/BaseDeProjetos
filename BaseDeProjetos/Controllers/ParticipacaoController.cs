@@ -114,6 +114,42 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        /// <summary>
+        /// Obter as prospecções de um usuário, incluindo as que ele é participante
+        /// </summary>
+        /// <param name="usuario"></param>
+        /// <returns></returns>
+        private async Task<List<Prospeccao>> GetProspeccoesUsuario(Usuario usuario)
+        {
+            return await _context.Prospeccao.Where(p => p.Usuario == usuario || p.MembrosEquipe.Contains(usuario.UserName)).ToListAsync();
+        }
+
+        /// <summary>
+        /// Percorre o range de data inicio até data fim e cria valores e labels (why?)
+        /// </summary>
+        /// <param name="participacao"></param>
+        /// <param name="prospeccoesUsuario"></param>
+        private void ComputarRangeData(ParticipacaoTotalViewModel participacao, List<Prospeccao> prospeccoesUsuario) 
+        {
+            DateTime dataInicial = prospeccoesUsuario.Min(p => p.Status.Min(f => f.Data));
+            DateTime dataIterada = dataInicial;
+            DateTime dataAtual = DateTime.Now;
+            List<string> mesAno = new List<string>();
+            List<decimal> valoresProposta = new List<decimal>();
+
+            while (dataIterada <= dataAtual)
+            {
+                string dataFormatada = $"{dataIterada:MMM} {dataIterada.Year}";
+                mesAno.Add(dataFormatada);
+                decimal valorSomado = prospeccoesUsuario.FindAll(p => p.Status.Any(f => f.Data.Year <= dataIterada.Year && f.Data.Month <= dataIterada.Month)).Sum(p => p.ValorProposta);
+                valoresProposta.Add(valorSomado);
+                dataIterada = dataIterada.AddMonths(1);
+            }
+
+            participacao.Valores = valoresProposta;
+            participacao.Labels = mesAno;
+        }
+
 
         /// <summary>
         /// Obtém uma participação de acordo com um usuário específico.
@@ -123,11 +159,10 @@ namespace BaseDeProjetos.Controllers
         private async Task<ParticipacaoTotalViewModel> GetParticipacaoTotalUsuario(Usuario usuario, string mesInicio, string anoInicio, string mesFim, string anoFim)
         {
             ParticipacaoTotalViewModel participacao = new ParticipacaoTotalViewModel() { Participacoes = new List<ParticipacaoViewModel>() };
+            
             // Líder e Membro
-            List<Prospeccao> prospeccoesUsuario = await _context.Prospeccao.Where(p => p.Usuario == usuario || p.MembrosEquipe.Contains(usuario.UserName)).ToListAsync();
-            // Somente membro
-            List<Prospeccao> prospeccoesUsuarioMembro = await _context.Prospeccao.Where(p => p.MembrosEquipe.Contains(usuario.UserName)).ToListAsync();
-
+            var prospeccoesUsuario = await GetProspeccoesUsuario(usuario);
+            var prospeccoesUsuarioMembro = await GetProspeccoesUsuarioMembro(usuario);
 
             // Evitar exibir usuários sem prospecção
             if (prospeccoesUsuario.Count == 0)
@@ -136,44 +171,25 @@ namespace BaseDeProjetos.Controllers
             }
             else
             {
-                DateTime dataInicial = prospeccoesUsuario.Min(p => p.Status.Min(f => f.Data));
-                DateTime dataIterada = dataInicial;
-                DateTime dataAtual = DateTime.Now;
-                List<string> mesAno = new List<string>();
-                List<decimal> valoresProposta = new List<decimal>();
-
-                while (dataIterada <= dataAtual)
-                {
-                    string dataFormatada = $"{dataIterada.ToString("MMM")} {dataIterada.Year}";
-                    mesAno.Add(dataFormatada);
-                    decimal valorSomado = prospeccoesUsuario.FindAll(p => p.Status.Any(f => f.Data.Year <= dataIterada.Year && f.Data.Month <= dataIterada.Month)).Sum(p => p.ValorProposta);
-                    valoresProposta.Add(valorSomado);
-                    dataIterada = dataIterada.AddMonths(1);
-                }
-
-                participacao.Valores = valoresProposta;
-                participacao.Labels = mesAno;
-
-                var x = JsonConvert.SerializeObject(valoresProposta);
-                var y = JsonConvert.SerializeObject(mesAno);
+                ComputarRangeData(participacao, prospeccoesUsuario);
             }
 
-            List<Prospeccao> prospeccoesUsuarioComProposta = await _context.Prospeccao.Where(p => p.Usuario == usuario && p.Status.Any(f => f.Status == StatusProspeccao.ComProposta)).ToListAsync();
-            List<Prospeccao> prospeccoesUsuarioConvertidas = await _context.Prospeccao.Where(p => p.Usuario == usuario && p.Status.Any(f => f.Status == StatusProspeccao.Convertida)).ToListAsync();
+            var prospeccoesUsuarioComProposta = prospeccoesUsuario.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.ComProposta)).ToList();
+            var prospeccoesUsuarioConvertidas = prospeccoesUsuario.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida)).ToList();
 
             if (!string.IsNullOrEmpty(anoFim) && !string.IsNullOrEmpty(mesFim))
             {
                 if (!string.IsNullOrEmpty(mesInicio) && !string.IsNullOrEmpty(anoInicio))
                 {
-                    prospeccoesUsuario = prospeccoesUsuario.Where(p => p.Status.Any(f => f.Data.Year >= int.Parse(anoInicio) && f.Data.Year <= int.Parse(anoFim) && f.Data.Month >= int.Parse(mesInicio) && f.Data.Month <= int.Parse(mesFim))).ToList();
-                    prospeccoesUsuarioComProposta = prospeccoesUsuarioComProposta.Where(p => p.Status.Any(f => f.Data.Year >= int.Parse(anoInicio) && f.Data.Year <= int.Parse(anoFim) && f.Data.Month >= int.Parse(mesInicio) && f.Data.Month <= int.Parse(mesFim))).ToList();
-                    prospeccoesUsuarioConvertidas = prospeccoesUsuarioConvertidas.Where(p => p.Status.Any(f => f.Data.Year >= int.Parse(anoInicio) && f.Data.Year <= int.Parse(anoFim) && f.Data.Month >= int.Parse(mesInicio) && f.Data.Month <= int.Parse(mesFim))).ToList();
+                    prospeccoesUsuario = FiltrarProspeccoesPorPeriodo(mesInicio, anoInicio, mesFim, anoFim, prospeccoesUsuario);
+                    prospeccoesUsuarioComProposta = FiltrarProspeccoesPorPeriodo(mesInicio, anoInicio, mesFim, anoFim, prospeccoesUsuarioComProposta);
+                    prospeccoesUsuarioConvertidas = FiltrarProspeccoesPorPeriodo(mesInicio, anoInicio, mesFim, anoFim, prospeccoesUsuarioConvertidas);
                 }
                 else
                 {
-                    prospeccoesUsuario = prospeccoesUsuario.Where(p => p.Status.Any(f => f.Data.Year <= int.Parse(anoFim) && f.Data.Month <= int.Parse(mesFim))).ToList();
-                    prospeccoesUsuarioComProposta = prospeccoesUsuarioComProposta.Where(p => p.Status.Any(f => f.Data.Year <= int.Parse(anoFim) && f.Data.Month <= int.Parse(mesFim))).ToList();
-                    prospeccoesUsuarioConvertidas = prospeccoesUsuarioConvertidas.Where(p => p.Status.Any(f => f.Data.Year <= int.Parse(anoFim) && f.Data.Month <= int.Parse(mesFim))).ToList();
+                    prospeccoesUsuario = FiltrarProspeccoesPorPeriodo(mesFim, anoFim, prospeccoesUsuario);
+                    prospeccoesUsuarioComProposta = FiltrarProspeccoesPorPeriodo(mesFim, anoFim, prospeccoesUsuarioComProposta);
+                    prospeccoesUsuarioConvertidas = FiltrarProspeccoesPorPeriodo(mesFim, anoFim, prospeccoesUsuarioConvertidas);
                 }
             }
 
@@ -201,7 +217,7 @@ namespace BaseDeProjetos.Controllers
                 if (prospeccao.ValorProposta != 0)
                 {
                     valorTotalProspeccoes += prospeccao.ValorProposta;
-				}
+                }
                 else
                 {
                     valorTotalProspeccoes += prospeccao.ValorEstimado;
@@ -209,14 +225,14 @@ namespace BaseDeProjetos.Controllers
             }
 
             participacao.ValorTotalProspeccoes = valorTotalProspeccoes;
-			participacao.ValorTotalProspeccoesComProposta = valorTotalProspeccoesComProposta = prospeccoesUsuarioComProposta.Sum(p => p.ValorProposta);
+            participacao.ValorTotalProspeccoesComProposta = valorTotalProspeccoesComProposta = prospeccoesUsuarioComProposta.Sum(p => p.ValorProposta);
             participacao.QuantidadeProspeccoes = quantidadeProspeccoes = prospeccoesUsuario.Count();
             participacao.QuantidadeProspeccoesComProposta = quantidadeProspeccoesComProposta = prospeccoesUsuarioComProposta.Count();
             participacao.QuantidadeProspeccoesProjeto = quantidadeProspeccoesProjetizadas = prospeccoesUsuarioConvertidas.Count();
             participacao.QuantidadeProspeccoesMembro = quantidadeProspeccoesMembro = prospeccoesUsuarioMembro.Count();
 
             participacao.Lider = usuario;
-            
+
             // Evita divisão por 0
             if (prospeccoesUsuario.Count() == 0)
             {
@@ -254,6 +270,43 @@ namespace BaseDeProjetos.Controllers
             }
 
             return participacao;
+        }
+
+        /// <summary>
+        /// Filtra as prospecções passadas por parâmetro com status até o mês e ano especificado
+        /// </summary>
+        /// <param name="mesFim"></param>
+        /// <param name="anoFim"></param>
+        /// <param name="prospeccoes"></param>
+        /// <returns></returns>
+        private static List<Prospeccao> FiltrarProspeccoesPorPeriodo(string mesFim, string anoFim, List<Prospeccao> prospeccoes)
+        {
+            return prospeccoes.Where(p => p.Status.Any(f => f.Data.Year <= int.Parse(anoFim) && f.Data.Month <= int.Parse(mesFim))).ToList();
+        }
+
+        /// <summary>
+        /// Filtra as prospecções passadas por parâmtro com status do mês e ano inicial até o mês e ano final
+        /// </summary>
+        /// <param name="mesInicio"></param>
+        /// <param name="anoInicio"></param>
+        /// <param name="mesFim"></param>
+        /// <param name="anoFim"></param>
+        /// <param name="prospeccoes"></param>
+        /// <returns></returns>
+        private static List<Prospeccao> FiltrarProspeccoesPorPeriodo(string mesInicio, string anoInicio, string mesFim, string anoFim, List<Prospeccao> prospeccoes)
+        {
+            return prospeccoes.Where(p => p.Status.Any(f => f.Data.Year >= int.Parse(anoInicio) && f.Data.Year <= int.Parse(anoFim) && f.Data.Month >= int.Parse(mesInicio) && f.Data.Month <= int.Parse(mesFim))).ToList();
+        }
+
+        /// <summary>
+        /// Obter todas as prospecções em que o usuário é um membro (apenas)
+        /// </summary>
+        /// <param name="usuario"></param>
+        /// <returns></returns>
+        private async Task<List<Prospeccao>> GetProspeccoesUsuarioMembro(Usuario usuario)
+        {
+            // Somente membro
+            return await _context.Prospeccao.Where(p => p.MembrosEquipe.Contains(usuario.UserName)).ToListAsync();
         }
 
         /// <summary>
@@ -399,6 +452,8 @@ namespace BaseDeProjetos.Controllers
             Usuario usuarioAtivo = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
             List<Usuario> usuarios;
 
+            // List<Prospeccao> prospeccoesTotais = _context.Prospeccao.ToList();
+
 			if (usuarioAtivo.Casa == Instituto.ISIQV || usuarioAtivo.Casa == Instituto.CISHO)
             {
 				usuarios = await _context.Users.Where(u => u.Casa == Instituto.ISIQV || u.Casa == Instituto.CISHO).ToListAsync();
@@ -407,6 +462,8 @@ namespace BaseDeProjetos.Controllers
             {
                 usuarios = await _context.Users.Where(u => u.Casa == usuarioAtivo.Casa).ToListAsync();
 			}
+
+            // List<Prospeccao> prospeccoesUsuarios = prospeccoesTotais.Where(p => usuarios.Contains(p.Usuario)).ToList();
 
 			List<ParticipacaoTotalViewModel> participacoes = new List<ParticipacaoTotalViewModel>();
 			
