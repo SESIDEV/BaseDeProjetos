@@ -94,19 +94,19 @@
                         <div class="app-card-header p-3 border-0">
                             <h4 class="app-card-title">
                                 <div class="input-group flex-nowrap">
-                                    <span class="input-group-text" id="addon-wrapping">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                                        </svg>
-                                    </span>
-                                    <select id="pessoasSelect" class="form-select" onchange="procurarPessoa(this)"></select>
+                                    <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectTags">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <div class="input-group flex-nowrap" id="caixaPesquisaPessoas" style="display:none;">
+                                        <select id="campoSelectPessoas" class="form-select" style="display:block;" onchange="procurarPessoa(this)"></select>
+                                    </div>
                                 </div>
                             </h4>
                         </div>
                         <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectPessoas">
                           <span class="visually-hidden">Loading...</span>
                         </div>
-                        <div id="campoPrincipal" class="app-card-body p-4 background_principal" style="display: none;">
+                        <div id="campoPrincipal" class="app-card-body p-4 background_principal">
                             <div class="chart-container network">
                                 <div id="chart-line" style="height: 700px;"></div><!--CAMPO PRINCIPAL-->
 
@@ -172,13 +172,13 @@
 
 <script>
     window.addEventListener('load', function(){
-        gerarOpcoesSelect(null,'pessoasSelect','Pessoas','campoPrincipal')
+        gerarOpcoesSelect('Pessoas');
         
         fetch('/Pessoas/dados').then(response => response.json()).then(data => {
             localStorage.setItem('Pessoas', JSON.stringify(data));
             montarNetwork(data)
         });
 
-        listarCompetencias()
+        listarCompetencias();
     });
 </script>

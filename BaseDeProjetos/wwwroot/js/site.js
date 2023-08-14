@@ -227,9 +227,9 @@ function gerarOpcoesSelect(rota, modelId="", fillValues=false) { // os últimos 
     let lider = "";
     let idSelect = `campoSelect${rota}${modelId}`;
     let caixaId = `caixaPesquisa${rota}${modelId}`;
-    let botaoAlterar = `botaoToggleCaixaRequest${rota}${modelId}`;
+    let botaoAlterar = null;
+    if(rota != "Pessoas"){botaoAlterar = `botaoToggleCaixaRequest${rota}${modelId}`;}
     let loadingIcon = `loadingOpcoesSelect${rota}${modelId}`;
-    let idText = `inputText${rota}${modelId}`;
 
     document.querySelector(`#${caixaId}`).style.display = "none";
     document.querySelector(`#${loadingIcon}`).style.display = "block";
@@ -242,7 +242,7 @@ function gerarOpcoesSelect(rota, modelId="", fillValues=false) { // os últimos 
     switch (rota) { //====================================================== \/\/\/ SWITCH PRINCIPAL \/\/\/ ===============================================================
         case "Pessoas":
             defRota = '/FunilDeVendas/PuxarDadosUsuarios';
-            value = "UserName"; //trocar para Email ?
+            value = "Email"; //PODE DAR ERRO, VERIFICAR DEPOIS
             inner = "UserName";
             if(document.querySelector(`#selectLiderProsp${modelId}`) != null){lider = document.querySelector(`#selectLiderProsp${modelId}`).selectedOptions[0].text;};
             break;
@@ -279,12 +279,15 @@ function gerarOpcoesSelect(rota, modelId="", fillValues=false) { // os últimos 
         document.querySelector(`#${loadingIcon}`).style.display = "none";
         document.querySelector(`#${caixaId}`).style.display = "block";
         if(fillValues){
+            let idText = `inputText${rota}${modelId}`;
             carregarValoresInputParaSelect(idText, idSelect, rota)
         }
     })
     document.querySelectorAll(".select2-container").forEach(input => { input.style.width = "100%" })
-    if (botaoAlterar != null) { document.querySelector(`#${botaoAlterar}`).style.display = "none"; }
-    document.querySelector(`#check${rota}${modelId}`).checked = true;
+    if (botaoAlterar != null) {
+        document.querySelector(`#${botaoAlterar}`).style.display = "none";
+        document.querySelector(`#check${rota}${modelId}`).checked = true;
+    }
 }
 
 function procurarPessoa(select) {
@@ -411,8 +414,6 @@ function updateLink() {
 }
 
 function montarNetwork(pessoas, compFiltradas = null) {
-    var nodes = null;
-    var edges = null;
     var network = null;
     let defuserpic = "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png";
     var existeFiltro = false
@@ -481,7 +482,7 @@ function montarNetwork(pessoas, compFiltradas = null) {
 
         listaPessoas.push(user)
     })
-    construirGrafo(nodes, listaPessoas, edges, listaLigacoes, network);
+    construirGrafo(listaPessoas, listaLigacoes);
     //({ nodes, edges, network } = construirGrafo(nodes, listaPessoas, edges, listaLigacoes, network));
 }
 
@@ -496,10 +497,9 @@ function isSuperset(set, subset) {
     return true;
 }
 
-function construirGrafo(nodes, listaPessoas, edges, listaLigacoes, network) {
+function construirGrafo(listaPessoas, listaLigacoes) {
     nodes = new vis.DataSet(listaPessoas); //lista de pessoas
-
-    edges = new vis.DataSet(listaLigacoes);
+    edges = new vis.DataSet(listaLigacoes); //lista de ligacoes
     var container = document.getElementById("chart-line");
 
     var data = {
