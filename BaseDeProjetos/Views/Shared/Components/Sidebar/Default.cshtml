@@ -21,7 +21,7 @@
 <script>
 	window.onload = () => {
 		let loadAnimGraficoParticipacao = document.getElementById("participacao");
-		loadAnimGraficoParticipacao.innerHTML = "<div class='d-flex justify-content-center align-items-center'><div class='spinner-border'></div></div>"
+		loadAnimGraficoParticipacao.innerHTML = "<div class='d-flex justify-content-center align-items-center'><div class='mt-2 mb-2 spinner-border'></div></div>"
 		puxarDadosParticipacao().then(data => 
 		{
 			carregarGraficoParticipacao(data);
@@ -35,6 +35,10 @@
 	function carregarGraficoParticipacao(dadosParticipacao) {
 		const rankings = dadosParticipacao["RankPorIndicador"];
 		Highcharts.chart('participacao', {
+		
+		exporting: {
+			enabled: false
+		},
 
 		chart: {
 			polar: true,
@@ -42,7 +46,7 @@
 		},
 
 		title: {
-			text: 'Gráfico de Participação'
+			text: undefined
 		},
 
 		pane: {
@@ -108,6 +112,10 @@
 		<a href="#" id="sidepanel-close" class="sidepanel-close d-xl-none">&times;</a>
 		<div class="app-branding">
 			<span class="logo-text">SGI</span>
+		</div>
+
+		<div class="align-self-center">
+			<h5 class="logo-text">Gráfico de Participação</h5>
 		</div>
 
 		<div id="participacao">
