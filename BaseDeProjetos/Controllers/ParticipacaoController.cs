@@ -159,7 +159,7 @@ namespace BaseDeProjetos.Controllers
         private async Task<ParticipacaoTotalViewModel> GetParticipacaoTotalUsuario(Usuario usuario, string mesInicio, string anoInicio, string mesFim, string anoFim)
         {
             ParticipacaoTotalViewModel participacao = new ParticipacaoTotalViewModel() { Participacoes = new List<ParticipacaoViewModel>() };
-            
+
             // Líder e Membro
             var prospeccoesUsuario = await GetProspeccoesUsuario(usuario);
             var prospeccoesUsuarioMembro = await GetProspeccoesUsuarioMembro(usuario);
@@ -202,7 +202,7 @@ namespace BaseDeProjetos.Controllers
             await AtribuirParticipacoesIndividuais(participacao, prospeccoesUsuario);
 
             decimal valorTotalProspeccoes = 0;
-            decimal valorTotalProspeccoesComProposta;
+            decimal valorTotalProspeccoesComProposta = 0;
             decimal valorMedioProspeccoes;
             decimal valorMedioProspeccoesComProposta = 0;
             decimal taxaConversaoProposta;
@@ -212,20 +212,12 @@ namespace BaseDeProjetos.Controllers
             int quantidadeProspeccoesComProposta;
             int quantidadeProspeccoesProjetizadas;
 
-            foreach (var prospeccao in prospeccoesUsuario)
-            {
-                if (prospeccao.ValorProposta != 0)
-                {
-                    valorTotalProspeccoes += prospeccao.ValorProposta;
-                }
-                else
-                {
-                    valorTotalProspeccoes += prospeccao.ValorEstimado;
-                }
-            }
-
+            valorTotalProspeccoes = ExtrairValorProspeccoes(prospeccoesUsuario, valorTotalProspeccoes);
+            valorTotalProspeccoesComProposta = ExtrairValorProspeccoes(prospeccoesUsuarioComProposta, valorTotalProspeccoesComProposta);
+            
             participacao.ValorTotalProspeccoes = valorTotalProspeccoes;
-            participacao.ValorTotalProspeccoesComProposta = valorTotalProspeccoesComProposta = prospeccoesUsuarioComProposta.Sum(p => p.ValorProposta);
+            participacao.ValorTotalProspeccoesComProposta = valorTotalProspeccoesComProposta;
+            
             participacao.QuantidadeProspeccoes = quantidadeProspeccoes = prospeccoesUsuario.Count();
             participacao.QuantidadeProspeccoesComProposta = quantidadeProspeccoesComProposta = prospeccoesUsuarioComProposta.Count();
             participacao.QuantidadeProspeccoesProjeto = quantidadeProspeccoesProjetizadas = prospeccoesUsuarioConvertidas.Count();
@@ -243,7 +235,7 @@ namespace BaseDeProjetos.Controllers
             }
             else
             {
-                participacao.TaxaConversaoProposta = taxaConversaoProposta = (quantidadeProspeccoesComProposta / (decimal)quantidadeProspeccoes);
+                participacao.TaxaConversaoProposta = taxaConversaoProposta = quantidadeProspeccoesComProposta / (decimal)quantidadeProspeccoes;
                 participacao.ValorMedioProspeccoes = valorMedioProspeccoes = valorTotalProspeccoes / quantidadeProspeccoes;
 
                 if (quantidadeProspeccoesComProposta > 0)
@@ -258,7 +250,7 @@ namespace BaseDeProjetos.Controllers
 
                 if (quantidadeProspeccoesComProposta != 0)
                 {
-                    participacao.TaxaConversaoProjeto = taxaConversaoProjeto = (quantidadeProspeccoesProjetizadas / (decimal)quantidadeProspeccoesComProposta);
+                    participacao.TaxaConversaoProjeto = taxaConversaoProjeto = quantidadeProspeccoesProjetizadas / (decimal)quantidadeProspeccoesComProposta;
                 }
                 else
                 {
@@ -270,6 +262,29 @@ namespace BaseDeProjetos.Controllers
             }
 
             return participacao;
+        }
+
+        /// <summary>
+        /// Extrai o valor total das prospecções considerando o valor da proposta se presente, se não, o valor estimado
+        /// </summary>
+        /// <param name="prospeccoes"></param>
+        /// <param name="valorTotalProspeccoes"></param>
+        /// <returns></returns>
+        private static decimal ExtrairValorProspeccoes(List<Prospeccao> prospeccoes, decimal valorTotalProspeccoes)
+        {
+            foreach (var prospeccao in prospeccoes)
+            {
+                if (prospeccao.ValorProposta != 0)
+                {
+                    valorTotalProspeccoes += prospeccao.ValorProposta;
+                }
+                else
+                {
+                    valorTotalProspeccoes += prospeccao.ValorEstimado;
+                }
+            }
+
+            return valorTotalProspeccoes;
         }
 
         /// <summary>
