@@ -68,7 +68,7 @@
 		},
 
 		series: [{
-			name: 'Values',
+			name: 'Indicador',
 			data: 
 				[
 					rankings['RankValorTotalProspeccoes'],
@@ -83,8 +83,13 @@
 					rankings['Propositividade'], 
 					rankings['Indice']
 				],
-			pointPlacement: 'on'
-		}]
+			pointPlacement: 'on',
+			showInLegend: false,
+			color: '#15a362'
+		}],
+		legend: {
+			enabled: false
+		}
 		});
 	}
 
