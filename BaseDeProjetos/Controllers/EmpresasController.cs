@@ -47,6 +47,8 @@ namespace BaseDeProjetos.Controllers
 
                 ViewBag.ProspeccoesPlanejadas = _context.Prospeccao.Where(P => P.Status.All(S => S.Status == StatusProspeccao.Planejada)).ToList();
 
+                ViewBag.Projetos = _context.Projeto.ToList();
+
                 ViewBag.Contatos = _context.Pessoa.ToList();
                 //Filtros e ordenadores
                 if (string.IsNullOrEmpty(searchString) && HttpContext.Session.Keys.Contains("_CurrentFilter"))
