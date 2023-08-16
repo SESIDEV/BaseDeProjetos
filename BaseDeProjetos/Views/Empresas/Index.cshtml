@@ -6,6 +6,7 @@
     List<Prospeccao> prospeccoes = ViewBag.Prospeccoes as List<Prospeccao>;
     List<Prospeccao> prospsPlanejadas = ViewBag.ProspeccoesPlanejadas as List<Prospeccao>;
     List<Prospeccao> prospsAtivas = ViewBag.ProspeccoesAtivas as List<Prospeccao>;
+    List<Projeto> projetos = ViewBag.Projetos as List<Projeto>;
 }
 <script>
     var prospeccoesDetalhes = [];
@@ -197,6 +198,8 @@
                     <div class="app-card-body p-4">
                         <div class="notification-content">
                             Prospecções Totais: @prospeccoes.Where(P => P.Empresa.Id == @empresa.Id).Count()
+                            <br>
+                            Projetos Totais: @projetos.Where(p => p.Empresa.Id == @empresa.Id).Count()
                         </div>
                     </div>
                     <div class="accordion accordion-flush" id="accordionEmpresa-@empresa.Id">
