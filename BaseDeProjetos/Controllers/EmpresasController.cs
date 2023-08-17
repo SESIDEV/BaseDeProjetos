@@ -122,11 +122,13 @@ namespace BaseDeProjetos.Controllers
             {
                 searchString = searchString.ToLower();
 
+                string searchStringCNPJSemCaracteres = searchString.Replace("/", "").Replace(".", "").Replace("-", "");
+
                 empresas = empresas.Where(e =>
                 e.RazaoSocial != null && e.RazaoSocial.ToLower().Contains(searchString.ToLower()) ||
                 e.Nome != null && e.Nome.ToLower().Contains(searchString.ToLower()) ||
-                e.CNPJ != null && e.CNPJ.ToLower().Contains(searchString.ToLower())).ToList();
-
+                e.CNPJ != null && e.CNPJ.Contains(searchString) || 
+                e.CNPJ != null && e.CNPJ.Contains(searchStringCNPJSemCaracteres)).ToList();
             }
 
             return empresas;
