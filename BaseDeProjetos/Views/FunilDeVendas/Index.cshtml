@@ -379,7 +379,7 @@
                             @if (Model.Pager.TemPaginaAnterior)
                             {
                                 <li class="page-item">
-                                    <a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-aba="@aba" asp-route-SearchString="@searchString" asp-route-numeroPagina="@(Model.Pager.PaginaAtual - 1)">Anterior</a>
+                                    <a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-aba="@aba" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" asp-route-SearchString="@searchString" asp-route-numeroPagina="@(Model.Pager.PaginaAtual - 1)">Anterior</a>
                                 </li>
                             }
                             else
@@ -394,13 +394,13 @@
                                 if (numeroPagina == Model.Pager.PaginaAtual)
                                 {
                                     <li class="page-item active">
-                                        <a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-aba="@aba" asp-route-SearchString="@searchString" asp-route-numeroPagina="@(numeroPagina-1)">@numeroPagina</a>
+                                        <a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-tamanhopagina="@ViewBag.TamanhoPagina" asp-route-casa="@casa" asp-route-aba="@aba" asp-route-SearchString="@searchString" asp-route-numeroPagina="@(numeroPagina-1)">@numeroPagina</a>
                                     </li>
                                 }
                                 else
                                 {
                                     <li class="page-item">
-                                        <a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-aba="@aba" asp-route-SearchString="@searchString" asp-route-numeroPagina="@numeroPagina">@numeroPagina</a>
+                                        <a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-tamanhopagina="@ViewBag.TamanhoPagina" asp-route-aba="@aba" asp-route-SearchString="@searchString" asp-route-numeroPagina="@numeroPagina">@numeroPagina</a>
                                     </li>
                                 }
                             }
