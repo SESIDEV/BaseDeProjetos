@@ -6,6 +6,7 @@
     List<Prospeccao> prospeccoes = ViewBag.Prospeccoes as List<Prospeccao>;
     List<Prospeccao> prospsPlanejadas = ViewBag.ProspeccoesPlanejadas as List<Prospeccao>;
     List<Prospeccao> prospsAtivas = ViewBag.ProspeccoesAtivas as List<Prospeccao>;
+    List<Prospeccao> outrasProspeccoes = ViewBag.OutrasProspeccoes as List<Prospeccao>;
     List<Projeto> projetos = ViewBag.Projetos as List<Projeto>;
 }
 <script>
@@ -382,6 +383,57 @@
                                     else
                                     {
                                         <p>Não há prospecções planejadas para esta empresa</p>
+                                    }
+                                    <br>
+                                    <h6>Outras Prospeccções</h6>
+                                    @if (outrasProspeccoes.Where(P => P.Empresa.Id == @empresa.Id).Count() > 0)
+                                    {
+                                        <table class="table table-striped">
+                                            <tr>
+                                                <th>Nome</th>
+                                                <th>Data do Último Status</th>
+                                                <th>Líder</th>
+                                                <th>Detalhes</th>
+                                            </tr>
+
+                                            @foreach (Prospeccao prospeccao in outrasProspeccoes.Where(P => P.Empresa.Id == @empresa.Id))
+                                            {
+                                                <div id="modalEditProsp-@prospeccao.Id-container">
+                                                </div>
+                                                <div id="modalDeleteProsp-@prospeccao.Id-container">
+                                                </div>
+                                                <div id="modalHistoryProsp-@prospeccao.Id-container">
+                                                </div>
+                                                <div id="modalCreateFollowupProsp-@prospeccao.Id-container">
+                                                </div>
+                                                <div id="modalEditFollowupProsp-@prospeccao.Id-container">
+                                                </div>
+                                                <div id="modalDetalhesProsp-@prospeccao.Id-container">
+                                                </div>
+                                                <tr>
+                                                    <td>
+                                                        @if (prospeccao.NomeProspeccao != null)
+                                                        {
+                                                            <span style="text-overflow: ellipsis;">@prospeccao.NomeProspeccao</span>
+                                                        } 
+                                                        else
+                                                        {
+                                                            <span style="text-overflow: ellipsis;">Prospecção sem Nome</span>
+                                                        }
+                                                    </td>                                                    
+                                                    <td>@prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))</td>
+                                                    <td>@prospeccao.Usuario</td>
+                                                    <td><button type="button" id="button-@prospeccao.Id"
+                                                    data-bs-target="#modalDetalhes-@prospeccao.Id" data-bs-toggle="modal"
+                                                    class="btn-sm app-btn-primary"
+                                                    onmouseover="carregarModaisProspeccao('@prospeccao.Id','@prospeccao.NomeProspeccao')">Detalhes</button></td>
+                                                </tr>
+                                            }
+                                        </table>
+                                    }
+                                    else 
+                                    {
+                                        <p>Não há outras prospecções para esta empresa</p>
                                     }
                                 </div>
                             </div>
