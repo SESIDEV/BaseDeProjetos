@@ -43,6 +43,7 @@ namespace BaseDeProjetos.Controllers
                 producoes = FunilHelpers.VincularCasaProducao(usuario, producoes);
                 producoes = FunilHelpers.PeriodizarProduções(ano, producoes);
                 producoes = FunilHelpers.FiltrarProduções(searchString, producoes);
+                producoes = producoes.OrderBy(p => p.Data).ToList();
 
                 List<Empresa> empresas = await _context.Empresa.ToListAsync();
                 List<Projeto> projetos = await _context.Projeto.ToListAsync();
@@ -50,7 +51,7 @@ namespace BaseDeProjetos.Controllers
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
                 ViewData["Projetos"] = new SelectList(projetos, "Id", "NomeProjeto");
 
-                return View(producoes.ToList());
+                return View(producoes);
             }
             else
             {
