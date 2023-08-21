@@ -24,11 +24,11 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: Producao
-        public IActionResult Index(string casa, string searchString = "", string ano = "")
+        public async Task<IActionResult> Index(string casa, string searchString = "", string ano = "")
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                List<Producao> Producoes;
+                List<Producao> producoes;
 
                 Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
                 ViewBag.usuarioCasa = usuario.Casa;
@@ -39,19 +39,18 @@ namespace BaseDeProjetos.Controllers
                     casa = usuario.Casa.ToString();
                 }
 
-                Producoes = FunilHelpers.DefinirCasaParaVisualizarEmProducao(casa, usuario, _context, HttpContext, ViewData);
-                Producoes = FunilHelpers.VincularCasaProducao(usuario, Producoes);
-                Producoes = FunilHelpers.PeriodizarProduções(ano, Producoes);
-                Producoes = FunilHelpers.FiltrarProduções(searchString, Producoes);
+                producoes = await FunilHelpers.DefinirCasaParaVisualizarEmProducao(casa, usuario, _context, HttpContext, ViewData);
+                producoes = FunilHelpers.VincularCasaProducao(usuario, producoes);
+                producoes = FunilHelpers.PeriodizarProduções(ano, producoes);
+                producoes = FunilHelpers.FiltrarProduções(searchString, producoes);
 
-                List<Empresa> empresas = _context.Empresa.ToList();
-                List<Projeto> projetos = _context.Projeto.ToList();
+                List<Empresa> empresas = await _context.Empresa.ToListAsync();
+                List<Projeto> projetos = await _context.Projeto.ToListAsync();
 
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
                 ViewData["Projetos"] = new SelectList(projetos, "Id", "NomeProjeto");
-                ViewData["ListaProducoes"] = Producoes.ToList();
 
-                return View();
+                return View(producoes.ToList());
             }
             else
             {
