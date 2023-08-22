@@ -227,8 +227,7 @@ function gerarOpcoesSelect(rota, modelId="", fillValues=false) { // os últimos 
     let lider = "";
     let idSelect = `campoSelect${rota}${modelId}`;
     let caixaId = `caixaPesquisa${rota}${modelId}`;
-    let botaoAlterar = null;
-    if(rota != "Pessoas"){botaoAlterar = `botaoToggleCaixaRequest${rota}${modelId}`;}
+    let botaoAlterar = `botaoToggleCaixaRequest${rota}${modelId}`;
     let loadingIcon = `loadingOpcoesSelect${rota}${modelId}`;
 
     document.querySelector(`#${caixaId}`).style.display = "none";
@@ -242,7 +241,7 @@ function gerarOpcoesSelect(rota, modelId="", fillValues=false) { // os últimos 
     switch (rota) { //====================================================== \/\/\/ SWITCH PRINCIPAL \/\/\/ ===============================================================
         case "Pessoas":
             defRota = '/FunilDeVendas/PuxarDadosUsuarios';
-            value = "Email"; //PODE DAR ERRO, VERIFICAR DEPOIS
+            value = "Email";
             inner = "UserName";
             if(document.querySelector(`#selectLiderProsp${modelId}`) != null){lider = document.querySelector(`#selectLiderProsp${modelId}`).selectedOptions[0].text;};
             break;
@@ -284,10 +283,8 @@ function gerarOpcoesSelect(rota, modelId="", fillValues=false) { // os últimos 
         }
     })
     document.querySelectorAll(".select2-container").forEach(input => { input.style.width = "100%" })
-    if (botaoAlterar != null) {
-        document.querySelector(`#${botaoAlterar}`).style.display = "none";
-        document.querySelector(`#check${rota}${modelId}`).checked = true;
-    }
+    document.querySelector(`#${botaoAlterar}`).style.display = "none";
+    document.querySelector(`#check${rota}${modelId}`).checked = true;
 }
 
 function procurarPessoa(select) {
