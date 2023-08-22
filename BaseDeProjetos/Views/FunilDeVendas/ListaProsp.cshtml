@@ -1,6 +1,7 @@
 ﻿@model ProspeccoesViewModel
 @using System.Globalization
 @using BaseDeProjetos.Helpers
+@using System.Linq;
 
 @{
     var ptbr = new CultureInfo("pt-BR");
@@ -9,6 +10,7 @@
     string casa = dadosDaRota.Values["casa"] as string;
     aba = aba.ToLowerInvariant();
     var agregadas = ViewData["ProspeccoesAgregadas"] as List<Prospeccao>;
+    var usuarios = ViewData["Usuarios"] as List<Usuario>;
 }
 <style>
     * {
@@ -104,7 +106,7 @@
                                     @if(prospeccao.MembrosEquipe != null){
                                         foreach (var item in prospeccao.MembrosEquipe.Split(";"))
                                         {
-                                            if(item == ""){} else {<span class="badge bg-info">@item</span>}
+                                            if(item == ""){} else {<span class="badge bg-info">@usuarios.Where(u => u.Email == item).FirstOrDefault().UserName</span>} // pode crashar se houver algum membro que nao esteja cadastrado como usuario
                                         }
                                     }
                                 </td>
