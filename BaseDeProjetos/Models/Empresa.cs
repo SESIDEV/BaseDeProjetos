@@ -29,7 +29,7 @@ namespace BaseDeProjetos.Models
 
         public string EmpresaUnique
         {
-            get => Nome + " - [" + CNPJ + "]";
+            get => Nome + " - [" + CNPJ + "]" + " - " + Id;
             private set { }
         }
     }
