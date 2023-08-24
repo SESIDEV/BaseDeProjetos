@@ -62,6 +62,7 @@ namespace BaseDeProjetos.Controllers
                     Pager = pager,
                 };
 
+                ViewData["Usuarios"] = _context.Users.ToList();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "Nome");
                 ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
                 ViewData["ProspeccoesAgregadas"] = _context.Prospeccao.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
