@@ -47,8 +47,6 @@ namespace BaseDeProjetos.Controllers
 
                 List<Empresa> empresas = await _context.Empresa.ToListAsync();
                 List<Projeto> projetos = await _context.Projeto.ToListAsync();
-                List<Empresa> empresas = await _context.Empresa.ToListAsync();
-                List<Projeto> projetos = await _context.Projeto.ToListAsync();
 
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
                 ViewData["Projetos"] = new SelectList(projetos, "Id", "NomeProjeto");
