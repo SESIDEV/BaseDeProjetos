@@ -17,7 +17,7 @@
 
 <style>
     .tooltip-indicadores {
-        position: relative
+        position: relative;
     }
 
         .tooltip-indicadores:before {
@@ -32,9 +32,10 @@
             border-radius: 10px;
             background: black;
             opacity: 100%;
-            color: #fff;
             text-align: center;
             display: none;
+            z-index: 1;
+            color: #fff;
         }
 
         .tooltip-indicadores:hover:before {
@@ -186,7 +187,7 @@
                                         <th class="cell">Proposta/Prospecção</th>
                                         <th class="cell">Projeto/Proposta</th>
                                         <th class="cell">Assertividade Precificação</th>
-                                        <th class="cell">FCF</th>
+                                        <th data-text="Fator de Contribuição Financeira" class="cell tooltip-indicadores-overflow">FCF</th>
                                         <th class="cell">Média dos Fatores</th>
                                         <th class="cell">Detalhes</th>
                                     </tr>
