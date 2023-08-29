@@ -28,7 +28,7 @@ namespace BaseDeProjetos.Controllers
 
         // GET: FunilDeVendas
         [Route("FunilDeVendas/Index/{casa?}/{aba?}/{ano?}")]
-        public IActionResult Index(string casa, string aba, string sortOrder = "", string searchString = "", string ano = "", int numeroPagina = 1, int tamanhoPagina = 20)
+        public async Task<IActionResult> Index(string casa, string aba, string sortOrder = "", string searchString = "", string ano = "", int numeroPagina = 1, int tamanhoPagina = 20)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
