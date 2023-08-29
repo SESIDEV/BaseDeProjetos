@@ -28,10 +28,8 @@ namespace BaseDeProjetos.Controllers
 
         // GET: FunilDeVendas
         [Route("FunilDeVendas/Index/{casa?}/{aba?}/{ano?}")]
-        public async Task<IActionResult> Index(string casa, string aba, string sortOrder = "", string searchString = "", string ano = "", int numeroPagina = 1)
+        public IActionResult Index(string casa, string aba, string sortOrder = "", string searchString = "", string ano = "", int numeroPagina = 1, int tamanhoPagina = 20)
         {
-            const int tamanhoPagina = 20;
-
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
@@ -40,6 +38,7 @@ namespace BaseDeProjetos.Controllers
                 ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;
                 ViewBag.searchString = searchString;
+                ViewBag.TamanhoPagina = tamanhoPagina;
 
                 if (string.IsNullOrEmpty(casa))
                 {
@@ -64,6 +63,7 @@ namespace BaseDeProjetos.Controllers
                     Pager = pager,
                 };
 
+                ViewData["Usuarios"] = _context.Users.ToList();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "Nome");
                 ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
                 ViewData["ProspeccoesAgregadas"] = _context.Prospeccao.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();

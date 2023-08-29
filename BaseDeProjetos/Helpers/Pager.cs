@@ -10,7 +10,6 @@ namespace BaseDeProjetos.Helpers
         public int PaginaAtual { get; private set; }
         public int TamanhoDaPagina { get; private set; }
         public int TotalPaginas { get; private set; }
-
         public List<int> Pages { get; set; }
 
         /// <summary>

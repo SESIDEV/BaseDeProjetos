@@ -36,9 +36,7 @@ namespace BaseDeProjetos.Controllers
 				ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;
 
-                ViewBag.Prospeccoes = _context.Prospeccao.Where(P => P.Status.All(S => S.Status != StatusProspeccao.NaoConvertida &&
-                                                                                        S.Status != StatusProspeccao.Convertida &&
-                                                                                        S.Status != StatusProspeccao.Suspensa)).ToList();
+                ViewBag.Prospeccoes = _context.Prospeccao.ToList();
 
                 ViewBag.ProspeccoesAtivas = _context.Prospeccao.Where(P => P.Status.All(S => S.Status != StatusProspeccao.NaoConvertida &&
                                                                                         S.Status != StatusProspeccao.Convertida &&
@@ -46,6 +44,11 @@ namespace BaseDeProjetos.Controllers
                                                                         && P.Status.OrderBy(k => k.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
 
                 ViewBag.ProspeccoesPlanejadas = _context.Prospeccao.Where(P => P.Status.All(S => S.Status == StatusProspeccao.Planejada)).ToList();
+
+                ViewBag.OutrasProspeccoes = _context.Prospeccao
+                    .Where(P => P.Status.Any(S => S.Status == StatusProspeccao.NaoConvertida ||
+                                  S.Status == StatusProspeccao.Convertida ||
+                                  S.Status == StatusProspeccao.Suspensa)).ToList();
 
                 ViewBag.Projetos = _context.Projeto.ToList();
 
@@ -128,7 +131,7 @@ namespace BaseDeProjetos.Controllers
                 empresas = empresas.Where(e =>
                 e.RazaoSocial != null && e.RazaoSocial.ToLower().Contains(searchString.ToLower()) ||
                 e.Nome != null && e.Nome.ToLower().Contains(searchString.ToLower()) ||
-                e.CNPJ != null && e.CNPJ.Contains(searchString) || 
+                e.CNPJ != null && e.CNPJ.Contains(searchString) ||
                 e.CNPJ != null && e.CNPJ.Contains(searchStringCNPJSemCaracteres)).ToList();
             }
 

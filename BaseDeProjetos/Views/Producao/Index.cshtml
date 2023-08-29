@@ -7,7 +7,6 @@
 	SelectList ListEmpresas = ViewData["Empresas"] as SelectList;
 
 	ViewData["Title"] = "Gestão do Conhecimento";
-	IEnumerable<BaseDeProjetos.Models.Producao> ListaProducoes = ViewData["ListaProducoes"] as IEnumerable<BaseDeProjetos.Models.Producao>;
 }
 <partial name="Header" view-data="@ViewData" />
 <div class="app-wrapper">
@@ -68,7 +67,7 @@
 			</div>
 
 			<div class="row g-4">
-				@foreach (var producao in ListaProducoes)
+				@foreach (var producao in Model)
 				{
 					<div class="col-6 col-md-4 col-xl-3 col-xxl-3">
 						<div class="app-card app-card-doc shadow-sm h-100">
