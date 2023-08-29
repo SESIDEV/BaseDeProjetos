@@ -310,7 +310,7 @@ namespace BaseDeProjetos.Controllers
                 }
 
                 // TODO: Preciso de valores de despesa do ISI
-                participacao.Indice = taxaConversaoProposta * valorMedioProspeccoesComProposta * quantidadeProspeccoesComProposta;
+                participacao.FatorDeContribuicaoFinanceira = taxaConversaoProposta * valorMedioProspeccoesComProposta * quantidadeProspeccoesComProposta;
             }
 
             return participacao;
@@ -578,7 +578,7 @@ namespace BaseDeProjetos.Controllers
         private void ObterRankingsMedios(List<ParticipacaoTotalViewModel> participacoes)
         {
             decimal rankMedio = participacoes.Average(p => p.Rank);
-            decimal rankMedioIndice = participacoes.Average(p => p.Indice);
+            decimal rankMedioIndice = participacoes.Average(p => p.FatorDeContribuicaoFinanceira);
 
             decimal rankMedioValorTotalProspeccao = participacoes.Average(p => p.RankPorIndicador["RankValorTotalProspeccoes"]);
             decimal rankMedioValorTotalProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador["RankValorTotalProspeccoesComProposta"]);
@@ -605,17 +605,17 @@ namespace BaseDeProjetos.Controllers
 
         private void AcertarValorRankParticipacoes(List<ParticipacaoTotalViewModel> participacoes)
         {
-            decimal mediaValorIndice = participacoes.Average(p => p.Indice);
+            decimal mediaValorIndice = participacoes.Average(p => p.FatorDeContribuicaoFinanceira);
 
             foreach (var participacao in participacoes)
             {
                 if (mediaValorIndice != 0)
                 {
-                    participacao.Indice = participacao.Indice / mediaValorIndice;
+                    participacao.FatorDeContribuicaoFinanceira = participacao.FatorDeContribuicaoFinanceira / mediaValorIndice;
                 }
                 else
                 {
-                    participacao.Indice = 0;
+                    participacao.FatorDeContribuicaoFinanceira = 0;
                 }
             }
         }
