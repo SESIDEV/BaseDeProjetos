@@ -21,8 +21,9 @@ namespace BaseDeProjetos.Models
         public int QuantidadeProspeccoesProjeto { get; set; }
         public decimal Propositividade { get; set; }
         public decimal FatorDeContribuicaoFinanceira { get; set; }
-        public decimal Rank { get; set; }
+        public decimal MediaFatores { get; set; }
         public Dictionary<string, decimal> RankPorIndicador { get; set; }
+        public Dictionary<string, decimal> ValoresMinMedMax { get; set; }
         public List<string> Labels { get; set; }
         public List<decimal> Valores { get; set; }
     }

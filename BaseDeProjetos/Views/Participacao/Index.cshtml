@@ -368,11 +368,11 @@
                                             <td class="cell">
                                                 <div class="d-flex align-items-center flex-row gap-2">
                                                     @{
-                                                        decimal rank = participacaoTotal.Rank;
+                                                        decimal rank = participacaoTotal.MediaFatores;
                                                         decimal rankMedio = (decimal)ViewData["rankMedio"];
                                                     }
                                                     <div class="d-flex flex-row align-items-center gap-2">
-                                                        @((participacaoTotal.Rank).ToString("N", cultura))
+                                                        @((participacaoTotal.MediaFatores).ToString("N", cultura))
                                                     </div>
                                                 </div>
                                             </td>
