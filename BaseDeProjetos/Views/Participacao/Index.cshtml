@@ -27,7 +27,7 @@
             transform: translateY(-50%);
             left: 100%;
             margin-left: 15px;
-            width: 50px;
+            width: auto; /* Funcionou supreendentemente bem */
             padding: 10px;
             border-radius: 10px;
             background: black;
@@ -187,7 +187,7 @@
                                         <th class="cell">Proposta/Prospecção</th>
                                         <th class="cell">Projeto/Proposta</th>
                                         <th class="cell">Assertividade Precificação</th>
-                                        <th data-text="Fator de Contribuição Financeira" class="cell tooltip-indicadores-overflow">FCF</th>
+                                        <th data-text="Fator de Contribuição Financeira" class="cell tooltip-indicadores">FCF</th>
                                         <th class="cell">Média dos Fatores</th>
                                         <th class="cell">Detalhes</th>
                                     </tr>
@@ -253,7 +253,7 @@
                                                     var rankMedioValorTotalProspeccoes = (decimal)ViewData["rankMedioValorTotalProspeccao"];
                                                 }
                                                 <div data-text="(@rankValorTotalProspeccoes.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                @Helpers.PrintarValorIndicadorParticipacao(rankValorTotalProspeccoes, rankMedioValorTotalProspeccoes)
+                                                @* @Helpers.PrintarValorIndicadorParticipacao(rankValorTotalProspeccoes, rankMedioValorTotalProspeccoes) *@
                                                 R$ @participacaoTotal.ValorTotalProspeccoes.ToString("N", cultura)
                                                 </div>
                                             </td>
@@ -263,7 +263,7 @@
                                                     var rankMedioQuantidadeProspeccoes = (decimal)ViewData["rankMedioQuantidadeProspeccoes"];
                                                 }
                                                 <div data-text="(@rankQuantidadeProspeccoes.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                    @Helpers.PrintarValorIndicadorParticipacao(rankQuantidadeProspeccoes, rankMedioQuantidadeProspeccoes)
+                                                    @* @Helpers.PrintarValorIndicadorParticipacao(rankQuantidadeProspeccoes, rankMedioQuantidadeProspeccoes) *@
                                                     @participacaoTotal.QuantidadeProspeccoes 
                                                 </div>
                                             </td>
@@ -273,7 +273,7 @@
                                                     var rankMedioValorMedioProspeccoes = (decimal)ViewData["rankMedioValorMedioProspeccoes"];
                                                 }
                                                 <div data-text="(@rankValorMedioProspeccoes.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                    @Helpers.PrintarValorIndicadorParticipacao(rankValorMedioProspeccoes, rankMedioValorMedioProspeccoes)
+                                                    @* @Helpers.PrintarValorIndicadorParticipacao(rankValorMedioProspeccoes, rankMedioValorMedioProspeccoes) *@
                                                     R$ @participacaoTotal.ValorMedioProspeccoes.ToString("N", cultura)
                                                 </div>
                                             </td>
@@ -283,7 +283,7 @@
                                                     var rankMedioQuantidadeProspeccoesMembro = (decimal)ViewData["rankMedioQuantidadeProspeccoesMembro"];
                                                 }
                                                 <div data-text="(@rankQuantidadeProspeccoesMembro.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                    @Helpers.PrintarValorIndicadorParticipacao(rankQuantidadeProspeccoesMembro, rankMedioQuantidadeProspeccoesMembro)
+                                                    @* @Helpers.PrintarValorIndicadorParticipacao(rankQuantidadeProspeccoesMembro, rankMedioQuantidadeProspeccoesMembro) *@
                                                     @participacaoTotal.QuantidadeProspeccoesMembro
                                                 </div>
                                             </td>
@@ -293,7 +293,7 @@
                                                     var rankMedioValorTotalProspeccoesComProposta = (decimal)ViewData["rankMedioValorTotalProspeccoesComProposta"];
                                                 }
                                                 <div data-text="(@rankValorTotalProspeccoesComProposta.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                    @Helpers.PrintarValorIndicadorParticipacao(rankValorTotalProspeccoesComProposta, rankMedioValorTotalProspeccoesComProposta)
+                                                    @* @Helpers.PrintarValorIndicadorParticipacao(rankValorTotalProspeccoesComProposta, rankMedioValorTotalProspeccoesComProposta) *@
                                                     R$ @participacaoTotal.ValorTotalProspeccoesComProposta.ToString("N", cultura) 
                                                 </div>
                                             </td>
@@ -303,7 +303,7 @@
                                                         var rankMedioValorMedioProspeccoesComProposta = (decimal)ViewData["rankMedioValorMedioProspeccoesComProposta"];
                                                     }
                                                 <div data-text="(@rankValorMedioProposta.ToString("N", cultura))" class="d-flex align-items-center flex-row gap-2 tooltip-indicadores">
-                                                    @Helpers.PrintarValorIndicadorParticipacao(rankValorMedioProposta, rankMedioValorMedioProspeccoesComProposta)
+                                                    @* @Helpers.PrintarValorIndicadorParticipacao(rankValorMedioProposta, rankMedioValorMedioProspeccoesComProposta) *@
                                                     R$ @participacaoTotal.ValorMedioProspeccoesComProposta.ToString("N", cultura)
                                                 </div>
                                             </td>
@@ -313,7 +313,7 @@
                                                     var rankMedioQuantidadeProspeccoesComProposta = (decimal)ViewData["rankMedioQuantidadeProspeccoesComProposta"];
                                                 }
                                                 <div data-text="(@rankProspeccoesComProposta.ToString("N", cultura))" class="d-flex align-items-center flex-row gap-2 tooltip-indicadores">
-                                                    @Helpers.PrintarValorIndicadorParticipacao(rankProspeccoesComProposta, rankMedioQuantidadeProspeccoesComProposta)
+                                                    @* @Helpers.PrintarValorIndicadorParticipacao(rankProspeccoesComProposta, rankMedioQuantidadeProspeccoesComProposta) *@
                                                     @participacaoTotal.QuantidadeProspeccoesComProposta
                                                 </div>
                                             </td>
@@ -323,7 +323,7 @@
                                                     var rankMedioQuantidadeProspeccoesProjeto = (decimal)ViewData["rankMedioQuantidadeProspeccoesProjeto"];
                                                 }
                                                 <div data-text="(@rankProspeccoesProjeto.ToString("N", cultura))" class="d-flex align-items-center flex-row gap-2 tooltip-indicadores">
-                                                    @Helpers.PrintarValorIndicadorParticipacao(rankProspeccoesProjeto, rankMedioQuantidadeProspeccoesProjeto)
+                                                    @* @Helpers.PrintarValorIndicadorParticipacao(rankProspeccoesProjeto, rankMedioQuantidadeProspeccoesProjeto) *@
                                                     @participacaoTotal.QuantidadeProspeccoesProjeto
                                                 </div>
                                             </td>
@@ -332,7 +332,7 @@
                                                     @{
                                                         var taxaConversaoProposta = participacaoTotal.TaxaConversaoProposta;
                                                     }
-                                                    @Helpers.PrintarValorIndicadorParticipacao(taxaConversaoProposta)
+                                                    @* @Helpers.PrintarValorIndicadorParticipacao(taxaConversaoProposta) *@
                                                     @((taxaConversaoProposta * 100).ToString("N", cultura))%
                                                 </div>
                                             </td>
@@ -341,7 +341,7 @@
                                                     @{
                                                         var taxaConversaoProjeto = participacaoTotal.TaxaConversaoProjeto;
                                                     }
-                                                    @Helpers.PrintarValorIndicadorParticipacao(taxaConversaoProjeto)
+                                                    @* @Helpers.PrintarValorIndicadorParticipacao(taxaConversaoProjeto) *@
                                                     @((taxaConversaoProjeto * 100).ToString("N", cultura))%
                                                 </div>
                                             </td>
@@ -352,37 +352,15 @@
                                                         var taxaPropositividade = participacaoTotal.Propositividade;
                                                     }
                                                 <div data-text="(@rankPropositividade.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2">
-                                                    @Helpers.PrintarValorIndicadorParticipacao(taxaPropositividade, rankMedioPropositividade)
+                                                    @* @Helpers.PrintarValorIndicadorParticipacao(taxaPropositividade, rankMedioPropositividade) *@
                                                     @((taxaPropositividade).ToString("N", cultura))
                                                 </div>
                                             </td>
                                             <td class="cell">
                                                 @{
-                                                    decimal indice = participacaoTotal.Indice;
-                                                    decimal indiceMedio = (decimal)ViewData["rankMedioIndice"];
+                                                    decimal fcf = participacaoTotal.Indice;
+                                                    decimal fcfMedio = (decimal)ViewData["rankMedioIndice"];
                                                     <div class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                        @if (indice > indiceMedio)
-                                                        {
-                                                            if (indice > indiceMedio * 2)
-                                                            {
-                                                                <svg style="color: green" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
-                                                                    <path fill-rule="evenodd" d="M7.646 2.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 3.707 2.354 9.354a.5.5 0 1 1-.708-.708l6-6z" />
-                                                                </svg>
-                                                            }
-                                                            else
-                                                            {
-                                                                <svg style="color: dodgerblue" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-bar-contract" viewBox="0 0 16 16">
-                                                                    <path fill-rule="evenodd" d="M3.646 14.854a.5.5 0 0 0 .708 0L8 11.207l3.646 3.647a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 0 0 0 .708zm0-13.708a.5.5 0 0 1 .708 0L8 4.793l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708zM1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
-                                                                </svg>
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            <svg style="color: red" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
-                                                                <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-                                                            </svg>
-                                                        }
-
                                                         @((participacaoTotal.Indice - 1).ToString("N", cultura))
                                                     </div>
                                                 }
@@ -394,28 +372,6 @@
                                                         decimal rankMedio = (decimal)ViewData["rankMedio"];
                                                     }
                                                     <div class="d-flex flex-row align-items-center gap-2">
-                                                        @if (rank > rankMedio)
-                                                        {
-                                                            if (rank > rankMedio * 2)
-                                                            {
-                                                                <svg style="color: green" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
-                                                                    <path fill-rule="evenodd" d="M7.646 2.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 3.707 2.354 9.354a.5.5 0 1 1-.708-.708l6-6z" />
-                                                                </svg>
-                                                            }
-                                                            else
-                                                            {
-                                                                <svg style="color: dodgerblue" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-bar-contract" viewBox="0 0 16 16">
-                                                                    <path fill-rule="evenodd" d="M3.646 14.854a.5.5 0 0 0 .708 0L8 11.207l3.646 3.647a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 0 0 0 .708zm0-13.708a.5.5 0 0 1 .708 0L8 4.793l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708zM1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z" />
-                                                                </svg>
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            <svg style="color: red" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
-                                                                <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-                                                            </svg>
-                                                        }
-
                                                         @((participacaoTotal.Rank).ToString("N", cultura))
                                                     </div>
                                                 </div>
