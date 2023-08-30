@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Controllers
@@ -164,6 +165,38 @@ namespace BaseDeProjetos.Controllers
             {
                 return View("Forbidden");
             }
+        }
+
+        private void DefinirValoresMinMax(List<ParticipacaoTotalViewModel> participacoes)
+        {
+            PropertyInfo[] atributos = typeof(ParticipacaoTotalViewModel).GetProperties();
+
+            Dictionary<string, decimal> valoresMaximos = new Dictionary<string, decimal>();
+            Dictionary<string, decimal> valoresMinimos = new Dictionary<string, decimal>();
+
+            foreach (var property in atributos)
+            {
+                if (property.PropertyType == typeof(decimal))
+                {
+                    decimal valorMaximo = participacoes.Max(x => (decimal)property.GetValue(x));
+                    decimal valorMinimo = participacoes.Min(x => (decimal)property.GetValue(x));
+
+                    valoresMaximos[$"max{property.Name}"] = valorMaximo;
+                    valoresMinimos[$"min{property.Name}"] = valorMinimo;
+                }
+
+                if (property.PropertyType == typeof(int))
+                {
+                    int valorMaximo = participacoes.Max(x => (int)property.GetValue(x));
+                    int valorMinimo = participacoes.Min(x => (int)property.GetValue(x));
+
+                    valoresMaximos[$"max{property.Name}"] = (decimal)valorMaximo;
+                    valoresMinimos[$"min{property.Name}"] = (decimal)valorMinimo;
+                }
+            }
+
+            ViewData["ValoresMaximos"] = valoresMaximos;
+            ViewData["ValoresMinimos"] = valoresMinimos;
         }
 
         /// <summary>
@@ -563,7 +596,8 @@ namespace BaseDeProjetos.Controllers
             {
                 RankearParticipacoes(participacoes, false);
                 AcertarValorRankParticipacoes(participacoes);
-                ObterRankingsMedios(participacoes);
+                //ObterRankingsMedios(participacoes);
+                DefinirValoresMinMax(participacoes);
 
                 participacoes = participacoes.OrderByDescending(p => p.MediaFatores).ToList();
             }
@@ -651,7 +685,8 @@ namespace BaseDeProjetos.Controllers
                 decimal rankQuantidadeProspeccoesComProposta = 0;
                 decimal rankValorTotalProspeccoes = 0;
                 decimal rankValorMedioProspeccoes = 0;
-                decimal calculoMediaFatores = CalcularMediaFatores(participacoes, participacao);
+
+                CalcularMediaFatores(participacoes, participacao);
 
                 if (medValorTotalProsp != 0)
                 {
@@ -703,7 +738,12 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
-        private static decimal CalcularMediaFatores(List<ParticipacaoTotalViewModel> participacoes, ParticipacaoTotalViewModel participacao)
+        /// <summary>
+        /// Realiza o cálculo da média dos fatores
+        /// </summary>
+        /// <param name="participacoes"></param>
+        /// <param name="participacao"></param>
+        private static void CalcularMediaFatores(List<ParticipacaoTotalViewModel> participacoes, ParticipacaoTotalViewModel participacao)
         {
             decimal calculoMediaFatores = 0;
 
@@ -749,7 +789,6 @@ namespace BaseDeProjetos.Controllers
             }
 
             participacao.MediaFatores = calculoMediaFatores /= 8;
-            return calculoMediaFatores;
         }
     }
 }

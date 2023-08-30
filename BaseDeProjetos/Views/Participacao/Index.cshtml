@@ -13,6 +13,9 @@
     var anoInicio = ViewData["anoInicio"] as string;
     var mesFim = ViewData["mesFim"] as string;
     var anoFim = ViewData["anoFim"] as string;
+
+    Dictionary<string, decimal> valoresMaximos = ViewData["ValoresMaximos"] as Dictionary<string, decimal>;
+    Dictionary<string, decimal> valoresMinimos = ViewData["ValoresMinimos"] as Dictionary<string, decimal>;
 }
 
 <style>
@@ -181,7 +184,7 @@
                                         <th class="cell">Valor Médio (Prospecção)</th>
                                         <th class="cell">Prospecção Membro</th>
                                         <th class="cell">Valor Total (Em Proposta)</th>
-                                        <th class="cell">Valor Médio (Em Proposta)</th>                                        
+                                        <th class="cell">Valor Médio (Em Proposta)</th>
                                         <th class="cell">Propostas Enviadas</th>
                                         <th class="cell">Propostas Convertidas</th>
                                         <th class="cell">Proposta/Prospecção</th>
@@ -233,7 +236,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>                                                            
+                                                            </div>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <a class="btn btn-outline-primary" data-bs-dismiss="modal" aria-label="Close" role="button">
@@ -245,94 +248,95 @@
                                             </div>
                                             <td class="cell" style="overflow:hidden; max-width:100px">
                                                 Membro @random.Next()
-                                                @*@participacaoTotal.Lider*@
+                                                @*@participacaoTotal.Lider*@ <!-- Estamos escondendo o líder real-->
                                             </td>
                                             <td class="cell">
                                                 @{
                                                     var rankValorTotalProspeccoes = participacaoTotal.RankPorIndicador["RankValorTotalProspeccoes"];
-                                                    var rankMedioValorTotalProspeccoes = (decimal)ViewData["rankMedioValorTotalProspeccao"];
+                                                    var valorTotalProspeccoes = participacaoTotal.ValorTotalProspeccoes;
+                                                    <div data-text="(@rankValorTotalProspeccoes.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
+                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(valorTotalProspeccoes, valoresMinimos["minValorTotalProspeccoes"], valoresMaximos["maxValorTotalProspeccoes"])))
+                                                        R$ @valorTotalProspeccoes.ToString("N", cultura)
+                                                    </div>
                                                 }
-                                                <div data-text="(@rankValorTotalProspeccoes.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                @* @Helpers.PrintarValorIndicadorParticipacao(rankValorTotalProspeccoes, rankMedioValorTotalProspeccoes) *@
-                                                R$ @participacaoTotal.ValorTotalProspeccoes.ToString("N", cultura)
-                                                </div>
                                             </td>
                                             <td class="cell">
                                                 @{
                                                     var rankQuantidadeProspeccoes = participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoes"];
-                                                    var rankMedioQuantidadeProspeccoes = (decimal)ViewData["rankMedioQuantidadeProspeccoes"];
+                                                    var quantidadeProspeccoes = participacaoTotal.QuantidadeProspeccoes;
+                                                    <div data-text="(@rankQuantidadeProspeccoes.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
+                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(quantidadeProspeccoes, valoresMinimos["minQuantidadeProspeccoes"], valoresMaximos["maxQuantidadeProspeccoes"])))
+                                                        @quantidadeProspeccoes
+                                                    </div>
                                                 }
-                                                <div data-text="(@rankQuantidadeProspeccoes.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                    @* @Helpers.PrintarValorIndicadorParticipacao(rankQuantidadeProspeccoes, rankMedioQuantidadeProspeccoes) *@
-                                                    @participacaoTotal.QuantidadeProspeccoes 
-                                                </div>
                                             </td>
                                             <td class="cell">
                                                 @{
                                                     var rankValorMedioProspeccoes = participacaoTotal.RankPorIndicador["RankValorMedioProspeccoes"];
-                                                    var rankMedioValorMedioProspeccoes = (decimal)ViewData["rankMedioValorMedioProspeccoes"];
+                                                    var valorMedioProspeccoes = participacaoTotal.ValorMedioProspeccoes;
+                                                    <div data-text="(@rankValorMedioProspeccoes.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
+                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(valorMedioProspeccoes, valoresMinimos["minValorMedioProspeccoes"], valoresMaximos["maxValorMedioProspeccoes"])))
+                                                        R$ @valorMedioProspeccoes.ToString("N", cultura)
+                                                    </div>
                                                 }
-                                                <div data-text="(@rankValorMedioProspeccoes.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                    @* @Helpers.PrintarValorIndicadorParticipacao(rankValorMedioProspeccoes, rankMedioValorMedioProspeccoes) *@
-                                                    R$ @participacaoTotal.ValorMedioProspeccoes.ToString("N", cultura)
-                                                </div>
                                             </td>
                                             <td class="cell">
                                                 @{
                                                     var rankQuantidadeProspeccoesMembro = participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoesMembro"];
-                                                    var rankMedioQuantidadeProspeccoesMembro = (decimal)ViewData["rankMedioQuantidadeProspeccoesMembro"];
+                                                    var quantidadeProspeccoesMembro = participacaoTotal.QuantidadeProspeccoesMembro;
+                                                    <div data-text="(@rankQuantidadeProspeccoesMembro.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
+                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(quantidadeProspeccoesMembro, valoresMinimos["minQuantidadeProspeccoesMembro"], valoresMaximos["maxQuantidadeProspeccoesMembro"])))
+                                                        @quantidadeProspeccoesMembro
+                                                    </div>
                                                 }
-                                                <div data-text="(@rankQuantidadeProspeccoesMembro.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                    @* @Helpers.PrintarValorIndicadorParticipacao(rankQuantidadeProspeccoesMembro, rankMedioQuantidadeProspeccoesMembro) *@
-                                                    @participacaoTotal.QuantidadeProspeccoesMembro
-                                                </div>
                                             </td>
                                             <td class="cell">
                                                 @{
                                                     var rankValorTotalProspeccoesComProposta = participacaoTotal.RankPorIndicador["RankValorTotalProspeccoesComProposta"];
-                                                    var rankMedioValorTotalProspeccoesComProposta = (decimal)ViewData["rankMedioValorTotalProspeccoesComProposta"];
+                                                    var valorTotalProspeccoesComProposta = participacaoTotal.ValorTotalProspeccoesComProposta;
                                                 }
                                                 <div data-text="(@rankValorTotalProspeccoesComProposta.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                    @* @Helpers.PrintarValorIndicadorParticipacao(rankValorTotalProspeccoesComProposta, rankMedioValorTotalProspeccoesComProposta) *@
-                                                    R$ @participacaoTotal.ValorTotalProspeccoesComProposta.ToString("N", cultura) 
+                                                    @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(valorTotalProspeccoesComProposta, valoresMinimos["minValorTotalProspeccoesComProposta"], valoresMaximos["maxValorTotalProspeccoesComProposta"])))
+                                                    R$ @valorTotalProspeccoesComProposta.ToString("N", cultura)
                                                 </div>
                                             </td>
                                             <td class="cell">
-                                                    @{
-                                                        var rankValorMedioProposta = participacaoTotal.RankPorIndicador["RankValorMedioProspeccoesComProposta"];
-                                                        var rankMedioValorMedioProspeccoesComProposta = (decimal)ViewData["rankMedioValorMedioProspeccoesComProposta"];
-                                                    }
-                                                <div data-text="(@rankValorMedioProposta.ToString("N", cultura))" class="d-flex align-items-center flex-row gap-2 tooltip-indicadores">
-                                                    @* @Helpers.PrintarValorIndicadorParticipacao(rankValorMedioProposta, rankMedioValorMedioProspeccoesComProposta) *@
-                                                    R$ @participacaoTotal.ValorMedioProspeccoesComProposta.ToString("N", cultura)
-                                                </div>
+                                                @{
+                                                    var rankValorMedioProposta = participacaoTotal.RankPorIndicador["RankValorMedioProspeccoesComProposta"];
+                                                    var valorMedioProspeccoesComProposta = participacaoTotal.ValorMedioProspeccoesComProposta;
+                                                    <div data-text="(@rankValorMedioProposta.ToString("N", cultura))" class="d-flex align-items-center flex-row gap-2 tooltip-indicadores">
+                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(valorMedioProspeccoesComProposta, valoresMinimos["minValorMedioProspeccoesComProposta"], valoresMaximos["maxValorMedioProspeccoesComProposta"])))
+                                                        R$ @valorMedioProspeccoesComProposta.ToString("N", cultura)
+                                                    </div>
+                                                }
                                             </td>
                                             <td class="cell">
                                                 @{
                                                     var rankProspeccoesComProposta = participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoesComProposta"];
-                                                    var rankMedioQuantidadeProspeccoesComProposta = (decimal)ViewData["rankMedioQuantidadeProspeccoesComProposta"];
+                                                    var prospeccoesComProposta = participacaoTotal.QuantidadeProspeccoesComProposta;
+                                                    <div data-text="(@rankProspeccoesComProposta.ToString("N", cultura))" class="d-flex align-items-center flex-row gap-2 tooltip-indicadores">
+                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(prospeccoesComProposta, valoresMinimos["minQuantidadeProspeccoesComProposta"], valoresMaximos["maxQuantidadeProspeccoesComProposta"])))
+                                                        @prospeccoesComProposta
+                                                    </div>
                                                 }
-                                                <div data-text="(@rankProspeccoesComProposta.ToString("N", cultura))" class="d-flex align-items-center flex-row gap-2 tooltip-indicadores">
-                                                    @* @Helpers.PrintarValorIndicadorParticipacao(rankProspeccoesComProposta, rankMedioQuantidadeProspeccoesComProposta) *@
-                                                    @participacaoTotal.QuantidadeProspeccoesComProposta
-                                                </div>
                                             </td>
                                             <td class="cell">
                                                 @{
                                                     var rankProspeccoesProjeto = participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoesProjeto"];
-                                                    var rankMedioQuantidadeProspeccoesProjeto = (decimal)ViewData["rankMedioQuantidadeProspeccoesProjeto"];
+                                                    var quantidadeProspeccoesProjeto = participacaoTotal.QuantidadeProspeccoesProjeto;
+                                                    <div data-text="(@rankProspeccoesProjeto.ToString("N", cultura))" class="d-flex align-items-center flex-row gap-2 tooltip-indicadores">
+                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(quantidadeProspeccoesProjeto, valoresMinimos["minQuantidadeProspeccoesProjeto"], valoresMaximos["maxQuantidadeProspeccoesProjeto"])))
+                                                        @quantidadeProspeccoesProjeto
+                                                    </div>
                                                 }
-                                                <div data-text="(@rankProspeccoesProjeto.ToString("N", cultura))" class="d-flex align-items-center flex-row gap-2 tooltip-indicadores">
-                                                    @* @Helpers.PrintarValorIndicadorParticipacao(rankProspeccoesProjeto, rankMedioQuantidadeProspeccoesProjeto) *@
-                                                    @participacaoTotal.QuantidadeProspeccoesProjeto
-                                                </div>
                                             </td>
                                             <td class="cell">
                                                 <div class="d-flex flex-row align-items-center gap-2">
                                                     @{
                                                         var taxaConversaoProposta = participacaoTotal.TaxaConversaoProposta;
+                                                        
                                                     }
-                                                    @* @Helpers.PrintarValorIndicadorParticipacao(taxaConversaoProposta) *@
+                                                    @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(taxaConversaoProposta, valoresMinimos["minTaxaConversaoProposta"], valoresMaximos["maxTaxaConversaoProposta"])))
                                                     @((taxaConversaoProposta * 100).ToString("N", cultura))%
                                                 </div>
                                             </td>
@@ -341,38 +345,39 @@
                                                     @{
                                                         var taxaConversaoProjeto = participacaoTotal.TaxaConversaoProjeto;
                                                     }
-                                                    @* @Helpers.PrintarValorIndicadorParticipacao(taxaConversaoProjeto) *@
+                                                    @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(taxaConversaoProjeto, valoresMinimos["minTaxaConversaoProjeto"], valoresMaximos["maxTaxaConversaoProjeto"])))
                                                     @((taxaConversaoProjeto * 100).ToString("N", cultura))%
                                                 </div>
                                             </td>
                                             <td class="cell">
-                                                    @{
-                                                        var rankPropositividade = participacaoTotal.RankPorIndicador["RankPropositividade"];
-                                                        var rankMedioPropositividade = (decimal)ViewData["rankMedioPropositividade"];
-                                                        var taxaPropositividade = participacaoTotal.Propositividade;
-                                                    }
+                                                @{
+                                                    var rankPropositividade = participacaoTotal.RankPorIndicador["RankPropositividade"];
+                                                    var taxaPropositividade = participacaoTotal.Propositividade;
+                                                }
                                                 <div data-text="(@rankPropositividade.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2">
-                                                    @* @Helpers.PrintarValorIndicadorParticipacao(taxaPropositividade, rankMedioPropositividade) *@
+                                                    @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(taxaPropositividade, valoresMinimos["minPropositividade"], valoresMaximos["maxPropositividade"])))
                                                     @((taxaPropositividade).ToString("N", cultura))
                                                 </div>
                                             </td>
                                             <td class="cell">
                                                 @{
-                                                    decimal fcf = participacaoTotal.Indice;
-                                                    decimal fcfMedio = (decimal)ViewData["rankMedioIndice"];
+                                                    decimal fatorDeContribuicaoFinanceira = participacaoTotal.FatorDeContribuicaoFinanceira;
+                                                    decimal fcfMaximo = valoresMaximos["maxFatorDeContribuicaoFinanceira"];
+                                                    decimal fcfMinimo = valoresMinimos["minFatorDeContribuicaoFinanceira"];
                                                     <div class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                        @((participacaoTotal.Indice - 1).ToString("N", cultura))
+                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(fatorDeContribuicaoFinanceira, fcfMinimo, fcfMaximo)))
+                                                        @((fatorDeContribuicaoFinanceira - 1).ToString("N", cultura))
                                                     </div>
                                                 }
                                             </td>
                                             <td class="cell">
                                                 <div class="d-flex align-items-center flex-row gap-2">
                                                     @{
-                                                        decimal rank = participacaoTotal.MediaFatores;
-                                                        decimal rankMedio = (decimal)ViewData["rankMedio"];
+                                                        decimal mediaFatores = participacaoTotal.MediaFatores;
                                                     }
                                                     <div class="d-flex flex-row align-items-center gap-2">
-                                                        @((participacaoTotal.MediaFatores).ToString("N", cultura))
+                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(mediaFatores, valoresMinimos["minMediaFatores"], valoresMaximos["maxMediaFatores"])))
+                                                        @((mediaFatores).ToString("N", cultura))
                                                     </div>
                                                 </div>
                                             </td>
