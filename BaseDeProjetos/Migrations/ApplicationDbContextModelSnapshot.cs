@@ -116,7 +116,7 @@ namespace BaseDeProjetos.Migrations
                     b.Property<string>("Nome")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("NomeFantasia")
+                    b.Property<string>("RazaoSocial")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<int>("Segmento")
