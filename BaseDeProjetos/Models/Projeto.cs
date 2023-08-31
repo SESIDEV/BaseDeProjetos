@@ -6,17 +6,8 @@ namespace BaseDeProjetos.Models
 {
     public class Projeto
     {
-        public Projeto() 
-        { 
-        
-        }
-
-        public Projeto(ProjetoIndicadores indicador)
-        {
-            Indicadores = new List<ProjetoIndicadores>() { indicador };
-        }
-
-        [Key]
+		
+		[Key]
         [Display(AutoGenerateFilter = true)]
         public virtual string Id { get; set; }
 
@@ -59,6 +50,9 @@ namespace BaseDeProjetos.Models
 
         public virtual Instituto Casa { get; set; }
 
-        public virtual List<ProjetoIndicadores> Indicadores { get; set; } = new List<ProjetoIndicadores>();
+        public virtual List<ProjetoIndicadores>? Indicadores { get; set; }
+
+        //Relacionamento Pesquisador
+        public virtual Usuario Usuario { get; set; }
     }
 }

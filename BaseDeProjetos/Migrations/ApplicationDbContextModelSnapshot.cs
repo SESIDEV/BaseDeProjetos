@@ -322,6 +322,9 @@ namespace BaseDeProjetos.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
                     b.Property<double>("ValorAporteRecursos")
                         .HasColumnType("double");
 
@@ -333,6 +336,8 @@ namespace BaseDeProjetos.Migrations
                     b.HasIndex("EmpresaId");
 
                     b.HasIndex("ProponenteId");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Projeto");
                 });
@@ -739,6 +744,10 @@ namespace BaseDeProjetos.Migrations
                     b.HasOne("BaseDeProjetos.Models.Empresa", "Proponente")
                         .WithMany()
                         .HasForeignKey("ProponenteId");
+
+                    b.HasOne("BaseDeProjetos.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
                 });
 
             modelBuilder.Entity("BaseDeProjetos.Models.ProjetoIndicadores", b =>
