@@ -10,7 +10,7 @@ namespace BaseDeProjetos.ViewComponents.ProjetoViewComponents
     {
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            return View(new Projeto());
+            return View(new Projeto(new ProjetoIndicadores()));
         }
     }
 }
