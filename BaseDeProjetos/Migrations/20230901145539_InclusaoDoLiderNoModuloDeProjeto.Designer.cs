@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaseDeProjetos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230901200156_MigrationFixSGI")]
-    partial class MigrationFixSGI
+    [Migration("20230901145539_InclusaoDoLiderNoModuloDeProjeto")]
+    partial class InclusaoDoLiderNoModuloDeProjeto
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
