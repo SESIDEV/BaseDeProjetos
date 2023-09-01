@@ -400,7 +400,7 @@ namespace BaseDeProjetos.Controllers
         /// <summary>
         /// Cria uma selectlist para a View(?)
         /// </summary>
-        private void CriarSelectListsDaView()
+        public void CriarSelectListsDaView()
         {
             ViewData["Empresas"] = new SelectList(_context.Empresa.ToList(), "Id", "EmpresaUnique");
             ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");

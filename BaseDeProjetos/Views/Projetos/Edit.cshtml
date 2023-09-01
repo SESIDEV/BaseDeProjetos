@@ -1,4 +1,5 @@
 ﻿@model BaseDeProjetos.Models.Projeto
+@using BaseDeProjetos.Models;
 @using Microsoft.AspNetCore.Http
 
 @{
@@ -7,9 +8,13 @@
     {
         ViewData["Area"] = Context.Session.GetString("_Casa");
     }
+
+    List<Empresa> empresas = ViewBag.Empresas;
+
 }
 
 <partial name="Header" view-data="@ViewData" />
+
 <div style="padding-left: 25em; padding-right: 10em; padding-top: 2em">
     <h1>Editar</h1>
     <h4>Projeto</h4>
@@ -31,9 +36,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="Empresa.Nome" class="control-label"></label>
-                    <input asp-for="Empresa.Nome" class="form-control" />
-                    <span asp-validation-for="Empresa.Nome" class="text-danger"></span>
+                    <label asp-for="Empresa" class="control-label"></label>
+                    <select asp-for="Empresa" class="form-control" asp-items="@(new SelectList(empresas, "Id", "Nome"))"></select>
+                    <span asp-validation-for="Empresa" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
