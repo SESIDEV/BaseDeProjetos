@@ -14,5 +14,8 @@ namespace BaseDeProjetos.Models
         public decimal OcupacaoAtual { get; set; }
 
         public decimal PrecoBase { get; set; }
+
+        //Relacionamento com projeto
+        public virtual Projeto? Projeto { get; set; }
     }
 }
