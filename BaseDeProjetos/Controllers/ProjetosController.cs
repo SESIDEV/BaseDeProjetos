@@ -363,7 +363,7 @@ namespace BaseDeProjetos.Controllers
             {
                 projeto.Empresa = _context.Empresa.FirstOrDefault(e => e.Id == projeto.Empresa.Id);
 
-                projeto.Usuario = usuario;
+                //projeto.Usuario = usuario;
 
                 _context.Add(projeto);
                 await _context.SaveChangesAsync();
