@@ -62,6 +62,6 @@ namespace BaseDeProjetos.Models
         public virtual List<ProjetoIndicadores> Indicadores { get; set; } = new List<ProjetoIndicadores>();
 
         //Relacionamento Usuário Líder (Pesquisador)
-        //public virtual Usuario Usuario { get; set; }
+        public virtual Usuario Usuario { get; set; }
     }
 }
