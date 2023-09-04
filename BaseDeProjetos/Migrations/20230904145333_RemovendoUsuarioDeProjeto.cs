@@ -6,17 +6,7 @@ namespace BaseDeProjetos.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Projeto_AspNetUsers_UsuarioId",
-                table: "Projeto");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Projeto_UsuarioId",
-                table: "Projeto");
-
-            migrationBuilder.DropColumn(
-                name: "UsuarioId",
-                table: "Projeto");
+           
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
