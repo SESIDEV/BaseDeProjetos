@@ -164,7 +164,7 @@ namespace BaseDeProjetos.Controllers
             }
         }
         // GET: FunilDeVendas/Create
-        public IActionResult Create(int id)
+        public IActionResult Create()
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
@@ -411,7 +411,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Empresa, Contato, Casa, Usuario, MembrosEquipe, ValorProposta, ValorEstimado, Status, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
+        public IActionResult Edit(string id, [Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Empresa, Contato, Casa, Usuario, MembrosEquipe, ValorProposta, ValorEstimado, Status, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
         {
 			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
@@ -494,7 +494,7 @@ namespace BaseDeProjetos.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditarFollowUp(int id, [Bind("Id", "OrigemID", "Status", "Anotacoes", "Data", "Vencimento")] FollowUp followup, double valorProposta)
+        public async Task<IActionResult> EditarFollowUp(int id, [Bind("Id", "OrigemID", "Status", "Anotacoes", "Data", "Vencimento")] FollowUp followup)
         {
 			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
@@ -573,7 +573,7 @@ namespace BaseDeProjetos.Controllers
                 Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
                 Prospeccao prospeccao = _context.Prospeccao.FirstOrDefault(p => p.Id == followup.OrigemID);
 
-                if (verificarCondicoesRemocao(prospeccao, usuario, followup.Origem.Usuario) || usuario.Nivel == Nivel.Dev)
+                if (VerificarCondicoesRemocao(prospeccao, usuario, followup.Origem.Usuario) || usuario.Nivel == Nivel.Dev)
                 {
                     _context.FollowUp.Remove(followup);
                     await _context.SaveChangesAsync();
@@ -598,7 +598,7 @@ namespace BaseDeProjetos.Controllers
         /// <param name="dono">Usuario líder da prospecção</param>
         /// <param name="ativo">Usuário ativo (HttpContext)</param>
         /// <returns></returns>
-        private bool verificarCondicoesRemocao(Prospeccao prospeccao, Usuario ativoNaSessao, Usuario donoProsp)
+        private bool VerificarCondicoesRemocao(Prospeccao prospeccao, Usuario ativoNaSessao, Usuario donoProsp)
         {
             return prospeccao.Status.Count() > 1 && ativoNaSessao == donoProsp;
         }
@@ -700,8 +700,25 @@ namespace BaseDeProjetos.Controllers
 
             foreach (var p in lista_prosp)
             {
-                Dictionary<string, object> dict = new Dictionary<string, object>();
-                dict["idProsp"] = p.Id;
+                Dictionary<string, object> dict = new Dictionary<string, object>
+                {
+                    ["idProsp"] = p.Id,
+                    ["Líder"] = p.Usuario.UserName,
+                    ["Membros"] = p.MembrosEquipe,
+                    ["Status"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Status.GetDisplayName(),
+                    ["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data.ToString("MM/yyyy"),
+                    ["Empresa"] = p.Empresa.Nome,
+                    ["CNPJ"] = p.Empresa.CNPJ,
+                    ["Segmento"] = p.Empresa.Segmento.GetDisplayName(),
+                    ["Estado"] = p.Empresa.Estado.GetDisplayName(),
+                    ["Casa"] = p.Casa.GetDisplayName(),
+                    ["Origem"] = p.Origem.GetDisplayName(),
+                    ["TipoContratacao"] = p.TipoContratacao.GetDisplayName(),
+                    ["LinhaPesquisa"] = p.LinhaPequisa.GetDisplayName(),
+                    ["ValorEstimado"] = p.ValorEstimado,
+                    ["ValorProposta"] = p.ValorProposta,
+                    ["ValorFinal"] = p.ValorProposta,
+                };
 
                 if (string.IsNullOrEmpty(p.NomeProspeccao))
                 {
@@ -712,23 +729,6 @@ namespace BaseDeProjetos.Controllers
                     dict["Titulo"] = p.NomeProspeccao;
                 }
 
-                dict["Titulo"] = p.NomeProspeccao;
-                dict["Líder"] = p.Usuario.UserName;
-                dict["Membros"] = p.MembrosEquipe;
-                dict["Status"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Status.GetDisplayName();
-                dict["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data.ToString("MM/yyyy");
-                dict["Empresa"] = p.Empresa.Nome;
-                dict["CNPJ"] = p.Empresa.CNPJ;
-                dict["Segmento"] = p.Empresa.Segmento.GetDisplayName();
-                dict["Estado"] = p.Empresa.Estado.GetDisplayName();
-                dict["Casa"] = p.Casa.GetDisplayName();
-                dict["Origem"] = p.Origem.GetDisplayName();
-                dict["TipoContratacao"] = p.TipoContratacao.GetDisplayName();
-                dict["LinhaPesquisa"] = p.LinhaPequisa.GetDisplayName();
-                dict["ValorEstimado"] = p.ValorEstimado;
-                dict["ValorProposta"] = p.ValorProposta;
-                dict["ValorFinal"] = p.ValorProposta;
-                
                 if (p.ValorProposta == 0) 
                 {
                     dict["ValorFinal"] = p.ValorEstimado;

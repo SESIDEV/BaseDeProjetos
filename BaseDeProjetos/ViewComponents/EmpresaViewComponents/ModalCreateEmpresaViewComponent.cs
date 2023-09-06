@@ -7,7 +7,7 @@ namespace BaseDeProjetos.ViewComponents
 {
     public class ModalCreateEmpresaViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync()
+        public IViewComponentResult Invoke()
         {
             return View(new Empresa());
         }

@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BaseDeProjetos.Models
 {
     public abstract class PesquisaOpiniao
     {
+        [Key]
         public int IdPesquisa { get; set; }
         public string ProjetoId { get; set; }
         public ResultadoOpiniao ResultadoFinal { get; set; }
+
+        [NotMapped]
         public Dictionary<string, List<PerguntaSatisfacao>> PerguntasSatisfacao { get; set; }
 
         public void calcularSatisficaoFinal()
@@ -16,12 +21,12 @@ namespace BaseDeProjetos.Models
         }
     }
 
-    public class PesquisaFimProjeto : PesquisaOpiniao
+    public class PesquisaProjeto : PesquisaOpiniao
     {
 
-        public PesquisaFimProjeto()
+        public PesquisaProjeto()
         {
-            this.PerguntasSatisfacao = PesquisaFimProjeto.InstanciarPerguntas();
+            this.PerguntasSatisfacao = PesquisaProjeto.InstanciarPerguntas();
         }
 
         private static Dictionary<string, List<PerguntaSatisfacao>> InstanciarPerguntas()

@@ -24,5 +24,6 @@ namespace BaseDeProjetos.Data
         public DbSet<BaseDeProjetos.Models.ProjetoIndicadores> ProjetoIndicadores { get; set; }
 		public DbSet<BaseDeProjetos.Models.Cargo> Cargo { get; set; }
 		public DbSet<BaseDeProjetos.Models.Maquina> Maquina { get; set; }
+		public DbSet<BaseDeProjetos.Models.PesquisaProjeto> PesquisaProjeto { get; set; }
 	}
 }

@@ -15,7 +15,7 @@ namespace BaseDeProjetos.ViewComponents.Sidebar
             _context = context;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public IViewComponentResult Invoke()
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
