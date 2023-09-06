@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
+using BaseDeProjetos.Helpers;
+using Microsoft.Data.SqlClient;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -20,9 +22,22 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: StatusCurvas
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.StatusCurva.ToListAsync());
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel; // Já vi não funcionar, porquê? :: hhenriques1999
+                ViewData["NivelUsuario"] = usuario.Nivel;
+
+                return View(await _context.StatusCurva.ToListAsync());
+            }
+            else
+            {
+                return View("Forbidden");
+            }
         }
 
         // GET: StatusCurvas/Details/5
