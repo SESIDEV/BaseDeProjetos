@@ -1,4 +1,6 @@
-﻿@using BaseDeProjetos.Helpers
+﻿@model List<Projeto>;
+@using BaseDeProjetos.Helpers;
+
 
 
 <div class="container">
@@ -23,8 +25,8 @@
                 <td class="cell">1</td>
                 <td class="cell">Rios Em Movimento</td>
                 <td class="cell">Leon Nascimento</td>
-                <td class="cell">5 @Helpers.FormatarValoresDashboards(Helpers.VerificarIntervalo(5, 1, 9))</td>
-                <td class="cell">5 </td>
+                <td class="cell">5</td>
+                <td class="cell">5 @Helpers.ObterIconeParticipacao(@Helpers.VerificarIntervalo(150m, ViewBag.SatisfacaoMetadeProjetoMin, ViewBag.SatisfacaoMetadeProjetoMax))</td>
                 <td class="cell">R$: 500.000,00</td>
                 <td class="cell">R$: 555555,00</td>
                 <td class="cell">R$: 15100,00</td>

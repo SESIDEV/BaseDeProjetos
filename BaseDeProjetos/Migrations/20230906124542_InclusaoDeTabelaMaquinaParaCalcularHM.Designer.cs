@@ -3,14 +3,16 @@ using System;
 using BaseDeProjetos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BaseDeProjetos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230906124542_InclusaoDeTabelaMaquinaParaCalcularHM")]
+    partial class InclusaoDeTabelaMaquinaParaCalcularHM
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -216,13 +218,10 @@ namespace BaseDeProjetos.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("CustoHoraMaquina")
+                    b.Property<decimal>("CustoHoraMaquina")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<string>("IdentificacaoDaMaquina")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<bool>("ManutencaoAnoAnterior")
+                    b.Property<bool?>("ManutencaoAnoAnterior")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Nome")
@@ -500,29 +499,6 @@ namespace BaseDeProjetos.Migrations
                     b.ToTable("Prospeccao");
                 });
 
-            modelBuilder.Entity("BaseDeProjetos.Models.StatusCurva", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Data")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<decimal>("Financeiro")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal>("Fisico")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<int>("IdProjeto")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("StatusCurva");
-                });
-
             modelBuilder.Entity("BaseDeProjetos.Models.Submissao", b =>
                 {
                     b.Property<string>("Id")
@@ -567,9 +543,6 @@ namespace BaseDeProjetos.Migrations
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CargoId")
                         .HasColumnType("int");
 
                     b.Property<int>("Casa")
@@ -638,8 +611,6 @@ namespace BaseDeProjetos.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CargoId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -861,13 +832,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasOne("BaseDeProjetos.Models.Prospeccao", "Prospeccao")
                         .WithMany()
                         .HasForeignKey("ProspeccaoId");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.Usuario", b =>
-                {
-                    b.HasOne("BaseDeProjetos.Models.Cargo", "Cargo")
-                        .WithMany()
-                        .HasForeignKey("CargoId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

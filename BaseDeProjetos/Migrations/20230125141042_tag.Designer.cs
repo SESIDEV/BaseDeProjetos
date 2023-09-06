@@ -3,18 +3,20 @@ using System;
 using BaseDeProjetos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BaseDeProjetos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230125141042_tag")]
+    partial class tag
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.32")
+                .HasAnnotation("ProductVersion", "3.1.30")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("BaseDeProjetos.Models.AtividadesProdutivas", b =>
@@ -52,23 +54,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasIndex("UsuarioId");
 
                     b.ToTable("AtividadesProdutivas");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.Cargo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Nome")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<decimal>("Salario")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Cargo");
                 });
 
             modelBuilder.Entity("BaseDeProjetos.Models.Editais", b =>
@@ -124,16 +109,10 @@ namespace BaseDeProjetos.Migrations
                     b.Property<int>("Estado")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Industrial")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<string>("Logo")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Nome")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("RazaoSocial")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<int>("Segmento")
@@ -208,41 +187,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("IndicadoresFinanceiros");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.Maquina", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("CustoHoraMaquina")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<string>("IdentificacaoDaMaquina")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<bool>("ManutencaoAnoAnterior")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("Nome")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<decimal>("OcupacaoAtual")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal>("OcupacaoMax")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal>("PrecoBase")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal?>("ValorManutenCaoAnoAnterior")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Maquina");
                 });
 
             modelBuilder.Entity("BaseDeProjetos.Models.Pessoa", b =>
@@ -374,9 +318,6 @@ namespace BaseDeProjetos.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<string>("UsuarioId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
-
                     b.Property<double>("ValorAporteRecursos")
                         .HasColumnType("double");
 
@@ -389,63 +330,13 @@ namespace BaseDeProjetos.Migrations
 
                     b.HasIndex("ProponenteId");
 
-                    b.HasIndex("UsuarioId");
-
                     b.ToTable("Projeto");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.ProjetoIndicadores", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
-
-                    b.Property<bool>("Bolsista")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("ComprasMaterial")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("ComprasServico")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("IdProjeto")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
-
-                    b.Property<bool>("PrestacaoContas")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("Regramento")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("Relatorios")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("Repasse")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("SatisfacaoFimProjeto")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("SatisfacaoMetadeProjeto")
-                        .HasColumnType("tinyint(1)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdProjeto");
-
-                    b.ToTable("ProjetoIndicadores");
                 });
 
             modelBuilder.Entity("BaseDeProjetos.Models.Prospeccao", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
-
-                    b.Property<string>("Agregadas")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<bool>("Ancora")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("CaminhoPasta")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -467,9 +358,6 @@ namespace BaseDeProjetos.Migrations
 
                     b.Property<string>("NomeProspeccao")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<int>("Origem")
-                        .HasColumnType("int");
 
                     b.Property<string>("PotenciaisParceiros")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -498,29 +386,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasIndex("UsuarioId");
 
                     b.ToTable("Prospeccao");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.StatusCurva", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Data")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<decimal>("Financeiro")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal>("Fisico")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<int>("IdProjeto")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("StatusCurva");
                 });
 
             modelBuilder.Entity("BaseDeProjetos.Models.Submissao", b =>
@@ -567,9 +432,6 @@ namespace BaseDeProjetos.Migrations
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CargoId")
                         .HasColumnType("int");
 
                     b.Property<int>("Casa")
@@ -638,8 +500,6 @@ namespace BaseDeProjetos.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CargoId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -824,17 +684,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasOne("BaseDeProjetos.Models.Empresa", "Proponente")
                         .WithMany()
                         .HasForeignKey("ProponenteId");
-
-                    b.HasOne("BaseDeProjetos.Models.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("UsuarioId");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.ProjetoIndicadores", b =>
-                {
-                    b.HasOne("BaseDeProjetos.Models.Projeto", "Projeto")
-                        .WithMany("Indicadores")
-                        .HasForeignKey("IdProjeto");
                 });
 
             modelBuilder.Entity("BaseDeProjetos.Models.Prospeccao", b =>
@@ -861,13 +710,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasOne("BaseDeProjetos.Models.Prospeccao", "Prospeccao")
                         .WithMany()
                         .HasForeignKey("ProspeccaoId");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.Usuario", b =>
-                {
-                    b.HasOne("BaseDeProjetos.Models.Cargo", "Cargo")
-                        .WithMany()
-                        .HasForeignKey("CargoId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

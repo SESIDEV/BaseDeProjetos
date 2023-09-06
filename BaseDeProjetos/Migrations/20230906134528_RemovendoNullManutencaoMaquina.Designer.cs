@@ -3,14 +3,16 @@ using System;
 using BaseDeProjetos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BaseDeProjetos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230906134528_RemovendoNullManutencaoMaquina")]
+    partial class RemovendoNullManutencaoMaquina
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -429,6 +431,12 @@ namespace BaseDeProjetos.Migrations
                     b.Property<bool>("SatisfacaoMetadeProjeto")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<int>("ValorSatisfacaoFimProjeto")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ValorSatisfacaoMetadeProjeto")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("IdProjeto");
@@ -498,29 +506,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasIndex("UsuarioId");
 
                     b.ToTable("Prospeccao");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.StatusCurva", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Data")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<decimal>("Financeiro")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal>("Fisico")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<int>("IdProjeto")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("StatusCurva");
                 });
 
             modelBuilder.Entity("BaseDeProjetos.Models.Submissao", b =>

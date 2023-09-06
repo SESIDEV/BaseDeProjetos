@@ -40,7 +40,7 @@ namespace BaseDeProjetos.Controllers
                 indicadores.Id = idIndicador;
 
                 // Atrelar o projeto ao indicador
-                indicadores.Projeto = projeto;
+                indicadores.Projeto = projeto; 
 
                 // Criar o indicador da macroentrega no DB
                 await CriarIndicadores(indicadores);
@@ -380,7 +380,7 @@ namespace BaseDeProjetos.Controllers
                 _context.Add(projeto);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
-            }
+            } 
             else
             {
                 return NotFound();
