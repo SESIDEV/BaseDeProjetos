@@ -756,6 +756,20 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Outros")]
         outros
     }
+
+    public enum ResultadoOpiniao
+    {
+        [Display(Name = "Péssimo")]
+        Pessimo,
+        [Display(Name = "Ruim")]
+        Ruim,
+        [Display(Name = "Regular")]
+        Regular,
+        [Display(Name = "Bom")]
+        Bom,
+        [Display(Name = "Ótimo")]
+        Otimo
+    }
     public static class EnumExtensions
     {
         public static string GetDisplayName(this Enum enu)
@@ -783,4 +797,5 @@ namespace BaseDeProjetos.Models
             return field?.GetCustomAttribute<DisplayAttribute>();
         }
     }
+
 }
