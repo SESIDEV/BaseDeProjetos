@@ -11,6 +11,7 @@ namespace BaseDeProjetos.Data
         {
         }
 
+        public DbSet<BaseDeProjetos.Models.StatusCurva> StatusCurva { get; set; }
         public DbSet<BaseDeProjetos.Models.Projeto> Projeto { get; set; }
         public DbSet<BaseDeProjetos.Models.Prospeccao> Prospeccao { get; set; }
         public DbSet<BaseDeProjetos.Models.FollowUp> FollowUp { get; set; }
