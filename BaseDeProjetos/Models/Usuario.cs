@@ -7,7 +7,6 @@ namespace BaseDeProjetos.Models
 	{
 
 		public Instituto Casa { get; set; }
-
 		public Nivel Nivel { get; set; }
 
 		[Display(Name = "Matrícula")]
@@ -23,7 +22,6 @@ namespace BaseDeProjetos.Models
 
 		[Display(Name = "Competências")]
 		public string Competencia { get; set; }
-
-		public virtual Cargo? Cargo { get; set; }
+		public int CargoId { get; set; }
 	}
 }

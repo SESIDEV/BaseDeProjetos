@@ -437,7 +437,8 @@ namespace BaseDeProjetos.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdProjeto");
+                    b.HasIndex("IdProjeto")
+                        .IsUnique();
 
                     b.ToTable("ProjetoIndicadores");
                 });
@@ -552,7 +553,7 @@ namespace BaseDeProjetos.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CargoId")
+                    b.Property<int>("CargoId")
                         .HasColumnType("int");
 
                     b.Property<int>("Casa")
@@ -621,8 +622,6 @@ namespace BaseDeProjetos.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CargoId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -816,8 +815,8 @@ namespace BaseDeProjetos.Migrations
             modelBuilder.Entity("BaseDeProjetos.Models.ProjetoIndicadores", b =>
                 {
                     b.HasOne("BaseDeProjetos.Models.Projeto", "Projeto")
-                        .WithMany("Indicadores")
-                        .HasForeignKey("IdProjeto");
+                        .WithOne("Indicador")
+                        .HasForeignKey("BaseDeProjetos.Models.ProjetoIndicadores", "IdProjeto");
                 });
 
             modelBuilder.Entity("BaseDeProjetos.Models.Prospeccao", b =>
@@ -844,13 +843,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasOne("BaseDeProjetos.Models.Prospeccao", "Prospeccao")
                         .WithMany()
                         .HasForeignKey("ProspeccaoId");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.Usuario", b =>
-                {
-                    b.HasOne("BaseDeProjetos.Models.Cargo", "Cargo")
-                        .WithMany()
-                        .HasForeignKey("CargoId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -32,46 +32,11 @@ namespace BaseDeProjetos.Models
 
 		[Display(Name = "Questionário de Satisfação na Metade do Projeto")]
 		public virtual bool SatisfacaoMetadeProjeto { get; set; }
-		public virtual int ValorSatisfacaoMetadeProjeto
-		{
-			get
-			{
-				return ValorSatisfacaoMetadeProjeto;
-			}
-			set
-			{
-				if(value < 0)
-				{
-					ValorSatisfacaoMetadeProjeto = 0;
-				}
-				if(value > 5)
-				{
-					ValorSatisfacaoMetadeProjeto = 5;
-				}
-			}
-		}
+		public virtual int ValorSatisfacaoMetadeProjeto { get; set; }
 
 		[Display(Name = "Questionário de Satisfação no Fim do Projeto")]
 		public virtual bool SatisfacaoFimProjeto { get; set; }
-		public virtual int ValorSatisfacaoFimProjeto
-		{
-			get
-			{
-				return ValorSatisfacaoFimProjeto;
-			}
-			set
-			{
-				if (value < 0)
-				{
-					ValorSatisfacaoFimProjeto = 0;
-				}
-				if (value > 5)
-				{
-					ValorSatisfacaoFimProjeto = 5;
-				}
-			}
-		}
-
+		public virtual int ValorSatisfacaoFimProjeto { get; set; }
 		[Display(Name = "Relatórios")]
 		public virtual bool Relatorios { get; set; }
 
