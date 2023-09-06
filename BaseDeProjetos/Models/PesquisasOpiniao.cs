@@ -12,6 +12,8 @@ namespace BaseDeProjetos.Models
         public string ProjetoId { get; set; }
         public ResultadoOpiniao ResultadoFinal { get; set; }
 
+        public string RepresentacaoTextualQuestionario { get; set; }
+
         [NotMapped]
         public Dictionary<string, List<PerguntaSatisfacao>> PerguntasSatisfacao { get; set; }
 
