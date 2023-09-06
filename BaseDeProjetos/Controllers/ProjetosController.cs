@@ -116,9 +116,9 @@ namespace BaseDeProjetos.Controllers
         {
             List<Projeto> listaProjetos = await _context.Projeto.ToListAsync();
 
-            int SatisfacaoMetadeProjetoMax = listaProjetos.Max<Projeto>(p => p.Indicador.ValorSatisfacaoMetadeProjeto);
+            //int SatisfacaoMetadeProjetoMax = listaProjetos.Max<Projeto>(p => p.Indicador.ValorSatisfacaoMetadeProjeto);
 
-            int SatisfacaoMetadeProjetoMin = listaProjetos.Min<Projeto>(p => p.Indicador.ValorSatisfacaoMetadeProjeto);
+            //int SatisfacaoMetadeProjetoMin = listaProjetos.Min<Projeto>(p => p.Indicador.ValorSatisfacaoMetadeProjeto);
 
             return View("indicador_projetos", listaProjetos);
         }
