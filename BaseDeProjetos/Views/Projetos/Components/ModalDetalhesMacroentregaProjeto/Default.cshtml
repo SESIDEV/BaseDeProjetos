@@ -80,16 +80,14 @@
                     </div>
                 </div>
                 <br>
-
-                @if (Model.Indicadores != null && Model.Indicadores.Count > 0)
+                @*
+                @if (Model.Indicador != null)
                 {
                     int i = 1;
-                    foreach (var macroEntrega in @Model.Indicadores)
-                    {
-                        <div class="accordion" id="accordionIndicadoresProjeto-@macroEntrega.Id">
+                        <div class="accordion" id="accordionIndicadoresProjeto-@Id">
                             <div class="accordion-item">
-                                <h2 class="accordion-header" id="heading@(macroEntrega.Id)">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse@(macroEntrega.Id)" aria-expanded="true" aria-controls="collapse@(macroEntrega.Id)">
+                                <h2 class="accordion-header" id="heading@(Id)">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse@(Id)" aria-expanded="true" aria-controls="collapse@(macroEntrega.Id)">
                                         Macroentrega @i
                                     </button>
                                 </h2>
@@ -153,11 +151,10 @@
                         <hr />
                         i++;
                     }
-                }
                 else
                 {
                     <h3>Não há macroentregas para este projeto. Cadastre ao menos uma!</h3>
-                }
+                }*@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn app-btn-primary" data-bs-toggle="modal" role="button">

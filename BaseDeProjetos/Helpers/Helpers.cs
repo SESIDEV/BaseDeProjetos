@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Text.Json;
 using BaseDeProjetos.Data;
+using Microsoft.AspNetCore.Html;
 
 namespace BaseDeProjetos.Helpers
 {
@@ -32,6 +33,57 @@ namespace BaseDeProjetos.Helpers
             }
 
             return valor.ToString("#,0");
+        }
+
+
+        public static int VerificarIntervalo(decimal valor, decimal valorMinimo, decimal valorMaximo)
+        {
+            decimal primeiroTerco, segundoTerco;
+            decimal valorFaixa = (valorMaximo - valorMinimo) / 3;
+
+            primeiroTerco = valorMinimo + valorFaixa;
+            segundoTerco = primeiroTerco + valorFaixa;
+
+            if (valor >= valorMinimo && valor <= primeiroTerco)
+            {
+                return -1;
+            }
+            else if (valor > primeiroTerco && valor <= segundoTerco)
+            {
+                return 0;
+            }
+            else if (valor > segundoTerco && valor <= valorMaximo)
+            {
+                return 1;
+            }
+            else
+            {
+                return int.MaxValue;
+            }
+        }
+
+        public static HtmlString ObterIconeParticipacao(int valorIndicador)
+        {
+            HtmlString htmlString = new HtmlString($"");
+
+            if (valorIndicador == -1)
+            {
+                htmlString = new HtmlString("<i style=\"color: red\" class=\"bi bi-chevron-down\"></i>");
+            }
+            else if (valorIndicador == 0)
+            {
+                htmlString = new HtmlString("<i style=\"color: blue\" class=\"bi bi-chevron-bar-contract\"></i>");
+            }
+            else if (valorIndicador == 1)
+            {
+                htmlString = new HtmlString("<i style=\"color: green\" class=\"bi bi-chevron-up\"></i>");
+            }
+            else
+            {
+                htmlString = new HtmlString("<i class=\"bi bi-question-circle-fill\"></i>");
+            }
+
+            return htmlString;
         }
 
         /// <summary>

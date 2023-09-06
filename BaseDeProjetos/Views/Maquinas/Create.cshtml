@@ -1,0 +1,62 @@
+﻿@model BaseDeProjetos.Models.Maquina
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Maquina</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Nome" class="control-label"></label>
+                <input asp-for="Nome" class="form-control" />
+                <span asp-validation-for="Nome" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input asp-for="ManutencaoAnoAnterior" class="form-check-input" type="checkbox" />
+                <label asp-for="ManutencaoAnoAnterior" class="form-check-label">Houve Manutenção no ano anterior</label>
+            </div>
+            <div class="form-group">
+                <label asp-for="ValorManutenCaoAnoAnterior" class="control-label"></label>
+                <input asp-for="ValorManutenCaoAnoAnterior" class="form-control" />
+                <span asp-validation-for="ValorManutenCaoAnoAnterior" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OcupacaoMax" class="control-label"></label>
+                <input asp-for="OcupacaoMax" class="form-control" />
+                <span asp-validation-for="OcupacaoMax" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OcupacaoAtual" class="control-label"></label>
+                <input asp-for="OcupacaoAtual" class="form-control" />
+                <span asp-validation-for="OcupacaoAtual" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrecoBase" class="control-label"></label>
+                <input asp-for="PrecoBase" class="form-control" />
+                <span asp-validation-for="PrecoBase" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CustoHoraMaquina" class="control-label"></label>
+                <input asp-for="CustoHoraMaquina" class="form-control" />
+                <span asp-validation-for="CustoHoraMaquina" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

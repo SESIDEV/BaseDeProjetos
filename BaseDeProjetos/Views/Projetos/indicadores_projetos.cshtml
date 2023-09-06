@@ -1,0 +1,40 @@
+﻿@model List<Projeto>;
+@using BaseDeProjetos.Helpers;
+
+
+
+<div class="container">
+
+    <table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Projeto</th>
+                <th scope="col">Líder</th>
+                <th scope="col">Satisfação do Cliente</th>
+                <th scope="col">FCF</th>
+                <th scope="col">Valor do Projeto</th>
+                <th scope="col">Custo HH</th>
+                <th scope="col">Custo HM</th>
+                <th scope="col">Média dos Fatores</th>
+                <th scope="col">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="cell">1</td>
+                <td class="cell">Rios Em Movimento</td>
+                <td class="cell">Leon Nascimento</td>
+                <td class="cell">5</td>
+                <td class="cell">5 @Helpers.ObterIconeParticipacao(@Helpers.VerificarIntervalo(150m, ViewBag.SatisfacaoMetadeProjetoMin, ViewBag.SatisfacaoMetadeProjetoMax))</td>
+                <td class="cell">R$: 500.000,00</td>
+                <td class="cell">R$: 555555,00</td>
+                <td class="cell">R$: 15100,00</td>
+                <td class="cell">0.3</td>
+                <td class="cell">
+                    <button>↓</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

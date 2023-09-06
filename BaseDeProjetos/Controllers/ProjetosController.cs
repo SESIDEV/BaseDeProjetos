@@ -111,6 +111,17 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        [HttpGet("Projetos/indicadores-projetos")]
+        public async Task<IActionResult> IndicadoresDeProjeto()
+        {
+            List<Projeto> listaProjetos = await _context.Projeto.ToListAsync();
+
+            ViewBag.SatisfacaoMetadeProjetoMax = listaProjetos.Max(i => i.Indicador.ValorSatisfacaoMetadeProjeto);
+            ViewBag.SatisfacaoMetadeProjetoMin = listaProjetos.Min(i => i.Indicador.ValorSatisfacaoMetadeProjeto);
+
+            return View("indicadores_projetos", listaProjetos);
+        }
+
         /// <summary>
         /// Configura os filtros para a ordenação e busca de acordo com os parâmetros passados
         /// </summary>

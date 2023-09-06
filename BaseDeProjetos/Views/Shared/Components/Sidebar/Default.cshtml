@@ -28,7 +28,7 @@
 		<nav id="app-nav-main" class="app-nav app-nav-main flex-grow-1">
 			<ul class="app-menu list-unstyled accordion" id="menu-accordion">
 
-				<li class="nav-item">					
+				<li class="nav-item">
 					@{
 						if (ViewContext.RouteData.Values["controller"] as string == "Home")
 						{
@@ -38,7 +38,8 @@
 								</span>
 								<span class="nav-link-text">Home</span>
 							</a>
-						} else
+						}
+						else
 						{
 							<a class="nav-link" href="/">
 								<span class="nav-icon">
@@ -49,6 +50,52 @@
 						}
 					}
 				</li>
+
+				<li class="nav-item">					
+					@{
+						if (ViewContext.RouteData.Values["controller"] as string == "Cargos")
+						{
+							<a class="nav-link active" asp-area="" asp-controller="Cargos" asp-action="Index">
+								<span class="nav-icon">
+									<i class="bi bi-house-door"></i>
+								</span>
+								<span class="nav-link-text">Cargos</span>
+							</a>
+						} else
+						{
+							<a class="nav-link" asp-area="" asp-controller="Cargos" asp-action="Index">
+								<span class="nav-icon">
+									<i class="bi bi-house-door"></i>
+								</span>
+								<span class="nav-link-text">Cargos</span>
+							</a>
+						}
+					}
+				</li>
+
+				<li class="nav-item">
+					@{
+						if (ViewContext.RouteData.Values["controller"] as string == "Maquinas")
+						{
+							<a class="nav-link active" asp-area="" asp-controller="Maquinas" asp-action="Index">
+								<span class="nav-icon">
+									<i class="bi bi-house-door"></i>
+								</span>
+								<span class="nav-link-text">Maquinas</span>
+							</a>
+						}
+						else
+						{
+							<a class="nav-link" asp-area="" asp-controller="Maquinas" asp-action="Index">
+								<span class="nav-icon">
+									<i class="bi bi-house-door"></i>
+								</span>
+								<span class="nav-link-text">Maquinas</span>
+							</a>
+						}
+					}
+				</li>
+
 				<li class="nav-item">
 					@{
 						if (ViewContext.RouteData.Values["controller"] as string == "Empresas")

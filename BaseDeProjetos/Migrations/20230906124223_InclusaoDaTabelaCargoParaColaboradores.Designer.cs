@@ -3,14 +3,16 @@ using System;
 using BaseDeProjetos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BaseDeProjetos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230906124223_InclusaoDaTabelaCargoParaColaboradores")]
+    partial class InclusaoDaTabelaCargoParaColaboradores
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -210,41 +212,6 @@ namespace BaseDeProjetos.Migrations
                     b.ToTable("IndicadoresFinanceiros");
                 });
 
-            modelBuilder.Entity("BaseDeProjetos.Models.Maquina", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("CustoHoraMaquina")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<string>("IdentificacaoDaMaquina")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<bool>("ManutencaoAnoAnterior")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("Nome")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<decimal>("OcupacaoAtual")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal>("OcupacaoMax")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal>("PrecoBase")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal?>("ValorManutenCaoAnoAnterior")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Maquina");
-                });
-
             modelBuilder.Entity("BaseDeProjetos.Models.Pessoa", b =>
                 {
                     b.Property<int>("id")
@@ -429,12 +396,6 @@ namespace BaseDeProjetos.Migrations
                     b.Property<bool>("SatisfacaoMetadeProjeto")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int>("ValorSatisfacaoFimProjeto")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ValorSatisfacaoMetadeProjeto")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("IdProjeto");
@@ -552,9 +513,6 @@ namespace BaseDeProjetos.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CargoId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Casa")
                         .HasColumnType("int");
 
@@ -621,8 +579,6 @@ namespace BaseDeProjetos.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CargoId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -844,13 +800,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasOne("BaseDeProjetos.Models.Prospeccao", "Prospeccao")
                         .WithMany()
                         .HasForeignKey("ProspeccaoId");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.Usuario", b =>
-                {
-                    b.HasOne("BaseDeProjetos.Models.Cargo", "Cargo")
-                        .WithMany()
-                        .HasForeignKey("CargoId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
