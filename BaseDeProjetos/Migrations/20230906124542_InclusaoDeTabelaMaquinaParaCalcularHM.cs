@@ -19,7 +19,8 @@ namespace BaseDeProjetos.Migrations
                     OcupacaoMax = table.Column<decimal>(nullable: false),
                     OcupacaoAtual = table.Column<decimal>(nullable: false),
                     PrecoBase = table.Column<decimal>(nullable: false),
-                    CustoHoraMaquina = table.Column<decimal>(nullable: false)
+                    CustoHoraMaquina = table.Column<decimal>(nullable: false),
+                    ProjetoId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
