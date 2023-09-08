@@ -1,6 +1,7 @@
 ﻿using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace BaseDeProjetos.Data
 {
@@ -9,6 +10,8 @@ namespace BaseDeProjetos.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+
+
         }
 
         public DbSet<BaseDeProjetos.Models.StatusCurva> StatusCurva { get; set; }
@@ -23,7 +26,20 @@ namespace BaseDeProjetos.Data
         public DbSet<BaseDeProjetos.Models.Editais> Editais { get; set; }
         public DbSet<BaseDeProjetos.Models.Submissao> Submissao { get; set; }
         public DbSet<BaseDeProjetos.Models.ProjetoIndicadores> ProjetoIndicadores { get; set; }
-		public DbSet<BaseDeProjetos.Models.Cargo> Cargo { get; set; }
-		public DbSet<BaseDeProjetos.Models.Maquina> Maquina { get; set; }
-	}
+        public DbSet<BaseDeProjetos.Models.Cargo> Cargo { get; set; }
+        public DbSet<BaseDeProjetos.Models.Maquina> Maquina { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<StatusCurva>()
+                .HasOne(sc => sc.Projeto)
+                .WithMany(p => p.StatusCurva)
+                .HasForeignKey(sc => sc.ProjetoId)
+                .OnDelete(DeleteBehavior.Restrict); // Esta linha configura a ação de exclusão como RESTRICT
+        }
+
+
+    }
 }

@@ -22,7 +22,6 @@ namespace BaseDeProjetos.Models
 
         [Display(AutoGenerateFilter = true, Name = "Nome do Projeto")]
         public virtual string NomeProjeto { get; set; }
-
         public virtual Empresa Empresa { get; set; }
         public virtual Empresa Proponente { get; set; }
 
@@ -63,5 +62,14 @@ namespace BaseDeProjetos.Models
 
         //Relacionamento Usuário Líder (Pesquisador)
         public virtual Usuario Usuario { get; set; }
+
+        //Cálcular HH
+        public virtual List<Usuario> ColaboradoresDoProjeto { get; set; }
+
+        //Cálcular HM
+        public virtual List<Maquina> MaquinasUsadasNoProjeto { get; set; }
+
+        //Relacionamento StatusCurva
+        public virtual List<StatusCurva> StatusCurva { get; set; }
     }
 }

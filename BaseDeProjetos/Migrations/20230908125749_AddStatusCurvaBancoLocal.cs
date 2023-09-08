@@ -1,10 +1,10 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
 namespace BaseDeProjetos.Migrations
 {
-    public partial class StatusCurva : Migration
+    public partial class AddStatusCurvaBancoLocal : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -23,16 +23,12 @@ namespace BaseDeProjetos.Migrations
                 {
                     table.PrimaryKey("PK_StatusCurva", x => x.Id);
                 });
-
-            
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "StatusCurva");
-
-            
         }
     }
 }

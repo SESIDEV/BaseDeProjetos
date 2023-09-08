@@ -59,8 +59,9 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: StatusCurvas/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            ViewBag.ListaDeProjetos = await _context.Projeto.ToListAsync();
             return View();
         }
 
@@ -69,13 +70,25 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,IdProjeto,Data,Fisico,Financeiro")] StatusCurva statusCurva)
+        public async Task<IActionResult> Create([Bind("Id,ProjetoId,Data,Fisico,Financeiro")] StatusCurva statusCurva)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(statusCurva);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                Projeto projetoExiste = await _context.Projeto.FindAsync(statusCurva.ProjetoId);
+
+                if (projetoExiste != null)
+                {
+                    
+                    statusCurva.Projeto = projetoExiste;
+                    _context.Add(statusCurva);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    throw new Exception("Não foi encontrado um projeto com este ID");
+                }
+                
             }
             return View(statusCurva);
         }
@@ -101,7 +114,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,IdProjeto,Data,Fisico,Financeiro")] StatusCurva statusCurva)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,ProjetoId,Data,Fisico,Financeiro")] StatusCurva statusCurva)
         {
             if (id != statusCurva.Id)
             {

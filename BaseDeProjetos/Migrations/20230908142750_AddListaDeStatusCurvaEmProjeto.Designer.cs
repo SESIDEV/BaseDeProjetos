@@ -3,14 +3,16 @@ using System;
 using BaseDeProjetos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BaseDeProjetos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230908142750_AddListaDeStatusCurvaEmProjeto")]
+    partial class AddListaDeStatusCurvaEmProjeto
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -517,6 +519,9 @@ namespace BaseDeProjetos.Migrations
 
                     b.Property<decimal>("Fisico")
                         .HasColumnType("decimal(65,30)");
+
+                    b.Property<int>("IdProjeto")
+                        .HasColumnType("int");
 
                     b.Property<string>("ProjetoId")
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");

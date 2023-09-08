@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BaseDeProjetos.Models
@@ -25,5 +26,6 @@ namespace BaseDeProjetos.Models
 		public string Competencia { get; set; }
 
 		public virtual Cargo? Cargo { get; set; }
+
 	}
 }

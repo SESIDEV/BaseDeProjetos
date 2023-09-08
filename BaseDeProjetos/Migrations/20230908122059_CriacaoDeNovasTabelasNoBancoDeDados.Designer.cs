@@ -3,14 +3,16 @@ using System;
 using BaseDeProjetos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BaseDeProjetos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230908122059_CriacaoDeNovasTabelasNoBancoDeDados")]
+    partial class CriacaoDeNovasTabelasNoBancoDeDados
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -216,6 +218,9 @@ namespace BaseDeProjetos.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<decimal?>("CustoHoraMaquina")
+                        .HasColumnType("decimal(65,30)");
+
                     b.Property<string>("IdentificacaoDaMaquina")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -234,15 +239,10 @@ namespace BaseDeProjetos.Migrations
                     b.Property<decimal>("PrecoBase")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<string>("ProjetoId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
-
                     b.Property<decimal?>("ValorManutenCaoAnoAnterior")
                         .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProjetoId");
 
                     b.ToTable("Maquina");
                 });
@@ -518,12 +518,10 @@ namespace BaseDeProjetos.Migrations
                     b.Property<decimal>("Fisico")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<string>("ProjetoId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                    b.Property<int>("IdProjeto")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProjetoId");
 
                     b.ToTable("StatusCurva");
                 });
@@ -626,9 +624,6 @@ namespace BaseDeProjetos.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("ProjetoId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -655,8 +650,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasName("UserNameIndex");
-
-                    b.HasIndex("ProjetoId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -807,13 +800,6 @@ namespace BaseDeProjetos.Migrations
                         .HasForeignKey("OrigemID");
                 });
 
-            modelBuilder.Entity("BaseDeProjetos.Models.Maquina", b =>
-                {
-                    b.HasOne("BaseDeProjetos.Models.Projeto", "Projeto")
-                        .WithMany("MaquinasUsadasNoProjeto")
-                        .HasForeignKey("ProjetoId");
-                });
-
             modelBuilder.Entity("BaseDeProjetos.Models.Pessoa", b =>
                 {
                     b.HasOne("BaseDeProjetos.Models.Empresa", "empresa")
@@ -869,14 +855,6 @@ namespace BaseDeProjetos.Migrations
                         .HasForeignKey("UsuarioId");
                 });
 
-            modelBuilder.Entity("BaseDeProjetos.Models.StatusCurva", b =>
-                {
-                    b.HasOne("BaseDeProjetos.Models.Projeto", "Projeto")
-                        .WithMany("StatusCurva")
-                        .HasForeignKey("ProjetoId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
             modelBuilder.Entity("BaseDeProjetos.Models.Submissao", b =>
                 {
                     b.HasOne("BaseDeProjetos.Models.Editais", "Edital")
@@ -893,10 +871,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasOne("BaseDeProjetos.Models.Cargo", "Cargo")
                         .WithMany()
                         .HasForeignKey("CargoId");
-
-                    b.HasOne("BaseDeProjetos.Models.Projeto", null)
-                        .WithMany("ColaboradoresDoProjeto")
-                        .HasForeignKey("ProjetoId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
