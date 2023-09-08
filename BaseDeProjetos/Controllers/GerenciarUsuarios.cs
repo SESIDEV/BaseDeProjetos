@@ -44,19 +44,12 @@ namespace BaseDeProjetos.Controllers
         {
             var listaUsuarios = _context.Users.ToList();
 
-            switch (statusEmailUsuario)
+            listaUsuarios = statusEmailUsuario switch
             {
-                case "1":
-                    listaUsuarios = _context.Users.Where(u => u.EmailConfirmed).ToList();
-                    break;
-                case "0":
-                    listaUsuarios = _context.Users.Where(u => !u.EmailConfirmed).ToList();
-                    break;
-                default:
-                    listaUsuarios = _context.Users.ToList();
-                    break;
-            }
-
+                "1" => _context.Users.Where(u => u.EmailConfirmed).ToList(),
+                "0" => _context.Users.Where(u => !u.EmailConfirmed).ToList(),
+                _ => _context.Users.ToList(),
+            };
             return listaUsuarios;
 
         }
@@ -85,7 +78,7 @@ namespace BaseDeProjetos.Controllers
         [Route("GerenciarUsuarios/Index")]
         [Route("GerenciarUsuarios/Index/{id?}")]
         // GET: GerenciarUsuarios
-        public IActionResult Index(string? statusEmailUsuario)
+        public IActionResult Index(string statusEmailUsuario)
         {
             ViewData["CurrentFilter"] = statusEmailUsuario;
 
@@ -105,7 +98,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: GerenciarUsuarios/Details/5
-        public async Task<IActionResult> Details(string? id)
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null)
             {
@@ -149,7 +142,7 @@ namespace BaseDeProjetos.Controllers
 
         // GET: GerenciarUsuarios/Edit/5
         [HttpGet]
-        public async Task<IActionResult> Edit(string? id)
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
             {
@@ -206,7 +199,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: GerenciarUsuarios/Delete/5
-        public async Task<IActionResult> Delete(string? id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {

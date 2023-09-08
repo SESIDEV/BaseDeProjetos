@@ -14,7 +14,7 @@ namespace BaseDeProjetos.ViewComponents.EditalViewComponents
             _context = context;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public IViewComponentResult Invoke()
         {
             return View(new Editais());
         }

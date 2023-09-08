@@ -160,7 +160,7 @@ namespace BaseDeProjetos.Helpers
             }
         }
 
-        public static List<Prospeccao> DefinirCasaParaVisualizar(string? casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, ViewDataDictionary ViewData)
+        public static List<Prospeccao> DefinirCasaParaVisualizar(string casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, ViewDataDictionary ViewData)
         {
             Instituto enum_casa;
 
@@ -190,7 +190,7 @@ namespace BaseDeProjetos.Helpers
             return prospeccoes.ToList();
         }
 
-        public static async Task<List<Producao>> DefinirCasaParaVisualizarEmProducao(string? casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, ViewDataDictionary ViewData)
+        public static async Task<List<Producao>> DefinirCasaParaVisualizarEmProducao(string casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, ViewDataDictionary ViewData)
         {
             Instituto enum_casa;
 

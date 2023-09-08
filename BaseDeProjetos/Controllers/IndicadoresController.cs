@@ -131,7 +131,7 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="casa">Nome do instituto</param>
         /// <returns></returns>
-        private List<IndicadoresFinanceiros> DefinirCasaParaVisualizar(string? casa)
+        private List<IndicadoresFinanceiros> DefinirCasaParaVisualizar(string casa)
         {
             Instituto enum_casa;
 

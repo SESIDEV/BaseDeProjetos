@@ -17,7 +17,7 @@ namespace BaseDeProjetos.ViewComponents.FunilDeVendasViewComponents
         }
 
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public IViewComponentResult Invoke()
         {
             List<Prospeccao> prosp = _context.Prospeccao.ToList();
 

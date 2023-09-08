@@ -8,7 +8,7 @@ namespace BaseDeProjetos.ViewComponents.ProjetoViewComponents
 {
     public class ModalCreateProjetoViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync()
+        public IViewComponentResult Invoke()
         {
             return View(new Projeto(new ProjetoIndicadores()));
         }

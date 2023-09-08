@@ -9,7 +9,7 @@ namespace BaseDeProjetos.Models
 		[Display(Name = "Nome da Máquina")]
 		public string Nome { get; set; }
 		[Display(Name = "Identificação da Máquina pode ser número de patrimonio ou algum outro que seja único")]
-		public string? IdentificacaoDaMaquina { get; set; }
+		public string IdentificacaoDaMaquina { get; set; } = "Identificação Ausente";
 		[Display(Name = "Informar se houve manutenção ")]
 		public bool ManutencaoAnoAnterior { get; set; }
 		[Display(Name = "Valor da Manutenção")]
