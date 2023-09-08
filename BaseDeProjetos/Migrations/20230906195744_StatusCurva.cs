@@ -14,7 +14,7 @@ namespace BaseDeProjetos.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    IdProjeto = table.Column<int>(nullable: false),
+                    ProjetoId = table.Column<int>(nullable: false),
                     Data = table.Column<DateTime>(nullable: false),
                     Fisico = table.Column<decimal>(nullable: false),
                     Financeiro = table.Column<decimal>(nullable: false)
