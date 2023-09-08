@@ -29,6 +29,7 @@ namespace BaseDeProjetos.Data
         public DbSet<BaseDeProjetos.Models.Cargo> Cargo { get; set; }
         public DbSet<BaseDeProjetos.Models.Maquina> Maquina { get; set; }
 		public DbSet<BaseDeProjetos.Models.PesquisaProjeto> PesquisaProjeto { get; set; }
+		public DbSet<BaseDeProjetos.Models.PesquisaProjeto> PesquisaProjeto { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
