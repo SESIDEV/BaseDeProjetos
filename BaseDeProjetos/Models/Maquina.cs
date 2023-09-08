@@ -21,14 +21,17 @@ namespace BaseDeProjetos.Models
 		[Display(Name = "Valor da máquina")]
 		public decimal PrecoBase { get; set; }
 		[Display(Name = "Valor hora máquina")]
-		public decimal CustoHoraMaquina
+		public decimal? CustoHoraMaquina
 		{
 			//Cálculo hora máquina fictício (10% do preço base, divido por 12 meses, divido por 30 dias, divido por 24h)
 			get
 			{ 
 				return PrecoBase * 0.10m / 12 / 30 / 24; 
 			}
-
+			set
+			{
+				value = PrecoBase;
+			}
 		}
 
 		//Relacionamento Projeto
