@@ -10,22 +10,23 @@ using BaseDeProjetos.Models;
 
 namespace BaseDeProjetos.Controllers
 {
-    public class PesquisaProjetoController : Controller
+    public class PesquisaProjetosController : SGIController
     {
         private readonly ApplicationDbContext _context;
 
-        public PesquisaProjetoController(ApplicationDbContext context)
+        public PesquisaProjetosController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: PesquisaProjeto
+        // GET: PesquisaProjetos
         public async Task<IActionResult> Index()
         {
+            this.ViewbagizarUsuario(_context);
             return View(await _context.PesquisaProjeto.ToListAsync());
         }
 
-        // GET: PesquisaProjeto/Details/5
+        // GET: PesquisaProjetos/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -43,29 +44,50 @@ namespace BaseDeProjetos.Controllers
             return View(pesquisaProjeto);
         }
 
-        // GET: PesquisaProjeto/Create
+        // GET: PesquisaProjetos/Create
         public IActionResult Create()
         {
+            List<Projeto> projetos = _context.Projeto.ToList();
+            ViewData["Projetos"] = new SelectList(projetos, "Id", "NomeProjeto");
             return View();
         }
 
-        // POST: PesquisaProjeto/Create
+        // POST: PesquisaProjetos/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdPesquisa,ProjetoId,ResultadoFinal")] PesquisaProjeto pesquisaProjeto)
+        public async Task<IActionResult> Create([Bind("IdPesquisa,ProjetoId")] PesquisaProjeto pesquisaProjeto)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(pesquisaProjeto);
+                PesquisaProjeto pesquisaNova = new PesquisaProjeto(InicioFrio:true)
+                {
+                    IdPesquisa = pesquisaProjeto.IdPesquisa,
+                    ProjetoId = pesquisaProjeto.ProjetoId
+                };
+
+                _context.Add(pesquisaNova);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(pesquisaProjeto);
+            return View();
         }
 
-        // GET: PesquisaProjeto/Edit/5
+        // GET: PesquisaProjetos/Responder/5
+        public IActionResult Responder(int? id)
+        {
+            PesquisaProjeto pesquisa = _context.PesquisaProjeto.FirstOrDefault(p => p.IdPesquisa == id);
+            Projeto projetoPesquisa = _context.Projeto.FirstOrDefault(p => p.Id == pesquisa.ProjetoId);
+
+            ViewBag.Projeto = projetoPesquisa;
+            ViewBag.Questionario = pesquisa;
+
+            return View();
+                
+        }
+
+        // GET: PesquisaProjetos/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -81,12 +103,12 @@ namespace BaseDeProjetos.Controllers
             return View(pesquisaProjeto);
         }
 
-        // POST: PesquisaProjeto/Edit/5
+        // POST: PesquisaProjetos/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdPesquisa,ProjetoId,ResultadoFinal")] PesquisaProjeto pesquisaProjeto)
+        public async Task<IActionResult> Edit(int id, [Bind("IdPesquisa,ProjetoId,ResultadoFinal,RepresentacaoTextualQuestionario")] PesquisaProjeto pesquisaProjeto)
         {
             if (id != pesquisaProjeto.IdPesquisa)
             {
@@ -116,7 +138,7 @@ namespace BaseDeProjetos.Controllers
             return View(pesquisaProjeto);
         }
 
-        // GET: PesquisaProjeto/Delete/5
+        // GET: PesquisaProjetos/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -134,7 +156,7 @@ namespace BaseDeProjetos.Controllers
             return View(pesquisaProjeto);
         }
 
-        // POST: PesquisaProjeto/Delete/5
+        // POST: PesquisaProjetos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
