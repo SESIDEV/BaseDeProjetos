@@ -759,15 +759,15 @@ namespace BaseDeProjetos.Models
 
     public enum ResultadoOpiniao
     {
-        [Display(Name = "Péssimo")]
+        [Display(Name = "Muito Insatisfeito")]
         Pessimo,
-        [Display(Name = "Ruim")]
+        [Display(Name = "Insatisfeito")]
         Ruim,
         [Display(Name = "Regular")]
         Regular,
-        [Display(Name = "Bom")]
+        [Display(Name = "Satisfeito")]
         Bom,
-        [Display(Name = "Ótimo")]
+        [Display(Name = "Muito Satisfeito")]
         Otimo
     }
     public static class EnumExtensions

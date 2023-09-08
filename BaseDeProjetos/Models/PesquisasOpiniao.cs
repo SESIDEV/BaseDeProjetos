@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace BaseDeProjetos.Models
 {
@@ -10,16 +12,36 @@ namespace BaseDeProjetos.Models
         [Key]
         public int IdPesquisa { get; set; }
         public string ProjetoId { get; set; }
-        public ResultadoOpiniao ResultadoFinal { get; set; }
+        public double ResultadoFinal { get; set; }
 
         public string RepresentacaoTextualQuestionario { get; set; }
 
         [NotMapped]
         public Dictionary<string, List<PerguntaSatisfacao>> PerguntasSatisfacao { get; set; }
 
-        public void calcularSatisficaoFinal()
+        public void CalcularSatisficaoFinal()
         {
-            //TODO
+            List<int> resultados = new List<int>();
+            foreach(KeyValuePair<string, List<PerguntaSatisfacao>> entrada in this.PerguntasSatisfacao)
+            {
+                foreach(PerguntaSatisfacao satisfacao in entrada.Value)
+                {
+                    if (satisfacao.GetType() == typeof(PerguntaLikert))
+                        resultados.Add((int)((PerguntaLikert)satisfacao).Resposta);
+                }
+            }
+
+            this.ResultadoFinal = resultados.Average();
+        }
+
+        public void DesserializarPerguntas()
+        {
+            this.PerguntasSatisfacao = JsonSerializer.Deserialize<Dictionary<string, List<PerguntaSatisfacao>>>(this.RepresentacaoTextualQuestionario);
+        }
+
+        public void SerializarPerguntas()
+        {
+            this.RepresentacaoTextualQuestionario = JsonSerializer.Serialize(this.PerguntasSatisfacao);
         }
     }
 
@@ -28,60 +50,76 @@ namespace BaseDeProjetos.Models
 
         public PesquisaProjeto()
         {
-            this.PerguntasSatisfacao = PesquisaProjeto.InstanciarPerguntas();
+            if(this.RepresentacaoTextualQuestionario != null)
+            {
+                this.DesserializarPerguntas();
+            }
+            else
+            {
+                this.PerguntasSatisfacao = PesquisaProjeto.InstanciarPerguntas();
+            }
+
+            this.SerializarPerguntas(); //Mantém uma representação em memória do questionário
         }
+        public PesquisaProjeto(bool InicioFrio):this()
+        {
+            if (InicioFrio) // Instanciado como pergunta a ser preenchida
+                this.PerguntasSatisfacao = PesquisaProjeto.InstanciarPerguntas();
+        }
+
 
         private static Dictionary<string, List<PerguntaSatisfacao>> InstanciarPerguntas()
         {
 
-            Dictionary<string, List<PerguntaSatisfacao>> perguntas = new Dictionary<string, List<PerguntaSatisfacao>>();
-
-            perguntas["Quão Satisfeito você está com as entregas do Projeto"] = new List<PerguntaSatisfacao>
+            Dictionary<string, List<PerguntaSatisfacao>> perguntas = new Dictionary<string, List<PerguntaSatisfacao>>
+            {
+                ["Quão Satisfeito você está com as entregas do Projeto"] = new List<PerguntaSatisfacao>
             {
                 new PerguntaLikert() { Pergunta = "Com a qualidade do conteúdo" },
                 new PerguntaLikert() { Pergunta = "Com a apresentação dos resultados" },
                 new PerguntaLikert() { Pergunta = "Com o cumprimento dos requisitos do projeto" }
-            };
+            },
 
-            perguntas["Quão satisfeito você está na interação com a equipe do projeto?"] = new List<PerguntaSatisfacao>
+                ["Quão satisfeito você está na interação com a equipe do projeto?"] = new List<PerguntaSatisfacao>
             {
                 new PerguntaLikert() { Pergunta = "Com a disponibilidade da equipe" },
                 new PerguntaLikert() { Pergunta = "Com o comprometimento da equipe" },
                 new PerguntaLikert() { Pergunta = "Com as habilidades de comunicação da equipe" }
-            };
+            },
 
-            perguntas["Quão satisfeito você está com as competências profissionais da equipe do projeto?"] = new List<PerguntaSatisfacao>
+                ["Quão satisfeito você está com as competências profissionais da equipe do projeto?"] = new List<PerguntaSatisfacao>
             {
                 new PerguntaLikert() { Pergunta = "Com a gestão do projeto" },
                 new PerguntaLikert() { Pergunta = "Com as competências tecnológicas da equipe" },
                 new PerguntaLikert() { Pergunta = "Com o conhecimento na área relacionado ao projeto" }
-            };
+            },
 
-            perguntas["Quão satisfeito você está com o cumprimento do cronograma do projeto?"] = new List<PerguntaSatisfacao>
+                ["Quão satisfeito você está com o cumprimento do cronograma do projeto?"] = new List<PerguntaSatisfacao>
             {
                 new PerguntaLikert() { Pergunta = "Com o cumprimento de prazos" },
                 new PerguntaLikert() { Pergunta = "Com a negociação de adiamentos e mudanças" },
                 new PerguntaLikert() { Pergunta = "Com os prazos do cronograma proposto" }
-            };
-            perguntas["Quão satisfeito você está com o impacto do projeto?"] = new List<PerguntaSatisfacao>
+            },
+                ["Quão satisfeito você está com o impacto do projeto?"] = new List<PerguntaSatisfacao>
             {
                 new PerguntaLikert() { Pergunta = "Com o valor/benefício" },
                 new PerguntaLikert() { Pergunta = "Com a relação preço-desempenho" },
                 new PerguntaLikert() { Pergunta = "Com o impacto esperado e percebido" }
-            };
-            perguntas["De 1 a 5 (sendo 1 pouco importante e 5 muitos importante), classifique seu grau de importância com relação aos seguintes aspectos?"] = new List<PerguntaSatisfacao>
+            },
+                ["De 1 a 5 (sendo 1 pouco importante e 5 muitos importante), classifique seu grau de importância com relação aos seguintes aspectos?"] = new List<PerguntaSatisfacao>
             {
                 new PerguntaLikert() { Pergunta = "Entregas de projeto" },
                 new PerguntaLikert() { Pergunta = "Interação" },
                 new PerguntaLikert() { Pergunta = "Competência profissional" },
                 new PerguntaLikert() { Pergunta = "Prazos e entrega" },
                 new PerguntaLikert() { Pergunta = "Impacto e benefícios" }
-            };
+            },
 
-            perguntas["Finalizando a pesquisa de opinião"] = new List<PerguntaSatisfacao>{
+                ["Finalizando a pesquisa de opinião"] = new List<PerguntaSatisfacao>{
                 new PerguntaBool() { Pergunta = "Você executaria projetos com o instituto novamente?"},
                 new PerguntaLikert() { Pergunta = "Qual é a probabilidade de você recomendar o instituto para parceiros de negócios ou colegas?"},
                 new PerguntaTexto() { Pergunta = "Gostaria de deixar algum comentário adicional? Escreva abaixo"}
+            }
             };
 
             return perguntas;
