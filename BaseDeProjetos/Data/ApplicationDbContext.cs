@@ -28,22 +28,6 @@ namespace BaseDeProjetos.Data
         public DbSet<BaseDeProjetos.Models.ProjetoIndicadores> ProjetoIndicadores { get; set; }
         public DbSet<BaseDeProjetos.Models.Cargo> Cargo { get; set; }
         public DbSet<BaseDeProjetos.Models.Maquina> Maquina { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<StatusCurva>()
-                .HasOne(sc => sc.Projeto)
-                .WithMany(p => p.StatusCurva)
-                .HasForeignKey(sc => sc.ProjetoId)
-                .OnDelete(DeleteBehavior.Restrict); // Esta linha configura a ação de exclusão como RESTRICT
-        }
-
-
-    }
-		public DbSet<BaseDeProjetos.Models.Cargo> Cargo { get; set; }
-		public DbSet<BaseDeProjetos.Models.Maquina> Maquina { get; set; }
 		public DbSet<BaseDeProjetos.Models.PesquisaProjeto> PesquisaProjeto { get; set; }
 	}
 }
