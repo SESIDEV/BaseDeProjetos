@@ -6,12 +6,19 @@ namespace BaseDeProjetos.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-           
+            migrationBuilder.AddColumn<bool>(
+                name: "Industrial",
+                table: "Empresa",
+                type: "bit",
+                nullable: false,
+                defaultValue: false);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            
+            migrationBuilder.DropColumn(
+                name: "Industrial",
+                table: "Empresa");
         }
     }
 }
