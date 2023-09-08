@@ -1,62 +1,65 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.StatusCurva>
 
-    @{
-        ViewData["Title"] = "Status Curvas";
-    }
+@{
+    ViewData["Title"] = "Status Curvas";
+}
 
 <partial name="Header" view-data="@ViewData" />
-<div class="app-wrapper">
-    <div class="app-content pt-3 p-md-3 p-lg-4">
-        <div class="container-xl">
-            <p>
-                <a asp-action="Create">Create New</a>
-            </p>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.ProjetoId)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Data)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Fisico)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Financeiro)
-                        </th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
+<div class="container">
+    <div class="app-wrapper">
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">
+                <p>
+                    <a asp-action="Create">Criar novo</a>
+                </p>
+                <table class="table table-striped">
+                    <thead>
                         <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ProjetoId)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Data)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Fisico)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Financeiro)
-                            </td>
-                            <td>
-                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                            </td>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ProjetoId)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Data)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Fisico)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Financeiro)
+                            </th>
+                            <th></th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ProjetoId)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Data)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Fisico)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Financeiro)
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                                    <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
+                                    <a asp-action="Delete" asp-route-id="@item.Id">Deletar</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-    <partial name="Footer" />
 </div>
+<partial name="Footer" />
+
 
 

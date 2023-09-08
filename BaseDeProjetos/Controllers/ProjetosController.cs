@@ -40,7 +40,7 @@ namespace BaseDeProjetos.Controllers
                 indicadores.Id = idIndicador;
 
                 // Atrelar o projeto ao indicador
-                indicadores.Projeto = projeto; 
+                indicadores.Projeto = projeto;
 
                 // Criar o indicador da macroentrega no DB
                 await CriarIndicadores(indicadores);
@@ -111,15 +111,30 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
-        [HttpGet("Projetos/indicadores-projetos")]
+        [HttpGet("Projetos/indicadores")]
         public async Task<IActionResult> IndicadoresDeProjeto()
         {
             List<Projeto> listaProjetos = await _context.Projeto.ToListAsync();
-            //int SatisfacaoMetadeProjetoMax = listaProjetos.Max<Projeto>(p => p.Indicador.ValorSatisfacaoMetadeProjeto);
 
-            //int SatisfacaoMetadeProjetoMin = listaProjetos.Min<Projeto>(p => p.Indicador.ValorSatisfacaoMetadeProjeto);
+            double ValorProjetoMin = listaProjetos.Min<Projeto>(projeto => projeto.ValorTotalProjeto);
+            ViewBag.ValorProjetoMin = ValorProjetoMin;
 
-            return View("indicador_projetos", listaProjetos);
+            double ValorProjetoMax = listaProjetos.Max<Projeto>(projeto => projeto.ValorTotalProjeto);
+            ViewBag.ValorProjetoMax = ValorProjetoMax;
+
+            decimal CustoHHProjetoMin = listaProjetos.Select(projeto => projeto.ColaboradoresDoProjeto.Sum(membro => membro.Cargo.Salario)).Min();
+            ViewBag.CustoHHProjetoMin = CustoHHProjetoMin;
+
+            decimal CustoHHProjetoMax = listaProjetos.Select(projeto => projeto.ColaboradoresDoProjeto.Sum(membro => membro.Cargo.Salario)).Max();
+            ViewBag.CustoHHProjetoMax = CustoHHProjetoMax;
+
+            decimal CustoHMProjetoMin = listaProjetos.Select(maquina => maquina.MaquinasUsadasNoProjeto.Sum(maquina => maquina.PrecoBase)).Min();
+            ViewBag.CustoHMProjetoMin = CustoHMProjetoMin;
+
+            decimal CustoHMProjetoMax = listaProjetos.Select(projeto => projeto.MaquinasUsadasNoProjeto.Sum(maquina => maquina.PrecoBase)).Max();
+            ViewBag.CustoHMProjetoMax = CustoHMProjetoMax;
+
+            return View("indicadores", listaProjetos);
         }
 
         /// <summary>
@@ -379,7 +394,7 @@ namespace BaseDeProjetos.Controllers
                 _context.Add(projeto);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
-            } 
+            }
             else
             {
                 return NotFound();
