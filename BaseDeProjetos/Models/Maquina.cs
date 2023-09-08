@@ -12,16 +12,27 @@ namespace BaseDeProjetos.Models
 		public string IdentificacaoDaMaquina { get; set; } = "Identificação Ausente";
 		[Display(Name = "Informar se houve manutenção ")]
 		public bool ManutencaoAnoAnterior { get; set; }
+		[Display(Name = "Valor da Manutenção")]
 		public decimal? ValorManutenCaoAnoAnterior { get; set; }
+		[Display(Name = "Informar tempo máximo em horas que a máquina fica disponível")]
 		public decimal OcupacaoMax { get; set; }
+		[Display(Name = "Informar tempo em horas que a máquina será usada no projeto")]
 		public decimal OcupacaoAtual { get; set; } = 0;
+		[Display(Name = "Valor da máquina")]
 		public decimal PrecoBase { get; set; }
-		public decimal? CustoHoraMaquina
+		[Display(Name = "Valor hora máquina")]
+		public decimal CustoHoraMaquina
 		{
 			//Cálculo hora máquina fictício (10% do preço base, divido por 12 meses, divido por 30 dias, divido por 24h)
-			get => (PrecoBase * 0.10m) / 12 / 30 / 24;
+			get
+			{ 
+				return PrecoBase * 0.10m / 12 / 30 / 24; 
+			}
 
-			set => _ = PrecoBase;
 		}
+
+		//Relacionamento Projeto
+		public virtual Projeto? Projeto { get; set; }
+
 	}
 }
