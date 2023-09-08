@@ -13,7 +13,8 @@ namespace BaseDeProjetos.Models
         public int IdPesquisa { get; set; }
         public string ProjetoId { get; set; }
         public double ResultadoFinal { get; set; }
-
+        public List<int> RespostasIndividuais { get; set; }
+        public string Comentarios { get; set; }
         public string RepresentacaoTextualQuestionario { get; set; }
 
         [NotMapped]
@@ -43,6 +44,18 @@ namespace BaseDeProjetos.Models
         {
             this.RepresentacaoTextualQuestionario = JsonSerializer.Serialize(this.PerguntasSatisfacao);
         }
+
+        public List<int> ObterHashCodesQuestoes()
+        {
+            List<int> hashes = new List<int>();
+            foreach(KeyValuePair<string, List<PerguntaSatisfacao>> kv in this.PerguntasSatisfacao.Where(p => p.GetType() == typeof(PerguntaLikert)))
+            {
+                kv.Value.ForEach((v) => hashes.Add(v.Pergunta.GetHashCode()));
+            }
+
+            return hashes;
+        }
+
     }
 
     public class PesquisaProjeto : PesquisaOpiniao

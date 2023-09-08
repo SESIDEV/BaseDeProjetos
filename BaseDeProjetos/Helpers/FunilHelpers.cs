@@ -454,12 +454,17 @@ namespace BaseDeProjetos.Helpers
         public static List<Prospeccao> OrdenarProspecções(string sortOrder, List<Prospeccao> lista)
         {
             var prospeccoes = lista.AsQueryable();
-            prospeccoes = sortOrder switch
+            switch(sortOrder)
             {
-                "name_desc" => prospeccoes.OrderByDescending(s => s.Empresa.Nome),
-                "TipoContratacao" => prospeccoes.OrderBy(s => s.TipoContratacao),
-                "tipo_desc" => prospeccoes.OrderByDescending(s => s.TipoContratacao),
-                _ => prospeccoes.OrderBy(s => s.Status.OrderBy(k => k.Data).Last().Data),
+                case "name_desc":
+                    return prospeccoes.OrderByDescending(s => s.Empresa.Nome).ToList();
+                    break;
+                case "TipoContratacao":
+                    return prospeccoes.OrderBy(s => s.TipoContratacao).ToList();
+                    break;
+                case "tipo_desc":
+                    return prospeccoes.OrderByDescending(s => s.TipoContratacao).ToList();
+                    break;
             };
             return prospeccoes.ToList();
         }
