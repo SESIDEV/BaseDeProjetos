@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace BaseDeProjetos.Controllers
 {
     [Authorize]
-    public class ProducaoController : Controller
+    public class ProducaoController : SGIController
     {
         private readonly ApplicationDbContext _context;
 
@@ -30,17 +30,15 @@ namespace BaseDeProjetos.Controllers
             {
                 List<Producao> producoes;
 
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                this.ViewbagizarUsuario(_context);
 
                 if (string.IsNullOrEmpty(casa))
                 {
-                    casa = usuario.Casa.ToString();
+                    casa = this.usuarioAtivo.Casa.ToString();
                 }
 
-                producoes = await FunilHelpers.DefinirCasaParaVisualizarEmProducao(casa, usuario, _context, HttpContext, ViewData);
-                producoes = FunilHelpers.VincularCasaProducao(usuario, producoes);
+                producoes = await FunilHelpers.DefinirCasaParaVisualizarEmProducao(casa, usuarioAtivo, _context, HttpContext, ViewData);
+                producoes = FunilHelpers.VincularCasaProducao(usuarioAtivo, producoes);
                 producoes = FunilHelpers.PeriodizarProduções(ano, producoes);
                 producoes = FunilHelpers.FiltrarProduções(searchString, producoes);
                 producoes = producoes.OrderBy(p => p.Data).ToList();
