@@ -40,7 +40,5 @@ namespace BaseDeProjetos.Data
                 .HasForeignKey(sc => sc.ProjetoId)
                 .OnDelete(DeleteBehavior.Restrict); // Esta linha configura a ação de exclusão como RESTRICT
         }
-
-
-	}
+    }
 }
