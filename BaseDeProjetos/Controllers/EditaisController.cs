@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace BaseDeProjetos.Controllers
 {
     [Authorize]
-    public class EditaisController : Controller
+    public class EditaisController : SGIController
     {
         private readonly ApplicationDbContext _context;
         public EditaisController(ApplicationDbContext context)
@@ -25,11 +25,9 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewbagizarUsuario(_context);
                 List<Empresa> empresas = _context.Empresa.ToList();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
                 return View(await _context.Editais.ToListAsync());
             }
             else
@@ -42,10 +40,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewbagizarUsuario(_context);
 
                 if (id == null)
                 {
@@ -72,10 +67,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewbagizarUsuario(_context);
 
                 return View();
             }
@@ -105,10 +97,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewbagizarUsuario(_context);
 
                 if (id == null)
                 {
@@ -168,11 +157,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewbagizarUsuario(_context);
 
                 if (id == null)
                 {
@@ -249,7 +234,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewbagizarUsuario(_context);
                 Editais Edital = _context.Editais.FirstOrDefault(e => e.Id == id);
                 string prospeccaoId = $"prosp_{DateTime.Now.Ticks}";
 
@@ -261,7 +246,7 @@ namespace BaseDeProjetos.Controllers
                     Prospeccao = new Prospeccao
                     {
                         Id = prospeccaoId,
-                        Usuario = usuario,
+                        Usuario = usuarioAtivo,
                         Status = new List<FollowUp> {
                         new FollowUp
                         {
@@ -271,12 +256,12 @@ namespace BaseDeProjetos.Controllers
                             Status = StatusProspeccao.ContatoInicial
                         }
                     },
-                        Casa = usuario.Casa
+                        Casa = usuarioAtivo.Casa
                     },
                     ProspeccaoId = prospeccaoId,
                     Proponente = "",
                     ProjetoProposto = "",
-                    ResponsavelSubmissao = usuario.UserName,
+                    ResponsavelSubmissao = usuarioAtivo.UserName,
                     StatusSubmissao = StatusSubmissaoEdital.emAnalise
                 };
                 _context.Add(submissao);
