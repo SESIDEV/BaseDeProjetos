@@ -81,7 +81,7 @@ namespace BaseDeProjetos.Models
 
         [Display(Name = "Anotações")]
         public virtual string Anotacoes { get; set; }
-        public virtual DateTime Data { get; set; }
+        public virtual DateTime Data { get; set; } = DateTime.Now;
 
         [Display(Name = "Ano da prospecção")]
         public virtual int AnoFiscal

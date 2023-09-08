@@ -37,41 +37,51 @@ namespace BaseDeProjetos.Helpers
             return valor.ToString("#,0");
         }
 
-        public static HtmlString PrintarValorIndicadorParticipacao(decimal valorIndicadorCru, decimal valorMedio)
+        public static int VerificarIntervalo(decimal valor, decimal valorMinimo, decimal valorMaximo)
         {
-            HtmlString htmlString = new HtmlString($"");
+            decimal primeiroTerco, segundoTerco;
+            decimal valorFaixa = (valorMaximo - valorMinimo) / 3;
 
-            if (valorIndicadorCru > valorMedio * (decimal)1.33333333)
+            primeiroTerco = valorMinimo + valorFaixa;
+            segundoTerco = primeiroTerco + valorFaixa;
+
+            if (valor >= valorMinimo && valor <= primeiroTerco)
             {
-                htmlString = new HtmlString("<svg style=\"color: green\" xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-chevron-up\" viewBox=\"0 0 16 16\">\r\n <path fill-rule=\"evenodd\" d=\"M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z\" />\r\n </svg>");
+                return -1;
             }
-            else if (valorIndicadorCru <= (decimal)1.33333333 && valorIndicadorCru > valorMedio / (decimal)1.51515151)
+            else if (valor > primeiroTerco && valor <= segundoTerco)
             {
-                htmlString = new HtmlString("<svg style=\"color: dodgerblue\" xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-chevron-bar-contract\" viewBox=\"0 0 16 16\">\r\n <path fill-rule=\"evenodd\" d=\"M3.646 14.854a.5.5 0 0 0 .708 0L8 11.207l3.646 3.647a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 0 0 0 .708zm0-13.708a.5.5 0 0 1 .708 0L8 4.793l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708zM1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z\" />\r\n </svg>");
+                return 0;
+            }
+            else if (valor > segundoTerco && valor <= valorMaximo)
+            {
+                return 1;
             }
             else
             {
-                htmlString = new HtmlString("<svg style=\"color: red\" xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-chevron-down\" viewBox=\"0 0 16 16\">\r\n <path fill-rule=\"evenodd\" d=\"M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z\" />\r\n </svg>");
+                return int.MaxValue;
             }
-
-            return htmlString;
         }
 
-        public static HtmlString PrintarValorIndicadorParticipacao(decimal valorIndicadorCru)
+        public static HtmlString ObterIconeParticipacao(int valorIndicador)
         {
             HtmlString htmlString = new HtmlString($"");
 
-            if (valorIndicadorCru <= 1 && valorIndicadorCru > (decimal)66 / 100)
+            if (valorIndicador == -1)
             {
-                htmlString = new HtmlString("<svg style=\"color: green\" xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-chevron-up\" viewBox=\"0 0 16 16\">\r\n <path fill-rule=\"evenodd\" d=\"M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z\" />\r\n </svg>");
+                htmlString = new HtmlString("<i style=\"color: red\" class=\"bi bi-chevron-down\"></i>");
             }
-            else if (valorIndicadorCru <= (decimal)66 / 100 && valorIndicadorCru > (decimal)33 / 100)
+            else if (valorIndicador == 0)
             {
-                htmlString = new HtmlString("<svg style=\"color: dodgerblue\" xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-chevron-bar-contract\" viewBox=\"0 0 16 16\">\r\n <path fill-rule=\"evenodd\" d=\"M3.646 14.854a.5.5 0 0 0 .708 0L8 11.207l3.646 3.647a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 0 0 0 .708zm0-13.708a.5.5 0 0 1 .708 0L8 4.793l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708zM1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z\" />\r\n </svg>");                                     
+                htmlString = new HtmlString("<i style=\"color: blue\" class=\"bi bi-chevron-bar-contract\"></i>");
+            }
+            else if (valorIndicador == 1)
+            {
+                htmlString = new HtmlString("<i style=\"color: green\" class=\"bi bi-chevron-up\"></i>");
             }
             else
             {
-                htmlString = new HtmlString("<svg style=\"color: red\" xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-chevron-down\" viewBox=\"0 0 16 16\">\r\n <path fill-rule=\"evenodd\" d=\"M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z\" />\r\n </svg>");                          
+                htmlString = new HtmlString("<i class=\"bi bi-question-circle-fill\"></i>");
             }
 
             return htmlString;
@@ -82,9 +92,10 @@ namespace BaseDeProjetos.Helpers
         /// </summary>
         /// <param name="_context"></param>
         /// <returns></returns>
-        public static string PuxarDadosUsuarios(ApplicationDbContext _context){
-            
-            var usuarios = _context.Users.Where(u => u.Email != null && u.EmailConfirmed == true).Select(u => new {u.Email, u.UserName, u.Foto, u.Competencia}).ToList();
+        public static string PuxarDadosUsuarios(ApplicationDbContext _context)
+        {
+
+            var usuarios = _context.Users.Where(u => u.Email != null).Select(u => new { u.Email, u.UserName, u.Foto, u.Competencia, u.EmailConfirmed }).ToList();
 
             string usuariosJson = JsonSerializer.Serialize(usuarios);
 
@@ -132,7 +143,7 @@ namespace BaseDeProjetos.Helpers
         public static string PuxarDadosProducoes(ApplicationDbContext _context)
         {
 
-            var producoes = _context.Producao.Where(p => p.Titulo != null).Select(p => new {p.Casa, p.Titulo, p.Descricao, p.Autores, p.StatusPub, p.Data, p.Local, p.DOI}).ToList(); //.GetDisplayName() NAO FUNCIONA
+            var producoes = _context.Producao.Where(p => p.Titulo != null).Select(p => new { p.Casa, p.Titulo, p.Descricao, p.Autores, p.StatusPub, p.Data, p.Local, p.DOI }).ToList(); //.GetDisplayName() NAO FUNCIONA
 
             string producoesJson = JsonSerializer.Serialize(producoes);
 
@@ -140,31 +151,31 @@ namespace BaseDeProjetos.Helpers
 
         }
 
-		public static Tuple<string, string> ObterNomeCasaAbreviado(Instituto casa)
-		{
-			string nomeCasa = Enum.GetName(typeof(Instituto), casa);
+        public static Tuple<string, string> ObterNomeCasaAbreviado(Instituto casa)
+        {
+            string nomeCasa = Enum.GetName(typeof(Instituto), casa);
 
-			if (nomeCasa == "CISHO")
-			{
-				return new Tuple<string, string>("CIS-SO", nomeCasa);
-			}
-			else if (nomeCasa == "ISIQV")
-			{
-				return new Tuple<string, string>("ISI-QV", nomeCasa);
-			}
-			else if (nomeCasa == "ISISVP")
-			{
-				return new Tuple<string, string>("ISI-SVP", nomeCasa);
-			}
-			else if (nomeCasa == "ISIII")
-			{
-				return new Tuple<string, string>("ISI-II", nomeCasa);
-			}
-			else
-			{
-				return new Tuple<string, string>(nomeCasa, nomeCasa);
-			}
-		}
-	}
+            if (nomeCasa == "CISHO")
+            {
+                return new Tuple<string, string>("CIS-SO", nomeCasa);
+            }
+            else if (nomeCasa == "ISIQV")
+            {
+                return new Tuple<string, string>("ISI-QV", nomeCasa);
+            }
+            else if (nomeCasa == "ISISVP")
+            {
+                return new Tuple<string, string>("ISI-SVP", nomeCasa);
+            }
+            else if (nomeCasa == "ISIII")
+            {
+                return new Tuple<string, string>("ISI-II", nomeCasa);
+            }
+            else
+            {
+                return new Tuple<string, string>(nomeCasa, nomeCasa);
+            }
+        }
+    }
 
 }

@@ -7,8 +7,8 @@ namespace BaseDeProjetos.Models
     {
         public virtual int Id { get; set; }
 
-        [Display(Name = "Tipo de Publicação")]
-        public virtual GrupoPublicacao Grupo { get; set; }
+        [Display(Name = "Tipo de Produção")]
+        public virtual GrupoProducao Grupo { get; set; }
 
         [Display(Name = "Instituto")]
         public virtual Instituto Casa { get; set; }
@@ -16,19 +16,19 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Título")]
         public virtual string Titulo { get; set; }
 
-        [Display(Name = "Resumo")]
+        [Display(Name = "Descrição/Resumo")]
         public virtual string Descricao { get; set; }
 
-        [Display(Name = "Autores/Inventores")]
+        [Display(Name = "Autores/Participantes")]
         public virtual string Autores { get; set; }
 
         [Display(Name = "Status")]
         public virtual StatusPub StatusPub { get; set; }
 
-        [Display(Name = "Publicado em")]
+        [Display(Name = "Data:")]
         public virtual DateTime Data { get; set; }
 
-        [Display(Name = "Localização")]
+        [Display(Name = "Localização (Estado ou País)")]
         public virtual string Local { get; set; }
 
         [Display(Name = "DOI")]

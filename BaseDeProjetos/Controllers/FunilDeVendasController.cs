@@ -28,10 +28,8 @@ namespace BaseDeProjetos.Controllers
 
         // GET: FunilDeVendas
         [Route("FunilDeVendas/Index/{casa?}/{aba?}/{ano?}")]
-        public async Task<IActionResult> Index(string casa, string aba, string sortOrder = "", string searchString = "", string ano = "", int numeroPagina = 1)
+        public async Task<IActionResult> Index(string casa, string aba, string sortOrder = "", string searchString = "", string ano = "", int numeroPagina = 1, int tamanhoPagina = 20)
         {
-            const int tamanhoPagina = 20;
-
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
@@ -40,6 +38,7 @@ namespace BaseDeProjetos.Controllers
                 ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;
                 ViewBag.searchString = searchString;
+                ViewBag.TamanhoPagina = tamanhoPagina;
 
                 if (string.IsNullOrEmpty(casa))
                 {
@@ -64,8 +63,10 @@ namespace BaseDeProjetos.Controllers
                     Pager = pager,
                 };
 
-                ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-                ViewData["Equipe"] = new SelectList(await _context.Users.ToListAsync(), "Id", "UserName");
+                ViewData["Usuarios"] = _context.Users.ToList();
+                ViewData["Empresas"] = new SelectList(empresas, "Id", "Nome");
+                ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
+                ViewData["ProspeccoesAgregadas"] = _context.Prospeccao.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
 
                 if (string.IsNullOrEmpty(aba))
                 {
@@ -460,11 +461,15 @@ namespace BaseDeProjetos.Controllers
 
             Prospeccao prospAntiga = await _context.Prospeccao.AsNoTracking().FirstAsync(p => p.Id == prospeccao.Id);
 
-            if(prospAntiga.Ancora == true && prospeccao.Ancora == false){ // compara a versão antiga com a nova que irá para o Update()
-                FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
-            }
+            // tudo abaixo compara a versão antiga com a nova que irá para o Update()
 
-            if(prospAntiga.Agregadas != prospeccao.Agregadas){
+            if(prospAntiga.Ancora == true && prospeccao.Ancora == false){ // verifica se a âncora foi cancelada
+                FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao); 
+            
+            } else if(prospeccao.Ancora == true && string.IsNullOrEmpty(prospeccao.Agregadas)){ // verifica se o campo agg está vazio
+                throw new InvalidOperationException("Não é possível adicionar uma Âncora sem nenhuma agregada.");
+
+            } else if(prospAntiga.Agregadas != prospeccao.Agregadas){ // verifica se alguma agregada foi alterada
                 FunilHelpers.AddAgregadas(_context, prospAntiga, prospeccao);
                 FunilHelpers.DelAgregadas(_context, prospAntiga, prospeccao);
             }
@@ -577,16 +582,16 @@ namespace BaseDeProjetos.Controllers
                 Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
                 Prospeccao prospeccao = await _context.Prospeccao.FirstOrDefaultAsync(p => p.Id == followup.OrigemID);
 
-                if (verificarCondicoesRemocao(prospeccao, usuario, followup.Origem.Usuario) || usuario.Casa == Instituto.Super)
+                if (verificarCondicoesRemocao(prospeccao, usuario, followup.Origem.Usuario) || usuario.Nivel == Nivel.Dev)
                 {
                     _context.FollowUp.Remove(followup);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction("Index", "Funil de Vendas", new { casa = usuario.Casa });
+                    return RedirectToAction("Index", "FunilDeVendas", new { casa = usuario.Casa });
                 }
                 else
                 {
                     // TODO: Colocar isso no frontend em vez de jogar uma exceção na cara do usuário
-                    throw new InvalidOperationException("Não é possível remover todas os followups de uma prospecção");
+                    throw new InvalidOperationException("Provável erro na função verificarCondicoesRemocao() no Controller");
                 }
             }
             else
@@ -602,9 +607,9 @@ namespace BaseDeProjetos.Controllers
         /// <param name="dono">Usuario líder da prospecção</param>
         /// <param name="ativo">Usuário ativo (HttpContext)</param>
         /// <returns></returns>
-        private bool verificarCondicoesRemocao(Prospeccao prospeccao, Usuario dono, Usuario ativo)
+        private bool verificarCondicoesRemocao(Prospeccao prospeccao, Usuario ativoNaSessao, Usuario donoProsp)
         {
-            return prospeccao.Status.Count() > 1 && dono == ativo;
+            return prospeccao.Status.Count() > 1 && ativoNaSessao == donoProsp;
         }
 
         // POST: FunilDeVendas/Delete/5
@@ -721,8 +726,9 @@ namespace BaseDeProjetos.Controllers
 
                 dict["Titulo"] = p.NomeProspeccao;
                 dict["Líder"] = p.Usuario.UserName;
+                dict["Membros"] = p.MembrosEquipe;
                 dict["Status"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Status.GetDisplayName();
-                dict["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data.ToString("dd/MM/yyyy");
+                dict["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data.ToString("MM/yyyy");
                 dict["Empresa"] = p.Empresa.Nome;
                 dict["CNPJ"] = p.Empresa.CNPJ;
                 dict["Segmento"] = p.Empresa.Segmento.GetDisplayName();
@@ -758,7 +764,7 @@ namespace BaseDeProjetos.Controllers
                 
                 if(p.NomeProspeccao != null){
                     dict["idProsp"] = p.Id;
-                    dict["Titulo"] = p.NomeProspeccao + " [" + p.Empresa.NomeFantasia + "]";
+                    dict["Titulo"] = p.NomeProspeccao + " [" + p.Empresa.Nome + "]";
                 } else {
                     continue;
                 }

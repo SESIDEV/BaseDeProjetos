@@ -36,9 +36,7 @@ namespace BaseDeProjetos.Controllers
 				ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;
 
-                ViewBag.Prospeccoes = _context.Prospeccao.Where(P => P.Status.All(S => S.Status != StatusProspeccao.NaoConvertida &&
-                                                                                        S.Status != StatusProspeccao.Convertida &&
-                                                                                        S.Status != StatusProspeccao.Suspensa)).ToList();
+                ViewBag.Prospeccoes = _context.Prospeccao.ToList();
 
                 ViewBag.ProspeccoesAtivas = _context.Prospeccao.Where(P => P.Status.All(S => S.Status != StatusProspeccao.NaoConvertida &&
                                                                                         S.Status != StatusProspeccao.Convertida &&
@@ -46,6 +44,13 @@ namespace BaseDeProjetos.Controllers
                                                                         && P.Status.OrderBy(k => k.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
 
                 ViewBag.ProspeccoesPlanejadas = _context.Prospeccao.Where(P => P.Status.All(S => S.Status == StatusProspeccao.Planejada)).ToList();
+
+                ViewBag.OutrasProspeccoes = _context.Prospeccao
+                    .Where(P => P.Status.Any(S => S.Status == StatusProspeccao.NaoConvertida ||
+                                  S.Status == StatusProspeccao.Convertida ||
+                                  S.Status == StatusProspeccao.Suspensa)).ToList();
+
+                ViewBag.Projetos = _context.Projeto.ToList();
 
                 ViewBag.Contatos = _context.Pessoa.ToList();
                 //Filtros e ordenadores
@@ -59,7 +64,7 @@ namespace BaseDeProjetos.Controllers
                     HttpContext.Session.SetString("_CurrentFilter", searchString);
                 }
 
-                var empresas = FiltrarEmpresas(searchString, _context.Empresa.OrderBy(e => e.NomeFantasia).ToList());
+                var empresas = FiltrarEmpresas(searchString, _context.Empresa.OrderBy(e => e.Nome).ToList());
 
                 return View(empresas);
             }
@@ -121,11 +126,13 @@ namespace BaseDeProjetos.Controllers
             {
                 searchString = searchString.ToLower();
 
-                empresas = empresas.Where(e =>
-                e.Nome != null && e.Nome.ToLower().Contains(searchString.ToLower()) ||
-                e.NomeFantasia != null && e.NomeFantasia.ToLower().Contains(searchString.ToLower()) ||
-                e.CNPJ != null && e.CNPJ.ToLower().Contains(searchString.ToLower())).ToList();
+                string searchStringCNPJSemCaracteres = searchString.Replace("/", "").Replace(".", "").Replace("-", "");
 
+                empresas = empresas.Where(e =>
+                e.RazaoSocial != null && e.RazaoSocial.ToLower().Contains(searchString.ToLower()) ||
+                e.Nome != null && e.Nome.ToLower().Contains(searchString.ToLower()) ||
+                e.CNPJ != null && e.CNPJ.Contains(searchString) ||
+                e.CNPJ != null && e.CNPJ.Contains(searchStringCNPJSemCaracteres)).ToList();
             }
 
             return empresas;
@@ -210,7 +217,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Logo,Nome,CNPJ,Segmento,Estado,Industrial,NomeFantasia")] Empresa empresa)
+        public async Task<IActionResult> Create([Bind("Id,Logo,RazaoSocial,CNPJ,Segmento,Estado,Industrial,Nome")] Empresa empresa)
         {
             if (ModelState.IsValid)
             {
@@ -254,7 +261,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Logo,Nome,CNPJ,Segmento,Estado,Industrial,NomeFantasia")] Empresa empresa)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Logo,RazaoSocial,CNPJ,Segmento,Estado,Industrial,Nome")] Empresa empresa)
         {
             if (id != empresa.Id)
             {
@@ -380,8 +387,8 @@ namespace BaseDeProjetos.Controllers
                 {
                     Dictionary<string, object> dict = new Dictionary<string, object>();
                     dict["Id"] = empresa.Id;
-                    dict["RazaoSocial"] = empresa.Nome;
-                    dict["NomeFantasia"] = empresa.NomeFantasia;
+                    dict["RazaoSocial"] = empresa.RazaoSocial;
+                    dict["NomeFantasia"] = empresa.Nome;
                     dict["Segmento"] = empresa.Segmento.GetDisplayName();
                     dict["Estado"] = empresa.Estado.GetDisplayName();
                     dict["CNPJ"] = empresa.CNPJ;

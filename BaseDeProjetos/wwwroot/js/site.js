@@ -62,6 +62,7 @@ var dictCNAE = {
     "77": "ALUGUÉIS NÃO-IMOBILIÁRIOS E GESTÃO DE ATIVOS INTANGÍVEIS NÃOFINANCEIROS (ALUGUEL DE ANDAÍMES, CNAE: 7732202)",
     "85": "EDUCAÇÃO (SERVIÇO NACIONAL DE APRENDIZAGEM DA INDÚTRIA – SENAI – OUTRAS ATIVIDADES DE ENSINO NÃO ESPECIFICADAS ANTERIORMENTE – CNAE: 8599699)",
     "91": "ATIVIDADES LIGADAS AO PATRIMÔNIO CULTURAL E AMBIENTAL (RESTAURAÇÃO E CONSERVAÇÃO DE LUGARES E PRÉDIOS HISTÓRICOS, CNAE: 9102302)",
+    "91": "ATIVIDADES LIGADAS AO PATRIMÔNIO CULTURAL E AMBIENTAL (RESTAURAÇÃO E CONSERVAÇÃO DE LUGARES E PRÉDIOS HISTÓRICOS, CNAE: 9102302)",
     "02": "PRODUÇÃO FLORESTAL (EXTRAÇÃO DE MADEIRA, PRODUÇÃO DE CARVÃO, COLETA DE LÁTEX | CNAE: 210107, 210108, 220901, 220902, 220904)",
     "05": "EXTRAÇÃO DE CARVÃO MINERAL",
     "06": "EXTRAÇÃO DE PETRÓLEO E GÁS NATURAL",
@@ -142,7 +143,7 @@ function FiltroEmpresaEstrangeira() {
     let cnpj = document.getElementById("valor_cnpj");
     let campo1 = document.getElementById("cadastro_campo1");
     let campo2 = document.getElementById("cadastro_campo2");
-    let nome = document.getElementById("NomeEmpresaCadastro");
+    let nome = document.getElementById("RazaoSocialEmpresaCadastro");
     let estado_int = document.getElementById("EstadoEmpresaCadastroINT");
 
     if (checkBox.checked == true) {
@@ -151,7 +152,7 @@ function FiltroEmpresaEstrangeira() {
         campo1.style.display = "none"
         estado_int.value = 26;
         campo2.style.display = "none"
-        nome.removeAttribute('readonly')
+        nome.style.display = "none"
 
     } else {
 
@@ -159,20 +160,32 @@ function FiltroEmpresaEstrangeira() {
         campo1.style.display = "block"
         estado_int.value = 0;
         campo2.style.display = "block"
-        nome.setAttribute('readonly')
+        nome.style.display = "block"
 
     }
 
 }
 
-function ChecarPatente() {
+function ChecarTipoProducao(id="") {
 
-    let valor = document.querySelector('#select_tipo').value
-    if (valor == 8) {
-        document.querySelector('#campos-patente').style = 'display:block'
-    }
-    else {
-        document.querySelector('#campos-patente').style = 'display:none'
+    let valor = document.querySelector(`#select_tipo${id}`).value
+
+    switch(valor){
+        case "8": //patente
+            document.querySelector(`#campos_patente${id}`).style = 'display:block';
+            document.querySelector(`#campos_status${id}`).style = 'display:block';
+            document.querySelector(`#campos_doi${id}`).style = 'display:block';
+            break;
+        case "9": case "10": case "11": case "12": //fatos_relevantes
+            document.querySelector(`#campos_patente${id}`).style = 'display:none';
+            document.querySelector(`#campos_status${id}`).style = 'display:none';
+            document.querySelector(`#campos_doi${id}`).style = 'display:none';
+            break;
+        default: //demais pubs
+            document.querySelector(`#campos_patente${id}`).style = 'display:none';
+            document.querySelector(`#campos_status${id}`).style = 'display:block';
+            document.querySelector(`#campos_doi${id}`).style = 'display:block';
+            break;
     }
 }
 
@@ -256,25 +269,31 @@ function checkAncora(alavanca, iconAncora, campoAgg) {
     }
 }
 
-function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loadingIcon, idText="", fillValues=false, userLider=null) { // os últimos 3 é exclusivo para a rota de Pessoas, e os últimos 2 são para tratar no Edit
+function gerarOpcoesSelect(rota, modelId="", fillValues=false) { // os últimos 2 parâmetros para tratar no Edit
+
     let defRota = "";
     let value = "";
     let inner = "";
     let lider = "";
+    let idSelect = `campoSelect${rota}${modelId}`;
+    let caixaId = `caixaPesquisa${rota}${modelId}`;
+    let botaoAlterar = `botaoToggleCaixaRequest${rota}${modelId}`;
+    let loadingIcon = `loadingOpcoesSelect${rota}${modelId}`;
+
     document.querySelector(`#${caixaId}`).style.display = "none";
     document.querySelector(`#${loadingIcon}`).style.display = "block";
     document.querySelector(`#${idSelect}`).innerHTML = '';
-    if (nomeModal == null) {
+    if (modelId == "") {
         $(`#${idSelect}`).select2()
     } else {
-        $(`#${idSelect}`).select2({ dropdownParent: $(`#${nomeModal}`) })
+        $(`#${idSelect}`).select2({ dropdownParent: $(`#editarProspModal${modelId}`) })
     }
-    switch (rota) {
+    switch (rota) { //====================================================== \/\/\/ SWITCH PRINCIPAL \/\/\/ ===============================================================
         case "Pessoas":
             defRota = '/FunilDeVendas/PuxarDadosUsuarios';
             value = "Email";
             inner = "UserName";
-            lider = document.querySelector(`#${userLider}`).selectedOptions[0].text;
+            if(document.querySelector(`#selectLiderProsp${modelId}`) != null){lider = document.querySelector(`#selectLiderProsp${modelId}`).selectedOptions[0].text;};
             break;
         case "Empresas":
             defRota = '/Empresas/PuxarEmpresas';
@@ -283,6 +302,7 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
             break;
         case "Tags":
             defRota = '/FunilDeVendas/PuxarTagsProspecoes';
+            value = "Tags"; // talvez quebre ??
             inner = "Tags";
             break;
         case "Prospeccoes":
@@ -293,11 +313,11 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
         default:
             console.log(`Erro: ${rota} é uma rota inválida`);
             break;
-    }
+    }               //====================================================== /\/\/\ SWITCH PRINCIPAL /\/\/\ ===============================================================
     fetch(defRota).then(response => response.json()).then(lista => {
         lista.forEach(function (item) {
             if (rota == "Pessoas" && item[inner] == lider){
-                // nao faca nada
+                //nao faca nada
             } else {
                 var opt = document.createElement("option");
                 if (rota != "Tags") { opt.value = item[value] }
@@ -308,106 +328,76 @@ function gerarOpcoesSelect(nomeModal, idSelect, rota, caixaId, botaoAlterar, loa
         document.querySelector(`#${loadingIcon}`).style.display = "none";
         document.querySelector(`#${caixaId}`).style.display = "block";
         if(fillValues){
+            let idText = `inputText${rota}${modelId}`;
             carregarValoresInputParaSelect(idText, idSelect, rota)
         }
     })
     document.querySelectorAll(".select2-container").forEach(input => { input.style.width = "100%" })
-    if (botaoAlterar != null) { document.querySelector(`#${botaoAlterar}`).style.display = "none"; }
-    document.querySelector(`#check${rota}`).checked = true;
+    document.querySelector(`#${botaoAlterar}`).style.display = "none";
+    document.querySelector(`#check${rota}${modelId}`).checked = true;
 }
 
 function procurarPessoa(select) {
     redePessoas.focus(select.value, { scale: 3, animation: { duration: 400 } })
 }
 
-function selectToText(checkAlterados, id) {
+function selectToText(id="") {
     let lista = [];
-    document.querySelectorAll(`.${checkAlterados}`).forEach(function (check){ //funcao para indicar quais campos select foram alterados (pra não verificar todos sem necessidade)
+    let checkAlterados = `changeCheck${id}`
+
+    document.querySelectorAll(`.${checkAlterados}`).forEach(function (check){ //funcao para indicar quais campos select foram alterados (pra não verificar todos a toa)
         if(check.checked == true){lista.push(check.value)}
     })
     lista.forEach(function (rota) {
         let texto = '';
-        if (document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`) != null) {
-            document.querySelector(`#select2-campoSelectEdit${rota}-${id}-container`).childNodes.forEach(caixa => {
-                valorTexto = caixa.title;
+        if (document.querySelector(`#select2-campoSelect${rota}${id}-container`) != null) {
+            document.querySelector(`#select2-campoSelect${rota}${id}-container`).childNodes.forEach(caixa => {
 
-                let selecoes = document.querySelector(`#campoSelectEdit${rota}-${id}`).childNodes; // loop para buscar os Ids das prosps na caixa select original
+                let selecoes = document.querySelector(`#campoSelect${rota}${id}`).childNodes; // buscar as options na tag select original para trazer os valores (.value)
                 for (let i = 0; i < selecoes.length; i++) {
-                    let val = selecoes[i];
-                    if (val.innerText === valorTexto.replace(/\s+/g, ' ')) {
-                        texto += val.value + ';';
+                    let option = selecoes[i];
+                    if (option.innerText === caixa.title.replace(/\s+/g, ' ')) { // compara o texto selecionado com o texto da option no loop
+                        texto += option.value + ';'; // concatena os valores dos textos selecionados
                         break;
                     }
                 }
             })
-        document.querySelector(`#inputTextEdit${rota}-${id}`).value = texto
+        document.querySelector(`#inputText${rota}${id}`).value = texto
         } else {
             return;
         }
     })
 }
 
-function carregarValoresInputParaSelect(idText, idSelect, rota){
+function carregarValoresInputParaSelect(idText, idSelect){
     let listaOptions = [];
-    let select = document.querySelector(`#${idSelect}`);
-    let options = select.options;
-    let listaSel = document.querySelector(`#${idText}`).value.split(";");
+    let selectOptions = document.querySelector(`#${idSelect}`).options; // todos os valores carregados do fetch
+    let listaValoresText = document.querySelector(`#${idText}`).value.split(";"); // todos os valores salvos no item
 
-    listaSel.forEach(p => {
-        if (p == '') { } else {
-            for (var i = 0; i < options.length; i++) {
-                
-                    switch (rota) {
-                        case "Pessoas":
-                            //value = Email;
-                            //innerHTML = UserName;
-                            if (options[i].innerText === p) { // possiveis erros futuros
-                                listaOptions.push(options[i].innerHTML); // considerar trocar para Id
-                            }
-                            break;
-                        case "Empresas":
-                            //value = Id;
-                            //innerHTML = NomeFantasia;
-                            if (options[i].innerText === p) { // possiveis erros futuros
-                                listaOptions.push(options[i].innerHTML); // considerar trocar para Id
-                            }
-                            break;
-                        case "Tags":
-                            if (options[i].value === p) {
-                                listaOptions.push(options[i].value);
-                            }
-                            break;
-                        case "Prospeccoes":
-                            //value = Id;
-                            //innerHTML = Titulo;
-                            if (options[i].value === p) {
-                                listaOptions.push(options[i].value);
-                            }
-                            break;
-                        default:
-                            console.log(`Erro: ${rota} é uma rota inválida`);
-                            break;
-                    }
-                
+    listaValoresText.forEach(txt => { //QUANDO TODOS OS VALORES DO BANCO ESTIVEREM TRATADOS, NAO SERA MAIS NECESSARIO ITERAR PELOS VALORES EM TXT PARAR FAZER O TRIGGER NO SELECT2
+        if (txt == '') { } else {
+            for (var i = 0; i < selectOptions.length; i++) {
+                if (selectOptions[i].value === txt) {
+                    listaOptions.push(selectOptions[i].value); // a funcao .val() do select2 detecta somente o .value da option
+                }                
             }
         }
-    $(`#${idSelect}`).val(listaOptions);
-    $(`#${idSelect}`).trigger('change');
+    $(`#${idSelect}`).val(listaOptions).trigger('change');
     })
 }
 
-function Base64(id) {
-    imagem = document.getElementById(`logo_imagem-${id}`).files[0];
+function Base64(id="") {
+    imagem = document.getElementById(`logo_imagem${id}`).files[0];
     r = new FileReader();
     r.readAsDataURL(imagem);
     r.onload = function () {
-        document.getElementById(`img_preview-${id}`).src = r.result
-        document.getElementById(`img_b64-${id}`).value = r.result
+        document.getElementById(`img_preview${id}`).src = r.result
+        document.getElementById(`img_b64${id}`).value = r.result
     }
 }
 
-function MostrarImagem(id) {
-    document.getElementById(`img_preview-${id}`).src = document.getElementById(`img_b64-${id}`).value
+function MostrarImagem(id="") {
+    document.getElementById(`img_preview${id}`).src = document.getElementById(`img_b64${id}`).value
 }
 
 function listarCompetencias() {
@@ -471,8 +461,6 @@ function updateLink() {
 }
 
 function montarNetwork(pessoas, compFiltradas = null) {
-    var nodes = null;
-    var edges = null;
     var network = null;
     let defuserpic = "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png";
     var existeFiltro = false
@@ -541,7 +529,7 @@ function montarNetwork(pessoas, compFiltradas = null) {
 
         listaPessoas.push(user)
     })
-    construirGrafo(nodes, listaPessoas, edges, listaLigacoes, network);
+    construirGrafo(listaPessoas, listaLigacoes);
     //({ nodes, edges, network } = construirGrafo(nodes, listaPessoas, edges, listaLigacoes, network));
 }
 
@@ -556,10 +544,9 @@ function isSuperset(set, subset) {
     return true;
 }
 
-function construirGrafo(nodes, listaPessoas, edges, listaLigacoes, network) {
+function construirGrafo(listaPessoas, listaLigacoes) {
     nodes = new vis.DataSet(listaPessoas); //lista de pessoas
-
-    edges = new vis.DataSet(listaLigacoes);
+    edges = new vis.DataSet(listaLigacoes); //lista de ligacoes
     var container = document.getElementById("chart-line");
 
     var data = {
@@ -635,26 +622,21 @@ function converterCompetencias() {
 
 }
 
-function statusPatente() {
+function statusPatente(id="") {
 
-    let status = document.querySelector("#StatusPub").value
+    let status = document.querySelector(`#StatusPub${id}`).value
     if (status != 5) {
-        document.querySelector("#NumPatente").readOnly = true;
+        document.querySelector(`#NumPatente${id}`).readOnly = true;
     } else {
-        document.querySelector("#NumPatente").readOnly = false;
+        document.querySelector(`#NumPatente${id}`).readOnly = false;
     }
 
 }
 
-function validarCNPJ(idElemento = null) {
-    let cnpj;
-    if (idElemento == null) {
-        document.getElementById("valor_cnpj").value = document.getElementById("valor_cnpj").value.replace(/[^0-9]/g, '');
-        cnpj = document.getElementById("valor_cnpj").value;
-    } else {
-        document.getElementById(`valor_cnpj-${idElemento}`).value = document.getElementById(`valor_cnpj-${idElemento}`).value.replace(/[^0-9]/g, '');
-        cnpj = document.getElementById(`valor_cnpj-${idElemento}`).value;
-    }
+function validarCNPJ(idElemento = "") {
+    document.getElementById(`valor_cnpj${idElemento}`).value = document.getElementById(`valor_cnpj${idElemento}`).value.replace(/[^0-9]/g, '');
+    let cnpj = document.getElementById(`valor_cnpj${idElemento}`).value;
+    
     if (isNaN(cnpj) || cnpj.length < 14) {
         alert("CNPJ inválido");
     } else {
@@ -662,51 +644,28 @@ function validarCNPJ(idElemento = null) {
     }
 }
 
-function checarCNAE(listaCNAE, idElemento = null) {
+function checarCNAE(listaCNAE, idElemento = "") {
 
     for (let i = 0; i < listaCNAE.length; i++) {
         var codcnae = listaCNAE[i];
 
         if (typeof (dictCNAE[codcnae.slice(0, 2)]) != "undefined") {
-
-            if (idElemento == null) {
-                document.getElementById("BoolCnaeIndustrial").value = "1";
-                document.getElementById("checkCNAE").style.color = "green";
-                document.getElementById("checkCNAE").classList.value = "fa fa-check";
-                document.getElementById("checkCNAE").style.display = "block";
-            } else {
-                document.getElementById(`BoolCnaeIndustrial-${idElemento}`).value = "1";
-                document.getElementById(`checkCNAE-${idElemento}`).style.color = "green";
-                document.getElementById(`checkCNAE-${idElemento}`).classList.value = "fa fa-check";
-                document.getElementById(`checkCNAE-${idElemento}`).style.display = "block";
-            }
-
+            document.getElementById(`BoolCnaeIndustrial${idElemento}`).value = "True";
+            document.getElementById(`checkCNAE${idElemento}`).style.color = "green";
+            document.getElementById(`checkCNAE${idElemento}`).classList.value = "fa fa-check";
+            document.getElementById(`checkCNAE${idElemento}`).style.display = "block";
             break;
-
         } else {
-
-            if (idElemento == null) {
-                document.getElementById("BoolCnaeIndustrial").value = "0";
-                document.getElementById("checkCNAE").style.color = "red";
-                document.getElementById("checkCNAE").classList.value = "fa fa-close";
-                document.getElementById("checkCNAE").style.display = "block";
-            } else {
-                document.getElementById(`BoolCnaeIndustrial-${idElemento}`).value = "0";
-                document.getElementById(`checkCNAE-${idElemento}`).style.color = "red";
-                document.getElementById(`checkCNAE-${idElemento}`).classList.value = "fa fa-close";
-                document.getElementById(`checkCNAE-${idElemento}`).style.display = "block";
-            }
+            document.getElementById(`BoolCnaeIndustrial${idElemento}`).value = "False";
+            document.getElementById(`checkCNAE${idElemento}`).style.color = "red";
+            document.getElementById(`checkCNAE${idElemento}`).classList.value = "fa fa-close";
+            document.getElementById(`checkCNAE${idElemento}`).style.display = "block";
         }
     };
 }
 
 function AplicarDadosAPI(idElemento) {
-    let cnpj;
-    if (idElemento == null) {
-        cnpj = document.querySelector("#valor_cnpj").value;
-    } else {
-        cnpj = document.querySelector(`#valor_cnpj-${idElemento}`).value;
-    }
+    let cnpj = document.querySelector(`#valor_cnpj${idElemento}`).value;
     let url = window.location.origin + "/Empresas/DadosAPI?query=" + cnpj;
 
     fetch(url).then(res => {
@@ -716,19 +675,11 @@ function AplicarDadosAPI(idElemento) {
             dados.atividades_secundarias.forEach(ativ => {
                 listaCNAE.push(ativ.code);
             });
-            if (idElemento == null) {
-                document.getElementById("NomeEmpresaCadastro").value = dados.nome;
-                document.getElementById("NomeFantasiaEmpresa").value = dados.fantasia;
-                document.getElementById("TipoEmpresaStatus").innerHTML = "Tipo: " + dados.tipo;
-                document.getElementById("SituacaoEmpresaStatus").innerHTML = "Situação: " + dados.situacao;
-                checarCNAE(listaCNAE);
-            } else {
-                document.getElementById(`NomeEmpresaCadastro-${idElemento}`).value = dados.nome;
-                document.getElementById(`NomeFantasiaEmpresa-${idElemento}`).value = dados.fantasia;
-                document.getElementById(`TipoEmpresaStatus-${idElemento}`).innerHTML = "Tipo: " + dados.tipo;
-                document.getElementById(`SituacaoEmpresaStatus-${idElemento}`).innerHTML = "Situação: " + dados.situacao;
-                checarCNAE(listaCNAE, idElemento);
-            }
+            document.getElementById(`RazaoSocialEmpresaCadastro${idElemento}`).value = dados.nome;
+            document.getElementById(`NomeEmpresa${idElemento}`).value = dados.fantasia;
+            document.getElementById(`TipoEmpresaStatus${idElemento}`).innerHTML = "Tipo: " + dados.tipo;
+            document.getElementById(`SituacaoEmpresaStatus${idElemento}`).innerHTML = "Situação: " + dados.situacao;
+            checarCNAE(listaCNAE, idElemento);
 
             // TUDO DAQUI PRA BAIXO FOI FEITO EXCLUSIVAMENTE PARA CONVERTER A SIGLA DE CADA ESTADO PARA O NOME COMPLETO
             function Dicionario() {
@@ -769,11 +720,7 @@ function AplicarDadosAPI(idElemento) {
             siglas.add('AL', 'Alagoas')
 
             // ESSA LINHA BUSCA O ÍNDICE A PARTIR DA SIGLA DEVOLVIDA PELA API --------\/
-            if (idElemento == null) {
-                document.getElementById("EstadoEmpresaCadastro").value = siglas.find(dados.uf);
-            } else {
-                document.getElementById(`EstadoEmpresaCadastro-${idElemento}`).value = siglas.find(dados.uf);
-            }
+            document.getElementById(`EstadoEmpresaCadastro${idElemento}`).value = siglas.find(dados.uf);
 
             // CONVERTER A SIGLA DE CADA ESTADO PARA O ÍNDICE DO ENUM
             function Dicionario2() {
@@ -814,13 +761,7 @@ function AplicarDadosAPI(idElemento) {
             indices.add('AL', 25)
 
             // ESSA LINHA BUSCA O NOME A PARTIR DA SIGLA DEVOLVIDA PELA API --------\/
-            if (idElemento == null) {
-                document.getElementById("EstadoEmpresaCadastroINT").value = indices.find(dados.uf);
-            }
-            else {
-                document.getElementById(`EstadoEmpresaCadastroINT-${idElemento}`).value = indices.find(dados.uf);
-            }
-
+            document.getElementById(`EstadoEmpresaCadastroINT${idElemento}`).value = indices.find(dados.uf);
         })
     })
 }

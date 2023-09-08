@@ -33,12 +33,12 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Nome" class="control-label"></label>
-                            <input asp-for="Nome" id="NomeEmpresaCadastro" class="form-control" value="" readonly />
+                            <label asp-for="RazaoSocial" class="control-label"></label>
+                            <input asp-for="RazaoSocial" id="RazaoSocialEmpresaCadastro" class="form-control" value="" readonly />
                         </div>
                         <div class="form-group">
-                            <label asp-for="NomeFantasia" class="control-label">Nome Fantasia</label>
-                            <input asp-for="NomeFantasia" id="NomeFantasiaEmpresa" class="form-control" value=""/>
+                            <label asp-for="Nome" class="control-label"></label>
+                            <input asp-for="Nome" id="NomeEmpresa" class="form-control" value="" required/>
                         </div>
                         <div class="form-group" id="cadastro_campo2">
                             <label asp-for="Estado" class="control-label"></label>
@@ -52,8 +52,8 @@
                         </div>
                         <div class="form-group">
                             <label asp-for="Logo" class="control-label"></label>
-                            <input type="file" class="form-control" id="logo_imagem-@Model.Id" onchange="Base64('@Model.Id')" />
-                            <input asp-for="Logo" id="img_b64-@Model.Id" class="control-label" style="display: none;" value="@Model.Logo" onchange="MostrarImagem('@Model.Id')" readonly>
+                            <input type="file" class="form-control" id="logo_imagem-@Model.Id" onchange="Base64('-@Model.Id')" />
+                            <input asp-for="Logo" id="img_b64-@Model.Id" class="control-label" style="display: none;" value="@Model.Logo" onchange="MostrarImagem('-@Model.Id')" readonly>
                         </div>
                         <img id="img_preview-@Model.Id" src="" width="300" style="margin-top:5px;">
                     

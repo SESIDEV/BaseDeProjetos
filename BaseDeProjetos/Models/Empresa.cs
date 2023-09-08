@@ -7,10 +7,10 @@ namespace BaseDeProjetos.Models
         public virtual int Id { get; set; }
 
         [Display(Name = "Razão Social")]
-        public virtual string Nome { get; set; }
+        public virtual string RazaoSocial { get; set; }
 
-        [Display(Name = "Nome Fantasia")]
-        public virtual string NomeFantasia { get; set; }
+        [Display(Name = "Nome")]
+        public virtual string Nome { get; set; }
 
         [Display(Name = "Logo da Empresa")]
         public virtual string Logo { get; set; }
@@ -29,7 +29,7 @@ namespace BaseDeProjetos.Models
 
         public string EmpresaUnique
         {
-            get => Nome + " - [" + CNPJ + "]";
+            get => Nome + " - [" + CNPJ + "]" + " - " + Id;
             private set { }
         }
     }
