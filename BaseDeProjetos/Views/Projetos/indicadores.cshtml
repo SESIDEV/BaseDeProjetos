@@ -60,7 +60,7 @@
 
                     <td class="cell">@Helpers.CalcularMediaFatoresProjeto(projeto) @Helpers.ObterIconeParticipacao(@Helpers.VerificarIntervalo((decimal)@Helpers.CalcularMediaFatoresProjeto(projeto), (decimal)ViewBag.mediaMinFatoresDeProjeto, (decimal)ViewBag.mediaMaxFatoresDeProjeto)) </td>
 
-                    <td class="cell">5</td>
+                    <td class="cell">@Helpers.CalcularValorFCF(projeto.DataInicio, projeto.DataEncerramento, (decimal)projeto.ValorTotalProjeto, ViewBag.despesasDoAno).ToString("0.00")%</td>
                 </tr>
             }
             

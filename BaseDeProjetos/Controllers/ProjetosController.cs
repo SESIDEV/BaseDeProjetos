@@ -140,6 +140,9 @@ namespace BaseDeProjetos.Controllers
             decimal mediaMinFatoresDeProjeto = Helpers.Helpers.EncontrarMediaMinimaDeFatoresEmProjeto(listaProjetos);
             ViewBag.mediaMinFatoresDeProjeto = mediaMinFatoresDeProjeto;
 
+            decimal despesasDoAno = _context.IndicadoresFinanceiros.OrderByDescending(despesa => despesa.Data).Select(despesa => despesa.Despesa).FirstOrDefault();
+            ViewBag.despesasDoAno = despesasDoAno;
+
             return View("indicadores", listaProjetos);
         }
 

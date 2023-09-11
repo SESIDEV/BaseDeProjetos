@@ -11,6 +11,32 @@ namespace BaseDeProjetos.Helpers
     public static class Helpers
     {
 
+        public static decimal CalcularValorFCF(DateTime datainicio, DateTime dataencerramento, decimal valor, decimal despesasDoAno)
+        {
+            
+            int mesesTotais = ((dataencerramento.Year - datainicio.Year) * 12) + dataencerramento.Month - datainicio.Month;
+            int anoAtual = DateTime.Now.Year;
+            int mesesNoAnoAtual = 0;
+
+            if (datainicio.Year == anoAtual)
+            {
+                mesesNoAnoAtual = 12 - datainicio.Month + 1;
+            }
+            else if (dataencerramento.Year == anoAtual)
+            {
+                mesesNoAnoAtual = dataencerramento.Month;
+            }
+
+            if (mesesTotais == 0)
+            {
+                return 0;
+            }
+
+            decimal valorComoPorcentagem = (valor / mesesTotais * mesesNoAnoAtual) / despesasDoAno * 100;
+            
+            return valorComoPorcentagem;
+        }
+
         public static decimal CalcularMediaFatoresProjeto(Projeto projeto)
         {
             decimal? custoHH = projeto.ColaboradoresDoProjeto.Sum(usuario => usuario.Cargo.Salario);
