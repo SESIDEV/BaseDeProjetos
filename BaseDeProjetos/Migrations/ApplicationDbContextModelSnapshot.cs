@@ -256,6 +256,9 @@ namespace BaseDeProjetos.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("Comentarios")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
                     b.Property<string>("ProjetoId")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 

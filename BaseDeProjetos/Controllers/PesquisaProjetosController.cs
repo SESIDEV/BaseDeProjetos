@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
+using System.Net.Http;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -85,6 +86,35 @@ namespace BaseDeProjetos.Controllers
 
             return View();
                 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Responder()
+        {
+            List<int> respostas = new List<int>();
+            int pesquisaId = Int32.Parse(HttpContext.Request.Form["PesquisaId"]);
+            PesquisaProjeto pesquisa = _context.PesquisaProjeto.First(p => p.IdPesquisa == pesquisaId);
+
+            foreach(int code in pesquisa.ObterHashCodesQuestoes())
+            {
+                int resposta = -1;
+                Int32.TryParse(HttpContext.Request.Form[$"likert-{code}"], out resposta);
+                respostas.Add(resposta); 
+                
+            }
+            int retornaria = -1;
+            Int32.TryParse(HttpContext.Request.Form["option"],out retornaria);
+            respostas.Add(retornaria);
+
+            var texto = HttpContext.Request.Form["commentsTextArea"];
+
+            pesquisa.RespostasIndividuais = respostas;
+            pesquisa.Comentarios = texto;
+
+            _context.PesquisaProjeto.Update(pesquisa);
+            await _context.SaveChangesAsync();
+
+            return View("Kokoro");
         }
 
         // GET: PesquisaProjetos/Edit/5
