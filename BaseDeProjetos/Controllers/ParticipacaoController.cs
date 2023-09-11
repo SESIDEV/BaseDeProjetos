@@ -18,14 +18,14 @@ namespace BaseDeProjetos.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
 
-        private Dictionary<string, float> despesas = new Dictionary<string, float> 
+        private Dictionary<string, float> despesas = new Dictionary<string, float>
         {
             {"2021", 290000.0f},
             {"2022", 400000.0f},
             {"2023", 440000.0f}
         };
 
-        private Dictionary<string, int> pesquisadores = new Dictionary<string, int> 
+        private Dictionary<string, int> pesquisadores = new Dictionary<string, int>
         {
             {"2021", 20},
             {"2022", 20},
@@ -181,8 +181,8 @@ namespace BaseDeProjetos.Controllers
                     decimal valorMaximo = participacoes.Max(x => (decimal)property.GetValue(x));
                     decimal valorMinimo = participacoes.Min(x => (decimal)property.GetValue(x));
 
-                    valoresMaximos[$"max{property.Name}"] = valorMaximo;
-                    valoresMinimos[$"min{property.Name}"] = valorMinimo;
+                    valoresMaximos[$"{property.Name}"] = valorMaximo;
+                    valoresMinimos[$"{property.Name}"] = valorMinimo;
                 }
 
                 if (property.PropertyType == typeof(int))
@@ -190,8 +190,8 @@ namespace BaseDeProjetos.Controllers
                     int valorMaximo = participacoes.Max(x => (int)property.GetValue(x));
                     int valorMinimo = participacoes.Min(x => (int)property.GetValue(x));
 
-                    valoresMaximos[$"max{property.Name}"] = (decimal)valorMaximo;
-                    valoresMinimos[$"min{property.Name}"] = (decimal)valorMinimo;
+                    valoresMaximos[$"{property.Name}"] = (decimal)valorMaximo;
+                    valoresMinimos[$"{property.Name}"] = (decimal)valorMinimo;
                 }
             }
 
@@ -288,24 +288,24 @@ namespace BaseDeProjetos.Controllers
 
             decimal valorTotalProspeccoes = 0;
             decimal valorTotalProspeccoesComProposta = 0;
-            decimal valorMedioProspeccoes;
+            decimal valorMedioProspeccoes = 0;
             decimal valorMedioProspeccoesComProposta = 0;
+            decimal valorMedioProspeccoesConvertidas = 0;
+            decimal valorTotalProspeccoesConvertidas = 0;
             decimal taxaConversaoProposta;
             decimal taxaConversaoProjeto;
             int quantidadeProspeccoes;
             int quantidadeProspeccoesMembro;
             int quantidadeProspeccoesComProposta;
-            int quantidadeProspeccoesProjetizadas;
+            int quantidadeProspeccoesConvertidas;
 
-            valorTotalProspeccoes = ExtrairValorProspeccoes(prospeccoesUsuario, valorTotalProspeccoes);
-            valorTotalProspeccoesComProposta = ExtrairValorProspeccoes(prospeccoesUsuarioComProposta, valorTotalProspeccoesComProposta);
-
-            participacao.ValorTotalProspeccoes = valorTotalProspeccoes;
-            participacao.ValorTotalProspeccoesComProposta = valorTotalProspeccoesComProposta;
+            participacao.ValorTotalProspeccoes = valorTotalProspeccoes = ExtrairValorProspeccoes(prospeccoesUsuario);
+            participacao.ValorTotalProspeccoesComProposta = valorTotalProspeccoesComProposta = ExtrairValorProspeccoes(prospeccoesUsuarioComProposta);
+            participacao.ValorTotalProspeccoesConvertidas = valorTotalProspeccoesConvertidas = ExtrairValorProspeccoes(prospeccoesUsuarioConvertidas);
 
             participacao.QuantidadeProspeccoes = quantidadeProspeccoes = prospeccoesUsuario.Count();
             participacao.QuantidadeProspeccoesComProposta = quantidadeProspeccoesComProposta = prospeccoesUsuarioComProposta.Count();
-            participacao.QuantidadeProspeccoesProjeto = quantidadeProspeccoesProjetizadas = prospeccoesUsuarioConvertidas.Count();
+            participacao.QuantidadeProspeccoesProjeto = quantidadeProspeccoesConvertidas = prospeccoesUsuarioConvertidas.Count();
             participacao.QuantidadeProspeccoesMembro = quantidadeProspeccoesMembro = prospeccoesUsuarioMembro.Count();
 
             participacao.Lider = usuario;
@@ -328,14 +328,24 @@ namespace BaseDeProjetos.Controllers
                     participacao.ValorMedioProspeccoesComProposta = valorMedioProspeccoesComProposta = valorTotalProspeccoesComProposta / quantidadeProspeccoesComProposta;
                 }
 
-                if (valorMedioProspeccoes != 0)
+                if (quantidadeProspeccoesConvertidas > 0)
                 {
-                    participacao.Propositividade = valorMedioProspeccoesComProposta / valorMedioProspeccoes;
+                    participacao.ValorMedioProspeccoesConvertidas = valorMedioProspeccoesConvertidas = valorTotalProspeccoesConvertidas / quantidadeProspeccoesConvertidas;
+                }
+
+                if (valorMedioProspeccoesConvertidas != 0)
+                {
+                    var calculoAbsoluto = ((valorMedioProspeccoesConvertidas - valorMedioProspeccoesComProposta) / valorMedioProspeccoesComProposta);
+                    // var calculoAbsoluto = ((valorMedioProspeccoesComProposta - valorMedioProspeccoesConvertidas) / valorMedioProspeccoesConvertidas);
+                    if (calculoAbsoluto != 0)
+                    {
+                        participacao.Propositividade = 1 / calculoAbsoluto;
+                    }
                 }
 
                 if (quantidadeProspeccoesComProposta != 0)
                 {
-                    participacao.TaxaConversaoProjeto = taxaConversaoProjeto = quantidadeProspeccoesProjetizadas / (decimal)quantidadeProspeccoesComProposta;
+                    participacao.TaxaConversaoProjeto = taxaConversaoProjeto = quantidadeProspeccoesConvertidas / (decimal)quantidadeProspeccoesComProposta;
                 }
                 else
                 {
@@ -355,8 +365,9 @@ namespace BaseDeProjetos.Controllers
         /// <param name="prospeccoes"></param>
         /// <param name="valorTotalProspeccoes"></param>
         /// <returns></returns>
-        private static decimal ExtrairValorProspeccoes(List<Prospeccao> prospeccoes, decimal valorTotalProspeccoes)
+        private static decimal ExtrairValorProspeccoes(List<Prospeccao> prospeccoes)
         {
+            decimal valorTotalProspeccoes = 0;
             foreach (var prospeccao in prospeccoes)
             {
                 if (prospeccao.ValorProposta != 0)

@@ -187,6 +187,8 @@
                                         <th class="cell">Valor Médio (Em Proposta)</th>
                                         <th class="cell">Propostas Enviadas</th>
                                         <th class="cell">Propostas Convertidas</th>
+                                        <th class="cell">Valor Total (Convertida)</th>
+                                        <th class="cell">Valor Médio (Convertida)</th>
                                         <th class="cell">Proposta/Prospecção</th>
                                         <th class="cell">Projeto/Proposta</th>
                                         <th class="cell">Assertividade Precificação</th>
@@ -255,7 +257,7 @@
                                                     var rankValorTotalProspeccoes = participacaoTotal.RankPorIndicador["RankValorTotalProspeccoes"];
                                                     var valorTotalProspeccoes = participacaoTotal.ValorTotalProspeccoes;
                                                     <div data-text="(@rankValorTotalProspeccoes.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(valorTotalProspeccoes, valoresMinimos["minValorTotalProspeccoes"], valoresMaximos["maxValorTotalProspeccoes"])))
+                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(valorTotalProspeccoes, valoresMinimos["ValorTotalProspeccoes"], valoresMaximos["ValorTotalProspeccoes"])))
                                                         R$ @valorTotalProspeccoes.ToString("N", cultura)
                                                     </div>
                                                 }
@@ -265,7 +267,7 @@
                                                     var rankQuantidadeProspeccoes = participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoes"];
                                                     var quantidadeProspeccoes = participacaoTotal.QuantidadeProspeccoes;
                                                     <div data-text="(@rankQuantidadeProspeccoes.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(quantidadeProspeccoes, valoresMinimos["minQuantidadeProspeccoes"], valoresMaximos["maxQuantidadeProspeccoes"])))
+                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(quantidadeProspeccoes, valoresMinimos["QuantidadeProspeccoes"], valoresMaximos["QuantidadeProspeccoes"])))
                                                         @quantidadeProspeccoes
                                                     </div>
                                                 }
@@ -275,7 +277,7 @@
                                                     var rankValorMedioProspeccoes = participacaoTotal.RankPorIndicador["RankValorMedioProspeccoes"];
                                                     var valorMedioProspeccoes = participacaoTotal.ValorMedioProspeccoes;
                                                     <div data-text="(@rankValorMedioProspeccoes.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(valorMedioProspeccoes, valoresMinimos["minValorMedioProspeccoes"], valoresMaximos["maxValorMedioProspeccoes"])))
+                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(valorMedioProspeccoes, valoresMinimos["ValorMedioProspeccoes"], valoresMaximos["ValorMedioProspeccoes"])))
                                                         R$ @valorMedioProspeccoes.ToString("N", cultura)
                                                     </div>
                                                 }
@@ -285,7 +287,7 @@
                                                     var rankQuantidadeProspeccoesMembro = participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoesMembro"];
                                                     var quantidadeProspeccoesMembro = participacaoTotal.QuantidadeProspeccoesMembro;
                                                     <div data-text="(@rankQuantidadeProspeccoesMembro.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(quantidadeProspeccoesMembro, valoresMinimos["minQuantidadeProspeccoesMembro"], valoresMaximos["maxQuantidadeProspeccoesMembro"])))
+                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(quantidadeProspeccoesMembro, valoresMinimos["QuantidadeProspeccoesMembro"], valoresMaximos["QuantidadeProspeccoesMembro"])))
                                                         @quantidadeProspeccoesMembro
                                                     </div>
                                                 }
@@ -296,7 +298,7 @@
                                                     var valorTotalProspeccoesComProposta = participacaoTotal.ValorTotalProspeccoesComProposta;
                                                 }
                                                 <div data-text="(@rankValorTotalProspeccoesComProposta.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                    @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(valorTotalProspeccoesComProposta, valoresMinimos["minValorTotalProspeccoesComProposta"], valoresMaximos["maxValorTotalProspeccoesComProposta"])))
+                                                    @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(valorTotalProspeccoesComProposta, valoresMinimos["ValorTotalProspeccoesComProposta"], valoresMaximos["ValorTotalProspeccoesComProposta"])))
                                                     R$ @valorTotalProspeccoesComProposta.ToString("N", cultura)
                                                 </div>
                                             </td>
@@ -305,7 +307,7 @@
                                                     var rankValorMedioProposta = participacaoTotal.RankPorIndicador["RankValorMedioProspeccoesComProposta"];
                                                     var valorMedioProspeccoesComProposta = participacaoTotal.ValorMedioProspeccoesComProposta;
                                                     <div data-text="(@rankValorMedioProposta.ToString("N", cultura))" class="d-flex align-items-center flex-row gap-2 tooltip-indicadores">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(valorMedioProspeccoesComProposta, valoresMinimos["minValorMedioProspeccoesComProposta"], valoresMaximos["maxValorMedioProspeccoesComProposta"])))
+                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(valorMedioProspeccoesComProposta, valoresMinimos["ValorMedioProspeccoesComProposta"], valoresMaximos["ValorMedioProspeccoesComProposta"])))
                                                         R$ @valorMedioProspeccoesComProposta.ToString("N", cultura)
                                                     </div>
                                                 }
@@ -315,7 +317,7 @@
                                                     var rankProspeccoesComProposta = participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoesComProposta"];
                                                     var prospeccoesComProposta = participacaoTotal.QuantidadeProspeccoesComProposta;
                                                     <div data-text="(@rankProspeccoesComProposta.ToString("N", cultura))" class="d-flex align-items-center flex-row gap-2 tooltip-indicadores">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(prospeccoesComProposta, valoresMinimos["minQuantidadeProspeccoesComProposta"], valoresMaximos["maxQuantidadeProspeccoesComProposta"])))
+                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(prospeccoesComProposta, valoresMinimos["QuantidadeProspeccoesComProposta"], valoresMaximos["QuantidadeProspeccoesComProposta"])))
                                                         @prospeccoesComProposta
                                                     </div>
                                                 }
@@ -325,8 +327,26 @@
                                                     var rankProspeccoesProjeto = participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoesProjeto"];
                                                     var quantidadeProspeccoesProjeto = participacaoTotal.QuantidadeProspeccoesProjeto;
                                                     <div data-text="(@rankProspeccoesProjeto.ToString("N", cultura))" class="d-flex align-items-center flex-row gap-2 tooltip-indicadores">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(quantidadeProspeccoesProjeto, valoresMinimos["minQuantidadeProspeccoesProjeto"], valoresMaximos["maxQuantidadeProspeccoesProjeto"])))
+                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(quantidadeProspeccoesProjeto, valoresMinimos["QuantidadeProspeccoesProjeto"], valoresMaximos["QuantidadeProspeccoesProjeto"])))
                                                         @quantidadeProspeccoesProjeto
+                                                    </div>
+                                                }
+                                            </td>
+                                            <td class="cell">
+                                                @{
+                                                    var valorTotalProspeccoesConvertidas = participacaoTotal.ValorTotalProspeccoesConvertidas;
+                                                    <div class="d-flex align-items-center flex-row gap-2 tooltip-indicadores">
+                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(valorTotalProspeccoesConvertidas, valoresMinimos["ValorTotalProspeccoesConvertidas"], valoresMaximos["ValorTotalProspeccoesConvertidas"])))
+                                                        R$ @valorTotalProspeccoesConvertidas.ToString("N", cultura)
+                                                    </div>
+                                                }
+                                            </td>
+                                            <td class="cell">
+                                                @{
+                                                    var valorMedioProspeccoesConvertidas = participacaoTotal.ValorMedioProspeccoesConvertidas;
+                                                    <div class="d-flex align-items-center flex-row gap-2 tooltip-indicadores">
+                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(valorMedioProspeccoesConvertidas, valoresMinimos["ValorMedioProspeccoesConvertidas"], valoresMaximos["ValorMedioProspeccoesConvertidas"])))
+                                                        R$ @valorMedioProspeccoesConvertidas.ToString("N", cultura)
                                                     </div>
                                                 }
                                             </td>
@@ -336,7 +356,7 @@
                                                         var taxaConversaoProposta = participacaoTotal.TaxaConversaoProposta;
                                                         
                                                     }
-                                                    @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(taxaConversaoProposta, valoresMinimos["minTaxaConversaoProposta"], valoresMaximos["maxTaxaConversaoProposta"])))
+                                                    @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(taxaConversaoProposta, valoresMinimos["TaxaConversaoProposta"], valoresMaximos["TaxaConversaoProposta"])))
                                                     @((taxaConversaoProposta * 100).ToString("N", cultura))%
                                                 </div>
                                             </td>
@@ -345,7 +365,7 @@
                                                     @{
                                                         var taxaConversaoProjeto = participacaoTotal.TaxaConversaoProjeto;
                                                     }
-                                                    @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(taxaConversaoProjeto, valoresMinimos["minTaxaConversaoProjeto"], valoresMaximos["maxTaxaConversaoProjeto"])))
+                                                    @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(taxaConversaoProjeto, valoresMinimos["TaxaConversaoProjeto"], valoresMaximos["TaxaConversaoProjeto"])))
                                                     @((taxaConversaoProjeto * 100).ToString("N", cultura))%
                                                 </div>
                                             </td>
@@ -355,15 +375,15 @@
                                                     var taxaPropositividade = participacaoTotal.Propositividade;
                                                 }
                                                 <div data-text="(@rankPropositividade.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2">
-                                                    @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(taxaPropositividade, valoresMinimos["minPropositividade"], valoresMaximos["maxPropositividade"])))
-                                                    @((taxaPropositividade).ToString("N", cultura))
+                                                    @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(taxaPropositividade, valoresMinimos["Propositividade"], valoresMaximos["Propositividade"])))
+                                                    @((taxaPropositividade).ToString("0.###", cultura))
                                                 </div>
                                             </td>
                                             <td class="cell">
                                                 @{
                                                     decimal fatorDeContribuicaoFinanceira = participacaoTotal.FatorDeContribuicaoFinanceira;
-                                                    decimal fcfMaximo = valoresMaximos["maxFatorDeContribuicaoFinanceira"];
-                                                    decimal fcfMinimo = valoresMinimos["minFatorDeContribuicaoFinanceira"];
+                                                    decimal fcfMaximo = valoresMaximos["FatorDeContribuicaoFinanceira"];
+                                                    decimal fcfMinimo = valoresMinimos["FatorDeContribuicaoFinanceira"];
                                                     <div class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
                                                         @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(fatorDeContribuicaoFinanceira, fcfMinimo, fcfMaximo)))
                                                         @((fatorDeContribuicaoFinanceira - 1).ToString("N", cultura))
@@ -376,7 +396,7 @@
                                                         decimal mediaFatores = participacaoTotal.MediaFatores;
                                                     }
                                                     <div class="d-flex flex-row align-items-center gap-2">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(mediaFatores, valoresMinimos["minMediaFatores"], valoresMaximos["maxMediaFatores"])))
+                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(mediaFatores, valoresMinimos["MediaFatores"], valoresMaximos["MediaFatores"])))
                                                         @((mediaFatores).ToString("N", cultura))
                                                     </div>
                                                 </div>
