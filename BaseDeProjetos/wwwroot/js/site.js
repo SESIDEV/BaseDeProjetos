@@ -233,17 +233,27 @@ function gerarOpcoesSelect(rota, modelId = "", fillValues = false) { // os últi
     document.querySelector(`#${caixaId}`).style.display = "none";
     document.querySelector(`#${loadingIcon}`).style.display = "block";
     document.querySelector(`#${idSelect}`).innerHTML = '';
+    
+    // ----
+    // O código abaixa seta o parent para o dropdown, ou seja, o parent do Select2 que no caso de modais precisa estar explicitamente definido
+
     if (modelId == "") {
-        $(`#${idSelect}`).select2()
+        $(`#${idSelect}`).select2({ dropdownParent: $(`#criarProspModalToggle`) })
     } else {
         $(`#${idSelect}`).select2({ dropdownParent: $(`#editarProspModal${modelId}`) })
     }
+
+    // Até aqui
+    // ----
+
     switch (rota) { //====================================================== \/\/\/ SWITCH PRINCIPAL \/\/\/ ===============================================================
         case "Pessoas":
             defRota = '/FunilDeVendas/PuxarDadosUsuarios';
             value = "Email";
             inner = "UserName";
-            if (document.querySelector(`#selectLiderProsp${modelId}`) != null) { lider = document.querySelector(`#selectLiderProsp${modelId}`).selectedOptions[0].text; };
+            if (document.querySelector(`#selectLiderProsp${modelId}`) != null) {
+                lider = document.querySelector(`#selectLiderProsp${modelId}`).selectedOptions[0].text;
+            };
             break;
         case "Empresas":
             defRota = '/Empresas/PuxarEmpresas';
