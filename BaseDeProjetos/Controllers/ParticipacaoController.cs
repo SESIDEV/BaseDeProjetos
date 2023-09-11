@@ -335,7 +335,7 @@ namespace BaseDeProjetos.Controllers
 
                 if (valorMedioProspeccoesConvertidas != 0)
                 {
-                    var calculoAbsoluto = ((valorMedioProspeccoesConvertidas - valorMedioProspeccoesComProposta) / valorMedioProspeccoesComProposta);
+                    var calculoAbsoluto = Math.Abs((valorMedioProspeccoesConvertidas - valorMedioProspeccoesComProposta) / valorMedioProspeccoesComProposta);
                     // var calculoAbsoluto = ((valorMedioProspeccoesComProposta - valorMedioProspeccoesConvertidas) / valorMedioProspeccoesConvertidas);
                     if (calculoAbsoluto != 0)
                     {
@@ -815,8 +815,16 @@ namespace BaseDeProjetos.Controllers
             {
                 calculoMediaFatores += participacao.Propositividade / participacoes.Max(p => p.Propositividade);
             }
+            if (participacoes.Max(p => p.ValorMedioProspeccoesConvertidas != 0))
+            {
+                calculoMediaFatores += participacao.ValorMedioProspeccoesConvertidas / participacoes.Max(p => p.ValorMedioProspeccoesConvertidas);
+            }
+            if (participacoes.Max(p => p.ValorTotalProspeccoesConvertidas != 0))
+            {
+                calculoMediaFatores += participacao.ValorTotalProspeccoesConvertidas / participacoes.Max(p => p.ValorTotalProspeccoesConvertidas);
+            }
 
-            participacao.MediaFatores = calculoMediaFatores /= 8;
+            participacao.MediaFatores = calculoMediaFatores /= 10;
         }
     }
 }
