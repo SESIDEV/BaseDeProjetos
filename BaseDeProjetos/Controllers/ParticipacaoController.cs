@@ -629,6 +629,8 @@ namespace BaseDeProjetos.Controllers
             decimal rankMedioValorTotalProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador["RankValorTotalProspeccoesComProposta"]);
             decimal rankMedioValorMedioProspeccoes = participacoes.Average(p => p.RankPorIndicador["RankValorMedioProspeccoes"]);
             decimal rankMedioValorMedioProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador["RankValorMedioProspeccoesComProposta"]);
+            decimal rankMedioValorTotalProspeccoesConvertidas = participacoes.Average(p => p.RankPorIndicador["RankValorTotalProspeccoesConvertidas"]);
+            decimal rankMedioValorMedioProspeccoesConvertidas = participacoes.Average(p => p.RankPorIndicador["RankValorMedioProspeccoesConvertidas"]);
             decimal rankMedioQuantidadeProspeccoes = participacoes.Average(p => p.RankPorIndicador["RankQuantidadeProspeccoes"]);
             decimal rankMedioQuantidadeProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador["RankQuantidadeProspeccoesComProposta"]);
             decimal rankMedioQuantidadeProspeccoesProjeto = participacoes.Average(p => p.RankPorIndicador["RankQuantidadeProspeccoesProjeto"]);
@@ -641,6 +643,8 @@ namespace BaseDeProjetos.Controllers
             ViewData[nameof(rankMedioValorTotalProspeccoesComProposta)] = rankMedioValorTotalProspeccoesComProposta;
             ViewData[nameof(rankMedioValorMedioProspeccoes)] = rankMedioValorMedioProspeccoes;
             ViewData[nameof(rankMedioValorMedioProspeccoesComProposta)] = rankMedioValorMedioProspeccoesComProposta;
+            ViewData[nameof(rankMedioValorTotalProspeccoesConvertidas)] = rankMedioValorTotalProspeccoesConvertidas;
+            ViewData[nameof(rankMedioValorTotalProspeccoesConvertidas)] = rankMedioValorMedioProspeccoesConvertidas;
             ViewData[nameof(rankMedioQuantidadeProspeccoes)] = rankMedioQuantidadeProspeccoes;
             ViewData[nameof(rankMedioQuantidadeProspeccoesComProposta)] = rankMedioQuantidadeProspeccoesComProposta;
             ViewData[nameof(rankMedioQuantidadeProspeccoesProjeto)] = rankMedioQuantidadeProspeccoesProjeto;
@@ -671,17 +675,21 @@ namespace BaseDeProjetos.Controllers
         /// <param name="participacoes">Lista de participações (normalmente de um usuário específico mas pode ser genérica)</param>
         private static void RankearParticipacoes(List<ParticipacaoTotalViewModel> participacoes, bool rankPorMaximo)
         {
-            decimal rankValorTotalProspeccoesComProposta = 0;
-            decimal rankValorMedioProspeccoesComProposta = 0;
-            decimal rankQuantidadeProspeccoesProjeto = 0;
-            decimal rankQuantidadeProspeccoes = 0;
-            decimal rankQuantidadeProspeccoesMembro = 0;
-            decimal rankPropositividade = 0;
+            decimal RankValorTotalProspeccoesComProposta = 0;
+            decimal RankValorTotalProspeccoesConvertidas = 0;
+            decimal RankValorMedioProspeccoesComProposta = 0;
+            decimal RankValorMedioProspeccoesConvertidas = 0;
+            decimal RankQuantidadeProspeccoesProjeto = 0;
+            decimal RankQuantidadeProspeccoes = 0;
+            decimal RankQuantidadeProspeccoesMembro = 0;
+            decimal RankPropositividade = 0;
 
             decimal medValorTotalProsp = participacoes.Average(p => p.ValorTotalProspeccoes);
             decimal medValorMedioProsp = participacoes.Average(p => p.ValorMedioProspeccoes);
             decimal medValorMedioProspComProposta = participacoes.Average(p => p.ValorMedioProspeccoesComProposta);
+            decimal medValorMedioProspConvertidas = participacoes.Average(p => p.ValorMedioProspeccoesConvertidas);
             decimal medTotalProspComProposta = participacoes.Average(p => p.ValorTotalProspeccoesComProposta);
+            decimal medTotalProspConvertidas = participacoes.Average(p => p.ValorTotalProspeccoesConvertidas);
             decimal medQtdProspeccoes = (decimal)participacoes.Average(p => p.QuantidadeProspeccoes);
             decimal medQtdProspeccoesMembro = (decimal)participacoes.Average(p => p.QuantidadeProspeccoesMembro);
             decimal medQtdProspeccoesComProposta = (decimal)participacoes.Average(p => p.QuantidadeProspeccoesComProposta);
@@ -693,59 +701,68 @@ namespace BaseDeProjetos.Controllers
             {
                 participacao.RankPorIndicador = new Dictionary<string, decimal>();
 
-                decimal rankQuantidadeProspeccoesComProposta = 0;
-                decimal rankValorTotalProspeccoes = 0;
-                decimal rankValorMedioProspeccoes = 0;
+                decimal RankQuantidadeProspeccoesComProposta = 0;
+                decimal RankValorTotalProspeccoes = 0;
+                decimal RankValorMedioProspeccoes = 0;
 
                 CalcularMediaFatores(participacoes, participacao);
 
                 if (medValorTotalProsp != 0)
                 {
-                    rankValorTotalProspeccoes = rankPorMaximo ? participacao.ValorTotalProspeccoes / participacoes.Max(p => p.ValorTotalProspeccoes) : participacao.ValorTotalProspeccoes / medValorTotalProsp;
+                    RankValorTotalProspeccoes = rankPorMaximo ? participacao.ValorTotalProspeccoes / participacoes.Max(p => p.ValorTotalProspeccoes) : participacao.ValorTotalProspeccoes / medValorTotalProsp;
                 }
                 if (medValorMedioProsp != 0)
                 {
-                    rankValorMedioProspeccoes = rankPorMaximo ? participacao.ValorMedioProspeccoes / participacoes.Max(p => p.ValorMedioProspeccoes) : participacao.ValorMedioProspeccoes / medValorMedioProsp;
+                    RankValorMedioProspeccoes = rankPorMaximo ? participacao.ValorMedioProspeccoes / participacoes.Max(p => p.ValorMedioProspeccoes) : participacao.ValorMedioProspeccoes / medValorMedioProsp;
                 }
                 if (medTotalProspComProposta != 0)
                 {
-                    rankValorTotalProspeccoesComProposta = rankPorMaximo ? participacao.ValorTotalProspeccoesComProposta / participacoes.Max(p => p.ValorTotalProspeccoesComProposta) : participacao.ValorTotalProspeccoesComProposta / medTotalProspComProposta;
+                    RankValorTotalProspeccoesComProposta = rankPorMaximo ? participacao.ValorTotalProspeccoesComProposta / participacoes.Max(p => p.ValorTotalProspeccoesComProposta) : participacao.ValorTotalProspeccoesComProposta / medTotalProspComProposta;
+                }
+                if (medTotalProspConvertidas != 0)
+                {
+                    RankValorTotalProspeccoesConvertidas = rankPorMaximo ? participacao.ValorTotalProspeccoesConvertidas / participacoes.Max(p => p.ValorTotalProspeccoesConvertidas) : participacao.ValorTotalProspeccoesConvertidas / medTotalProspConvertidas;
                 }
                 if (medValorMedioProspComProposta != 0)
                 {
-                    rankValorMedioProspeccoesComProposta = rankPorMaximo ? participacao.ValorMedioProspeccoesComProposta / participacoes.Max(p => p.ValorMedioProspeccoesComProposta) : participacao.ValorMedioProspeccoesComProposta / medValorMedioProspComProposta;
+                    RankValorMedioProspeccoesComProposta = rankPorMaximo ? participacao.ValorMedioProspeccoesComProposta / participacoes.Max(p => p.ValorMedioProspeccoesComProposta) : participacao.ValorMedioProspeccoesComProposta / medValorMedioProspComProposta;
+                }
+                if (medValorMedioProspConvertidas != 0)
+                {
+                    RankValorMedioProspeccoesConvertidas = rankPorMaximo ? participacao.ValorMedioProspeccoesConvertidas / participacoes.Max(p => p.ValorMedioProspeccoesConvertidas) : participacao.ValorMedioProspeccoesConvertidas / medValorMedioProspConvertidas;
                 }
                 if (medQtdProspeccoes != 0)
                 {
-                    rankQuantidadeProspeccoes = rankPorMaximo ? participacao.QuantidadeProspeccoes / (decimal)participacoes.Max(p => p.QuantidadeProspeccoes) : participacao.QuantidadeProspeccoes / medQtdProspeccoes;
+                    RankQuantidadeProspeccoes = rankPorMaximo ? participacao.QuantidadeProspeccoes / (decimal)participacoes.Max(p => p.QuantidadeProspeccoes) : participacao.QuantidadeProspeccoes / medQtdProspeccoes;
                 }
                 if (medQtdProspProjetizadas != 0)
                 {
-                    rankQuantidadeProspeccoesProjeto = rankPorMaximo ? participacao.QuantidadeProspeccoesProjeto / (decimal)participacoes.Max(p => p.QuantidadeProspeccoesProjeto) : participacao.QuantidadeProspeccoesProjeto / medQtdProspProjetizadas;
+                    RankQuantidadeProspeccoesProjeto = rankPorMaximo ? participacao.QuantidadeProspeccoesProjeto / (decimal)participacoes.Max(p => p.QuantidadeProspeccoesProjeto) : participacao.QuantidadeProspeccoesProjeto / medQtdProspProjetizadas;
                 }
                 if (medQtdProspeccoesComProposta != 0)
                 {
-                    rankQuantidadeProspeccoesComProposta = rankPorMaximo ? participacao.QuantidadeProspeccoesComProposta / (decimal)participacoes.Max(p => p.QuantidadeProspeccoesComProposta) : participacao.QuantidadeProspeccoesComProposta / medQtdProspeccoesComProposta;
+                    RankQuantidadeProspeccoesComProposta = rankPorMaximo ? participacao.QuantidadeProspeccoesComProposta / (decimal)participacoes.Max(p => p.QuantidadeProspeccoesComProposta) : participacao.QuantidadeProspeccoesComProposta / medQtdProspeccoesComProposta;
                 }
                 if (medQtdProspeccoesMembro != 0)
                 {
-                    rankQuantidadeProspeccoesMembro = rankPorMaximo ? participacao.QuantidadeProspeccoesMembro / (decimal)participacoes.Max(p => p.QuantidadeProspeccoesMembro) : participacao.QuantidadeProspeccoesMembro / medQtdProspeccoesMembro;
+                    RankQuantidadeProspeccoesMembro = rankPorMaximo ? participacao.QuantidadeProspeccoesMembro / (decimal)participacoes.Max(p => p.QuantidadeProspeccoesMembro) : participacao.QuantidadeProspeccoesMembro / medQtdProspeccoesMembro;
                 }
                 if (participacoes.Average(p => p.Propositividade) != 0)
                 {
-                    rankPropositividade = rankPorMaximo ? participacao.Propositividade / participacoes.Max(p => p.Propositividade) : participacao.Propositividade / participacoes.Average(p => p.Propositividade);
+                    RankPropositividade = rankPorMaximo ? participacao.Propositividade / participacoes.Max(p => p.Propositividade) : participacao.Propositividade / participacoes.Average(p => p.Propositividade);
                 }
 
-                participacao.RankPorIndicador["RankValorTotalProspeccoes"] = rankValorTotalProspeccoes;
-                participacao.RankPorIndicador["RankValorTotalProspeccoesComProposta"] = rankValorTotalProspeccoesComProposta;
-                participacao.RankPorIndicador["RankValorMedioProspeccoes"] = rankValorMedioProspeccoes;
-                participacao.RankPorIndicador["RankValorMedioProspeccoesComProposta"] = rankValorMedioProspeccoesComProposta;
-                participacao.RankPorIndicador["RankQuantidadeProspeccoes"] = rankQuantidadeProspeccoes;
-                participacao.RankPorIndicador["RankQuantidadeProspeccoesComProposta"] = rankQuantidadeProspeccoesComProposta;
-                participacao.RankPorIndicador["RankQuantidadeProspeccoesProjeto"] = rankQuantidadeProspeccoesProjeto;
-                participacao.RankPorIndicador["RankQuantidadeProspeccoesMembro"] = rankQuantidadeProspeccoesMembro;
-                participacao.RankPorIndicador["RankPropositividade"] = rankPropositividade;
-
+                participacao.RankPorIndicador[nameof(RankValorTotalProspeccoes)] = RankValorTotalProspeccoes;
+                participacao.RankPorIndicador[nameof(RankValorTotalProspeccoesComProposta)] = RankValorTotalProspeccoesComProposta;
+                participacao.RankPorIndicador[nameof(RankValorTotalProspeccoesConvertidas)] = RankValorTotalProspeccoesConvertidas;
+                participacao.RankPorIndicador[nameof(RankValorMedioProspeccoes)] = RankValorMedioProspeccoes;
+                participacao.RankPorIndicador[nameof(RankValorMedioProspeccoesComProposta)] = RankValorMedioProspeccoesComProposta;
+                participacao.RankPorIndicador[nameof(RankValorMedioProspeccoesConvertidas)] = RankValorMedioProspeccoesConvertidas;
+                participacao.RankPorIndicador[nameof(RankQuantidadeProspeccoes)] = RankQuantidadeProspeccoes;
+                participacao.RankPorIndicador[nameof(RankQuantidadeProspeccoesComProposta)] = RankQuantidadeProspeccoesComProposta;
+                participacao.RankPorIndicador[nameof(RankQuantidadeProspeccoesProjeto)] = RankQuantidadeProspeccoesProjeto;
+                participacao.RankPorIndicador[nameof(RankQuantidadeProspeccoesMembro)] = RankQuantidadeProspeccoesMembro;
+                participacao.RankPorIndicador[nameof(RankPropositividade)] = RankPropositividade;
             }
         }
 
