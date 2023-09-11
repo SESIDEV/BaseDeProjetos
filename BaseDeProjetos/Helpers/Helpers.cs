@@ -1,12 +1,63 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using BaseDeProjetos.Data;
+using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Html;
 
 namespace BaseDeProjetos.Helpers
 {
     public static class Helpers
     {
+
+        public static decimal CalcularMediaFatoresProjeto(Projeto projeto)
+        {
+            decimal? custoHH = projeto.ColaboradoresDoProjeto.Sum(usuario => usuario.Cargo.Salario);
+            decimal? custoHM = projeto.MaquinasUsadasNoProjeto.Sum(maquina => maquina.CustoHoraMaquina);
+            decimal mediaFatores = (decimal)projeto.ValorTotalProjeto + (decimal)custoHH + (decimal)custoHM / 3;
+            return mediaFatores;
+        }
+
+        public static decimal EncontrarMediaMaximaDeFatoresEmProjeto(List<Projeto> projetos)
+        {
+            decimal maiorMediaFatores = decimal.MinValue;
+
+            foreach (var projeto in projetos)
+            {
+                decimal custoTotalProjeto = CalcularMediaFatoresProjeto(projeto);
+
+                if (custoTotalProjeto > maiorMediaFatores)
+                {
+                    maiorMediaFatores = custoTotalProjeto;
+                }
+            }
+
+            return maiorMediaFatores;
+        }
+
+        public static decimal EncontrarMediaMinimaDeFatoresEmProjeto(List<Projeto> projetos)
+        {
+            decimal menorMediaFatores = decimal.MaxValue;
+
+            foreach (var projeto in projetos)
+            {
+                decimal custoTotalProjeto = CalcularMediaFatoresProjeto(projeto);
+
+                if (custoTotalProjeto < menorMediaFatores)
+                {
+                    menorMediaFatores = custoTotalProjeto;
+
+                    if(menorMediaFatores < 0)
+                    {
+                        menorMediaFatores = 0;
+                    }
+                }
+            }
+
+            return menorMediaFatores;
+        }
+
 
         /// <summary>
         /// Formata um valor decimal para melhor visualização em Dashboard

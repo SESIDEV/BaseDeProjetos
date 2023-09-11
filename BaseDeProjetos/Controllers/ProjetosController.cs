@@ -134,6 +134,12 @@ namespace BaseDeProjetos.Controllers
             decimal CustoHMProjetoMax = listaProjetos.Select(projeto => projeto.MaquinasUsadasNoProjeto.Sum(maquina => maquina.PrecoBase)).Max();
             ViewBag.CustoHMProjetoMax = CustoHMProjetoMax;
 
+            decimal mediaMaxFatoresDeProjeto = Helpers.Helpers.EncontrarMediaMaximaDeFatoresEmProjeto(listaProjetos);
+            ViewBag.mediaMaxFatoresDeProjeto = mediaMaxFatoresDeProjeto;
+
+            decimal mediaMinFatoresDeProjeto = Helpers.Helpers.EncontrarMediaMinimaDeFatoresEmProjeto(listaProjetos);
+            ViewBag.mediaMinFatoresDeProjeto = mediaMinFatoresDeProjeto;
+
             return View("indicadores", listaProjetos);
         }
 
