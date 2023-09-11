@@ -192,7 +192,7 @@
                                         <th class="cell">Proposta/Prospecção</th>
                                         <th class="cell">Projeto/Proposta</th>
                                         <th class="cell">Assertividade Precificação</th>
-                                        <th data-text="Fator de Contribuição Financeira" class="cell tooltip-indicadores">FCF</th>
+                                        @* <th data-text="Fator de Contribuição Financeira" class="cell tooltip-indicadores">FCF</th> *@
                                         <th class="cell">Média dos Fatores</th>
                                         <th class="cell">Detalhes</th>
                                     </tr>
@@ -380,7 +380,7 @@
                                                     @((taxaPropositividade).ToString("0.###", cultura))
                                                 </div>
                                             </td>
-                                            <td class="cell">
+                                            @* <td class="cell">
                                                 @{
                                                     decimal fatorDeContribuicaoFinanceira = participacaoTotal.FatorDeContribuicaoFinanceira;
                                                     decimal fcfMaximo = valoresMaximos["FatorDeContribuicaoFinanceira"];
@@ -390,7 +390,7 @@
                                                         @((fatorDeContribuicaoFinanceira - 1).ToString("N", cultura))
                                                     </div>
                                                 }
-                                            </td>
+                                            </td> *@
                                             <td class="cell">
                                                 <div class="d-flex align-items-center flex-row gap-2">
                                                     @{
