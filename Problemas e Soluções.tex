@@ -10,7 +10,7 @@
 
 \maketitle
 
-\section{Introdução}
+\section{Introdução:}
 Este documento tem como objetivo explicar alguns dos problemas comuns enfrentados no SGI e como resolvê-los.
 
 \section{Problema 1: Múltiplos usuários "meuovo" na tabela de usuários}
@@ -95,6 +95,9 @@ DELETE FROM basedb.aspnetusers WHERE Id='f475a734-79b4-4f5c-a95d-187e3d4cb3e9';
 DELETE FROM basedb.aspnetusers WHERE Id='f539b696-c3cd-47ea-81c1-40b63e6f7435';
 \end{lstlisting}
 
+\subsection{Observação}
+Verifique que nenhum usuário importante tenha sido removido.
+
 \section{Problema 2: Unable to cast object of type 'System.DBNull' to type 'System.Boolean'}
 \subsection{Problema}
 Alguma coluna que deveria conter valores bool está com valroes nulos.
@@ -114,5 +117,11 @@ Alguma coluna está com o tipo de dado errado no SQL, nesse caso temos o dado no
 \subsection{Solução}
 Verifique a linha de código que retornou o problema, procure ver se as colunas no banco de dados estão com tipo compatível com os tipos do modelo que está retornando o erro.
 Verifique se há algum tipo enum que está definido como varchar\(255\) no banco de dados
+
+\section{Outras soluções:}
+\subsection{Solução Geral 1: Resetar o banco local}
+Restaurar o banco local de um backup recente pode solucionar os seus problemas de forma rápida e eficaz.
+\subsection{Solução Geral 2: Resetar as mudanças realizadas no Git}
+Restaurar o estado do git com um git stash ou algo do tipo pode resolver algum problema de código
 
 \end{document}
