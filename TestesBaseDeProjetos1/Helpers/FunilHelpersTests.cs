@@ -103,5 +103,14 @@ namespace BaseDeProjetos.Helpers.Tests
 
             Assert.AreEqual(resultadoEsperado, resultadoObtido);
         }
+
+        [Test]
+        public void Test_FiltrarProducoes_SearchTermoInvalido() {
+            var resultadoEsperado = new List<Producao>();
+
+            var resultadoObtido = FunilHelpers.FiltrarProduções("Esse termo não é valido de forma alguma", producoesMock);
+
+            Assert.AreEqual(resultadoEsperado, resultadoObtido);
+        }
     }
 }
