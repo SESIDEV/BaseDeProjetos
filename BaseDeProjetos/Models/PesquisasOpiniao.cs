@@ -13,7 +13,18 @@ namespace BaseDeProjetos.Models
         public int IdPesquisa { get; set; }
         public string ProjetoId { get; set; }
         public double ResultadoFinal { get; set; }
+        
+        // Favor tirar depois caso necessário
+        // O EntityFramework tá reclamando que List<int> n pode ser mapeado para nenhum tipo conhecido em SQL
+        // The property 'PesquisaProjeto.RespostasIndividuais' could not be mapped, 
+        // because it is of type 'List<int>' which is not a supported primitive type or a valid entity type. 
+        // Either explicitly map this property, or ignore it using the '[NotMapped]' attribute or by using 
+        // 'EntityTypeBuilder.Ignore' in 'OnModelCreating'.
 
+        [NotMapped] 
+        public List<int> RespostasIndividuais { get; set; }
+        
+        public string Comentarios { get; set; }
         public string RepresentacaoTextualQuestionario { get; set; }
 
         [NotMapped]
@@ -43,6 +54,18 @@ namespace BaseDeProjetos.Models
         {
             this.RepresentacaoTextualQuestionario = JsonSerializer.Serialize(this.PerguntasSatisfacao);
         }
+
+        public List<int> ObterHashCodesQuestoes()
+        {
+            List<int> hashes = new List<int>();
+            foreach(KeyValuePair<string, List<PerguntaSatisfacao>> kv in this.PerguntasSatisfacao.Where(p => p.GetType() == typeof(PerguntaLikert)))
+            {
+                kv.Value.ForEach((v) => hashes.Add(v.Pergunta.GetHashCode()));
+            }
+
+            return hashes;
+        }
+
     }
 
     public class PesquisaProjeto : PesquisaOpiniao
