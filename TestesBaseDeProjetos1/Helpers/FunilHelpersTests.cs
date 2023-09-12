@@ -8,6 +8,27 @@ namespace BaseDeProjetos.Helpers.Tests
     [TestFixture]
     public class FunilHelpersTests
     {
+        private List<Producao> producoesMock;
+
+        [SetUp]
+        public void Setup_Tests_FiltrarProducoes()
+        {
+            producoesMock = new List<Producao> {
+                new Producao() {
+                    Autores = "Eu, Moq, teste"
+                },
+                new Producao() {
+                    Casa = Instituto.ISIQV
+                },
+                new Producao() {
+                    Descricao = "Descrição, descritiva, teste"
+                },
+                new Producao() {
+                    Titulo = "Titulo, teste"
+                }
+            };
+        }
+
         [Test]
         public void Test_VerificarTemperatura_Quente()
         {
@@ -16,7 +37,7 @@ namespace BaseDeProjetos.Helpers.Tests
 
             var resultadoObtido = FunilHelpers.VerificarTemperatura(6).ToString();
 
-            Assert.AreEqual(resultadoObtido, resultadoEsperado);
+            Assert.AreEqual(resultadoEsperado, resultadoObtido);
         }
 
         [Test]
@@ -27,7 +48,7 @@ namespace BaseDeProjetos.Helpers.Tests
 
             var resultadoObtido = FunilHelpers.VerificarTemperatura(7).ToString();
 
-            Assert.AreEqual(resultadoObtido, resultadoEsperado);
+            Assert.AreEqual(resultadoEsperado, resultadoObtido);
         }
 
         [Test]
@@ -38,7 +59,7 @@ namespace BaseDeProjetos.Helpers.Tests
 
             var resultadoObtido = FunilHelpers.VerificarTemperatura(dias).ToString();
 
-            Assert.AreEqual(resultadoObtido, resultadoEsperado);
+            Assert.AreEqual(resultadoEsperado, resultadoObtido);
         }
 
         [Test]
@@ -49,7 +70,7 @@ namespace BaseDeProjetos.Helpers.Tests
 
             var resultadoObtido = FunilHelpers.VerificarTemperatura(dias).ToString();
 
-            Assert.AreEqual(resultadoObtido, resultadoEsperado);
+            Assert.AreEqual(resultadoEsperado, resultadoObtido);
         }
 
         [Test]
@@ -60,7 +81,27 @@ namespace BaseDeProjetos.Helpers.Tests
 
             var resultadoObtido = FunilHelpers.VerificarTemperatura(dias).ToString();
 
-            Assert.AreEqual(resultadoObtido, resultadoEsperado);
+            Assert.AreEqual(resultadoEsperado, resultadoObtido);
+        }
+
+        [Test]
+        public void Test_FiltrarProducoes_SearchStringVazia()
+        {
+            var resultadoEsperado = producoesMock;
+
+            var resultadoObtido = FunilHelpers.FiltrarProduções("", producoesMock);
+
+            Assert.AreEqual(resultadoEsperado, resultadoObtido);
+        }
+
+        [Test]
+        public void Test_FiltrarProducoes_SearchTermoValido()
+        {
+            var resultadoEsperado = new List<Producao> { producoesMock[0] };
+
+            var resultadoObtido = FunilHelpers.FiltrarProduções("Moq", producoesMock);
+
+            Assert.AreEqual(resultadoEsperado, resultadoObtido);
         }
     }
 }
