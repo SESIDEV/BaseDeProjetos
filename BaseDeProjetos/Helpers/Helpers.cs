@@ -39,7 +39,7 @@ namespace BaseDeProjetos.Helpers
         /// </summary>
         /// <param name="_context"></param>
         /// <returns></returns>
-        public static string PuxarDadosUsuarios(ApplicationDbContext _context){
+        public static string PuxarDadosUsuarios(ApplicationDbContext _context) {
             
             var usuarios = _context.Users.Where(u => u.Email != null).Select(u => new {u.Email, u.UserName, u.Foto, u.Competencia, u.EmailConfirmed}).ToList();
 
