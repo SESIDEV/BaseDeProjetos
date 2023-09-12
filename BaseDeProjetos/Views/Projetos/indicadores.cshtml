@@ -1,7 +1,7 @@
 ﻿@using BaseDeProjetos.Helpers;
 @model List<Projeto>;
 
-<partial name="Header" view-data="@ViewData" />
+
 <div class="container">
 
     <table class="table">
@@ -16,6 +16,7 @@
                 <th scope="col">Custo HM</th>
                 <th scope="col">Média dos Fatores</th>
                 <th scope="col">FCF</th>
+                <th scope="col">Ações</th>
             </tr>
         </thead>
         <tbody>
@@ -23,9 +24,7 @@
             {
                 <tr>
                     <td class="cell">@projeto.Id</td>
-
                     <td class="cell">@projeto.NomeProjeto</td>
-
                     @if(projeto.Usuario != null)
                     {
                         <td class="cell">@projeto.Usuario.UserName.ToString()</td>
@@ -34,11 +33,10 @@
                     {
                         <td class="cell">Líder não informado!</td>
                     }
-
                     <td class="cell">5</td>
-
-                    <td class="cell">@Helpers.FormatarValoresDashboards((decimal)projeto.ValorTotalProjeto) @Helpers.ObterIconeParticipacao(@Helpers.VerificarIntervalo((decimal)projeto.ValorTotalProjeto, (decimal)ViewBag.ValorProjetoMin, (decimal)ViewBag.ValorProjetoMax))</td>
-
+                    <!--Quando ativar essa linha comentada, remover a linha de cima!-->
+                    @*<td class="cell">5 @Helpers.ObterIconeParticipacao(@Helpers.VerificarIntervalo(150m, ViewBag.SatisfacaoMetadeProjetoMin, ViewBag.SatisfacaoMetadeProjetoMax))</td>*@
+                    <td class="cell">@projeto.ValorTotalProjeto @Helpers.ObterIconeParticipacao(@Helpers.VerificarIntervalo((decimal)projeto.ValorTotalProjeto, (decimal)ViewBag.ValorProjetoMin, (decimal)ViewBag.ValorProjetoMax))</td>
                     @if (projeto.ColaboradoresDoProjeto.Sum(cargo => cargo.Cargo.Salario) != 0 && (decimal)projeto.ValorTotalProjeto != 0)
                     {
                         <td class="cell">R$: @(projeto.ColaboradoresDoProjeto.Sum(cargo => cargo.Cargo.Salario) / (decimal)projeto.ValorTotalProjeto) @Helpers.ObterIconeParticipacao(@Helpers.VerificarIntervalo((decimal)projeto.ColaboradoresDoProjeto.Sum(cargo => cargo.Cargo.Salario), (decimal)ViewBag.CustoHHProjetoMin, (decimal)ViewBag.CustoHHProjetoMax))</td>
@@ -48,23 +46,24 @@
                         <td class="cell">R$: 0 @Helpers.ObterIconeParticipacao(@Helpers.VerificarIntervalo((decimal)projeto.ColaboradoresDoProjeto.Sum(cargo => cargo.Cargo.Salario), (decimal)ViewBag.CustoHHProjetoMin, (decimal)ViewBag.CustoHHProjetoMax))</td>
                     }
 
-                    
+                    @*
                     @if (projeto.MaquinasUsadasNoProjeto.Sum(valor => valor.CustoHoraMaquina) != 0 && (decimal)projeto.ValorTotalProjeto != 0)
                     {
-                        <td class="cell">R$: @(projeto.MaquinasUsadasNoProjeto.Sum(valor => valor.CustoHoraMaquina) / (decimal)projeto.ValorTotalProjeto) @Helpers.ObterIconeParticipacao(@Helpers.VerificarIntervalo((decimal)projeto.MaquinasUsadasNoProjeto.Sum(valor => valor.CustoHoraMaquina), (decimal)ViewBag.CustoHMProjetoMin, (decimal)ViewBag.CustoHMProjetoMax))</td>
+                        <td class="cell">R$: (projeto.MaquinasUsadasNoProjeto.Sum(valor => valor.CustoHoraMaquina) / (decimal)projeto.ValorTotalProjeto) @Helpers.ObterIconeParticipacao(@Helpers.VerificarIntervalo((decimal)projeto.MaquinasUsadasNoProjeto.Sum(valor => valor.CustoHoraMaquina), (decimal)ViewBag.CustoHMProjetoMin, (decimal)ViewBag.CustoHMProjetoMax))</td>
                     }
                     else
                     {
                         <td class="cell">R$: 0 @Helpers.ObterIconeParticipacao(@Helpers.VerificarIntervalo((decimal)projeto.MaquinasUsadasNoProjeto.Sum(valor => valor.CustoHoraMaquina), (decimal)ViewBag.CustoHMProjetoMin, (decimal)ViewBag.CustoHMProjetoMax))</td>
                     }
-
-                    <td class="cell">@Helpers.CalcularMediaFatoresProjeto(projeto) @Helpers.ObterIconeParticipacao(@Helpers.VerificarIntervalo((decimal)@Helpers.CalcularMediaFatoresProjeto(projeto), (decimal)ViewBag.mediaMinFatoresDeProjeto, (decimal)ViewBag.mediaMaxFatoresDeProjeto)) </td>
-
+                    *@
+                    <td class="cell">0.3</td>
                     <td class="cell">5</td>
+                    <td class="cell">
+                        <button>↓</button>
+                    </td>
                 </tr>
             }
             
         </tbody>
     </table>
 </div>
-<partial name="Footer" />
