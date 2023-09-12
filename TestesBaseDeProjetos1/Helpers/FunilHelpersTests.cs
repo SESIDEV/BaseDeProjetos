@@ -8,10 +8,10 @@ namespace BaseDeProjetos.Helpers.Tests
     [TestFixture]
     public class FunilHelpersTests
     {
-        private List<Producao> producoesMock;
-        private Prospeccao prospeccaoContatoInicial;
-        private Prospeccao prospeccaoEmDiscussao;
-        private Prospeccao prospeccaoComProposta;
+        private List<Producao> producoesMock = new List<Producao>();
+        private static Prospeccao prospeccaoContatoInicial = new Prospeccao();
+        private static Prospeccao prospeccaoEmDiscussao = new Prospeccao();
+        private static Prospeccao prospeccaoComProposta = new Prospeccao();
 
         [SetUp]
         public void Setup_Tests_FiltrarProducoes()
@@ -152,17 +152,23 @@ namespace BaseDeProjetos.Helpers.Tests
             };
         }
 
-        [Test]
-        public void Test_VerificarStatus_EmDiscussao()
+        [TestCaseSource(nameof(VerificarStatus_EmDiscussao_Cases))]
+        public void Test_VerificarStatus_EmDiscussao(Prospeccao prospeccao, bool resultadoEsperado)
         {
-            var resultadoObtido = FunilHelpers.VerificarStatus(prospeccaoEmDiscussao, StatusProspeccao.Discussao_EsbocoProjeto);
-            var resultadoObtido2 = FunilHelpers.VerificarStatus(prospeccaoContatoInicial, StatusProspeccao.Discussao_EsbocoProjeto);
-            var resultadoObtido3 = FunilHelpers.VerificarStatus(prospeccaoComProposta, StatusProspeccao.Discussao_EsbocoProjeto);
-
-            Assert.AreEqual(true, resultadoObtido);
-            Assert.AreEqual(false, resultadoObtido2);
-            Assert.AreEqual(false, resultadoObtido3);
+            var resultadoObtido = FunilHelpers.VerificarStatus(prospeccao, StatusProspeccao.Discussao_EsbocoProjeto);
+            Assert.AreEqual(resultadoEsperado, resultadoObtido);
         }
+
+        public static IEnumerable<TestCaseData> VerificarStatus_EmDiscussao_Cases
+        {
+            get
+            {
+                yield return new TestCaseData(prospeccaoEmDiscussao, true);
+                yield return new TestCaseData(prospeccaoContatoInicial, false);
+                yield return new TestCaseData(prospeccaoComProposta, false);
+            }
+        }
+
 
         [Test]
         public void Test_VerificarStatus_ContatoInicial()
@@ -187,6 +193,5 @@ namespace BaseDeProjetos.Helpers.Tests
             Assert.AreEqual(false, resultadoObtido2);
             Assert.AreEqual(true, resultadoObtido3);
         }
-
     }
 }
