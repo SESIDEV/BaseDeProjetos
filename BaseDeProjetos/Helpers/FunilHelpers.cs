@@ -222,7 +222,7 @@ namespace BaseDeProjetos.Helpers
 
         public static void AddAgregadas(ApplicationDbContext _context, Prospeccao prospAntiga, Prospeccao prospeccao)
         {
-            if (!prospeccao.Agregadas.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(prospeccao.Agregadas))
             {
                 var listaIdsAggAntiga = prospAntiga.Agregadas?.Split(";") ?? Array.Empty<string>(); //puxa os dados das agregadas da prosp antiga
                 var listaIdsAggNova = prospeccao.Agregadas.Split(";"); //separa os Ids das agregadas da prosp nova
@@ -248,7 +248,7 @@ namespace BaseDeProjetos.Helpers
 
         public static void DelAgregadas(ApplicationDbContext _context, Prospeccao prospAntiga, Prospeccao prospeccao)
         {
-            if (!prospAntiga.Agregadas.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(prospAntiga.Agregadas))
             {
                 var listaAggAntiga = prospAntiga.Agregadas.Split(";");
                 var listaAggNova = prospeccao.Agregadas.Split(";"); //separa os Ids
@@ -266,7 +266,7 @@ namespace BaseDeProjetos.Helpers
                     }
                 }
 
-                if (!listaRemovidas.IsNullOrEmpty())
+                if (listaRemovidas != null)
                 { // itera pelas removidas
                     foreach (string ids in listaRemovidas)
                     {
@@ -274,7 +274,7 @@ namespace BaseDeProjetos.Helpers
                         var AggUltimoStatusData = antigaAgg.Status.Last().Data; // salva a data do último followup
                         var statusMaisRecentes = prospeccao.Status.Where(s => s.Data > AggUltimoStatusData).ToList(); // busca por status da prosp atual que sejam de datas posteriores ao último status da antiga agregada
 
-                        if (statusMaisRecentes.IsNullOrEmpty())
+                        if (statusMaisRecentes != null)
                         {// se não houver diferença de status, add um novo status
                             FollowUp statusDeagg = new FollowUp
                             {
@@ -311,7 +311,7 @@ namespace BaseDeProjetos.Helpers
 
         public static string MostrarAgregadas(List<Prospeccao> aggTodas, string agregadas)
         {
-            if (!aggTodas.IsNullOrEmpty())
+            if (aggTodas != null)
             {
                 string empresas = "";
                 List<string> agg = agregadas.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
@@ -334,7 +334,7 @@ namespace BaseDeProjetos.Helpers
 
         public static void RepassarStatusAoCancelarAncora(ApplicationDbContext _context, Prospeccao prospeccao)
         {
-            if (!prospeccao.Agregadas.IsNullOrEmpty())
+            if (prospeccao != null)
             {
                 var listaAggIds = prospeccao.Agregadas.Split(";"); //separa os Ids
 
@@ -345,7 +345,7 @@ namespace BaseDeProjetos.Helpers
                         var prospAgg = _context.Prospeccao.Where(prosp => prosp.Id == AggId).First();
                         var AggUltimoStatusData = prospAgg.Status.Last().Data;
                         var statusMaisRecentes = prospeccao.Status.Where(s => s.Data > AggUltimoStatusData).ToList();
-                        if (statusMaisRecentes.IsNullOrEmpty())
+                        if (statusMaisRecentes != null)
                         {// se não houver diferença de status, add um novo status
                             FollowUp statusDeagg = new FollowUp
                             {

@@ -11,6 +11,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("TestesBaseDeProjetos1")]
 
 namespace BaseDeProjetos.Controllers
 {
@@ -290,9 +293,9 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, Empresa, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
         {
-			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-			if (ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 try
                 {
@@ -303,7 +306,7 @@ namespace BaseDeProjetos.Controllers
                     return CapturarErro(e);
                 }
                 prospeccao.Contato.empresa = prospeccao.Empresa;
-                await VincularUsuario(prospeccao);
+                await VincularUsuario(prospeccao, HttpContext, _context);
 
                 prospeccao.Status[0].Origem = prospeccao;
 
@@ -322,10 +325,10 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="prospeccao">Prospecção que se deseja vincular ao usuário logado</param>
         /// <returns></returns>
-        private async Task VincularUsuario(Prospeccao prospeccao)
+        internal async static Task VincularUsuario(Prospeccao prospeccao, HttpContext httpContext, ApplicationDbContext context)
         {
-            string userId = HttpContext.User.Identity.Name;
-            Usuario user = await _context.Users.FirstAsync(u => u.UserName == userId);
+            string userId = httpContext.User.Identity.Name; ;
+            Usuario user = await context.Users.FirstAsync(u => u.UserName == userId);
             prospeccao.Usuario = user;
         }
 
@@ -413,9 +416,9 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Empresa, Contato, Casa, Usuario, MembrosEquipe, ValorProposta, ValorEstimado, Status, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
         {
-			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-			if (id != prospeccao.Id)
+            if (id != prospeccao.Id)
             {
                 return NotFound();
             }
@@ -454,17 +457,22 @@ namespace BaseDeProjetos.Controllers
 
             // tudo abaixo compara a versão antiga com a nova que irá para o Update()
 
-            if(prospAntiga.Ancora == true && prospeccao.Ancora == false){ // verifica se a âncora foi cancelada
-                FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao); 
-            
-            } else if(prospeccao.Ancora == true && string.IsNullOrEmpty(prospeccao.Agregadas)){ // verifica se o campo agg está vazio
+            if (prospAntiga.Ancora == true && prospeccao.Ancora == false)
+            { // verifica se a âncora foi cancelada
+                FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
+
+            }
+            else if (prospeccao.Ancora == true && string.IsNullOrEmpty(prospeccao.Agregadas))
+            { // verifica se o campo agg está vazio
                 throw new InvalidOperationException("Não é possível adicionar uma Âncora sem nenhuma agregada.");
 
-            } else if(prospAntiga.Agregadas != prospeccao.Agregadas){ // verifica se alguma agregada foi alterada
+            }
+            else if (prospAntiga.Agregadas != prospeccao.Agregadas)
+            { // verifica se alguma agregada foi alterada
                 FunilHelpers.AddAgregadas(_context, prospAntiga, prospeccao);
                 FunilHelpers.DelAgregadas(_context, prospAntiga, prospeccao);
             }
-            
+
             _context.Update(prospeccao);
             return prospeccao;
         }
@@ -496,9 +504,9 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditarFollowUp(int id, [Bind("Id", "OrigemID", "Status", "Anotacoes", "Data", "Vencimento")] FollowUp followup, double valorProposta)
         {
-			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-			if (id != followup.Id)
+            if (id != followup.Id)
             {
                 return NotFound();
             }
@@ -573,7 +581,7 @@ namespace BaseDeProjetos.Controllers
                 Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
                 Prospeccao prospeccao = _context.Prospeccao.FirstOrDefault(p => p.Id == followup.OrigemID);
 
-                if (verificarCondicoesRemocao(prospeccao, usuario, followup.Origem.Usuario) || usuario.Nivel == Nivel.Dev)
+                if (VerificarCondicoesRemocao(prospeccao, usuario, followup.Origem.Usuario) || usuario.Nivel == Nivel.Dev)
                 {
                     _context.FollowUp.Remove(followup);
                     await _context.SaveChangesAsync();
@@ -598,7 +606,7 @@ namespace BaseDeProjetos.Controllers
         /// <param name="dono">Usuario líder da prospecção</param>
         /// <param name="ativo">Usuário ativo (HttpContext)</param>
         /// <returns></returns>
-        private bool verificarCondicoesRemocao(Prospeccao prospeccao, Usuario ativoNaSessao, Usuario donoProsp)
+        internal static bool VerificarCondicoesRemocao(Prospeccao prospeccao, Usuario ativoNaSessao, Usuario donoProsp)
         {
             return prospeccao.Status.Count() > 1 && ativoNaSessao == donoProsp;
         }
@@ -608,11 +616,11 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-			var prospeccao =  _context.Prospeccao.Where(prosp => prosp.Id == id).Include(f => f.Status).First(); // o First converte de IQuerable para objeto Prospeccao
+            var prospeccao = _context.Prospeccao.Where(prosp => prosp.Id == id).Include(f => f.Status).First(); // o First converte de IQuerable para objeto Prospeccao
 
-            if(prospeccao.Ancora){FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);}
+            if (prospeccao.Ancora) { FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao); }
 
             _context.Remove(prospeccao);
             await _context.SaveChangesAsync();
@@ -728,12 +736,12 @@ namespace BaseDeProjetos.Controllers
                 dict["ValorEstimado"] = p.ValorEstimado;
                 dict["ValorProposta"] = p.ValorProposta;
                 dict["ValorFinal"] = p.ValorProposta;
-                
-                if (p.ValorProposta == 0) 
+
+                if (p.ValorProposta == 0)
                 {
                     dict["ValorFinal"] = p.ValorEstimado;
-                }               
-                
+                }
+
                 listaFull.Add(dict);
             }
 
@@ -749,14 +757,17 @@ namespace BaseDeProjetos.Controllers
             foreach (var p in lista_prosp)
             {
                 Dictionary<string, object> dict = new Dictionary<string, object>();
-                
-                if(p.NomeProspeccao != null){
+
+                if (p.NomeProspeccao != null)
+                {
                     dict["idProsp"] = p.Id;
                     dict["Titulo"] = p.NomeProspeccao + " [" + p.Empresa.Nome + "]";
-                } else {
+                }
+                else
+                {
                     continue;
                 }
-                
+
                 listaFull.Add(dict);
             }
 
