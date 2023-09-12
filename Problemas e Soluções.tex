@@ -10,16 +10,16 @@
 
 \maketitle
 
-\section{Introdução:}
-Este documento tem como objetivo explicar alguns dos problemas comuns enfrentados no SGI e como resolvê-los.
+\section{Introdução}
+Este documento tem como objetivo explicar alguns dos problemas comuns enfrentados no SGI e suas respectivas soluções.
 
-\section{Problema 1: Múltiplos usuários "meuovo" na tabela de usuários}
-\subsection{Problema}
-A tabela de usuários do aplicativo contém múltiplas instâncias de usuários com o nome de usuário "meuovo", causando confusão e potenciais erros.
+\section{Problemas e Soluções}
+\subsection{Múltiplos usuários "meuovo" na tabela de usuários}
+\subsubsection{Descrição}
+A tabela de usuários do aplicativo contém múltiplas instâncias de usuários com o nome "meuovo", causando confusão e potenciais erros.
 
-\subsection{Solução}
-Para resolver esse problema, execute o seguinte código SQL para deletar as entradas duplicadas:
-
+\subsubsection{Solução}
+Execute o seguinte código SQL para remover as entradas duplicadas:
 \begin{lstlisting}[language=SQL]
 DELETE FROM basedb.aspnetusers WHERE Id='00a71569-0a65-4b3c-83e7-6fa48e6f9a92';
 DELETE FROM basedb.aspnetusers WHERE Id='019f9312-211b-4ca8-b86f-f272b3e7459c';
@@ -95,33 +95,38 @@ DELETE FROM basedb.aspnetusers WHERE Id='f475a734-79b4-4f5c-a95d-187e3d4cb3e9';
 DELETE FROM basedb.aspnetusers WHERE Id='f539b696-c3cd-47ea-81c1-40b63e6f7435';
 \end{lstlisting}
 
-\subsection{Observação}
-Verifique que nenhum usuário importante tenha sido removido.
+\subsubsection{Observação}
+Certifique-se de que nenhum usuário importante tenha sido removido inadvertidamente.
 
-\section{Problema 2: Unable to cast object of type 'System.DBNull' to type 'System.Boolean'}
-\subsection{Problema}
-Alguma coluna que deveria conter valores bool está com valroes nulos.
-No passado tive esse problema especificamente na coluna Ancora na tabela Prospeccao. Setar todos os valores para 0 é uma opção.
+\subsection{Unable to cast object of type 'System.DBNull' to type 'System.Boolean'}
+\subsubsection{Descrição}
+Alguma coluna que deveria conter valores booleanos está com valores nulos.
 
-\subsection{Solução}
-Para resolver esse problema, atualize toda a coluna Ancora na tabela Prospeccao para 0. Execute o seguinte comando SQL:
-
+\subsubsection{Solução}
+Atualize toda a coluna Ancora na tabela Prospeccao para 0:
 \begin{lstlisting}[language=SQL]
 UPDATE Prospeccao SET Ancora = 0;
 \end{lstlisting}
 
-\section{Problema 3: Unable to cast object of Type 'System.String' to type 'System.Int32'}
-\subsection{Problema}
-Alguma coluna está com o tipo de dado errado no SQL, nesse caso temos o dado no SQL como string, e no código temos Int32, podendo estar representando um enum.
+\subsection{Unable to cast object of Type 'System.String' to type 'System.Int32'}
+\subsubsection{Descrição}
+Incompatibilidade de tipos entre a base de dados e o código.
 
-\subsection{Solução}
-Verifique a linha de código que retornou o problema, procure ver se as colunas no banco de dados estão com tipo compatível com os tipos do modelo que está retornando o erro.
-Verifique se há algum tipo enum que está definido como varchar\(255\) no banco de dados
+\subsubsection{Solução}
+Verifique a compatibilidade de tipos entre o banco de dados e o código. Atualize o schema do banco de dados conforme necessário.
 
-\section{Outras soluções:}
-\subsection{Solução Geral 1: Resetar o banco local}
-Restaurar o banco local de um backup recente pode solucionar os seus problemas de forma rápida e eficaz.
-\subsection{Solução Geral 2: Resetar as mudanças realizadas no Git}
-Restaurar o estado do git com um git stash ou algo do tipo pode resolver algum problema de código
+\subsection{Gráfico de Participação Lateral carrega de forma infinita}
+\subsubsection{Descrição}
+A rota não está retornando os dados esperados ou retorna nulo.
+
+\subsubsection{Solução}
+Verifique a rota pela URL: \texttt{/Participacao/PuxarDadosParticipacao}.
+
+\section{Soluções Gerais}
+\subsection{Resetar o banco local}
+Restaurar o banco local a partir de um backup recente pode ser uma solução rápida e eficaz.
+
+\subsection{Resetar as mudanças realizadas no Git}
+Utilizar comandos como \texttt{git stash} pode reverter problemas de código recentes.
 
 \end{document}
