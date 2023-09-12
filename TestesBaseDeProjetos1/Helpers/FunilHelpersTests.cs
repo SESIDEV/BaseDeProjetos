@@ -11,6 +11,7 @@ namespace BaseDeProjetos.Helpers.Tests
         private List<Producao> producoesMock;
         private Prospeccao prospeccaoContatoInicial;
         private Prospeccao prospeccaoEmDiscussao;
+        private Prospeccao prospeccaoComProposta;
 
         [SetUp]
         public void Setup_Tests_FiltrarProducoes()
@@ -127,7 +128,7 @@ namespace BaseDeProjetos.Helpers.Tests
         }
 
         [SetUp]
-        public void Setup_Test_VerificarStatus_ContatoInicial()
+        public void Setup_Test_VerificarStatus()
         {
             prospeccaoContatoInicial = new Prospeccao()
             {
@@ -135,58 +136,57 @@ namespace BaseDeProjetos.Helpers.Tests
                 Status = new List<FollowUp> { new FollowUp() { Id = 1, OrigemID = "myProsp", Status = StatusProspeccao.ContatoInicial } },
                 NomeProspeccao = "prospStatusInicial"
             };
-        }
 
-        [SetUp]
-        public void Setup_Test_VerificarStatus_EmDiscussao()
-        {
             prospeccaoEmDiscussao = new Prospeccao()
             {
                 Id = "myProsp2",
                 Status = new List<FollowUp> { new FollowUp() { Id = 2, OrigemID = "myProsp2", Status = StatusProspeccao.Discussao_EsbocoProjeto } },
                 NomeProspeccao = "prospEmDiscussao"
             };
-        }
 
-
-        [Test]
-        public void Test_VerificarStatus_ContatoInicial_Existindo()
-        {
-            var resultadoEsperado = true;
-
-            var resultadoObtido = FunilHelpers.VerificarStatus(prospeccaoContatoInicial, StatusProspeccao.ContatoInicial);
-
-            Assert.AreEqual(resultadoEsperado, resultadoObtido);
+            prospeccaoComProposta = new Prospeccao
+            {
+                Id = "idProsp3",
+                Status = new List<FollowUp> { new FollowUp { Id = 3, Status = StatusProspeccao.ComProposta, OrigemID = "idProsp3" } },
+                NomeProspeccao = "prospComProposta"
+            };
         }
 
         [Test]
-        public void Test_VerificarStatus_ContatoInicial_NaoExistindo()
+        public void Test_VerificarStatus_EmDiscussao()
         {
-            var resultadoEsperado = false;
-
-            var resultadoObtido = FunilHelpers.VerificarStatus(prospeccaoEmDiscussao, StatusProspeccao.ContatoInicial);
-
-            Assert.AreEqual(resultadoEsperado, resultadoObtido);
-        }
-
-        [Test]
-        public void Test_VerificarStatus_EmDiscussao_Existindo()
-        {
-            var resultadoEsperado = true;
-
             var resultadoObtido = FunilHelpers.VerificarStatus(prospeccaoEmDiscussao, StatusProspeccao.Discussao_EsbocoProjeto);
+            var resultadoObtido2 = FunilHelpers.VerificarStatus(prospeccaoContatoInicial, StatusProspeccao.Discussao_EsbocoProjeto);
+            var resultadoObtido3 = FunilHelpers.VerificarStatus(prospeccaoComProposta, StatusProspeccao.Discussao_EsbocoProjeto);
 
-            Assert.AreEqual(resultadoEsperado, resultadoObtido);
+            Assert.AreEqual(true, resultadoObtido);
+            Assert.AreEqual(false, resultadoObtido2);
+            Assert.AreEqual(false, resultadoObtido3);
         }
 
         [Test]
-        public void Test_VerificarStatus_EmDiscussao_NaoExistindo()
+        public void Test_VerificarStatus_ContatoInicial()
         {
-            var resultadoEsperado = false;
-
             var resultadoObtido = FunilHelpers.VerificarStatus(prospeccaoEmDiscussao, StatusProspeccao.ContatoInicial);
+            var resultadoObtido2 = FunilHelpers.VerificarStatus(prospeccaoContatoInicial, StatusProspeccao.ContatoInicial);
+            var resultadoObtido3 = FunilHelpers.VerificarStatus(prospeccaoComProposta, StatusProspeccao.ContatoInicial);
 
-            Assert.AreEqual(resultadoEsperado, resultadoObtido);
+            Assert.AreEqual(false, resultadoObtido);
+            Assert.AreEqual(true, resultadoObtido2);
+            Assert.AreEqual(false, resultadoObtido3);
         }
+
+        [Test]
+        public void Test_VerificarStatus_ComProposta()
+        {
+            var resultadoObtido = FunilHelpers.VerificarStatus(prospeccaoEmDiscussao, StatusProspeccao.ComProposta);
+            var resultadoObtido2 = FunilHelpers.VerificarStatus(prospeccaoContatoInicial, StatusProspeccao.ComProposta);
+            var resultadoObtido3 = FunilHelpers.VerificarStatus(prospeccaoComProposta, StatusProspeccao.ComProposta);
+
+            Assert.AreEqual(false, resultadoObtido);
+            Assert.AreEqual(false, resultadoObtido2);
+            Assert.AreEqual(true, resultadoObtido3);
+        }
+
     }
 }
