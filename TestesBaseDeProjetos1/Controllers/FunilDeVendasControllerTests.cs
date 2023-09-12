@@ -1,4 +1,5 @@
-﻿using BaseDeProjetos.Models;
+﻿using BaseDeProjetos.Helpers;
+using BaseDeProjetos.Models;
 using NUnit.Framework;
 using System.Collections.Generic;
 
@@ -42,5 +43,7 @@ namespace BaseDeProjetos.Controllers.Tests
 
             Assert.IsFalse(result);
         }
+
+        
     }
 }
