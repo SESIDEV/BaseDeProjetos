@@ -185,11 +185,11 @@
 									role="button" aria-expanded="false">
 									@if (SignInManager.IsSignedIn(User) && !string.IsNullOrEmpty(ViewBag.usuarioFoto))
 									{
-										<img src="data:image/png;base64,@ViewBag.usuarioFoto" alt="user profile">
+										<img src="data:image/png;base64,@ViewBag.usuarioFoto" alt="user profile"/>
 									}
 									else
 									{
-										<img src="~/assets/images/default_profile.png" alt="user profile">
+										<img src="~/assets/images/default_profile.png" alt="user profile"/>
 									}
 									
 								</a>
