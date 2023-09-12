@@ -329,6 +329,7 @@ namespace BaseDeProjetos.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 List<Empresa> empresas = _context.Empresa.ToList();
@@ -360,10 +361,10 @@ namespace BaseDeProjetos.Controllers
 
             if (ModelState.IsValid)
             {
-                // TODO: Puxar do banco se utilizando do usuário que está logado?? -hhenriques1999
-                Usuario lider = new Usuario() { UserName = "Preencher", NormalizedEmail = "usuario@firjan.com.br" };
-
                 projeto.Empresa = _context.Empresa.FirstOrDefault(e => e.Id == projeto.Empresa.Id);
+
+                //projeto.Usuario = usuario;
+
                 _context.Add(projeto);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });

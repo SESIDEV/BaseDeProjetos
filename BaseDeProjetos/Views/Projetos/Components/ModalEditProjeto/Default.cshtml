@@ -35,9 +35,11 @@
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="Empresa.Nome" class="control-label"></label>
-                        <input asp-for="Empresa.Nome" class="form-control" />
-                        <span asp-validation-for="Empresa.Nome" class="text-danger"></span>
+                        <label asp-for="Empresa" class="control-label"></label>
+                        <select asp-for="Empresa" class="form-control" asp-items='@ViewData["Empresa"] as SelectList'>
+                            <option value="@Model.Empresa.Nome" selected disabled>@Model.Empresa.Nome</option>
+                        </select>
+                        <span asp-validation-for="Empresa" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
@@ -94,8 +96,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn app-btn-primary"
-                        data-bs-target="#editarProjetoModal-@Model.Id-Toggle2" data-bs-toggle="modal"
-                        onclick="selectToText('campoSelectEdit', 'inputTextEdit')">
+                            data-bs-target="#editarProjetoModal-@Model.Id-Toggle2" data-bs-toggle="modal"
+                            onclick="selectToText('campoSelectEdit', 'inputTextEdit')">
                         Próximo
                     </button>
                 </div>
