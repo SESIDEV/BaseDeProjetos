@@ -150,7 +150,7 @@ namespace BaseDeProjetos.Helpers.Tests
 
 
         [Test]
-        public void Test_VerificarStatus_ContatoInicial()
+        public void Test_VerificarStatus_ContatoInicial_Existindo()
         {
             var resultadoEsperado = true;
 
@@ -160,11 +160,31 @@ namespace BaseDeProjetos.Helpers.Tests
         }
 
         [Test]
-        public void Test_VerificarStatus_EmDiscussao()
+        public void Test_VerificarStatus_ContatoInicial_NaoExistindo()
+        {
+            var resultadoEsperado = false;
+
+            var resultadoObtido = FunilHelpers.VerificarStatus(prospeccaoEmDiscussao, StatusProspeccao.ContatoInicial);
+
+            Assert.AreEqual(resultadoEsperado, resultadoObtido);
+        }
+
+        [Test]
+        public void Test_VerificarStatus_EmDiscussao_Existindo()
         {
             var resultadoEsperado = true;
 
             var resultadoObtido = FunilHelpers.VerificarStatus(prospeccaoEmDiscussao, StatusProspeccao.Discussao_EsbocoProjeto);
+
+            Assert.AreEqual(resultadoEsperado, resultadoObtido);
+        }
+
+        [Test]
+        public void Test_VerificarStatus_EmDiscussao_NaoExistindo()
+        {
+            var resultadoEsperado = false;
+
+            var resultadoObtido = FunilHelpers.VerificarStatus(prospeccaoEmDiscussao, StatusProspeccao.ContatoInicial);
 
             Assert.AreEqual(resultadoEsperado, resultadoObtido);
         }
