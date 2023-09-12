@@ -593,6 +593,8 @@ namespace BaseDeProjetos.Helpers
                     return prospeccao.Status.Any(followup => followup.Status < StatusProspeccao.ComProposta && followup.Status > StatusProspeccao.ContatoInicial);
                 case StatusProspeccao.ComProposta:
                     return prospeccao.Status.Any(followup => followup.Status == status);
+                case StatusProspeccao.Convertida:
+                    return prospeccao.Status.Any(followup => followup.Status == status);
                 default:
                     return false;
             }
