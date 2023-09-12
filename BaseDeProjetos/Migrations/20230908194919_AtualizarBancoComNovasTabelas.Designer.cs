@@ -9,8 +9,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaseDeProjetos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230911102224_ResolvendoProblemaDeBancoLocalNovasTabelas")]
-    partial class ResolvendoProblemaDeBancoLocalNovasTabelas
+<<<<<<<< HEAD:BaseDeProjetos/Migrations/20230908194919_AtualizarBancoComNovasTabelas.Designer.cs
+    [Migration("20230908194919_AtualizarBancoComNovasTabelas")]
+    partial class AtualizarBancoComNovasTabelas
+========
+    [Migration("20230908221051_Comentarios")]
+    partial class Comentarios
+>>>>>>>> cbb5472d2f7255547383950d33fb75c54346aff2:BaseDeProjetos/Migrations/20230908221051_Comentarios.Designer.cs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -258,9 +263,12 @@ namespace BaseDeProjetos.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+<<<<<<<< HEAD:BaseDeProjetos/Migrations/20230908194919_AtualizarBancoComNovasTabelas.Designer.cs
+========
                     b.Property<string>("Comentarios")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+>>>>>>>> cbb5472d2f7255547383950d33fb75c54346aff2:BaseDeProjetos/Migrations/20230908221051_Comentarios.Designer.cs
                     b.Property<string>("ProjetoId")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 

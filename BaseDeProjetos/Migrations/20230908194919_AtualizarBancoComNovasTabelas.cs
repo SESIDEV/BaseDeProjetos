@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BaseDeProjetos.Migrations
 {
-    public partial class ResolvendoProblemaDeBancoLocalNovasTabelas : Migration
+    public partial class AtualizarBancoComNovasTabelas : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -103,7 +103,6 @@ namespace BaseDeProjetos.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     ProjetoId = table.Column<string>(nullable: true),
                     ResultadoFinal = table.Column<double>(nullable: false),
-                    Comentarios = table.Column<string>(nullable: true),
                     RepresentacaoTextualQuestionario = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
