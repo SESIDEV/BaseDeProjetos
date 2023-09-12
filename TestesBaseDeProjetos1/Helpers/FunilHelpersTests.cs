@@ -112,5 +112,14 @@ namespace BaseDeProjetos.Helpers.Tests
 
             Assert.AreEqual(resultadoEsperado, resultadoObtido);
         }
+
+        [Test]
+        public void Test_FiltrarProducoes_SearchTermoNulo() {
+            var resultadoEsperado = producoesMock;
+
+            var resultadoObtido = FunilHelpers.FiltrarProduções(null, producoesMock);
+
+            Assert.AreEqual(resultadoEsperado, resultadoObtido);
+        }
     }
 }
