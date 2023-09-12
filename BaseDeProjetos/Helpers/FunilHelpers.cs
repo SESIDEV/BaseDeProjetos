@@ -37,6 +37,7 @@ namespace BaseDeProjetos.Helpers
                 return new HtmlString($"<span class='badge bg-frio text-dark'>Congelado: ({qtdDias} Dias)</span>");
             }
         }
+
         public static bool ProspeccaoExists(string id, ApplicationDbContext _context)
         {
             return _context.Prospeccao.Any(prospeccao => prospeccao.Id == id);
