@@ -336,43 +336,43 @@ namespace BaseDeProjetos.Helpers
         {
             if (prospeccao != null)
             {
-                var listaAggIds = prospeccao.Agregadas.Split(";"); //separa os Ids
+                var idsProspeccoesAgregadas = prospeccao.Agregadas.Split(";"); //separa os Ids
 
-                foreach (string AggId in listaAggIds) //itera pelas agregadas
+                foreach (string id in idsProspeccoesAgregadas) //itera pelas agregadas
                 {
-                    if (AggId != "")
+                    if (id != "")
                     {
-                        var prospAgg = _context.Prospeccao.Where(prosp => prosp.Id == AggId).First();
-                        var AggUltimoStatusData = prospAgg.Status.Last().Data;
-                        var statusMaisRecentes = prospeccao.Status.Where(s => s.Data > AggUltimoStatusData).ToList();
+                        var prospeccaoAgregada = _context.Prospeccao.Where(prosp => prosp.Id == id).First();
+                        var ultimoStatusProspeccaoAgregada = prospeccaoAgregada.Status.Last().Data;
+                        var statusMaisRecentes = prospeccao.Status.Where(s => s.Data > ultimoStatusProspeccaoAgregada).ToList();
                         if (statusMaisRecentes != null)
                         {// se não houver diferença de status, add um novo status
                             FollowUp statusDeagg = new FollowUp
                             {
-                                Status = prospAgg.Status.OrderByDescending(d => d.Data).ToList()[1].Status, // retorna ao status anterior ao agregado
+                                Status = prospeccaoAgregada.Status.OrderByDescending(d => d.Data).ToList()[1].Status, // retorna ao status anterior ao agregado
                                 Data = DateTime.Today,
                                 Anotacoes = "Esta prospecção foi desagregada de um grupo."
                             };
 
-                            prospAgg.Status.Add(statusDeagg); //adiciona o status ao final da lista de followups
+                            prospeccaoAgregada.Status.Add(statusDeagg); //adiciona o status ao final da lista de followups
                         }
                         else
                         {
                             List<FollowUp> listaCopia = new List<FollowUp>(statusMaisRecentes.Count);
 
-                            statusMaisRecentes.ForEach(s =>
+                            statusMaisRecentes.ForEach(status =>
                             {
                                 var copiaStatus = new FollowUp
                                 {
-                                    OrigemID = AggId, // essa é a própria id do loop, da prosp que está sendo removida
-                                    Anotacoes = s.Anotacoes,
-                                    AnoFiscal = s.AnoFiscal,
-                                    Status = s.Status,
-                                    Data = s.Data
+                                    OrigemID = id, // essa é a própria id do loop, da prosp que está sendo removida
+                                    Anotacoes = status.Anotacoes,
+                                    AnoFiscal = status.AnoFiscal,
+                                    Status = status.Status,
+                                    Data = status.Data
                                 };
                                 listaCopia.Add(copiaStatus);
                             });
-                            prospAgg.Status.AddRange(listaCopia);
+                            prospeccaoAgregada.Status.AddRange(listaCopia);
                         }
                     }
                 }
@@ -389,32 +389,32 @@ namespace BaseDeProjetos.Helpers
         /// Periodiza as prospecções de acordo com o ano no parâmetro
         /// </summary>
         /// <param name="ano">Ano que se deseja</param>
-        /// <param name="lista">Lista de prospecções a serem periodizadas</param>
+        /// <param name="prospeccoes">Lista de prospecções a serem periodizadas</param>
         /// <returns></returns>
-        public static List<Prospeccao> PeriodizarProspecções(string ano, List<Prospeccao> lista)
+        public static List<Prospeccao> PeriodizarProspecções(string ano, List<Prospeccao> prospeccoes)
         {
             if (ano.Equals("Todos") || string.IsNullOrEmpty(ano))
             {
-                return lista;
+                return prospeccoes;
             }
 
-            return lista.Where(prospeccao => prospeccao.Status.Any(followup => followup.Data.Year == Convert.ToInt32(ano))).ToList();
+            return prospeccoes.Where(prospeccao => prospeccao.Status.Any(followup => followup.Data.Year == Convert.ToInt32(ano))).ToList();
         }
 
         /// <summary>
         /// Periodiza produções de acordo com o ano no parâmetro
         /// </summary>
         /// <param name="ano">Ano que se deseja</param>
-        /// <param name="lista">Lista de produções a serem periodizadas</param>
+        /// <param name="producoes">Lista de produções a serem periodizadas</param>
         /// <returns></returns>
-        public static List<Producao> PeriodizarProduções(string ano, List<Producao> lista)
+        public static List<Producao> PeriodizarProduções(string ano, List<Producao> producoes)
         {
             if (ano.Equals("Todos") || string.IsNullOrEmpty(ano))
             {
-                return lista;
+                return producoes;
             }
 
-            return lista.Where(producao => producao.Data.Year == Convert.ToInt32(ano)).ToList();
+            return producoes.Where(producao => producao.Data.Year == Convert.ToInt32(ano)).ToList();
         }
 
 
