@@ -11,6 +11,6 @@ namespace BaseDeProjetos.Models
 		public virtual decimal Financeiro { get; set; }
 		[ForeignKey("ProjetoId")]
 		public virtual Projeto Projeto { get; set; }
-		public virtual string ProjetoId { get; set; }
+		public string ProjetoId { get; set; }
 	}
 }

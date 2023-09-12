@@ -24,98 +24,96 @@
                 Nenhuma das perguntas é obrigatória, sendo facultado não responder aquelas que você não possa ou não queira opinar.
             </p>
 
-            <form asp-action="Responder" method="POST">
             @foreach (KeyValuePair<string, List<PerguntaSatisfacao>> secoes in questoes.PerguntasSatisfacao)
             {
-                    <div class="secao p-3 m-2 border bg-light">
+                <div class="secao p-3 m-2 border bg-light">
 
-                        <h5>@secoes.Key</h5>
-                        <hr>
+                    <h5>@secoes.Key</h5>
+                    <hr>
 
-                        @foreach (PerguntaSatisfacao p in secoes.Value)
+                    @foreach (PerguntaSatisfacao p in secoes.Value)
+                    {
+
+
+                        <br>
+                        @if (p.GetType() == typeof(PerguntaLikert))
                         {
-
-
-                            <br>
-                            @if (p.GetType() == typeof(PerguntaLikert))
-                            {
-                                <div class="row align-content-center">
-                                    <div class="col-4 align-content-center">
-                                        <i>@p.Pergunta</i>
-                                    </div>
-
-                                    <div class=" col align-content-center">
-                                        <input class="btn-check" type="radio" name="likert-@p.Pergunta.GetHashCode()" id="@p.Pergunta.GetHashCode()#1" value="1" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="@p.Pergunta.GetHashCode()#1">
-                                            @ResultadoOpiniao.Pessimo.GetDisplayName()
-                                        </label>
-                                    </div>
-                                    <div class=" col">
-                                        <input class="btn-check" type="radio" name="likert-@p.Pergunta.GetHashCode()" id="@p.Pergunta.GetHashCode()#2" value="2" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="@p.Pergunta.GetHashCode()#2">
-                                            @ResultadoOpiniao.Ruim.GetDisplayName()
-                                        </label>
-                                    </div>
-                                    <div class=" col">
-                                        <input class="btn-check" type="radio" name="likert-@p.Pergunta.GetHashCode()" id="@p.Pergunta.GetHashCode()#3" value="3" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="@p.Pergunta.GetHashCode()#3">
-                                            @ResultadoOpiniao.Regular.GetDisplayName()
-                                        </label>
-                                    </div>
-                                    <div class=" col">
-                                        <input class="btn-check" type="radio" name="likert-@p.Pergunta.GetHashCode()" id="@p.Pergunta.GetHashCode()#4" value="4" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="@p.Pergunta.GetHashCode()#4">
-                                            @ResultadoOpiniao.Bom.GetDisplayName()
-                                        </label>
-                                    </div>
-                                    <div class=" col">
-                                        <input class="btn-check" type="radio" name="likert-@p.Pergunta.GetHashCode()" id="@p.Pergunta.GetHashCode()#5" value="5" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="@p.Pergunta.GetHashCode()#5">
-                                            @ResultadoOpiniao.Otimo.GetDisplayName()
-                                        </label>
-                                    </div>
-                                </div>
-                            }
-                            @if (p.GetType() == typeof(PerguntaBool))
-                            {
-                                <div class="row">
-                                    <div class="col-4 align-content-center">
-                                        <i>@p.Pergunta</i>
-                                    </div>
-                                    <div class="col-3">
-                                        <!-- Propositalmente vazia-->
-                                    </div>
-                                    <div class="col">
-                                        <input class="btn-check" type="radio" name="option" id="yesRadio" value="Yes" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="yesRadio">
-                                            Sim
-                                        </label>
-                                    </div>
-                                    <div class="col">
-                                        <input class="btn-check" type="radio" name="option" id="noRadio" value="No" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="noRadio">
-                                            Não
-                                        </label>
-                                    </div>
+                            <div class="row align-content-center">
+                                <div class="col-4 align-content-center">
+                                    <i>@p.Pergunta</i>
                                 </div>
 
-                            }
-                            @if (p.GetType() == typeof(PerguntaTexto))
-                            {
-                                <div class="form-group">
-                                    <label for="commentsTextarea">Comentários</label>
-                                    <textarea class="form-control" id="commentsTextarea" rows="4" placeholder="deixe seu comentário aqui"></textarea>
+                                <div class=" col align-content-center">
+                                    <input class="btn-check" type="radio" name="likert-@p.Pergunta.GetHashCode()" id="@p.Pergunta.GetHashCode()#1" value="1" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="@p.Pergunta.GetHashCode()#1">
+                                        @ResultadoOpiniao.Pessimo.GetDisplayName()
+                                    </label>
                                 </div>
-                            }
+                                <div class=" col">
+                                    <input class="btn-check" type="radio" name="likert-@p.Pergunta.GetHashCode()" id="@p.Pergunta.GetHashCode()#2" value="2" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="@p.Pergunta.GetHashCode()#2">
+                                        @ResultadoOpiniao.Ruim.GetDisplayName()
+                                    </label>
+                                </div>
+                                <div class=" col">
+                                    <input class="btn-check" type="radio" name="likert-@p.Pergunta.GetHashCode()" id="@p.Pergunta.GetHashCode()#3" value="3" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="@p.Pergunta.GetHashCode()#3">
+                                        @ResultadoOpiniao.Regular.GetDisplayName()
+                                    </label>
+                                </div>
+                                <div class=" col">
+                                    <input class="btn-check" type="radio" name="likert-@p.Pergunta.GetHashCode()" id="@p.Pergunta.GetHashCode()#4" value="4" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="@p.Pergunta.GetHashCode()#4">
+                                        @ResultadoOpiniao.Bom.GetDisplayName()
+                                    </label>
+                                </div>
+                                <div class=" col">
+                                    <input class="btn-check" type="radio" name="likert-@p.Pergunta.GetHashCode()" id="@p.Pergunta.GetHashCode()#5" value="5" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="@p.Pergunta.GetHashCode()#5">
+                                        @ResultadoOpiniao.Otimo.GetDisplayName()
+                                    </label>
+                                </div>
+                            </div>
+                        }
+                        @if (p.GetType() == typeof(PerguntaBool))
+                        {
+                            <div class="row">
+                                <div class="col-4 align-content-center">
+                                    <i>@p.Pergunta</i>
+                                </div>
+                                <div class="col-3">
+                                    <!-- Propositalmente vazia-->
+                                </div>
+                                <div class="col">
+                                    <input class="btn-check" type="radio" name="option" id="yesRadio" value="Yes" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="yesRadio">
+                                        Sim
+                                    </label>
+                                </div>
+                                <div class="col">
+                                    <input class="btn-check" type="radio" name="option" id="noRadio" value="No" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="noRadio">
+                                        Não
+                                    </label>
+                                </div>
+                            </div>
 
                         }
+                        @if (p.GetType() == typeof(PerguntaTexto))
+                        {
+                            <div class="form-group">
+                                <label for="commentsTextarea">Comentários</label>
+                                <textarea class="form-control" id="commentsTextarea" rows="4" placeholder="deixe seu comentário aqui"></textarea>
+                            </div>
+                        }
 
-                    </div>
+                    }
+
+                </div>
 
             }
 
-                <button class="btn btn-primary" onclick="alert('meuovo')"> Enviar Feedback</button>
-            </form>
+            <button class="btn btn-primary" onclick="alert('meuovo')"> Enviar Feedback</button>
         </div>
 
     </div>

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BaseDeProjetos.Models
 {
@@ -26,10 +25,7 @@ namespace BaseDeProjetos.Models
 		[Display(Name = "Competências")]
 		public string Competencia { get; set; }
 
-        [ForeignKey("CargoId")]
-        public virtual Cargo? Cargo { get; set; }
-
-		public virtual int? CargoId { get; set; }
+		public virtual Cargo? Cargo { get; set; }
 
 	}
 }
