@@ -12,6 +12,7 @@ namespace BaseDeProjetos.Helpers.Tests
         private Prospeccao prospeccaoContatoInicial;
         private Prospeccao prospeccaoEmDiscussao;
         private Prospeccao prospeccaoComProposta;
+        private Prospeccao prospeccaoConvertida;
 
         [SetUp]
         public void Setup_Tests_FiltrarProducoes()
@@ -150,6 +151,13 @@ namespace BaseDeProjetos.Helpers.Tests
                 Status = new List<FollowUp> { new FollowUp { Id = 3, Status = StatusProspeccao.ComProposta, OrigemID = "idProsp3" } },
                 NomeProspeccao = "prospComProposta"
             };
+
+            prospeccaoConvertida = new Prospeccao()
+            {
+                Id = "myProsp4",
+                Status = new List<FollowUp> { new FollowUp() { Id = 4, OrigemID = "myProsp4", Status = StatusProspeccao.Convertida } },
+                NomeProspeccao = "prospConvertida"
+            };
         }
 
         [Test]
@@ -158,10 +166,13 @@ namespace BaseDeProjetos.Helpers.Tests
             var resultadoObtido = FunilHelpers.VerificarStatus(prospeccaoEmDiscussao, StatusProspeccao.Discussao_EsbocoProjeto);
             var resultadoObtido2 = FunilHelpers.VerificarStatus(prospeccaoContatoInicial, StatusProspeccao.Discussao_EsbocoProjeto);
             var resultadoObtido3 = FunilHelpers.VerificarStatus(prospeccaoComProposta, StatusProspeccao.Discussao_EsbocoProjeto);
+            var resultadoObtido4 = FunilHelpers.VerificarStatus(prospeccaoConvertida, StatusProspeccao.Discussao_EsbocoProjeto);
+
 
             Assert.AreEqual(true, resultadoObtido);
             Assert.AreEqual(false, resultadoObtido2);
             Assert.AreEqual(false, resultadoObtido3);
+            Assert.AreEqual(false, resultadoObtido4);
         }
 
         [Test]
@@ -170,10 +181,12 @@ namespace BaseDeProjetos.Helpers.Tests
             var resultadoObtido = FunilHelpers.VerificarStatus(prospeccaoEmDiscussao, StatusProspeccao.ContatoInicial);
             var resultadoObtido2 = FunilHelpers.VerificarStatus(prospeccaoContatoInicial, StatusProspeccao.ContatoInicial);
             var resultadoObtido3 = FunilHelpers.VerificarStatus(prospeccaoComProposta, StatusProspeccao.ContatoInicial);
+            var resultadoObtido4 = FunilHelpers.VerificarStatus(prospeccaoConvertida, StatusProspeccao.ContatoInicial);
 
             Assert.AreEqual(false, resultadoObtido);
             Assert.AreEqual(true, resultadoObtido2);
             Assert.AreEqual(false, resultadoObtido3);
+            Assert.AreEqual(false, resultadoObtido4);
         }
 
         [Test]
@@ -182,11 +195,30 @@ namespace BaseDeProjetos.Helpers.Tests
             var resultadoObtido = FunilHelpers.VerificarStatus(prospeccaoEmDiscussao, StatusProspeccao.ComProposta);
             var resultadoObtido2 = FunilHelpers.VerificarStatus(prospeccaoContatoInicial, StatusProspeccao.ComProposta);
             var resultadoObtido3 = FunilHelpers.VerificarStatus(prospeccaoComProposta, StatusProspeccao.ComProposta);
+            var resultadoObtido4 = FunilHelpers.VerificarStatus(prospeccaoConvertida, StatusProspeccao.ComProposta);
+
 
             Assert.AreEqual(false, resultadoObtido);
             Assert.AreEqual(false, resultadoObtido2);
             Assert.AreEqual(true, resultadoObtido3);
+            Assert.AreEqual(false, resultadoObtido4);
+
         }
 
+        [Test]
+        public void Test_VerificarStatus_Convertida()
+        {
+
+            var resultadoObtido = FunilHelpers.VerificarStatus(prospeccaoEmDiscussao, StatusProspeccao.Convertida);
+            var resultadoObtido2 = FunilHelpers.VerificarStatus(prospeccaoContatoInicial, StatusProspeccao.Convertida);
+            var resultadoObtido3 = FunilHelpers.VerificarStatus(prospeccaoComProposta, StatusProspeccao.Convertida);
+            var resultadoObtido4 = FunilHelpers.VerificarStatus(prospeccaoConvertida, StatusProspeccao.Convertida);
+
+            Assert.AreEqual(false, resultadoObtido);
+            Assert.AreEqual(false, resultadoObtido2);
+            Assert.AreEqual(false, resultadoObtido3);
+            Assert.AreEqual(true, resultadoObtido4);
+        }
     }
+
 }
