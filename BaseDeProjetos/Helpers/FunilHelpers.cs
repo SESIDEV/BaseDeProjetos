@@ -518,27 +518,25 @@ namespace BaseDeProjetos.Helpers
         /// <returns></returns>
         public static List<Producao> FiltrarProduções(string searchString, List<Producao> producoes)
         {
-
             if (!string.IsNullOrEmpty(searchString))
             {
                 searchString = searchString.ToLower();
 
-                if (producoes[0].Empresa != null)
+                if (producoes != null && producoes.Any())
                 {
-
                     producoes = producoes.Where(producao =>
-                        producao.Autores.ToLower().Contains(searchString) ||
-                        producao.Titulo.ToLower().Contains(searchString) ||
-                        producao.Empresa.Nome.ToLower().Contains(searchString) ||
-                        producao.Projeto.NomeProjeto.ToLower().Contains(searchString)
-                        ).ToList();
+                        (producao?.Autores?.ToLower().Contains(searchString) ?? false) ||
+                        (producao?.Titulo?.ToLower().Contains(searchString) ?? false) ||
+                        (producao?.Empresa?.Nome?.ToLower().Contains(searchString) ?? false) ||
+                        (producao?.Projeto?.NomeProjeto?.ToLower().Contains(searchString) ?? false)
+                    ).ToList();
                 }
-                else
+                else if (producoes != null)
                 {
                     producoes = producoes.Where(producao =>
-                        producao.Autores.ToLower().Contains(searchString) ||
-                        producao.Titulo.ToLower().Contains(searchString)
-                        ).ToList();
+                        (producao?.Autores?.ToLower().Contains(searchString) ?? false) ||
+                        (producao?.Titulo?.ToLower().Contains(searchString) ?? false)
+                    ).ToList();
                 }
             }
 
