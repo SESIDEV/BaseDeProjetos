@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -824,7 +824,7 @@ namespace BaseDeProjetos.Controllers
                 calculoMediaFatores += participacao.ValorTotalProspeccoesConvertidas / participacoes.Max(p => p.ValorTotalProspeccoesConvertidas);
             }
 
-            participacao.MediaFatores = calculoMediaFatores /= 10;
+            participacao.MediaFatores = calculoMediaFatores /= 12;
         }
     }
 }
