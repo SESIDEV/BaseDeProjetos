@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace BaseDeProjetos.Controllers
 {
     [Authorize]
-    public class EmpresasController : Controller
+    public class EmpresasController : SGIController
     {
         private readonly ApplicationDbContext _context;
 
@@ -30,10 +30,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewbagizarUsuario(_context);
 
                 ViewBag.Prospeccoes = _context.Prospeccao.ToList();
 
@@ -168,10 +165,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewbagizarUsuario(_context);
 
                 if (id == null)
                 {
@@ -198,10 +192,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewbagizarUsuario(_context);
 
                 return View();
             }
@@ -232,10 +223,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewbagizarUsuario(_context);
 
                 if (id == null)
                 {
@@ -296,10 +284,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewbagizarUsuario(_context);
 
                 if (id == null)
                 {
