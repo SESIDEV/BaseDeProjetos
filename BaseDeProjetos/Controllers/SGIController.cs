@@ -9,13 +9,13 @@ namespace BaseDeProjetos.Controllers
 {
     public class SGIController: Controller
     {
-        public Usuario usuarioAtivo { get; set; }
+        public Usuario UsuarioAtivo { get; set; }
 
         public void ViewbagizarUsuario(ApplicationDbContext _context)
         {
-            this.usuarioAtivo = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            ViewBag.usuarioCasa = usuarioAtivo.Casa;
-            ViewBag.usuarioNivel = usuarioAtivo.Nivel;
+            UsuarioAtivo = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewBag.usuarioCasa = UsuarioAtivo.Casa;
+            ViewBag.usuarioNivel = UsuarioAtivo.Nivel;
 
         }
     }
