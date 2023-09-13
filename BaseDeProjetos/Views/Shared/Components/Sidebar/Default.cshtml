@@ -59,7 +59,20 @@
 		},
 
 		xAxis: {
-			categories: ['Valor Total das Prospecções', 'Quantidade de Prospecções', 'Valor Médio (Prospecções)', 'Valor Total das Prospecções (Em Proposta)', 'Valor Médio das Prospecções (Em Proposta)', 'Prospecções em Proposta', 'Prospecções Convertidas', 'Taxa de Conversão em Proposta', 'Taxa de Conversão em Projeto', 'Propositividade', 'Fator de Contribuição Financeira'],
+			categories: [
+				'Valor Total das Prospecções', 
+				'Quantidade de Prospecções', 
+				'Valor Médio (Prospecções)', 
+				'Valor Total das Prospecções (Em Proposta)', 
+				'Valor Médio das Prospecções (Em Proposta)',
+				'Valor Total das Prospecções (Convertidas)',
+				'Valor Médio das Prospecções (Convertidas)',
+				'Prospecções em Proposta', 
+				'Prospecções Convertidas', 
+				'Taxa de Conversão em Proposta', 
+				'Taxa de Conversão em Projeto', 
+				'Assertividade na Precificação', 
+				'Fator de Contribuição Financeira'],
 			tickmarkPlacement: 'on',
 			labels: {
             	enabled: false
@@ -85,11 +98,13 @@
 					rankings['RankValorMedioProspeccoes'],
 					rankings['RankValorTotalProspeccoesComProposta'],
 					rankings['RankValorMedioProspeccoesComProposta'],
+					rankings['RankValorTotalProspeccoesConvertidas'],
+					rankings['RankValorMedioProspeccoesConvertidas'],
 					rankings['RankQuantidadeProspeccoesComProposta'],
 					rankings['RankQuantidadeProspeccoesProjeto'], 
 					dadosParticipacao['TaxaConversaoProposta'], 
 					dadosParticipacao['TaxaConversaoProjeto'], 
-					rankings['Propositividade'], 
+					rankings['RankPropositividade'],
 					rankings['Indice']
 				],
 			pointPlacement: 'on',
