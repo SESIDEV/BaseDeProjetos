@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace BaseDeProjetos.Controllers
 {
     [Authorize]
-    public class IndicadoresController : Controller
+    public class IndicadoresController : SGIController
     {
         private readonly ApplicationDbContext _context;
 
@@ -28,18 +28,16 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewbagizarUsuario(_context);
 
                 List<IndicadoresFinanceiros> listaIndicadoresFinanceiros = await _context.IndicadoresFinanceiros.ToListAsync();
                 if (string.IsNullOrEmpty(casa))
                 {
-                    casa = usuario.Casa.ToString();
+                    casa = UsuarioAtivo.Casa.ToString();
 
                 }
                 List<IndicadoresFinanceiros> lista = DefinirCasaParaVisualizar(casa);
-                lista = VincularCasaAosIndicadoresFinanceiros(usuario, listaIndicadoresFinanceiros);
+                lista = VincularCasaAosIndicadoresFinanceiros(UsuarioAtivo, listaIndicadoresFinanceiros);
                 return View(lista.ToList());
             }
             else
@@ -162,12 +160,9 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
-                if (usuario.Nivel == Nivel.PMO || usuario.Nivel == Nivel.Dev)
+                ViewbagizarUsuario(_context);
+                if (UsuarioAtivo.Nivel == Nivel.PMO || UsuarioAtivo.Nivel == Nivel.Dev)
                 {
-                    ViewBag.usuarioCasa = usuario.Casa;
-                    ViewBag.usuarioNivel = usuario.Nivel;
-
                     if (id == null)
                     {
                         return NotFound();
@@ -198,12 +193,9 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
-                if (usuario.Nivel == Nivel.PMO || usuario.Nivel == Nivel.Dev)
+                ViewbagizarUsuario(_context);
+                if (UsuarioAtivo.Nivel == Nivel.PMO || UsuarioAtivo.Nivel == Nivel.Dev)
                 {
-                    ViewBag.usuarioCasa = usuario.Casa;
-                    ViewBag.usuarioNivel = usuario.Nivel;
-
                     return View();
                 }
                 else
@@ -238,12 +230,9 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
-                if (usuario.Nivel == Nivel.PMO || usuario.Nivel == Nivel.Dev)
+                ViewbagizarUsuario(_context);
+                if (UsuarioAtivo.Nivel == Nivel.PMO || UsuarioAtivo.Nivel == Nivel.Dev)
                 {
-                    ViewBag.usuarioCasa = usuario.Casa;
-                    ViewBag.usuarioNivel = usuario.Nivel;
-
                     if (id == null)
                     {
                         return NotFound();
@@ -307,12 +296,9 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
-                if (usuario.Nivel == Nivel.PMO || usuario.Nivel == Nivel.Dev)
+                ViewbagizarUsuario(_context);
+                if (UsuarioAtivo.Nivel == Nivel.PMO || UsuarioAtivo.Nivel == Nivel.Dev)
                 {
-                    ViewBag.usuarioCasa = usuario.Casa;
-                    ViewBag.usuarioNivel = usuario.Nivel;
-
                     if (id == null)
                     {
                         return NotFound();
