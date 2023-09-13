@@ -1,4 +1,4 @@
-using BaseDeProjetos.Data;
+﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.ConstrainedExecution;
 using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Controllers
@@ -142,19 +143,25 @@ namespace BaseDeProjetos.Controllers
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 var participacoes = await GetParticipacoesTotaisUsuarios();
+                List<decimal> rankingsMedios = new List<decimal>();
 
                 if (participacoes.Count > 0)
                 {
                     RankearParticipacoes(participacoes, true);
                     AcertarValorRankParticipacoes(participacoes);
-                    ObterRankingsMedios(participacoes);
+                    rankingsMedios = ObterRankingsMedios(participacoes);
                 }
 
                 var participacaoUsuario = participacoes.FirstOrDefault(p => p.Lider == usuario);
+                var participacaoSerialized = JsonConvert.SerializeObject(participacaoUsuario);
+                var rankingsSerialized = JsonConvert.SerializeObject(rankingsMedios);
+
+                var finalObject = $"{{\"Participacao\": {participacaoSerialized}, \"Rankings\": {rankingsSerialized}}}";
+
 
                 if (usuario != null)
                 {
-                    return Ok(JsonConvert.SerializeObject(participacaoUsuario));
+                    return Ok(finalObject);
                 }
                 else
                 {
@@ -620,8 +627,10 @@ namespace BaseDeProjetos.Controllers
             return View(participacoes);
         }
 
-        private void ObterRankingsMedios(List<ParticipacaoTotalViewModel> participacoes)
+        private List<decimal> ObterRankingsMedios(List<ParticipacaoTotalViewModel> participacoes)
         {
+            List<decimal> rankings = new List<decimal>();
+
             decimal rankMedio = participacoes.Average(p => p.MediaFatores);
             decimal rankMedioIndice = participacoes.Average(p => p.FatorDeContribuicaoFinanceira);
 
@@ -637,6 +646,20 @@ namespace BaseDeProjetos.Controllers
             decimal rankMedioQuantidadeProspeccoesMembro = participacoes.Average(p => p.RankPorIndicador["RankQuantidadeProspeccoesMembro"]);
             decimal rankMedioPropositividade = participacoes.Average(p => p.RankPorIndicador["RankPropositividade"]);
 
+            rankings.Add(rankMedio);
+            rankings.Add(rankMedioIndice);
+            rankings.Add(rankMedioValorTotalProspeccao);
+            rankings.Add(rankMedioValorTotalProspeccoesComProposta);
+            rankings.Add(rankMedioValorMedioProspeccoes);
+            rankings.Add(rankMedioValorMedioProspeccoesComProposta);
+            rankings.Add(rankMedioValorTotalProspeccoesConvertidas);
+            rankings.Add(rankMedioValorMedioProspeccoesConvertidas);
+            rankings.Add(rankMedioQuantidadeProspeccoes);
+            rankings.Add(rankMedioQuantidadeProspeccoesComProposta);
+            rankings.Add(rankMedioQuantidadeProspeccoesProjeto);
+            rankings.Add(rankMedioQuantidadeProspeccoesMembro);
+            rankings.Add(rankMedioPropositividade);
+
             ViewData[nameof(rankMedio)] = rankMedio;
             ViewData[nameof(rankMedioIndice)] = rankMedioIndice;
             ViewData[nameof(rankMedioValorTotalProspeccao)] = rankMedioValorTotalProspeccao;
@@ -650,6 +673,8 @@ namespace BaseDeProjetos.Controllers
             ViewData[nameof(rankMedioQuantidadeProspeccoesProjeto)] = rankMedioQuantidadeProspeccoesProjeto;
             ViewData[nameof(rankMedioQuantidadeProspeccoesMembro)] = rankMedioQuantidadeProspeccoesMembro;
             ViewData[nameof(rankMedioPropositividade)] = rankMedioPropositividade;
+
+            return rankings;
         }
 
         private void AcertarValorRankParticipacoes(List<ParticipacaoTotalViewModel> participacoes)
