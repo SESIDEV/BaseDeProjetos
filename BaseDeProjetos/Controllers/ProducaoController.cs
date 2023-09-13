@@ -34,11 +34,11 @@ namespace BaseDeProjetos.Controllers
 
                 if (string.IsNullOrEmpty(casa))
                 {
-                    casa = this.usuarioAtivo.Casa.ToString();
+                    casa = UsuarioAtivo.Casa.ToString();
                 }
 
-                producoes = await FunilHelpers.DefinirCasaParaVisualizarEmProducao(casa, usuarioAtivo, _context, HttpContext, ViewData);
-                producoes = FunilHelpers.VincularCasaProducao(usuarioAtivo, producoes);
+                producoes = await FunilHelpers.DefinirCasaParaVisualizarEmProducao(casa, UsuarioAtivo, _context, HttpContext, ViewData);
+                producoes = FunilHelpers.VincularCasaProducao(UsuarioAtivo, producoes);
                 producoes = FunilHelpers.PeriodizarProduções(ano, producoes);
                 producoes = FunilHelpers.FiltrarProduções(searchString, producoes);
                 producoes = producoes.OrderBy(p => p.Data).ToList();
