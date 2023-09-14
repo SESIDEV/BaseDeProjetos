@@ -130,6 +130,35 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        [HttpGet("Participacao/RetornarDadosGraficoTemporal/{idUsuario}")]
+        public async Task<IActionResult> RetornarDadosGraficoTemporal(string idUsuario)
+        {
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                Usuario usuario = new Usuario();
+
+                if (!string.IsNullOrEmpty(idUsuario))
+                {
+                    usuario = await _context.Users.Where(u => u.Id == idUsuario).FirstOrDefaultAsync();
+                }
+
+                var participacao = await GetParticipacaoTotalUsuario(usuario);
+
+                if (participacao != null)
+                {
+                    return Ok(JsonConvert.SerializeObject(participacao));
+                }
+                else
+                {
+                    return Ok(null);
+                }
+            }
+            else
+            {
+                return View("Forbidden");
+            }
+        }
+
         /// <summary>
         /// Retorna os dados para o gráfico de participação do usuário
         /// </summary>
@@ -217,7 +246,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         /// <summary>
-        /// Percorre o range de data inicio até data fim e cria valores e labels (why?)
+        /// Percorre o range de data inicio até data fim e cria valores e labels
         /// </summary>
         /// <param name="participacao"></param>
         /// <param name="prospeccoesUsuario"></param>
@@ -233,7 +262,10 @@ namespace BaseDeProjetos.Controllers
             {
                 string dataFormatada = $"{dataIterada:MMM} {dataIterada.Year}";
                 mesAno.Add(dataFormatada);
-                decimal valorSomado = prospeccoesUsuario.FindAll(p => p.Status.Any(f => f.Data.Year <= dataIterada.Year && f.Data.Month <= dataIterada.Month)).Sum(p => p.ValorProposta);
+                decimal valorSomado = prospeccoesUsuario
+                    .FindAll(p => p.Status
+                    .Any(f => new DateTime(f.Data.Year, f.Data.Month, 1) <= new DateTime(dataIterada.Year, dataIterada.Month, 1)))
+                    .Sum(p => p.ValorProposta);
                 valoresProposta.Add(valorSomado);
                 dataIterada = dataIterada.AddMonths(1);
             }
@@ -623,6 +655,7 @@ namespace BaseDeProjetos.Controllers
             ViewBag.usuarioFoto = usuario.Foto;
             ViewBag.usuarioCasa = usuario.Casa;
             ViewBag.usuarioNivel = usuario.Nivel;
+            ViewBag.usuarioId = usuario.Id;
 
             return View(participacoes);
         }
