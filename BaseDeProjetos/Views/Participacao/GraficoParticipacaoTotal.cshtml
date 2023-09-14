@@ -1,6 +1,7 @@
 ﻿@using System.Globalization;
 @using Newtonsoft.Json
 @using BaseDeProjetos.Helpers;
+@using BaseDeProjetos.Helpers;
 @model BaseDeProjetos.Models.ParticipacaoTotalViewModel
 @{
     var cultura = new CultureInfo("pt-BR");
@@ -8,6 +9,19 @@
 
 
 <script>
+    function carregarGraficoTemporal(dadosRetornados, modelId) {
+        let labels = null;
+        let values = null;
+
+        if (dadosRetornados) {
+            labels = dadosRetornados.Labels;
+            values = dadosRetornados.Valores;
+        }
+        else {
+            console.error("Os dados retornados estão nulos!");
+        }
+
+        let name = `participacao-${modelId}`;
     function carregarGraficoTemporal(dadosRetornados, modelId) {
         let labels = null;
         let values = null;
