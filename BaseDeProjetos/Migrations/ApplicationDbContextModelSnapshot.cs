@@ -237,15 +237,10 @@ namespace BaseDeProjetos.Migrations
                     b.Property<decimal>("PrecoBase")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<string>("ProjetoId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
-
                     b.Property<decimal?>("ValorManutenCaoAnoAnterior")
                         .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProjetoId");
 
                     b.ToTable("Maquina");
                 });
