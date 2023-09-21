@@ -513,9 +513,9 @@ namespace BaseDeProjetos.Controllers
                         }
                     }
 
-                    qtdBolsistas = membrosEquipe.Count(u => u.Cargo == Cargo.PesquisadorBolsista);
-                    qtdEstagiarios = membrosEquipe.Count(u => u.Cargo == Cargo.EstagiarioNivelSuperior || u.Cargo == Cargo.EstagiarioNivelTecnico);
-                    qtdPesquisadores = membrosEquipe.Count(u => u.Cargo == Cargo.PesquisadorQMS);
+                    qtdBolsistas = membrosEquipe.Count(u => u.Cargo.Nome == "Pesquisador Bolsista"); // TODO: Temporário, precisa estar definido de forma mais clara
+                    qtdEstagiarios = membrosEquipe.Count(u => u.Cargo.Nome == "Estagiário"); // TODO: Temporário, precisa estar definido de forma mais clara
+                    qtdPesquisadores = membrosEquipe.Count(u => u.Cargo.Nome == "Pesquisador QMS"); // TODO: Temporário, precisa estar definido de forma mais clara
 
                     qtdMembros = qtdBolsistas + qtdEstagiarios + qtdPesquisadores;
                 }
