@@ -48,15 +48,16 @@
                         <span asp-validation-for="NomeProjeto" class="text-danger"></span>
                     </div>
 
-                    <div class="form-group">
-                        <label asp-for="MembrosEquipe" class="control-label p-2"></label>
-                        <button type="button" class="btn app-btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#exampleModal">
-                            Abrir
-                        </button>
-                        <input asp-for="MembrosEquipe" class="form-control d-none" />
-                        <span asp-validation-for="MembrosEquipe" class="text-danger"></span>
-                        <div id="membrosSelecionados" class="form-control" style="padding:2rem;"></div>
+                    <div class="mb-2">
+                        <label asp-for="MembrosEquipe" class="col-form-label" style="font-weight: 600">Membros</label>
+                        <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectPessoas-@Model.Id">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <input asp-for="MembrosEquipe" class="form-control d-none" id="inputTextPessoas-@Model.Id" type="text" />
+                        <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestPessoas-@Model.Id" onclick="gerarOpcoesSelect('Pessoas','editarProjetoModal','-@Model.Id',true)">Alterar</button>
+                        <div class="input-group flex-nowrap" id="caixaPesquisaPessoas-@Model.Id" style="display:none;">
+                            <select id="campoSelectPessoas-@Model.Id" class="form-select" multiple="true"></select>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -160,6 +161,7 @@
                     </fieldset>
                     *@
                 </div>
+                <input style="display:none" type="checkbox" disabled class="changeCheck-@Model.Id" value="Pessoas" id="checkPessoas-@Model.Id">
                 <div class="modal-footer">
                     <button type="button" class="btn app-btn-primary"
                             data-bs-target="#editarProjetoModal-@Model.Id" data-bs-toggle="modal">
@@ -289,45 +291,6 @@
                     <button type="Submit" class="btn app-btn-primary">
                         Editar
                     </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Membros da equipe-->
-    <div class="modal fade" id="modalMembrosEquipe" tabindex="-1" aria-labelledby="modalMembrosEquipeLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modalMembrosEquipeLabel">Inserir Membros da Equipe</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                            onclick="criarListaDeUsuarios.enviarMembrosParaInput()">
-                        <span aria-hidden="true"></span>
-                    </button>
-                </div>
-                <div class="modal-body d-flex justify-content-between gap-2">
-                    <div style="width:45%;">
-                        <span>Membros do Projeto</span>
-                        <div id="membrosDoProjeto" ondrop="dnd.drop(event)" ondragover="dnd.allowDrop(event)"
-                             class="border border-secondary rounded" style="width:100%;min-height:150px;padding:10px;">
-                        </div>
-                    </div>
-                    <div style="width:45%;">
-                        <span>Membros Disponíveis</span>
-                        <div id="membrosDisponiveis" ondrop="dnd.drop(event)" ondragover="dnd.allowDrop(event)"
-                             class="border border-secondary rounded"
-                             style="width:100%;height:150px;padding:10px;overflow-y:auto;">
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn app-btn-primary"
-                            onclick="criarListaDeUsuarios.exibirMembrosSelecionados()">
-                        Adicionar
-                    </button>
-                    @*<button type="button" class="btn app-btn-secondary" data-bs-dismiss="modal"
-                    onclick="enviarMembrosParaInput()">Enviar</button>*@
                 </div>
             </div>
         </div>
