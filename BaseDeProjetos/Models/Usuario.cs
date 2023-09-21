@@ -18,8 +18,6 @@ namespace BaseDeProjetos.Models
 
         [Display(Name = "Titulação Máxima")]
         public Titulacao Titulacao { get; set; }
-        [Display(Name = "Titulação Máxima")]
-        public Titulacao Titulacao { get; set; }
 
         public TipoVinculo Vinculo { get; set; }
 

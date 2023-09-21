@@ -10,7 +10,7 @@ namespace BaseDeProjetos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20230125141042_tag")]
-    partial class tag
+    partial class tag : Migration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

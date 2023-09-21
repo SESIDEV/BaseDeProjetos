@@ -66,9 +66,6 @@ namespace BaseDeProjetos.Models
         //Cálcular HH
         public virtual List<Usuario> ColaboradoresDoProjeto { get; set; }
 
-        //Cálcular HM
-        public virtual List<Maquina> MaquinasUsadasNoProjeto { get; set; }
-
         //Relacionamento StatusCurva
         public virtual List<StatusCurva> StatusCurva { get; set; }
     }
