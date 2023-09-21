@@ -217,25 +217,6 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Danificado (sem condições de uso) ou extraviado")]
         Subs_DanificadoExtraviado
     }
-
-    public enum Cargo
-    {
-        [Display(Name = "Estagiário - Nível Técnico")]
-        EstagiarioNivelTecnico, // 0
-        [Display(Name = "Estagiário - Nível Superior")]
-        EstagiarioNivelSuperior, // 1
-        [Display(Name = "Pesquisador Bolsista")]
-        PesquisadorBolsista, // 2
-        [Display(Name = "Pesquisador QMS")]
-        PesquisadorQMS, // 3 
-        [Display(Name = "PMO")]
-        PMO, // 4
-        [Display(Name = "Gestor/Supervisor")]
-        Super, // 5
-        [Display(Name = "Desligado")]
-        Desligado, // 6
-    }
-
     public enum Competencia
     {
         [Display(Name = "...")]
