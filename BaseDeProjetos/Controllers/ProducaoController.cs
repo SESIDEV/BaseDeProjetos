@@ -15,6 +15,7 @@ namespace BaseDeProjetos.Controllers
 {
     [Authorize]
     public class ProducaoController : SGIController
+    public class ProducaoController : SGIController
     {
         private readonly ApplicationDbContext _context;
 
@@ -31,14 +32,15 @@ namespace BaseDeProjetos.Controllers
                 List<Producao> producoes;
 
                 this.ViewbagizarUsuario(_context);
+                this.ViewbagizarUsuario(_context);
 
                 if (string.IsNullOrEmpty(casa))
                 {
-                    casa = this.usuarioAtivo.Casa.ToString();
+                    casa = UsuarioAtivo.Casa.ToString();
                 }
 
-                producoes = await FunilHelpers.DefinirCasaParaVisualizarEmProducao(casa, usuarioAtivo, _context, HttpContext, ViewData);
-                producoes = FunilHelpers.VincularCasaProducao(usuarioAtivo, producoes);
+                producoes = await FunilHelpers.DefinirCasaParaVisualizarEmProducao(casa, UsuarioAtivo, _context, HttpContext, ViewData);
+                producoes = FunilHelpers.VincularCasaProducao(UsuarioAtivo, producoes);
                 producoes = FunilHelpers.PeriodizarProduções(ano, producoes);
                 producoes = FunilHelpers.FiltrarProduções(searchString, producoes);
                 producoes = producoes.OrderBy(p => p.Data).ToList();

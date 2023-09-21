@@ -116,11 +116,11 @@ function FiltroEmpresaEstrangeira() {
 
 }
 
-function ChecarTipoProducao(id="") {
+function ChecarTipoProducao(id = "") {
 
     let valor = document.querySelector(`#select_tipo${id}`).value
 
-    switch(valor){
+    switch (valor) {
         case "8": //patente
             document.querySelector(`#campos_patente${id}`).style = 'display:block';
             document.querySelector(`#campos_status${id}`).style = 'display:block';
@@ -219,7 +219,7 @@ function checkAncora(alavanca, iconAncora, campoAgg) {
     }
 }
 
-function gerarOpcoesSelect(rota, modelId="", fillValues=false) { // os últimos 2 parâmetros para tratar no Edit
+function gerarOpcoesSelect(rota, modelId = "", fillValues = false) { // os últimos 2 parâmetros para tratar no Edit
 
     let defRota = "";
     let value = "";
@@ -233,17 +233,27 @@ function gerarOpcoesSelect(rota, modelId="", fillValues=false) { // os últimos 
     document.querySelector(`#${caixaId}`).style.display = "none";
     document.querySelector(`#${loadingIcon}`).style.display = "block";
     document.querySelector(`#${idSelect}`).innerHTML = '';
+    
+    // ----
+    // O código abaixa seta o parent para o dropdown, ou seja, o parent do Select2 que no caso de modais precisa estar explicitamente definido
+
     if (modelId == "") {
-        $(`#${idSelect}`).select2()
+        $(`#${idSelect}`).select2({ dropdownParent: $(`#criarProspModalToggle`) })
     } else {
         $(`#${idSelect}`).select2({ dropdownParent: $(`#editarProspModal${modelId}`) })
     }
+
+    // Até aqui
+    // ----
+
     switch (rota) { //====================================================== \/\/\/ SWITCH PRINCIPAL \/\/\/ ===============================================================
         case "Pessoas":
             defRota = '/FunilDeVendas/PuxarDadosUsuarios';
             value = "Email";
             inner = "UserName";
-            if(document.querySelector(`#selectLiderProsp${modelId}`) != null){lider = document.querySelector(`#selectLiderProsp${modelId}`).selectedOptions[0].text;};
+            if (document.querySelector(`#selectLiderProsp${modelId}`) != null) {
+                lider = document.querySelector(`#selectLiderProsp${modelId}`).selectedOptions[0].text;
+            };
             break;
         case "Empresas":
             defRota = '/Empresas/PuxarEmpresas';
@@ -266,7 +276,7 @@ function gerarOpcoesSelect(rota, modelId="", fillValues=false) { // os últimos 
     }               //====================================================== /\/\/\ SWITCH PRINCIPAL /\/\/\ ===============================================================
     fetch(defRota).then(response => response.json()).then(lista => {
         lista.forEach(function (item) {
-            if (rota == "Pessoas" && item[inner] == lider){
+            if (rota == "Pessoas" && item[inner] == lider) {
                 //nao faca nada
             } else {
                 var opt = document.createElement("option");
@@ -277,26 +287,27 @@ function gerarOpcoesSelect(rota, modelId="", fillValues=false) { // os últimos 
         })
         document.querySelector(`#${loadingIcon}`).style.display = "none";
         document.querySelector(`#${caixaId}`).style.display = "block";
-        if(fillValues){
+        if (fillValues) {
             let idText = `inputText${rota}${modelId}`;
             carregarValoresInputParaSelect(idText, idSelect, rota)
         }
+        document.querySelectorAll(".select2-container").forEach(input => { input.style.width = "100%" })
+        document.querySelector(`#${botaoAlterar}`).style.display = "none";
+        document.querySelector(`#check${rota}${modelId}`).checked = true;
     })
-    document.querySelectorAll(".select2-container").forEach(input => { input.style.width = "100%" })
-    document.querySelector(`#${botaoAlterar}`).style.display = "none";
-    document.querySelector(`#check${rota}${modelId}`).checked = true;
+
 }
 
 function procurarPessoa(select) {
     redePessoas.focus(select.value, { scale: 3, animation: { duration: 400 } })
 }
 
-function selectToText(id="") {
+function selectToText(id = "") {
     let lista = [];
     let checkAlterados = `changeCheck${id}`
 
-    document.querySelectorAll(`.${checkAlterados}`).forEach(function (check){ //funcao para indicar quais campos select foram alterados (pra não verificar todos a toa)
-        if(check.checked == true){lista.push(check.value)}
+    document.querySelectorAll(`.${checkAlterados}`).forEach(function (check) { //funcao para indicar quais campos select foram alterados (pra não verificar todos a toa)
+        if (check.checked == true) { lista.push(check.value) }
     })
     lista.forEach(function (rota) {
         let texto = '';
@@ -312,14 +323,14 @@ function selectToText(id="") {
                     }
                 }
             })
-        document.querySelector(`#inputText${rota}${id}`).value = texto
+            document.querySelector(`#inputText${rota}${id}`).value = texto
         } else {
             return;
         }
     })
 }
 
-function carregarValoresInputParaSelect(idText, idSelect){
+function carregarValoresInputParaSelect(idText, idSelect) {
     let listaOptions = [];
     let selectOptions = document.querySelector(`#${idSelect}`).options; // todos os valores carregados do fetch
     let listaValoresText = document.querySelector(`#${idText}`).value.split(";"); // todos os valores salvos no item
@@ -329,14 +340,14 @@ function carregarValoresInputParaSelect(idText, idSelect){
             for (var i = 0; i < selectOptions.length; i++) {
                 if (selectOptions[i].value === txt) {
                     listaOptions.push(selectOptions[i].value); // a funcao .val() do select2 detecta somente o .value da option
-                }                
+                }
             }
         }
-    $(`#${idSelect}`).val(listaOptions).trigger('change');
+        $(`#${idSelect}`).val(listaOptions).trigger('change');
     })
 }
 
-function Base64(id="") {
+function Base64(id = "") {
     imagem = document.getElementById(`logo_imagem${id}`).files[0];
     r = new FileReader();
     r.readAsDataURL(imagem);
@@ -346,7 +357,7 @@ function Base64(id="") {
     }
 }
 
-function MostrarImagem(id="") {
+function MostrarImagem(id = "") {
     document.getElementById(`img_preview${id}`).src = document.getElementById(`img_b64${id}`).value
 }
 
@@ -572,7 +583,7 @@ function converterCompetencias() {
 
 }
 
-function statusPatente(id="") {
+function statusPatente(id = "") {
 
     let status = document.querySelector(`#StatusPub${id}`).value
     if (status != 5) {
@@ -586,7 +597,7 @@ function statusPatente(id="") {
 function validarCNPJ(idElemento = "") {
     document.getElementById(`valor_cnpj${idElemento}`).value = document.getElementById(`valor_cnpj${idElemento}`).value.replace(/[^0-9]/g, '');
     let cnpj = document.getElementById(`valor_cnpj${idElemento}`).value;
-    
+
     if (isNaN(cnpj) || cnpj.length < 14) {
         alert("CNPJ inválido");
     } else {

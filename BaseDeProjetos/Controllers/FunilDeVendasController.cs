@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace BaseDeProjetos.Controllers
 {
     [Authorize]
-    public class FunilDeVendasController : Controller
+    public class FunilDeVendasController : SGIController
     {
         private readonly ApplicationDbContext _context;
         private readonly IEmailSender _mailer;
@@ -32,22 +32,20 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewbagizarUsuario(_context);
 
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
                 ViewBag.searchString = searchString;
                 ViewBag.TamanhoPagina = tamanhoPagina;
 
                 if (string.IsNullOrEmpty(casa))
                 {
-                    casa = usuario.Casa.ToString();
+                    casa = UsuarioAtivo.Casa.ToString();
                 }
 
                 List<Empresa> empresas = _context.Empresa.ToList();
                 List<Prospeccao> prospeccoes;
 
-                prospeccoes = ObterProspeccoesFunilFiltradas(casa, aba, sortOrder, searchString, ano, usuario);
+                prospeccoes = ObterProspeccoesFunilFiltradas(casa, aba, sortOrder, searchString, ano, UsuarioAtivo);
 
                 int qtdProspeccoes = prospeccoes.Count();
                 int qtdPaginasTodo = (int)Math.Ceiling((double)qtdProspeccoes / tamanhoPagina);
@@ -134,10 +132,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewbagizarUsuario(_context);
 
                 List<Empresa> empresas = _context.Empresa.ToList();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
@@ -168,10 +163,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewbagizarUsuario(_context);
 
                 List<Empresa> empresas = _context.Empresa.ToList();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
@@ -193,10 +185,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewbagizarUsuario(_context);
 
                 userId = HttpContext.User.Identity.Name;
                 Instituto usuarioCasa = _context.Users.FirstOrDefault(u => u.UserName == userId).Casa;
@@ -239,10 +228,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewbagizarUsuario(_context);
 
                 ViewData["origem"] = id;
                 ViewData["prosp"] = _context.Prospeccao.FirstOrDefault(p => p.Id == id);
@@ -257,7 +243,7 @@ namespace BaseDeProjetos.Controllers
         [HttpPost]
         public async Task<IActionResult> Atualizar([Bind("OrigemID, Data, Status, Anotacoes, MotivoNaoConversao")] FollowUp followup)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewbagizarUsuario(_context);
 
             if (ModelState.IsValid)
             {
@@ -270,7 +256,7 @@ namespace BaseDeProjetos.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction(nameof(Index), new { casa = usuario.Casa });
+            return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
         }
 
         /// <summary>
@@ -290,9 +276,9 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, Empresa, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
         {
-			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewbagizarUsuario(_context);
 
-			if (ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 try
                 {
@@ -311,10 +297,10 @@ namespace BaseDeProjetos.Controllers
 
                 _context.Add(prospeccao);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { casa = usuario.Casa });
+                return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
             }
             var errors = ModelState.Values.SelectMany(v => v.Errors);
-            return RedirectToAction(nameof(Index), new { casa = usuario.Casa });
+            return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
         }
 
         /// <summary>
@@ -374,10 +360,7 @@ namespace BaseDeProjetos.Controllers
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 CriarSelectListsDaView();
-
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewbagizarUsuario(_context);
 
                 if (id == null)
                 {
@@ -471,10 +454,7 @@ namespace BaseDeProjetos.Controllers
 
         public async Task<IActionResult> EditarFollowUp(int? id) // RETONAR VIEW
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
+            ViewbagizarUsuario(_context);
 
             if (id == null)
             {

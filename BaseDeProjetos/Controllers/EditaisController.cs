@@ -14,6 +14,7 @@ namespace BaseDeProjetos.Controllers
 {
     [Authorize]
     public class EditaisController : SGIController
+    public class EditaisController : SGIController
     {
         private readonly ApplicationDbContext _context;
         public EditaisController(ApplicationDbContext context)
@@ -246,7 +247,7 @@ namespace BaseDeProjetos.Controllers
                     Prospeccao = new Prospeccao
                     {
                         Id = prospeccaoId,
-                        Usuario = usuarioAtivo,
+                        Usuario = UsuarioAtivo,
                         Status = new List<FollowUp> {
                         new FollowUp
                         {
@@ -256,12 +257,12 @@ namespace BaseDeProjetos.Controllers
                             Status = StatusProspeccao.ContatoInicial
                         }
                     },
-                        Casa = usuarioAtivo.Casa
+                        Casa = UsuarioAtivo.Casa
                     },
                     ProspeccaoId = prospeccaoId,
                     Proponente = "",
                     ProjetoProposto = "",
-                    ResponsavelSubmissao = usuarioAtivo.UserName,
+                    ResponsavelSubmissao = UsuarioAtivo.UserName,
                     StatusSubmissao = StatusSubmissaoEdital.emAnalise
                 };
                 _context.Add(submissao);
