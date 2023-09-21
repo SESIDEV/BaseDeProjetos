@@ -54,22 +54,7 @@ namespace BaseDeProjetos.Migrations
                     b.ToTable("AtividadesProdutivas");
                 });
 
-            modelBuilder.Entity("BaseDeProjetos.Models.Cargo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
 
-                    b.Property<string>("Nome")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<decimal>("Salario")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Cargo");
-                });
 
             modelBuilder.Entity("BaseDeProjetos.Models.Editais", b =>
                 {
@@ -913,9 +898,7 @@ namespace BaseDeProjetos.Migrations
 
             modelBuilder.Entity("BaseDeProjetos.Models.Usuario", b =>
                 {
-                    b.HasOne("BaseDeProjetos.Models.Cargo", "Cargo")
-                        .WithMany()
-                        .HasForeignKey("CargoId");
+
 
                     b.HasOne("BaseDeProjetos.Models.Projeto", null)
                         .WithMany("ColaboradoresDoProjeto")
