@@ -1,10 +1,11 @@
 \documentclass[12pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
+\usepackage{graphicx}
 
 \title{Problemas no SGI}
 \author{Henrique Henriques}
-\date{12 de Setembro de 2023}
+\date{Última Atualização: 21 de Setembro de 2023}
 
 \begin{document}
 
@@ -121,6 +122,19 @@ A rota não está retornando os dados esperados ou retorna nulo.
 
 \subsubsection{Solução}
 Verifique a rota pela URL: \texttt{/Participacao/PuxarDadosParticipacao}.
+
+\subsection{Uncaught typeerror l[0] is undefined ao clicar em algum select}
+
+\subsubsection{Descrição}
+Ao clicar em um campo de seleção multipla select2, um erro misterioso de TypeError aparece no console do navegador e o select não funciona.
+
+\begin{figure}[h!]
+    \includegraphics[width=\linewidth]{Imagens/typeerrorselect.png}
+    \caption{Erro no Console do Firefox}
+\end{figure}
+
+\subsubsection{Solução}
+Verifique se o código que atrela o dropdown do modal está encontrando o elementoPai no método gerarOpcoesSelect
 
 \section{Soluções Gerais}
 \subsection{Resetar o banco local}
