@@ -23,7 +23,7 @@ namespace BaseDeProjetos.Controllers
         // GET: PesquisaProjetos
         public async Task<IActionResult> Index()
         {
-            this.ViewbagizarUsuario(_context);
+            ViewbagizarUsuario(_context);
             return View(await _context.PesquisaProjeto.ToListAsync());
         }
 
