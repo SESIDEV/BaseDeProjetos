@@ -21,7 +21,7 @@ A tabela de usuários do aplicativo contém múltiplas instâncias de usuários 
 
 \subsubsection{Solução}
 Execute o seguinte código SQL para remover as entradas duplicadas:
-\begin{lstlisting}[language=SQL]
+    \begin{lstlisting}[language=SQL, breaklines=true]
 DELETE FROM basedb.aspnetusers WHERE Id='00a71569-0a65-4b3c-83e7-6fa48e6f9a92';
 DELETE FROM basedb.aspnetusers WHERE Id='019f9312-211b-4ca8-b86f-f272b3e7459c';
 DELETE FROM basedb.aspnetusers WHERE Id='03d60c0b-3dad-4c14-bcc8-d4d02c35933d';
