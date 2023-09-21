@@ -40,7 +40,7 @@ namespace BaseDeProjetos.Controllers
                 indicadores.Id = idIndicador;
 
                 // Atrelar o projeto ao indicador
-                indicadores.Projeto = projeto;
+                indicadores.Projeto = projeto; 
 
                 // Criar o indicador no DB
                 await CriarIndicadores(indicadores);
@@ -116,31 +116,10 @@ namespace BaseDeProjetos.Controllers
         {
             List<Projeto> listaProjetos = await _context.Projeto.ToListAsync();
 
-            double ValorProjetoMin = listaProjetos.Min<Projeto>(projeto => projeto.ValorTotalProjeto);
-            ViewBag.ValorProjetoMin = ValorProjetoMin;
+            ViewBag.SatisfacaoMetadeProjetoMax = listaProjetos.Max(i => i.Indicador.ValorSatisfacaoMetadeProjeto);
+            ViewBag.SatisfacaoMetadeProjetoMin = listaProjetos.Min(i => i.Indicador.ValorSatisfacaoMetadeProjeto);
 
-            double ValorProjetoMax = listaProjetos.Max<Projeto>(projeto => projeto.ValorTotalProjeto);
-            ViewBag.ValorProjetoMax = ValorProjetoMax;
-
-            decimal CustoHHProjetoMin = listaProjetos.Select(projeto => projeto.ColaboradoresDoProjeto.Sum(membro => membro.Cargo.Salario)).Min();
-            ViewBag.CustoHHProjetoMin = CustoHHProjetoMin;
-
-            decimal CustoHHProjetoMax = listaProjetos.Select(projeto => projeto.ColaboradoresDoProjeto.Sum(membro => membro.Cargo.Salario)).Max();
-            ViewBag.CustoHHProjetoMax = CustoHHProjetoMax;
-
-            decimal CustoHMProjetoMin = listaProjetos.Select(maquina => maquina.MaquinasUsadasNoProjeto.Sum(maquina => maquina.PrecoBase)).Min();
-            ViewBag.CustoHMProjetoMin = CustoHMProjetoMin;
-
-            decimal CustoHMProjetoMax = listaProjetos.Select(projeto => projeto.MaquinasUsadasNoProjeto.Sum(maquina => maquina.PrecoBase)).Max();
-            ViewBag.CustoHMProjetoMax = CustoHMProjetoMax;
-
-            decimal mediaMaxFatoresDeProjeto = Helpers.Helpers.EncontrarMediaMaximaDeFatoresEmProjeto(listaProjetos);
-            ViewBag.mediaMaxFatoresDeProjeto = mediaMaxFatoresDeProjeto;
-
-            decimal mediaMinFatoresDeProjeto = Helpers.Helpers.EncontrarMediaMinimaDeFatoresEmProjeto(listaProjetos);
-            ViewBag.mediaMinFatoresDeProjeto = mediaMinFatoresDeProjeto;
-
-            return View("indicadores", listaProjetos);
+            return View("indicadores_projetos", listaProjetos);
         }
 
         /// <summary>
@@ -400,7 +379,7 @@ namespace BaseDeProjetos.Controllers
                 _context.Add(projeto);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
-            }
+            } 
             else
             {
                 return NotFound();

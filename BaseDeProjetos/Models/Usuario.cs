@@ -10,6 +10,7 @@ namespace BaseDeProjetos.Models
 
 		public Instituto Casa { get; set; }
 
+
 		public Nivel Nivel { get; set; }
 
 		[Display(Name = "Matrícula")]
