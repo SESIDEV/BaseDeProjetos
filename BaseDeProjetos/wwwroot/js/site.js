@@ -219,40 +219,52 @@ function checkAncora(alavanca, iconAncora, campoAgg) {
     }
 }
 
-function gerarOpcoesSelect(rota, modelId = "", fillValues = false) { // os últimos 2 parâmetros para tratar no Edit
+function changeDisplayStyle(element, style) {
+    if (element && element.style) {
+        element.style.display = style;
+        return
+    }
+    console.warn("O elemento ou o seu style o qual se deseja mudar está nulo");
+    if (element) {
+        console.warn(`O elemento até existe: ${element}`);
+    }
+}
 
-    let defRota = "";
-    let value = "";
-    let inner = "";
-    let lider = "";
+function gerarOpcoesSelect(rota, elementoPai, modelId = "", fillValues = false) { // os últimos 2 parâmetros para tratar no Edit
+    elementoPai = `${elementoPai}${modelId}`
+
+    let defRota = '';
+    let value = '';
+    let inner = '';
+    let lider = '';
     let idSelect = `campoSelect${rota}${modelId}`;
     let caixaId = `caixaPesquisa${rota}${modelId}`;
     let botaoAlterar = `botaoToggleCaixaRequest${rota}${modelId}`;
     let loadingIcon = `loadingOpcoesSelect${rota}${modelId}`;
 
-    document.querySelector(`#${caixaId}`).style.display = "none";
-    document.querySelector(`#${loadingIcon}`).style.display = "block";
-    document.querySelector(`#${idSelect}`).innerHTML = '';
-    
-    // ----
-    // O código abaixa seta o parent para o dropdown, ou seja, o parent do Select2 que no caso de modais precisa estar explicitamente definido
+    console.log(loadingIcon);
 
-    if (modelId == "") {
-        $(`#${idSelect}`).select2({ dropdownParent: $(`#criarProspModalToggle`) })
-    } else {
-        $(`#${idSelect}`).select2({ dropdownParent: $(`#editarProspModal${modelId}`) })
+    const caixaElem = document.querySelector(`#${caixaId}`);
+    let loadingIconElem = document.querySelector(`#${loadingIcon}`);
+    const selectElem = document.querySelector(`#${idSelect}`);
+    const liderElem = document.querySelector(`#selectLiderProsp${modelId}`);
+    let select2_containers = null;
+    const botaoAlterarElem = document.querySelector(`#${botaoAlterar}`);
+
+    changeDisplayStyle(caixaElem, "none");
+    changeDisplayStyle(loadingIconElem, "block");
+
+    if (selectElem) {
+        selectElem.innerHTML = '';
     }
-
-    // Até aqui
-    // ----
 
     switch (rota) { //====================================================== \/\/\/ SWITCH PRINCIPAL \/\/\/ ===============================================================
         case "Pessoas":
             defRota = '/FunilDeVendas/PuxarDadosUsuarios';
             value = "Email";
             inner = "UserName";
-            if (document.querySelector(`#selectLiderProsp${modelId}`) != null) {
-                lider = document.querySelector(`#selectLiderProsp${modelId}`).selectedOptions[0].text;
+            if (liderElem) {
+                lider = liderElem.selectedOptions[0].text;
             };
             break;
         case "Empresas":
@@ -274,28 +286,53 @@ function gerarOpcoesSelect(rota, modelId = "", fillValues = false) { // os últi
             console.log(`Erro: ${rota} é uma rota inválida`);
             break;
     }               //====================================================== /\/\/\ SWITCH PRINCIPAL /\/\/\ ===============================================================
-    fetch(defRota).then(response => response.json()).then(lista => {
-        lista.forEach(function (item) {
-            if (rota == "Pessoas" && item[inner] == lider) {
-                //nao faca nada
-            } else {
-                var opt = document.createElement("option");
-                if (rota != "Tags") { opt.value = item[value] }
-                opt.innerHTML = item[inner]
-                document.querySelector(`#${idSelect}`).appendChild(opt)
-            }
-        })
-        document.querySelector(`#${loadingIcon}`).style.display = "none";
-        document.querySelector(`#${caixaId}`).style.display = "block";
-        if (fillValues) {
-            let idText = `inputText${rota}${modelId}`;
-            carregarValoresInputParaSelect(idText, idSelect, rota)
-        }
-        document.querySelectorAll(".select2-container").forEach(input => { input.style.width = "100%" })
-        document.querySelector(`#${botaoAlterar}`).style.display = "none";
-        document.querySelector(`#check${rota}${modelId}`).checked = true;
-    })
+    fetch(defRota)
+        .then(response => response.json())
+        .then(lista => {
+            lista.forEach((item) => {
+                if (rota != "Pessoas" || item[inner] != lider) {
+                    let opt = document.createElement("option");
+                    if (rota != "Tags") { opt.value = item[value] }
+                    opt.innerHTML = item[inner]
+                    selectElem.appendChild(opt)
+                }
+            })
 
+            changeDisplayStyle(loadingIconElem, "none");
+            changeDisplayStyle(caixaElem, "block");
+
+            if (fillValues) {
+                let idText = `inputText${rota}${modelId}`;
+                carregarValoresInputParaSelect(idText, idSelect, rota)
+            }
+
+            changeDisplayStyle(botaoAlterarElem, "none");
+
+            let checkRota = document.querySelector(`#check${rota}${modelId}`);
+            if (checkRota) {
+                checkRota.checked = true;
+            } else {
+                console.error(`checkRota está nulo ou undefined. Rota: ${rota} ModelId: ${modelId ?? 'null'}`)
+            }
+
+            // ----
+            // O código abaixa seta o parent para o dropdown, ou seja, o parent do Select2 que no caso de modais precisa estar explicitamente definido
+            // O código usa jQuery
+
+            if (elementoPai) {
+                $(`#${idSelect}`).select2({ dropdownParent: $(`#${elementoPai}`) })
+            }
+
+            // Até aqui
+            // ----
+
+            select2_containers = document.querySelectorAll(".select2-container");
+            select2_containers.forEach(input => input.style.width = "100%");
+
+        })
+        .catch(err => {
+            console.error(`Erro no fetch ${err}`);
+        });
 }
 
 function procurarPessoa(select) {
@@ -400,10 +437,11 @@ function mostrarCompetencias() {
 }
 
 function checarStatusNaoConvertida(select) {
+    let naoConversaoElem = document.querySelector("#naoconversao");
     if (select.value == 7) {
-        document.querySelector('#naoconversao').style.display = 'block';
+        changeDisplayStyle(naoConversaoElem, "block");
     } else {
-        document.querySelector('#naoconversao').style.display = 'none';
+        changeDisplayStyle(naoConversaoElem, "none");
     }
 }
 
@@ -421,27 +459,28 @@ function updateLink() {
 
 }
 
-function montarNetwork(pessoas, compFiltradas = null) {
+function montarNetwork(pessoas, competenciasFiltradas = null) {
     var network = null;
     let defuserpic = "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png";
     var existeFiltro = false
     var listaPessoas = []
-    var listaLigacoes = []
+    var ligacoes = []
 
-    if (compFiltradas !== null) {
-        existeFiltro = NaoEhNulaOuVazia(compFiltradas)
+    if (competenciasFiltradas !== null) {
+        existeFiltro = naoNulaOuVazia(competenciasFiltradas)
     }
+
     let dictCompetencias = JSON.parse(localStorage.getItem('dictCompetencias'))
-    pessoas.forEach(p => {
+    pessoas.forEach(pessoa => {
         let listaCompPessoa = []
         let notInclude = false
         var user = {};
 
         if (existeFiltro) {
 
-            listaCompPessoa = p['Competencia'].split(";").map(cp => dictCompetencias[cp])
+            listaCompPessoa = pessoa['Competencia'].split(";").map(cp => dictCompetencias[cp])
 
-            compFiltradas.forEach(comp => {
+            competenciasFiltradas.forEach(comp => {
                 if (!listaCompPessoa.includes(comp)) {
                     notInclude = true;
                     return;
@@ -452,16 +491,16 @@ function montarNetwork(pessoas, compFiltradas = null) {
             }
         }
 
-        user['id'] = p['Email']
-        user['title'] = p['UserName']
-        user['comp'] = p['Competencia']
+        user['id'] = pessoa['Email']
+        user['title'] = pessoa['UserName']
+        user['comp'] = pessoa['Competencia']
 
-        if ((p['Foto'] == null) || (p['Foto'] == "")) {
+        if ((pessoa['Foto'] == null) || (pessoa['Foto'] == "")) {
             user['image'] = defuserpic
-        } else if (p['Foto'].includes("data:image/jpeg;base64,")) {
-            user['image'] = p['Foto']
+        } else if (pessoa['Foto'].includes("data:image/jpeg;base64,")) {
+            user['image'] = pessoa['Foto']
         } else {
-            user['image'] = "data:image/jpeg;base64," + p['Foto']
+            user['image'] = "data:image/jpeg;base64," + pessoa['Foto']
         }
 
         pessoas.filter(ps => ps['Email'] != user['id']).forEach(pessoaParalela => { // para cada pessoa na rede inteira
@@ -473,10 +512,10 @@ function montarNetwork(pessoas, compFiltradas = null) {
             listaCompPessoa.every(compet => { // para cada competencia da pessoa do loop atual
                 if (listaCompPessoaParalela.includes(compet)) {
                     let setUsuario = new Set([user['id'], pessoaParalela['Email']]);
-                    let ligacoes = listaLigacoes.map(p => new Set(Object.values(p)))
+                    let ligacoes = ligacoes.map(p => new Set(Object.values(p)))
                     console.log(ligacoes)
                     if (ligacoes.filter(p2 => eqSet(p2, setUsuario)).length == 0) {
-                        listaLigacoes.push({ from: user['id'], to: pessoaParalela['Email'] })
+                        ligacoes.push({ from: user['id'], to: pessoaParalela['Email'] })
                         iterar = false;
                         return;
                     }
@@ -490,7 +529,7 @@ function montarNetwork(pessoas, compFiltradas = null) {
 
         listaPessoas.push(user)
     })
-    construirGrafo(listaPessoas, listaLigacoes);
+    construirGrafo(listaPessoas, ligacoes);
     //({ nodes, edges, network } = construirGrafo(nodes, listaPessoas, edges, listaLigacoes, network));
 }
 
@@ -566,7 +605,7 @@ function construirGrafo(listaPessoas, listaLigacoes) {
     //return { nodes, edges, network };
 }
 
-function NaoEhNulaOuVazia(compFiltradas) {
+function naoNulaOuVazia(compFiltradas) {
     return compFiltradas != null && compFiltradas != "" && compFiltradas != [];
 }
 
