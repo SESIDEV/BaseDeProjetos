@@ -7,10 +7,12 @@ namespace BaseDeProjetos.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "Comentarios",
-                table: "PesquisaProjeto",
+            // Não editar, tive de adicionar manualmente
+            migrationBuilder.AddColumn<int>(
+                name: "CargoId",
+                table: "AspNetUsers",
                 nullable: true);
+
 
             migrationBuilder.CreateTable(
                 name: "Cargo",
@@ -41,12 +43,14 @@ namespace BaseDeProjetos.Migrations
                 name: "FK_AspNetUsers_Cargo_CargoId",
                 table: "AspNetUsers");
 
+            // Não alterar, tive de adicionar manualmente
+            migrationBuilder.DropColumn(
+                name: "CargoId",
+                table: "AspNetUsers");
+
             migrationBuilder.DropTable(
                 name: "Cargo");
 
-            migrationBuilder.DropColumn(
-                name: "Comentarios",
-                table: "PesquisaProjeto");
         }
     }
 }
