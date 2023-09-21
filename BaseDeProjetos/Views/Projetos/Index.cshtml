@@ -41,7 +41,7 @@
 
 	function carregarModaisProjeto(idProjeto) {
 		// O nome precisa bater com o nome da view, no sentido que, o sufixo será "ProjViewComponent". Em outras palavras, está acoplado.
-		modaisDisponiveis = ["DetalhesMacroentrega", "IncluirMacroentrega", "Edit", "Delete"]
+		modaisDisponiveis = ["DetalhesIndicador", "IncluirIndicador", "Edit", "Delete"]
 		modaisDisponiveis.forEach((tipo) => {
 			carregarModalProjeto(idProjeto, tipo)
 		})
@@ -53,7 +53,7 @@
 </script>
 <div class="app-wrapper">
 	<div class="app-content pt-3 p-md-3 p-lg-4">
-		<div class="container-xl">
+		<div class="">
 			<div class="row g-3 mb-4 align-items-center justify-content-between">
 				<div class="col-auto">
 					<h1 class="app-page-title mb-0">Projetos @ViewData["Area"]</h1>

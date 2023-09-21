@@ -42,7 +42,7 @@ namespace BaseDeProjetos.Controllers
                 // Atrelar o projeto ao indicador
                 indicadores.Projeto = projeto;
 
-                // Criar o indicador da macroentrega no DB
+                // Criar o indicador no DB
                 await CriarIndicadores(indicadores);
 
                 await _context.SaveChangesAsync();
@@ -537,7 +537,7 @@ namespace BaseDeProjetos.Controllers
         // POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeletarMacroentrega(string id)
+        public async Task<IActionResult> DeletarIndicador(string id)
         {
             ProjetoIndicadores indicador = await _context.ProjetoIndicadores.FindAsync(id);
             _context.ProjetoIndicadores.Remove(indicador);

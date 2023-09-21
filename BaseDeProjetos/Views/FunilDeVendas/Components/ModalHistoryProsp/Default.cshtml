@@ -39,7 +39,13 @@
                             <div id="panelsFollowups-collapse-@followup.Id" class="accordion-collapse collapse"
                             aria-labelledby="panelsFollowups-heading-@followup.Id">
                                 <div class="accordion-body">
-                                    @followup.Anotacoes
+                                    @if (string.IsNullOrEmpty(followup.Anotacoes)) 
+                                    {
+                                        <span>Não há nada preenchido.</span>
+                                    }
+                                    else {
+                                        @followup.Anotacoes
+                                    }
                                     <hr />
                                     Vence em: @followup.Vencimento.ToString("dd/MM/yyyy",
                                 CultureInfo.CreateSpecificCulture("pt-BR"))

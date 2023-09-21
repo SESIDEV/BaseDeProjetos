@@ -5,6 +5,8 @@ using System.Text.Json;
 using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Html;
+using BaseDeProjetos.Models;
+using Microsoft.AspNetCore.Html;
 
 namespace BaseDeProjetos.Helpers
 {
@@ -86,7 +88,6 @@ namespace BaseDeProjetos.Helpers
             return valor.ToString("#,0");
         }
 
-
         public static int VerificarIntervalo(decimal valor, decimal valorMinimo, decimal valorMaximo)
         {
             decimal primeiroTerco, segundoTerco;
@@ -142,9 +143,10 @@ namespace BaseDeProjetos.Helpers
         /// </summary>
         /// <param name="_context"></param>
         /// <returns></returns>
-        public static string PuxarDadosUsuarios(ApplicationDbContext _context){
-            
-            var usuarios = _context.Users.Where(u => u.Email != null).Select(u => new {u.Email, u.UserName, u.Foto, u.Competencia, u.EmailConfirmed}).ToList();
+        public static string PuxarDadosUsuarios(ApplicationDbContext _context)
+        {
+
+            var usuarios = _context.Users.Where(u => u.Email != null).Select(u => new { u.Email, u.UserName, u.Foto, u.Competencia, u.EmailConfirmed }).ToList();
 
             string usuariosJson = JsonSerializer.Serialize(usuarios);
 
@@ -192,12 +194,38 @@ namespace BaseDeProjetos.Helpers
         public static string PuxarDadosProducoes(ApplicationDbContext _context)
         {
 
-            var producoes = _context.Producao.Where(p => p.Titulo != null).Select(p => new {p.Casa, p.Titulo, p.Descricao, p.Autores, p.StatusPub, p.Data, p.Local, p.DOI}).ToList(); //.GetDisplayName() NAO FUNCIONA
+            var producoes = _context.Producao.Where(p => p.Titulo != null).Select(p => new { p.Casa, p.Titulo, p.Descricao, p.Autores, p.StatusPub, p.Data, p.Local, p.DOI }).ToList(); //.GetDisplayName() NAO FUNCIONA
 
             string producoesJson = JsonSerializer.Serialize(producoes);
 
             return producoesJson;
 
+        }
+
+        public static Tuple<string, string> ObterNomeCasaAbreviado(Instituto casa)
+        {
+            string nomeCasa = Enum.GetName(typeof(Instituto), casa);
+
+            if (nomeCasa == "CISHO")
+            {
+                return new Tuple<string, string>("CIS-SO", nomeCasa);
+            }
+            else if (nomeCasa == "ISIQV")
+            {
+                return new Tuple<string, string>("ISI-QV", nomeCasa);
+            }
+            else if (nomeCasa == "ISISVP")
+            {
+                return new Tuple<string, string>("ISI-SVP", nomeCasa);
+            }
+            else if (nomeCasa == "ISIII")
+            {
+                return new Tuple<string, string>("ISI-II", nomeCasa);
+            }
+            else
+            {
+                return new Tuple<string, string>(nomeCasa, nomeCasa);
+            }
         }
     }
 

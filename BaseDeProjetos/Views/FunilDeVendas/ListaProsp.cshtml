@@ -121,7 +121,7 @@
                                 </td> @*Status*@
                                 @if (prospeccao.Status.OrderBy(followup => followup.Data).Last().Status != StatusProspeccao.Planejada)
                                 {
-                                    <td class="cell">                
+                                    <td class="cell">
                                         @FunilHelpers.VerificarTemperatura(subtracaoUltimoStatus)
                                     </td>
                                 }
