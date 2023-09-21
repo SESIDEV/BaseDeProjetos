@@ -15,7 +15,6 @@ namespace BaseDeProjetos.Controllers
 {
     [Authorize]
     public class ProducaoController : SGIController
-    public class ProducaoController : SGIController
     {
         private readonly ApplicationDbContext _context;
 

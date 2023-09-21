@@ -14,7 +14,6 @@ namespace BaseDeProjetos.Controllers
 {
     [Authorize]
     public class EditaisController : SGIController
-    public class EditaisController : SGIController
     {
         private readonly ApplicationDbContext _context;
         public EditaisController(ApplicationDbContext context)
