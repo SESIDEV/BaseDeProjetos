@@ -544,12 +544,7 @@ namespace BaseDeProjetos.Migrations
                     b.Property<decimal>("Fisico")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<string>("ProjetoId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ProjetoId");
 
                     b.ToTable("StatusCurva");
                 });
@@ -893,14 +888,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasOne("BaseDeProjetos.Models.Usuario", "Usuario")
                         .WithMany()
                         .HasForeignKey("UsuarioId");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.StatusCurva", b =>
-                {
-                    b.HasOne("BaseDeProjetos.Models.Projeto", "Projeto")
-                        .WithMany("StatusCurva")
-                        .HasForeignKey("ProjetoId")
-                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("BaseDeProjetos.Models.Submissao", b =>
