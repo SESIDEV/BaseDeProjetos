@@ -1,4 +1,4 @@
-﻿@model BaseDeProjetos.Models.Projeto
+@model BaseDeProjetos.Models.Projeto
 @using Microsoft.AspNetCore.Http
 @using System.Globalization
 
@@ -333,13 +333,6 @@
         </div>
     </div>
 </form>
-
-<script>
-    let dnd = new DragAndDrop();
-    let criarListaDeUsuarios = new ObterListaDeUsuariosJson();
-    criarListaDeUsuarios.enviarMembrosParaInput();
-    criarListaDeUsuarios.exibirMembrosSelecionados();
-</script>
 
 @section Scripts {
     @{
