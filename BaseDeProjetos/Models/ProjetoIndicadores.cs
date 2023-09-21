@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -32,16 +31,16 @@ namespace BaseDeProjetos.Models
 		public virtual bool Bolsista { get; set; }
 
 		[Display(Name = "Questionário de Satisfação na Metade do Projeto")]
-		public virtual bool SatisfacaoMetadeProjeto { get; set; }		
+		public virtual bool SatisfacaoMetadeProjeto { get; set; }
+		public virtual int ValorSatisfacaoMetadeProjeto { get; set; }
 
 		[Display(Name = "Questionário de Satisfação no Fim do Projeto")]
 		public virtual bool SatisfacaoFimProjeto { get; set; }
-		
+		public virtual int ValorSatisfacaoFimProjeto { get; set; }
 		[Display(Name = "Relatórios")]
 		public virtual bool Relatorios { get; set; }
 
 		[Display(Name = "Prestação de Contas")]
 		public virtual bool PrestacaoContas { get; set; }
-
-    }
+	}
 }
