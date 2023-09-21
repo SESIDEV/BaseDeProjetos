@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using BaseDeProjetos.Data;
-using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Html;
 using BaseDeProjetos.Models;
-using Microsoft.AspNetCore.Html;
 
 namespace BaseDeProjetos.Helpers
 {
