@@ -60,7 +60,6 @@
         <td class="cell">
             @projeto.Status.GetDisplayName()
         </td>
-
         <td class="cell">
             @if (projeto.ValorAporteRecursos != 0 && projeto.ValorAporteRecursos > 0)
             {
@@ -75,11 +74,14 @@
             @projeto.FonteFomento.GetDisplayName()
         </td>
         <td class="cell">
-
-            <span>@projeto.DataEncerramento.ToString("dd/MM/yyyy")</span>
-
+            <span>@projeto.DataInicio.ToString("dd/MM/yyyy")</span>
         </td>
-
+        <td class="cell">
+            <span>@projeto.DataEncerramento.ToString("dd/MM/yyyy")</span>
+        </td>
+        <td class="cell">
+            <span>69%</span>
+        </td>
         <td class="cell">
             <button type="button" data-bs-target="#modalDetalhes-@projeto.Id" id="button-@projeto.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary" onmouseover="carregarModaisProjeto('@projeto.Id')">Detalhes</button>
         </td>
