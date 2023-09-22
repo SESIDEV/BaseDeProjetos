@@ -40,7 +40,7 @@ namespace BaseDeProjetos.Controllers
                 indicadores.Id = idIndicador;
 
                 // Atrelar o projeto ao indicador
-                indicadores.Projeto = projeto; 
+                indicadores.Projeto = projeto;
 
                 // Criar o indicador no DB
                 await CriarIndicadores(indicadores);
@@ -368,7 +368,7 @@ namespace BaseDeProjetos.Controllers
                 _context.Add(projeto);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
-            } 
+            }
             else
             {
                 return NotFound();
@@ -389,17 +389,15 @@ namespace BaseDeProjetos.Controllers
 
                 if (id == null)
                 {
-                    return NotFound();
+                    return View("Error");
                 }
 
                 Projeto projeto = await _context.Projeto.FindAsync(id);
 
                 if (projeto == null)
                 {
-                    return NotFound();
+                    return View("Error");
                 }
-
-                //ConfigurarEquipe(projeto);
 
                 return View(projeto);
             }
@@ -409,31 +407,16 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
-        /*private static void ConfigurarEquipe(Projeto projeto)
-        {
-            if (projeto.Equipe.Count() < 2)
-            {
-                if (projeto.Equipe.Count() == 0)
-                {
-                    projeto.Equipe = new List<Usuario>() { new Usuario(), new Usuario() };
-                }
-                else
-                {
-                    projeto.Equipe.Add(new Usuario());
-                }
-            }
-        }*/
-
         //POST: Projetos/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Casa,NomeProjeto, MembrosEquipe,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos,Indicadores")] Projeto projeto)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Casa,NomeProjeto,MembrosEquipe,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos,Indicadores")] Projeto projeto)
         {
             if (id != projeto.Id)
             {
-                return NotFound();
+                return View("Error");
             }
 
             if (ModelState.IsValid)
@@ -443,20 +426,16 @@ namespace BaseDeProjetos.Controllers
                     _context.Projeto.Update(projeto);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
-                    if (!ProjetoExists(projeto.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw ex;
                 }
                 return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
             }
-            return View(projeto);
+            else
+            {
+                return View("Error");
+            }
         }
 
         /*private List<Usuario> ObterUsuarios(Projeto projeto)
