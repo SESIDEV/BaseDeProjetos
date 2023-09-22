@@ -1,5 +1,9 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Projeto>
 @using BaseDeProjetos.Helpers
+@{
+    var usuarios = ViewData["Usuarios"] as List<Usuario>;
+}
+
 <style>
     .caixa-logo {
         max-width: 180px;
@@ -8,14 +12,7 @@
         align-items: center;
         padding: 20px;
     }
-
-    #logoEmpresa {
-        object-fit: contain;
-        max-width: 180px;
-        max-height: 180px;
-        padding: 20px;
-    }
-
+    
     #box-btn-actions {
         width: 100%;
         justify-content: center;
@@ -45,17 +42,52 @@
     </div>
 
     <tr>
-        @if (projeto.Empresa.Logo != null)
-        {
-            <td class="cell"><img loading="lazy" src="@projeto.Empresa.Logo" id="logoEmpresa" alt="Logo da Empresa" style="background-color:white"></td>
-        }
-        else
-        {
-            <td class="cell"><nobr id="logo_alt">Sem Logo</nobr></td>
-        }
-        <td class="cell">@projeto.Empresa.Nome</td> @*Empresa*@
+        <td class="cell">
+            <div class="d-flex gap-2 flex-column align-items-center">
+                <div>
+                    @*LOGO*@
+                    @if (projeto.Empresa.Logo != null)
+                    {
+                        <img style="border: 2px solid #999; border-radius: 10px;" loading="lazy" src="@projeto.Empresa.Logo" id="logoEmpresa" alt="Logo da Empresa" style="background-color:white" width="175%" />
+                    }
+                    else
+                    {
+                        <nobr id="logo_alt">Sem Logo</nobr>
+                    }
+                </div>
+                <div style="text-align:center;width:90px">
+                    @*NOME EMPRESA*@
+                    @projeto.Empresa.Nome @*FAVOR NAO EDITAR*@
+                </div>
+            </div>
+        </td>
+        
         <td class="cell">
             @projeto.NomeProjeto
+        </td>
+        <td class="cell">
+            @if (projeto.Usuario != null)
+            {
+                <span class="badge bg-success">@projeto.Usuario.UserName</span> @*Líder*@
+            }
+            else
+            {
+                <span class="badge bg-danger">Sem Líder</span>
+            }
+            @if (projeto.MembrosEquipe != null)
+            {
+                foreach (var item in projeto.MembrosEquipe.Split(";"))
+                {
+                    if (item != "")
+                    {
+                        var user = usuarios.Where(u => u.Email == item).FirstOrDefault();
+                        if (user != null)
+                        {
+                            <span class="badge bg-info">@user.UserName</span>
+                        }
+                    }
+                }
+            }
         </td>
         <td class="cell">
             @projeto.Status.GetDisplayName()
