@@ -2,3 +2,25 @@
 for details on configuring this project to bundle and minify static web assets. */
 
 /* common */
+
+#logoEmpresa {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+}
+
+.bg-esfriando {
+    background-color: #fff462;
+}
+
+.bg-frio {
+    background-color: #beffff;
+}
+
+.bg-morno {
+    background-color: #ff8f50;
+}
+
+.bg-quente {
+    background-color: #ff5c50;
+}
