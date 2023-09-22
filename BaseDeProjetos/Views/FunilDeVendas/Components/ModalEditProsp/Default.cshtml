@@ -53,7 +53,7 @@
                         <span class="visually-hidden">Loading...</span>
                     </div>
                     <input asp-for="MembrosEquipe" class="form-control d-none" id="inputTextPessoas-@Model.Id" type="text"/>
-                        <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestPessoas-@Model.Id" onclick="gerarOpcoesSelect('Pessoas','editarProspModal-@Model.Id','-@Model.Id',true)">Alterar</button>
+                        <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestPessoas-@Model.Id" onclick="gerarOpcoesSelect('Pessoas','editarProspModal','-@Model.Id',true)">Alterar</button>
                     <div class="input-group flex-nowrap" id="caixaPesquisaPessoas-@Model.Id" style="display:none;">
                         <select id="campoSelectPessoas-@Model.Id" class="form-select" multiple="true"></select>
                     </div>
@@ -96,7 +96,7 @@
                         <span class="visually-hidden">Loading...</span>
                     </div>
                     <input asp-for="Agregadas" class="form-control d-none" id="inputTextProspeccoes-@Model.Id" type="text"/>
-                        <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestProspeccoes-@Model.Id" onclick="gerarOpcoesSelect('Prospeccoes','editarProspModal-@Model.Id','-@Model.Id',true)">Alterar</button>
+                        <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestProspeccoes-@Model.Id" onclick="gerarOpcoesSelect('Prospeccoes','editarProspModal','-@Model.Id',true)">Alterar</button>
                     <div class="input-group flex-nowrap" id="caixaPesquisaProspeccoes-@Model.Id" style="display:none;">
                         <select id="campoSelectProspeccoes-@Model.Id" class="form-select" multiple="true"></select>
                     </div>
