@@ -340,31 +340,54 @@ function procurarPessoa(select) {
 }
 
 function selectToText(id = "") {
-    let lista = [];
-    let checkAlterados = `changeCheck${id}`
+    let checkAlteradosId = `.changeCheck${id}`
+    let checkAlteradosElem = document.querySelectorAll(checkAlteradosId);
 
-    document.querySelectorAll(`.${checkAlterados}`).forEach(function (check) { //funcao para indicar quais campos select foram alterados (pra não verificar todos a toa)
-        if (check.checked == true) { lista.push(check.value) }
-    })
-    lista.forEach(function (rota) {
-        let texto = '';
-        if (document.querySelector(`#select2-campoSelect${rota}${id}-container`) != null) {
-            document.querySelector(`#select2-campoSelect${rota}${id}-container`).childNodes.forEach(caixa => {
+    // Indicar quais campos select foram alterados (pra não verificar todos a toa)
+    let valoresCheck = Array.from(checkAlteradosElem)
+        .filter(check => check)
+        .map(check => check.value);
 
-                let selecoes = document.querySelector(`#campoSelect${rota}${id}`).childNodes; // buscar as options na tag select original para trazer os valores (.value)
-                for (let i = 0; i < selecoes.length; i++) {
-                    let option = selecoes[i];
+    if (valoresCheck.length === 0) {
+        console.error("Não temos um check...");
+        return;
+    }
+
+    valoresCheck.forEach((rota) => {
+        if (!rota) {
+            console.error("A rota está nula");
+        }
+
+        const campoSelectId = `#select2-campoSelect${rota}${id}-container`;
+        const campoSelectElem = document.querySelector(campoSelectId);
+
+        if (campoSelectElem) {
+            let texto = '';
+
+            campoSelectElem.childNodes.forEach(caixa => {
+                const selecoes = document.querySelector(`#campoSelect${rota}${id}`).childNodes; // buscar as options na tag select original para trazer os valores (.value)
+                for (const option of selecoes) {
                     if (option.innerText === caixa.title.replace(/\s+/g, ' ')) { // compara o texto selecionado com o texto da option no loop
-                        texto += option.value + ';'; // concatena os valores dos textos selecionados
+                        texto += `${option.value};`; // concatena os valores dos textos selecionados
                         break;
                     }
                 }
-            })
-            document.querySelector(`#inputText${rota}${id}`).value = texto
+            });
+
+            const inputTextId = `#inputText${rota}${id}`
+            const inputTextElem = document.querySelector(inputTextId);
+
+            if (inputTextElem) {
+                inputTextElem.value = texto
+            }
+            else {
+                console.error("Não temos um input text...")
+            }
         } else {
+            console.error("Não temos um Campo Select...");
             return;
         }
-    })
+    });
 }
 
 function carregarValoresInputParaSelect(idText, idSelect) {
