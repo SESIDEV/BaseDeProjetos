@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BaseDeProjetos.Models
 {
@@ -60,13 +61,13 @@ namespace BaseDeProjetos.Models
 
         public virtual List<ProjetoIndicadores> Indicadores { get; set; } = new List<ProjetoIndicadores>();
 
-        //Relacionamento Usuário Líder (Pesquisador)
+        [ForeignKey("UsuarioId")]
         public virtual Usuario Usuario { get; set; }
 
-        //Cálcular HH
+        public virtual string UsuarioId { get; set; }
+
         public virtual List<Usuario> ColaboradoresDoProjeto { get; set; }
 
-        //Relacionamento StatusCurva
         public virtual List<StatusCurva> StatusCurva { get; set; }
     }
 }

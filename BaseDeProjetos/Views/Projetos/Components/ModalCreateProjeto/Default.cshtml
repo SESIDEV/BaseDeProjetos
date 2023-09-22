@@ -1,8 +1,10 @@
 ﻿@model BaseDeProjetos.Models.Projeto
+@using BaseDeProjetos.Helpers;
 @using Microsoft.AspNetCore.Http
 @{
     ViewData["Title"] = "Adicionar Projeto";
     var nivelUsuario = ViewData["NivelUsuario"];
+    var idUsuarioAtivo = ViewData["IdUsuario"];
     if (!(Context.Session.GetString("_Casa") is null))
     {
         ViewData["Area"] = Context.Session.GetString("_Casa");
@@ -19,6 +21,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <input asp-for="UsuarioId" type="hidden" value="@idUsuarioAtivo" readonly />
                     <div class="form-group">
                         <label asp-for="Id" class="control-label"></label>
                         @{
