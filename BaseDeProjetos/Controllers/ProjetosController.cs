@@ -91,11 +91,12 @@ namespace BaseDeProjetos.Controllers
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                var usuarios = _context.Users.ToList();
                 ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel; // Já vi não funcionar, porquê? :: hhenriques1999
                 ViewData["NivelUsuario"] = usuario.Nivel;
                 ViewData["IdUsuario"] = usuario.Id;
-                ViewData["Usuarios"] = _context.Users.ToList();
+                ViewData["Usuarios"] = usuarios;
 
                 List<Empresa> empresas = _context.Empresa.ToList();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
