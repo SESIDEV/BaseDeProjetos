@@ -137,35 +137,6 @@
         </form>
     </div>
 </div>
-
-<!-- Modal Membros da equipe-->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Inserir Membros da Equipe</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="criarListaDeUsuarios.enviarMembrosParaInput()"><span aria-hidden="true"></span></button>
-            </div>
-            <div class="modal-body d-flex justify-content-between gap-2">
-                <div style="width:45%;">
-                    <span>Membros do Projeto</span>
-                    <div id="membrosDoProjeto" ondrop="dnd.drop(event)" ondragover="dnd.allowDrop(event)" class="border border-secondary rounded" style="width:100%;min-height:150px;padding:10px;">
-                    </div>
-                </div>
-                <div style="width:45%;">
-                    <span>Membros Disponíveis</span>
-                    <div id="membrosDisponiveis" ondrop="dnd.drop(event)" ondragover="dnd.allowDrop(event)" class="border border-secondary rounded" style="width:100%;height:150px;padding:10px;overflow-y:auto;">
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn app-btn-primary" onclick="criarListaDeUsuarios.exibirMembrosSelecionados()">Adicionar</button>
-                @*<button type="button" class="btn app-btn-secondary" data-bs-dismiss="modal" onclick="enviarMembrosParaInput()">Enviar</button>*@
-            </div>
-        </div>
-    </div>
-</div>
-
 <div>
     <a asp-action="Index" asp-route-casa="@ViewData["Area"]">Voltar</a>
 </div>
