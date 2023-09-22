@@ -21,13 +21,13 @@
 </style>
 
 <div class="app-card app-card-orders-table shadow-sm mb-5">
-    @foreach (var prospeccao in Model.Prospeccoes) 
+    @foreach (var prospeccao in Model.Prospeccoes)
     {
         @* ["Edit", "Delete", "History", "CreateFollowup", "EditFollowup", "Detalhes"] *@
         @await Component.InvokeAsync("ModalEditProsp", new { id = prospeccao.Id })
         @await Component.InvokeAsync("ModalDeleteProsp", new { id = prospeccao.Id })
         @await Component.InvokeAsync("ModalDetailsProsp", new { id = prospeccao.Id })
-        @await Component.InvokeAsync("ModalHistoryProsp", new { id = prospeccao.Id }) 
+        @await Component.InvokeAsync("ModalHistoryProsp", new { id = prospeccao.Id })
         @await Component.InvokeAsync("ModalCreateFollowupProsp", new { id = prospeccao.Id })
     }
 </div>
@@ -47,7 +47,7 @@
                             @if (@aba != "planejadas")
                             {
                                 <th class="cell">Temperatura</th>
-                            }                          
+                            }
                             <th class="cell">Valor</th>
                             <th class="cell">Origem</th>
                             <th class="cell">Detalhes</th>
@@ -59,15 +59,19 @@
                             <tr id="table-row-@prospeccao.Id">
                                 <td class="cell">
                                     <div class="d-flex gap-2 flex-column align-items-center">
-                                        <div> @*ICONES*@
-                                            @if (prospeccao.Empresa.Industrial == false){
+                                        <div>
+                                            @*ICONES*@
+                                            @if (prospeccao.Empresa.Industrial == false)
+                                            {
                                                 <span id="tip_ind" class="translate-top-left badge rounded-circle bg-danger" data-tippy-content="<center>Esta empresa não possui<br>CNAE Industrial</center>">!</span>
                                             }
-                                            @if(prospeccao.Ancora == true){
+                                            @if (prospeccao.Ancora == true)
+                                            {
                                                 <span id="tip_agg" class="translate-top-right badge rounded-pill bg-warning" data-tippy-content='@FunilHelpers.MostrarAgregadas(agregadas, prospeccao.Agregadas)'>+@prospeccao.Agregadas.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Length</span>
                                             }
                                         </div>
-                                        <div> @*LOGO*@
+                                        <div>
+                                            @*LOGO*@
                                             @if (prospeccao.Empresa.Logo != null)
                                             {
                                                 <img style="border: 2px solid #999; border-radius: 10px;" loading="lazy" src="@prospeccao.Empresa.Logo" id="logoEmpresa" alt="Logo da Empresa" style="background-color:white" width="175%">
@@ -77,7 +81,8 @@
                                                 <nobr id="logo_alt">Sem Logo</nobr>
                                             }
                                         </div>
-                                        <div style="text-align:center;width:90px"> @*NOME EMPRESA*@
+                                        <div style="text-align:center;width:90px">
+                                            @*NOME EMPRESA*@
                                             @prospeccao.Empresa.Nome @*FAVOR NAO EDITAR*@
                                         </div>
                                     </div>
@@ -103,10 +108,18 @@
                                     {
                                         <span class="badge bg-danger">Sem Líder</span>
                                     }
-                                    @if(prospeccao.MembrosEquipe != null){
+                                    @if (prospeccao.MembrosEquipe != null)
+                                    {
                                         foreach (var item in prospeccao.MembrosEquipe.Split(";"))
                                         {
-                                            if(item == ""){} else {<span class="badge bg-info">@usuarios.Where(u => u.Email == item).FirstOrDefault().UserName</span>} // pode crashar se houver algum membro que nao esteja cadastrado como usuario
+                                            if (item != "")
+                                            {
+                                                var user = usuarios.Where(u => u.Email == item).FirstOrDefault();
+                                                if (user != null)
+                                                {
+                                                    <span class="badge bg-info">@user.UserName</span>
+                                                }
+                                            }
                                         }
                                     }
                                 </td>
@@ -164,7 +177,7 @@
                             </tr>
                         }
                     </tbody>
-                </table>               
+                </table>
             </div>
         </div>
     </div>
