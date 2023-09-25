@@ -10,7 +10,7 @@ using BaseDeProjetos.Models;
 
 namespace BaseDeProjetos.Controllers
 {
-    public class CargosController : Controller
+    public class CargosController : SGIController
     {
         private readonly ApplicationDbContext _context;
 
@@ -22,7 +22,14 @@ namespace BaseDeProjetos.Controllers
         // GET: Cargos
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Cargo.ToListAsync());
+			if (HttpContext.User.Identity.IsAuthenticated)
+            {
+				ViewbagizarUsuario(_context);
+            	return View(await _context.Cargo.ToListAsync());
+			}
+			else {
+				return View("Forbidden");
+			}
         }
 
         // GET: Cargos/Details/5

@@ -1,46 +1,147 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Cargo>
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Cargos";
 }
 
+<partial name="Header" view-data="@ViewData" />
+<script>
+    let cargosCarregados = []
 
-<div class="container">
-    <h1>Index</h1>
-
-    <p>
-        <a asp-action="Create">Criar Novo</a>
-    </p>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Nome)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Salario)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Nome)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Salario)
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Deletar</a>
-                    </td>
-                </tr>
+    async function carregarModalCargo(idCargo, tipo) {
+        if (idCargo) {
+            if (tipo) {
+                await fetch(`/Cargos/RetornarModal?idCargo=${idCargo}&tipo=${tipo}`)
+                    .then(response => response.text())
+                    .then(result => {
+                        let modalContainer = document.querySelector(`#modal${tipo}Cargo-${idCargo}-container`);
+                        if (modalContainer) {
+                            modalContainer.innerHTML = result;
+                        }
+                        else {
+                            console.error("Não temos o container para o modal");
+                        }
+                    })
+                    .catch(err => {
+                        console.error(`Ocorreu um erro ao puxar o modal: ${err}`);
+                    });
+            } else {
+                console.log("Tipo de Modal Inválido");
             }
-        </tbody>
-    </table>
+        }
+        else {
+            console.error(`idCargo inválida: ${idCargo}`);
+        }
+    }
 
+    async function carregarModaisCargo(idCargo) {
+        // O nome precisa bater com o nome da view, no sentido que, o sufixo será "CargoViewComponent". Em outras palavras, está acoplado.
+        let modaisDisponiveis = ["Edit", "Delete"]
+
+        const buttonName = `#button-${idCargo}`;
+        const buttonElem = document.querySelector(buttonName);
+
+        if (buttonElem) {
+            try {
+                if (!cargosCarregados.includes(idCargo)) {
+                    buttonElem.disabled = true;
+                    buttonElem.innerHTML = '<div class="spinner-border spinner-border-sm text-primary" role="status"><span class="visually-hidden">Loading...</span></div>';
+
+                    await Promise.all(modaisDisponiveis.map(tipo => carregarModalCargo(idCargo, tipo)));
+
+                    modaisDisponiveis.forEach(async (tipo) => {
+                        await carregarModalCargo(idCargo, tipo)
+                    })
+
+                    // Execute after the carregarModalCargo is done (doesn't work)
+                    cargosCarregados.push(idCargo);
+
+                    buttonElem.disabled = false;
+                    buttonElem.innerHTML = '<i class="bi bi-gear text-primary fs-5"></i>';
+                }
+            } catch (error) {
+                console.error(`Houve um erro ao carregar os cargos: ${error}`)
+            }
+        }
+        else {
+            console.error(`Não temos um elemento botão válido`);
+        }
+    }
+
+</script>
+@foreach (var cargo in Model)
+{
+    <div id="modalEditCargo-@cargo.Id-container">
+    </div>
+
+    <div id="modalDeleteCargo-@cargo.Id-container">
+    </div>
+}
+<div class="app-wrapper">
+    <div class="app-content pt-3 p-md-3 p-lg-4">
+        <div class="">
+            <div class="row g-3 mb-4 align-items-center justify-content-between">
+                <div class="col-auto">
+                    <h1 class="app-page-title mb-0">Cargos</h1>
+                </div>
+                <div class="col-auto">
+                    <div class="page-utilities">
+                        <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+                            <div class="col-auto">
+                                <a class="btn app-btn-primary" data-bs-toggle="modal" href="#ModalCreateCargo" role="button">
+                                    <i class="bi bi-plus-circle-fill"></i> Novo Cargo
+                                </a>
+                                @await Component.InvokeAsync("ModalCreateCargo")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="app-card app-card-orders-table shadow-sm mb-5">
+                <div class="app-card-body">
+                    <div class="table-responsive">
+                        <table class="table mb-0 text-left">
+                            <thead>
+                                <tr>
+                                    <th class="cell">Id</th>
+                                    <th class="cell">Nome</th>
+                                    <th class="cell">Salário</th>
+                                    <th class="cell">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var cargo in Model)
+                                {
+                                    <tr>
+                                        <td class="cell">@cargo.Id</td>
+                                        <td class="cell">@cargo.Nome</td>
+                                        <td class="cell">R$ @cargo.Salario.ToString("N")</td>
+                                        <td class="cell">
+                                            <div class="dropdown">
+                                                <button onmouseover="carregarModaisCargo('@cargo.Id')" type="button" id="button-@cargo.Id" class="btn dropdown-toggle no-toggle-arrow" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-gear text-primary fs-5"></i>
+                                                </button>
+                                                <ul class="dropdown-menu" data-popper-placement="bottom-start">
+                                                    <li>
+                                                        <a class="dropdown-item" data-bs-target="#ModalEditCargo-@cargo.Id" data-bs-toggle="modal">
+                                                            <i class="bi bi-pen"></i>&nbsp;Editar
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" data-bs-target="#ModalDeleteCargo-@cargo.Id" data-bs-toggle="modal">
+                                                            <i class="bi bi-trash"></i>&nbsp;Deletar
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <partial name="Footer" />
 </div>

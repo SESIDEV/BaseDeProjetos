@@ -8,7 +8,6 @@ namespace BaseDeProjetos.Models
 		public int Id { get; set; }
 		public string Nome { get; set; }
 		public decimal Salario { get; set; }
-
 	}
 
 }
