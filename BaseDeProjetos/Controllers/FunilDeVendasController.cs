@@ -361,7 +361,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                CriarSelectListsDaView();
+                await CriarSelectListsDaView();
                 ViewbagizarUsuario(_context);
 
                 if (id == null)
