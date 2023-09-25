@@ -27,6 +27,12 @@ namespace BaseDeProjetos.Controllers
             _context = context;
         }
 
+
+        /// <summary>
+        /// Pra que diabos serve isso?
+        /// </summary>
+        /// <param name="indicadores"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Atualizar([Bind("IdProjeto, Regramento, Repasse, ComprasServico, ComprasMaterial, Bolsista, SatisfacaoMetadeProjeto, SatisfacaoFimProjeto, Relatorios, PrestacaoContas")] ProjetoIndicadores indicadores)
