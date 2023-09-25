@@ -145,7 +145,27 @@ namespace BaseDeProjetos.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CargoExists(int id)
+        [HttpGet]
+		public IActionResult RetornarModal(string idCargo, string tipo)
+		{
+			if (HttpContext.User.Identity.IsAuthenticated)
+			{
+				if (tipo != null)
+				{
+					return ViewComponent($"Modal{tipo}Cargo", new { id = idCargo });
+				}
+				else
+				{
+					return View("Error");
+				}
+			}
+			else
+			{
+				return View("Forbidden");
+			}
+		}
+
+		private bool CargoExists(int id)
         {
             return _context.Cargo.Any(e => e.Id == id);
         }
