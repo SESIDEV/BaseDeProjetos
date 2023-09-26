@@ -444,21 +444,36 @@ namespace BaseDeProjetos.Controllers
 			Projeto projeto,
 			string membrosSelect)
 		{
-			// TODO: Repensar a forma como o frontend implementa essa funcionalidade
-			string[] membrosEmails = membrosSelect.Split(';');
+			var projetoExistente = await _context.Projeto.Include(p => p.MembrosEquipe).FirstOrDefaultAsync(p => p.Id == projeto.Id);
 
-			List<Usuario> usuarios = await _context.Users.Where(u => membrosEmails.Contains(u.Email)).ToListAsync();
-
-			List<EquipeProjeto> equipe = new List<EquipeProjeto>();
-
-			foreach (var usuario in usuarios)
+			if (projetoExistente == null)
 			{
-				equipe.Add(new EquipeProjeto { IdUsuario = usuario.Id, IdTrabalho = projeto.Id });
+				return View("Error");
 			}
 
-			projeto.MembrosEquipe = equipe;
+			projetoExistente.MembrosEquipe.Clear();
 
-			if (id != projeto.Id)
+			List<string> membrosEmails = new List<string>();
+
+            // TODO: Repensar a forma como o frontend implementa essa funcionalidade
+            if (!string.IsNullOrEmpty(membrosSelect))
+            {
+                membrosEmails.AddRange(membrosSelect.Split(';').ToList());
+            }
+
+            List<Usuario> usuarios = await _context.Users.Where(u => membrosEmails.Contains(u.Email)).ToListAsync();
+
+            List<EquipeProjeto> equipe = new List<EquipeProjeto>();
+
+            foreach (var usuario in usuarios)
+            {
+				var equipeProjeto = new EquipeProjeto { IdUsuario = usuario.Id, IdTrabalho = projeto.Id };
+                equipe.Add(equipeProjeto);
+            }
+
+            projetoExistente.MembrosEquipe = equipe;
+
+            if (id != projeto.Id)
 			{
 				return View("Error");
 			}
@@ -467,7 +482,7 @@ namespace BaseDeProjetos.Controllers
 			{
 				try
 				{
-					_context.Projeto.Update(projeto);
+					_context.Projeto.Update(projetoExistente);
 					await _context.SaveChangesAsync();
 				}
 				catch (DbUpdateConcurrencyException ex)
