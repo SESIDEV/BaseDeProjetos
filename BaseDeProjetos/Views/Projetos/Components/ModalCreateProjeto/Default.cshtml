@@ -102,9 +102,12 @@
                         <span asp-validation-for="Status" class="text-danger"></span>
                     </div>
                 </div>
+                <input style="display:none" type="checkbox" disabled class="changeCheck" value="Pessoas" id="checkPessoas-@Model.Id">
                 <div class="modal-footer">
                     <button type="button" class="btn app-btn-primary" data-bs-target="#modalCreateProjeto2"
-                        data-bs-toggle="modal">Próximo</button>
+                            data-bs-toggle="modal" onclick="selectToText()">
+                        Próximo
+                    </button>
                     @*<input type="submit" value="Concluir" class="btn app-btn-primary">*@
                 </div>
             </div>

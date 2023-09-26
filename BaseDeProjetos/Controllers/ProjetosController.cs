@@ -363,10 +363,15 @@ namespace BaseDeProjetos.Controllers
 			Projeto projeto,
 			string membrosSelect)
 		{
+			List<string> membrosEmails = new List<string>();
+
 			ViewbagizarUsuario(_context);
 
 			// TODO: Repensar a forma como o frontend implementa essa funcionalidade
-			string[] membrosEmails = membrosSelect.Split(';');
+			if (!string.IsNullOrEmpty(membrosSelect))
+			{
+				membrosEmails.AddRange(membrosSelect.Split(';').ToList());
+			}
 
 			List<Usuario> usuarios = await _context.Users.Where(u => membrosEmails.Contains(u.Email)).ToListAsync();
 
@@ -523,6 +528,17 @@ namespace BaseDeProjetos.Controllers
 		public async Task<IActionResult> DeleteConfirmed(string id)
 		{
 			Projeto projeto = await _context.Projeto.FindAsync(id);
+
+			foreach (var relacao in projeto.MembrosEquipe)
+			{
+				_context.EquipeProjeto.Remove(relacao);
+			}
+
+			foreach (var indicador in projeto.Indicadores)
+			{
+				_context.ProjetoIndicadores.Remove(indicador);
+			}
+
 			_context.Projeto.Remove(projeto);
 			await _context.SaveChangesAsync();
 			return RedirectToAction(nameof(Index));
