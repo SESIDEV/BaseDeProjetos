@@ -379,8 +379,7 @@ namespace BaseDeProjetos.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdProjeto")
-                        .IsUnique();
+                    b.HasIndex("IdProjeto");
 
                     b.ToTable("ProjetoIndicadores");
                 });
@@ -791,8 +790,8 @@ namespace BaseDeProjetos.Migrations
             modelBuilder.Entity("BaseDeProjetos.Models.ProjetoIndicadores", b =>
                 {
                     b.HasOne("BaseDeProjetos.Models.Projeto", "Projeto")
-                        .WithOne("Indicador")
-                        .HasForeignKey("BaseDeProjetos.Models.ProjetoIndicadores", "IdProjeto");
+                        .WithMany("Indicadores")
+                        .HasForeignKey("IdProjeto");
                 });
 
             modelBuilder.Entity("BaseDeProjetos.Models.Prospeccao", b =>
