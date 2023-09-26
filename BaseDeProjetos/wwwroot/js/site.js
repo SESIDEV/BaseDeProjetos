@@ -1,4 +1,5 @@
 ﻿import dictCNAE from "./cnae";
+import Dicionario from "./utils/Dicionario";
 redePessoas = null
 
 // Auxiliar para tippy no projetos
@@ -80,7 +81,6 @@ function ChecarTipoProducao(id = "") {
 }
 
 function CasasFunil() {
-
     let caixa1 = document.getElementById("caixaISIQV")
     let caixa2 = document.getElementById("caixaCISHO")
     let caixa3 = document.getElementById("caixaISIII")
@@ -644,15 +644,7 @@ function AplicarDadosAPI(idElemento) {
             document.getElementById(`SituacaoEmpresaStatus${idElemento}`).innerHTML = "Situação: " + dados.situacao;
             checarCNAE(listaCNAE, idElemento);
 
-            // TUDO DAQUI PRA BAIXO FOI FEITO EXCLUSIVAMENTE PARA CONVERTER A SIGLA DE CADA ESTADO PARA O NOME COMPLETO
-            function Dicionario() {
-                this.add = add;
-                this.dataStore = [];
-                this.find = find;
-            }
-            function add(key, value) { this.dataStore[key] = value; }
-            function find(key) { return this.dataStore[key]; }
-
+            // Tudo daqui pra baixo foi feito exclusivamente para converter a sigla de cada estado para o nome completo
             var siglas = new Dicionario();
 
             siglas.add('RJ', 'Rio de Janeiro')
@@ -682,19 +674,11 @@ function AplicarDadosAPI(idElemento) {
             siglas.add('CE', 'Ceará')
             siglas.add('AL', 'Alagoas')
 
-            // ESSA LINHA BUSCA O ÍNDICE A PARTIR DA SIGLA DEVOLVIDA PELA API --------\/
+            // Essa linha busca o índice a partir da sigla devolvida pela api --------\/
             document.getElementById(`EstadoEmpresaCadastro${idElemento}`).value = siglas.find(dados.uf);
 
-            // CONVERTER A SIGLA DE CADA ESTADO PARA O ÍNDICE DO ENUM
-            function Dicionario2() {
-                this.add = add;
-                this.dataStore = [];
-                this.find = find;
-            }
-            function add(key, value) { this.dataStore[key] = value; }
-            function find(key) { return this.dataStore[key]; }
-
-            var indices = new Dicionario2();
+            // Converter a sigla de cada estado para o índice do enum
+            var indices = new Dicionario();
 
             indices.add('RJ', 0)
             indices.add('SP', 1)
@@ -723,7 +707,7 @@ function AplicarDadosAPI(idElemento) {
             indices.add('CE', 24)
             indices.add('AL', 25)
 
-            // ESSA LINHA BUSCA O NOME A PARTIR DA SIGLA DEVOLVIDA PELA API --------\/
+            // Essa linha busca o nome a partir da sigla devolvida pela api --------\/
             document.getElementById(`EstadoEmpresaCadastroINT${idElemento}`).value = indices.find(dados.uf);
         })
     })
