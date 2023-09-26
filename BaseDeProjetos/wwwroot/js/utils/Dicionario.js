@@ -11,5 +11,3 @@ class Dicionario {
 		return this.dataStore[key];
 	}
 }
-
-export default Dicionario;
