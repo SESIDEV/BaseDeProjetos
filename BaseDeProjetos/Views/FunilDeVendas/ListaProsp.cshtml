@@ -112,11 +112,14 @@
                                     {
                                         foreach (var item in prospeccao.MembrosEquipe.Split(";"))
                                         {
-                                            if (item == "") { }
-                                            else
+                                            if (item != "")
                                             {
-                                                <span class="badge bg-info">@usuarios.Where(u => u.Email == item).FirstOrDefault().UserName</span>
-                                            } // pode crashar se houver algum membro que nao esteja cadastrado como usuario
+                                                var user = usuarios.Where(u => u.Email == item).FirstOrDefault();
+                                                if (user != null)
+                                                {
+                                                    <span class="badge bg-info">@user.UserName</span>
+                                                }
+                                            }
                                         }
                                     }
                                 </td>
