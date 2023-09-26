@@ -193,6 +193,29 @@ namespace BaseDeProjetos.Migrations
                     b.ToTable("IndicadoresFinanceiros");
                 });
 
+            modelBuilder.Entity("BaseDeProjetos.Models.PesquisaProjeto", b =>
+                {
+                    b.Property<int>("IdPesquisa")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comentarios")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("ProjetoId")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("RepresentacaoTextualQuestionario")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<double>("ResultadoFinal")
+                        .HasColumnType("double");
+
+                    b.HasKey("IdPesquisa");
+
+                    b.ToTable("PesquisaProjeto");
+                });
+
             modelBuilder.Entity("BaseDeProjetos.Models.Pessoa", b =>
                 {
                     b.Property<int>("id")
