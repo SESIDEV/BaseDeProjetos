@@ -35,7 +35,7 @@ namespace BaseDeProjetos.Models
         public virtual DateTime DataEncerramento { get; set; } = DateTime.Now;
 
         [Display(AutoGenerateFilter = true, Name = "Membros da Equipe")]
-        public virtual string MembrosEquipe { get; set; }
+        public virtual List<EquipeProjeto> MembrosEquipe { get; set; }
 
         public virtual Estado Estado { get; set; }
 
@@ -65,8 +65,6 @@ namespace BaseDeProjetos.Models
         public virtual Usuario Usuario { get; set; }
 
         public virtual string UsuarioId { get; set; }
-
-        public virtual List<Usuario> ColaboradoresDoProjeto { get; set; }
 
         public virtual List<StatusCurva> StatusCurva { get; set; }
     }
