@@ -5,7 +5,7 @@
 
 \title{Problemas no SGI}
 \author{Henrique Henriques}
-\date{Última Atualização: 21 de Setembro de 2023}
+\date{Última Atualização: 26 de Setembro de 2023}
 
 \begin{document}
 
@@ -135,6 +135,18 @@ Ao clicar em um campo de seleção multipla select2, um erro misterioso de TypeE
 
 \subsubsection{Solução}
 Verifique se o código que atrela o dropdown do modal está encontrando o elementoPai no método gerarOpcoesSelect
+
+\subsection{Ao clicar em botão que deveria acessar modal, modal não abre e um erro JS misterioso é lançado no console}
+\subsubsection{Descrição}
+Ao tentar acessar um modal, observa-se um erro tipo "Uncaught TypeError: this.\textunderscore config is undefined"
+
+\begin{figure}[h!]
+	\includegraphics[width=\linewidth]{Imagens/modalerror.png}
+	\caption{Erro no Console do Firefox}
+\end{figure}
+
+\subsubsection{Solução}
+Verifique se o identificador do modal bate com o botão ou script que está tentando spawnar o modal. Exemplo botão tem id="meumodal" e modal tem id="modalbacana"
 
 \section{Soluções Gerais}
 \subsection{Resetar o banco local}
