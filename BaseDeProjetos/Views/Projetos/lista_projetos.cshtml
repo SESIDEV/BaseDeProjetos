@@ -20,6 +20,20 @@
     }
 </style>
 
+<script>
+	function setupTippy(id) {
+		try {
+			if (!tippyDone.includes(id)) {
+				console.log("Setting up tippy for: " + id);
+				tippy(`#${id}`, {allowHTML: true, placement: 'left'});
+				tippyDone.push(id);
+			}
+		} catch (error) {
+			console.error(`Um erro ocorreu ao tentar setar o tippy... vamos tentar novamente. ${error}`);
+			tippy(`#${id}`, {allowHTML: true, placement: 'left'});
+		}
+	}
+</script>
 
 @foreach (var projeto in Model)
 {
@@ -68,7 +82,7 @@
         <td class="cell">
             @if (projeto.Usuario != null)
             {
-                <span class="badge bg-success">@projeto.Usuario.UserName</span> @*Líder*@
+                <span onmouseover="setupTippy('cargoUsuario-@(projeto.Id)')" data-tippy-content="@projeto.Usuario.Cargo?.Nome" id="cargoUsuario-@projeto.Id" class="badge bg-success">@projeto.Usuario.UserName</span> @*Líder*@
             }
             else
             {
@@ -78,7 +92,7 @@
             {
                 foreach (var relacao in projeto.MembrosEquipe)
                 {
-                    <span class="badge bg-info">@relacao.Usuario.UserName</span>
+                    <span onmouseover="setupTippy('cargoMembro-@(relacao.Usuario?.Id)')" data-tippy-content="@relacao.Usuario.Cargo?.Nome" id="cargoMembro-@relacao.Usuario?.Id" class="badge bg-info">@relacao.Usuario?.UserName</span>
                 }
             }
         </td>

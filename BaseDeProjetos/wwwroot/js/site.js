@@ -12,6 +12,9 @@
 
 redePessoas = null
 
+// Auxiliar para tippy no projetos
+let tippyDone = []
+
 var dictCNAE = {
     "02": "PRODUÇÃO FLORESTAL (EXTRAÇÃO DE MADEIRA, PRODUÇÃO DE CARVÃO, COLETA DE LÁTEX | CNAE: 210107, 210108, 220901, 220902, 220904)",
     "05": "EXTRAÇÃO DE CARVÃO MINERAL",
