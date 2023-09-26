@@ -76,16 +76,9 @@
             }
             @if (projeto.MembrosEquipe != null)
             {
-                foreach (var item in projeto.MembrosEquipe.Split(";"))
+                foreach (var relacao in projeto.MembrosEquipe)
                 {
-                    if (item != "")
-                    {
-                        var user = usuarios.Where(u => u.Email == item).FirstOrDefault();
-                        if (user != null)
-                        {
-                            <span class="badge bg-info">@user.UserName</span>
-                        }
-                    }
+                    <span class="badge bg-info">@relacao.Usuario.UserName</span>
                 }
             }
         </td>
