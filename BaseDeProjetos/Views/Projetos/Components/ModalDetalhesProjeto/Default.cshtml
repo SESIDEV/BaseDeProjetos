@@ -5,7 +5,7 @@
     var nivelUsuario = ViewData["NivelUsuario"];
 }
 <div class="modal fade" id="modalDetalhes-@Model.Id" tabindex="-1" aria-labelledby="modalDetalhes-@Model.Id-Label"
-     aria-hidden="true">
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -30,14 +30,15 @@
                 <h1 class="app-card-title">Equipe do Projeto:</h1>
                 <div class="accordion" id="accordionEquipe">
                     <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingOne">
+                        <h2 class="accordion-header" id="headingEquipe">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                <span id="qtdMembros" class="m-1">@Model.MembrosEquipe.Count</span><span class="m-1">Membros</span>
+                                data-bs-target="#collapseEquipe" aria-expanded="true" aria-controls="collapseEquipe">
+                                <span id="qtdMembros" class="m-1">@Model.MembrosEquipe.Count</span><span
+                                    class="m-1">Membros</span>
                             </button>
                         </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
-                             data-bs-parent="#accordionEquipe">
+                        <div id="collapseEquipe" class="accordion-collapse collapse" aria-labelledby="headingEquipe"
+                            data-bs-parent="#accordionEquipe">
                             <div class="accordion-body">
                                 <ul id="lista"></ul>
                             </div>
@@ -46,26 +47,27 @@
                 </div>
             </div>
             <div class="modal-footer">
-                @if (nivelUsuario.ToString() == "PMO" || nivelUsuario.ToString() == "Dev" || nivelUsuario.ToString() == "Supervisor")
+                @if (nivelUsuario.ToString() == "PMO" || nivelUsuario.ToString() == "Dev" || nivelUsuario.ToString() ==
+                        "Supervisor")
                 {
                     <div class="d-flex">
-                        <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#incluirIndicadorProjetoModal-@Model.Id"
-                           role="button">
+                        <a class="btn btn-outline-primary" data-bs-toggle="modal"
+                            href="#incluirIndicadorProjetoModal-@Model.Id" role="button">
                             Incluir Indicador
                         </a>
-                        <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#detalhesIndicadorProjetoModal-@Model.Id"
-                           role="button">
+                        <a class="btn btn-outline-primary" data-bs-toggle="modal"
+                            href="#detalhesIndicadorProjetoModal-@Model.Id" role="button">
                             Visualizar Indicadores
                         </a>
                     </div>
                 }
                 <div class="d-flex">
                     <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#editarProjetoModal-@Model.Id"
-                       role="button">
+                        role="button">
                         Editar
                     </a>
                     <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#deletarProjetoModal-@Model.Id"
-                       role="button">
+                        role="button">
                         Deletar
                     </a>
                 </div>
