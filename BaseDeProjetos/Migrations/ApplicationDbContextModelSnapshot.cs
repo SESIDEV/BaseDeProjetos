@@ -520,9 +520,6 @@ namespace BaseDeProjetos.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CargoId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Casa")
                         .HasColumnType("int");
 
@@ -592,8 +589,6 @@ namespace BaseDeProjetos.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CargoId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -833,14 +828,6 @@ namespace BaseDeProjetos.Migrations
                         .WithMany()
                         .HasForeignKey("ProspeccaoId");
                 });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.Usuario", b =>
-                {
-                    b.HasOne("BaseDeProjetos.Models.Cargo", "Cargo")
-                        .WithMany()
-                        .HasForeignKey("CargoId");
-                });
-                
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
