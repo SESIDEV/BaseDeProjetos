@@ -3,12 +3,6 @@
 @using System.Globalization
 @{
     var nivelUsuario = ViewData["NivelUsuario"];
-    var membros = Model.MembrosEquipe?.Split(";");
-    int qtdMembros = 0;
-    if (membros != null)
-    {
-        qtdMembros = membros.Count();
-    }
 }
 <div class="modal fade" id="modalDetalhes-@Model.Id" tabindex="-1" aria-labelledby="modalDetalhes-@Model.Id-Label"
      aria-hidden="true">
@@ -34,16 +28,16 @@
                 <h1 class="app-card-title">Duração em Meses:</h1>
                 <span>@Model.DuracaoProjetoEmMeses</span>
                 <h1 class="app-card-title">Equipe do Projeto:</h1>
-                <div class="accordion" id="accordionExample">
+                <div class="accordion" id="accordionEquipe">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                <span id="qtdMembros" class="m-1">@qtdMembros</span><span class="m-1">Membros</span>
+                                <span id="qtdMembros" class="m-1">@Model.MembrosEquipe.Count</span><span class="m-1">Membros</span>
                             </button>
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
-                             data-bs-parent="#accordionExample">
+                             data-bs-parent="#accordionEquipe">
                             <div class="accordion-body">
                                 <ul id="lista"></ul>
                             </div>
