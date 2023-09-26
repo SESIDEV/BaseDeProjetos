@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using MailSenderHelpers;
@@ -366,6 +366,21 @@ namespace BaseDeProjetos.Controllers
 			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 			ViewBag.usuarioCasa = usuario.Casa;
 			ViewBag.usuarioNivel = usuario.Nivel;
+
+			// TODO: Repensar a forma como o frontend implementa essa funcionalidade
+			string[] membrosEmails = membrosSelect.Split(';');
+
+			List<Usuario> usuarios = await _context.Users.Where(u => membrosEmails.Contains(u.Email)).ToListAsync();
+
+			List<EquipeProjeto> equipe = new List<EquipeProjeto>();
+
+			foreach (var usuario in usuarios)
+			{
+				equipe.Add(new EquipeProjeto { IdUsuario = usuario.Id, IdTrabalho = projeto.Id });
+			}
+
+			projeto.MembrosEquipe = equipe;
+
 
 			List<Empresa> empresas = _context.Empresa.ToList();
 			ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
