@@ -1,4 +1,4 @@
-using BaseDeProjetos.Data;
+﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using MailSenderHelpers;
@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 namespace BaseDeProjetos.Controllers
 {
 	[Authorize]
-	public class ProjetosController : Controller
+	public class ProjetosController : SGIController
 	{
 		private readonly ApplicationDbContext _context;
 
@@ -363,9 +363,7 @@ namespace BaseDeProjetos.Controllers
 			Projeto projeto,
 			string membrosSelect)
 		{
-			Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-			ViewBag.usuarioCasa = usuario.Casa;
-			ViewBag.usuarioNivel = usuario.Nivel;
+			ViewbagizarUsuario(_context);
 
 			// TODO: Repensar a forma como o frontend implementa essa funcionalidade
 			string[] membrosEmails = membrosSelect.Split(';');
@@ -406,9 +404,7 @@ namespace BaseDeProjetos.Controllers
 		{
 			if (HttpContext.User.Identity.IsAuthenticated)
 			{
-				Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-				ViewBag.usuarioCasa = usuario.Casa;
-				ViewBag.usuarioNivel = usuario.Nivel;
+				ViewbagizarUsuario(_context);
 				List<Empresa> empresas = _context.Empresa.ToList();
 				ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
 				ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
@@ -487,9 +483,7 @@ namespace BaseDeProjetos.Controllers
 			if (HttpContext.User.Identity.IsAuthenticated)
 			{
 
-				Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-				ViewBag.usuarioCasa = usuario.Casa;
-				ViewBag.usuarioNivel = usuario.Nivel;
+				ViewbagizarUsuario(_context);
 
 				if (id == null)
 				{
@@ -616,13 +610,13 @@ namespace BaseDeProjetos.Controllers
 		{
 			if (HttpContext.User.Identity.IsAuthenticated)
 			{
-				Usuario ativo = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-				List<string> usuarios = _context.Users.AsEnumerable().
-											Where(u => u.Casa == ativo.Casa).
-											Where(usuario => usuario.EmailConfirmed == true).
-											Where(usuario => usuario.Nivel != Nivel.Dev && usuario.Nivel != Nivel.Externos).
-											Select((usuario) => usuario.Email.ToString().ToLower()).
-											ToList();
+				ViewbagizarUsuario(_context);
+				List<string> usuarios = _context.Users.AsEnumerable()
+											.Where(u => u.Casa == UsuarioAtivo.Casa)
+											.Where(usuario => usuario.EmailConfirmed == true)
+											.Where(usuario => usuario.Nivel != Nivel.Dev && usuario.Nivel != Nivel.Externos)
+											.Select((usuario) => usuario.Email.ToString().ToLower())
+											.ToList();
 
 				return Json(usuarios);
 			}
