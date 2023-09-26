@@ -28,27 +28,51 @@
                 <h1 class="app-card-title">Duração em Meses:</h1>
                 <span>@Model.DuracaoProjetoEmMeses</span>
                 <h1 class="app-card-title">Equipe do Projeto:</h1>
-                <div class="accordion" id="accordionEquipe">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingEquipe">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseEquipe" aria-expanded="true" aria-controls="collapseEquipe">
-                                <span id="qtdMembros" class="m-1">@Model.MembrosEquipe.Count</span><span
-                                    class="m-1">Membros</span>
-                            </button>
-                        </h2>
-                        <div id="collapseEquipe" class="accordion-collapse collapse" aria-labelledby="headingEquipe"
-                            data-bs-parent="#accordionEquipe">
-                            <div class="accordion-body">
-                                <ul id="lista"></ul>
+                @if (Model.MembrosEquipe.Count != 0)
+                {
+                    <div class="accordion" id="accordionEquipe">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingEquipe">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseEquipe" aria-expanded="true" aria-controls="collapseEquipe">
+                                    @if (Model.Usuario != null)
+                                    {
+                                        <span class="m-1">@(Model.MembrosEquipe.Count + 1) Membros</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="m-1">@Model.MembrosEquipe.Count Membros</span>
+                                    }
+                                </button>
+                            </h2>
+                            <div id="collapseEquipe" class="accordion-collapse collapse" aria-labelledby="headingEquipe"
+                                data-bs-parent="#accordionEquipe">
+                                <div class="accordion-body">
+                                    @if (Model.Usuario != null)
+                                    {
+                                        <span class="badge bg-success">@Model.Usuario.UserName</span> @*Líder*@
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Sem Líder</span>
+                                    }
+                                    @foreach (var membro in Model.MembrosEquipe)
+                                    {
+                                        <span class="badge bg-info">@membro.Usuario.UserName</span>
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                }
+                else
+                {
+                    <span>Este projeto não tem uma equipe definida</span>
+                }
             </div>
             <div class="modal-footer">
                 @if (nivelUsuario.ToString() == "PMO" || nivelUsuario.ToString() == "Dev" || nivelUsuario.ToString() ==
-                        "Supervisor")
+                "Supervisor")
                 {
                     <div class="d-flex">
                         <a class="btn btn-outline-primary" data-bs-toggle="modal"
