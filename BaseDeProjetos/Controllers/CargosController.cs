@@ -22,38 +22,55 @@ namespace BaseDeProjetos.Controllers
         // GET: Cargos
         public async Task<IActionResult> Index()
         {
-			if (HttpContext.User.Identity.IsAuthenticated)
+            if (HttpContext.User.Identity.IsAuthenticated && UsuarioAtivo.Nivel != Nivel.Usuario && UsuarioAtivo.Nivel != Nivel.Externos)
             {
-				ViewbagizarUsuario(_context);
-            	return View(await _context.Cargo.ToListAsync());
-			}
-			else {
-				return View("Forbidden");
-			}
+                ViewbagizarUsuario(_context);
+                return View(await _context.Cargo.ToListAsync());
+            }
+            else
+            {
+                return View("Forbidden");
+            }
         }
 
         // GET: Cargos/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (HttpContext.User.Identity.IsAuthenticated && UsuarioAtivo.Nivel != Nivel.Usuario && UsuarioAtivo.Nivel != Nivel.Externos)
             {
-                return NotFound();
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                var cargo = await _context.Cargo
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (cargo == null)
+                {
+                    return NotFound();
+                }
+
+                return View(cargo);
+            }
+            else
+            {
+                return View("Forbiden");
             }
 
-            var cargo = await _context.Cargo
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (cargo == null)
-            {
-                return NotFound();
-            }
 
-            return View(cargo);
         }
 
         // GET: Cargos/Create
         public IActionResult Create()
         {
-            return View();
+            if (HttpContext.User.Identity.IsAuthenticated && UsuarioAtivo.Nivel != Nivel.Usuario && UsuarioAtivo.Nivel != Nivel.Externos)
+            {
+                return View();
+            }
+            else
+            {
+                return View("Forbidden");
+            }
         }
 
         // POST: Cargos/Create
@@ -75,17 +92,25 @@ namespace BaseDeProjetos.Controllers
         // GET: Cargos/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (HttpContext.User.Identity.IsAuthenticated && UsuarioAtivo.Nivel != Nivel.Usuario && UsuarioAtivo.Nivel != Nivel.Externos)
             {
-                return NotFound();
-            }
 
-            var cargo = await _context.Cargo.FindAsync(id);
-            if (cargo == null)
-            {
-                return NotFound();
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                var cargo = await _context.Cargo.FindAsync(id);
+                if (cargo == null)
+                {
+                    return NotFound();
+                }
+                return View(cargo);
             }
-            return View(cargo);
+            else
+            {
+                return View("Forbidden");
+            }
         }
 
         // POST: Cargos/Edit/5
@@ -126,19 +151,27 @@ namespace BaseDeProjetos.Controllers
         // GET: Cargos/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (HttpContext.User.Identity.IsAuthenticated && UsuarioAtivo.Nivel != Nivel.Usuario && UsuarioAtivo.Nivel != Nivel.Externos)
             {
-                return NotFound();
-            }
 
-            var cargo = await _context.Cargo
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (cargo == null)
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                var cargo = await _context.Cargo
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (cargo == null)
+                {
+                    return NotFound();
+                }
+
+                return View(cargo);
+            }
+            else
             {
-                return NotFound();
+                return View("Forbidden");
             }
-
-            return View(cargo);
         }
 
         // POST: Cargos/Delete/5
@@ -153,26 +186,26 @@ namespace BaseDeProjetos.Controllers
         }
 
         [HttpGet]
-		public IActionResult RetornarModal(string idCargo, string tipo)
-		{
-			if (HttpContext.User.Identity.IsAuthenticated)
-			{
-				if (tipo != null)
-				{
-					return ViewComponent($"Modal{tipo}Cargo", new { id = idCargo });
-				}
-				else
-				{
-					return View("Error");
-				}
-			}
-			else
-			{
-				return View("Forbidden");
-			}
-		}
+        public IActionResult RetornarModal(string idCargo, string tipo)
+        {
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                if (tipo != null)
+                {
+                    return ViewComponent($"Modal{tipo}Cargo", new { id = idCargo });
+                }
+                else
+                {
+                    return View("Error");
+                }
+            }
+            else
+            {
+                return View("Forbidden");
+            }
+        }
 
-		private bool CargoExists(int id)
+        private bool CargoExists(int id)
         {
             return _context.Cargo.Any(e => e.Id == id);
         }
