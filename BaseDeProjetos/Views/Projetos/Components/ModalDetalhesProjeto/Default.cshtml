@@ -28,7 +28,7 @@
                 <h1 class="app-card-title">Duração em Meses:</h1>
                 <span>@Model.DuracaoProjetoEmMeses</span>
                 <h1 class="app-card-title">Equipe do Projeto:</h1>
-                @if (Model.MembrosEquipe.Count != 0)
+                @if (Model.EquipeProjeto.Count != 0)
                 {
                     <div class="accordion" id="accordionEquipe">
                         <div class="accordion-item">
@@ -37,11 +37,11 @@
                                     data-bs-target="#collapseEquipe" aria-expanded="true" aria-controls="collapseEquipe">
                                     @if (Model.Usuario != null)
                                     {
-                                        <span class="m-1">@(Model.MembrosEquipe.Count + 1) Membros</span>
+                                        <span class="m-1">@(Model.EquipeProjeto.Count + 1) Membros</span>
                                     }
                                     else
                                     {
-                                        <span class="m-1">@Model.MembrosEquipe.Count Membros</span>
+                                        <span class="m-1">@Model.EquipeProjeto.Count Membros</span>
                                     }
                                 </button>
                             </h2>
@@ -56,7 +56,7 @@
                                     {
                                         <span class="badge bg-danger">Sem Líder</span>
                                     }
-                                    @foreach (var membro in Model.MembrosEquipe)
+                                    @foreach (var membro in Model.EquipeProjeto)
                                     {
                                         <span class="badge bg-info">@membro.Usuario.UserName</span>
                                     }
@@ -72,7 +72,7 @@
             </div>
             <div class="modal-footer">
                 @if (nivelUsuario.ToString() == "PMO" || nivelUsuario.ToString() == "Dev" || nivelUsuario.ToString() ==
-                "Supervisor")
+                        "Supervisor")
                 {
                     <div class="d-flex">
                         <a class="btn btn-outline-primary" data-bs-toggle="modal"

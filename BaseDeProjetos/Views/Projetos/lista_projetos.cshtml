@@ -88,9 +88,9 @@
             {
                 <span class="badge bg-danger">Sem Líder</span>
             }
-            @if (projeto.MembrosEquipe != null)
+            @if (projeto.EquipeProjeto != null)
             {
-                foreach (var relacao in projeto.MembrosEquipe)
+                foreach (var relacao in projeto.EquipeProjeto)
                 {
                     <span onmouseover="setupTippy('cargoMembro-@(relacao.Usuario?.Id)')" data-tippy-content="@relacao.Usuario.Cargo?.Nome" id="cargoMembro-@relacao.Usuario?.Id" class="badge bg-info">@relacao.Usuario?.UserName</span>
                 }

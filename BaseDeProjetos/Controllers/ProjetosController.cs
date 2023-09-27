@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using MailSenderHelpers;
@@ -382,7 +382,7 @@ namespace BaseDeProjetos.Controllers
 				equipe.Add(new EquipeProjeto { IdUsuario = usuario.Id, IdTrabalho = projeto.Id });
 			}
 
-			projeto.MembrosEquipe = equipe;
+			projeto.EquipeProjeto = equipe;
 
 
 			List<Empresa> empresas = _context.Empresa.ToList();
@@ -471,7 +471,7 @@ namespace BaseDeProjetos.Controllers
                 equipe.Add(equipeProjeto);
             }
 
-            projetoExistente.MembrosEquipe = equipe;
+            projetoExistente.EquipeProjeto = equipe;
 
             if (id != projeto.Id)
 			{
