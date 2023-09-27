@@ -445,14 +445,17 @@ namespace BaseDeProjetos.Controllers
             Projeto projeto,
             string membrosSelect)
         {
-            var projetoExistente = await _context.Projeto.Include(p => p.EquipeProjeto).FirstOrDefaultAsync(p => p.Id == projeto.Id);
+            var projetoExistente = await _context.Projeto.AsNoTracking().Include(p => p.EquipeProjeto).FirstOrDefaultAsync(p => p.Id == projeto.Id);
 
             if (projetoExistente == null)
             {
                 return View("Error");
             }
 
-            projetoExistente.EquipeProjeto.Clear();
+            foreach (var relacao in projetoExistente.EquipeProjeto)
+            {
+                _context.EquipeProjeto.Remove(relacao);
+            }
 
             List<string> membrosEmails = new List<string>();
 
@@ -472,7 +475,7 @@ namespace BaseDeProjetos.Controllers
                 equipe.Add(equipeProjeto);
             }
 
-            projetoExistente.EquipeProjeto = equipe;
+            projeto.EquipeProjeto = equipe;
 
             if (id != projeto.Id)
             {
@@ -483,7 +486,7 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {
-                    _context.Projeto.Update(projetoExistente);
+                    _context.Projeto.Update(projeto);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException ex)
