@@ -445,6 +445,7 @@ namespace BaseDeProjetos.Controllers
             Projeto projeto,
             string membrosSelect)
         {
+            List<EquipeProjeto> equipe = new List<EquipeProjeto>();
             var projetoExistente = await _context.Projeto.AsNoTracking().Include(p => p.EquipeProjeto).FirstOrDefaultAsync(p => p.Id == projeto.Id);
 
             if (projetoExistente == null)
@@ -466,8 +467,6 @@ namespace BaseDeProjetos.Controllers
             }
 
             List<Usuario> usuarios = await _context.Users.Where(u => membrosEmails.Contains(u.Email)).ToListAsync();
-
-            List<EquipeProjeto> equipe = new List<EquipeProjeto>();
 
             foreach (var usuario in usuarios)
             {
