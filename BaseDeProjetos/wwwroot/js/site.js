@@ -28,7 +28,6 @@ function converterParaBase64(file, id) {
 
 
 function ChecarTipoProducao(id = "") {
-
     let valor = document.querySelector(`#select_tipo${id}`).value
 
     switch (valor) {
