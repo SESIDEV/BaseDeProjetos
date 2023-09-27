@@ -139,6 +139,18 @@ function changeDisplayStyle(element, style) {
     }
 }
 
+function preencherInputEditProjeto(idProjeto) {
+	let elementoInput = document.querySelector(`#inputTextPessoas-${idProjeto}`);
+	fetch(`/Projetos/RetornarMembrosCSV/${idProjeto}`)
+		.then(response => response.json())
+		.then(data => {
+			console.log(data);
+			elementoInput.value = data['data'];
+		}).catch(err => {
+			console.error(err);
+		});
+}
+
 function gerarOpcoesSelect(rota, elementoPai, modelId = "", fillValues = false) { // os últimos 2 parâmetros para tratar no Edit
     elementoPai = `${elementoPai}${modelId}`
 
@@ -150,8 +162,6 @@ function gerarOpcoesSelect(rota, elementoPai, modelId = "", fillValues = false) 
     let caixaId = `caixaPesquisa${rota}${modelId}`;
     let botaoAlterar = `botaoToggleCaixaRequest${rota}${modelId}`;
     let loadingIcon = `loadingOpcoesSelect${rota}${modelId}`;
-
-    console.log(loadingIcon);
 
     const caixaElem = document.querySelector(`#${caixaId}`);
     let loadingIconElem = document.querySelector(`#${loadingIcon}`);
@@ -192,7 +202,7 @@ function gerarOpcoesSelect(rota, elementoPai, modelId = "", fillValues = false) 
             inner = "Titulo";
             break;
         default:
-            console.log(`Erro: ${rota} é uma rota inválida`);
+            console.error(`Erro: ${rota} é uma rota inválida`);
             break;
     }               //====================================================== /\/\/\ SWITCH PRINCIPAL /\/\/\ ===============================================================
     fetch(defRota)
