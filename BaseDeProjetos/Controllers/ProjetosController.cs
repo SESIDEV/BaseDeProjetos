@@ -444,7 +444,7 @@ namespace BaseDeProjetos.Controllers
 			Projeto projeto,
 			string membrosSelect)
 		{
-			var projetoExistente = await _context.Projeto.Include(p => p.MembrosEquipe).FirstOrDefaultAsync(p => p.Id == projeto.Id);
+			var projetoExistente = await _context.Projeto.Include(p => p.EquipeProjeto).FirstOrDefaultAsync(p => p.Id == projeto.Id);
 
 			if (projetoExistente == null)
 			{
@@ -544,7 +544,7 @@ namespace BaseDeProjetos.Controllers
 		{
 			Projeto projeto = await _context.Projeto.FindAsync(id);
 
-			foreach (var relacao in projeto.MembrosEquipe)
+			foreach (var relacao in projeto.EquipeProjeto)
 			{
 				_context.EquipeProjeto.Remove(relacao);
 			}
