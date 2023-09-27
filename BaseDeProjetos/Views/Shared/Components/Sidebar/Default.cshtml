@@ -170,27 +170,30 @@
 					}
 				</li>
 
-				<li class="nav-item">					
-					@{
-						if (ViewContext.RouteData.Values["controller"] as string == "Cargos")
-						{
-							<a class="nav-link active" asp-area="" asp-controller="Cargos" asp-action="Index">
-								<span class="nav-icon">
-									<i class="bi bi-person-workspace"></i>
-								</span>
-								<span class="nav-link-text">Cargos</span>
-							</a>
-						} else
-						{
-							<a class="nav-link" asp-area="" asp-controller="Cargos" asp-action="Index">
-								<span class="nav-icon">
-									<i class="bi bi-person-workspace"></i>
-								</span>
-								<span class="nav-link-text">Cargos</span>
-							</a>
+				@if (usuarioNivel.ToString() == "PMO" || usuarioNivel.ToString() == "Dev" || usuarioNivel.ToString() == "Supervisor")
+				{
+					<li class="nav-item">					
+						@{
+							if (ViewContext.RouteData.Values["controller"] as string == "Cargos")
+							{
+								<a class="nav-link active" asp-area="" asp-controller="Cargos" asp-action="Index">
+									<span class="nav-icon">
+										<i class="bi bi-person-workspace"></i>
+									</span>
+									<span class="nav-link-text">Cargos</span>
+								</a>
+							} else
+							{
+								<a class="nav-link" asp-area="" asp-controller="Cargos" asp-action="Index">
+									<span class="nav-icon">
+										<i class="bi bi-person-workspace"></i>
+									</span>
+									<span class="nav-link-text">Cargos</span>
+								</a>
+							}
 						}
-					}
-				</li>
+					</li>
+				}
 
                 <li class="nav-item">
                     @{
