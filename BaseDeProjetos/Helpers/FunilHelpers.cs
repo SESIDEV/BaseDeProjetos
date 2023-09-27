@@ -458,13 +458,10 @@ namespace BaseDeProjetos.Helpers
             {
                 case "name_desc":
                     return prospeccoes.OrderByDescending(s => s.Empresa.Nome).ToList();
-                    break;
                 case "TipoContratacao":
                     return prospeccoes.OrderBy(s => s.TipoContratacao).ToList();
-                    break;
                 case "tipo_desc":
                     return prospeccoes.OrderByDescending(s => s.TipoContratacao).ToList();
-                    break;
             };
             return prospeccoes.ToList();
         }
