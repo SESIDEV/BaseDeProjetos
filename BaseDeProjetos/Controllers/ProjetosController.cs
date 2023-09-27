@@ -451,7 +451,7 @@ namespace BaseDeProjetos.Controllers
 				return View("Error");
 			}
 
-			projetoExistente.MembrosEquipe.Clear();
+			projetoExistente.EquipeProjeto.Clear();
 
 			List<string> membrosEmails = new List<string>();
 
