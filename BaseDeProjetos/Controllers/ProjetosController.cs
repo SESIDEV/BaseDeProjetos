@@ -458,6 +458,25 @@ namespace BaseDeProjetos.Controllers
                 _context.EquipeProjeto.Remove(relacao);
             }
 
+            projetoExistente.AreaPesquisa = projeto.AreaPesquisa;
+            projetoExistente.Casa = projeto.Casa;
+            projetoExistente.DataEncerramento = projeto.DataEncerramento;
+            projetoExistente.DataInicio = projeto.DataInicio;
+            projetoExistente.DuracaoProjetoEmMeses = projeto.DuracaoProjetoEmMeses;
+            projetoExistente.Empresa = projeto.Empresa;
+            projetoExistente.Estado = projeto.Estado;
+            projetoExistente.FonteFomento = projeto.FonteFomento;
+            projetoExistente.Indicadores = projeto.Indicadores;
+            projetoExistente.Inovacao = projeto.Inovacao;
+            projetoExistente.NomeProjeto = projeto.NomeProjeto;
+            projetoExistente.Proponente = projeto.Proponente;
+            projetoExistente.Status = projeto.Status;
+            projetoExistente.StatusCurva = projeto.StatusCurva;
+            projetoExistente.Usuario = projeto.Usuario;
+            projetoExistente.UsuarioId = projeto.UsuarioId;
+            projetoExistente.ValorAporteRecursos = projeto.ValorAporteRecursos;
+            projetoExistente.ValorTotalProjeto = projeto.ValorTotalProjeto;
+
             List<string> membrosEmails = new List<string>();
 
             // TODO: Repensar a forma como o frontend implementa essa funcionalidade
@@ -474,7 +493,7 @@ namespace BaseDeProjetos.Controllers
                 equipe.Add(equipeProjeto);
             }
 
-            projeto.EquipeProjeto = equipe;
+            projetoExistente.EquipeProjeto = equipe;
 
             if (id != projeto.Id)
             {
@@ -485,7 +504,7 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {
-                    _context.Projeto.Update(projeto);
+                    _context.Projeto.Update(projetoExistente);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException ex)
