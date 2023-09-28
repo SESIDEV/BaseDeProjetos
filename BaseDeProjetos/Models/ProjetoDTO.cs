@@ -1,18 +1,21 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BaseDeProjetos.Models
 {
-    public class Projeto
+	/// <summary>
+	/// DTO utilizado para o ProjetoGraficoViewModel em que não precisamos de todas as propriedades
+	/// </summary>
+    public class ProjetoDTO
     {
-        public Projeto()
+        public ProjetoDTO()
         {
 
         }
 
-        public Projeto(ProjetoIndicadores indicador)
+        public ProjetoDTO(ProjetoIndicadores indicador)
         {
             Indicadores = new List<ProjetoIndicadores>() { indicador };
         }
@@ -33,9 +36,6 @@ namespace BaseDeProjetos.Models
         public virtual DateTime DataInicio { get; set; } = DateTime.Now;
 
         public virtual DateTime DataEncerramento { get; set; } = DateTime.Now;
-
-        [Display(AutoGenerateFilter = true, Name = "Membros da Equipe")]
-        public virtual List<EquipeProjeto> EquipeProjeto { get; set; }
 
         public virtual Estado Estado { get; set; }
 
