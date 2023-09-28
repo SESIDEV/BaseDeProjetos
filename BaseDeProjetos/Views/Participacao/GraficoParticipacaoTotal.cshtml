@@ -6,8 +6,9 @@
     var cultura = new CultureInfo("pt-BR");
 }
 
-
 <script>
+    const classesLoading = ["spinner-border", "text-white"];
+
     function carregarGraficoTemporal(dadosRetornados, modelId) {
         let labels = null;
         let values = null;
@@ -71,7 +72,7 @@
     function exibirLoading(idUsuario) {
         const internalDiv = document.querySelector(`#internalDiv-${idUsuario}`);
         if (internalDiv) {
-            internalDiv.classList.add("spinner-border");
+            internalDiv.classList.add(...classesLoading);
             internalDiv.innerHTML = '';
         } else {
             console.error(`Element with id 'internalDiv-${idUsuario}' not found.`);
@@ -81,7 +82,7 @@
     function esconderLoading(idUsuario) {
         const internalDiv = document.querySelector(`#internalDiv-${idUsuario}`);
         if (internalDiv) {
-            internalDiv.classList.remove("spinner-border");
+            internalDiv.classList.remove(...classesLoading);
         }
     }
 

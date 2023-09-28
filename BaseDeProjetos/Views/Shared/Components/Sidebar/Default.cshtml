@@ -22,7 +22,7 @@
 <script>
     window.onload = () => {
         let loadAnimGraficoParticipacao = document.getElementById("participacao");
-        loadAnimGraficoParticipacao.innerHTML = "<div class='d-flex justify-content-center align-items-center'><div class='mt-2 mb-2 spinner-border'></div></div>"
+        loadAnimGraficoParticipacao.innerHTML = "<div class='d-flex justify-content-center align-items-center'><div class='mt-2 mb-2 spinner-border text-primary'></div></div>"
         puxarDadosParticipacao().then(data => {
             carregarGraficoParticipacao(data);
         }).catch(error => {
