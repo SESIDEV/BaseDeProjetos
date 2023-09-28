@@ -128,6 +128,10 @@
                             asp-items="Html.GetEnumSelectList<Estado>()"></select>
                         <span asp-validation-for="Estado" class="text-danger"></span>
                     </div>
+					<div class="form-group">
+						<label asp-for="SatisfacaoCliente" class="control-label"></label>
+						<input type="number" step="0.01" asp-for="SatisfacaoCliente" />
+					</div>
                     <div class="form-group">
                         <label asp-for="FonteFomento" class="control-label"></label>
                         <select asp-for="FonteFomento" class="form-control"

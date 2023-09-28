@@ -386,7 +386,7 @@ namespace BaseDeProjetos.Controllers
 		// more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("Id,NomeProjeto,MembrosEquipe,Casa,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos,Empresa,Indicadores,UsuarioId")]
+		public async Task<IActionResult> Create([Bind("Id,NomeProjeto,MembrosEquipe,Casa,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos,Empresa,Indicadores,UsuarioId,SatisfacaoCliente")]
 			Projeto projeto,
 			string membrosSelect)
 		{
@@ -467,7 +467,7 @@ namespace BaseDeProjetos.Controllers
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Edit(string id,
-			[Bind("Id,Casa,NomeProjeto,MembrosEquipe,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos,Indicadores,UsuarioId")]
+			[Bind("Id,Casa,NomeProjeto,MembrosEquipe,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos,Indicadores,UsuarioId,SatisfacaoCliente")]
 			Projeto projeto,
 			string membrosSelect)
 		{
@@ -496,6 +496,7 @@ namespace BaseDeProjetos.Controllers
 			projetoExistente.Inovacao = projeto.Inovacao;
 			projetoExistente.NomeProjeto = projeto.NomeProjeto;
 			projetoExistente.Proponente = projeto.Proponente;
+            projetoExistente.SatisfacaoCliente = projeto.SatisfacaoCliente;
 			projetoExistente.Status = projeto.Status;
 			projetoExistente.StatusCurva = projeto.StatusCurva;
 			projetoExistente.Usuario = projeto.Usuario;

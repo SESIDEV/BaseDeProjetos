@@ -29,6 +29,16 @@
                 <span>@Model.DataEncerramento.ToString("dd/MM/yyyy")</span>
                 <h1 class="app-card-title">Duração em Meses:</h1>
                 <span>@Model.DuracaoProjetoEmMeses</span>
+                <h1 class="app-card-title">Satisfação do Cliente:</h1>
+                @if (Model.SatisfacaoCliente != null && Model.SatisfacaoCliente != 0)
+                {
+                    <span>@Model.SatisfacaoCliente</span>
+                }
+                else
+                {
+                    <span>Não há valor de Satisfação do Cliente</span>
+                }
+
                 <h1 class="app-card-title">Equipe do Projeto:</h1>
                 @if (Model.EquipeProjeto.Count != 0)
                 {
