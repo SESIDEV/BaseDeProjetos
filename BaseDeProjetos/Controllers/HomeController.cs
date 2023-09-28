@@ -105,19 +105,11 @@ namespace BaseDeProjetos.Controllers
 
                 if (usuarioAtivo.Casa == Instituto.Super || usuarioAtivo.Casa == Instituto.ISIQV || usuarioAtivo.Casa == Instituto.CISHO)
                 {
-                    /*ViewData["receita_total"] = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == Instituto.ISIQV).ToList().LastOrDefault().Receita;
+                    ViewData["receita_total"] = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == Instituto.ISIQV).ToList().LastOrDefault().Receita;
                     ViewData["despesa_total"] = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == Instituto.ISIQV).ToList().LastOrDefault().Despesa;
                     ViewData["invest_total"] = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == Instituto.ISIQV).ToList().LastOrDefault().Investimento;
                     ViewData["Data"] = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == Instituto.ISIQV).ToList().LastOrDefault().Data;
                     ViewData["quali"] = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == Instituto.ISIQV).ToList().LastOrDefault().QualiSeguranca;
-                    */
-                    ViewData["receita_total"] = 0;
-                    ViewData["despesa_total"] = 1;
-                    ViewData["invest_total"] = 0;
-                    ViewData["quali"] = 0;
-                    ViewData["Data"] = DateTime.Today;
-
-
                 }
                 else
                 {
