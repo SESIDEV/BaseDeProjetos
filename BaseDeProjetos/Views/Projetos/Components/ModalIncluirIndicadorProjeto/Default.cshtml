@@ -19,7 +19,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="incluirIndicadorProjetoModal-@projeto.Id-Label2">
-                    Adicionar indicadores  
+                    Adicionar checklists
                 </h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -91,7 +91,7 @@
                     }
                     <input asp-for="Id" type="hidden" value='@unique_id_indicadores' />
 
-                    <h5>Indicadores:</h5>
+                    <h5>Checklists:</h5>
                     <div class="form-check">
                         <input asp-for="Bolsista" class="form-check-input" type="checkbox" id="checkBolsista" />
                         <label asp-for="Bolsista" class="form-check-label" for="checkBolsista"></label>
