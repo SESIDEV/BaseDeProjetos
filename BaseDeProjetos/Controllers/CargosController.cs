@@ -22,10 +22,18 @@ namespace BaseDeProjetos.Controllers
         // GET: Cargos
         public async Task<IActionResult> Index()
         {
-            if (HttpContext.User.Identity.IsAuthenticated && UsuarioAtivo.Nivel != Nivel.Usuario && UsuarioAtivo.Nivel != Nivel.Externos)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
                 ViewbagizarUsuario(_context);
-                return View(await _context.Cargo.ToListAsync());
+
+                if (UsuarioAtivo.Nivel != Nivel.Usuario && UsuarioAtivo.Nivel != Nivel.Externos)
+                {
+                    return View(await _context.Cargo.ToListAsync());
+                }
+                else
+                {
+                    return View("Forbidden");
+                }
             }
             else
             {
