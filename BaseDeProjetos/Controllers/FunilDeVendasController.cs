@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -731,23 +731,26 @@ namespace BaseDeProjetos.Controllers
             return Json(listaFull);
         }
 
-        public ActionResult PuxarDadosProspeccoes2() //para puxar em selectList
+        public async Task<IActionResult> PuxarDadosProspeccoes2() //para puxar em selectList
         {
-            List<Prospeccao> lista_prosp = _context.Prospeccao.ToList();
+            List<Prospeccao> lista_prosp = await _context.Prospeccao.ToListAsync();
 
             List<Dictionary<string, object>> listaFull = new List<Dictionary<string, object>>();
 
             foreach (var p in lista_prosp)
             {
                 Dictionary<string, object> dict = new Dictionary<string, object>();
-                
-                if(p.NomeProspeccao != null){
+
+                if (p.NomeProspeccao != null)
+                {
                     dict["idProsp"] = p.Id;
                     dict["Titulo"] = p.NomeProspeccao + " [" + p.Empresa.Nome + "]";
-                } else {
+                }
+                else
+                {
                     continue;
                 }
-                
+
                 listaFull.Add(dict);
             }
 
