@@ -15,7 +15,7 @@ namespace BaseDeProjetos.Controllers.Tests
     {
         private ProjetosController? _controller;
         private ApplicationDbContext? _context;
-        private ObjectCreator _creator;
+        private ObjectCreator? _creator;
 
         [SetUp]
         public void Setup()
@@ -59,13 +59,13 @@ namespace BaseDeProjetos.Controllers.Tests
         [Test]
         public async Task Test_Create_ValidModel_ReturnsRedirectToAction()
         {
-            if (_context != null)
+            if (_context != null && _creator != null)
             {
                 _context.Users.Add(_creator.usuario);
                 _context.SaveChanges();
             }
 
-            if (_controller != null)
+            if (_controller != null && _creator != null)
             {
                 var result = await _controller.Create(_creator.projeto, "meuemail@firjan.com.br");
                 Assert.IsInstanceOf<RedirectToActionResult>(result);
@@ -78,7 +78,7 @@ namespace BaseDeProjetos.Controllers.Tests
         [Test]
         public void Test_Create_UserAuthenticated_ReturnsView()
         {
-            if (_context != null)
+            if (_context != null && _creator != null)
             {
                 var empresa = _creator.empresa;
 
@@ -92,6 +92,14 @@ namespace BaseDeProjetos.Controllers.Tests
                 var result = _controller.Create();
                 Assert.IsInstanceOf<ViewResult>(result);
             }
+        }
+
+        [TearDown]
+        public void Teardown()
+        {
+            _context = null;
+            _controller = null;
+            _creator = null;
         }
     }
 }
