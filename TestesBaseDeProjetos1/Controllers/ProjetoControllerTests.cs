@@ -57,6 +57,32 @@ namespace BaseDeProjetos.Controllers.Tests
         }
 
         [Test]
+        public async Task Test_Edit_ValidModel_ReturnsRedirectToAction()
+        {
+            await _context.Users.AddAsync(_objectCreator?.usuario);
+            await _context.Projeto.AddAsync(_objectCreator?.projeto);
+            await _context.SaveChangesAsync();
+
+            var existingProjeto = await _context.Projeto.FindAsync(_objectCreator?.projeto.Id);
+
+            existingProjeto.NomeProjeto = "Nome Alterado";
+            existingProjeto.AreaPesquisa = LinhaPesquisa.QuimicaESustentabilidade;
+
+            if (existingProjeto != null)
+            {
+                if (_context != null && _controller != null && _objectCreator != null)
+                {
+                    _context.Entry(existingProjeto).State = EntityState.Detached;
+
+                    var result = await _controller.Edit(existingProjeto.Id, existingProjeto, "meuemail@firjan.com.br");
+                    Assert.IsInstanceOf<RedirectToActionResult>(result);
+                    var redirectResult = (RedirectToActionResult)result;
+                    Assert.AreEqual("Index", redirectResult?.ActionName);
+                }
+            }
+        }
+
+        [Test]
         public async Task Test_Create_ValidModel_ReturnsRedirectToAction()
         {
             if (_context != null && _objectCreator != null)
