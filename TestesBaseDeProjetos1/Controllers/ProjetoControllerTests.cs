@@ -15,7 +15,7 @@ namespace BaseDeProjetos.Controllers.Tests
     {
         private ProjetosController? _controller;
         private ApplicationDbContext? _context;
-        private ObjectCreator? _creator;
+        private ObjectCreator? _objectCreator;
 
         [SetUp]
         public void Setup()
@@ -27,14 +27,14 @@ namespace BaseDeProjetos.Controllers.Tests
             _context = new ApplicationDbContext(options);
             _context.Database.EnsureDeleted();
 
-            _creator = new ObjectCreator();
+            _objectCreator = new ObjectCreator();
 
             // Não mude a ordem!!
-            _creator.CriarProjetoIndicadoresMock();
-            _creator.CriarCargoMock();
-            _creator.CriarUsuarioMock();
-            _creator.CriarEmpresaMock();
-            _creator.CriarProjetoMock();
+            _objectCreator.CriarProjetoIndicadoresMock();
+            _objectCreator.CriarCargoMock();
+            _objectCreator.CriarUsuarioMock();
+            _objectCreator.CriarEmpresaMock();
+            _objectCreator.CriarProjetoMock();
 
             _controller = new ProjetosController(_context);
 
@@ -79,9 +79,9 @@ namespace BaseDeProjetos.Controllers.Tests
         [Test]
         public void Test_Create_UserAuthenticated_ReturnsView()
         {
-            if (_context != null && _creator != null)
+            if (_context != null && _objectCreator != null)
             {
-                var empresa = _creator.empresa;
+                var empresa = _objectCreator.empresa;
 
                 _context.Empresa.Add(empresa);
 
@@ -98,9 +98,10 @@ namespace BaseDeProjetos.Controllers.Tests
         [TearDown]
         public void Teardown()
         {
+            _context?.Database.EnsureDeleted();
             _context = null;
             _controller = null;
-            _creator = null;
+            _objectCreator = null;
         }
     }
 }
