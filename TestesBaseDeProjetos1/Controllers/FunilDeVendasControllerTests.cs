@@ -1,5 +1,4 @@
-﻿using BaseDeProjetos.Helpers;
-using BaseDeProjetos.Models;
+﻿using BaseDeProjetos.Models;
 using NUnit.Framework;
 using System.Collections.Generic;
 
