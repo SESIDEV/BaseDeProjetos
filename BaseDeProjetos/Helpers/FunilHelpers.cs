@@ -383,7 +383,19 @@ namespace BaseDeProjetos.Helpers
 
         public static Usuario ObterUsuarioAtivo(ApplicationDbContext _context, HttpContext HttpContext)
         {
-            return _context.Users.ToList().FirstOrDefault(usuario => usuario.UserName == HttpContext.User.Identity.Name);
+            if (HttpContext == null)
+            {
+                throw new ArgumentNullException(nameof(HttpContext));
+            }
+
+            if (_context == null)
+            {
+                throw new ArgumentNullException(nameof(_context));
+            }
+
+            var usuarioAtivo = _context.Users.ToList().FirstOrDefault(usuario => usuario.UserName == HttpContext.User.Identity.Name);
+
+            return usuarioAtivo;
         }
 
         /// <summary>
@@ -455,7 +467,7 @@ namespace BaseDeProjetos.Helpers
         public static List<Prospeccao> OrdenarProspecções(string sortOrder, List<Prospeccao> lista)
         {
             var prospeccoes = lista.AsQueryable();
-            switch(sortOrder)
+            switch (sortOrder)
             {
                 case "name_desc":
                     return prospeccoes.OrderByDescending(s => s.Empresa.Nome).ToList();
