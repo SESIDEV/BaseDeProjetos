@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -59,18 +59,19 @@ namespace BaseDeProjetos.Controllers.Tests
         [Test]
         public async Task Test_Create_ValidModel_ReturnsRedirectToAction()
         {
-            if (_context != null && _creator != null)
+            if (_context != null && _objectCreator != null)
             {
-                _context.Users.Add(_creator.usuario);
-                _context.SaveChanges();
+                await _context.Users.AddAsync(_objectCreator.usuario);
+                await _context.SaveChangesAsync();
             }
 
-            if (_controller != null && _creator != null)
+            if (_controller != null && _objectCreator != null)
             {
-                var result = await _controller.Create(_creator.projeto, "meuemail@firjan.com.br");
+                var result = await _controller.Create(_objectCreator.projeto, "meuemail@firjan.com.br");
+
                 Assert.IsInstanceOf<RedirectToActionResult>(result);
                 var redirectResult = (RedirectToActionResult)result;
-                Assert.AreEqual("Index", redirectResult.ActionName);
+                Assert.AreEqual("Index", redirectResult?.ActionName);
             }
         }
 
