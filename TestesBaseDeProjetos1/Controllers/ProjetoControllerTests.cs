@@ -1,9 +1,11 @@
-using BaseDeProjetos.Data;
+﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using TestesBaseDeProjetos1.TestHelper;
