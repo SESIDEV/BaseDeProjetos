@@ -21,11 +21,11 @@ namespace BaseDeProjetos.Controllers.Tests
         public void Setup()
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "InMemoryDbForTesting")
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()) // Separar o contexto do banco para cada teste
                 .Options;
 
             _context = new ApplicationDbContext(options);
-            _context.Database.EnsureDeleted();
+            _context.Database.EnsureCreated();
 
             _objectCreator = new ObjectCreator();
 
