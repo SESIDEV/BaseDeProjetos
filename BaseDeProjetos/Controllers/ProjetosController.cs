@@ -1,4 +1,4 @@
-using BaseDeProjetos.Data;
+﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using MailSenderHelpers;
@@ -352,7 +352,7 @@ namespace BaseDeProjetos.Controllers
 		// more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("Id,NomeProjeto,MembrosEquipe,Casa,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos,Empresa,Indicadores,UsuarioId,SatisfacaoCliente")]
+		public async Task<IActionResult> Create([Bind("Id,NomeProjeto,MembrosEquipe,Casa,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos,Empresa,Indicadores,UsuarioId,SatisfacaoCliente,ProponenteId")]
 			Projeto projeto,
 			string membrosSelect)
 		{
@@ -377,15 +377,12 @@ namespace BaseDeProjetos.Controllers
 
 			projeto.EquipeProjeto = equipe;
 
-
 			List<Empresa> empresas = _context.Empresa.ToList();
 			ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
 
 			if (ModelState.IsValid)
 			{
 				projeto.Empresa = _context.Empresa.FirstOrDefault(e => e.Id == projeto.Empresa.Id);
-
-				//projeto.Usuario = usuario;
 
 				_context.Add(projeto);
 				await _context.SaveChangesAsync();
@@ -433,7 +430,7 @@ namespace BaseDeProjetos.Controllers
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Edit(string id,
-			[Bind("Id,Casa,NomeProjeto,MembrosEquipe,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos,Indicadores,UsuarioId,SatisfacaoCliente")]
+			[Bind("Id,Casa,NomeProjeto,MembrosEquipe,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos,Indicadores,UsuarioId,SatisfacaoCliente,ProponenteId")]
 			Projeto projeto,
 			string membrosSelect)
 		{
