@@ -21,7 +21,6 @@ public static class ProjetoExtensions
             ValorTotalProjeto = projeto.ValorTotalProjeto,
             ValorAporteRecursos = projeto.ValorAporteRecursos,
             Casa = projeto.Casa,
-            Indicadores = projeto.Indicadores,
             Usuario = projeto.Usuario,
             UsuarioId = projeto.UsuarioId,
             StatusCurva = projeto.StatusCurva,

@@ -14,11 +14,6 @@ namespace BaseDeProjetos.Models
         {
         }
 
-        public ProjetoDTO(ProjetoIndicadores indicador)
-        {
-            Indicadores = new List<ProjetoIndicadores>() { indicador };
-        }
-
         [Key]
         [Display(AutoGenerateFilter = true)]
         public virtual string Id { get; set; }
@@ -60,8 +55,6 @@ namespace BaseDeProjetos.Models
         public virtual double ValorAporteRecursos { get; set; }
 
         public virtual Instituto Casa { get; set; }
-
-        public virtual List<ProjetoIndicadores> Indicadores { get; set; } = new List<ProjetoIndicadores>();
 
         [ForeignKey("UsuarioId")]
         public virtual Usuario Usuario { get; set; }
