@@ -168,7 +168,6 @@ namespace BaseDeProjetos.Helpers.Tests
             var resultadoObtido3 = FunilHelpers.VerificarStatus(prospeccaoComProposta, StatusProspeccao.Discussao_EsbocoProjeto);
             var resultadoObtido4 = FunilHelpers.VerificarStatus(prospeccaoConvertida, StatusProspeccao.Discussao_EsbocoProjeto);
 
-
             Assert.AreEqual(true, resultadoObtido);
             Assert.AreEqual(false, resultadoObtido2);
             Assert.AreEqual(false, resultadoObtido3);
@@ -197,18 +196,15 @@ namespace BaseDeProjetos.Helpers.Tests
             var resultadoObtido3 = FunilHelpers.VerificarStatus(prospeccaoComProposta, StatusProspeccao.ComProposta);
             var resultadoObtido4 = FunilHelpers.VerificarStatus(prospeccaoConvertida, StatusProspeccao.ComProposta);
 
-
             Assert.AreEqual(false, resultadoObtido);
             Assert.AreEqual(false, resultadoObtido2);
             Assert.AreEqual(true, resultadoObtido3);
             Assert.AreEqual(false, resultadoObtido4);
-
         }
 
         [Test]
         public void Test_VerificarStatus_Convertida()
         {
-
             var resultadoObtido = FunilHelpers.VerificarStatus(prospeccaoEmDiscussao, StatusProspeccao.Convertida);
             var resultadoObtido2 = FunilHelpers.VerificarStatus(prospeccaoContatoInicial, StatusProspeccao.Convertida);
             var resultadoObtido3 = FunilHelpers.VerificarStatus(prospeccaoComProposta, StatusProspeccao.Convertida);
@@ -220,5 +216,4 @@ namespace BaseDeProjetos.Helpers.Tests
             Assert.AreEqual(true, resultadoObtido4);
         }
     }
-
 }
