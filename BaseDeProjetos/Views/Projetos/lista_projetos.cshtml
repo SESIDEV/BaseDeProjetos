@@ -12,7 +12,7 @@
         align-items: center;
         padding: 20px;
     }
-    
+
     #box-btn-actions {
         width: 100%;
         justify-content: center;
@@ -21,18 +21,18 @@
 </style>
 
 <script>
-	function setupTippy(id) {
-		try {
-			if (!tippyDone.includes(id)) {
-				console.log("Setting up tippy for: " + id);
-				tippy(`#${id}`, {allowHTML: true, placement: 'left'});
-				tippyDone.push(id);
-			}
-		} catch (error) {
-			console.error(`Um erro ocorreu ao tentar setar o tippy... vamos tentar novamente. ${error}`);
-			tippy(`#${id}`, {allowHTML: true, placement: 'left'});
-		}
-	}
+    function setupTippy(id) {
+        try {
+            if (!tippyDone.includes(id)) {
+                console.log("Setting up tippy for: " + id);
+                tippy(`#${id}`, { allowHTML: true, placement: 'left' });
+                tippyDone.push(id);
+            }
+        } catch (error) {
+            console.error(`Um erro ocorreu ao tentar setar o tippy... vamos tentar novamente. ${error}`);
+            tippy(`#${id}`, { allowHTML: true, placement: 'left' });
+        }
+    }
 </script>
 
 @foreach (var projeto in Model)
@@ -75,7 +75,7 @@
                 </div>
             </div>
         </td>
-        
+
         <td class="cell">
             @projeto.NomeProjeto
         </td>
@@ -118,9 +118,37 @@
         <td class="cell">
             <span>@projeto.DataEncerramento.ToString("dd/MM/yyyy")</span>
         </td>
-        <td class="cell">
-            <span>@projeto.SatisfacaoCliente?.ToString("N")</span>
-        </td>
+        @if (projeto.SatisfacaoClienteParcial != null)
+        {
+            <td class="cell">
+                <span>@(projeto.SatisfacaoClienteParcial*100)%</span>
+            </td>
+        }
+        else
+        {
+            <td>
+                <span>
+                    Sem pesquisa realizada
+                </span>
+            </td>
+        }
+
+        @if (projeto.SatisfacaoClienteFinal != null)
+        {
+            <td class="cell">
+                <span>@(projeto.SatisfacaoClienteFinal*100)%</span>
+            </td>
+        }
+        else
+        {
+            <td>
+                <span>
+                    Sem pesquisa realizada
+                </span>
+            </td>
+        }
+
+
         <td class="cell">
             <button type="button" data-bs-target="#modalDetalhes-@projeto.Id" id="button-@projeto.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary" onmouseover="carregarModaisProjeto('@projeto.Id')">Detalhes</button>
         </td>
