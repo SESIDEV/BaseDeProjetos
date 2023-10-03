@@ -80,6 +80,16 @@
             @projeto.NomeProjeto
         </td>
         <td class="cell">
+            @if (projeto.Proponente != null)
+            {
+                <span onmouseover="setupTippy('cargoProponente-@(projeto.Id)')" data-tippy-content="@projeto.Proponente.Cargo?.Nome" id="cargoProponente-@projeto.Id" class="badge bg-success">@projeto.Proponente.UserName</span> @*Líder*@
+            }
+            else
+            {
+                <span class="badge bg-danger">Sem Proponente</span>
+            }
+        </td>
+        <td class="cell">
             @if (projeto.Usuario != null)
             {
                 <span onmouseover="setupTippy('cargoUsuario-@(projeto.Id)')" data-tippy-content="@projeto.Usuario.Cargo?.Nome" id="cargoUsuario-@projeto.Id" class="badge bg-success">@projeto.Usuario.UserName</span> @*Líder*@
@@ -121,12 +131,12 @@
         @if (projeto.SatisfacaoClienteParcial != null)
         {
             <td class="cell">
-                <span>@(projeto.SatisfacaoClienteParcial*100)%</span>
+                <span>@(projeto.SatisfacaoClienteParcial)%</span>
             </td>
         }
         else
         {
-            <td>
+            <td class="cell">
                 <span>
                     Sem pesquisa realizada
                 </span>
@@ -136,12 +146,12 @@
         @if (projeto.SatisfacaoClienteFinal != null)
         {
             <td class="cell">
-                <span>@(projeto.SatisfacaoClienteFinal*100)%</span>
+                <span>@(projeto.SatisfacaoClienteFinal)%</span>
             </td>
         }
         else
         {
-            <td>
+            <td class="cell">
                 <span>
                     Sem pesquisa realizada
                 </span>
