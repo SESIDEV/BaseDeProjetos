@@ -1,14 +1,13 @@
-using BaseDeProjetos.Data;
-using Microsoft.AspNetCore.Mvc;
 using BaseDeProjetos.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BaseDeProjetos.ViewComponents.CargoViewComponents
 {
-	public class ModalCreateCargoViewComponent : ViewComponent
-	{
-		public IViewComponentResult Invoke()
-		{
-			return View(new Cargo());
-		}
-	}
+    public class ModalCreateCargoViewComponent : ViewComponent
+    {
+        public IViewComponentResult Invoke()
+        {
+            return View(new Cargo());
+        }
+    }
 }

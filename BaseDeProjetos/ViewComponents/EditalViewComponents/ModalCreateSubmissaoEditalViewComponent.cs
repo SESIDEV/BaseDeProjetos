@@ -1,7 +1,6 @@
 ﻿using BaseDeProjetos.Data;
-using Microsoft.AspNetCore.Mvc;
 using BaseDeProjetos.Models;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BaseDeProjetos.ViewComponents.EditalViewComponents
 {
@@ -18,6 +17,5 @@ namespace BaseDeProjetos.ViewComponents.EditalViewComponents
         {
             return View(new Submissao());
         }
-
     }
 }
