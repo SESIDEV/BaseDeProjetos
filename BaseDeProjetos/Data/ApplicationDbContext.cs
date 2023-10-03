@@ -22,5 +22,6 @@ namespace BaseDeProjetos.Data
         public DbSet<BaseDeProjetos.Models.Editais> Editais { get; set; }
         public DbSet<BaseDeProjetos.Models.Submissao> Submissao { get; set; }
         public DbSet<BaseDeProjetos.Models.ProjetoIndicadores> ProjetoIndicadores { get; set; }
+        public DbSet<BaseDeProjetos.Models.CodigoAmostraProjeto> CodigoAmostraProjeto { get; set; }
     }
 }
