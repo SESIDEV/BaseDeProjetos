@@ -27,12 +27,12 @@
                 <span>@Model.DataInicio.ToString("dd/MM/yyyy")</span>
                 <h1 class="app-card-title">Data de Encerramento:</h1>
                 <span>@Model.DataEncerramento.ToString("dd/MM/yyyy")</span>
-                <h1 class="app-card-title">Duração em Meses:</h1>
-                <span>@Model.DuracaoProjetoEmMeses</span>
+                <h1 class="app-card-title">Duração do Projeto:</h1>
+                <span>@Model.DuracaoProjetoEmMeses meses</span>
                 <h1 class="app-card-title">Satisfação do Cliente (Parcial):</h1>
                 @if (Model.SatisfacaoClienteParcial != null && Model.SatisfacaoClienteParcial != 0)
                 {
-                    <span>@Model.SatisfacaoClienteParcial</span>
+                    <span>@(Model.SatisfacaoClienteParcial*100)%</span>
                 }
                 else
                 {
@@ -41,7 +41,7 @@
                 <h1 class="app-card-title">Satisfação do Cliente (Final):</h1>
                 @if (Model.SatisfacaoClienteFinal != null && Model.SatisfacaoClienteFinal != 0)
                 {
-                    <span>@Model.SatisfacaoClienteFinal</span>
+                    <span>@(Model.SatisfacaoClienteFinal*100)%</span>
                 }
                 else
                 {
