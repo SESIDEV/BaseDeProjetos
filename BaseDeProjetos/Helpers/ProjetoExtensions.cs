@@ -25,7 +25,8 @@ public static class ProjetoExtensions
 			Usuario = projeto.Usuario,
 			UsuarioId = projeto.UsuarioId,
 			StatusCurva = projeto.StatusCurva,
-			SatisfacaoCliente = projeto.SatisfacaoCliente,
+			SatisfacaoClienteParcial = projeto.SatisfacaoClienteParcial,
+			SatisfacaoClienteFinal = projeto.SatisfacaoClienteFinal,
 		};
 	}
 }

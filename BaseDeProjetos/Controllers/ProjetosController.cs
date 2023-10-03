@@ -496,7 +496,8 @@ namespace BaseDeProjetos.Controllers
 			projetoExistente.Inovacao = projeto.Inovacao;
 			projetoExistente.NomeProjeto = projeto.NomeProjeto;
 			projetoExistente.Proponente = projeto.Proponente;
-            projetoExistente.SatisfacaoCliente = projeto.SatisfacaoCliente;
+            projetoExistente.SatisfacaoClienteParcial = projeto.SatisfacaoClienteParcial;
+            projetoExistente.SatisfacaoClienteFinal = projeto.SatisfacaoClienteFinal;
 			projetoExistente.Status = projeto.Status;
 			projetoExistente.StatusCurva = projeto.StatusCurva;
 			projetoExistente.Usuario = projeto.Usuario;
