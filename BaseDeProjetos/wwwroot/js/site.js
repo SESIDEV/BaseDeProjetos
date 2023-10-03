@@ -184,6 +184,8 @@ function gerarOpcoesSelect(rota, elementoPai, modelId = "", fillValues = false) 
             inner = "UserName";
             if (liderElem) {
                 lider = liderElem.selectedOptions[0].text;
+            if (liderElem) {
+                lider = liderElem.selectedOptions[0].text;
             };
             break;
         case "Empresas":
