@@ -1,6 +1,6 @@
 ﻿using BaseDeProjetos.Data;
-using BaseDeProjetos.Models;
 using BaseDeProjetos.Helpers;
+using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -34,7 +34,6 @@ namespace BaseDeProjetos.Controllers
                 if (string.IsNullOrEmpty(casa))
                 {
                     casa = UsuarioAtivo.Casa.ToString();
-
                 }
                 List<IndicadoresFinanceiros> lista = DefinirCasaParaVisualizar(casa);
                 lista = VincularCasaAosIndicadoresFinanceiros(UsuarioAtivo, listaIndicadoresFinanceiros);
@@ -63,7 +62,6 @@ namespace BaseDeProjetos.Controllers
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
-
 
                 ViewBag.QuantidadeDeProspeccoesPorCasa = indicadoresProspeccoesTotal.QuantidadeDeProspeccoes(p => p?.Casa.GetDisplayName(), ano);
                 ViewBag.ValorSomaProspeccoesPorCasa = indicadoresProspeccoesTotal.ValorSomaProspeccoes(p => p?.Casa.GetDisplayName(), ano);
@@ -95,7 +93,6 @@ namespace BaseDeProjetos.Controllers
                 ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;
                 return View("IndicadoresDashBoard");
-
             }
             else
             {
@@ -111,17 +108,14 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         public static List<IndicadoresFinanceiros> VincularCasaAosIndicadoresFinanceiros(Usuario usuario, List<IndicadoresFinanceiros> listaIndicadoresFinanceiros)
         {
-
             if (usuario.Casa == Instituto.Super || usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO)
             {
                 return listaIndicadoresFinanceiros.Where(lista => lista.Casa == Instituto.ISIQV).ToList();
-
             }
             else
             {
                 return listaIndicadoresFinanceiros.Where(lista => lista.Casa == usuario.Casa).ToList();
             }
-
         }
 
         /// <summary>
@@ -142,7 +136,6 @@ namespace BaseDeProjetos.Controllers
             {
                 enum_casa = Instituto.Super;
             }
-
 
             List<IndicadoresFinanceiros> listaIndicadores = new List<IndicadoresFinanceiros>();
 

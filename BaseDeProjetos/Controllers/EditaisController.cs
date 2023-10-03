@@ -1,5 +1,4 @@
 ﻿using BaseDeProjetos.Data;
-using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,10 +15,12 @@ namespace BaseDeProjetos.Controllers
     public class EditaisController : SGIController
     {
         private readonly ApplicationDbContext _context;
+
         public EditaisController(ApplicationDbContext context)
         {
             _context = context;
         }
+
         // GET: Editais
         public async Task<IActionResult> Index()
         {
@@ -35,6 +36,7 @@ namespace BaseDeProjetos.Controllers
                 return View("Forbidden");
             }
         }
+
         // GET: Editais/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -62,7 +64,7 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
-        // GET: Editais/Create        
+        // GET: Editais/Create
         public IActionResult Create()
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -76,8 +78,9 @@ namespace BaseDeProjetos.Controllers
                 return View("Forbidden");
             }
         }
+
         // POST: Editais/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -118,7 +121,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // POST: Editais/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]

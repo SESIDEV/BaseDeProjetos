@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Controllers
 {
-
     public class GerenciarUsuarios : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -51,7 +50,6 @@ namespace BaseDeProjetos.Controllers
                 _ => _context.Users.ToList(),
             };
             return listaUsuarios;
-
         }
 
         /// <summary>
@@ -61,7 +59,6 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         public bool VerificarNivelUsuario(Usuario usuario)
         {
-
             if (usuario.Nivel == Nivel.PMO || usuario.Nivel == Nivel.Dev || usuario.Nivel == Nivel.Supervisor)
             {
                 return true;
@@ -70,14 +67,11 @@ namespace BaseDeProjetos.Controllers
             {
                 return false;
             }
-
         }
-
 
         [Route("GerenciarUsuarios")]
         [Route("GerenciarUsuarios/Index")]
         [Route("GerenciarUsuarios/Index/{id?}")]
-        // GET: GerenciarUsuarios
         public IActionResult Index(string statusEmailUsuario)
         {
             ViewData["CurrentFilter"] = statusEmailUsuario;
@@ -88,13 +82,10 @@ namespace BaseDeProjetos.Controllers
 
             if (usuario != null && VerificarNivelUsuario(usuario))
             {
-
                 lista = VerificarStatusEmailUsuario(statusEmailUsuario);
-
             }
 
             return View(lista);
-
         }
 
         // GET: GerenciarUsuarios/Details/5
@@ -122,13 +113,12 @@ namespace BaseDeProjetos.Controllers
         }
 
         // POST: GerenciarUsuarios/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,UserName,Email,EmailConfirmado,PasswordHash,Casa,Nivel")] Usuario usuario)
         {
-            
             if (ModelState.IsValid)
             {
                 usuario.PasswordHash = "AQAAAAEAACcQAAAAEEJOLHMoQRfLBTu8K2wwcFq91QZqkhyVQyP1TpvtsZ5/6jd5CP6jpEEL0bcpUjKvpg==";
@@ -158,15 +148,14 @@ namespace BaseDeProjetos.Controllers
         }
 
         // POST: GerenciarUsuarios/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id,UserName,Email, EmailConfirmed,Casa,Nivel,PasswordHash")] Usuario usuario)
         {
-
             Usuario usuarioEditado = usuario;
-            
+
             if (id.ToString() != usuario.Id)
             {
                 return NotFound();
@@ -174,7 +163,6 @@ namespace BaseDeProjetos.Controllers
 
             if (ModelState.IsValid)
             {
-
                 try
                 {
                     var usuarioExiste = await _context.Users.FindAsync(id);

@@ -9,7 +9,7 @@ namespace MailSenderHelpers
     public class Mailer
     {
         private EmailAddress From { get; set; }
-        private string APIKey {get;set;}
+        private string APIKey { get; set; }
 
         public Mailer()
         {

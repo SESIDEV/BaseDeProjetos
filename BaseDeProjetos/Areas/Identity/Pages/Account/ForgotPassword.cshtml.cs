@@ -64,8 +64,6 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account
 
                     return RedirectToPage("./ForgotPasswordConfirmation");
                 }
-
-                
             }
 
             return Page();

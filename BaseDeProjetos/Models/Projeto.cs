@@ -24,7 +24,6 @@ namespace BaseDeProjetos.Models
         [Display(AutoGenerateFilter = true, Name = "Nome do Projeto")]
         public virtual string NomeProjeto { get; set; }
         public virtual Empresa Empresa { get; set; }
-        public virtual Empresa Proponente { get; set; }
 
         [Display(AutoGenerateFilter = true, Name = "Linha de Pesquisa")]
         public virtual LinhaPesquisa AreaPesquisa { get; set; }
@@ -65,6 +64,11 @@ namespace BaseDeProjetos.Models
         public virtual Usuario Usuario { get; set; }
 
         public virtual string UsuarioId { get; set; }
+
+        [ForeignKey(nameof(ProponenteId))]
+        public virtual Usuario Proponente { get; set; }
+
+        public virtual string ProponenteId { get; set; }
 
         public virtual List<StatusCurva> StatusCurva { get; set; }
 

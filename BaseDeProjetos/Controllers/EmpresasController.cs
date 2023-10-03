@@ -1,5 +1,4 @@
 ﻿using BaseDeProjetos.Data;
-using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -86,7 +85,6 @@ namespace BaseDeProjetos.Controllers
             {
                 return Json("403 Forbidden");
             }
-
         }
 
         /// <summary>
@@ -117,7 +115,6 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private static List<Empresa> FiltrarEmpresas(string searchString, List<Empresa> empresas)
         {
-
             if (!string.IsNullOrEmpty(searchString))
             {
                 searchString = searchString.ToLower();
@@ -157,7 +154,6 @@ namespace BaseDeProjetos.Controllers
             {
                 return View("Forbidden");
             }
-
         }
 
         // GET: Empresas/Details/5

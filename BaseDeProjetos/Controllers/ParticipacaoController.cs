@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.ConstrainedExecution;
 using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Controllers
@@ -187,7 +186,6 @@ namespace BaseDeProjetos.Controllers
 
                 var finalObject = $"{{\"Participacao\": {participacaoSerialized}, \"Rankings\": {rankingsSerialized}}}";
 
-
                 if (usuario != null)
                 {
                     return Ok(finalObject);
@@ -273,7 +271,6 @@ namespace BaseDeProjetos.Controllers
             participacao.Valores = valoresProposta;
             participacao.Labels = mesAno;
         }
-
 
         /// <summary>
         /// Obtém uma participação de acordo com um usuário específico.
