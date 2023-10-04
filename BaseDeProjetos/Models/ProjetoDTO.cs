@@ -65,9 +65,9 @@ namespace BaseDeProjetos.Models
 
         public virtual List<StatusCurva> StatusCurva { get; set; }
 
-        public virtual float? SatisfacaoClienteParcial { get; set; }
+        public virtual double? SatisfacaoClienteParcial { get; set; }
 
-        public virtual float? SatisfacaoClienteFinal { get; set; }
+        public virtual double? SatisfacaoClienteFinal { get; set; }
 
         public virtual decimal CustoHH { get; set; }
     }
