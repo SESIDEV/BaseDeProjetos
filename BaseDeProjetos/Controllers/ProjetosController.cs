@@ -1,4 +1,4 @@
-using BaseDeProjetos.Data;
+﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -383,10 +383,15 @@ namespace BaseDeProjetos.Controllers
 
         private void AtribuirCustoHH(Projeto projeto)
         {
-			foreach (var relacao in projeto.EquipeProjeto)
-			{
-				projeto.CustoHH += DiferencaMeses(projeto.DataEncerramento, projeto.DataInicio) * relacao.Usuario.Cargo.Salario;
-			}
+            projeto.CustoHH = 0;
+
+            foreach (var relacao in projeto.EquipeProjeto)
+            {
+                if (relacao.Usuario != null)
+                {
+                    projeto.CustoHH += DiferencaMeses(projeto.DataEncerramento, projeto.DataInicio) * relacao.Usuario.Cargo.Salario;
+                }
+            }
         }
 
         private async Task<List<Usuario>> ObterListaDeMembrosSelecionados(string membrosSelect)
