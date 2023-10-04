@@ -78,11 +78,6 @@ namespace BaseDeProjetos.Controllers
         // GET: CodigoAmostraProjeto/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var codigoAmostraProjeto = await _context.CodigoAmostraProjeto.FindAsync(id);
             if (codigoAmostraProjeto == null)
             {
@@ -133,11 +128,6 @@ namespace BaseDeProjetos.Controllers
         // GET: CodigoAmostraProjeto/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var codigoAmostraProjeto = await _context.CodigoAmostraProjeto
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (codigoAmostraProjeto == null)
