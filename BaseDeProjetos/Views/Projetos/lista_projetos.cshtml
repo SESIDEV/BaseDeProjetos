@@ -134,6 +134,9 @@
             }
         </td>
         <td class="cell">
+            <span>R$ @projeto.CustoHH.ToString("N")</span>
+        </td>
+        <td class="cell">
             @projeto.FonteFomento.GetDisplayName()
         </td>
         <td class="cell">
@@ -141,9 +144,6 @@
         </td>
         <td class="cell">
             <span>@projeto.DataEncerramento.ToString("dd/MM/yyyy")</span>
-        </td>
-        <td class="cell">
-            <span>R$ @projeto.CustoHH.ToString("N")</span>
         </td>
         @if (projeto.SatisfacaoClienteParcial != null)
         {
