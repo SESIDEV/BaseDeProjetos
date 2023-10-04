@@ -76,6 +76,6 @@ namespace BaseDeProjetos.Models
 
         public virtual float? SatisfacaoClienteFinal { get; set; }
 
-        public virtual float CustoHH { get; set; }
+        public virtual decimal CustoHH { get; set; }
     }
 }
