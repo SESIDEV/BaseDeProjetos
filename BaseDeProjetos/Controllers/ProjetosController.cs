@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -476,27 +476,9 @@ namespace BaseDeProjetos.Controllers
 				_context.EquipeProjeto.Remove(relacao);
 			}
 
-			projetoExistente.AreaPesquisa = projeto.AreaPesquisa;
-			projetoExistente.Casa = projeto.Casa;
-			projetoExistente.CustoHH = projeto.CustoHH;
-			projetoExistente.DataEncerramento = projeto.DataEncerramento;
-			projetoExistente.DataInicio = projeto.DataInicio;
-			projetoExistente.DuracaoProjetoEmMeses = projeto.DuracaoProjetoEmMeses;
-			projetoExistente.Empresa = projeto.Empresa;
-			projetoExistente.Estado = projeto.Estado;
-			projetoExistente.FonteFomento = projeto.FonteFomento;
-			projetoExistente.Indicadores = projeto.Indicadores;
-			projetoExistente.Inovacao = projeto.Inovacao;
-			projetoExistente.NomeProjeto = projeto.NomeProjeto;
-			projetoExistente.Proponente = projeto.Proponente;
-            projetoExistente.SatisfacaoClienteParcial = projeto.SatisfacaoClienteParcial;
-            projetoExistente.SatisfacaoClienteFinal = projeto.SatisfacaoClienteFinal;
-			projetoExistente.Status = projeto.Status;
-			projetoExistente.StatusCurva = projeto.StatusCurva;
-			projetoExistente.Usuario = projeto.Usuario;
-			projetoExistente.UsuarioId = projeto.UsuarioId;
-			projetoExistente.ValorAporteRecursos = projeto.ValorAporteRecursos;
-			projetoExistente.ValorTotalProjeto = projeto.ValorTotalProjeto;
+            await _context.SaveChangesAsync();
+
+            _context.Entry(projetoExistente).CurrentValues.SetValues(projeto);
 
             AtribuirCustoHH(projetoExistente);
 
