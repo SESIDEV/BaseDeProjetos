@@ -58,26 +58,26 @@ namespace BaseDeProjetos.Controllers
 
         // GET: Projetos
         [HttpGet]
-        public IActionResult Index(string casa, string sortOrder = "", string searchString = "", string ano = "")
+        public async Task<IActionResult> Index(string casa, string sortOrder = "", string searchString = "", string ano = "")
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                var usuarios = _context.Users.ToList();
+                var usuarios = await _context.Users.ToListAsync();
                 ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel; // Já vi não funcionar, porquê? :: hhenriques1999
                 ViewData["NivelUsuario"] = usuario.Nivel;
                 ViewData["IdUsuario"] = usuario.Id;
                 ViewData["Usuarios"] = usuarios;
 
-                List<Empresa> empresas = _context.Empresa.ToList();
+                List<Empresa> empresas = await _context.Empresa.ToListAsync();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
 
                 SetarFiltros(sortOrder, searchString);
                 IQueryable<Projeto> projetos = ObterProjetosPorCasa(casa);
                 projetos = PeriodizarProjetos(ano, projetos);
                 CategorizarStatusProjetos(projetos);
-                GerarIndicadores(casa, _context);
+                await GerarIndicadores(_context);
                 return View(projetos.ToList());
             }
             else
@@ -148,7 +148,7 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="casa"></param>
         /// <param name="_context"></param>
-        private void GerarIndicadores(string casa, ApplicationDbContext _context)
+        private async Task GerarIndicadores(ApplicationDbContext _context)
         {
             ViewBag.n_projs = _context.Projeto.Where(p => p.Status == StatusProjeto.EmExecucao).Count();
             ViewBag.n_empresas = _context.Projeto.Count();
@@ -157,8 +157,8 @@ namespace BaseDeProjetos.Controllers
                 Select(p => p.ValorAporteRecursos).
                 Sum();
             ViewBag.n_pesquisadores = _context.Users.Count();
-            ViewBag.Embrapii_projs = _context.Projeto.ToList<Projeto>();
-            ViewBag.Embrapii_prosps = _context.Prospeccao.ToList<Prospeccao>();
+            ViewBag.Embrapii_projs = await _context.Projeto.ToListAsync();
+            ViewBag.Embrapii_prosps = await _context.Prospeccao.ToListAsync();
         }
 
         /// <summary>
