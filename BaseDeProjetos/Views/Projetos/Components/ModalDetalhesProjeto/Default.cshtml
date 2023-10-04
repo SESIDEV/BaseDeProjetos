@@ -23,6 +23,8 @@
                 <span>@Model.Status.GetDisplayName()</span>
                 <h1 class="app-card-title">Valor:</h1>
                 <span>R$ @Helpers.FormatarValoresDashboards((decimal)Model.ValorAporteRecursos)</span>
+				<h1 class="app-card-title">Custo do HH:</h1>
+                <span>R$ @Model.CustoHH.ToString("N")</span>
                 <h1 class="app-card-title">Data de Início:</h1>
                 <span>@Model.DataInicio.ToString("dd/MM/yyyy")</span>
                 <h1 class="app-card-title">Data de Encerramento:</h1>

@@ -35,7 +35,6 @@
                                 asp-items="Html.GetEnumSelectList<Instituto>()"></select>
                         <span asp-validation-for="Casa" class="text-danger"></span>
                     </div>
-
                     <div class="form-group">
                         <label asp-for="Empresa" class="control-label"></label>
                         <select asp-for="Empresa" class="form-control" asp-items='@ViewData["Empresa"] as SelectList'>
@@ -43,13 +42,11 @@
                         </select>
                         <span asp-validation-for="Empresa" class="text-danger"></span>
                     </div>
-
                     <div class="form-group">
                         <label asp-for="NomeProjeto" class="control-label"></label>
                         <input asp-for="NomeProjeto" id="nomeProjeto" class="form-control" />
                         <span asp-validation-for="NomeProjeto" class="text-danger"></span>
                     </div>
-
                     <div class="form-group">
                         <label asp-for="UsuarioId" class="control-label">Líder</label>
                         <select asp-for="UsuarioId" class="form-control">
@@ -61,7 +58,6 @@
                         </select>
                         <span asp-validation-for="UsuarioId" class="text-danger"></span>
                     </div>
-
                     <div class="mb-2">
                         <label name="MembrosSelect" class="col-form-label" style="font-weight: 600">Membros</label>
                         <div style="margin-left:3%;display:none" class="spinner-border" role="status"
@@ -79,7 +75,6 @@
                             <select id="campoSelectPessoas-@Model.Id" class="form-select" multiple="true"></select>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label asp-for="AreaPesquisa" class="control-label"></label>
                         <select asp-for="AreaPesquisa" class="form-control"
@@ -168,6 +163,11 @@
                         <input asp-for="ValorAporteRecursos" class="form-control" placeholder="3,00" />
                         <span asp-validation-for="ValorAporteRecursos" class="text-danger"></span>
                     </div>
+					<div class="form-group">
+                        <label asp-for="CustoHH" class="control-label"></label> (R$)
+                        <input asp-for="CustoHH" class="form-control" placeholder="3,00" readonly />
+                        <span asp-validation-for="CustoHH" class="text-danger"></span>
+					</div>
                 </div>
                 <input style="display:none" type="checkbox" disabled class="changeCheck-@Model.Id" value="Pessoas"
                        id="checkPessoas-@Model.Id">
