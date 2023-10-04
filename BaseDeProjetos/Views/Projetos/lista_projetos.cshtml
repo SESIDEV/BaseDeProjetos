@@ -148,7 +148,7 @@
         @if (projeto.SatisfacaoClienteParcial != null)
         {
             <td class="cell">
-                <span>@(projeto.SatisfacaoClienteParcial)%</span>
+                <span>@(projeto.SatisfacaoClienteParcial?.ToString("N"))%</span>
             </td>
         }
         else
@@ -163,7 +163,7 @@
         @if (projeto.SatisfacaoClienteFinal != null)
         {
             <td class="cell">
-                <span>@(projeto.SatisfacaoClienteFinal)%</span>
+                <span>@(projeto.SatisfacaoClienteFinal?.ToString("N"))%</span>
             </td>
         }
         else
