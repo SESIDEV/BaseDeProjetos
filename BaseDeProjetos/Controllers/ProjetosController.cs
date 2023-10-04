@@ -1,7 +1,6 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
-using MailSenderHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,13 +12,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Controllers
 {
-	[Authorize]
+    [Authorize]
 	public class ProjetosController : SGIController
 	{
 		private readonly ApplicationDbContext _context;
@@ -355,44 +353,75 @@ namespace BaseDeProjetos.Controllers
 		public async Task<IActionResult> Create([Bind("Id,NomeProjeto,MembrosEquipe,Casa,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos,Empresa,Indicadores,UsuarioId,SatisfacaoCliente,ProponenteId,CustoHH")]
 			Projeto projeto,
 			string membrosSelect)
-		{
-			List<string> membrosEmails = new List<string>();
+        {
+            ViewbagizarUsuario(_context);
 
-			ViewbagizarUsuario(_context);
+            List<Usuario> usuarios = await ObterListaDeMembrosSelecionados(membrosSelect);
 
-			// TODO: Repensar a forma como o frontend implementa essa funcionalidade
-			if (!string.IsNullOrEmpty(membrosSelect))
+            AtribuirEquipeProjeto(projeto, usuarios);
+
+			AtribuirCustoHH(projeto);
+
+            CriarSelectListNaViewbag();
+
+            if (ModelState.IsValid)
+            {
+                projeto.Empresa = _context.Empresa.FirstOrDefault(e => e.Id == projeto.Empresa.Id);
+
+                _context.Add(projeto);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        public static int DiferencaMeses(DateTime dataFim, DateTime dataInicio)
+        {
+            return Math.Abs((dataFim.Month - dataInicio.Month) + 12 * (dataFim.Year - dataInicio.Year));
+        }
+
+        private void AtribuirCustoHH(Projeto projeto)
+        {
+			foreach (var relacao in projeto.EquipeProjeto)
 			{
-				membrosEmails.AddRange(membrosSelect.Split(';').ToList());
+				projeto.CustoHH += DiferencaMeses(projeto.DataEncerramento, projeto.DataInicio) * relacao.Usuario.Cargo.Salario;
 			}
+        }
 
-			List<Usuario> usuarios = await _context.Users.Where(u => membrosEmails.Contains(u.Email)).ToListAsync();
+        private async Task<List<Usuario>> ObterListaDeMembrosSelecionados(string membrosSelect)
+        {
+            List<string> membrosEmails = new List<string>();
 
-			List<EquipeProjeto> equipe = new List<EquipeProjeto>();
+            // TODO: Repensar a forma como o frontend implementa essa funcionalidade
+            if (!string.IsNullOrEmpty(membrosSelect))
+            {
+                membrosEmails.AddRange(membrosSelect.Split(';').ToList());
+            }
 
-			foreach (var usuario in usuarios)
-			{
-				equipe.Add(new EquipeProjeto { IdUsuario = usuario.Id, IdTrabalho = projeto.Id });
-			}
+            List<Usuario> usuarios = await _context.Users.Where(u => membrosEmails.Contains(u.Email)).ToListAsync();
+            return usuarios;
+        }
 
-			projeto.EquipeProjeto = equipe;
+        private void CriarSelectListNaViewbag()
+        {
+            List<Empresa> empresas = _context.Empresa.ToList();
+            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+        }
 
-			List<Empresa> empresas = _context.Empresa.ToList();
-			ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+        private static void AtribuirEquipeProjeto(Projeto projeto, List<Usuario> usuarios)
+        {
+            List<EquipeProjeto> equipe = new List<EquipeProjeto>();
 
-			if (ModelState.IsValid)
-			{
-				projeto.Empresa = _context.Empresa.FirstOrDefault(e => e.Id == projeto.Empresa.Id);
+            foreach (var usuario in usuarios)
+            {
+                equipe.Add(new EquipeProjeto { IdUsuario = usuario.Id, IdTrabalho = projeto.Id });
+            }
 
-				_context.Add(projeto);
-				await _context.SaveChangesAsync();
-				return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
-			}
-			else
-			{
-				return NotFound();
-			}
-		}
+            projeto.EquipeProjeto = equipe;
+        }
 
 		// GET: Projetos/Edit/5
 		public async Task<IActionResult> Edit(string id)
@@ -469,7 +498,9 @@ namespace BaseDeProjetos.Controllers
 			projetoExistente.ValorAporteRecursos = projeto.ValorAporteRecursos;
 			projetoExistente.ValorTotalProjeto = projeto.ValorTotalProjeto;
 
-			List<string> membrosEmails = new List<string>();
+            AtribuirCustoHH(projetoExistente);
+
+            List<string> membrosEmails = new List<string>();
 
 			// TODO: Repensar a forma como o frontend implementa essa funcionalidade
 			if (!string.IsNullOrEmpty(membrosSelect))
