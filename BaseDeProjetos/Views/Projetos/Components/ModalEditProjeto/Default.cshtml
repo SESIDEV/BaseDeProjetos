@@ -153,18 +153,19 @@
                         <span asp-validation-for="FonteFomento" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="ValorTotalProjeto" class="control-label"></label> (R$)
+                        <label asp-for="ValorTotalProjeto" class="control-label"></label>
                         <input asp-for="ValorTotalProjeto" class="form-control"
                                placeholder="@Model.ValorTotalProjeto" />
                         <span asp-validation-for="ValorTotalProjeto" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="ValorAporteRecursos" class="control-label"></label> (R$)
-                        <input asp-for="ValorAporteRecursos" class="form-control" placeholder="3,00" />
+                        <label asp-for="ValorAporteRecursos" class="control-label"></label>
+                        <input asp-for="ValorAporteRecursos" class="form-control" 
+                                placeholder="@Model.ValorAporteRecursos" />
                         <span asp-validation-for="ValorAporteRecursos" class="text-danger"></span>
                     </div>
 					<div class="form-group">
-                        <label asp-for="CustoHH" class="control-label"></label> (R$)
+                        <label asp-for="CustoHH" class="control-label"></label>
                         <input asp-for="CustoHH" class="form-control" placeholder="3,00" readonly />
                         <span asp-validation-for="CustoHH" class="text-danger"></span>
 					</div>
