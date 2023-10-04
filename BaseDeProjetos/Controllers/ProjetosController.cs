@@ -352,7 +352,7 @@ namespace BaseDeProjetos.Controllers
 		// more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("Id,NomeProjeto,MembrosEquipe,Casa,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos,Empresa,Indicadores,UsuarioId,SatisfacaoCliente,ProponenteId")]
+		public async Task<IActionResult> Create([Bind("Id,NomeProjeto,MembrosEquipe,Casa,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos,Empresa,Indicadores,UsuarioId,SatisfacaoCliente,ProponenteId,CustoHH")]
 			Projeto projeto,
 			string membrosSelect)
 		{
@@ -430,7 +430,7 @@ namespace BaseDeProjetos.Controllers
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Edit(string id,
-			[Bind("Id,Casa,NomeProjeto,MembrosEquipe,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos,Indicadores,UsuarioId,SatisfacaoCliente,ProponenteId")]
+			[Bind("Id,Casa,NomeProjeto,MembrosEquipe,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos,Indicadores,UsuarioId,SatisfacaoCliente,ProponenteId,CustoHH")]
 			Projeto projeto,
 			string membrosSelect)
 		{
@@ -449,6 +449,7 @@ namespace BaseDeProjetos.Controllers
 
 			projetoExistente.AreaPesquisa = projeto.AreaPesquisa;
 			projetoExistente.Casa = projeto.Casa;
+			projetoExistente.CustoHH = projeto.CustoHH;
 			projetoExistente.DataEncerramento = projeto.DataEncerramento;
 			projetoExistente.DataInicio = projeto.DataInicio;
 			projetoExistente.DuracaoProjetoEmMeses = projeto.DuracaoProjetoEmMeses;

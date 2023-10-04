@@ -142,6 +142,9 @@
         <td class="cell">
             <span>@projeto.DataEncerramento.ToString("dd/MM/yyyy")</span>
         </td>
+        <td class="cell">
+            <span>R$ @projeto.CustoHH.ToString("N")</span>
+        </td>
         @if (projeto.SatisfacaoClienteParcial != null)
         {
             <td class="cell">

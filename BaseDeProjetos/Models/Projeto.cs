@@ -75,5 +75,7 @@ namespace BaseDeProjetos.Models
         public virtual float? SatisfacaoClienteParcial { get; set; }
 
         public virtual float? SatisfacaoClienteFinal { get; set; }
+
+        public virtual float CustoHH { get; set; }
     }
 }
