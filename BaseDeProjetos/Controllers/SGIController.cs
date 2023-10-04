@@ -3,7 +3,7 @@ using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using System;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -14,9 +14,16 @@ namespace BaseDeProjetos.Controllers
         public void ViewbagizarUsuario(ApplicationDbContext _context)
         {
             UsuarioAtivo = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            ViewBag.usuarioCasa = UsuarioAtivo.Casa;
-            ViewBag.usuarioNivel = UsuarioAtivo.Nivel;
-
+            
+            if (UsuarioAtivo != null)
+            {
+                ViewBag.usuarioCasa = UsuarioAtivo.Casa;
+                ViewBag.usuarioNivel = UsuarioAtivo.Nivel;
+            }
+            else
+            {
+                throw new ArgumentNullException(nameof(UsuarioAtivo));
+            }
         }
     }
 }

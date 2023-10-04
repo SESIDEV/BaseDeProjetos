@@ -2,6 +2,7 @@
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -29,9 +30,9 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="status">Status a se buscar</param>
         /// <returns>Quantidade de prospecções</returns>
-        private List<Prospeccao> GetProspStatus(StatusProspeccao status)
+        private async Task<List<Prospeccao>> GetProspStatus(StatusProspeccao status)
         {
-            return _context.Prospeccao.Where(p => p.Status.OrderByDescending(f => f.Data).FirstOrDefault().Status == status).ToList();
+            return await _context.Prospeccao.Where(p => p.Status.OrderByDescending(f => f.Data).FirstOrDefault().Status == status).ToListAsync();
         }
 
 
@@ -88,15 +89,15 @@ namespace BaseDeProjetos.Controllers
             dadosFinanceiros["receitaISIII"] = ReceitaCasa(Instituto.ISIII);
             dadosFinanceiros["receitaCISHO"] = ReceitaCasa(Instituto.CISHO);
 
-            var prospeccoes = _context.Prospeccao.Where(p => p.Casa == UsuarioAtivo.Casa).ToList();
+            var prospeccoes = await _context.Prospeccao.Where(p => p.Casa == UsuarioAtivo.Casa).ToListAsync();
             var prospeccoesAtivas = prospeccoes.Where(p => VerificarProspeccaoAtiva(p) == true).ToList();
             var prospeccoesNaoPlanejadas = prospeccoes.Where(p => p.Status.Any(s => s.Status != StatusProspeccao.Planejada)).ToList();
-            var prospeccoesComProposta = GetProspStatus(StatusProspeccao.ComProposta);
-            var prospeccoesConcluidas = GetProspStatus(StatusProspeccao.Convertida);
-            var prospeccoesPlanejadas = GetProspStatus(StatusProspeccao.Planejada);
-            var projetos = _context.Projeto.Where(p => p.Casa == UsuarioAtivo.Casa).Where(p => p.Status == StatusProjeto.EmExecucao).ToList();
+            var prospeccoesComProposta = await GetProspStatus(StatusProspeccao.ComProposta);
+            var prospeccoesConcluidas = await GetProspStatus(StatusProspeccao.Convertida);
+            var prospeccoesPlanejadas = await GetProspStatus(StatusProspeccao.Planejada);
+            var projetos = await _context.Projeto.Where(p => p.Casa == UsuarioAtivo.Casa).Where(p => p.Status == StatusProjeto.EmExecucao).ToListAsync();
             var empresas = prospeccoesNaoPlanejadas.Select(e => e.Empresa).Distinct().ToList();
-            var usuarios = _context.Users.Select(u => new { id = u.Id, casa = u.Casa, emailConfirmed = u.EmailConfirmed, nivel = u.Nivel }).Where(u => u.casa == UsuarioAtivo.Casa).Where(u => u.emailConfirmed == true).Where(u => u.nivel != Nivel.Dev && u.nivel != Nivel.Externos).ToList();
+            var usuarios = await _context.Users.Select(u => new { id = u.Id, casa = u.Casa, emailConfirmed = u.EmailConfirmed, nivel = u.Nivel }).Where(u => u.casa == UsuarioAtivo.Casa).Where(u => u.emailConfirmed == true).Where(u => u.nivel != Nivel.Dev && u.nivel != Nivel.Externos).ToListAsync();
             var linhasDePesquisa = prospeccoesNaoPlanejadas.Select(p => p.LinhaPequisa).ToList();
 
             // Separação do query SQL em algumas variáveis para clareza

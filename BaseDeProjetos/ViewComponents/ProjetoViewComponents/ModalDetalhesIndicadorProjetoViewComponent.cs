@@ -18,6 +18,5 @@ namespace BaseDeProjetos.ViewComponents.ProjetoViewComponents
             var model = await _context.Projeto.FindAsync(id);
             return View(model);
         }
-
     }
 }

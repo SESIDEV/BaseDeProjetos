@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BaseDeProjetos.Models
@@ -17,7 +16,7 @@ namespace BaseDeProjetos.Models
 
         [Display(Name = "Regramento")]
         public virtual bool Regramento { get; set; }
-        
+
         [Display(Name = "Repasse")]
         public virtual bool Repasse { get; set; }
 
@@ -40,6 +39,6 @@ namespace BaseDeProjetos.Models
         public virtual bool Relatorios { get; set; }
 
         [Display(Name = "Prestação de Contas")]
-        public virtual bool PrestacaoContas { get; set; }        
+        public virtual bool PrestacaoContas { get; set; }
     }
 }

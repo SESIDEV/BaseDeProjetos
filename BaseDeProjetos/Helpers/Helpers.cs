@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Models;
+using Microsoft.AspNetCore.Html;
+using System;
 using System.Linq;
 using System.Text.Json;
-using BaseDeProjetos.Data;
-using Microsoft.AspNetCore.Html;
-using BaseDeProjetos.Models;
 
 namespace BaseDeProjetos.Helpers
 {
@@ -94,13 +93,11 @@ namespace BaseDeProjetos.Helpers
         /// <returns></returns>
         public static string PuxarDadosUsuarios(ApplicationDbContext _context)
         {
-
             var usuarios = _context.Users.Where(u => u.Email != null).Select(u => new { u.Email, u.UserName, u.Foto, u.Competencia, u.EmailConfirmed }).ToList();
 
             string usuariosJson = JsonSerializer.Serialize(usuarios);
 
             return usuariosJson;
-
         }
 
         /// <summary>
@@ -110,13 +107,11 @@ namespace BaseDeProjetos.Helpers
         /// <returns></returns>
         public static string PuxarTagsProspecoes(ApplicationDbContext _context)
         {
-
             var tags = _context.Prospeccao.Where(p => p.Tags != null).Select(p => new { p.Tags }).ToList();
 
             string tagsJson = JsonSerializer.Serialize(tags);
 
             return tagsJson;
-
         }
 
         /// <summary>
@@ -126,13 +121,11 @@ namespace BaseDeProjetos.Helpers
         /// <returns></returns>
         public static string PuxarDadosEmpresas(ApplicationDbContext _context)
         {
-
             var empresas = _context.Empresa.Where(e => e.Nome != null);//.Select(e => new {e.Nome, e.Segmento.GetDisplayName()}).ToList();
 
             string empresasJson = JsonSerializer.Serialize(empresas);
 
             return empresasJson;
-
         }
 
         /// <summary>
@@ -142,13 +135,11 @@ namespace BaseDeProjetos.Helpers
         /// <returns></returns>
         public static string PuxarDadosProducoes(ApplicationDbContext _context)
         {
-
             var producoes = _context.Producao.Where(p => p.Titulo != null).Select(p => new { p.Casa, p.Titulo, p.Descricao, p.Autores, p.StatusPub, p.Data, p.Local, p.DOI }).ToList(); //.GetDisplayName() NAO FUNCIONA
 
             string producoesJson = JsonSerializer.Serialize(producoes);
 
             return producoesJson;
-
         }
 
         public static Tuple<string, string> ObterNomeCasaAbreviado(Instituto casa)
@@ -177,5 +168,4 @@ namespace BaseDeProjetos.Helpers
             }
         }
     }
-
 }

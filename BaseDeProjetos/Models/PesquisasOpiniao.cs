@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json;
 
 namespace BaseDeProjetos.Models
 {
@@ -11,19 +10,20 @@ namespace BaseDeProjetos.Models
     {
         [Key]
         public int IdPesquisa { get; set; }
+
         public string ProjetoId { get; set; }
         public double ResultadoFinal { get; set; }
-        
+
         // Favor tirar depois caso necessário
         // O EntityFramework tá reclamando que List<int> n pode ser mapeado para nenhum tipo conhecido em SQL
-        // The property 'PesquisaProjeto.RespostasIndividuais' could not be mapped, 
-        // because it is of type 'List<int>' which is not a supported primitive type or a valid entity type. 
-        // Either explicitly map this property, or ignore it using the '[NotMapped]' attribute or by using 
+        // The property 'PesquisaProjeto.RespostasIndividuais' could not be mapped,
+        // because it is of type 'List<int>' which is not a supported primitive type or a valid entity type.
+        // Either explicitly map this property, or ignore it using the '[NotMapped]' attribute or by using
         // 'EntityTypeBuilder.Ignore' in 'OnModelCreating'.
 
-        [NotMapped] 
+        [NotMapped]
         public List<int> RespostasIndividuais { get; set; }
-        
+
         public string Comentarios { get; set; }
         public string RepresentacaoTextualQuestionario { get; set; }
 
@@ -33,9 +33,9 @@ namespace BaseDeProjetos.Models
         public void CalcularSatisficaoFinal()
         {
             List<int> resultados = new List<int>();
-            foreach(KeyValuePair<string, List<PerguntaSatisfacao>> entrada in this.PerguntasSatisfacao)
+            foreach (KeyValuePair<string, List<PerguntaSatisfacao>> entrada in this.PerguntasSatisfacao)
             {
-                foreach(PerguntaSatisfacao satisfacao in entrada.Value)
+                foreach (PerguntaSatisfacao satisfacao in entrada.Value)
                 {
                     if (satisfacao.GetType() == typeof(PerguntaLikert))
                         resultados.Add((int)((PerguntaLikert)satisfacao).Resposta);
@@ -58,22 +58,20 @@ namespace BaseDeProjetos.Models
         public List<int> ObterHashCodesQuestoes()
         {
             List<int> hashes = new List<int>();
-            foreach(KeyValuePair<string, List<PerguntaSatisfacao>> kv in this.PerguntasSatisfacao.Where(p => p.GetType() == typeof(PerguntaLikert)))
+            foreach (KeyValuePair<string, List<PerguntaSatisfacao>> kv in this.PerguntasSatisfacao.Where(p => p.GetType() == typeof(PerguntaLikert)))
             {
                 kv.Value.ForEach((v) => hashes.Add(v.Pergunta.GetHashCode()));
             }
 
             return hashes;
         }
-
     }
 
     public class PesquisaProjeto : PesquisaOpiniao
     {
-
         public PesquisaProjeto()
         {
-            if(this.RepresentacaoTextualQuestionario != null)
+            if (this.RepresentacaoTextualQuestionario != null)
             {
                 this.DesserializarPerguntas();
             }
@@ -84,16 +82,15 @@ namespace BaseDeProjetos.Models
 
             this.SerializarPerguntas(); //Mantém uma representação em memória do questionário
         }
-        public PesquisaProjeto(bool InicioFrio):this()
+
+        public PesquisaProjeto(bool InicioFrio) : this()
         {
             if (InicioFrio) // Instanciado como pergunta a ser preenchida
                 this.PerguntasSatisfacao = PesquisaProjeto.InstanciarPerguntas();
         }
 
-
         private static Dictionary<string, List<PerguntaSatisfacao>> InstanciarPerguntas()
         {
-
             Dictionary<string, List<PerguntaSatisfacao>> perguntas = new Dictionary<string, List<PerguntaSatisfacao>>
             {
                 ["Quão Satisfeito você está com as entregas do Projeto"] = new List<PerguntaSatisfacao>

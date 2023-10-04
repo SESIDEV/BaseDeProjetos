@@ -1,7 +1,5 @@
-﻿using BaseDeProjetos.Data;
+﻿using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
-using BaseDeProjetos.Models;
-using System.Threading.Tasks;
 
 namespace BaseDeProjetos.ViewComponents
 {
@@ -11,6 +9,5 @@ namespace BaseDeProjetos.ViewComponents
         {
             return View(new Empresa());
         }
-
     }
 }

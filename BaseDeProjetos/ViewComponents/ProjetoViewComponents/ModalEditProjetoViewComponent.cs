@@ -9,8 +9,6 @@ namespace BaseDeProjetos.ViewComponents.ProjetoViewComponents
     {
         private readonly ApplicationDbContext _context;
 
-        
-
         public ModalEditProjetoViewComponent(ApplicationDbContext context)
         {
             _context = context;

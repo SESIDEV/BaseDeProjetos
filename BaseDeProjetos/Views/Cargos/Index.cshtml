@@ -105,6 +105,9 @@
                                     <th class="cell">Id</th>
                                     <th class="cell">Nome</th>
                                     <th class="cell">Salário</th>
+                                    <th class="cell">Custo por Hora</th>
+                                    <th class="cell">Horas Semanais</th>
+                                    <th class="cell">Tributos</th>
                                     <th class="cell">Ações</th>
                                 </tr>
                             </thead>
@@ -115,6 +118,35 @@
                                         <td class="cell">@cargo.Id</td>
                                         <td class="cell">@cargo.Nome</td>
                                         <td class="cell">R$ @cargo.Salario.ToString("N")</td>
+                                        @{
+                                            decimal custoPorHora = 0;
+                                            decimal custoCalc = 0;
+                                            @if (cargo.HorasSemanais != 0)
+                                            {
+                                                if (cargo.Tributos)
+                                                {
+                                                    custoPorHora = cargo.Salario / 8 / 30 * 2;
+                                                    custoCalc = cargo.Salario / cargo.HorasSemanais / 20 * 2;
+                                                }
+                                                else
+                                                {
+                                                    custoPorHora = cargo.Salario / 8 / 30;
+                                                    custoCalc = cargo.Salario / cargo.HorasSemanais / 20;
+                                                }
+                                            }
+                                        }
+                                        <td class="cell">R$ @custoPorHora.ToString("N") // R$ @custoCalc.ToString("N")</td>
+                                        <td class="cell">@cargo.HorasSemanais </td>
+                                        <td class="cell">
+                                            @if (cargo.Tributos == true)
+                                            {
+                                                <div>Sim</div>
+                                            }
+                                            else
+                                            {
+                                                <div>Não</div>
+                                            }
+                                        </td>
                                         <td class="cell">
                                             <div class="dropdown">
                                                 <button onmouseover="carregarModaisCargo('@cargo.Id')" type="button" id="button-@cargo.Id" class="btn dropdown-toggle no-toggle-arrow" data-bs-toggle="dropdown" aria-expanded="false">

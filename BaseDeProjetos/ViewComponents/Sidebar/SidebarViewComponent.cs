@@ -24,9 +24,9 @@ namespace BaseDeProjetos.ViewComponents.Sidebar
                 ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;
                 ViewData["NivelUsuario"] = usuario.Nivel;
-				ViewData["UsuarioNivel"] = usuario.Nivel;
+                ViewData["UsuarioNivel"] = usuario.Nivel;
                 ViewData["UsuarioCasa"] = usuario.Casa;
-            }           
+            }
 
             return View();
         }

@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using BaseDeProjetos.Data;
-using BaseDeProjetos.Models;
-using System.Net.Http;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -54,7 +53,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // POST: PesquisaProjetos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -62,7 +61,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (ModelState.IsValid)
             {
-                PesquisaProjeto pesquisaNova = new PesquisaProjeto(InicioFrio:true)
+                PesquisaProjeto pesquisaNova = new PesquisaProjeto(InicioFrio: true)
                 {
                     IdPesquisa = pesquisaProjeto.IdPesquisa,
                     ProjetoId = pesquisaProjeto.ProjetoId
@@ -85,7 +84,6 @@ namespace BaseDeProjetos.Controllers
             ViewBag.Questionario = pesquisa;
 
             return View();
-                
         }
 
         [HttpPost]
@@ -95,15 +93,14 @@ namespace BaseDeProjetos.Controllers
             int pesquisaId = Int32.Parse(HttpContext.Request.Form["PesquisaId"]);
             PesquisaProjeto pesquisa = _context.PesquisaProjeto.First(p => p.IdPesquisa == pesquisaId);
 
-            foreach(int code in pesquisa.ObterHashCodesQuestoes())
+            foreach (int code in pesquisa.ObterHashCodesQuestoes())
             {
                 int resposta = -1;
                 Int32.TryParse(HttpContext.Request.Form[$"likert-{code}"], out resposta);
-                respostas.Add(resposta); 
-                
+                respostas.Add(resposta);
             }
             int retornaria = -1;
-            Int32.TryParse(HttpContext.Request.Form["option"],out retornaria);
+            Int32.TryParse(HttpContext.Request.Form["option"], out retornaria);
             respostas.Add(retornaria);
 
             var texto = HttpContext.Request.Form["commentsTextArea"];
@@ -134,7 +131,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // POST: PesquisaProjetos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]

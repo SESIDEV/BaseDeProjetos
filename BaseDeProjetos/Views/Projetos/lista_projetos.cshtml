@@ -12,7 +12,7 @@
         align-items: center;
         padding: 20px;
     }
-    
+
     #box-btn-actions {
         width: 100%;
         justify-content: center;
@@ -21,18 +21,18 @@
 </style>
 
 <script>
-	function setupTippy(id) {
-		try {
-			if (!tippyDone.includes(id)) {
-				console.log("Setting up tippy for: " + id);
-				tippy(`#${id}`, {allowHTML: true, placement: 'left'});
-				tippyDone.push(id);
-			}
-		} catch (error) {
-			console.error(`Um erro ocorreu ao tentar setar o tippy... vamos tentar novamente. ${error}`);
-			tippy(`#${id}`, {allowHTML: true, placement: 'left'});
-		}
-	}
+    function setupTippy(id) {
+        try {
+            if (!tippyDone.includes(id)) {
+                console.log("Setting up tippy for: " + id);
+                tippy(`#${id}`, { allowHTML: true, placement: 'left' });
+                tippyDone.push(id);
+            }
+        } catch (error) {
+            console.error(`Um erro ocorreu ao tentar setar o tippy... vamos tentar novamente. ${error}`);
+            tippy(`#${id}`, { allowHTML: true, placement: 'left' });
+        }
+    }
 </script>
 
 @foreach (var projeto in Model)
@@ -62,7 +62,7 @@
                     @*LOGO*@
                     @if (projeto.Empresa.Logo != null)
                     {
-                        <img style="border: 2px solid #999; border-radius: 10px;" loading="lazy" src="@projeto.Empresa.Logo" id="logoEmpresa" alt="Logo da Empresa" style="background-color:white" width="175%" />
+                        <img style="border: 2px solid #999; border-radius: 10px; background: white" loading="lazy" src="@projeto.Empresa.Logo" id="logoEmpresa" alt="Logo da Empresa" />
                     }
                     else
                     {
@@ -75,9 +75,19 @@
                 </div>
             </div>
         </td>
-        
+
         <td class="cell">
             @projeto.NomeProjeto
+        </td>
+        <td class="cell">
+            @if (projeto.Proponente != null)
+            {
+                <span onmouseover="setupTippy('cargoProponente-@(projeto.Id)')" data-tippy-content="@projeto.Proponente.Cargo?.Nome" id="cargoProponente-@projeto.Id" class="badge bg-success">@projeto.Proponente.UserName</span> @*Líder*@
+            }
+            else
+            {
+                <span class="badge bg-danger">Sem Proponente</span>
+            }
         </td>
         <td class="cell">
             @if (projeto.Usuario != null)
@@ -97,7 +107,21 @@
             }
         </td>
         <td class="cell">
-            @projeto.Status.GetDisplayName()
+            @if (projeto.Status == StatusProjeto.EmExecucao) 
+            {
+                if (DateTime.Now > projeto.DataEncerramento)
+                {
+                    <span class="badge bg-danger" onmouseover="setupTippy('statusCargo-@(projeto.Id)')" data-tippy-content="Atrasado" id="statusCargo-@projeto.Id">@projeto.Status.GetDisplayName()</span>
+                }
+                else
+                {
+                    <span class="badge bg-success" onmouseover="setupTippy('statusCargo-@(projeto.Id)')" data-tippy-content="Dentro do Prazo" id="statusCargo-@projeto.Id">@projeto.Status.GetDisplayName()</span>
+                }
+            } 
+            else
+            {
+                <span class="badge bg-info">@projeto.Status.GetDisplayName()</span>
+            }
         </td>
         <td class="cell">
             @if (projeto.ValorAporteRecursos != 0 && projeto.ValorAporteRecursos > 0)
@@ -110,6 +134,9 @@
             }
         </td>
         <td class="cell">
+            <span>R$ @projeto.CustoHH.ToString("N")</span>
+        </td>
+        <td class="cell">
             @projeto.FonteFomento.GetDisplayName()
         </td>
         <td class="cell">
@@ -118,9 +145,37 @@
         <td class="cell">
             <span>@projeto.DataEncerramento.ToString("dd/MM/yyyy")</span>
         </td>
-        <td class="cell">
-            <span>@projeto.SatisfacaoCliente?.ToString("N")</span>
-        </td>
+        @if (projeto.SatisfacaoClienteParcial != null)
+        {
+            <td class="cell">
+                <span>@(projeto.SatisfacaoClienteParcial?.ToString("N"))%</span>
+            </td>
+        }
+        else
+        {
+            <td class="cell">
+                <span>
+                    Sem pesquisa realizada
+                </span>
+            </td>
+        }
+
+        @if (projeto.SatisfacaoClienteFinal != null)
+        {
+            <td class="cell">
+                <span>@(projeto.SatisfacaoClienteFinal?.ToString("N"))%</span>
+            </td>
+        }
+        else
+        {
+            <td class="cell">
+                <span>
+                    Sem pesquisa realizada
+                </span>
+            </td>
+        }
+
+
         <td class="cell">
             <button type="button" data-bs-target="#modalDetalhes-@projeto.Id" id="button-@projeto.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary" onmouseover="carregarModaisProjeto('@projeto.Id')">Detalhes</button>
         </td>

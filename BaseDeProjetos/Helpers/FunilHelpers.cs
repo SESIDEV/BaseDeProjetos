@@ -37,6 +37,7 @@ namespace BaseDeProjetos.Helpers
                 return new HtmlString($"<span class='badge bg-frio text-dark'>Congelado: ({qtdDias} Dias)</span>");
             }
         }
+
         public static bool ProspeccaoExists(string id, ApplicationDbContext _context)
         {
             return _context.Prospeccao.Any(prospeccao => prospeccao.Id == id);
@@ -222,7 +223,7 @@ namespace BaseDeProjetos.Helpers
 
         public static void AddAgregadas(ApplicationDbContext _context, Prospeccao prospAntiga, Prospeccao prospeccao)
         {
-            if (!prospeccao.Agregadas.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(prospeccao.Agregadas))
             {
                 var listaIdsAggAntiga = prospAntiga.Agregadas?.Split(";") ?? Array.Empty<string>(); //puxa os dados das agregadas da prosp antiga
                 var listaIdsAggNova = prospeccao.Agregadas.Split(";"); //separa os Ids das agregadas da prosp nova
@@ -248,7 +249,7 @@ namespace BaseDeProjetos.Helpers
 
         public static void DelAgregadas(ApplicationDbContext _context, Prospeccao prospAntiga, Prospeccao prospeccao)
         {
-            if (!prospAntiga.Agregadas.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(prospAntiga.Agregadas))
             {
                 var listaAggAntiga = prospAntiga.Agregadas.Split(";");
                 var listaAggNova = prospeccao.Agregadas.Split(";"); //separa os Ids
@@ -266,7 +267,7 @@ namespace BaseDeProjetos.Helpers
                     }
                 }
 
-                if (!listaRemovidas.IsNullOrEmpty())
+                if (listaRemovidas != null)
                 { // itera pelas removidas
                     foreach (string ids in listaRemovidas)
                     {
@@ -274,7 +275,7 @@ namespace BaseDeProjetos.Helpers
                         var AggUltimoStatusData = antigaAgg.Status.Last().Data; // salva a data do último followup
                         var statusMaisRecentes = prospeccao.Status.Where(s => s.Data > AggUltimoStatusData).ToList(); // busca por status da prosp atual que sejam de datas posteriores ao último status da antiga agregada
 
-                        if (statusMaisRecentes.IsNullOrEmpty())
+                        if (statusMaisRecentes != null)
                         {// se não houver diferença de status, add um novo status
                             FollowUp statusDeagg = new FollowUp
                             {
@@ -311,7 +312,7 @@ namespace BaseDeProjetos.Helpers
 
         public static string MostrarAgregadas(List<Prospeccao> aggTodas, string agregadas)
         {
-            if (!aggTodas.IsNullOrEmpty())
+            if (aggTodas != null)
             {
                 string empresas = "";
                 List<string> agg = agregadas.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
@@ -334,45 +335,45 @@ namespace BaseDeProjetos.Helpers
 
         public static void RepassarStatusAoCancelarAncora(ApplicationDbContext _context, Prospeccao prospeccao)
         {
-            if (!prospeccao.Agregadas.IsNullOrEmpty())
+            if (prospeccao != null)
             {
-                var listaAggIds = prospeccao.Agregadas.Split(";"); //separa os Ids
+                var idsProspeccoesAgregadas = prospeccao.Agregadas.Split(";"); //separa os Ids
 
-                foreach (string AggId in listaAggIds) //itera pelas agregadas
+                foreach (string id in idsProspeccoesAgregadas) //itera pelas agregadas
                 {
-                    if (AggId != "")
+                    if (id != "")
                     {
-                        var prospAgg = _context.Prospeccao.Where(prosp => prosp.Id == AggId).First();
-                        var AggUltimoStatusData = prospAgg.Status.Last().Data;
-                        var statusMaisRecentes = prospeccao.Status.Where(s => s.Data > AggUltimoStatusData).ToList();
-                        if (statusMaisRecentes.IsNullOrEmpty())
+                        var prospeccaoAgregada = _context.Prospeccao.Where(prosp => prosp.Id == id).First();
+                        var ultimoStatusProspeccaoAgregada = prospeccaoAgregada.Status.Last().Data;
+                        var statusMaisRecentes = prospeccao.Status.Where(s => s.Data > ultimoStatusProspeccaoAgregada).ToList();
+                        if (statusMaisRecentes != null)
                         {// se não houver diferença de status, add um novo status
                             FollowUp statusDeagg = new FollowUp
                             {
-                                Status = prospAgg.Status.OrderByDescending(d => d.Data).ToList()[1].Status, // retorna ao status anterior ao agregado
+                                Status = prospeccaoAgregada.Status.OrderByDescending(d => d.Data).ToList()[1].Status, // retorna ao status anterior ao agregado
                                 Data = DateTime.Today,
                                 Anotacoes = "Esta prospecção foi desagregada de um grupo."
                             };
 
-                            prospAgg.Status.Add(statusDeagg); //adiciona o status ao final da lista de followups
+                            prospeccaoAgregada.Status.Add(statusDeagg); //adiciona o status ao final da lista de followups
                         }
                         else
                         {
                             List<FollowUp> listaCopia = new List<FollowUp>(statusMaisRecentes.Count);
 
-                            statusMaisRecentes.ForEach(s =>
+                            statusMaisRecentes.ForEach(status =>
                             {
                                 var copiaStatus = new FollowUp
                                 {
-                                    OrigemID = AggId, // essa é a própria id do loop, da prosp que está sendo removida
-                                    Anotacoes = s.Anotacoes,
-                                    AnoFiscal = s.AnoFiscal,
-                                    Status = s.Status,
-                                    Data = s.Data
+                                    OrigemID = id, // essa é a própria id do loop, da prosp que está sendo removida
+                                    Anotacoes = status.Anotacoes,
+                                    AnoFiscal = status.AnoFiscal,
+                                    Status = status.Status,
+                                    Data = status.Data
                                 };
                                 listaCopia.Add(copiaStatus);
                             });
-                            prospAgg.Status.AddRange(listaCopia);
+                            prospeccaoAgregada.Status.AddRange(listaCopia);
                         }
                     }
                 }
@@ -382,39 +383,51 @@ namespace BaseDeProjetos.Helpers
 
         public static Usuario ObterUsuarioAtivo(ApplicationDbContext _context, HttpContext HttpContext)
         {
-            return _context.Users.ToList().FirstOrDefault(usuario => usuario.UserName == HttpContext.User.Identity.Name);
+            if (HttpContext == null)
+            {
+                throw new ArgumentNullException(nameof(HttpContext));
+            }
+
+            if (_context == null)
+            {
+                throw new ArgumentNullException(nameof(_context));
+            }
+
+            var usuarioAtivo = _context.Users.ToList().FirstOrDefault(usuario => usuario.UserName == HttpContext.User.Identity.Name);
+
+            return usuarioAtivo;
         }
 
         /// <summary>
         /// Periodiza as prospecções de acordo com o ano no parâmetro
         /// </summary>
         /// <param name="ano">Ano que se deseja</param>
-        /// <param name="lista">Lista de prospecções a serem periodizadas</param>
+        /// <param name="prospeccoes">Lista de prospecções a serem periodizadas</param>
         /// <returns></returns>
-        public static List<Prospeccao> PeriodizarProspecções(string ano, List<Prospeccao> lista)
+        public static List<Prospeccao> PeriodizarProspecções(string ano, List<Prospeccao> prospeccoes)
         {
             if (ano.Equals("Todos") || string.IsNullOrEmpty(ano))
             {
-                return lista;
+                return prospeccoes;
             }
 
-            return lista.Where(prospeccao => prospeccao.Status.Any(followup => followup.Data.Year == Convert.ToInt32(ano))).ToList();
+            return prospeccoes.Where(prospeccao => prospeccao.Status.Any(followup => followup.Data.Year == Convert.ToInt32(ano))).ToList();
         }
 
         /// <summary>
         /// Periodiza produções de acordo com o ano no parâmetro
         /// </summary>
         /// <param name="ano">Ano que se deseja</param>
-        /// <param name="lista">Lista de produções a serem periodizadas</param>
+        /// <param name="producoes">Lista de produções a serem periodizadas</param>
         /// <returns></returns>
-        public static List<Producao> PeriodizarProduções(string ano, List<Producao> lista)
+        public static List<Producao> PeriodizarProduções(string ano, List<Producao> producoes)
         {
             if (ano.Equals("Todos") || string.IsNullOrEmpty(ano))
             {
-                return lista;
+                return producoes;
             }
 
-            return lista.Where(producao => producao.Data.Year == Convert.ToInt32(ano)).ToList();
+            return producoes.Where(producao => producao.Data.Year == Convert.ToInt32(ano)).ToList();
         }
 
 
@@ -454,7 +467,7 @@ namespace BaseDeProjetos.Helpers
         public static List<Prospeccao> OrdenarProspecções(string sortOrder, List<Prospeccao> lista)
         {
             var prospeccoes = lista.AsQueryable();
-            switch(sortOrder)
+            switch (sortOrder)
             {
                 case "name_desc":
                     return prospeccoes.OrderByDescending(s => s.Empresa.Nome).ToList();
@@ -519,27 +532,25 @@ namespace BaseDeProjetos.Helpers
         /// <returns></returns>
         public static List<Producao> FiltrarProduções(string searchString, List<Producao> producoes)
         {
-
             if (!string.IsNullOrEmpty(searchString))
             {
                 searchString = searchString.ToLower();
 
-                if (producoes[0].Empresa != null)
+                if (producoes != null && producoes.Any())
                 {
-
                     producoes = producoes.Where(producao =>
-                        producao.Autores.ToLower().Contains(searchString) ||
-                        producao.Titulo.ToLower().Contains(searchString) ||
-                        producao.Empresa.Nome.ToLower().Contains(searchString) ||
-                        producao.Projeto.NomeProjeto.ToLower().Contains(searchString)
-                        ).ToList();
+                        (producao?.Autores?.ToLower().Contains(searchString) ?? false) ||
+                        (producao?.Titulo?.ToLower().Contains(searchString) ?? false) ||
+                        (producao?.Empresa?.Nome?.ToLower().Contains(searchString) ?? false) ||
+                        (producao?.Projeto?.NomeProjeto?.ToLower().Contains(searchString) ?? false)
+                    ).ToList();
                 }
-                else
+                else if (producoes != null)
                 {
                     producoes = producoes.Where(producao =>
-                        producao.Autores.ToLower().Contains(searchString) ||
-                        producao.Titulo.ToLower().Contains(searchString)
-                        ).ToList();
+                        (producao?.Autores?.ToLower().Contains(searchString) ?? false) ||
+                        (producao?.Titulo?.ToLower().Contains(searchString) ?? false)
+                    ).ToList();
                 }
             }
 
@@ -595,6 +606,8 @@ namespace BaseDeProjetos.Helpers
                 case StatusProspeccao.Discussao_EsbocoProjeto: // Status seria < 5 e > 0 1-4 INCLUSO, se precisar inclua um case acima sem execução de nenhuma instrução ou break
                     return prospeccao.Status.Any(followup => followup.Status < StatusProspeccao.ComProposta && followup.Status > StatusProspeccao.ContatoInicial);
                 case StatusProspeccao.ComProposta:
+                    return prospeccao.Status.Any(followup => followup.Status == status);
+                case StatusProspeccao.Convertida:
                     return prospeccao.Status.Any(followup => followup.Status == status);
                 default:
                     return false;

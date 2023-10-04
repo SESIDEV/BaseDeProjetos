@@ -5,7 +5,7 @@
 
 \title{Problemas no SGI}
 \author{Henrique Henriques}
-\date{Última Atualização: 26 de Setembro de 2023}
+\date{Última Atualização: 03 de Outubro de 2023}
 
 \begin{document}
 
@@ -147,6 +147,19 @@ Ao tentar acessar um modal, observa-se um erro tipo "Uncaught TypeError: this.\t
 
 \subsubsection{Solução}
 Verifique se o identificador do modal bate com o botão ou script que está tentando spawnar o modal. Exemplo botão tem id="meumodal" e modal tem id="modalbacana"
+
+\subsection{Gráfico de Projetos não aparece}
+\subsubsection{Descrição}
+Ao acessar a página principal de projetos observa-se um erro tipo:\linebreak
+\texttt{"JsonSerializationException: Self referencing loop detected for property 'Projeto' with type 'Castle.Proxies.ProjetoProxy'. Path '.ProjetosContratacaoDireta.Indicadores.Projeto.EquipeProjeto'."}
+
+\begin{figure}[h!]
+	\includegraphics*[width=\linewidth]{Imagens/errograficoprojetos.png}
+	\caption{Erro na Página}
+\end{figure}
+
+\subsubsection{Solução}
+Uma das propriedades está gerando uma espécie de dependência circular. Crie ou altere um DTO caso exista, e remova a propriedade problemática.
 
 \section{Soluções Gerais}
 \subsection{Resetar o banco local}

@@ -1,8 +1,6 @@
 ﻿using BaseDeProjetos.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using BaseDeProjetos.Models;
-using System;
 
 namespace BaseDeProjetos.ViewComponents.EditalViewComponents
 {

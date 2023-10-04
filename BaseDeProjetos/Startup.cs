@@ -44,7 +44,6 @@ namespace BaseDeProjetos
 
                 System.Console.WriteLine(ConStr);
 
-
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseMySql(ConStr, mysqlOptions => { mysqlOptions.ServerVersion(new Version(5, 7, 9), ServerType.MySql); }).UseLazyLoadingProxies());
             }
@@ -60,13 +59,13 @@ namespace BaseDeProjetos
             services.AddDistributedMemoryCache();
             services.AddLocalization(options => options.ResourcesPath = "Resources");
 
-			services.Configure<IdentityOptions>(options =>
-			{
-				options.User.AllowedUserNameCharacters =
-					"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
-			});
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.User.AllowedUserNameCharacters =
+                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
+            });
 
-			services.Configure<RequestLocalizationOptions>(
+            services.Configure<RequestLocalizationOptions>(
                 options =>
                     {
                         var supportedCultures = new List<CultureInfo>
@@ -119,7 +118,6 @@ namespace BaseDeProjetos
 
             app.UseEndpoints(endpoints =>
             {
-
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

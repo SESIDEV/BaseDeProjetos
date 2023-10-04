@@ -16,7 +16,7 @@
 <form asp-action="Edit" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="modal fade" id="editarProjetoModal-@Model.Id" aria-hidden="true"
-        aria-labelledby="editarProjetoModal-@Model.Id-Label" tabindex="-1">
+         aria-labelledby="editarProjetoModal-@Model.Id-Label" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -32,10 +32,9 @@
                     <div class="form-group">
                         <label asp-for="Casa" class="control-label"></label>
                         <select asp-for="Casa" class="form-control"
-                            asp-items="Html.GetEnumSelectList<Instituto>()"></select>
+                                asp-items="Html.GetEnumSelectList<Instituto>()"></select>
                         <span asp-validation-for="Casa" class="text-danger"></span>
                     </div>
-
                     <div class="form-group">
                         <label asp-for="Empresa" class="control-label"></label>
                         <select asp-for="Empresa" class="form-control" asp-items='@ViewData["Empresa"] as SelectList'>
@@ -43,13 +42,11 @@
                         </select>
                         <span asp-validation-for="Empresa" class="text-danger"></span>
                     </div>
-
                     <div class="form-group">
                         <label asp-for="NomeProjeto" class="control-label"></label>
                         <input asp-for="NomeProjeto" id="nomeProjeto" class="form-control" />
                         <span asp-validation-for="NomeProjeto" class="text-danger"></span>
                     </div>
-
                     <div class="form-group">
                         <label asp-for="UsuarioId" class="control-label">Líder</label>
                         <select asp-for="UsuarioId" class="form-control">
@@ -61,41 +58,54 @@
                         </select>
                         <span asp-validation-for="UsuarioId" class="text-danger"></span>
                     </div>
-
+                    <div class="form-group">
+                        <label asp-for="ProponenteId" class="control-label">Proponente</label>
+                        <select asp-for="ProponenteId" class="form-control">
+                            <option value="">Selecione o Proponente:</option>
+                            @foreach (var proponente in ViewData["Usuarios"] as List<Usuario>)
+                            {
+                                <option value="@proponente.Id">@proponente.UserName</option>
+                            }
+                        </select>
+                        <span asp-validation-for="ProponenteId" class="text-danger"></span>
+                    </div>
                     <div class="mb-2">
                         <label name="MembrosSelect" class="col-form-label" style="font-weight: 600">Membros</label>
                         <div style="margin-left:3%;display:none" class="spinner-border" role="status"
-                            id="loadingOpcoesSelectPessoas-@Model.Id">
+                             id="loadingOpcoesSelectPessoas-@Model.Id">
                             <span class="visually-hidden">Loading...</span>
                         </div>
                         <input name="MembrosSelect" class="form-control d-none" id="inputTextPessoas-@Model.Id"
-                            type="text" />
+                               type="text" />
                         <button class="btn app-btn-primary" type="button" style="width: 100%;"
-                            id="botaoToggleCaixaRequestPessoas-@Model.Id" onmouseover="preencherInputEditProjeto('@(Model.Id)')"
-                            onclick="gerarOpcoesSelect('Pessoas','editarProjetoModal','-@Model.Id',true)">Alterar</button>
+                                id="botaoToggleCaixaRequestPessoas-@Model.Id" onmouseover="preencherInputEditProjeto('@(Model.Id)')"
+                                onclick="gerarOpcoesSelect('Pessoas','editarProjetoModal','-@Model.Id',true)">
+                            Alterar
+                        </button>
                         <div class="input-group flex-nowrap" id="caixaPesquisaPessoas-@Model.Id" style="display:none;">
                             <select id="campoSelectPessoas-@Model.Id" class="form-select" multiple="true"></select>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label asp-for="AreaPesquisa" class="control-label"></label>
                         <select asp-for="AreaPesquisa" class="form-control"
-                            asp-items="Html.GetEnumSelectList<LinhaPesquisa>()"></select>
+                                asp-items="Html.GetEnumSelectList<LinhaPesquisa>()"></select>
                         <span asp-validation-for="AreaPesquisa" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Inovacao" class="control-label"></label>
                         <select asp-for="Inovacao" class="form-control"
-                            asp-items="Html.GetEnumSelectList<TipoInovacao>()"></select>
+                                asp-items="Html.GetEnumSelectList<TipoInovacao>()"></select>
                         <span asp-validation-for="Inovacao" class="text-danger"></span>
                     </div>
-
-					<div class="form-group">
-						<label asp-for="SatisfacaoCliente" class="control-label"></label>
-						<input type="number" step="0.01" asp-for="SatisfacaoCliente" />
-					</div>
-
+                    <div class="form-group">
+                        <label asp-for="SatisfacaoClienteParcial" class="control-label">Satisfação do Cliente (Parcial)</label>
+                        <input class="form-control" type="number" step="0.1" min="0" max="100" asp-for="SatisfacaoClienteParcial" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="SatisfacaoClienteFinal" class="control-label">Satisfação do Cliente (Final)</label>
+                        <input class="form-control" type="number" step="0.1" min="0" max="100" asp-for="SatisfacaoClienteFinal" />
+                    </div>
                     <div class="form-group">
                         <label asp-for="DataInicio" class="control-label"></label>
                         <input type="date" asp-for="DataInicio" class="form-control" />
@@ -114,14 +124,14 @@
                     <div class="form-group">
                         <label asp-for="Status" class="control-label"></label>
                         <select asp-for="Status" class="form-control"
-                            asp-items="Html.GetEnumSelectList<StatusProjeto>()"></select>
+                                asp-items="Html.GetEnumSelectList<StatusProjeto>()"></select>
                         <span asp-validation-for="Status" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn app-btn-primary"
-                        data-bs-target="#editarProjetoModal-@Model.Id-Toggle2" data-bs-toggle="modal"
-                        onclick="selectToText('-@Model.Id')">
+                            data-bs-target="#editarProjetoModal-@Model.Id-Toggle2" data-bs-toggle="modal"
+                            onclick="selectToText('-@Model.Id')">
                         Próximo
                     </button>
                 </div>
@@ -129,7 +139,7 @@
         </div>
     </div>
     <div class="modal fade" id="editarProjetoModal-@Model.Id-Toggle2" aria-hidden="true"
-        aria-labelledby="editarProjetoModal-@Model.Id-Label2" tabindex="-1">
+         aria-labelledby="editarProjetoModal-@Model.Id-Label2" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -142,41 +152,47 @@
                     <div class="form-group">
                         <label asp-for="Estado" class="control-label"></label>
                         <select asp-for="Estado" class="form-control"
-                            asp-items="Html.GetEnumSelectList<Estado>()"></select>
+                                asp-items="Html.GetEnumSelectList<Estado>()"></select>
                         <span asp-validation-for="Estado" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="FonteFomento" class="control-label"></label>
                         <select asp-for="FonteFomento" class="form-control"
-                            asp-items="Html.GetEnumSelectList<TipoContratacao>()">
+                                asp-items="Html.GetEnumSelectList<TipoContratacao>()">
                             <option selected="selected" value="">Selecione uma opção</option>
                         </select>
                         <span asp-validation-for="FonteFomento" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="ValorTotalProjeto" class="control-label"></label> (R$)
+                        <label asp-for="ValorTotalProjeto" class="control-label"></label>
                         <input asp-for="ValorTotalProjeto" class="form-control"
-                            placeholder="@Model.ValorTotalProjeto" />
+                               placeholder="@Model.ValorTotalProjeto" />
                         <span asp-validation-for="ValorTotalProjeto" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="ValorAporteRecursos" class="control-label"></label> (R$)
-                        <input asp-for="ValorAporteRecursos" class="form-control" placeholder="3,00" />
+                        <label asp-for="ValorAporteRecursos" class="control-label"></label>
+                        <input asp-for="ValorAporteRecursos" class="form-control" 
+                                placeholder="@Model.ValorAporteRecursos" />
                         <span asp-validation-for="ValorAporteRecursos" class="text-danger"></span>
                     </div>
+					<div class="form-group">
+                        <label asp-for="CustoHH" class="control-label"></label>
+                        <input asp-for="CustoHH" class="form-control" placeholder="3,00" readonly />
+                        <span asp-validation-for="CustoHH" class="text-danger"></span>
+					</div>
                 </div>
                 <input style="display:none" type="checkbox" disabled class="changeCheck-@Model.Id" value="Pessoas"
-                    id="checkPessoas-@Model.Id">
+                       id="checkPessoas-@Model.Id">
                 <div class="modal-footer">
                     <button type="button" class="btn app-btn-primary" data-bs-target="#editarProjetoModal-@Model.Id"
-                        data-bs-toggle="modal">
+                            data-bs-toggle="modal">
                         Anterior
                     </button>
                     @if (nivelUsuario.ToString() == "Dev" || nivelUsuario.ToString() == "Supervisor" ||
-                            nivelUsuario.ToString() == "PMO")
+                    nivelUsuario.ToString() == "PMO")
                     {
                         <button type="button" class="btn app-btn-primary"
-                            data-bs-target="#editarProjetoModal-@Model.Id-Toggle3" data-bs-toggle="modal">
+                                data-bs-target="#editarProjetoModal-@Model.Id-Toggle3" data-bs-toggle="modal">
                             Próximo
                         </button>
                     }
@@ -191,7 +207,7 @@
         </div>
     </div>
     <div class="modal fade" id="editarProjetoModal-@Model.Id-Toggle3" aria-hidden="true"
-        aria-labelledby="editarProjetoModal-@Model.Id-Label3" tabindex="-1">
+         aria-labelledby="editarProjetoModal-@Model.Id-Label3" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -234,13 +250,13 @@
                                 <div class="accordion-item">
                                     <h2 class="accordion-header" id="heading@(indicador.Id)">
                                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapse@(indicador.Id)" aria-expanded="true"
-                                            aria-controls="collapse@(indicador.Id)">
+                                                data-bs-target="#collapse@(indicador.Id)" aria-expanded="true"
+                                                aria-controls="collapse@(indicador.Id)">
                                             Indicador @i
                                         </button>
                                     </h2>
                                     <div id="collapse@(indicador.Id)" class="accordion-collapse collapse"
-                                        data-bs-parent="#accordionIndicadoresProjeto-@indicador.Id">
+                                         data-bs-parent="#accordionIndicadoresProjeto-@indicador.Id">
                                         <div class="accordion-body">
                                             <div class="form-group">
                                                 <label class="control-label"> ID do indicador</label>
@@ -249,53 +265,53 @@
                                             </div>
                                             <div class="form-check">
                                                 <input asp-for="@indicador.Bolsista" class="form-check-input" type="checkbox"
-                                                    id="checkBolsista" />
+                                                       id="checkBolsista" />
                                                 <label asp-for="@indicador.Bolsista" class="form-check-label"></label>
                                             </div>
                                             <div class="form-check">
                                                 <input asp-for="@indicador.ComprasMaterial" class="form-check-input"
-                                                    type="checkbox" id="checkComprasMaterial" />
+                                                       type="checkbox" id="checkComprasMaterial" />
                                                 <label asp-for="@indicador.ComprasMaterial" class="form-check-label"
-                                                    for="checkComprasMaterial"></label>
+                                                       for="checkComprasMaterial"></label>
                                             </div>
                                             <div class="form-check">
                                                 <input asp-for="@indicador.ComprasServico" class="form-check-input"
-                                                    type="checkbox" id="checkComprasServico" />
+                                                       type="checkbox" id="checkComprasServico" />
                                                 <label asp-for="@indicador.ComprasServico" class="form-check-label"></label>
                                             </div>
                                             <div class="form-check">
                                                 <input asp-for="@indicador.PrestacaoContas" class="form-check-input"
-                                                    type="checkbox" id="checkPrestacaoContas" />
+                                                       type="checkbox" id="checkPrestacaoContas" />
                                                 <label asp-for="@indicador.PrestacaoContas" class="form-check-label"></label>
                                             </div>
                                             <div class="form-check">
                                                 <input asp-for="@indicador.Regramento" class="form-check-input" type="checkbox"
-                                                    id="checkRegramento" />
+                                                       id="checkRegramento" />
                                                 <label asp-for="@indicador.Regramento" class="form-check-label"></label>
                                             </div>
                                             <div class="form-check">
                                                 <input asp-for="@indicador.Relatorios" class="form-check-input" type="checkbox"
-                                                    id="checkRelatorios" />
+                                                       id="checkRelatorios" />
                                                 <label asp-for="@indicador.Relatorios" class="form-check-label"
-                                                    for="checkRelatorios"></label>
+                                                       for="checkRelatorios"></label>
                                             </div>
                                             <div class="form-check">
                                                 <input asp-for="@indicador.Repasse" class="form-check-input" type="checkbox"
-                                                    id="checkRepasse" />
+                                                       id="checkRepasse" />
                                                 <label asp-for="@indicador.Repasse" class="form-check-label"
-                                                    for="checkRepasse"></label>
+                                                       for="checkRepasse"></label>
                                             </div>
                                             <div class="form-check">
                                                 <input asp-for="@indicador.SatisfacaoMetadeProjeto" class="form-check-input"
-                                                    type="checkbox" id="checkSatisfacaoMetadeProjeto" />
+                                                       type="checkbox" id="checkSatisfacaoMetadeProjeto" />
                                                 <label asp-for="@indicador.SatisfacaoMetadeProjeto" class="form-check-label"
-                                                    for="checkSatisfacaoMetadeProjeto"></label>
+                                                       for="checkSatisfacaoMetadeProjeto"></label>
                                             </div>
                                             <div class="form-check">
                                                 <input asp-for="@indicador.SatisfacaoFimProjeto" class="form-check-input"
-                                                    type="checkbox" id="checkSatisfacaoFimProjeto" />
+                                                       type="checkbox" id="checkSatisfacaoFimProjeto" />
                                                 <label asp-for="@indicador.SatisfacaoFimProjeto" class="form-check-label"
-                                                    for="checkSatisfacaoFimProjeto"></label>
+                                                       for="checkSatisfacaoFimProjeto"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -308,7 +324,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn app-btn-primary"
-                        data-bs-target="#editarProjetoModal-@Model.Id-Toggle2" data-bs-toggle="modal">
+                            data-bs-target="#editarProjetoModal-@Model.Id-Toggle2" data-bs-toggle="modal">
                         Anterior
                     </button>
                     <button type="Submit" class="btn app-btn-primary">

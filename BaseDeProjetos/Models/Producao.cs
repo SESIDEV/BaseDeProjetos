@@ -48,6 +48,5 @@ namespace BaseDeProjetos.Models
 
         [Display(Name = "Número de Patente")]
         public virtual string NumPatente { get; set; }
-
     }
 }

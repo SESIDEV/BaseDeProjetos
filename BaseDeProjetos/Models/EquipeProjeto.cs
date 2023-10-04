@@ -10,8 +10,9 @@ namespace BaseDeProjetos.Models
         [ForeignKey("IdTrabalho")]
         public virtual Projeto Projeto { get; set; }
 
-		[ForeignKey("IdUsuario")]
+        [ForeignKey("IdUsuario")]
         public virtual Usuario Usuario { get; set; }
+
         public string IdUsuario { get; set; }
     }
 }

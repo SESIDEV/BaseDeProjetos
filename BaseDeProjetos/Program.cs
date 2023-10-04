@@ -16,7 +16,8 @@ namespace BaseDeProjetos
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>()
-                    .ConfigureKestrel((context, options) => {
+                    .ConfigureKestrel((context, options) =>
+                    {
                         // ViewComponents possuem um bug em que sem isso eles morrem...
                         // Issue no GitHub: https://github.com/dotnet/aspnetcore/issues/40928
                         options.AllowSynchronousIO = true;

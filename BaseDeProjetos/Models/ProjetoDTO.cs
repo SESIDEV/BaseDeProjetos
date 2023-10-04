@@ -5,19 +5,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BaseDeProjetos.Models
 {
-	/// <summary>
-	/// DTO utilizado para o ProjetoGraficoViewModel em que não precisamos de todas as propriedades
-	/// </summary>
+    /// <summary>
+    /// DTO utilizado para o ProjetoGraficoViewModel em que não precisamos de todas as propriedades
+    /// </summary>
     public class ProjetoDTO
     {
         public ProjetoDTO()
         {
-
-        }
-
-        public ProjetoDTO(ProjetoIndicadores indicador)
-        {
-            Indicadores = new List<ProjetoIndicadores>() { indicador };
         }
 
         [Key]
@@ -26,8 +20,11 @@ namespace BaseDeProjetos.Models
 
         [Display(AutoGenerateFilter = true, Name = "Nome do Projeto")]
         public virtual string NomeProjeto { get; set; }
+
         public virtual Empresa Empresa { get; set; }
-        public virtual Empresa Proponente { get; set; }
+
+        [ForeignKey(nameof(ProponenteId))]
+        public virtual Usuario Proponente { get; set; }
 
         [Display(AutoGenerateFilter = true, Name = "Linha de Pesquisa")]
         public virtual LinhaPesquisa AreaPesquisa { get; set; }
@@ -59,15 +56,19 @@ namespace BaseDeProjetos.Models
 
         public virtual Instituto Casa { get; set; }
 
-        public virtual List<ProjetoIndicadores> Indicadores { get; set; } = new List<ProjetoIndicadores>();
-
         [ForeignKey("UsuarioId")]
         public virtual Usuario Usuario { get; set; }
 
         public virtual string UsuarioId { get; set; }
 
+        public virtual string ProponenteId { get; set; }
+
         public virtual List<StatusCurva> StatusCurva { get; set; }
 
-        public virtual float? SatisfacaoCliente { get; set; }
+        public virtual double? SatisfacaoClienteParcial { get; set; }
+
+        public virtual double? SatisfacaoClienteFinal { get; set; }
+
+        public virtual decimal CustoHH { get; set; }
     }
 }

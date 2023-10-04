@@ -7,6 +7,5 @@ namespace BaseDeProjetos.Models
     {
         public List<Prospeccao> Prospeccoes { get; set; }
         public Pager Pager { get; set; }
-
     }
 }

@@ -86,7 +86,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Salario")] Cargo cargo)
+        public async Task<IActionResult> Create([Bind("Id,Nome,Salario,HorasSemanais,Tributos")] Cargo cargo)
         {
             if (ModelState.IsValid)
             {
@@ -126,7 +126,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Salario")] Cargo cargo)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Salario,HorasSemanais,Tributos")] Cargo cargo)
         {
             if (id != cargo.Id)
             {

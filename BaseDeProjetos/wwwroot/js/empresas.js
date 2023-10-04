@@ -123,14 +123,12 @@ function FiltroEmpresaEstrangeira() {
 	let estado_int = document.getElementById("EstadoEmpresaCadastroINT");
 
 	if (checkBox.checked == true) {
-
 		cnpj.value = "00000000000000";
 		campo1.style.display = "none"
 		estado_int.value = 26;
 		campo2.style.display = "none"
 		nome.style.display = "none"
 	} else {
-
 		cnpj.value = "";
 		campo1.style.display = "block"
 		estado_int.value = 0;

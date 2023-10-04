@@ -11,6 +11,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("TestesBaseDeProjetos1")]
 
 namespace BaseDeProjetos.Controllers
 {
@@ -291,7 +294,7 @@ namespace BaseDeProjetos.Controllers
                     return CapturarErro(e);
                 }
                 prospeccao.Contato.empresa = prospeccao.Empresa;
-                await VincularUsuario(prospeccao);
+                await VincularUsuario(prospeccao, HttpContext, _context);
 
                 prospeccao.Status[0].Origem = prospeccao;
 
@@ -310,10 +313,10 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="prospeccao">Prospecção que se deseja vincular ao usuário logado</param>
         /// <returns></returns>
-        private async Task VincularUsuario(Prospeccao prospeccao)
+        internal async static Task VincularUsuario(Prospeccao prospeccao, HttpContext httpContext, ApplicationDbContext context)
         {
-            string userId = HttpContext.User.Identity.Name;
-            Usuario user = await _context.Users.FirstAsync(u => u.UserName == userId);
+            string userId = httpContext.User.Identity.Name;
+            Usuario user = await context.Users.FirstAsync(u => u.UserName == userId);
             prospeccao.Usuario = user;
         }
 
@@ -591,7 +594,7 @@ namespace BaseDeProjetos.Controllers
         /// <param name="dono">Usuario líder da prospecção</param>
         /// <param name="ativo">Usuário ativo (HttpContext)</param>
         /// <returns></returns>
-        private bool VerificarCondicoesRemocao(Prospeccao prospeccao, Usuario ativoNaSessao, Usuario donoProsp)
+        internal static bool VerificarCondicoesRemocao(Prospeccao prospeccao, Usuario ativoNaSessao, Usuario donoProsp)
         {
             return prospeccao.Status.Count() > 1 && ativoNaSessao == donoProsp;
         }

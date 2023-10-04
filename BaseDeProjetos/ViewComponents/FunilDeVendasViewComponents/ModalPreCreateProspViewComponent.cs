@@ -1,10 +1,9 @@
 ﻿using BaseDeProjetos.Data;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using BaseDeProjetos.Models;
-using System.Linq;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BaseDeProjetos.ViewComponents.FunilDeVendasViewComponents
 {
@@ -16,7 +15,6 @@ namespace BaseDeProjetos.ViewComponents.FunilDeVendasViewComponents
         {
             _context = context;
         }
-
 
         public async Task<IViewComponentResult> InvokeAsync()
         {

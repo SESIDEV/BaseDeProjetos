@@ -17,6 +17,6 @@ namespace BaseDeProjetos.ViewComponents.ProjetoViewComponents
         {
             ViewData["Projeto"] = await _context.Projeto.FindAsync(id);
             return View();
-        }        
+        }
     }
 }
