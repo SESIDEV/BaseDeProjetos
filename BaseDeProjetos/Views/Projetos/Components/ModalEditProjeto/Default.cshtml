@@ -58,6 +58,17 @@
                         </select>
                         <span asp-validation-for="UsuarioId" class="text-danger"></span>
                     </div>
+                    <div class="form-group">
+                        <label asp-for="ProponenteId" class="control-label">Proponente</label>
+                        <select asp-for="ProponenteId" class="form-control">
+                            <option value="">Selecione o Proponente:</option>
+                            @foreach (var proponente in ViewData["Usuarios"] as List<Usuario>)
+                            {
+                                <option value="@proponente.Id">@proponente.UserName</option>
+                            }
+                        </select>
+                        <span asp-validation-for="ProponenteId" class="text-danger"></span>
+                    </div>
                     <div class="mb-2">
                         <label name="MembrosSelect" class="col-form-label" style="font-weight: 600">Membros</label>
                         <div style="margin-left:3%;display:none" class="spinner-border" role="status"
