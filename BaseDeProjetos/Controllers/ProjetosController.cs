@@ -483,8 +483,6 @@ namespace BaseDeProjetos.Controllers
 
             _context.Entry(projetoExistente).CurrentValues.SetValues(projeto);
 
-            AtribuirCustoHH(projetoExistente);
-
             List<string> membrosEmails = new List<string>();
 
             // TODO: Repensar a forma como o frontend implementa essa funcionalidade
@@ -502,6 +500,17 @@ namespace BaseDeProjetos.Controllers
             }
 
             projetoExistente.EquipeProjeto = equipe;
+
+            /* 
+             * Salvamos as alterações de equipe no banco pois enviamos apenas o ID do Projeto e do Usuário
+             * Se não efetuarmos o salvamento, o método seguinte AtribuirCustoHH apenas enxergará os IDs 
+             * e não os objetos para Projeto e Usuário pois o relacionamento estará ""fraco""
+             * Sem sombra de dúvidas que existe uma forma "mais correta" de implementar essa funcionalidade.
+             * Mas acho desnecessário ir no banco em código para puxar o Projeto e o Usuário novamente pelos IDs
+            */
+            await _context.SaveChangesAsync();
+
+            AtribuirCustoHH(projetoExistente);
 
             if (id != projeto.Id)
             {
