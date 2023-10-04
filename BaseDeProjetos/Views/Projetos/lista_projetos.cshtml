@@ -107,7 +107,21 @@
             }
         </td>
         <td class="cell">
-            @projeto.Status.GetDisplayName()
+            @if (projeto.Status == StatusProjeto.EmExecucao) 
+            {
+                if (DateTime.Now > projeto.DataEncerramento)
+                {
+                    <span class="badge bg-danger" onmouseover="setupTippy('statusCargo-@(projeto.Id)')" data-tippy-content="Atrasado" id="statusCargo-@projeto.Id">@projeto.Status.GetDisplayName()</span>
+                }
+                else
+                {
+                    <span class="badge bg-success" onmouseover="setupTippy('statusCargo-@(projeto.Id)')" data-tippy-content="Dentro do Prazo" id="statusCargo-@projeto.Id">@projeto.Status.GetDisplayName()</span>
+                }
+            } 
+            else
+            {
+                <span class="badge bg-info">@projeto.Status.GetDisplayName()</span>
+            }
         </td>
         <td class="cell">
             @if (projeto.ValorAporteRecursos != 0 && projeto.ValorAporteRecursos > 0)

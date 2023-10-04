@@ -9,5 +9,6 @@ namespace BaseDeProjetos.Models
         public virtual string Nome { get; set; }
         public virtual decimal Salario { get; set; }
         public virtual int HorasSemanais { get; set; }
+        public virtual bool Tributos { get; set; }
     }
 }
