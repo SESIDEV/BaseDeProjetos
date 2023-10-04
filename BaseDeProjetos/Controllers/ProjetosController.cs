@@ -385,12 +385,19 @@ namespace BaseDeProjetos.Controllers
         {
             projeto.CustoHH = 0;
 
+            // Soma do custo da equipe (membros)
             foreach (var relacao in projeto.EquipeProjeto)
             {
                 if (relacao.Usuario != null)
                 {
                     projeto.CustoHH += DiferencaMeses(projeto.DataEncerramento, projeto.DataInicio) * relacao.Usuario.Cargo.Salario;
                 }
+            }
+
+            // Soma do custo do líder
+            if (projeto.Usuario != null)
+            {
+                projeto.CustoHH += DiferencaMeses(projeto.DataEncerramento, projeto.DataInicio) * projeto.Usuario.Cargo.Salario;
             }
         }
 
@@ -467,7 +474,7 @@ namespace BaseDeProjetos.Controllers
             string membrosSelect)
         {
             List<EquipeProjeto> equipe = new List<EquipeProjeto>();
-            var projetoExistente = await _context.Projeto.AsNoTracking().Include(p => p.EquipeProjeto).Include(p => p.Indicadores).FirstOrDefaultAsync(p => p.Id == projeto.Id);
+            var projetoExistente = await _context.Projeto.AsNoTracking().Include(p=>p.Usuario).Include(p => p.EquipeProjeto).Include(p => p.Indicadores).FirstOrDefaultAsync(p => p.Id == projeto.Id);
 
             if (projetoExistente == null)
             {
