@@ -9,7 +9,6 @@ namespace BaseDeProjetos.Models
     {
         public Projeto()
         {
-
         }
 
         public Projeto(ProjetoIndicadores indicador)
@@ -23,6 +22,7 @@ namespace BaseDeProjetos.Models
 
         [Display(AutoGenerateFilter = true, Name = "Nome do Projeto")]
         public virtual string NomeProjeto { get; set; }
+
         public virtual Empresa Empresa { get; set; }
 
         [Display(AutoGenerateFilter = true, Name = "Linha de Pesquisa")]
