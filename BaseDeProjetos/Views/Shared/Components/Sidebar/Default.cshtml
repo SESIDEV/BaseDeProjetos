@@ -397,6 +397,30 @@
                 {
                     <li class="nav-item">
                         @{
+                            if (ViewContext.RouteData.Values["controller"] as string == "CurvaFisicoFinanceira")
+                            {
+                                <a class="nav-link active" asp-action="Index" asp-controller="CurvaFisicoFinanceira">
+                                    <span class="nav-icon">
+                                        <i class="bi bi-currency-dollar"></i>
+                                    </span>
+                                    <span class="nav-link-text">CFF</span>
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="nav-link" asp-action="Index" asp-controller="CurvaFisicoFinanceira">
+                                    <span class="nav-icon">
+                                        <i class="bi bi-currency-dollar"></i>
+                                    </span>
+                                    <span class="nav-link-text">CFF</span>
+                                </a>
+                            }
+                        }
+                    </li>
+
+
+                    <li class="nav-item">
+                        @{
                             if (ViewContext.RouteData.Values["controller"] as string == "Editais")
                             {
                                 <a class="nav-link active" asp-action="Index" asp-controller="Editais">
