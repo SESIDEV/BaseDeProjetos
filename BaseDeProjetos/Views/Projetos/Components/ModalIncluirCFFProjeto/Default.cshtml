@@ -1,0 +1,47 @@
+﻿@model BaseDeProjetos.Models.CurvaFisicoFinanceira
+@using Microsoft.AspNetCore.Http
+@using System.Globalization
+@using BaseDeProjetos.Models
+
+@{
+    var nivelUsuario = ViewData["NivelUsuario"];
+    var projeto = ViewData["Projeto"] as Projeto;
+    ViewData["Title"] = "Edit";
+    if (!(Context.Session.GetString("_Casa") is null))
+    {
+        ViewData["Area"] = Context.Session.GetString("_Casa");
+    }
+}
+<!-- Modal -->
+<div class="modal fade" id="incluirCFFProjetoModal-@projeto.Id" aria-hidden="true"
+     aria-labelledby="#incluirCFFProjetoModal-@projeto.Id-Label" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="incluirCFFProjetoModal-@projeto.Id-Label2">
+                    Adicionar Indicador de Curva Fisico Financeira
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form class="form-submit" asp-controller="Projetos" asp-action="Atualizar" method="POST">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label asp-for="PercentualFisico" class="control-label">Percentual Físico</label>
+                        <input type="number" min="0" max="100" asp-for="PercentualFisico" class="form-control" placeholder="50" value="50" step="0.1" required />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PercentualFinanceiro" class="control-label">Percentual Financeiro</label>
+                        <input type="number" min="0" max="100" asp-for="PercentualFinanceiro" class="form-control" placeholder="50" value="50" step="0.1" required />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Data" class="control-label">Data</label>
+                        <input asp-for="Data" class="form-control" type="date" placeholder="@DateTime.Now" value="@DateTime.Now" required/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" value="Incluir" class="btn-submit btn app-btn-primary">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
