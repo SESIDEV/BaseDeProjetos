@@ -12,7 +12,7 @@ namespace BaseDeProjetos.Data
         {
         }
 
-        public DbSet<CurvaFisicoFinanceira> StatusCurva { get; set; }
+        public DbSet<CurvaFisicoFinanceira> CurvaFisicoFinanceira { get; set; }
         public DbSet<Projeto> Projeto { get; set; }
         public DbSet<Prospeccao> Prospeccao { get; set; }
         public DbSet<FollowUp> FollowUp { get; set; }
