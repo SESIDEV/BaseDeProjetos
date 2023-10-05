@@ -397,7 +397,10 @@ namespace BaseDeProjetos.Controllers
             // Soma do custo do líder
             if (projeto.Usuario != null)
             {
-                projeto.CustoHH += DiferencaMeses(projeto.DataEncerramento, projeto.DataInicio) * projeto.Usuario.Cargo.Salario;
+                if (projeto.Usuario.Cargo != null)
+                {
+                    projeto.CustoHH += DiferencaMeses(projeto.DataEncerramento, projeto.DataInicio) * projeto.Usuario.Cargo.Salario;
+                }
             }
         }
 
