@@ -531,7 +531,6 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {
-                    _context.Projeto.Update(projetoExistente);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException ex)
