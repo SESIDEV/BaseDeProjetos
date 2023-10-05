@@ -43,6 +43,7 @@ namespace BaseDeProjetos.Controllers.Tests
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.Name, "username"),
+                //new Claim(type: "Cargo", value: _objectCreator.usuario.Cargo?.ToString()),
             }));
 
             var sessionMock = new Mock<ISession>();

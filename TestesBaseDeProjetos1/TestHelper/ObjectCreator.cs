@@ -25,9 +25,14 @@ namespace TestesBaseDeProjetos1.TestHelper
             };
         }
 
-        public Cargo CriarCargoMock()
+        public void CriarCargoMock()
         {
-            return new Cargo() { Id = 1, Nome = "Pesquisador", Salario = 7500 };
+            cargo = new Cargo()
+            {
+                Id = 1,
+                Nome = "Pesquisador",
+                Salario = 7500
+            };
         }
 
         public void CriarProjetoIndicadoresMock()
@@ -70,7 +75,7 @@ namespace TestesBaseDeProjetos1.TestHelper
                 DataEncerramento = new DateTime(2023, 09, 23),
                 SatisfacaoClienteParcial = 0.97f,
                 SatisfacaoClienteFinal = 0.74f,
-				NomeProjeto = "Meu Projeto Teste",
+                NomeProjeto = "Meu Projeto Teste",
                 Empresa = empresa,
                 Estado = Estado.RioDeJaneiro,
                 Inovacao = TipoInovacao.Processo,
