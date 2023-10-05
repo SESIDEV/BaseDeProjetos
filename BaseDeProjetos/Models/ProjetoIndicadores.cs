@@ -9,11 +9,6 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Id do indicador do projeto")]
         public virtual string Id { get; set; }
 
-        [ForeignKey("IdProjeto")]
-        public virtual Projeto Projeto { get; set; }
-
-        public virtual string IdProjeto { get; set; }
-
         [Display(Name = "Regramento")]
         public virtual bool Regramento { get; set; }
 
