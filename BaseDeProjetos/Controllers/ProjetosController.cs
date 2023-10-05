@@ -27,16 +27,50 @@ namespace BaseDeProjetos.Controllers
             _context = context;
         }
 
-        /// <summary>
-        /// Cria os indicadores no Banco de Dados
-        /// </summary>
-        /// <param name="indicadoresProjeto"></param>
-        /// <returns></returns>
-        private async Task CriarIndicadores(ProjetoIndicadores indicadoresProjeto)
-        {
-            await _context.AddAsync(indicadoresProjeto);
-            await _context.SaveChangesAsync();
-        }
+
+		/// <summary>
+		/// Pra que diabos serve isso?
+		/// </summary>
+		/// <param name="indicadores"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Atualizar([Bind("IdProjeto, Regramento, Repasse, ComprasServico, ComprasMaterial, Bolsista, SatisfacaoMetadeProjeto, SatisfacaoFimProjeto, Relatorios, PrestacaoContas")] ProjetoIndicadores indicadores)
+		{
+			if (ModelState.IsValid)
+			{
+				Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == indicadores.IdProjeto);
+
+				// Gerar id do indicador
+				string idIndicador = $"proj_ind_{Guid.NewGuid()}";
+				indicadores.Id = idIndicador;
+
+				// Atrelar o projeto ao indicador
+				indicadores.Projeto = projeto;
+
+				// Criar o indicador no DB
+				await CriarIndicadores(indicadores);
+
+				await _context.SaveChangesAsync();
+			}
+			else
+			{
+				return View("Error");
+			}
+
+			return RedirectToAction(nameof(Index));
+		}
+
+		/// <summary>
+		/// Cria os indicadores no Banco de Dados
+		/// </summary>
+		/// <param name="indicadoresProjeto"></param>
+		/// <returns></returns>
+		private async Task CriarIndicadores(ProjetoIndicadores indicadoresProjeto)
+		{
+			await _context.AddAsync(indicadoresProjeto);
+			await _context.SaveChangesAsync();
+		}
 
         public IActionResult PopularBase()
         {
