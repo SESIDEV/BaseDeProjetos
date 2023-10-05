@@ -70,7 +70,7 @@ namespace BaseDeProjetos.Models
 
         public virtual string ProponenteId { get; set; }
 
-        public virtual List<StatusCurva> StatusCurva { get; set; }
+        public virtual List<CurvaFisicoFinanceira> CurvaFisicoFinanceira { get; set; }
 
         public virtual double? SatisfacaoClienteParcial { get; set; }
 

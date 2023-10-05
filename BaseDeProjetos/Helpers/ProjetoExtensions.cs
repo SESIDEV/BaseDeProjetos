@@ -23,7 +23,7 @@ public static class ProjetoExtensions
             Casa = projeto.Casa,
             Usuario = projeto.Usuario,
             UsuarioId = projeto.UsuarioId,
-            StatusCurva = projeto.StatusCurva,
+            StatusCurva = projeto.CurvaFisicoFinanceira,
             SatisfacaoClienteParcial = projeto.SatisfacaoClienteParcial,
             SatisfacaoClienteFinal = projeto.SatisfacaoClienteFinal,
         };
