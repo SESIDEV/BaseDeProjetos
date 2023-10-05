@@ -29,24 +29,34 @@ namespace BaseDeProjetos.Controllers
 
 
 		/// <summary>
-		/// Pra que diabos serve isso?
+		/// Adicionar um indicador e atrela ao projeto
 		/// </summary>
 		/// <param name="indicadores"></param>
 		/// <returns></returns>
-		[HttpPost]
+		[HttpPost("/Projetos/Atualizar/{idProjeto}")]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Atualizar([Bind("IdProjeto, Regramento, Repasse, ComprasServico, ComprasMaterial, Bolsista, SatisfacaoMetadeProjeto, SatisfacaoFimProjeto, Relatorios, PrestacaoContas")] ProjetoIndicadores indicadores)
+		public async Task<IActionResult> Atualizar(string idProjeto, [Bind("Regramento, Repasse, ComprasServico, ComprasMaterial, Bolsista, SatisfacaoMetadeProjeto, SatisfacaoFimProjeto, Relatorios, PrestacaoContas")] ProjetoIndicadores indicadores)
 		{
 			if (ModelState.IsValid)
 			{
-				Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == indicadores.IdProjeto);
+				Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == idProjeto);
 
 				// Gerar id do indicador
 				string idIndicador = $"proj_ind_{Guid.NewGuid()}";
 				indicadores.Id = idIndicador;
 
 				// Atrelar o projeto ao indicador
-				indicadores.Projeto = projeto;
+				if (projeto.Indicadores != null)
+                {
+                    if (projeto.Indicadores.Count == 0)
+                    {
+                        projeto.Indicadores = new List<ProjetoIndicadores> { indicadores };
+                    }
+                    else
+                    {
+                        projeto.Indicadores.Add(indicadores);
+                    }
+                }
 
 				// Criar o indicador no DB
 				await CriarIndicadores(indicadores);
