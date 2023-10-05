@@ -477,7 +477,7 @@ namespace BaseDeProjetos.Controllers
             string membrosSelect)
         {
             List<EquipeProjeto> equipe = new List<EquipeProjeto>();
-            var projetoExistente = await _context.Projeto.AsNoTracking().Include(p=>p.Usuario).Include(p => p.EquipeProjeto).Include(p => p.Indicadores).FirstOrDefaultAsync(p => p.Id == projeto.Id);
+            var projetoExistente = await _context.Projeto.AsNoTracking().Include(p => p.Usuario).Include(p => p.EquipeProjeto).Include(p => p.Indicadores).FirstOrDefaultAsync(p => p.Id == projeto.Id);
 
             if (projetoExistente == null)
             {
@@ -579,6 +579,16 @@ namespace BaseDeProjetos.Controllers
         {
             ProjetoIndicadores indicador = await _context.ProjetoIndicadores.FindAsync(id);
             _context.ProjetoIndicadores.Remove(indicador);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletarCurvaFisicoFinanceira(int id)
+        {
+            CurvaFisicoFinanceira cff = await _context.CurvaFisicoFinanceira.FindAsync(id);
+            _context.CurvaFisicoFinanceira.Remove(cff);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
