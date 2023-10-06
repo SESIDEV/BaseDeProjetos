@@ -69,11 +69,28 @@ namespace BaseDeProjetos.Controllers
             if (ModelState.IsValid)
             {
                 Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == idProjeto);
+        /// <summary>
+        /// Adicionar um indicador e atrela ao projeto
+        /// </summary>
+        /// <param name="indicadores"></param>
+        /// <returns></returns>
+        [HttpPost("/Projetos/AdicionarIndicador/{idProjeto}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AdicionarIndicador(string idProjeto, [Bind("Regramento, Repasse, ComprasServico, ComprasMaterial, Bolsista, SatisfacaoMetadeProjeto, SatisfacaoFimProjeto, Relatorios, PrestacaoContas")] ProjetoIndicadores indicadores)
+        {
+            if (ModelState.IsValid)
+            {
+                Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == idProjeto);
 
                 // Gerar id do indicador
                 string idIndicador = $"proj_ind_{Guid.NewGuid()}";
                 indicadores.Id = idIndicador;
+                // Gerar id do indicador
+                string idIndicador = $"proj_ind_{Guid.NewGuid()}";
+                indicadores.Id = idIndicador;
 
+                // Atrelar o projeto ao indicador
+                if (projeto.Indicadores != null)
                 // Atrelar o projeto ao indicador
                 if (projeto.Indicadores != null)
                 {
