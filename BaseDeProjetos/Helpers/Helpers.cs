@@ -75,9 +75,7 @@ namespace BaseDeProjetos.Helpers
 
             var empresas = _context.Empresa.Where(e => e.Nome != null);//.Select(e => new {e.Nome, e.Segmento.GetDisplayName()}).ToList();
 
-            string empresasJson = JsonSerializer.Serialize(empresas);
-
-            return empresasJson;
+            return JsonSerializer.Serialize(empresas);
 
         }
 
