@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("TestesBaseDeProjetos1")]
 
@@ -128,7 +128,6 @@ namespace BaseDeProjetos.Controllers
                 prospeccoes = FunilHelpers.RetornarProspeccoesPorStatus(prospeccoes, usuario, aba, HttpContext);
             }
 
-
             return prospeccoes;
         }
 
@@ -155,7 +154,6 @@ namespace BaseDeProjetos.Controllers
                     return NotFound();
                 }
 
-
                 return View(prospeccao);
             }
             else
@@ -163,6 +161,7 @@ namespace BaseDeProjetos.Controllers
                 return View("Forbidden");
             }
         }
+
         // GET: FunilDeVendas/Create
         public async Task<IActionResult> Create(int id)
         {
@@ -208,12 +207,10 @@ namespace BaseDeProjetos.Controllers
             {
                 new FollowUp
                 {
-
                     OrigemID = prosp.Id,
                     Data = DateTime.Today,
                     Anotacoes = $"Incluído no plano de prospecção de {User.Identity.Name}",
                     Status = StatusProspeccao.Planejada
-
                 }
             };
 
@@ -225,7 +222,6 @@ namespace BaseDeProjetos.Controllers
             {
                 return View("Forbidden");
             }
-
         }
 
         [HttpGet]
@@ -313,13 +309,12 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="prospeccao">Prospecção que se deseja vincular ao usuário logado</param>
         /// <returns></returns>
-        internal async static Task VincularUsuario(Prospeccao prospeccao, HttpContext httpContext, ApplicationDbContext context)
+        internal static async Task VincularUsuario(Prospeccao prospeccao, HttpContext httpContext, ApplicationDbContext context)
         {
             string userId = httpContext.User.Identity.Name;
             Usuario user = await context.Users.FirstAsync(u => u.UserName == userId);
             prospeccao.Usuario = user;
         }
-
 
         // TODO: Conceito SOLID quebrado, desmembrar?
         /// <summary>
@@ -336,7 +331,6 @@ namespace BaseDeProjetos.Controllers
                 if (atual.Nome != " " && atual.CNPJ != " ")
                 {
                     prospeccao.Empresa = atual;
-
                 }
                 else
                 {
@@ -359,6 +353,7 @@ namespace BaseDeProjetos.Controllers
 
             return prospeccao;
         }
+
         // GET: FunilDeVendas/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -451,12 +446,10 @@ namespace BaseDeProjetos.Controllers
             if (prospAntiga.Ancora == true && prospeccao.Ancora == false)
             { // verifica se a âncora foi cancelada
                 FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
-
             }
             else if (prospeccao.Ancora == true && string.IsNullOrEmpty(prospeccao.Agregadas))
             { // verifica se o campo agg está vazio
                 throw new InvalidOperationException("Não é possível adicionar uma Âncora sem nenhuma agregada.");
-
             }
             else if (prospAntiga.Agregadas != prospeccao.Agregadas)
             { // verifica se alguma agregada foi alterada
@@ -561,6 +554,7 @@ namespace BaseDeProjetos.Controllers
                 return View("Forbidden");
             }
         }
+
         private async Task<IActionResult> RemoverFollowupAutenticado(FollowUp followup)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -687,7 +681,7 @@ namespace BaseDeProjetos.Controllers
 
         /// <summary>
         /// Retorna os dados de todas as prospeções cadastradas no sistema em formato JSON.
-        /// OBS: Método permite acesso não autenticado vide tag: [AllowAnonymous] 
+        /// OBS: Método permite acesso não autenticado vide tag: [AllowAnonymous]
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
@@ -775,7 +769,6 @@ namespace BaseDeProjetos.Controllers
             {
                 return "403 Forbidden";
             }
-
         }
 
         /// <summary>
@@ -793,6 +786,5 @@ namespace BaseDeProjetos.Controllers
                 return "403 Forbidden";
             }
         }
-
     }
 }

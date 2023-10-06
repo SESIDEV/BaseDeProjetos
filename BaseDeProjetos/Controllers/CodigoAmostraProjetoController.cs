@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using BaseDeProjetos.Data;
-using BaseDeProjetos.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -52,13 +52,12 @@ namespace BaseDeProjetos.Controllers
         }
 
         // POST: CodigoAmostraProjeto/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Projeto,Codigo")] CodigoAmostraProjeto codigoAmostraProjeto)
         {
-
             if (_context.CodigoAmostraProjeto.Any(c => c.Codigo == codigoAmostraProjeto.Codigo))
             {
                 throw new InvalidOperationException("Já existe um código com este valor.");
@@ -89,7 +88,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // POST: CodigoAmostraProjeto/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]

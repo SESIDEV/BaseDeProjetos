@@ -26,7 +26,6 @@ function converterParaBase64(file, id) {
     reader.readAsDataURL(file);
 }
 
-
 function ChecarTipoProducao(id = "") {
     let valor = document.querySelector(`#select_tipo${id}`).value
 
@@ -247,7 +246,6 @@ function gerarOpcoesSelect(rota, elementoPai, modelId = "", fillValues = false) 
 
             select2_containers = document.querySelectorAll(".select2-container");
             select2_containers.forEach(input => input.style.width = "100%");
-
         })
         .catch(err => {
             console.error(`Erro no fetch ${err}`);
@@ -398,7 +396,6 @@ function updateLink() {
     else {
         location.href = baseUrl + params + select;
     }
-
 }
 
 function montarNetwork(pessoas, competenciasFiltradas = null) {
@@ -419,7 +416,6 @@ function montarNetwork(pessoas, competenciasFiltradas = null) {
         var user = {};
 
         if (existeFiltro) {
-
             listaCompPessoa = pessoa['Competencia'].split(";").map(cp => dictCompetencias[cp])
 
             competenciasFiltradas.forEach(comp => {
@@ -462,7 +458,6 @@ function montarNetwork(pessoas, competenciasFiltradas = null) {
                         return;
                     }
                 }
-
             })
             if (iterar == false) {
                 return
@@ -552,7 +547,6 @@ function naoNulaOuVazia(compFiltradas) {
 }
 
 function converterCompetencias() {
-
     let inputComp = ""
     let dict1 = {}
 
@@ -561,18 +555,15 @@ function converterCompetencias() {
     listaComp.forEach(c => {
         compString = dict1[c]
     })
-
 }
 
 function statusPatente(id = "") {
-
     let status = document.querySelector(`#StatusPub${id}`).value
     if (status != 5) {
         document.querySelector(`#NumPatente${id}`).readOnly = true;
     } else {
         document.querySelector(`#NumPatente${id}`).readOnly = false;
     }
-
 }
 
 function travarBotao() {

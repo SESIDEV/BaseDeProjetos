@@ -1,10 +1,8 @@
 ﻿using BaseDeProjetos.Models;
-using NUnit.Framework.Constraints;
 using System;
 
 namespace TestesBaseDeProjetos1.TestHelper
 {
-
     internal class ObjectCreator
     {
         public ProjetoIndicadores projetoIndicadores;

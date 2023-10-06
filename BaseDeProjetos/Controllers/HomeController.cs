@@ -35,7 +35,6 @@ namespace BaseDeProjetos.Controllers
             return await _context.Prospeccao.Where(p => p.Status.OrderByDescending(f => f.Data).FirstOrDefault().Status == status).ToListAsync();
         }
 
-
         [Route("")]
         [Route("Home")]
         [Route("Home/Index")]
@@ -57,10 +56,8 @@ namespace BaseDeProjetos.Controllers
                 ViewData["satisfacao"] = 0.8750; // TODO: Implementar lógica?
                 ViewData["Valor_Prosp_Proposta"] = _context.Prospeccao.Where(p => p.Casa == UsuarioAtivo.Casa).Where(p => p.Status.Any(s => s.Status == StatusProspeccao.ComProposta)).Sum(p => p.ValorProposta);
                 ViewBag.Estados = _context.Prospeccao.Where(p => p.Casa == UsuarioAtivo.Casa).Select(p => p.Empresa.Estado).ToList();
-
             }
             return View();
-
         }
 
         /// <summary>
@@ -110,7 +107,7 @@ namespace BaseDeProjetos.Controllers
             dadosOperacionais["projetos"] = projetos.Count;
             dadosOperacionais["empresas"] = empresas.Count;
             dadosOperacionais["usuarios"] = usuarios.Count;
-            
+
             dadosGrafico["linhasDePesquisa"] = quantidades;
             dadosGrafico["labels"] = labelsDePesquisa;
 
@@ -124,7 +121,7 @@ namespace BaseDeProjetos.Controllers
             dadosProspeccoes["proporcaoComProposta"] = prospeccoesComProposta.Count / (float)prospeccoes.Count;
             dadosProspeccoes["proporcaoConcluidas"] = prospeccoesConcluidas.Count / (float)prospeccoes.Count;
             dadosProspeccoes["proporcaoPlanejadas"] = prospeccoesPlanejadas.Count / (float)prospeccoes.Count;
-    
+
             try
             {
                 if (UsuarioAtivo.Casa == Instituto.Super || UsuarioAtivo.Casa == Instituto.ISIQV || UsuarioAtivo.Casa == Instituto.CISHO)

@@ -104,7 +104,6 @@ namespace BaseDeProjetos.Controllers.Tests
             }
         }
 
-
         [Test]
         public void Test_Create_UserAuthenticated_ReturnsView()
         {

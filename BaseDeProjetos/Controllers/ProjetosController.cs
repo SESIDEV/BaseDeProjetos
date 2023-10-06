@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -28,25 +28,25 @@ namespace BaseDeProjetos.Controllers
         }
 
 
-		/// <summary>
-		/// Adicionar um indicador e atrela ao projeto
-		/// </summary>
-		/// <param name="indicadores"></param>
-		/// <returns></returns>
-		[HttpPost("/Projetos/AdicionarIndicador/{idProjeto}")]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> AdicionarIndicador(string idProjeto, [Bind("Regramento, Repasse, ComprasServico, ComprasMaterial, Bolsista, SatisfacaoMetadeProjeto, SatisfacaoFimProjeto, Relatorios, PrestacaoContas")] ProjetoIndicadores indicadores)
-		{
-			if (ModelState.IsValid)
-			{
-				Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == idProjeto);
+        /// <summary>
+        /// Adicionar um indicador e atrela ao projeto
+        /// </summary>
+        /// <param name="indicadores"></param>
+        /// <returns></returns>
+        [HttpPost("/Projetos/AdicionarIndicador/{idProjeto}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AdicionarIndicador(string idProjeto, [Bind("Regramento, Repasse, ComprasServico, ComprasMaterial, Bolsista, SatisfacaoMetadeProjeto, SatisfacaoFimProjeto, Relatorios, PrestacaoContas")] ProjetoIndicadores indicadores)
+        {
+            if (ModelState.IsValid)
+            {
+                Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == idProjeto);
 
-				// Gerar id do indicador
-				string idIndicador = $"proj_ind_{Guid.NewGuid()}";
-				indicadores.Id = idIndicador;
+                // Gerar id do indicador
+                string idIndicador = $"proj_ind_{Guid.NewGuid()}";
+                indicadores.Id = idIndicador;
 
-				// Atrelar o projeto ao indicador
-				if (projeto.Indicadores != null)
+                // Atrelar o projeto ao indicador
+                if (projeto.Indicadores != null)
                 {
                     if (projeto.Indicadores.Count == 0)
                     {
@@ -58,34 +58,34 @@ namespace BaseDeProjetos.Controllers
                     }
                 }
 
-				// Criar o indicador no DB
-				await CriarIndicadores(indicadores);
+                // Criar o indicador no DB
+                await CriarIndicadores(indicadores);
 
-				await _context.SaveChangesAsync();
-			}
-			else
-			{
-				return View("Error");
-			}
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                return View("Error");
+            }
 
-			return RedirectToAction(nameof(Index));
-		}
+            return RedirectToAction(nameof(Index));
+        }
 
-		/// <summary>
-		/// Adicionar uma CFF e atrela ao projeto
-		/// </summary>
-		/// <param name="cff">Objeto CFF</param>
-		/// <returns></returns>
-		[HttpPost("/Projetos/AdicionarCFF/{idProjeto}")]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> AdicionarCFF(string idProjeto, [Bind("")] CurvaFisicoFinanceira cff)
-		{
-			if (ModelState.IsValid)
-			{
-				Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == idProjeto);
+        /// <summary>
+        /// Adicionar uma CFF e atrela ao projeto
+        /// </summary>
+        /// <param name="cff">Objeto CFF</param>
+        /// <returns></returns>
+        [HttpPost("/Projetos/AdicionarCFF/{idProjeto}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AdicionarCFF(string idProjeto, [Bind("")] CurvaFisicoFinanceira cff)
+        {
+            if (ModelState.IsValid)
+            {
+                Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == idProjeto);
 
-				// Atrelar o projeto ao indicador
-				if (projeto.CurvaFisicoFinanceira != null)
+                // Atrelar o projeto ao indicador
+                if (projeto.CurvaFisicoFinanceira != null)
                 {
                     if (projeto.CurvaFisicoFinanceira.Count == 0)
                     {
@@ -97,40 +97,40 @@ namespace BaseDeProjetos.Controllers
                     }
                 }
 
-				// Criar o indicador no DB
-				await CriarCFF(cff);
+                // Criar o indicador no DB
+                await CriarCFF(cff);
 
-				await _context.SaveChangesAsync();
-			}
-			else
-			{
-				return View("Error");
-			}
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                return View("Error");
+            }
 
-			return RedirectToAction(nameof(Index));
-		}
+            return RedirectToAction(nameof(Index));
+        }
 
-		/// <summary>
-		/// Cria a curva físico financeira no banco
-		/// </summary>
-		/// <param name="cff">Objeto CurvaFisicoFinanceira</param>
-		/// <returns></returns>
-		private async Task CriarCFF(CurvaFisicoFinanceira cff)
-		{
-			await _context.AddAsync(cff);
-			await _context.SaveChangesAsync();
-		}
+        /// <summary>
+        /// Cria a curva físico financeira no banco
+        /// </summary>
+        /// <param name="cff">Objeto CurvaFisicoFinanceira</param>
+        /// <returns></returns>
+        private async Task CriarCFF(CurvaFisicoFinanceira cff)
+        {
+            await _context.AddAsync(cff);
+            await _context.SaveChangesAsync();
+        }
 
-		/// <summary>
-		/// Cria os indicadores no Banco de Dados
-		/// </summary>
-		/// <param name="indicadoresProjeto"></param>
-		/// <returns></returns>
-		private async Task CriarIndicadores(ProjetoIndicadores indicadoresProjeto)
-		{
-			await _context.AddAsync(indicadoresProjeto);
-			await _context.SaveChangesAsync();
-		}
+        /// <summary>
+        /// Cria os indicadores no Banco de Dados
+        /// </summary>
+        /// <param name="indicadoresProjeto"></param>
+        /// <returns></returns>
+        private async Task CriarIndicadores(ProjetoIndicadores indicadoresProjeto)
+        {
+            await _context.AddAsync(indicadoresProjeto);
+            await _context.SaveChangesAsync();
+        }
 
         public IActionResult PopularBase()
         {

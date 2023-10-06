@@ -1,13 +1,12 @@
 ﻿using BaseDeProjetos.Data;
-using System;
-using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
-using System.Linq;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Castle.Core.Internal;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Helpers
@@ -42,6 +41,7 @@ namespace BaseDeProjetos.Helpers
         {
             return _context.Prospeccao.Any(prospeccao => prospeccao.Id == id);
         }
+
         public static List<Producao> VincularCasaProducao(Usuario usuario, List<Producao> listaProd)
         {
             if (usuario.Nivel == Nivel.Dev)
@@ -57,7 +57,6 @@ namespace BaseDeProjetos.Helpers
                 if (usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO)
                 {
                     return listaProd.Where(producao => producao.Casa == Instituto.ISIQV || producao.Casa == Instituto.CISHO).ToList();
-
                 }
                 else
                 {
@@ -65,6 +64,7 @@ namespace BaseDeProjetos.Helpers
                 }
             }
         }
+
         public static List<Prospeccao> VincularCasaProspeccao(Usuario usuario, List<Prospeccao> listaProsp)
         {
             if (usuario.Nivel == Nivel.Dev)
@@ -75,13 +75,11 @@ namespace BaseDeProjetos.Helpers
                 prospeccao.Casa == Instituto.ISIII ||
                 prospeccao.Casa == Instituto.ISISVP).ToList();
             }
-
             else
             {
                 if (usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO)
                 {
                     return listaProsp.Where(prospeccao => prospeccao.Casa == Instituto.ISIQV || prospeccao.Casa == Instituto.CISHO).ToList();
-
                 }
                 else
                 {
@@ -117,7 +115,6 @@ namespace BaseDeProjetos.Helpers
 
         public static List<Prospeccao> RetornarProspeccoesPorStatus(List<Prospeccao> lista, Usuario usuario, string aba, HttpContext HttpContext)
         {
-
             if (aba.ToLowerInvariant() == "ativas")
             {
                 List<Prospeccao> ativas = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
@@ -172,10 +169,8 @@ namespace BaseDeProjetos.Helpers
                 List<Prospeccao> lista = await _context.Prospeccao.ToListAsync();
                 prospeccoes.AddRange(lista);
             }
-
             else
             {
-
                 if (Enum.IsDefined(typeof(Instituto), casa))
                 {
                     HttpContext.Session.SetString("_Casa", casa);
@@ -202,10 +197,8 @@ namespace BaseDeProjetos.Helpers
                 List<Producao> lista = await _context.Producao.ToListAsync();
                 producoes.AddRange(lista);
             }
-
             else
             {
-
                 if (Enum.IsDefined(typeof(Instituto), casa))
                 {
                     HttpContext.Session.SetString("_Casa", casa);
@@ -259,7 +252,6 @@ namespace BaseDeProjetos.Helpers
                 {
                     if (AggId != "")
                     {
-
                         if (!listaAggNova.Contains(AggId))
                         {
                             listaRemovidas.Add(AggId);
@@ -430,7 +422,6 @@ namespace BaseDeProjetos.Helpers
             return producoes.Where(producao => producao.Data.Year == Convert.ToInt32(ano)).ToList();
         }
 
-
         public static TimeSpan RetornarValorDiferencaTempo(List<Prospeccao> prospeccoes)
         {
             TimeSpan intervaloDeTempo;
@@ -471,8 +462,10 @@ namespace BaseDeProjetos.Helpers
             {
                 case "name_desc":
                     return prospeccoes.OrderByDescending(s => s.Empresa.Nome).ToList();
+
                 case "TipoContratacao":
                     return prospeccoes.OrderBy(s => s.TipoContratacao).ToList();
+
                 case "tipo_desc":
                     return prospeccoes.OrderByDescending(s => s.TipoContratacao).ToList();
             };
@@ -487,7 +480,6 @@ namespace BaseDeProjetos.Helpers
         /// <returns></returns>
         public static List<Prospeccao> FiltrarProspecções(string searchString, List<Prospeccao> prospeccoes)
         {
-
             if (!string.IsNullOrEmpty(searchString))
             {
                 searchString = searchString.ToLower();
@@ -569,18 +561,25 @@ namespace BaseDeProjetos.Helpers
             {
                 case TipoContratacao.ContratacaoDireta:
                     return prospeccao.TipoContratacao == tipoContratacao;
+
                 case TipoContratacao.EditalInovacao:
                     return prospeccao.TipoContratacao == tipoContratacao;
+
                 case TipoContratacao.AgenciaFomento:
                     return prospeccao.TipoContratacao == tipoContratacao;
+
                 case TipoContratacao.Embrapii:
                     return prospeccao.TipoContratacao == tipoContratacao;
+
                 case TipoContratacao.Indefinida:
                     return prospeccao.TipoContratacao == tipoContratacao;
+
                 case TipoContratacao.Parceiro:
                     return prospeccao.TipoContratacao == tipoContratacao;
+
                 case TipoContratacao.ANP:
                     return prospeccao.TipoContratacao == tipoContratacao;
+
                 default:
                     return false;
             }
@@ -603,12 +602,16 @@ namespace BaseDeProjetos.Helpers
             {
                 case StatusProspeccao.ContatoInicial:
                     return prospeccao.Status.Any(s => s.Status == status);
+
                 case StatusProspeccao.Discussao_EsbocoProjeto: // Status seria < 5 e > 0 1-4 INCLUSO, se precisar inclua um case acima sem execução de nenhuma instrução ou break
                     return prospeccao.Status.Any(followup => followup.Status < StatusProspeccao.ComProposta && followup.Status > StatusProspeccao.ContatoInicial);
+
                 case StatusProspeccao.ComProposta:
                     return prospeccao.Status.Any(followup => followup.Status == status);
+
                 case StatusProspeccao.Convertida:
                     return prospeccao.Status.Any(followup => followup.Status == status);
+
                 default:
                     return false;
             }

@@ -1,15 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BaseDeProjetos.Models
 {
-	public class Usuario : IdentityUser
-	{
-
-		public Instituto Casa { get; set; }
-
+    public class Usuario : IdentityUser
+    {
+        public Instituto Casa { get; set; }
 
         public Nivel Nivel { get; set; }
 
@@ -24,13 +21,12 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Foto do Perfil")]
         public string Foto { get; set; }
 
-		[Display(Name = "Competências")]
-		public string Competencia { get; set; }
+        [Display(Name = "Competências")]
+        public string Competencia { get; set; }
 
         [ForeignKey("CargoId")]
         public virtual Cargo? Cargo { get; set; }
 
-		public virtual int? CargoId { get; set; }
-
-	}
+        public virtual int? CargoId { get; set; }
+    }
 }

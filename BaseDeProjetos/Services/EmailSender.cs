@@ -1,7 +1,7 @@
 ﻿using BaseDeProjetos.Models;
+using MailSenderHelpers;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using SendGrid.Helpers.Mail;
-using MailSenderHelpers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,7 +17,7 @@ namespace MailSenderApp.Services
         public EmailSender()
         {
             mailer = new MailSenderHelpers.Mailer();
-            
+
             Destinatarios.Add(new Usuario { UserName = "Leon Nascimento", Email = "lednascimento@firjan.com.br", Nivel = Nivel.Dev });
             Destinatarios.Add(new Usuario { UserName = "Rafael Magno", Email = "istqmat04@firjan.com.br", Nivel = Nivel.Dev });
             Destinatarios.Add(new Usuario { UserName = "Iury Kozlowsky", Email = "iksimoes@firjan.com.br", Nivel = Nivel.Dev });
@@ -26,7 +26,6 @@ namespace MailSenderApp.Services
             Destinatarios.Add(new Usuario { UserName = "Ivone Luci Martins", Email = "ilmartins@firjan.com.br", Nivel = Nivel.Supervisor });
             Destinatarios.Add(new Usuario { UserName = "Felipe, Lawrence e Paulo", Email = "pmointegrado@firjan.com.br", Nivel = Nivel.PMO });
             Destinatarios.Add(new Usuario { UserName = "Gabriela e Carlos Eduardo", Email = "nit@firjan.com.br", Nivel = Nivel.PMO });*/
-
         }
 
         public Task SendEmailAsync(string email, string subject, string htmlMessage)

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using BaseDeProjetos.Data;
-using BaseDeProjetos.Models;
 
 namespace BaseDeProjetos.Controllers
 {
@@ -64,8 +61,6 @@ namespace BaseDeProjetos.Controllers
             {
                 return View("Forbiden");
             }
-
-
         }
 
         // GET: Cargos/Create
@@ -82,7 +77,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // POST: Cargos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -102,7 +97,6 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated && UsuarioAtivo.Nivel != Nivel.Usuario && UsuarioAtivo.Nivel != Nivel.Externos)
             {
-
                 if (id == null)
                 {
                     return NotFound();
@@ -122,7 +116,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // POST: Cargos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -161,7 +155,6 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated && UsuarioAtivo.Nivel != Nivel.Usuario && UsuarioAtivo.Nivel != Nivel.Externos)
             {
-
                 if (id == null)
                 {
                     return NotFound();
