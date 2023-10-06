@@ -22,19 +22,20 @@ namespace BaseDeProjetos.Controllers
         [Route("Pessoas")]
         public IActionResult Index()
         {
-            if (HttpContext.User.Identity.IsAuthenticated)
-            {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            // if (HttpContext.User.Identity.IsAuthenticated)
+            // {
+            //     Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+            //     ViewBag.usuarioCasa = usuario.Casa;
+            //     ViewBag.usuarioNivel = usuario.Nivel;
 
-                return View();
-            }
-            else
-            {
-                return View("Forbidden");
-            }
+            //     return View();
+            // }
+            // else
+            // {
+            //     return View("Forbidden");
+            // }
+			return View("Construcao");
         }
 
         /// <summary>
