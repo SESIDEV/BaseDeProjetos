@@ -1,4 +1,4 @@
-﻿@model BaseDeProjetos.Models.Projeto
+@model BaseDeProjetos.Models.Projeto
 @using Microsoft.AspNetCore.Http
 @using System.Globalization
 
@@ -8,7 +8,7 @@
 <!-- Modal -->
 <div class="modal fade" id="detalhesCFFProjetoModal-@Model.Id" aria-hidden="true"
      aria-labelledby="#detalhesCFFProjetoModal-@Model.Id-Label" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="detalhesCFFProjetoModal-@Model.Id-Label2">
@@ -29,6 +29,7 @@
                 {
                     <h4>Não há CFFs para este projeto. Cadastre ao menos uma!</h4>
                 }
+                <partial name="GraficoCurvaFisicoFinanceira" model="@Model" />
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn app-btn-primary" data-bs-toggle="modal" role="button">
