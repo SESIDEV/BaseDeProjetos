@@ -41,7 +41,6 @@ function formatarPorcentagem(valor) {
     return `${result}%`;
 }
 
-
 function preencherDadosDashboard(data) {
     const dadosFinanceiros = data['dadosFinanceiros'];
     const dadosOperacionais = data['dadosOperacionais'];
@@ -119,7 +118,6 @@ function inicializarBarChart(data) {
                 backgroundColor: '#fff',
                 bodyFontColor: window.chartColors.text,
                 titleFontColor: window.chartColors.text,
-
             },
             scales: {
                 xAxes: [{
@@ -133,7 +131,6 @@ function inicializarBarChart(data) {
                         drawBorder: false,
                         color: window.chartColors.border,
                     },
-
                 }],
                 yAxes: [{
                     display: true,
