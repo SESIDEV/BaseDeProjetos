@@ -3,16 +3,11 @@
 @using System.Globalization
 
 @{
-    var nivelUsuario = ViewData["NivelUsuario"];
-    ViewData["Title"] = "Edit";
-    if (!(Context.Session.GetString("_Casa") is null))
-    {
-        ViewData["Area"] = Context.Session.GetString("_Casa");
-    }
+    AtribuirDadosViewData();
 }
 <!-- Modal -->
 <div class="modal fade" id="detalhesIndicadorProjetoModal-@Model.Id" aria-hidden="true"
-     aria-labelledby="#detalhesIndicadorProjetoModal-@Model.Id-Label" tabindex="-1">
+    aria-labelledby="#detalhesIndicadorProjetoModal-@Model.Id-Label" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -22,136 +17,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                @* <div class="accordion" id="accordionFlushIndicador">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="flush-headingOne">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                                Dados do Projeto
-                            </button>
-                        </h2>
-                        <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushIndicador">
-                            <div class="accordion-body">
-                                <div class="form-group">
-                                    <label asp-for="Id" class="control-label"></label>
-                                    <input type="text" class="form-control" value="@Model.Id" readonly />
-                                </div>
-                                <div class="form-group">
-                                    <label> Nome do Projeto </label>
-                                    <input type="text" class="form-control" value="@Model.NomeProjeto" readonly />
-                                </div>
-                                <div class="form-group">
-                                    <label> Area de Pesquisa </label>
-                                    <input type="text" class="form-control" value="@Model.AreaPesquisa.GetDisplayName()" readonly />
-                                </div>
-                                <div class="form-group">
-                                    <label> Casa </label>
-                                    <input type="text" class="form-control" value="@Model.Casa" readonly />
-                                </div>
-                                <div class="form-group">
-                                    <label> Data de Inicio</label>
-                                    <input type="text" class="form-control" value="@Model.DataInicio.ToString("dd/MM/yyyy")" readonly />
-                                </div>
-                                <div class="form-group">
-                                    <label> Data de Encerramento </label>
-                                    <input type="text" class="form-control" value="@Model.DataEncerramento.ToString("dd/MM/yyyy")" readonly />
-                                </div>
-                                <div class="form-group">
-                                    <label> Empresa </label>
-                                    <input type="text" class="form-control" value="@Model.Empresa.Nome" readonly />
-                                </div>
-                                <div class="form-group">
-                                    <label> Estado </label>
-                                    <input type="text" class="form-control" value="@Model.Estado.GetDisplayName()" readonly />
-                                </div>
-                                <div class="form-group">
-                                    <label> Fonte de Fomento </label>
-                                    <input type="text" class="form-control" value="@Model.FonteFomento.GetDisplayName()" readonly />
-                                </div>
-                                <div class="form-group">
-                                    <label> Inovação </label>
-                                    <input type="text" class="form-control" value="@Model.Inovacao.GetDisplayName()" readonly />
-                                </div>
-                                <div class="form-group">
-                                    <label> Status do Projeto </label>
-                                    <input type="text" class="form-control" value="@Model.Status.GetDisplayName()" readonly />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <br> *@
-
                 @if (Model.Indicadores != null && Model.Indicadores.Count > 0)
                 {
                     int i = 1;
                     foreach (var indicador in @Model.Indicadores)
                     {
-                        <div class="accordion" id="accordionIndicadoresProjeto-@indicador.Id">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="heading@(indicador.Id)">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse@(indicador.Id)" aria-expanded="true" aria-controls="collapse@(indicador.Id)">
-                                        Indicador @i
-                                    </button>
-                                </h2>
-                                <div id="collapse@(indicador.Id)" class="accordion-collapse collapse" data-bs-parent="#accordionIndicadoresProjeto-@indicador.Id">
-                                    <div class="accordion-body">
-                                        <div class="form-group">
-                                            <label class="control-label"> ID da Indicador</label>
-                                            <input readonly asp-for="@indicador.Id" class="form-control" />
-                                            <span asp-validation-for="@indicador.Id" class="text-danger"></span>
-                                        </div>
-                                        <div class="form-check">
-                                            <input readonly asp-for="@indicador.Bolsista" class="form-check-input" type="checkbox" id="checkBolsista" />
-                                            <label asp-for="@indicador.Bolsista" class="form-check-label"></label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input readonly asp-for="@indicador.ComprasMaterial" class="form-check-input" type="checkbox" id="checkComprasMaterial" />
-                                            <label asp-for="@indicador.ComprasMaterial" class="form-check-label" for="checkComprasMaterial"></label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input readonly asp-for="@indicador.ComprasServico" class="form-check-input" type="checkbox" id="checkComprasServico" />
-                                            <label asp-for="@indicador.ComprasServico" class="form-check-label"></label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input readonly asp-for="@indicador.PrestacaoContas" class="form-check-input" type="checkbox" id="checkPrestacaoContas" />
-                                            <label asp-for="@indicador.PrestacaoContas" class="form-check-label"></label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input readonly asp-for="@indicador.Regramento" class="form-check-input" type="checkbox" id="checkRegramento" />
-                                            <label asp-for="@indicador.Regramento" class="form-check-label"></label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input readonly asp-for="@indicador.Relatorios" class="form-check-input" type="checkbox" id="checkRelatorios" />
-                                            <label asp-for="@indicador.Relatorios" class="form-check-label" for="checkRelatorios"></label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input readonly asp-for="@indicador.Repasse" class="form-check-input" type="checkbox" id="checkRepasse" />
-                                            <label asp-for="@indicador.Repasse" class="form-check-label" for="checkRepasse"></label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input readonly asp-for="@indicador.SatisfacaoMetadeProjeto" class="form-check-input" type="checkbox" id="checkSatisfacaoMetadeProjeto" />
-                                            <label asp-for="@indicador.SatisfacaoMetadeProjeto" class="form-check-label" for="checkSatisfacaoMetadeProjeto"></label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input readonly asp-for="@indicador.SatisfacaoFimProjeto" class="form-check-input" type="checkbox" id="checkSatisfacaoFimProjeto" />
-                                            <label asp-for="@indicador.SatisfacaoFimProjeto" class="form-check-label" for="checkSatisfacaoFimProjeto"></label>
-                                        </div>
-                                        <hr>
-                                        <h4>Deseja deletar essa Indicador?</h4>
-                                        <div class="d-flex justify-content-start">
-                                            <form asp-action="DeletarIndicador" asp-controller="Projetos" asp-route-id="@indicador.Id" method="POST">
-                                                <input readonly type="hidden" asp-for="@indicador.Id" class="form-control" />
-                                                <button type="submit" class="btn btn-danger text-white" data-bs-toggle="modal" role="button">
-                                                    Deletar
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <hr />
-                        i++;
+                        RenderIndicadoresAccordion(indicador, i);
                     }
                 }
                 else
@@ -168,4 +39,99 @@
     </div>
 </div>
 
+@{
+    void AtribuirDadosViewData()
+    {
+        var nivelUsuario = ViewData["NivelUsuario"];
+        ViewData["Title"] = "Edit";
+        if (!(Context.Session.GetString("_Casa") is null))
+        {
+            ViewData["Area"] = Context.Session.GetString("_Casa");
+        }
+    }
 
+    async Task RenderIndicadoresAccordion(ProjetoIndicadores indicador, int i)
+    {
+        <div class="accordion" id="accordionIndicadoresProjeto-@indicador.Id">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading@(indicador.Id)">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapse@(indicador.Id)" aria-expanded="true" aria-controls="collapse@(indicador.Id)">
+                        Indicador @i
+                    </button>
+                </h2>
+                <div id="collapse@(indicador.Id)" class="accordion-collapse collapse"
+                    data-bs-parent="#accordionIndicadoresProjeto-@indicador.Id">
+                    <div class="accordion-body">
+                        <div class="form-group">
+                            <label class="control-label"> ID da Indicador</label>
+                            <input readonly asp-for="@indicador.Id" class="form-control" />
+                            <span asp-validation-for="@indicador.Id" class="text-danger"></span>
+                        </div>
+                        <div class="form-check">
+                            <input readonly asp-for="@indicador.Bolsista" class="form-check-input" type="checkbox"
+                                id="checkBolsista" />
+                            <label asp-for="@indicador.Bolsista" class="form-check-label"></label>
+                        </div>
+                        <div class="form-check">
+                            <input readonly asp-for="@indicador.ComprasMaterial" class="form-check-input" type="checkbox"
+                                id="checkComprasMaterial" />
+                            <label asp-for="@indicador.ComprasMaterial" class="form-check-label"
+                                for="checkComprasMaterial"></label>
+                        </div>
+                        <div class="form-check">
+                            <input readonly asp-for="@indicador.ComprasServico" class="form-check-input" type="checkbox"
+                                id="checkComprasServico" />
+                            <label asp-for="@indicador.ComprasServico" class="form-check-label"></label>
+                        </div>
+                        <div class="form-check">
+                            <input readonly asp-for="@indicador.PrestacaoContas" class="form-check-input" type="checkbox"
+                                id="checkPrestacaoContas" />
+                            <label asp-for="@indicador.PrestacaoContas" class="form-check-label"></label>
+                        </div>
+                        <div class="form-check">
+                            <input readonly asp-for="@indicador.Regramento" class="form-check-input" type="checkbox"
+                                id="checkRegramento" />
+                            <label asp-for="@indicador.Regramento" class="form-check-label"></label>
+                        </div>
+                        <div class="form-check">
+                            <input readonly asp-for="@indicador.Relatorios" class="form-check-input" type="checkbox"
+                                id="checkRelatorios" />
+                            <label asp-for="@indicador.Relatorios" class="form-check-label" for="checkRelatorios"></label>
+                        </div>
+                        <div class="form-check">
+                            <input readonly asp-for="@indicador.Repasse" class="form-check-input" type="checkbox"
+                                id="checkRepasse" />
+                            <label asp-for="@indicador.Repasse" class="form-check-label" for="checkRepasse"></label>
+                        </div>
+                        <div class="form-check">
+                            <input readonly asp-for="@indicador.SatisfacaoMetadeProjeto" class="form-check-input"
+                                type="checkbox" id="checkSatisfacaoMetadeProjeto" />
+                            <label asp-for="@indicador.SatisfacaoMetadeProjeto" class="form-check-label"
+                                for="checkSatisfacaoMetadeProjeto"></label>
+                        </div>
+                        <div class="form-check">
+                            <input readonly asp-for="@indicador.SatisfacaoFimProjeto" class="form-check-input" type="checkbox"
+                                id="checkSatisfacaoFimProjeto" />
+                            <label asp-for="@indicador.SatisfacaoFimProjeto" class="form-check-label"
+                                for="checkSatisfacaoFimProjeto"></label>
+                        </div>
+                        <hr>
+                        <h4>Deseja deletar essa Indicador?</h4>
+                        <div class="d-flex justify-content-start">
+                            <form asp-action="DeletarIndicador" asp-controller="Projetos" asp-route-id="@indicador.Id"
+                                method="POST">
+                                <input readonly type="hidden" asp-for="@indicador.Id" class="form-control" />
+                                <button type="submit" class="btn btn-danger text-white" data-bs-toggle="modal" role="button">
+                                    Deletar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        i++;
+    }
+}

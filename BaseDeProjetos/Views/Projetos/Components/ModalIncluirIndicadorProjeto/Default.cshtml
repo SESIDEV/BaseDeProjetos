@@ -23,7 +23,7 @@
                 </h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form class="form-submit" asp-controller="Projetos" asp-action="Atualizar" asp-route-id="@projeto.Id" method="POST">
+            <form class="form-submit" asp-controller="Projetos" asp-action="AdicionarIndicador" asp-route-id="@projeto.Id" method="POST">
                 <div class="modal-body">
                    @{
                         var unique_id_indicadores = $"proj_ind_{Guid.NewGuid()}";
