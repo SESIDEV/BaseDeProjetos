@@ -1,4 +1,4 @@
-using BaseDeProjetos.Data;
+﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -27,6 +27,35 @@ namespace BaseDeProjetos.Controllers
             _context = context;
         }
 
+        [HttpGet("/Projetos/RetornarDadosGraficoCFF/{idProjeto}")]
+        public async Task<IActionResult> RetornarDadosGraficoCFF(string idProjeto)
+        {
+            List<object[]> dataPercentualFisico = new List<object[]>();
+            List<object[]> dataPercentualFinanceiro = new List<object[]>();
+
+            Dictionary<string, object> dadosGrafico = new Dictionary<string, object>();
+
+            var projeto = await _context.Projeto.FirstOrDefaultAsync(p => p.Id == idProjeto);
+
+            var curvaFisicoFinanceiraSort = projeto.CurvaFisicoFinanceira.OrderBy(p => p.Data);
+
+            foreach (var cff in curvaFisicoFinanceiraSort)
+            {
+                long timestamp = Helpers.Helpers.DateTimeToUnixTimestamp(cff.Data); // Multiply by 1000 to convert to JavaScript timestamp
+                object[] percentualFisico = new object[] { timestamp, cff.PercentualFisico };
+                object[] percentualFinanceiro = new object[] { timestamp, cff.PercentualFinanceiro };
+
+                dataPercentualFisico.Add(percentualFisico);
+                dataPercentualFinanceiro.Add(percentualFinanceiro);
+            }
+
+            dadosGrafico["dadosPercentualFisico"] = dataPercentualFisico;
+            dadosGrafico["dadosPercentualFinanceiro"] = dataPercentualFinanceiro;
+
+            var serializedResult = JsonConvert.SerializeObject(dadosGrafico);
+
+            return Ok(serializedResult);
+        }
 
         /// <summary>
         /// Adicionar um indicador e atrela ao projeto
@@ -605,9 +634,9 @@ namespace BaseDeProjetos.Controllers
 
             projetoExistente.EquipeProjeto = equipe;
 
-            /* 
+            /*
              * Salvamos as alterações de equipe no banco pois enviamos apenas o ID do Projeto e do Usuário
-             * Se não efetuarmos o salvamento, o método seguinte AtribuirCustoHH apenas enxergará os IDs 
+             * Se não efetuarmos o salvamento, o método seguinte AtribuirCustoHH apenas enxergará os IDs
              * e não os objetos para Projeto e Usuário pois o relacionamento estará ""fraco""
              * Sem sombra de dúvidas que existe uma forma "mais correta" de implementar essa funcionalidade.
              * Mas acho desnecessário ir no banco em código para puxar o Projeto e o Usuário novamente pelos IDs
