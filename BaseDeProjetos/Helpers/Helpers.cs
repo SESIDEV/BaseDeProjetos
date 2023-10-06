@@ -36,6 +36,12 @@ namespace BaseDeProjetos.Helpers
             return valor.ToString("#,0");
         }
 
+        public static long DateTimeToUnixTimestamp(DateTime dateTime)
+        {
+            DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            return (long)(dateTime.ToUniversalTime() - epoch).TotalMilliseconds;
+        }
+
         public static int VerificarIntervalo(decimal valor, decimal valorMinimo, decimal valorMaximo)
         {
             decimal primeiroTerco, segundoTerco;
