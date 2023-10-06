@@ -33,9 +33,9 @@ namespace BaseDeProjetos.Controllers
 		/// </summary>
 		/// <param name="indicadores"></param>
 		/// <returns></returns>
-		[HttpPost("/Projetos/Atualizar/{idProjeto}")]
+		[HttpPost("/Projetos/AdicionarIndicador/{idProjeto}")]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Atualizar(string idProjeto, [Bind("Regramento, Repasse, ComprasServico, ComprasMaterial, Bolsista, SatisfacaoMetadeProjeto, SatisfacaoFimProjeto, Relatorios, PrestacaoContas")] ProjetoIndicadores indicadores)
+		public async Task<IActionResult> AdicionarIndicador(string idProjeto, [Bind("Regramento, Repasse, ComprasServico, ComprasMaterial, Bolsista, SatisfacaoMetadeProjeto, SatisfacaoFimProjeto, Relatorios, PrestacaoContas")] ProjetoIndicadores indicadores)
 		{
 			if (ModelState.IsValid)
 			{
@@ -69,6 +69,56 @@ namespace BaseDeProjetos.Controllers
 			}
 
 			return RedirectToAction(nameof(Index));
+		}
+
+		/// <summary>
+		/// Adicionar uma CFF e atrela ao projeto
+		/// </summary>
+		/// <param name="cff">Objeto CFF</param>
+		/// <returns></returns>
+		[HttpPost("/Projetos/AdicionarCFF/{idProjeto}")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> AdicionarCFF(string idProjeto, [Bind("")] CurvaFisicoFinanceira cff)
+		{
+			if (ModelState.IsValid)
+			{
+				Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == idProjeto);
+
+				// Atrelar o projeto ao indicador
+				if (projeto.CurvaFisicoFinanceira != null)
+                {
+                    if (projeto.CurvaFisicoFinanceira.Count == 0)
+                    {
+                        projeto.CurvaFisicoFinanceira = new List<CurvaFisicoFinanceira> { cff };
+                    }
+                    else
+                    {
+                        projeto.CurvaFisicoFinanceira.Add(cff);
+                    }
+                }
+
+				// Criar o indicador no DB
+				await CriarCFF(cff);
+
+				await _context.SaveChangesAsync();
+			}
+			else
+			{
+				return View("Error");
+			}
+
+			return RedirectToAction(nameof(Index));
+		}
+
+		/// <summary>
+		/// Cria a curva físico financeira no banco
+		/// </summary>
+		/// <param name="cff">Objeto CurvaFisicoFinanceira</param>
+		/// <returns></returns>
+		private async Task CriarCFF(CurvaFisicoFinanceira cff)
+		{
+			await _context.AddAsync(cff);
+			await _context.SaveChangesAsync();
 		}
 
 		/// <summary>
