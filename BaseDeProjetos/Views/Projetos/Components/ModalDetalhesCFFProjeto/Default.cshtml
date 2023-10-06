@@ -72,6 +72,10 @@
 							<label class="control-label" asp-for="@cff.PercentualFinanceiro">Percentual Financeiro</label>
 							<input readonly asp-for="@cff.PercentualFinanceiro" class="form-control" />
 						</div>
+						<div class="form-group">
+							<label class="control-label">Taxa Físico Financeiro</label>
+							<input readonly class="form-control" value="@(cff.PercentualFisico / cff.PercentualFinanceiro * 100)%" />
+						</div>
 						<div class="form-group">  
 							<label class="control-label" asp-for="@cff.Data">Data</label>
 							<input type="text" readonly asp-for="@cff.Data" value='@(cff.Data.ToString("dd/MM/yyyy"))' class="form-control" />
