@@ -118,10 +118,12 @@
                 if (DateTime.Now > projeto.DataEncerramento)
                 {
                     <span class="badge bg-danger" onmouseover="setupTippy('statusCargo-@(projeto.Id)')" data-tippy-content="Atrasado" id="statusCargo-@projeto.Id">@projeto.Status.GetDisplayName()</span>
+                    <i class="text-danger bi bi-hourglass-bottom"></i>
                 }
                 else
                 {
                     <span class="badge bg-success" onmouseover="setupTippy('statusCargo-@(projeto.Id)')" data-tippy-content="Dentro do Prazo" id="statusCargo-@projeto.Id">@projeto.Status.GetDisplayName()</span>
+                    <i class="text-success bi bi-hourglass-split"></i>
                 }
             } 
             else
