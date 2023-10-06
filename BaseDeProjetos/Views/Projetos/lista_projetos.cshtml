@@ -117,13 +117,17 @@
             {
                 if (DateTime.Now > projeto.DataEncerramento)
                 {
-                    <span class="badge bg-danger" onmouseover="setupTippy('statusCargo-@(projeto.Id)')" data-tippy-content="Atrasado" id="statusCargo-@projeto.Id">@projeto.Status.GetDisplayName()</span>
-                    <i class="text-danger bi bi-hourglass-bottom"></i>
+                    <div class="d-flex flex-row gap-2 align-items-center justify-content-center">
+						<i class="text-danger fs-3 bi bi-hourglass-bottom"></i>
+						<span class="badge bg-danger" onmouseover="setupTippy('statusCargo-@(projeto.Id)')" data-tippy-content="Atrasado" id="statusCargo-@projeto.Id">@projeto.Status.GetDisplayName()</span>
+					</div>
                 }
                 else
                 {
-                    <span class="badge bg-success" onmouseover="setupTippy('statusCargo-@(projeto.Id)')" data-tippy-content="Dentro do Prazo" id="statusCargo-@projeto.Id">@projeto.Status.GetDisplayName()</span>
-                    <i class="text-success bi bi-hourglass-split"></i>
+					<div class="d-flex flex-row gap-2 align-items-center justify-content-center">
+						<i class="text-success fs-3 bi bi-hourglass-split"></i>
+						<span class="badge bg-success" onmouseover="setupTippy('statusCargo-@(projeto.Id)')" data-tippy-content="Dentro do Prazo" id="statusCargo-@projeto.Id">@projeto.Status.GetDisplayName()</span>
+					</div>
                 }
             } 
             else
