@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -36,6 +36,50 @@ namespace BaseDeProjetos.Controllers
         {
             _context = context;
             _logger = logger;
+        }
+
+        /// <summary>
+        /// Efetua o cálculo das despesas do ISI com base no período selecionado
+        /// </summary>
+        /// <param name="mesInicial"></param>
+        /// <param name="anoInicial"></param>
+        /// <param name="mesFinal"></param>
+        /// <param name="anoFinal"></param>
+        /// <returns></returns>
+        internal static decimal CalculoDespesa(int mesInicial, int anoInicial, int mesFinal, int anoFinal)
+        {
+            decimal valorCustoFinal = 0;
+
+            if (anoInicial == anoFinal)
+            {
+                int quantidadeDeMesesAno = mesFinal - mesInicial + 1;
+                valorCustoFinal = despesas[anoInicial] / 12 * quantidadeDeMesesAno;
+                return valorCustoFinal;
+            }
+            else
+            {
+                int quantidadeDeMesesAnoInicial = 12 - mesInicial + 1;
+                valorCustoFinal += despesas[anoInicial] / 12 * quantidadeDeMesesAnoInicial;
+
+                int quantidadeDeMesesAnoFinal = mesFinal;
+                valorCustoFinal += despesas[anoFinal] / 12 * quantidadeDeMesesAnoFinal;
+
+                int subtracaoAno = anoFinal - anoInicial - 1;
+
+                if (subtracaoAno <= 0)
+                {
+                    return valorCustoFinal;
+                }
+                else
+                {
+                    for (int i = 1; i <= subtracaoAno; i++)
+                    {
+                        valorCustoFinal += despesas[anoInicial + i];
+                    }
+                }
+
+                return valorCustoFinal;
+            }
         }
 
         /// <summary>
