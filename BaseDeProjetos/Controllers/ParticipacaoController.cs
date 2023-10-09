@@ -336,6 +336,8 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private async Task<ParticipacaoTotalViewModel> GetParticipacaoTotalUsuario(Usuario usuario, string mesInicio = null, string anoInicio = null, string mesFim = null, string anoFim = null)
         {
+            decimal despesaIsiMeses = 0;
+
             ParticipacaoTotalViewModel participacao = new ParticipacaoTotalViewModel() { Participacoes = new List<ParticipacaoViewModel>() };
 
             // Líder e Membro
@@ -451,15 +453,65 @@ namespace BaseDeProjetos.Controllers
                     participacao.TaxaConversaoProjeto = taxaConversaoProjeto = 0;
                 }
 
-                // TODO: Preciso de valores de despesa do ISI
                 decimal somaProjetosProspeccoesUsuario = prospeccoesUsuarioConvertidas.Sum(p => p.ValorProposta) + (decimal)projetosUsuarioEmExecucao.Sum(p => p.ValorTotalProjeto);
-                decimal despesaIsiMeses = 1; // TODO: Calcular
-                int quantidadePesquisadores = 1; // TODO: Calcular
 
-                participacao.FatorDeContribuicaoFinanceira = somaProjetosProspeccoesUsuario / despesaIsiMeses / quantidadePesquisadores;
+                if (mesInicio == null || anoInicio == null)
+                {
+                    mesInicio = "01";
+                    anoInicio = "2019";
+                }
+
+                HandleMesFimAnoFimInvalido(ref mesFim, ref anoFim);
+
+                despesaIsiMeses = CalculoDespesa(int.Parse(mesInicio), int.Parse(anoInicio), int.Parse(mesFim), int.Parse(anoFim));
+
+                double quantidadePesquisadores = CalculoNumeroPesquisadores(int.Parse(anoInicio), int.Parse(anoFim));
+
+                participacao.FatorDeContribuicaoFinanceira = somaProjetosProspeccoesUsuario / despesaIsiMeses / (decimal)quantidadePesquisadores;
             }
 
             return participacao;
+        }
+
+        /// <summary>
+        /// Retorna o número médio de pesquisadores presentes em um determinado período
+        /// </summary>
+        /// <param name="anoInicial"></param>
+        /// <param name="anoFinal"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        internal static double CalculoNumeroPesquisadores(int anoInicial, int anoFinal)
+        {
+            double qtdPesquisadores = 0;
+            if (anoInicial > anoFinal)
+            {
+                throw new ArgumentException($"{nameof(anoInicial)} não pode ser maior que {nameof(anoFinal)}");
+            }
+
+            if (anoInicial == anoFinal)
+            {
+                return pesquisadores[anoFinal];
+            }
+            else
+            {
+                int index = 0;
+
+                for (int i = anoInicial; i <= anoFinal; i++)
+                {
+                    qtdPesquisadores += pesquisadores[i];
+                    index++;
+                }
+
+                qtdPesquisadores /= index;
+                return qtdPesquisadores;
+            }
+        }
+
+        private static void HandleMesFimAnoFimInvalido(ref string mesFim, ref string anoFim)
+        {
+            // Ano/Mes nulo?
+            mesFim ??= DateTime.Now.Month.ToString();
+            anoFim ??= DateTime.Now.Year.ToString();
         }
 
         /// <summary>
