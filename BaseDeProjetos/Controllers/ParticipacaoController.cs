@@ -220,7 +220,7 @@ namespace BaseDeProjetos.Controllers
                 if (participacoes.Count > 0)
                 {
                     RankearParticipacoes(participacoes, true);
-                    AcertarValorRankParticipacoes(participacoes);
+                    CalcularValorSobreMediaDoFCF(participacoes);
                     rankingsMedios = ObterRankingsMedios(participacoes);
                 }
 
@@ -761,7 +761,7 @@ namespace BaseDeProjetos.Controllers
             if (participacoes.Count > 0)
             {
                 RankearParticipacoes(participacoes, false);
-                AcertarValorRankParticipacoes(participacoes);
+                // CalcularValorSobreMediaDoFCF(participacoes);
                 //ObterRankingsMedios(participacoes);
                 DefinirValoresMinMax(participacoes);
 
@@ -826,7 +826,7 @@ namespace BaseDeProjetos.Controllers
             return rankings;
         }
 
-        private void AcertarValorRankParticipacoes(List<ParticipacaoTotalViewModel> participacoes)
+        private void CalcularValorSobreMediaDoFCF(List<ParticipacaoTotalViewModel> participacoes)
         {
             decimal mediaFatorContribuicaoFinanceira = participacoes.Average(p => p.FatorDeContribuicaoFinanceira);
 
