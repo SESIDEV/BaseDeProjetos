@@ -23,11 +23,12 @@
                     foreach (var indicador in @Model.Indicadores)
                     {
                         RenderIndicadoresAccordion(indicador, i);
+                        i++;
                     }
                 }
                 else
                 {
-                    <h4>Não há checklists para este projeto. Cadastre ao menos um!</h4>
+                    <h5>Não há checklists para este projeto. Cadastre ao menos um!</h5>
                 }
             </div>
             <div class="modal-footer">
@@ -132,6 +133,5 @@
             </div>
         </div>
         <hr />
-        i++;
     }
 }
