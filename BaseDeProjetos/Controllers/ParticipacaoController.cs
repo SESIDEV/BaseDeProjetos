@@ -51,10 +51,20 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         internal static decimal CalculoDespesa(int mesInicial, int anoInicial, int mesFinal, int anoFinal)
         {
+            if (anoInicial > anoFinal)
+            {
+                throw new ArgumentException($"{nameof(anoInicial)} não pode ser maior que {nameof(anoFinal)}");
+            }
+
             decimal valorCustoFinal = 0;
 
             if (anoInicial == anoFinal)
             {
+                if (mesInicial > mesFinal)
+                {
+                    throw new ArgumentException($"{nameof(mesInicial)} não pode ser maior que {nameof(mesFinal)}");
+                }
+
                 int quantidadeDeMesesAno = mesFinal - mesInicial + 1;
                 valorCustoFinal = despesas[anoInicial] / 12 * quantidadeDeMesesAno;
                 return valorCustoFinal;
