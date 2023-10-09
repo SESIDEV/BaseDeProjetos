@@ -18,18 +18,18 @@ namespace BaseDeProjetos.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
 
-        private Dictionary<string, float> despesas = new Dictionary<string, float>
+        private static Dictionary<int, decimal> despesas = new Dictionary<int, decimal>
         {
-            {"2021", 290000.0f},
-            {"2022", 400000.0f},
-            {"2023", 440000.0f}
+            { 2021, 290000M },
+            { 2022, 400000M },
+            { 2023, 440000M },
         };
 
-        private Dictionary<string, int> pesquisadores = new Dictionary<string, int>
+        private static Dictionary<int, int> pesquisadores = new Dictionary<int, int>
         {
-            {"2021", 20},
-            {"2022", 20},
-            {"2023", 23}
+            {2021, 20},
+            {2022, 20},
+            {2023, 23}
         };
 
         public ParticipacaoController(ILogger<HomeController> logger, ApplicationDbContext context)
