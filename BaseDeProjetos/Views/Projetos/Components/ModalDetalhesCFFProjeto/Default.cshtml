@@ -23,6 +23,7 @@
                     foreach (var cff in @Model.CurvaFisicoFinanceira)
                     {
                         await RenderCFFAccordion(cff, i);
+                        i++;
                     }
                 }
                 else
