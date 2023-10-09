@@ -337,6 +337,7 @@ namespace BaseDeProjetos.Controllers
         private async Task<ParticipacaoTotalViewModel> GetParticipacaoTotalUsuario(Usuario usuario, string mesInicio = null, string anoInicio = null, string mesFim = null, string anoFim = null)
         {
             decimal despesaIsiMeses = 0;
+            double quantidadePesquisadores = 0;
 
             ParticipacaoTotalViewModel participacao = new ParticipacaoTotalViewModel() { Participacoes = new List<ParticipacaoViewModel>() };
 
@@ -465,7 +466,7 @@ namespace BaseDeProjetos.Controllers
 
                 despesaIsiMeses = CalculoDespesa(int.Parse(mesInicio), int.Parse(anoInicio), int.Parse(mesFim), int.Parse(anoFim));
 
-                double quantidadePesquisadores = CalculoNumeroPesquisadores(int.Parse(anoInicio), int.Parse(anoFim));
+                quantidadePesquisadores = CalculoNumeroPesquisadores(int.Parse(anoInicio), int.Parse(anoFim));
 
                 participacao.FatorDeContribuicaoFinanceira = somaProjetosProspeccoesUsuario / despesaIsiMeses / (decimal)quantidadePesquisadores;
             }
