@@ -1,4 +1,4 @@
-﻿@model BaseDeProjetos.Models.Projeto
+@model BaseDeProjetos.Models.Projeto
 @using Microsoft.AspNetCore.Http
 @using System.Globalization
 
@@ -27,9 +27,11 @@
                 }
                 else
                 {
-                    <h4>Não há CFFs para este projeto. Cadastre ao menos uma!</h4>
+                    <h5>Não há CFFs para este projeto. Cadastre ao menos uma!</h5>
                 }
-                <partial name="GraficoCurvaFisicoFinanceira" model="@Model" />
+                @if (Model.CurvaFisicoFinanceira != null & Model.CurvaFisicoFinanceira.Count > 0) {
+                    <partial name="GraficoCurvaFisicoFinanceira" model="@Model" />
+                }
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn app-btn-primary" data-bs-toggle="modal" role="button">
