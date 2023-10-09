@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BaseDeProjetos.Controllers.Tests
+namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
 {
-    internal class ParticipacaoController_CalculoNumeroPesquisadoresTests
+    internal class CalculoNumeroPesquisadoresTests
     {
         private static Dictionary<int, int> pesquisadores = new Dictionary<int, int>
         {
@@ -16,20 +16,20 @@ namespace BaseDeProjetos.Controllers.Tests
         };
 
         [Test]
-        public void CalculoNumeroPesquisadores_ThrowsException_AnoInicialMaiorQueAnoFinal()
+        public void Test_ThrowsException_AnoInicialMaiorQueAnoFinal()
         {
             Assert.Throws<ArgumentException>(() => ParticipacaoController.CalculoNumeroPesquisadores(2020, 2019));
         }
 
         [Test]
-        public void CalculoNumeroPesquisadores_ReturnsPesquisadoresForAnoFinal_WhenAnoInicialEqualsAnoFinal()
+        public void Test_ReturnsPesquisadoresForAnoFinal_WhenAnoInicialEqualsAnoFinal()
         {
             var result = ParticipacaoController.CalculoNumeroPesquisadores(2021, 2021);
             Assert.AreEqual(pesquisadores[2021], result);
         }
 
         [Test]
-        public void CalculoNumeroPesquisadores_ReturnsSumOfPesquisadoresInRange_QuandoAnoInicialMenorQueAnoFinal()
+        public void Test_ReturnsSumOfPesquisadoresInRange_QuandoAnoInicialMenorQueAnoFinal()
         {
             var result = ParticipacaoController.CalculoNumeroPesquisadores(2021, 2022);
             Assert.AreEqual((pesquisadores[2021] + pesquisadores[2022]) / 2, result);

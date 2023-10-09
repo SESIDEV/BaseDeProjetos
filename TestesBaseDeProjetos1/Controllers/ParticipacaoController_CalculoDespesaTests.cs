@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace BaseDeProjetos.Controllers.Tests
+namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
 {
-    public class ParticipacaoController_CalculoDespesaTests
+    public class CalculoDespesaTests
     {
         // Assuming this dictionary represents the annual expenses for certain years
         private Dictionary<int, decimal> despesas = new Dictionary<int, decimal>
