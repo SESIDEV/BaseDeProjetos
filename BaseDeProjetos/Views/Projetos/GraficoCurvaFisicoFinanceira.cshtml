@@ -117,7 +117,11 @@
     var idProjeto = Model.Id;
 }
 
-<button type="button" id="button-@(idProjeto)" class="btn app-btn-primary" onclick="exibirDados('@(idProjeto)','@(Model.Id)')"><div id="internalDiv-@(idProjeto)">Exibir Gráfico</div></button>
+
+<button type="button" id="button-@(idProjeto)" class="btn app-btn-primary"
+    onclick="exibirDados('@(idProjeto)','@(Model.Id)')">
+    <div id="internalDiv-@(idProjeto)">Exibir Gráfico</div>
+</button>
 <figure class="highcharts-figure">
     <div id="cff-@(Model.Id)">
     </div>
