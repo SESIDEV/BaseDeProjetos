@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Html;
 using System;
@@ -34,6 +34,11 @@ namespace BaseDeProjetos.Helpers
             }
 
             return valor.ToString("#,0");
+        }
+
+        public static int DiferencaMeses(DateTime dataFim, DateTime dataInicio)
+        {
+            return Math.Abs((dataFim.Month - dataInicio.Month) + 12 * (dataFim.Year - dataInicio.Year));
         }
 
         public static long DateTimeToUnixTimestamp(DateTime dateTime)
