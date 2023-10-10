@@ -372,12 +372,12 @@
                                             </td>
                                             <td class="cell">
                                                 @{
-                                                    var rankPropositividade = participacaoTotal.RankPorIndicador["RankPropositividade"];
-                                                    var taxaPropositividade = participacaoTotal.Propositividade;
+                                                    var rankAssertividadePrecificacao = participacaoTotal.RankPorIndicador["RankAssertividadePrecificacao"];
+                                                    var taxaAssertividadePrecificacao = participacaoTotal.AssertividadePrecificacao;
                                                 }
-                                                <div data-text="(@rankPropositividade.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2">
-                                                    @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(taxaPropositividade, valoresMinimos["Propositividade"], valoresMaximos["Propositividade"])))
-                                                    @((taxaPropositividade).ToString("0.###", cultura))
+                                                <div data-text="(@rankAssertividadePrecificacao.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2">
+                                                    @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(taxaAssertividadePrecificacao, valoresMinimos["AssertividadePrecificacao"], valoresMaximos["AssertividadePrecificacao"])))
+                                                    @((taxaAssertividadePrecificacao).ToString("0.###", cultura))
                                                 </div>
                                             </td>
                                             <td class="cell">
