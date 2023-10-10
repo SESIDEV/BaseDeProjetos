@@ -459,7 +459,7 @@ namespace BaseDeProjetos.Controllers
                 if (mesInicio == null || anoInicio == null)
                 {
                     mesInicio = "01";
-                    anoInicio = "2019";
+                    anoInicio = "2021";
                 }
 
                 HandleMesFimAnoFimInvalido(ref mesFim, ref anoFim);
