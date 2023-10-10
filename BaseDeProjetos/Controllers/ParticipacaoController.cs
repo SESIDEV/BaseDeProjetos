@@ -228,6 +228,7 @@ namespace BaseDeProjetos.Controllers
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 var participacoes = await GetParticipacoesTotaisUsuarios();
+                Dictionary<string, object> dadosGrafico = new Dictionary<string, object>();
                 List<decimal> rankingsMedios = new List<decimal>();
 
                 if (participacoes.Count > 0)
@@ -238,14 +239,14 @@ namespace BaseDeProjetos.Controllers
                 }
 
                 var participacaoUsuario = participacoes.FirstOrDefault(p => p.Lider == usuario);
-                var participacaoSerialized = JsonConvert.SerializeObject(participacaoUsuario);
-                var rankingsSerialized = JsonConvert.SerializeObject(rankingsMedios);
 
-                var finalObject = $"{{\"Participacao\": {participacaoSerialized}, \"Rankings\": {rankingsSerialized}}}";
+                dadosGrafico["Participacao"] = participacaoUsuario;
+                dadosGrafico["Rankings"] = rankingsMedios;
+
 
                 if (usuario != null)
                 {
-                    return Ok(finalObject);
+                    return Ok(JsonConvert.SerializeObject(dadosGrafico));
                 }
                 else
                 {
