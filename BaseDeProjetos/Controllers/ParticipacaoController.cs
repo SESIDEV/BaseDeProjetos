@@ -509,6 +509,43 @@ namespace BaseDeProjetos.Controllers
         }
 
         /// <summary>
+        /// Retorna uma lista de projetos com o seu valor ajustado para o custo de acordo com o filtro
+        /// </summary>
+        /// <param name="mesInicio">Mês de inicio do filtro</param>
+        /// <param name="anoInicio">Ano de inicio do filtro</param>
+        /// <param name="mesFim">Mês de fim do filtro</param>
+        /// <param name="anoFim">Ano de fim do filtro</param>
+        /// <param name="projetos">Lista de projetos a serem ajustados</param>
+        /// <returns></returns>
+        private List<Projeto> AcertarPrecificacaoProjetos(string mesInicio, string anoInicio, string mesFim, string anoFim, List<Projeto> projetos)
+        {
+            var dataInicialFiltro = new DateTime(int.Parse(anoInicio), int.Parse(mesInicio), 1);
+            var dataFinalFiltro = Helpers.Helpers.ObterUltimoDiaMes(int.Parse(anoFim), int.Parse(mesFim));
+
+            foreach (var projeto in projetos)
+            {
+                if (dataInicialFiltro > projeto.DataEncerramento || dataFinalFiltro < projeto.DataInicio)
+                {
+                    projeto.ValorTotalProjeto = 0;
+                }
+                else
+                {
+                    if (dataFinalFiltro < projeto.DataEncerramento)
+                    {
+                        ReatribuirValorProjeto(projeto, dataFinalFiltro);
+                    }
+                    else
+                    {
+                        ReatribuirValorProjeto(dataInicialFiltro, projeto);
+                    }
+                }
+            }
+
+            return projetos;
+        }
+
+
+        /// <summary>
         /// Retorna o número médio de pesquisadores presentes em um determinado período
         /// </summary>
         /// <param name="anoInicial"></param>
