@@ -73,6 +73,17 @@ namespace BaseDeProjetos.Helpers
             }
         }
 
+        /// <summary>
+        /// Dado um ano e um mês, retorna um DateTime com o último dia do mês desse ano
+        /// </summary>
+        /// <param name="ano"></param>
+        /// <param name="mes"></param>
+        /// <returns></returns>
+        public static DateTime ObterUltimoDiaMes(int ano, int mes)
+        {
+            return new DateTime(ano, mes, DateTime.DaysInMonth(ano, mes));
+        }
+
         public static HtmlString ObterIconeParticipacao(int valorIndicador)
         {
             HtmlString htmlString = new HtmlString($"");
