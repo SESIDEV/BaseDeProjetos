@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -472,6 +472,40 @@ namespace BaseDeProjetos.Controllers
             }
 
             return participacao;
+        }
+
+        /// <summary>
+        /// Retorna uma lista de projetos com o seu valor ajustado para o custo de acordo com o filtro
+        /// (Apenas considera uma data limite)
+        /// </summary>
+        /// <param name="mesFim">Mes de fim do filtro</param>
+        /// <param name="anoFim">Ano de fim do filtro</param>
+        /// <param name="projetos">Projetos a serem ajustados</param>
+        /// <returns></returns>
+        private List<Projeto> AcertarPrecificacaoProjetos(string mesFim, string anoFim, List<Projeto> projetos)
+        {
+            int qtdMesesCalculavel = 0;
+            var dataFinalFiltro = Helpers.Helpers.ObterUltimoDiaMes(int.Parse(anoFim), int.Parse(mesFim));
+
+            foreach (var projeto in projetos)
+            {
+                if (dataFinalFiltro > projeto.DataInicio)
+                {
+                    if (dataFinalFiltro < projeto.DataEncerramento)
+                    {
+                        qtdMesesCalculavel = Helpers.Helpers.DiferencaMeses(dataFinalFiltro, projeto.DataInicio);
+                        double valorProjetoPorMes = projeto.ValorTotalProjeto / Helpers.Helpers.DiferencaMeses(projeto.DataEncerramento, projeto.DataInicio);
+                        projeto.ValorTotalProjeto = valorProjetoPorMes * qtdMesesCalculavel;
+                    }
+                }
+                else
+                {
+                    // Não considerar o custo caso o filtro esteja fora?
+                    projeto.ValorTotalProjeto = 0;
+                }
+            }
+
+            return projetos;
         }
 
         /// <summary>
