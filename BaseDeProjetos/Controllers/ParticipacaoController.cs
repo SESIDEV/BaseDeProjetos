@@ -258,6 +258,10 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        /// <summary>
+        /// Envia para o ViewData os valores mínimos e máximos de cada propriedade do tipo decimal das participações
+        /// </summary>
+        /// <param name="participacoes"></param>
         private void DefinirValoresMinMax(List<ParticipacaoTotalViewModel> participacoes)
         {
             PropertyInfo[] atributos = typeof(ParticipacaoTotalViewModel).GetProperties();
