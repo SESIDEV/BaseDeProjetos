@@ -936,6 +936,11 @@ namespace BaseDeProjetos.Controllers
             return View(participacoes);
         }
 
+        /// <summary>
+        /// Cálculo o rank médio de todos os atributos de participacação total
+        /// </summary>
+        /// <param name="participacoes"></param>
+        /// <returns></returns>
         private List<decimal> ObterRankingsMedios(List<ParticipacaoTotalViewModel> participacoes)
         {
             List<decimal> rankings = new List<decimal>();
@@ -986,6 +991,10 @@ namespace BaseDeProjetos.Controllers
             return rankings;
         }
 
+        /// <summary>
+        /// Ajusta o valor do FCF de acordo com a média de todas as participacões para cada participação
+        /// </summary>
+        /// <param name="participacoes"></param>
         private void CalcularValorSobreMediaDoFCF(List<ParticipacaoTotalViewModel> participacoes)
         {
             decimal mediaFatorContribuicaoFinanceira = participacoes.Average(p => p.FatorDeContribuicaoFinanceira);
