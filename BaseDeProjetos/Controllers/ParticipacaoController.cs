@@ -719,7 +719,7 @@ namespace BaseDeProjetos.Controllers
         /// <param name="anoFim"></param>
         /// <param name="projetosUsuario"></param>
         /// <returns></returns>
-        private IEnumerable<Projeto> FiltrarProjetosPorPeriodo(string mesFim, string anoFim, List<Projeto> projetos)
+        private List<Projeto> FiltrarProjetosPorPeriodo(string mesFim, string anoFim, List<Projeto> projetos)
         {
             int yearFim = int.Parse(anoFim);
             int monthFim = int.Parse(mesFim);
