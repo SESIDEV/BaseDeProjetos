@@ -544,6 +544,29 @@ namespace BaseDeProjetos.Controllers
             return projetos;
         }
 
+        /// <summary>
+        /// Reatribui os valores de um projeto de acordo com uma data final de filtro
+        /// </summary>
+        /// <param name="projeto"></param>
+        /// <param name="dataFinalFiltro"></param>
+        private static void ReatribuirValorProjeto(Projeto projeto, DateTime dataFinalFiltro)
+        {
+            int qtdMeses = Helpers.Helpers.DiferencaMeses(dataFinalFiltro, projeto.DataInicio);
+            double valorProjetoPorMes = projeto.ValorTotalProjeto / Helpers.Helpers.DiferencaMeses(projeto.DataEncerramento, projeto.DataInicio);
+            projeto.ValorTotalProjeto = valorProjetoPorMes * qtdMeses;
+        }
+
+        /// <summary>
+        /// Reatribui os valores de um projeto de acordo com uma data inicial de filtro
+        /// </summary>
+        /// <param name="dataInicialFiltro"></param>
+        /// <param name="projeto"></param>
+        private static void ReatribuirValorProjeto(DateTime dataInicialFiltro, Projeto projeto)
+        {
+            int qtdMeses = Helpers.Helpers.DiferencaMeses(projeto.DataEncerramento, dataInicialFiltro);
+            double valorProjetoPorMes = projeto.ValorTotalProjeto / Helpers.Helpers.DiferencaMeses(projeto.DataEncerramento, projeto.DataInicio);
+            projeto.ValorTotalProjeto = valorProjetoPorMes * qtdMeses;
+        }
 
         /// <summary>
         /// Retorna o número médio de pesquisadores presentes em um determinado período
