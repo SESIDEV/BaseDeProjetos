@@ -340,6 +340,7 @@ namespace BaseDeProjetos.Controllers
             double quantidadePesquisadores = 0;
 
             ParticipacaoTotalViewModel participacao = new ParticipacaoTotalViewModel() { Participacoes = new List<ParticipacaoViewModel>() };
+            List<Projeto> projetosUsuarioEmExecucaoFiltrados = new List<Projeto>();
 
             // Líder e Membro
             var prospeccoesUsuario = await GetProspeccoesUsuario(usuario);
@@ -360,7 +361,7 @@ namespace BaseDeProjetos.Controllers
 
             var prospeccoesUsuarioComProposta = prospeccoesUsuario.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.ComProposta)).ToList();
             var prospeccoesUsuarioConvertidas = prospeccoesUsuario.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida)).ToList();
-            var projetosUsuarioEmExecucao = projetosUsuario.Where(p => p.Status == StatusProjeto.EmExecucao);
+            var projetosUsuarioEmExecucao = projetosUsuario.Where(p => p.Status == StatusProjeto.EmExecucao).ToList();
 
             if (!string.IsNullOrEmpty(anoFim) && !string.IsNullOrEmpty(mesFim))
             {
@@ -370,6 +371,7 @@ namespace BaseDeProjetos.Controllers
                     prospeccoesUsuarioComProposta = FiltrarProspeccoesPorPeriodo(mesInicio, anoInicio, mesFim, anoFim, prospeccoesUsuarioComProposta);
                     prospeccoesUsuarioConvertidas = FiltrarProspeccoesPorPeriodo(mesInicio, anoInicio, mesFim, anoFim, prospeccoesUsuarioConvertidas);
                     projetosUsuarioEmExecucao = FiltrarProjetosPorPeriodo(mesInicio, anoInicio, mesFim, anoFim, projetosUsuario);
+                    projetosUsuarioEmExecucaoFiltrados = AcertarPrecificacaoProjetos(mesInicio, anoInicio, mesFim, anoFim, projetosUsuarioEmExecucao);
                 }
                 else
                 {
@@ -377,6 +379,7 @@ namespace BaseDeProjetos.Controllers
                     prospeccoesUsuarioComProposta = FiltrarProspeccoesPorPeriodo(mesFim, anoFim, prospeccoesUsuarioComProposta);
                     prospeccoesUsuarioConvertidas = FiltrarProspeccoesPorPeriodo(mesFim, anoFim, prospeccoesUsuarioConvertidas);
                     projetosUsuarioEmExecucao = FiltrarProjetosPorPeriodo(mesFim, anoFim, projetosUsuario);
+                    projetosUsuarioEmExecucaoFiltrados = AcertarPrecificacaoProjetos(mesFim, anoFim, projetosUsuarioEmExecucao);
                 }
             }
 
