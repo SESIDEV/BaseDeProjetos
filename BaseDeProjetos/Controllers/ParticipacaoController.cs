@@ -1019,17 +1019,17 @@ namespace BaseDeProjetos.Controllers
         /// <param name="participacoes"></param>
         private void CalcularValorSobreMediaDoFCF(List<ParticipacaoTotalViewModel> participacoes)
         {
-            decimal mediaFatorContribuicaoFinanceira = participacoes.Average(p => p.FatorDeContribuicaoFinanceira);
+            decimal mediaFatorContribuicaoFinanceira = participacoes.Average(p => p.FatorContribuicaoFinanceira);
 
             foreach (var participacao in participacoes)
             {
                 if (mediaFatorContribuicaoFinanceira != 0)
                 {
-                    participacao.FatorDeContribuicaoFinanceira = participacao.FatorDeContribuicaoFinanceira / mediaFatorContribuicaoFinanceira;
+                    participacao.FatorContribuicaoFinanceira = participacao.FatorContribuicaoFinanceira / mediaFatorContribuicaoFinanceira;
                 }
                 else
                 {
-                    participacao.FatorDeContribuicaoFinanceira = 0;
+                    participacao.FatorContribuicaoFinanceira = 0;
                 }
             }
         }
