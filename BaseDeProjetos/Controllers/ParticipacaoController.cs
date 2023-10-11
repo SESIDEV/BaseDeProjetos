@@ -968,8 +968,6 @@ namespace BaseDeProjetos.Controllers
             List<decimal> rankings = new List<decimal>();
 
             decimal rankMedio = participacoes.Average(p => p.MediaFatores);
-            decimal rankMedioFatorContribuicaoFinanceira = participacoes.Average(p => p.FatorContribuicaoFinanceira);
-
             decimal rankMedioValorTotalProspeccao = participacoes.Average(p => p.RankPorIndicador["RankValorTotalProspeccoes"]);
             decimal rankMedioValorTotalProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador["RankValorTotalProspeccoesComProposta"]);
             decimal rankMedioValorMedioProspeccoes = participacoes.Average(p => p.RankPorIndicador["RankValorMedioProspeccoes"]);
@@ -985,7 +983,6 @@ namespace BaseDeProjetos.Controllers
 
             rankings.AddRange(new List<decimal> {
                 rankMedio,
-                rankMedioFatorContribuicaoFinanceira,
                 rankMedioValorTotalProspeccao,
                 rankMedioValorTotalProspeccoesComProposta,
                 rankMedioValorMedioProspeccoes,
@@ -1000,7 +997,6 @@ namespace BaseDeProjetos.Controllers
             });
 
             ViewData[nameof(rankMedio)] = rankMedio;
-            ViewData[nameof(rankMedioFatorContribuicaoFinanceira)] = rankMedioFatorContribuicaoFinanceira;
             ViewData[nameof(rankMedioValorTotalProspeccao)] = rankMedioValorTotalProspeccao;
             ViewData[nameof(rankMedioValorTotalProspeccoesComProposta)] = rankMedioValorTotalProspeccoesComProposta;
             ViewData[nameof(rankMedioValorMedioProspeccoes)] = rankMedioValorMedioProspeccoes;
@@ -1012,6 +1008,7 @@ namespace BaseDeProjetos.Controllers
             ViewData[nameof(rankMedioQuantidadeProspeccoesProjeto)] = rankMedioQuantidadeProspeccoesProjeto;
             ViewData[nameof(rankMedioQuantidadeProspeccoesMembro)] = rankMedioQuantidadeProspeccoesMembro;
             ViewData[nameof(rankMedioAssertividadePrecificacao)] = rankMedioAssertividadePrecificacao;
+            ViewData[nameof(rankMedioFatorContribuicaoFinanceira)] = rankMedioFatorContribuicaoFinanceira;
 
             return rankings;
         }
