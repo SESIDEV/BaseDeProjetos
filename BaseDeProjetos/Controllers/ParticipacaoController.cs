@@ -35,10 +35,9 @@ namespace BaseDeProjetos.Controllers
             {2023, 23}
         };
 
-        public ParticipacaoController(ILogger<HomeController> logger, ApplicationDbContext context)
+        public ParticipacaoController(ApplicationDbContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
         /// <summary>
