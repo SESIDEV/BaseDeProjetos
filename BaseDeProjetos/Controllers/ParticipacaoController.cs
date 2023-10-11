@@ -965,7 +965,7 @@ namespace BaseDeProjetos.Controllers
             List<decimal> rankings = new List<decimal>();
 
             decimal rankMedio = participacoes.Average(p => p.MediaFatores);
-            decimal rankMedioIndice = participacoes.Average(p => p.FatorDeContribuicaoFinanceira);
+            decimal rankMedioFatorContribuicaoFinanceira = participacoes.Average(p => p.FatorContribuicaoFinanceira);
 
             decimal rankMedioValorTotalProspeccao = participacoes.Average(p => p.RankPorIndicador["RankValorTotalProspeccoes"]);
             decimal rankMedioValorTotalProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador["RankValorTotalProspeccoesComProposta"]);
@@ -978,23 +978,26 @@ namespace BaseDeProjetos.Controllers
             decimal rankMedioQuantidadeProspeccoesProjeto = participacoes.Average(p => p.RankPorIndicador["RankQuantidadeProspeccoesProjeto"]);
             decimal rankMedioQuantidadeProspeccoesMembro = participacoes.Average(p => p.RankPorIndicador["RankQuantidadeProspeccoesMembro"]);
             decimal rankMedioAssertividadePrecificacao = participacoes.Average(p => p.RankPorIndicador["RankAssertividadePrecificacao"]);
+            decimal rankMedioFatorContribuicaoFinanceira = participacoes.Average(p => p.RankPorIndicador["RankFatorContribuicaoFinanceira"]);
 
-            rankings.Add(rankMedio);
-            rankings.Add(rankMedioIndice);
-            rankings.Add(rankMedioValorTotalProspeccao);
-            rankings.Add(rankMedioValorTotalProspeccoesComProposta);
-            rankings.Add(rankMedioValorMedioProspeccoes);
-            rankings.Add(rankMedioValorMedioProspeccoesComProposta);
-            rankings.Add(rankMedioValorTotalProspeccoesConvertidas);
-            rankings.Add(rankMedioValorMedioProspeccoesConvertidas);
-            rankings.Add(rankMedioQuantidadeProspeccoes);
-            rankings.Add(rankMedioQuantidadeProspeccoesComProposta);
-            rankings.Add(rankMedioQuantidadeProspeccoesProjeto);
-            rankings.Add(rankMedioQuantidadeProspeccoesMembro);
-            rankings.Add(rankMedioAssertividadePrecificacao);
+            rankings.AddRange(new List<decimal> {
+                rankMedio,
+                rankMedioFatorContribuicaoFinanceira,
+                rankMedioValorTotalProspeccao,
+                rankMedioValorTotalProspeccoesComProposta,
+                rankMedioValorMedioProspeccoes,
+                rankMedioValorMedioProspeccoesComProposta,
+                rankMedioValorTotalProspeccoesConvertidas,
+                rankMedioQuantidadeProspeccoes,
+                rankMedioQuantidadeProspeccoesComProposta,
+                rankMedioQuantidadeProspeccoesProjeto,
+                rankMedioQuantidadeProspeccoesMembro,
+                rankMedioAssertividadePrecificacao,
+                rankMedioFatorContribuicaoFinanceira,
+            });
 
             ViewData[nameof(rankMedio)] = rankMedio;
-            ViewData[nameof(rankMedioIndice)] = rankMedioIndice;
+            ViewData[nameof(rankMedioFatorContribuicaoFinanceira)] = rankMedioFatorContribuicaoFinanceira;
             ViewData[nameof(rankMedioValorTotalProspeccao)] = rankMedioValorTotalProspeccao;
             ViewData[nameof(rankMedioValorTotalProspeccoesComProposta)] = rankMedioValorTotalProspeccoesComProposta;
             ViewData[nameof(rankMedioValorMedioProspeccoes)] = rankMedioValorMedioProspeccoes;
