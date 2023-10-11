@@ -1,4 +1,5 @@
-﻿using BaseDeProjetos.Models;
+﻿using BaseDeProjetos.Helpers;
+using BaseDeProjetos.Models;
 using System;
 
 namespace TestesBaseDeProjetos1.TestHelper
@@ -69,8 +70,8 @@ namespace TestesBaseDeProjetos1.TestHelper
                 Id = "proj_1",
                 AreaPesquisa = LinhaPesquisa.Quimica40,
                 Casa = Instituto.ISIQV,
-                DataInicio = new DateTime(2013, 09, 23),
-                DataEncerramento = new DateTime(2023, 09, 23),
+                DataInicio = new DateTime(2023, 01, 01),
+                DataEncerramento = new DateTime(2023, 12, 31),
                 SatisfacaoClienteParcial = 0.97f,
                 SatisfacaoClienteFinal = 0.74f,
                 NomeProjeto = "Meu Projeto Teste",
@@ -78,8 +79,8 @@ namespace TestesBaseDeProjetos1.TestHelper
                 Estado = Estado.RioDeJaneiro,
                 Inovacao = TipoInovacao.Processo,
                 Status = StatusProjeto.Contratado,
-                DuracaoProjetoEmMeses = 240,
-                ValorTotalProjeto = 123000,
+                DuracaoProjetoEmMeses = Helpers.DiferencaMeses(new DateTime(2023, 12, 31), new DateTime(2023, 01, 01), true),
+                ValorTotalProjeto = 120000,
                 Usuario = usuario,
                 UsuarioId = usuario.Id,
             };
