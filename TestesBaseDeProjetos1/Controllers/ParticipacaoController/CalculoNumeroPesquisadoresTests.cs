@@ -21,7 +21,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
         private ObjectCreator _objectCreator;
         private ParticipacaoController _controller;
 
-        private static Dictionary<int, int> pesquisadores = new Dictionary<int, int>
+        private readonly static Dictionary<int, int> pesquisadores = new Dictionary<int, int>
         {
             {2021, 20},
             {2022, 20},

@@ -21,14 +21,14 @@ namespace BaseDeProjetos.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
 
-        private static Dictionary<int, decimal> despesas = new Dictionary<int, decimal>
+        private readonly static Dictionary<int, decimal> despesas = new Dictionary<int, decimal>
         {
             { 2021, 290000M },
             { 2022, 400000M },
             { 2023, 440000M },
         };
 
-        private static Dictionary<int, int> pesquisadores = new Dictionary<int, int>
+        private readonly static Dictionary<int, int> pesquisadores = new Dictionary<int, int>
         {
             {2021, 20},
             {2022, 20},
@@ -1025,7 +1025,7 @@ namespace BaseDeProjetos.Controllers
             {
                 if (mediaFatorContribuicaoFinanceira != 0)
                 {
-                    participacao.FatorContribuicaoFinanceira = participacao.FatorContribuicaoFinanceira / mediaFatorContribuicaoFinanceira;
+                    participacao.FatorContribuicaoFinanceira /= mediaFatorContribuicaoFinanceira;
                 }
                 else
                 {

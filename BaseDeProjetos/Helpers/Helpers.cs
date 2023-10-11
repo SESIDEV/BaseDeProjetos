@@ -101,7 +101,7 @@ namespace BaseDeProjetos.Helpers
 
         public static HtmlString ObterIconeParticipacao(int valorIndicador)
         {
-            HtmlString htmlString = new HtmlString($"");
+            HtmlString htmlString;
 
             if (valorIndicador == -1)
             {
