@@ -7,10 +7,10 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
     public class CalculoDespesaTests
     {
         // Assuming this dictionary represents the annual expenses for certain years
-        private Dictionary<int, decimal> despesas = new Dictionary<int, decimal>
+        private readonly Dictionary<int, decimal> despesas = new Dictionary<int, decimal>
         {
             {2021, 290000},
-            {2022 , 400000},
+            {2022, 400000},
             {2023, 440000}
         };
 

@@ -495,7 +495,7 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         internal List<Projeto> AcertarPrecificacaoProjetos(string mesFim, string anoFim, List<Projeto> projetos)
         {
-            int qtdMesesCalculavel = 0;
+            int qtdMesesCalculavel;
             var dataFinalFiltro = Helpers.Helpers.ObterUltimoDiaMes(int.Parse(anoFim), int.Parse(mesFim));
 
             foreach (var projeto in projetos)
