@@ -1048,6 +1048,7 @@ namespace BaseDeProjetos.Controllers
             decimal RankQuantidadeProspeccoes = 0;
             decimal RankQuantidadeProspeccoesMembro = 0;
             decimal RankAssertividadePrecificacao = 0;
+            decimal RankFatorContribuicaoFinanceira = 0;
 
             decimal medValorTotalProsp = participacoes.Average(p => p.ValorTotalProspeccoes);
             decimal medValorMedioProsp = participacoes.Average(p => p.ValorMedioProspeccoes);
@@ -1061,6 +1062,7 @@ namespace BaseDeProjetos.Controllers
             decimal medQtdProspProjetizadas = (decimal)participacoes.Average(p => p.QuantidadeProspeccoesProjeto);
             decimal medConversaoProjeto = participacoes.Average(p => p.TaxaConversaoProjeto);
             decimal medConversaoProposta = participacoes.Average(p => p.TaxaConversaoProposta);
+            decimal medFatorContribuicaoFinanceira = participacoes.Average(p => p.FatorContribuicaoFinanceira);
 
             foreach (var participacao in participacoes)
             {
@@ -1116,6 +1118,10 @@ namespace BaseDeProjetos.Controllers
                 {
                     RankAssertividadePrecificacao = rankPorMaximo ? participacao.AssertividadePrecificacao / participacoes.Max(p => p.AssertividadePrecificacao) : participacao.AssertividadePrecificacao / participacoes.Average(p => p.AssertividadePrecificacao);
                 }
+                if (medFatorContribuicaoFinanceira != 0)
+                {
+                    RankFatorContribuicaoFinanceira = rankPorMaximo ? participacao.FatorContribuicaoFinanceira / participacoes.Max(p => p.FatorContribuicaoFinanceira) : participacao.FatorContribuicaoFinanceira / participacoes.Average(p => p.FatorContribuicaoFinanceira);
+                }
 
                 participacao.RankPorIndicador[nameof(RankValorTotalProspeccoes)] = RankValorTotalProspeccoes;
                 participacao.RankPorIndicador[nameof(RankValorTotalProspeccoesComProposta)] = RankValorTotalProspeccoesComProposta;
@@ -1128,6 +1134,7 @@ namespace BaseDeProjetos.Controllers
                 participacao.RankPorIndicador[nameof(RankQuantidadeProspeccoesProjeto)] = RankQuantidadeProspeccoesProjeto;
                 participacao.RankPorIndicador[nameof(RankQuantidadeProspeccoesMembro)] = RankQuantidadeProspeccoesMembro;
                 participacao.RankPorIndicador[nameof(RankAssertividadePrecificacao)] = RankAssertividadePrecificacao;
+                participacao.RankPorIndicador[nameof(RankFatorContribuicaoFinanceira)] = RankFatorContribuicaoFinanceira;
             }
         }
 
