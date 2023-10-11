@@ -72,17 +72,23 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
         [Test]
         public void Test_AcertarPrecificacaoProjetos_FiltroFinalAnteriorComecoAnteriorFim()
         {
+            TestContext.Out.WriteLine($"Results for: {nameof(Test_AcertarPrecificacaoProjetos_FiltroFinalAnteriorComecoAnteriorFim)}");
+
             var result = _controller.AcertarPrecificacaoProjetos("1", "2022", projetos);
 
             TestContext.Out.WriteLine($"Expected: {0}");
             TestContext.Out.WriteLine($"Actual: {result[0].ValorTotalProjeto}");
 
             Assert.AreEqual(0, result[0].ValorTotalProjeto);
+
+            TestContext.Out.WriteLine("Pass");
         }
 
         [Test]
         public void Test_AcertarPrecificacaoProjetos_FiltroFinalPosteriorComecoAnteriorFim()
         {
+            TestContext.Out.WriteLine($"Results for: {nameof(Test_AcertarPrecificacaoProjetos_FiltroFinalPosteriorComecoAnteriorFim)}");
+
             var result = _controller.AcertarPrecificacaoProjetos("6", "2023", projetos);
             DateTime dataFinalFiltro = Helpers.Helpers.ObterUltimoDiaMes(2023, 6);
 
@@ -101,8 +107,8 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
             TestContext.Out.WriteLine($"Actual: {(float)result[0].ValorTotalProjeto}");
 
             Assert.AreEqual((float)valorProjMes * qtdMesesFiltrados, (float)result[0].ValorTotalProjeto);
+
+            TestContext.Out.WriteLine("Pass");
         }
-
-
     }
 }
