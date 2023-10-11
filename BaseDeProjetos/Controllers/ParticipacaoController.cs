@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -476,7 +476,7 @@ namespace BaseDeProjetos.Controllers
 
                 quantidadePesquisadores = CalculoNumeroPesquisadores(int.Parse(anoInicio), int.Parse(anoFim));
 
-                participacao.FatorDeContribuicaoFinanceira = somaProjetosProspeccoesUsuario / despesaIsiMeses / (decimal)quantidadePesquisadores;
+                participacao.FatorContribuicaoFinanceira = somaProjetosProspeccoesUsuario / despesaIsiMeses / (decimal)quantidadePesquisadores;
             }
 
             return participacao;
