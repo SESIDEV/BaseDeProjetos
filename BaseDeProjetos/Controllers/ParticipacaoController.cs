@@ -1,4 +1,4 @@
-using BaseDeProjetos.Data;
+﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -185,6 +185,11 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        /// <summary>
+        /// Retorna os dados do gráfico temporal considerando o id do usuário passado por parâmetro
+        /// </summary>
+        /// <param name="idUsuario"></param>
+        /// <returns></returns>
         [HttpGet("Participacao/RetornarDadosGraficoTemporal/{idUsuario}")]
         public async Task<IActionResult> RetornarDadosGraficoTemporal(string idUsuario)
         {
@@ -241,7 +246,6 @@ namespace BaseDeProjetos.Controllers
 
                 dadosGrafico["Participacao"] = participacaoUsuario;
                 dadosGrafico["Rankings"] = rankingsMedios;
-
 
                 if (usuario != null)
                 {
