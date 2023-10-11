@@ -66,7 +66,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
         public void Test_ReatribuirValorProjeto_FiltroInicialPosteriorComeco_FiltroFinalPosteriorFim()
         {
             DateTime dataInicialFiltro = new DateTime(2023, 2, 1);
-            DateTime dataFinalFiltro = new DateTime(2024, 1, 1);
+            //DateTime dataFinalFiltro = new DateTime(2024, 1, 1);
 
             if (_objectCreator != null)
             {
@@ -91,8 +91,8 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
         [Test]
         public void Test_ReatribuirValorProjeto_FiltroInicialAnteriorComeco_FiltroFinalPosteriorFim()
         {
-            DateTime dataInicial = new DateTime(2022, 1, 1);
-            DateTime dataFinalFiltro = new DateTime(2024, 1, 1);
+            //DateTime dataInicial = new DateTime(2022, 1, 1);
+            //DateTime dataFinalFiltro = new DateTime(2024, 1, 1);
 
             Assert.Pass("Condição não válida para o método, sempre passa");
         }
@@ -103,7 +103,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
         [Test]
         public void Test_ReatribuirValorProjeto_FiltroInicialAnteriorComeco_FiltroFinalAnteriorFim()
         {
-            DateTime dataInicialFiltro = new DateTime(2022, 1, 1);
+            //DateTime dataInicialFiltro = new DateTime(2022, 1, 1);
             DateTime dataFinalFiltro = new DateTime(2023, 11, 30);
 
             if (_objectCreator != null)
@@ -125,7 +125,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
         [Test]
         public void Test_ReatribuirValorProjeto_FiltroInicialPosteriorComeco_FiltroFinalAnteriorFim()
         {
-            DateTime dataInicialFiltro = new DateTime(2021, 2, 1);
+            //DateTime dataInicialFiltro = new DateTime(2021, 2, 1);
             DateTime dataFinalFiltro = new DateTime(2023, 11, 30);
 
             if (_objectCreator != null)
