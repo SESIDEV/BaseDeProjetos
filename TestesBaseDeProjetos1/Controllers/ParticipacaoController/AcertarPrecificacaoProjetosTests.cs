@@ -110,5 +110,23 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
 
             TestContext.Out.WriteLine("Pass");
         }
+
+        [Test]
+        public void Test_AcertarPrecificacaoProjetos_FiltroFinalPosteriorComecoPosteriorFim()
+        {
+            TestContext.Out.WriteLine($"Results for: {nameof(Test_AcertarPrecificacaoProjetos_FiltroFinalPosteriorComecoPosteriorFim)}");
+         
+            var result = _controller.AcertarPrecificacaoProjetos("1", "2024", projetos);
+            DateTime dataFinalFiltro = Helpers.Helpers.ObterUltimoDiaMes(2024, 1);
+
+            _controller?.ReatribuirValorProjeto(_objectCreator.projeto, dataFinalFiltro);
+
+            TestContext.Out.WriteLine($"Expected: {_objectCreator.projeto.ValorTotalProjeto}");
+            TestContext.Out.WriteLine($"Actual: {result[0].ValorTotalProjeto}");
+
+            Assert.AreEqual(_objectCreator.projeto.ValorTotalProjeto, result[0].ValorTotalProjeto);
+
+            TestContext.Out.WriteLine("Pass");
+        }
     }
 }
