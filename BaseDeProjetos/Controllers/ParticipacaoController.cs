@@ -493,7 +493,7 @@ namespace BaseDeProjetos.Controllers
         /// <param name="anoFim">Ano de fim do filtro</param>
         /// <param name="projetos">Projetos a serem ajustados</param>
         /// <returns></returns>
-        private List<Projeto> AcertarPrecificacaoProjetos(string mesFim, string anoFim, List<Projeto> projetos)
+        internal List<Projeto> AcertarPrecificacaoProjetos(string mesFim, string anoFim, List<Projeto> projetos)
         {
             int qtdMesesCalculavel = 0;
             var dataFinalFiltro = Helpers.Helpers.ObterUltimoDiaMes(int.Parse(anoFim), int.Parse(mesFim));
@@ -528,7 +528,7 @@ namespace BaseDeProjetos.Controllers
         /// <param name="anoFim">Ano de fim do filtro</param>
         /// <param name="projetos">Lista de projetos a serem ajustados</param>
         /// <returns></returns>
-        private List<Projeto> AcertarPrecificacaoProjetos(string mesInicio, string anoInicio, string mesFim, string anoFim, List<Projeto> projetos)
+        internal List<Projeto> AcertarPrecificacaoProjetos(string mesInicio, string anoInicio, string mesFim, string anoFim, List<Projeto> projetos)
         {
             var dataInicialFiltro = new DateTime(int.Parse(anoInicio), int.Parse(mesInicio), 1);
             var dataFinalFiltro = Helpers.Helpers.ObterUltimoDiaMes(int.Parse(anoFim), int.Parse(mesFim));
