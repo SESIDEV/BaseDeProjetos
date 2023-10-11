@@ -84,6 +84,9 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
             TestContext.Out.WriteLine("Pass");
         }
 
+        /// <summary>
+        /// Testa um filtro com data final posterior ao começo do projeto e anterior ao fim do projeto
+        /// </summary>
         [Test]
         public void Test_AcertarPrecificacaoProjetos_FiltroFinalPosteriorComecoAnteriorFim()
         {
@@ -109,6 +112,9 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
             TestContext.Out.WriteLine("Pass");
         }
 
+        /// <summary>
+        /// Testa um filtro com data final posterior ao começo do projeto e posterior ao fim do projeto
+        /// </summary>
         [Test]
         public void Test_AcertarPrecificacaoProjetos_FiltroFinalPosteriorComecoPosteriorFim()
         {
@@ -124,6 +130,9 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
             TestContext.Out.WriteLine("Pass");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [Test]
         public void Test_AcertarPrecificacaoProjetos_FiltroInicialAnteriorComeco_FiltroFinalAnteriorFim()
         {
