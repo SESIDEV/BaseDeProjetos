@@ -564,12 +564,12 @@ namespace BaseDeProjetos.Controllers
         {
             if (dataFinalFiltro > projeto.DataEncerramento)
             {
-                throw new ArgumentException($"{nameof(dataFinalFiltro)} cannot be greater than {nameof(projeto.DataEncerramento)}");
+                throw new ArgumentException($"{nameof(dataFinalFiltro)} não pode ser superior a {nameof(projeto.DataEncerramento)}");
             }
 
             if (dataFinalFiltro < projeto.DataInicio)
             {
-                throw new ArgumentException($"{nameof(dataFinalFiltro)} cannot be smaller than {nameof(projeto.DataEncerramento)}");
+                throw new ArgumentException($"{nameof(dataFinalFiltro)} não pode ser inferior a {nameof(projeto.DataEncerramento)}");
             }
 
             int qtdMeses = Helpers.Helpers.DiferencaMeses(dataFinalFiltro, projeto.DataInicio, true);
