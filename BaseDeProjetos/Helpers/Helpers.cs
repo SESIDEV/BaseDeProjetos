@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Html;
 using System;
@@ -36,9 +36,24 @@ namespace BaseDeProjetos.Helpers
             return valor.ToString("#,0");
         }
 
-        public static int DiferencaMeses(DateTime dataFim, DateTime dataInicio)
+        /// <summary>
+        /// Calcula a diferença de meses (ex: Janeiro a Fevereiro), 1 mês de diferença
+        /// OBS: Se você precisa da quantidade de meses, some um ao resultado
+        /// </summary>
+        /// <param name="dataFim"></param>
+        /// <param name="dataInicio"></param>
+        /// <param name="isInclusivo">Se o retorno deve contar a quantidade de meses, e não apenas retornar a diferença. Padrão: false</param>
+        /// <returns></returns>
+        public static int DiferencaMeses(DateTime dataFim, DateTime dataInicio, bool isInclusivo = false)
         {
-            return Math.Abs((dataFim.Month - dataInicio.Month) + 12 * (dataFim.Year - dataInicio.Year));
+            if (isInclusivo)
+            {
+                return Math.Abs((dataFim.Month - dataInicio.Month) + 12 * (dataFim.Year - dataInicio.Year)) + 1;
+            }
+            else
+            {
+                return Math.Abs((dataFim.Month - dataInicio.Month) + 12 * (dataFim.Year - dataInicio.Year));
+            }
         }
 
         public static long DateTimeToUnixTimestamp(DateTime dateTime)
