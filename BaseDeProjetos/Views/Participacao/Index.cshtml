@@ -382,12 +382,12 @@
                                             </td>
                                             <td class="cell">
                                                 @{
-                                                    decimal fatorDeContribuicaoFinanceira = participacaoTotal.FatorDeContribuicaoFinanceira;
-                                                    decimal fcfMaximo = valoresMaximos["FatorDeContribuicaoFinanceira"];
-                                                    decimal fcfMinimo = valoresMinimos["FatorDeContribuicaoFinanceira"];
+                                                    decimal fatorContribuicaoFinanceira = participacaoTotal.FatorContribuicaoFinanceira;
+                                                    decimal fcfMaximo = valoresMaximos["FatorContribuicaoFinanceira"];
+                                                    decimal fcfMinimo = valoresMinimos["FatorContribuicaoFinanceira"];
                                                     <div class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(fatorDeContribuicaoFinanceira, fcfMinimo, fcfMaximo)))
-                                                        @(fatorDeContribuicaoFinanceira.ToString("N", cultura))
+                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(fatorContribuicaoFinanceira, fcfMinimo, fcfMaximo)))
+                                                        @(fatorContribuicaoFinanceira.ToString("N", cultura))
                                                     </div>
                                                 }
                                             </td>
