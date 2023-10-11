@@ -580,7 +580,7 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="dataInicialFiltro"></param>
         /// <param name="projeto"></param>
-        private static void ReatribuirValorProjeto(DateTime dataInicialFiltro, Projeto projeto)
+        internal void ReatribuirValorProjeto(DateTime dataInicialFiltro, Projeto projeto)
         {
             int qtdMeses = Helpers.Helpers.DiferencaMeses(projeto.DataEncerramento, dataInicialFiltro);
             double valorProjetoPorMes = projeto.ValorTotalProjeto / Helpers.Helpers.DiferencaMeses(projeto.DataEncerramento, projeto.DataInicio);
@@ -594,7 +594,7 @@ namespace BaseDeProjetos.Controllers
         /// <param name="anoFinal"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        internal static double CalculoNumeroPesquisadores(int anoInicial, int anoFinal)
+        internal double CalculoNumeroPesquisadores(int anoInicial, int anoFinal)
         {
             double qtdPesquisadores = 0;
             if (anoInicial > anoFinal)
