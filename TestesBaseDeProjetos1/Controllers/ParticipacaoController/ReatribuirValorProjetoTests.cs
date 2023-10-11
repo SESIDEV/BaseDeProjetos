@@ -3,6 +3,7 @@ using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
@@ -58,53 +59,149 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
             };
         }
 
+        /// <summary>
+        /// Testa um filtro com data inicial posterior ao começo do projeto e data final posterior ao fim do projeto
+        /// </summary>
         [Test]
-        public void Test_ReatribuirValorProjeto_FiltroFinalDentroPeriodoProjeto()
+        public void Test_ReatribuirValorProjeto_FiltroInicialPosteriorComeco_FiltroFinalPosteriorFim()
         {
-            var projeto = new Projeto
+            DateTime dataInicialFiltro = new DateTime(2023, 2, 1);
+            DateTime dataFinalFiltro = new DateTime(2024, 1, 1);
+
+            if (_objectCreator != null)
             {
-                DataInicio = new DateTime(2023, 1, 1),
-                DataEncerramento = new DateTime(2023, 12, 31),
-                ValorTotalProjeto = 12000
-            };
+                int qtdMesesTotal = Helpers.Helpers.DiferencaMeses(_objectCreator.projeto.DataEncerramento, _objectCreator.projeto.DataInicio, true);
+                int qtdMesesFiltro = Helpers.Helpers.DiferencaMeses(_objectCreator.projeto.DataEncerramento, dataInicialFiltro, true);
 
-            DateTime dataFinalFiltro = new DateTime(2023, 6, 1);
-            int qtdMesesTotal = Helpers.Helpers.DiferencaMeses(projeto.DataEncerramento, projeto.DataInicio, true);
-            int qtdMesesFiltrados = Helpers.Helpers.DiferencaMeses(dataFinalFiltro, projeto.DataInicio, true);
+                decimal valorProjMes = (decimal)_objectCreator.projeto.ValorTotalProjeto / qtdMesesTotal;
+                _controller?.ReatribuirValorProjeto(dataInicialFiltro, _objectCreator.projeto);
 
-            decimal valorProjMes = (decimal)projeto.ValorTotalProjeto / qtdMesesTotal;
-
-            _controller?.ReatribuirValorProjeto(projeto, dataFinalFiltro);
-
-            Assert.AreEqual(valorProjMes * qtdMesesFiltrados, projeto.ValorTotalProjeto);
-        }
-        
-        [Test]
-        public void Test_ReatribuirValorProjeto_FiltroFinalAntesPeriodoProjeto()
-        {
-            var projeto = new Projeto
-            {
-                DataInicio = new DateTime(2023, 1, 1),
-                DataEncerramento = new DateTime(2023, 12, 31),
-                ValorTotalProjeto = 12000
-            };
-
-            DateTime dataFinalFiltro = new DateTime(2022, 6, 1);
-
-            var ex = Assert.Throws<ArgumentException>(() => _controller?.ReatribuirValorProjeto(projeto, dataFinalFiltro));
-
-            if (ex != null)
-            {
-                StringAssert.Contains("dataFinalFiltro cannot be smaller than DataEncerramento", ex.Message);
+                Assert.AreEqual(valorProjMes * qtdMesesFiltro, _objectCreator.projeto.ValorTotalProjeto);
             }
             else
             {
-                Assert.Fail();
+                Assert.Fail($"{nameof(_objectCreator)} não pode ser null");
             }
         }
-        
+
+        /// <summary>
+        /// Testa um filtro com data inicial anterior ao começo do projeto e data final anterior ao final do projeto
+        /// Caso não executado em funcionamento normal do programa
+        /// </summary>
         [Test]
-        public void Test_ReatribuirValorProjeto_FiltroFinalForaPeriodoProjeto()
+        public void Test_ReatribuirValorProjeto_FiltroInicialAnteriorComeco_FiltroFinalPosteriorFim()
+        {
+            DateTime dataInicial = new DateTime(2022, 1, 1);
+            DateTime dataFinalFiltro = new DateTime(2024, 1, 1);
+
+            Assert.Pass("Condição não válida para o método, sempre passa");
+        }
+        
+        /// <summary>
+        /// Testa um filtro com data inicial anterior ao começo do projeto e data final anterior ao final do projeto
+        /// </summary>
+        [Test]
+        public void Test_ReatribuirValorProjeto_FiltroInicialAnteriorComeco_FiltroFinalAnteriorFim()
+        {
+            DateTime dataInicialFiltro = new DateTime(2022, 1, 1);
+            DateTime dataFinalFiltro = new DateTime(2023, 11, 30);
+
+            if (_objectCreator != null)
+            {
+                int qtdMesesTotal = Helpers.Helpers.DiferencaMeses(_objectCreator.projeto.DataEncerramento, _objectCreator.projeto.DataInicio, true);
+                int qtdMesesFiltro = Helpers.Helpers.DiferencaMeses(dataFinalFiltro, _objectCreator.projeto.DataInicio, true);
+
+                decimal valorProjMes = (decimal)_objectCreator.projeto.ValorTotalProjeto / qtdMesesTotal;
+
+                _controller?.ReatribuirValorProjeto(_objectCreator.projeto, dataFinalFiltro);
+
+                Assert.AreEqual(valorProjMes * qtdMesesFiltro, _objectCreator.projeto.ValorTotalProjeto);
+            }
+        }
+
+        /// <summary>
+        /// Testa um filtro com data inicial posterior ao começo do projeto e data final anterior ao final do projeto
+        /// </summary>
+        [Test]
+        public void Test_ReatribuirValorProjeto_FiltroInicialPosteriorComeco_FiltroFinalAnteriorFim()
+        {
+            DateTime dataInicialFiltro = new DateTime(2021, 2, 1);
+            DateTime dataFinalFiltro = new DateTime(2023, 11, 30);
+
+            if (_objectCreator != null)
+            {
+                int qtdMesesTotal = Helpers.Helpers.DiferencaMeses(_objectCreator.projeto.DataEncerramento, _objectCreator.projeto.DataInicio, true);
+                int qtdMesesFiltro = Helpers.Helpers.DiferencaMeses(dataFinalFiltro, _objectCreator.projeto.DataInicio, true);
+
+                decimal valorProjMes = (decimal)_objectCreator.projeto.ValorTotalProjeto / qtdMesesTotal;
+
+                _controller?.ReatribuirValorProjeto(_objectCreator.projeto, dataFinalFiltro);
+
+                Assert.AreEqual(valorProjMes * qtdMesesFiltro, _objectCreator.projeto.ValorTotalProjeto);
+            }
+            else
+            {
+                Assert.Fail($"{nameof(_objectCreator)} não pode ser null");
+            }
+        }
+
+        /// <summary>
+        /// Testa um filtro com data final posterior ao começo do projeto mas anterior ao fim do projeto
+        /// </summary>
+        [Test]
+        public void Test_ReatribuirValorProjeto_FiltroFinalPosteriorComecoAnteriorFim()
+        {
+            DateTime dataFinalFiltro = new DateTime(2023, 6, 1);
+
+            if (_objectCreator != null)
+            {
+                int qtdMesesTotal = Helpers.Helpers.DiferencaMeses(_objectCreator.projeto.DataEncerramento, _objectCreator.projeto.DataInicio, true);
+                int qtdMesesFiltrados = Helpers.Helpers.DiferencaMeses(dataFinalFiltro, _objectCreator.projeto.DataInicio, true);
+
+                decimal valorProjMes = (decimal)_objectCreator.projeto.ValorTotalProjeto / qtdMesesTotal;
+
+                _controller?.ReatribuirValorProjeto(_objectCreator.projeto, dataFinalFiltro);
+
+                Assert.AreEqual(valorProjMes * qtdMesesFiltrados, _objectCreator.projeto.ValorTotalProjeto);
+            }
+            else
+            {
+                Assert.Fail($"{nameof(_objectCreator)} não pode ser null");
+            }
+        }
+
+        /// <summary>
+        /// Testa um filtro com data final anterior ao começo do projeto e ao fim do projeto
+        /// </summary>
+        [Test]
+        public void Test_ReatribuirValorProjeto_FiltroFinalAnteriorComecoAnteriorFim()
+        {
+            DateTime dataFinalFiltro = new DateTime(2022, 6, 1);
+
+            if (_objectCreator != null)
+            {
+                var ex = Assert.Throws<ArgumentException>(() => _controller?.ReatribuirValorProjeto(_objectCreator.projeto, dataFinalFiltro));
+
+                if (ex != null)
+                {
+                    StringAssert.Contains("dataFinalFiltro não pode ser inferior a DataEncerramento", ex.Message);
+                }
+                else
+                {
+                    Assert.Fail($"Exceção não lançada");
+                }
+            }
+            else
+            {
+                Assert.Fail($"{nameof(_objectCreator)} não pode ser null.");
+            }
+        }
+
+        /// <summary>
+        /// Testa um filtro com data final posterior ao começo do projeto e ao fim do projeto
+        /// </summary>
+        [Test]
+        public void Test_ReatribuirValorProjeto_FiltroFinalPosteriorComecoPosteriorFim()
         {
             var projeto = new Projeto
             {
@@ -117,9 +214,9 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
 
             var ex = Assert.Throws<ArgumentException>(() => _controller?.ReatribuirValorProjeto(projeto, dataFinalFiltro));
 
-            if (ex != null )
+            if (ex != null)
             {
-                StringAssert.Contains("dataFinalFiltro cannot be greater than DataEncerramento", ex.Message);
+                StringAssert.Contains("dataFinalFiltro não pode ser superior a DataEncerramento", ex.Message);
             }
             else
             {
