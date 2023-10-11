@@ -504,8 +504,8 @@ namespace BaseDeProjetos.Controllers
                 {
                     if (dataFinalFiltro < projeto.DataEncerramento)
                     {
-                        qtdMesesCalculavel = Helpers.Helpers.DiferencaMeses(dataFinalFiltro, projeto.DataInicio);
-                        double valorProjetoPorMes = projeto.ValorTotalProjeto / Helpers.Helpers.DiferencaMeses(projeto.DataEncerramento, projeto.DataInicio);
+                        qtdMesesCalculavel = Helpers.Helpers.DiferencaMeses(dataFinalFiltro, projeto.DataInicio, true);
+                        double valorProjetoPorMes = projeto.ValorTotalProjeto / Helpers.Helpers.DiferencaMeses(projeto.DataEncerramento, projeto.DataInicio, true);
                         projeto.ValorTotalProjeto = valorProjetoPorMes * qtdMesesCalculavel;
                     }
                 }
