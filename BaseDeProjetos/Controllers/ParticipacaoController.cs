@@ -562,14 +562,9 @@ namespace BaseDeProjetos.Controllers
         /// <param name="dataFinalFiltro"></param>
         internal void ReatribuirValorProjeto(Projeto projeto, DateTime dataFinalFiltro)
         {
-            if (dataFinalFiltro > projeto.DataEncerramento)
-            {
-                throw new ArgumentException($"{nameof(dataFinalFiltro)} não pode ser superior a {nameof(projeto.DataEncerramento)}");
-            }
-
             if (dataFinalFiltro < projeto.DataInicio)
             {
-                throw new ArgumentException($"{nameof(dataFinalFiltro)} não pode ser inferior a {nameof(projeto.DataEncerramento)}");
+                throw new ArgumentException($"{nameof(dataFinalFiltro)} não pode ser inferior a {nameof(projeto.DataInicio)}");
             }
 
             int qtdMeses = Helpers.Helpers.DiferencaMeses(dataFinalFiltro, projeto.DataInicio, true);
