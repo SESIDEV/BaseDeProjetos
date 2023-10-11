@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -585,8 +585,9 @@ namespace BaseDeProjetos.Controllers
         /// <param name="projeto"></param>
         internal void ReatribuirValorProjeto(DateTime dataInicialFiltro, Projeto projeto)
         {
-            int qtdMeses = Helpers.Helpers.DiferencaMeses(projeto.DataEncerramento, dataInicialFiltro);
-            double valorProjetoPorMes = projeto.ValorTotalProjeto / Helpers.Helpers.DiferencaMeses(projeto.DataEncerramento, projeto.DataInicio);
+            int qtdMeses = Helpers.Helpers.DiferencaMeses(projeto.DataEncerramento, dataInicialFiltro, true);
+            int diferencaMeses = Helpers.Helpers.DiferencaMeses(projeto.DataEncerramento, projeto.DataInicio, true);
+            double valorProjetoPorMes = projeto.ValorTotalProjeto / diferencaMeses;
             projeto.ValorTotalProjeto = valorProjetoPorMes * qtdMeses;
         }
 
