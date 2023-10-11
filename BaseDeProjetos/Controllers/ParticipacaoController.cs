@@ -557,10 +557,21 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="projeto"></param>
         /// <param name="dataFinalFiltro"></param>
-        private static void ReatribuirValorProjeto(Projeto projeto, DateTime dataFinalFiltro)
+        internal void ReatribuirValorProjeto(Projeto projeto, DateTime dataFinalFiltro)
         {
-            int qtdMeses = Helpers.Helpers.DiferencaMeses(dataFinalFiltro, projeto.DataInicio);
-            double valorProjetoPorMes = projeto.ValorTotalProjeto / Helpers.Helpers.DiferencaMeses(projeto.DataEncerramento, projeto.DataInicio);
+            if (dataFinalFiltro > projeto.DataEncerramento)
+            {
+                throw new ArgumentException($"{nameof(dataFinalFiltro)} cannot be greater than {nameof(projeto.DataEncerramento)}");
+            }
+
+            if (dataFinalFiltro < projeto.DataInicio)
+            {
+                throw new ArgumentException($"{nameof(dataFinalFiltro)} cannot be smaller than {nameof(projeto.DataEncerramento)}");
+            }
+
+            int qtdMeses = Helpers.Helpers.DiferencaMeses(dataFinalFiltro, projeto.DataInicio, true);
+            int diferencaMeses = Helpers.Helpers.DiferencaMeses(projeto.DataEncerramento, projeto.DataInicio, true);
+            double valorProjetoPorMes = projeto.ValorTotalProjeto / diferencaMeses;
             projeto.ValorTotalProjeto = valorProjetoPorMes * qtdMeses;
         }
 
