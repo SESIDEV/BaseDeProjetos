@@ -47,7 +47,8 @@ namespace BaseDeProjetos.Controllers
         public IActionResult Create()
         {
             List<Projeto> projetos = _context.Projeto.ToList();
-            ViewData["Projetos"] = new SelectList(projetos, "Id", "NomeProjeto");
+            List<Projeto> projetosFiltrados = projetos.Where(p => !_context.CodigoAmostraProjeto.Any(c => c.Projeto.Id == p.Id)).ToList();
+            ViewData["Projetos"] = new SelectList(projetosFiltrados, "Id", "NomeProjeto");
             return View();
         }
 
@@ -68,6 +69,10 @@ namespace BaseDeProjetos.Controllers
             {
                 Projeto proj = _context.Projeto.First(p => p.Id == codigoAmostraProjeto.Projeto.Id);
                 codigoAmostraProjeto.Projeto = proj;
+                
+                int novoNumCod = int.Parse(_context.CodigoAmostraProjeto.Last().Codigo.Split("/")[0]);
+                codigoAmostraProjeto.Codigo = novoNumCod + "/" + DateTime.Now.ToString("yy").PadLeft(3, '0');
+
                 _context.Add(codigoAmostraProjeto);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -89,7 +94,8 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
             List<Projeto> projetos = _context.Projeto.ToList();
-            ViewData["Projetos"] = new SelectList(projetos, "Id", "NomeProjeto");
+            List<Projeto> projetosFiltrados = projetos.Where(p => !_context.CodigoAmostraProjeto.Any(c => c.Projeto.Id == p.Id)).ToList();
+            ViewData["Projetos"] = new SelectList(projetosFiltrados, "Id", "NomeProjeto");
             return View(codigoAmostraProjeto);
         }
 
