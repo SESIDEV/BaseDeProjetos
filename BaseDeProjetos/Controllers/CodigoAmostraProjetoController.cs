@@ -70,8 +70,8 @@ namespace BaseDeProjetos.Controllers
                 Projeto proj = _context.Projeto.First(p => p.Id == codigoAmostraProjeto.Projeto.Id);
                 codigoAmostraProjeto.Projeto = proj;
                 
-                int novoNumCod = int.Parse(_context.CodigoAmostraProjeto.Last().Codigo.Split("/")[0]);
-                codigoAmostraProjeto.Codigo = novoNumCod + "/" + DateTime.Now.ToString("yy").PadLeft(3, '0');
+                int novoNumCod = int.Parse(_context.CodigoAmostraProjeto.AsEnumerable().Last().Codigo.Split("/")[0]);
+                codigoAmostraProjeto.Codigo = (novoNumCod + 1).ToString().PadLeft(3, '0') + "/" + DateTime.Now.ToString("yy");
 
                 _context.Add(codigoAmostraProjeto);
                 await _context.SaveChangesAsync();
@@ -95,6 +95,7 @@ namespace BaseDeProjetos.Controllers
             }
             List<Projeto> projetos = _context.Projeto.ToList();
             List<Projeto> projetosFiltrados = projetos.Where(p => !_context.CodigoAmostraProjeto.Any(c => c.Projeto.Id == p.Id)).ToList();
+            projetosFiltrados.Add(_context.Projeto.FirstOrDefault(p => p.Id == codigoAmostraProjeto.Projeto.Id));
             ViewData["Projetos"] = new SelectList(projetosFiltrados, "Id", "NomeProjeto");
             return View(codigoAmostraProjeto);
         }
