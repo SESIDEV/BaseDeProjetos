@@ -94,20 +94,20 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
 
             DateTime dataFinalFiltro = Helpers.Helpers.ObterUltimoDiaMes(2023, 6);
 
-            int qtdMesesTotal = Helpers.Helpers.DiferencaMeses(_objectCreator.projeto.DataEncerramento, _objectCreator.projeto.DataInicio, true);
-            int qtdMesesFiltrados = Helpers.Helpers.DiferencaMeses(dataFinalFiltro, _objectCreator.projeto.DataInicio, true);
+            int qtdMesesProjeto = Helpers.Helpers.DiferencaMeses(_objectCreator.projeto.DataEncerramento, _objectCreator.projeto.DataInicio, true);
+            int qtdMesesFiltro = Helpers.Helpers.DiferencaMeses(dataFinalFiltro, _objectCreator.projeto.DataInicio, true);
 
-            decimal valorProjMes = (decimal)_objectCreator.projeto.ValorTotalProjeto / qtdMesesTotal;
+            decimal valorProjMes = (decimal)_objectCreator.projeto.ValorTotalProjeto / qtdMesesProjeto;
 
             var result = _controller.AcertarPrecificacaoProjetos("6", "2023", projetos);
             // Cast para float pois os valores tem um desvio pequeno "não significante"
             // e.g:
             // Expected: 27272.727272727298d
             // But was:  27272.727272727276d
-            TestContext.Out.WriteLine($"Expected: {(float)valorProjMes * qtdMesesFiltrados}");
+            TestContext.Out.WriteLine($"Expected: {(float)valorProjMes * qtdMesesFiltro}");
             TestContext.Out.WriteLine($"Actual: {(float)result[0].ValorTotalProjeto}");
 
-            Assert.AreEqual((float)valorProjMes * qtdMesesFiltrados, (float)result[0].ValorTotalProjeto);
+            Assert.AreEqual((float)valorProjMes * qtdMesesFiltro, (float)result[0].ValorTotalProjeto);
 
             TestContext.Out.WriteLine("Pass");
         }
@@ -131,7 +131,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
         }
 
         /// <summary>
-        /// 
+        /// Testa um filtro com data inicial anterior ao começo do projeto e data final anterior ao fim do projeto
         /// </summary>
         [Test]
         public void Test_AcertarPrecificacaoProjetos_FiltroInicialAnteriorComeco_FiltroFinalAnteriorFim()
@@ -142,14 +142,57 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
             DateTime dataInicioFiltro = new DateTime(2022, 1, 1);
             DateTime dataFimFiltro = Helpers.Helpers.ObterUltimoDiaMes(2023, 11);
 
-            int qtdMesesTotal = Helpers.Helpers.DiferencaMeses(_objectCreator.projeto.DataEncerramento, _objectCreator.projeto.DataInicio, true);
-            int qtdMesesFiltrados = Helpers.Helpers.DiferencaMeses(dataFimFiltro, _objectCreator.projeto.DataInicio, true);
+            int qtdMesesProjeto = Helpers.Helpers.DiferencaMeses(_objectCreator.projeto.DataEncerramento, _objectCreator.projeto.DataInicio, true);
+            int qtdMesesFiltro = Helpers.Helpers.DiferencaMeses(dataFimFiltro, _objectCreator.projeto.DataInicio, true);
 
-            decimal valorProjMes = (decimal)_objectCreator.projeto.ValorTotalProjeto / qtdMesesTotal;
+            decimal valorProjMes = (decimal)_objectCreator.projeto.ValorTotalProjeto / qtdMesesProjeto;
 
             var result = _controller.AcertarPrecificacaoProjetos("1", "2022", "11", "2023", projetos);
 
-            Assert.AreEqual(valorProjMes * qtdMesesFiltrados, result[0].ValorTotalProjeto);
+            Assert.AreEqual(valorProjMes * qtdMesesFiltro, result[0].ValorTotalProjeto);
+
+            TestContext.Out.WriteLine("Pass");
+        }
+        
+        /// <summary>
+        /// Testa um filtro com data inicial anterior ao começo do projeto e data final posterior ao fim do projeto
+        /// </summary>
+        [Test]
+        public void Test_AcertarPrecificacaoProjetos_FiltroInicialAnteriorComeco_FiltroFinalPosteriorFim()
+        {
+            TestContext.Out.WriteLine($"Results for: {nameof(Test_AcertarPrecificacaoProjetos_FiltroInicialAnteriorComeco_FiltroFinalPosteriorFim)}");
+            
+            DateTime dataInicioFiltro = new DateTime(2022, 1, 1);
+            DateTime dataFimFiltro = Helpers.Helpers.ObterUltimoDiaMes(2024, 1);
+
+            var result = _controller.AcertarPrecificacaoProjetos("1", "2022", "1", "2024", projetos);
+
+            Assert.AreEqual(_objectCreator.projeto.ValorTotalProjeto, result[0].ValorTotalProjeto);
+
+            TestContext.Out.WriteLine("Pass");
+        }
+        
+        /// <summary>
+        /// Testa um filtro com data inicial anterior ao começo do projeto e data final posterior ao fim do projeto
+        /// </summary>
+        [Test]
+        public void Test_AcertarPrecificacaoProjetos_FiltroInicialPosteriorComeco_FiltroFinalAnteriorFim()
+        {
+            TestContext.Out.WriteLine($"Results for: {nameof(Test_AcertarPrecificacaoProjetos_FiltroInicialAnteriorComeco_FiltroFinalPosteriorFim)}");
+            
+            DateTime dataInicioFiltro = new DateTime(2023, 6, 1);
+            DateTime dataFimFiltro = Helpers.Helpers.ObterUltimoDiaMes(2023, 11);
+
+            int qtdMesesProjeto = Helpers.Helpers.DiferencaMeses(_objectCreator.projeto.DataEncerramento, _objectCreator.projeto.DataInicio, true);
+            int qtdMesesFiltro = Helpers.Helpers.DiferencaMeses(dataFimFiltro, dataInicioFiltro, true);
+
+            decimal valorProjMes = (decimal)_objectCreator.projeto.ValorTotalProjeto / qtdMesesProjeto;
+
+            var result = _controller.AcertarPrecificacaoProjetos("6", "2023", "11", "2023", projetos);
+
+            // TODO:
+
+            Assert.AreEqual(valorProjMes * qtdMesesFiltro, result[0].ValorTotalProjeto);
 
             TestContext.Out.WriteLine("Pass");
         }

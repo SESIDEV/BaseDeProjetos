@@ -125,7 +125,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
         [Test]
         public void Test_ReatribuirValorProjeto_FiltroInicialPosteriorComeco_FiltroFinalAnteriorFim()
         {
-            //DateTime dataInicialFiltro = new DateTime(2021, 2, 1);
+            DateTime dataInicialFiltro = new DateTime(2021, 2, 1);
             DateTime dataFinalFiltro = new DateTime(2023, 11, 30);
 
             if (_objectCreator != null)
@@ -135,7 +135,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
 
                 decimal valorProjMes = (decimal)_objectCreator.projeto.ValorTotalProjeto / qtdMesesTotal;
 
-                _controller?.ReatribuirValorProjeto(_objectCreator.projeto, dataFinalFiltro);
+                _controller?.ReatribuirValorProjeto(_objectCreator.projeto, dataFinalFiltro, dataInicialFiltro);
 
                 Assert.AreEqual(valorProjMes * qtdMesesFiltro, _objectCreator.projeto.ValorTotalProjeto);
             }

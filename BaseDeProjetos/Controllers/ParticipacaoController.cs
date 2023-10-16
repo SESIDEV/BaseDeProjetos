@@ -543,7 +543,15 @@ namespace BaseDeProjetos.Controllers
                 {
                     if (dataFinalFiltro < projeto.DataEncerramento)
                     {
-                        ReatribuirValorProjeto(projeto, dataFinalFiltro);
+                        // TODO: E se o inicio do filtro for maior que o começo do projeto?
+                        if (projeto.DataInicio < dataInicialFiltro)
+                        {
+                            ReatribuirValorProjeto(projeto, dataFinalFiltro, dataInicialFiltro);
+                        }
+                        else
+                        {
+                            ReatribuirValorProjeto(projeto, dataFinalFiltro);
+                        }
                     }
                     else
                     {
@@ -560,14 +568,24 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="projeto"></param>
         /// <param name="dataFinalFiltro"></param>
-        internal void ReatribuirValorProjeto(Projeto projeto, DateTime dataFinalFiltro)
+        internal void ReatribuirValorProjeto(Projeto projeto, DateTime dataFinalFiltro, DateTime? dataInicialFiltro = null)
         {
+            int qtdMeses = 0;
+            //TODO: considerar que em algumas situações deve se tomar em conta a data inicial do filtro e não do projeto!!!!
             if (dataFinalFiltro < projeto.DataInicio)
             {
                 throw new ArgumentException($"{nameof(dataFinalFiltro)} não pode ser inferior a {nameof(projeto.DataInicio)}");
             }
 
-            int qtdMeses = Helpers.Helpers.DiferencaMeses(dataFinalFiltro, projeto.DataInicio, true);
+            if (dataInicialFiltro != null)
+            {
+                qtdMeses = Helpers.Helpers.DiferencaMeses(dataFinalFiltro, (DateTime)dataInicialFiltro, true);
+            }
+            else
+            {
+                qtdMeses = Helpers.Helpers.DiferencaMeses(dataFinalFiltro, projeto.DataInicio, true);
+            }
+
             int diferencaMeses = Helpers.Helpers.DiferencaMeses(projeto.DataEncerramento, projeto.DataInicio, true);
             double valorProjetoPorMes = projeto.ValorTotalProjeto / diferencaMeses;
             projeto.ValorTotalProjeto = valorProjetoPorMes * qtdMeses;
