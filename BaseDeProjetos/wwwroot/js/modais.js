@@ -11,7 +11,7 @@ function carregarModalCFF(event, idCFF) {
   let modalCFFcontainer = document.querySelector(`#modalEditCFFProjeto-${idCFF}-container`);
 
   if (modalCFFcontainer.innerHTML && modalCFFcontainer.innerHTML.trim() === '') {
-    sourceElement.disabled = false;
+    sourceElement.disabled = true;
     let previousInner = sourceElement.innerHTML;
     sourceElement.innerHTML = '<div class="spinner-border text-light"></div>';
     fetch(`/Projetos/RetornarModalEditCFF?idCFF=${idCFF}`)
@@ -19,6 +19,7 @@ function carregarModalCFF(event, idCFF) {
       .then(result => {
         sourceElement.innerHTML = previousInner;
         modalCFFcontainer.innerHTML = result;
+        sourceElement.disabled = false;
         console.log(modalCFFcontainer);
       })
       .finally(() => {
