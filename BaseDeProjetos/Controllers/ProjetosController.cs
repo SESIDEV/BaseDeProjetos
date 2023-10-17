@@ -101,13 +101,41 @@ namespace BaseDeProjetos.Controllers
         }
 
         /// <summary>
+        /// Edita uma CFF e atrela ao projeto
+        /// </summary>
+        /// <param name="cff">Objeto CFF</param>
+        /// <returns></returns>
+        [HttpPost("/Projetos/EditarCFF/{idCFF}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditarCFF(int idCFF, [Bind("Id, Data, PercentualFisico, PercentualFinanceiro")] CurvaFisicoFinanceira cff)
+        {
+            if (idCFF != cff.Id)
+            {
+                return View("Error");
+            }
+
+            if (ModelState.IsValid)
+            {
+                _context.Update(cff);
+
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                return View("Error");
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        /// <summary>
         /// Adicionar uma CFF e atrela ao projeto
         /// </summary>
         /// <param name="cff">Objeto CFF</param>
         /// <returns></returns>
         [HttpPost("/Projetos/AdicionarCFF/{idProjeto}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AdicionarCFF(string idProjeto, [Bind("")] CurvaFisicoFinanceira cff)
+        public async Task<IActionResult> AdicionarCFF(string idProjeto, [Bind("Id, Data, PercentualFisico, PercentualFinanceiro")] CurvaFisicoFinanceira cff)
         {
             if (ModelState.IsValid)
             {
@@ -346,6 +374,25 @@ namespace BaseDeProjetos.Controllers
                 {
                     return ViewComponent("null"); // View n existe é mais pra ""debug""
                 }
+            }
+            else
+            {
+                return View("Forbidden");
+            }
+        }
+
+        /// <summary>
+        /// Retorna um modal específico a partir dos parâmetros especificados
+        /// </summary>
+        /// <param name="idProjeto">ID do CFF</param>
+        /// <returns></returns>
+        public IActionResult RetornarModalEditCFF(int idCFF)
+        {
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                ViewbagizarUsuario(_context);
+
+                return ViewComponent("ModalEditCFFProjeto", new { id = idCFF });
             }
             else
             {

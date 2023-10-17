@@ -61,6 +61,14 @@
     <div id="modalDetalhesCFFProjeto-@projeto.Id-container">
     </div>
 
+    <div id="modalEditCFFProjeto-@projeto.Id-container">
+    </div>
+
+    @foreach (var cff in projeto.CurvaFisicoFinanceira) {
+        <div id="modalEditCFFProjeto-@cff.Id-container">
+        </div>
+    }
+
     <tr>
         <td class="cell">
             <div class="d-flex gap-2 flex-column align-items-center">
