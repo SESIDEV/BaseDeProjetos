@@ -40,8 +40,9 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="Data" class="control-label">Data</label>
-                        <input asp-for="Data" class="form-control" type="date" placeholder="@Model.Data"
-                            value="@Model.Data" required />
+                        <input asp-for="Data" class="form-control" type="date"
+                            placeholder='@Model.Data.ToString("yyyy-MM-dd")' value='@Model.Data.ToString("yyyy-MM-dd")'
+                            required />
                     </div>
                 </div>
                 <div class="modal-footer">
