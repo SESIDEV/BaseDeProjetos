@@ -70,5 +70,6 @@ namespace BaseDeProjetos.Models
         public virtual double? SatisfacaoClienteFinal { get; set; }
 
         public virtual decimal CustoHH { get; set; }
+        public virtual decimal CustoHM { get; set; }
     }
 }

@@ -163,6 +163,12 @@
                         </select>
                         <span asp-validation-for="FonteFomento" class="text-danger"></span>
                     </div>
+                    <!-- Remover assim que passarmos a calcular o custo de forma automática -->
+                    <div class="form-group">
+                        <label asp-for="CustoHM" class="control-label"></label> (R$)
+                        <input asp-for="CustoHM" class="form-control" placeholder="@Model.CustoHM" value="@Model.CustoHM" />
+                        <span asp-validation-for="CustoHM" class="text-danger"></span>
+                    </div>
                     <div class="form-group">
                         <label asp-for="ValorTotalProjeto" class="control-label"></label>
                         <input asp-for="ValorTotalProjeto" class="form-control"
