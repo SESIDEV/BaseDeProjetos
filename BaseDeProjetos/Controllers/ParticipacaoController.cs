@@ -307,7 +307,7 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private async Task<List<Prospeccao>> GetProspeccoesUsuarioMembroEquipe(Usuario usuario)
         {
-            return await _context.Prospeccao.Where(p => p.Usuario == usuario || p.MembrosEquipe.Contains(usuario.UserName)).ToListAsync();
+            return await _context.Prospeccao.Where(p => p.Usuario == usuario || p.MembrosEquipe.Contains(usuario.Email)).ToListAsync();
         }
 
         /// <summary>
@@ -317,26 +317,30 @@ namespace BaseDeProjetos.Controllers
         /// <param name="prospeccoesUsuario"></param>
         private void ComputarRangeGraficoParticipacao(ParticipacaoTotalViewModel participacao, List<Prospeccao> prospeccoesUsuario)
         {
-            DateTime dataInicial = prospeccoesUsuario.Min(p => p.Status.Min(f => f.Data));
-            DateTime dataIterada = dataInicial;
-            DateTime dataAtual = DateTime.Now;
-            List<string> mesAno = new List<string>();
-            List<decimal> valoresProposta = new List<decimal>();
-
-            while (dataIterada <= dataAtual)
+            if (prospeccoesUsuario.Count > 0)
             {
-                string dataFormatada = $"{dataIterada:MMM} {dataIterada.Year}";
-                mesAno.Add(dataFormatada);
-                decimal valorSomado = prospeccoesUsuario
-                    .FindAll(p => p.Status
-                    .Any(f => new DateTime(f.Data.Year, f.Data.Month, 1) <= new DateTime(dataIterada.Year, dataIterada.Month, 1)))
-                    .Sum(p => p.ValorProposta);
-                valoresProposta.Add(valorSomado);
-                dataIterada = dataIterada.AddMonths(1);
+                DateTime dataInicial = prospeccoesUsuario.Min(p => p.Status.Min(f => f.Data));
+                DateTime dataIterada = dataInicial;
+                DateTime dataAtual = DateTime.Now;
+                List<string> mesAno = new List<string>();
+                List<decimal> valoresProposta = new List<decimal>();
+
+                while (dataIterada <= dataAtual)
+                {
+                    string dataFormatada = $"{dataIterada:MMM} {dataIterada.Year}";
+                    mesAno.Add(dataFormatada);
+                    decimal valorSomado = prospeccoesUsuario
+                        .FindAll(p => p.Status
+                        .Any(f => new DateTime(f.Data.Year, f.Data.Month, 1) <= new DateTime(dataIterada.Year, dataIterada.Month, 1)))
+                        .Sum(p => p.ValorProposta);
+                    valoresProposta.Add(valorSomado);
+                    dataIterada = dataIterada.AddMonths(1);
+                }
+
+                participacao.Valores = valoresProposta;
+                participacao.Labels = mesAno;
             }
 
-            participacao.Valores = valoresProposta;
-            participacao.Labels = mesAno;
         }
 
         /// <summary>
@@ -472,7 +476,7 @@ namespace BaseDeProjetos.Controllers
                     participacao.TaxaConversaoProjeto = taxaConversaoProjeto = 0;
                 }
 
-                decimal somaProjetosProspeccoesUsuario = prospeccoesUsuarioConvertidas.Sum(p => p.ValorProposta) + (decimal)projetosUsuarioEmExecucao.Sum(p => p.ValorTotalProjeto);
+                decimal somaProjetosProspeccoesUsuario = prospeccoesUsuarioConvertidas.Sum(p => p.ValorProposta);
 
                 if (mesInicio == null || anoInicio == null)
                 {
@@ -486,7 +490,7 @@ namespace BaseDeProjetos.Controllers
 
                 quantidadePesquisadores = CalculoNumeroPesquisadores(int.Parse(anoInicio), int.Parse(anoFim));
 
-                participacao.FatorContribuicaoFinanceira = somaProjetosProspeccoesUsuario / despesaIsiMeses / (decimal)quantidadePesquisadores;
+                participacao.FatorContribuicaoFinanceira = somaProjetosProspeccoesUsuario / despesaIsiMeses;
             }
 
             return participacao;
@@ -690,7 +694,7 @@ namespace BaseDeProjetos.Controllers
                 {
                     if (!string.IsNullOrEmpty(membro))
                     {
-                        Usuario usuarioEquivalente = usuarios.Find(u => u.UserName == membro);
+                        Usuario usuarioEquivalente = usuarios.Find(u => u.Email == membro);
                         if (usuarioEquivalente != null)
                         {
                             membrosEquipe.Add(usuarioEquivalente);
@@ -726,7 +730,7 @@ namespace BaseDeProjetos.Controllers
             foreach (var prospeccao in prospeccoes)
             {
                 // Verificar se a prospecção tem como líder o usuário passado ou se a prospecção tem como membro o usuário passado
-                if (prospeccao.Usuario.Id == usuario.Id || (prospeccao.MembrosEquipe?.Contains(usuario.UserName) ?? false))
+                if (prospeccao.Usuario.Id == usuario.Id || (prospeccao.MembrosEquipe?.Contains(usuario.Email) ?? false))
                 {
                     List<Usuario> membrosProspeccao = TratarMembrosEquipeString(prospeccao);
                     // TODO: Remover hardcoding no futuro!!
@@ -872,7 +876,7 @@ namespace BaseDeProjetos.Controllers
         private async Task<List<Prospeccao>> GetProspeccoesUsuarioMembro(Usuario usuario)
         {
             // Somente membro
-            return await _context.Prospeccao.Where(p => p.MembrosEquipe.Contains(usuario.UserName)).ToListAsync();
+            return await _context.Prospeccao.Where(p => p.MembrosEquipe.Contains(usuario.Email)).ToListAsync();
         }
 
         /// <summary>
@@ -921,7 +925,7 @@ namespace BaseDeProjetos.Controllers
                     {
                         if (!string.IsNullOrEmpty(membro))
                         {
-                            Usuario usuarioEquivalente = usuarios.Find(u => u.UserName == membro);
+                            Usuario usuarioEquivalente = usuarios.Find(u => u.Email == membro);
                             if (usuarioEquivalente != null)
                             {
                                 membrosEquipe.Add(usuarioEquivalente);
