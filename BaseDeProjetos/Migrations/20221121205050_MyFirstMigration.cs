@@ -13,7 +13,7 @@ namespace BaseDeProjetos.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-
+            
         }
     }
 }
