@@ -475,6 +475,7 @@ namespace BaseDeProjetos.Controllers
                     participacao.TaxaConversaoProjeto = taxaConversaoProjeto = 0;
                 }
 
+                // Procurar saber se precisa incluir o peso aqui ou não
                 decimal somaProjetosProspeccoesUsuario = prospeccoesUsuarioConvertidas.Sum(p => p.ValorProposta);
 
                 if (mesInicio == null || anoInicio == null)
@@ -1071,7 +1072,16 @@ namespace BaseDeProjetos.Controllers
             ViewBag.usuarioNivel = usuario.Nivel;
             ViewBag.usuarioId = usuario.Id;
 
-            return View(participacoes);
+            if (usuario.Nivel == Nivel.Dev || usuario.Nivel == Nivel.PMO)
+            {
+                return View(participacoes);
+            }
+            else
+            {
+                var participacoesFiltradas = participacoes.Where(p => p.Lider.Id == usuario.Id).ToList();
+                return View(participacoesFiltradas);
+            }
+
         }
 
         /// <summary>

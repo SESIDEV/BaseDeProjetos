@@ -249,8 +249,13 @@
                                                 </div>
                                             </div>
                                             <td class="cell" style="overflow:hidden; max-width:100px">
-                                                Membro @random.Next()
-                                                @*@participacaoTotal.Lider*@ <!-- Estamos escondendo o líder real-->
+                                                @if (ViewBag.usuarioNivel == Nivel.Dev || ViewBag.usuarioNivel == Nivel.PMO) 
+                                                {
+                                                    @participacaoTotal.Lider
+                                                } 
+                                                else {
+                                                    <p>Membro @(random.Next())</p>
+                                                }   
                                             </td>
                                             <td class="cell">
                                                 @{
