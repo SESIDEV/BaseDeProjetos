@@ -22,7 +22,6 @@ namespace BaseDeProjetos.Controllers
         private const string nomeCargoPesquisador = "Pesquisador QMS";
         private const string nomeCargoEstagiário = "Estagiário";
         private const string nomeCargoBolsista = "Pesquisador Bolsista";
-        private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
 
         private readonly static Dictionary<int, decimal> despesas = new Dictionary<int, decimal>
@@ -754,6 +753,7 @@ namespace BaseDeProjetos.Controllers
                     } // Se não...
                     else
                     {
+                        // Em tese não haveria necessidade de verificar o cargo...
                         if (usuario.Cargo?.Nome == nomeCargoEstagiário)
                         {
                             if (prospeccao.ValorProposta != 0)
@@ -1022,14 +1022,12 @@ namespace BaseDeProjetos.Controllers
 
             if (usuarioAtivo.Casa == Instituto.ISIQV || usuarioAtivo.Casa == Instituto.CISHO)
             {
-                usuarios = await _context.Users.Where(u => u.Casa == Instituto.ISIQV || u.Casa == Instituto.CISHO).ToListAsync();
+                usuarios = await _context.Users.Where(u => (u.Casa == Instituto.ISIQV || u.Casa == Instituto.CISHO) && u.Cargo.Nome == nomeCargoPesquisador && u.EmailConfirmed == true && u.Nivel == Nivel.Usuario).ToListAsync();
             }
             else
             {
-                usuarios = await _context.Users.Where(u => u.Casa == usuarioAtivo.Casa).ToListAsync();
+                usuarios = await _context.Users.Where(u => u.Casa == usuarioAtivo.Casa && u.EmailConfirmed == true && u.Cargo.Nome == nomeCargoPesquisador && u.Nivel == Nivel.Usuario).ToListAsync();
             }
-
-            // List<Prospeccao> prospeccoesUsuarios = prospeccoesTotais.Where(p => usuarios.Contains(p.Usuario)).ToList();
 
             List<ParticipacaoTotalViewModel> participacoes = new List<ParticipacaoTotalViewModel>();
 
