@@ -125,17 +125,15 @@
                                             {
                                                 if (cargo.Tributos)
                                                 {
-                                                    custoPorHora = cargo.Salario / 8 / 30 * 2;
-                                                    custoCalc = cargo.Salario / cargo.HorasSemanais / 20 * 2;
+                                                    custoPorHora = cargo.Salario / 8 / 40 * 2;
                                                 }
                                                 else
                                                 {
-                                                    custoPorHora = cargo.Salario / 8 / 30;
-                                                    custoCalc = cargo.Salario / cargo.HorasSemanais / 20;
+                                                    custoPorHora = cargo.Salario / 8 / 40;
                                                 }
                                             }
                                         }
-                                        <td class="cell">R$ @custoPorHora.ToString("N") // R$ @custoCalc.ToString("N")</td>
+                                        <td class="cell">R$ @custoPorHora.ToString("N")</td>
                                         <td class="cell">@cargo.HorasSemanais </td>
                                         <td class="cell">
                                             @if (cargo.Tributos == true)
