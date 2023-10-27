@@ -1,5 +1,6 @@
 @model BaseDeProjetos.Models.Cargo
-<div class="modal fade" id="ModalEditCargo-@Model.Id" tabindex="-1" aria-labelledby="ModalEditCargoLabel-@Model.Id" aria-hidden="true">
+<div class="modal fade" id="ModalEditCargo-@Model.Id" tabindex="-1" aria-labelledby="ModalEditCargoLabel-@Model.Id"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -24,7 +25,7 @@
                     </div>
                     <div class="form-check">
                         <label asp-for="Tributos" class="form-check-label">Tributos</label>
-                        <input asp-for="Tributos" class="form-check-input" required />
+                        <input asp-for="Tributos" class="form-check-input" />
                     </div>
                 </div>
                 <div class="modal-footer">
