@@ -109,11 +109,11 @@ namespace BaseDeProjetos.Controllers
         {
             int numeroMembros = 1 + qtdPesquisadores + qtdBolsistas + qtdEstagiarios;
 
-            decimal percentualPorPesquisdor = CalculoPercentualPesquisador(numeroMembros, qtdPesquisadores);
+            decimal percentualPorPesquisador = CalculoPercentualPesquisador(numeroMembros, qtdPesquisadores);
             decimal percentualPorBolsista = CalculoPercentualBolsista(numeroMembros, qtdBolsistas);
             decimal percentualPorEstagiario = CalculoPercentualEstagiario(numeroMembros, qtdEstagiarios);
 
-            decimal percentualTodosPesquisadores = percentualPorPesquisdor * qtdPesquisadores;
+            decimal percentualTodosPesquisadores = percentualPorPesquisador * qtdPesquisadores;
             decimal percentualTodosBolsistas = percentualPorBolsista * qtdBolsistas;
             decimal percentualTodosEstagiarios = percentualPorEstagiario * qtdEstagiarios;
             decimal percentualLider = 1 - (percentualTodosBolsistas + percentualTodosEstagiarios + percentualTodosPesquisadores);
@@ -124,7 +124,7 @@ namespace BaseDeProjetos.Controllers
                 { "percentualBolsistas", percentualTodosBolsistas },
                 { "percentualEstagiarios", percentualTodosEstagiarios },
                 { "percentualLider", percentualLider },
-                { "percentualPorPesquisador", percentualPorPesquisdor },
+                { "percentualPorPesquisador", percentualPorPesquisador },
                 { "percentualPorBolsista", percentualPorBolsista },
                 { "percentualPorEstagiario", percentualPorEstagiario },
             };
@@ -786,10 +786,6 @@ namespace BaseDeProjetos.Controllers
                             {
                                 valorTotalProspeccoes += percentualBolsista * prospeccao.ValorEstimado;
                             }
-                        }
-                        else
-                        {
-                            valorTotalProspeccoes += prospeccao.ValorProposta;
                         }
                     }
                 }
