@@ -1,4 +1,4 @@
-﻿@using System.Globalization;
+@using System.Globalization;
 @using BaseDeProjetos.Models;
 @using BaseDeProjetos.Helpers;
 @model IEnumerable<ParticipacaoTotalViewModel>
@@ -283,7 +283,7 @@
                                                     var rankQuantidadeProspeccoesLider = participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoesLider"];
                                                     var quantidadeProspeccoesLider = participacaoTotal.QuantidadeProspeccoesLider;
                                                     <div data-text="(@rankQuantidadeProspeccoes.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(quantidadeProspeccoes, valoresMinimos["QuantidadeProspeccoesLider"], valoresMaximos["QuantidadeProspeccoesLider"])))
+                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(quantidadeProspeccoesLider, valoresMinimos["QuantidadeProspeccoesLider"], valoresMaximos["QuantidadeProspeccoesLider"])))
                                                         @quantidadeProspeccoesLider
                                                     </div>
                                                 }
