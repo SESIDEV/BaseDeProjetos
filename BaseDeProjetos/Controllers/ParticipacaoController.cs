@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -773,38 +773,38 @@ namespace BaseDeProjetos.Controllers
                     else
                     {
                         // Em tese não haveria necessidade de verificar o cargo...
-                        if (usuario.Cargo?.Nome == nomeCargoEstagiário)
+                        switch (usuario.Cargo?.Nome)
                         {
-                            if (prospeccao.ValorProposta != 0)
-                            {
-                                valorTotalProspeccoes += percentualEstagiario * prospeccao.ValorProposta;
-                            }
-                            else
-                            {
-                                valorTotalProspeccoes += percentualEstagiario * prospeccao.ValorEstimado;
-                            }
-                        }
-                        else if (usuario.Cargo?.Nome == nomeCargoPesquisador)
-                        {
-                            if (prospeccao.ValorProposta != 0)
-                            {
-                                valorTotalProspeccoes += percentualPesquisador * prospeccao.ValorProposta;
-                            }
-                            else
-                            {
-                                valorTotalProspeccoes += percentualPesquisador * prospeccao.ValorEstimado;
-                            }
-                        }
-                        else if (usuario.Cargo?.Nome == nomeCargoBolsista)
-                        {
-                            if (prospeccao.ValorProposta != 0)
-                            {
-                                valorTotalProspeccoes += percentualBolsista * prospeccao.ValorProposta;
-                            }
-                            else
-                            {
-                                valorTotalProspeccoes += percentualBolsista * prospeccao.ValorEstimado;
-                            }
+                            case nomeCargoEstagiário:
+                                if (prospeccao.ValorProposta != 0)
+                                {
+                                    valorTotalProspeccoes += percentualEstagiario * prospeccao.ValorProposta;
+                                }
+                                else
+                                {
+                                    valorTotalProspeccoes += percentualEstagiario * prospeccao.ValorEstimado;
+                                }
+                                break;
+                            case nomeCargoPesquisador:
+                                if (prospeccao.ValorProposta != 0)
+                                {
+                                    valorTotalProspeccoes += percentualPesquisador * prospeccao.ValorProposta;
+                                }
+                                else
+                                {
+                                    valorTotalProspeccoes += percentualPesquisador * prospeccao.ValorEstimado;
+                                }
+                                break;
+                            case nomeCargoBolsista:
+                                if (prospeccao.ValorProposta != 0)
+                                {
+                                    valorTotalProspeccoes += percentualBolsista * prospeccao.ValorProposta;
+                                }
+                                else
+                                {
+                                    valorTotalProspeccoes += percentualBolsista * prospeccao.ValorEstimado;
+                                }
+                                break;
                         }
                     }
                 }
@@ -965,39 +965,37 @@ namespace BaseDeProjetos.Controllers
                 var valorPorPesquisador = calculoParticipantes["percentualPorPesquisador"] * prospeccao.ValorProposta;
                 var valorPorEstagiario = calculoParticipantes["percentualPorEstagiario"] * prospeccao.ValorProposta;
 
-                if (prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida)
+                var ultimoStatusProspeccao = prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Status;
+
+                switch (ultimoStatusProspeccao)
                 {
-                    prospConvertida = true;
-                }
-                else if (prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Planejada)
-                {
-                    prospPlanejada = true;
-                }
-                else if (prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Suspensa)
-                {
-                    prospSuspensa = true;
-                }
-                else if (prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.NaoConvertida)
-                {
-                    prospNaoConvertida = true;
-                }
-                else if (prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.ContatoInicial ||
-                    prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Discussao_EsbocoProjeto)
-                {
-                    prospEmDiscussao = true;
-                }
-                else if (prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.ComProposta)
-                {
-                    prospComProposta = true;
-                }
-                else
-                {
-                    prospSuspensa = false;
-                    prospConvertida = false;
-                    prospPlanejada = false;
-                    prospNaoConvertida = false;
-                    prospEmDiscussao = false;
-                    prospComProposta = false;
+                    case StatusProspeccao.Convertida:
+                        prospConvertida = true;
+                        break;
+                    case StatusProspeccao.Planejada:
+                        prospPlanejada = true;
+                        break;
+                    case StatusProspeccao.Suspensa:
+                        prospSuspensa = true;
+                        break;
+                    case StatusProspeccao.NaoConvertida:
+                        prospNaoConvertida = true;
+                        break;
+                    case StatusProspeccao.ContatoInicial:
+                    case StatusProspeccao.Discussao_EsbocoProjeto:
+                        prospEmDiscussao = true;
+                        break;
+                    case StatusProspeccao.ComProposta:
+                        prospComProposta = true;
+                        break;
+                    default:
+                        prospSuspensa = false;
+                        prospConvertida = false;
+                        prospPlanejada = false;
+                        prospNaoConvertida = false;
+                        prospEmDiscussao = false;
+                        prospComProposta = false;
+                        break;
                 }
 
                 participacao.Participacoes.Add(new ParticipacaoViewModel()
