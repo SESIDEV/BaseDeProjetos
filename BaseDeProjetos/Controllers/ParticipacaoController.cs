@@ -26,6 +26,10 @@ namespace BaseDeProjetos.Controllers
         private readonly ApplicationDbContext _context;
         private readonly ILogger<ParticipacaoController> _logger;
 
+        private const int AnoPadrao = 2021;
+        private const int MesInicioPadrao = 1;
+        private const int MesFimPadrao = 12;
+
         private readonly static Dictionary<int, decimal> despesas = new Dictionary<int, decimal>
         {
             { 2021, 290000M },
@@ -346,17 +350,40 @@ namespace BaseDeProjetos.Controllers
         }
 
         /// <summary>
+        /// Converter strings contendo mes e ano em datetimes considerando ano e mes padrões
+        /// </summary>
+        /// <param name="mes">string do mes: "01"</param>
+        /// <param name="ano">string do ano: "2023"</param>
+        /// <param name="anoPadrao"></param>
+        /// <param name="mesPadrao"></param>
+        /// <returns></returns>
+        private DateTime InicializarDatetimes(string mes, string ano, int anoPadrao, int mesPadrao)
+        {
+            if (!int.TryParse(ano, out int anoParse))
+            {
+                anoParse = anoPadrao;
+            }
+
+            if (!int.TryParse(mes, out int mesParse))
+            {
+                mesParse = mesPadrao;
+            }
+
+            return new DateTime(anoParse, mesParse, 1);
+        }
+
+        /// <summary>
         /// Obtém uma participação de acordo com um usuário específico.
         /// </summary>
         /// <param name="usuario">Usuário do sistema a ter participações retornadas</param>
         /// <returns></returns>
         private async Task<ParticipacaoTotalViewModel> GetParticipacaoTotalUsuario(Usuario usuario, string mesInicio = null, string anoInicio = null, string mesFim = null, string anoFim = null)
         {
-            DateTime filtroInicio = new DateTime(string.IsNullOrEmpty(anoInicio) ? 2021 : int.Parse(anoInicio), string.IsNullOrEmpty(mesInicio) ? 1 : int.Parse(mesInicio), 1);
-            DateTime filtroFim = new DateTime(string.IsNullOrEmpty(anoFim) ? DateTime.Now.Year : int.Parse(anoInicio), string.IsNullOrEmpty(mesFim) ? 12 : int.Parse(mesFim), 1);
+            DateTime filtroInicio = InicializarDatetimes(mesInicio, anoInicio, AnoPadrao, MesInicioPadrao);
+            DateTime filtroFim = InicializarDatetimes(mesFim, anoFim, DateTime.Now.Year, MesFimPadrao);
 
             anoInicio = string.IsNullOrEmpty(anoInicio) ? "2021" : anoInicio;
-            anoFim = string.IsNullOrEmpty(anoInicio) ? DateTime.Now.Year.ToString() : anoFim;
+            anoFim = string.IsNullOrEmpty(anoFim) ? DateTime.Now.Year.ToString() : anoFim;
             mesInicio = string.IsNullOrEmpty(mesInicio) ? "1" : mesInicio;
             mesFim = string.IsNullOrEmpty(mesFim) ? "12" : mesFim;
 
@@ -373,7 +400,7 @@ namespace BaseDeProjetos.Controllers
             var projetosUsuario = await GetProjetosUsuario(usuario);
             var projetosUsuarioEmExecucao = projetosUsuario.Where(p => p.Status == StatusProjeto.EmExecucao).ToList();
             var projetosUsuarioMembro = await GetProjetosUsuarioMembro(usuario);
-            
+
             prospeccoesUsuarioLider = FiltrarProspeccoesPorPeriodo(mesInicio, anoInicio, mesFim, anoFim, prospeccoesUsuarioLider);
             prospeccoesUsuarioMembro = FiltrarProspeccoesPorPeriodo(mesInicio, anoInicio, mesFim, anoFim, prospeccoesUsuarioMembro);
             prospeccoesUsuarioMembroEquipe = FiltrarProspeccoesPorPeriodo(mesInicio, anoInicio, mesFim, anoFim, prospeccoesUsuarioMembroEquipe);
@@ -381,7 +408,7 @@ namespace BaseDeProjetos.Controllers
             projetosUsuarioEmExecucaoFiltrados = AcertarPrecificacaoProjetos(mesInicio, anoInicio, mesFim, anoFim, projetosUsuarioEmExecucao);
 
             var prospeccoesUsuarioComProposta = prospeccoesUsuarioMembroEquipe.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.ComProposta)).ToList();
-            var prospeccoesUsuarioConvertidas = prospeccoesUsuarioMembroEquipe.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida)).ToList();
+            var prospeccoesUsuarioConvertidas = prospeccoesUsuarioMembroEquipe.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida));
             var prospeccoesUsuarioConvertidasLider = prospeccoesUsuarioLider.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida)).ToList();
 
             // Evitar exibir usuários sem prospecção
@@ -394,8 +421,6 @@ namespace BaseDeProjetos.Controllers
                 ComputarRangeGraficoParticipacao(participacao, prospeccoesUsuarioLider); // TODO considerar novas mudanças
             }
 
-
-
             // Evitar exibir usuários sem prospecção
             if (prospeccoesUsuarioLider.Count + prospeccoesUsuarioMembro.Count == 0)
             {
@@ -406,6 +431,7 @@ namespace BaseDeProjetos.Controllers
 
             decimal valorTotalProspeccoes = 0;
             decimal valorTotalProspeccoesComProposta = 0;
+            decimal quantidadeProspeccoesComPeso = 0;
             decimal valorMedioProspeccoes = 0;
             decimal valorMedioProspeccoesComProposta = 0;
             decimal valorMedioProspeccoesConvertidas = 0;
@@ -414,8 +440,8 @@ namespace BaseDeProjetos.Controllers
             decimal taxaConversaoProjeto;
             int quantidadeProspeccoes;
             int quantidadeProspeccoesMembro;
-            int quantidadeProspeccoesComProposta;
-            int quantidadeProspeccoesConvertidas;
+            decimal quantidadeProspeccoesComProposta = 0;
+            decimal quantidadeProspeccoesConvertidas = 0;
             int quantidadeProspeccoesLider;
 
             // Apenas para calculo da Assertividade
@@ -432,8 +458,50 @@ namespace BaseDeProjetos.Controllers
             participacao.ValorTotalProspeccoesConvertidas = valorTotalProspeccoesConvertidas = ExtrairValorProspeccoes(usuario, StatusProspeccao.Convertida, mesInicio, anoInicio, mesFim, anoFim);
 
             participacao.QuantidadeProspeccoes = quantidadeProspeccoes = prospeccoesUsuarioMembroEquipe.Count();
-            participacao.QuantidadeProspeccoesComProposta = quantidadeProspeccoesComProposta = prospeccoesUsuarioComProposta.Count();
-            participacao.QuantidadeProspeccoesProjeto = quantidadeProspeccoesConvertidas = prospeccoesUsuarioConvertidas.Count();
+
+            foreach (var prospeccao in prospeccoesUsuarioMembroEquipe)
+            {
+                if (prospeccao.Usuario.Id == usuario.Id)
+                {
+                    quantidadeProspeccoesComPeso += 1;
+                }
+                else if (prospeccao.MembrosEquipe.Contains(usuario.Email))
+                {
+                    var membrosEquipe = TratarMembrosEquipeString(prospeccao);
+                    quantidadeProspeccoesComPeso += CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
+                }
+            }
+
+            foreach (var prospeccao in prospeccoesUsuarioComProposta)
+            {
+                if (prospeccao.Usuario.Id == usuario.Id)
+                {
+                    quantidadeProspeccoesComProposta += 1;
+                }
+                else if (prospeccao.MembrosEquipe.Contains(usuario.Email))
+                {
+                    var membrosEquipe = TratarMembrosEquipeString(prospeccao);
+                    quantidadeProspeccoesComProposta += CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
+                }
+            }
+
+            participacao.QuantidadeProspeccoesComProposta = quantidadeProspeccoesComProposta;
+
+            foreach (var prospeccao in prospeccoesUsuarioConvertidas)
+            {
+                if (prospeccao.Usuario.Id == usuario.Id)
+                {
+                    quantidadeProspeccoesConvertidas += 1;
+                }
+                else
+                {
+                    var membrosEquipe = TratarMembrosEquipeString(prospeccao);
+                    quantidadeProspeccoesConvertidas += CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
+                }
+            }
+
+            participacao.QuantidadeProspeccoesProjeto = quantidadeProspeccoesConvertidas;
+
             participacao.QuantidadeProspeccoesMembro = quantidadeProspeccoesMembro = prospeccoesUsuarioMembro.Count();
             participacao.QuantidadeProspeccoesLider = quantidadeProspeccoesLider = prospeccoesUsuarioLider.Count();
 
@@ -455,7 +523,7 @@ namespace BaseDeProjetos.Controllers
             }
             else
             {
-                participacao.TaxaConversaoProposta = taxaConversaoProposta = quantidadeProspeccoesComProposta / (decimal)quantidadeProspeccoes;
+                participacao.TaxaConversaoProposta = taxaConversaoProposta = quantidadeProspeccoesComProposta / quantidadeProspeccoesComPeso;
                 participacao.ValorMedioProspeccoes = valorMedioProspeccoes = valorTotalProspeccoes / quantidadeProspeccoes;
 
                 if (quantidadeProspeccoesComPropostaLider > 0)
@@ -473,14 +541,12 @@ namespace BaseDeProjetos.Controllers
                 if (valorMedioProspeccoesConvertidasLider != 0)
                 {
                     var erroRelativo = Math.Abs(valorMedioProspeccoesConvertidasLider - valorMedioProspeccoesComPropostaLider) / Math.Abs(valorMedioProspeccoesConvertidasLider);
-                    _logger.LogInformation($"O Valor medio das conv do lider e ${valorMedioProspeccoesConvertidasLider}, o valor medio das propostas e {valorMedioProspeccoesComPropostaLider}");
-                    _logger.LogInformation($"O valor do erro relativo {erroRelativo}");
                     participacao.AssertividadePrecificacao = erroRelativo;
                 }
 
                 if (quantidadeProspeccoesComProposta != 0)
                 {
-                    participacao.TaxaConversaoProjeto = taxaConversaoProjeto = quantidadeProspeccoesConvertidas / (decimal)quantidadeProspeccoesComProposta;
+                    participacao.TaxaConversaoProjeto = taxaConversaoProjeto = quantidadeProspeccoesConvertidas / quantidadeProspeccoesComProposta;
                 }
                 else
                 {
