@@ -334,7 +334,7 @@
                                                     var prospeccoesComProposta = participacaoTotal.QuantidadeProspeccoesComProposta;
                                                     <div data-text="(@rankProspeccoesComProposta.ToString("N", cultura))" class="d-flex align-items-center flex-row gap-2 tooltip-indicadores">
                                                         @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(prospeccoesComProposta, valoresMinimos["QuantidadeProspeccoesComProposta"], valoresMaximos["QuantidadeProspeccoesComProposta"])))
-                                                        @prospeccoesComProposta
+                                                        @(Math.Round(prospeccoesComProposta))
                                                     </div>
                                                 }
                                             </td>
@@ -344,7 +344,7 @@
                                                     var quantidadeProspeccoesProjeto = participacaoTotal.QuantidadeProspeccoesProjeto;
                                                     <div data-text='(@rankProspeccoesProjeto.ToString("N", cultura))' class="d-flex align-items-center flex-row gap-2 tooltip-indicadores">
                                                         @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(quantidadeProspeccoesProjeto, valoresMinimos["QuantidadeProspeccoesProjeto"], valoresMaximos["QuantidadeProspeccoesProjeto"])))
-                                                        @quantidadeProspeccoesProjeto
+                                                        @(Math.Round(quantidadeProspeccoesProjeto))
                                                     </div>
                                                 }
                                             </td>
