@@ -13,14 +13,12 @@
     }
 
     @@media (min-width: 768px) {
-    
+
         .flex-login {
             display: flex;
             flex-direction: row;
         }
-
     }
-
 
 </style>
 
@@ -34,8 +32,8 @@
         </li>
     </ul>
 
-    <div class="flex-login gap-2">
-        <div class="card m-0">
+    <main class="flex-login gap-2">
+        <section class="card m-0">
             <div class="card-body">
                 <h5 class="card-title text-center">Bem vindo ao sistema de Gestão de Inovação - SGI</h5>
                 <hr />
@@ -45,15 +43,55 @@
                 <hr />
                 <div class="card-text"> O SGI é uma plataforma unificada para gestão de dados referentes às equipes dos Insitituto SENAI de Inovação em Química Verde(ISI-QV) e Inspeção e Integridade(ISI-II), assim como do Centro de Inovação SESI em Higiene Ocupacional (CIS-HO)</div>
             </div>
-        </div>
+        </section>
 
-        <div class="card col-md-3 m-0">
+        <aside class="card col-md-3 m-0" style="height: 75vh; overflow-y: scroll">
             <div class="card-body">
                 <h6 class="card-title text-center">Notas da versão</h6>
                 <hr>
 
+                <h6> Versão 1.0.0 - Mudanças Gerais: 30/10/2023</h6>
+                <ul style="font-size:small">
+                    <li class="card-text">Mudanças gerais na interface</li>
+                    <li class="card-text">Melhorias de performance</li>
+                    <li class="card-text">Introdução de novos módulos</li>
+                    <li class="card-text">Correção de Inúmeros Bugs</li>
+                </ul>
+                <h6>Versão 1.0.0 - Correções e Implementações</h6>
+                <ul style="font-size:small">
+                    <li class="card-text">Ajustes na interface de edição (CFF) para uma melhor visualização das datas.</li>
+                    <li class="card-text">Aperfeiçoamentos na exibição dos detalhes e porcentagens da CFF.</li>
+                    <li class="card-text">Aprimoramento na visualização de curvas.</li>
+                    <li class="card-text">Melhorias ao adicionar indicadores em projetos.</li>
+                    <li class="card-text">Ajustes na lista de projetos para evitar sobreposições visuais.</li>
+                    <li class="card-text">Corrigido um erro que poderia afetar o cálculo de custos.</li>
+                    <li class="card-text">Aprimoramentos na interface de usuário para melhorar a verificação de níveis de acesso.</li>
+                    <li class="card-text">Melhorias na edição e criação de projetos.</li>
+                    <li class="card-text">Ajustes para evitar problemas ao adicionar membros em equipes de projeto.</li>
+                    <li class="card-text">Corrigido um problema que impedia a edição e criação de membros em determinadas situações.</li>
+                    <li class="card-text">Aperfeiçoamentos na visualização de gráficos, incluindo o gráfico de aranha.</li>
+                    <li class="card-text">Melhorias gerais na interface e experiência do usuário.</li>
+                    <li class="card-text">Correções de pequenos bugs identificados.</li>
+                    <li class="card-text">Melhoria na exibição das prospecções.</li>
+                    <li class="card-text">Atualização nos gráficos do painel.</li>
+                    <li class="card-text">Adicionada função para testes de visibilidade.</li>
+                    <li class="card-text">Aprimoramento nas funções de gráficos.</li>
+                    <li class="card-text">Introdução de novos pop-ups em projetos.</li>
+                    <li class="card-text">Detalhamento melhorado nos projetos.</li>
+                    <li class="card-text">Adicionada opção de escolha de proponente.</li>
+                    <li class="card-text">Novas opções em configurações de cargos.</li>
+                    <li class="card-text">Melhorias em testes e funções associadas.</li>
+                    <li class="card-text">Introdução de animações para carregamento.</li>
+                    <li class="card-text">Aprimoramento na contagem de líderes e prospecções.</li>
+                    <li class="card-text">Novos indicadores e métricas introduzidos.</li>
+                    <li class="card-text">Simplificação nas visualizações do sistema.</li>
+                    <li class="card-text">Correções e melhorias gerais no sistema.</li>
+                </ul>
+
+                <hr>
+
                 <h6> Versão 0.4.21 - 06/04/2022</h6>
-                <ul style="font-size:small; height:100px; overflow-y:scroll">
+                <ul style="font-size:small">
                     <li class="card-text"> Novas visualizações na lista de empresas</li>
                     <li class="card-text"> Periodização no funil da página principal</li>
                     <li class="card-text"> Adição de filtro para prospecções ativas</li>
@@ -69,7 +107,7 @@
                 <hr>
 
                 <h6> Versão 0.3.08 - 07/04/2021</h6>
-                <ul style="font-size:small; height:100px; overflow-y:scroll">
+                <ul style="font-size:small">
                     <li class="card-text"> Novas visualizações no dashboard de prospecções</li>
                     <li class="card-text"> Implementado novas regras de notificação de prospecções</li>
                     <li class="card-text"> Inclusão de campo referente ao valor das propostas</li>
@@ -78,7 +116,7 @@
                 <hr>
 
                 <h6> Versão 0.2.01 - 05/02/2021</h6>
-                <ul style="font-size:small; height:100px; overflow-y:scroll">
+                <ul style="font-size:small">
                     <li class="card-text"> Acertado problema da inclusão de membros da equipe de projetos</li>
                     <li class="card-text"> Implementado funcionalidade de gerenciamento de entregas de projeto</li>
                     <li class="card-text"> Acertado estouro de layout da lista de projetos</li>
@@ -89,7 +127,7 @@
                 <h6> Versão 0.1.31 - 06/01/2021</h6>
                 <small class="card-text"> Ajuste de versão para inclusão de dados em 2021</small>
             </div>
-        </div>
-    </div>
+        </aside>
+    </main>
     <partial name="Footer" />
 </div>
