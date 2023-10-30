@@ -1,8 +1,10 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
+using Castle.Core.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -17,6 +19,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
     internal class AcertarPrecificacaoProjetosTests
     {
         private ApplicationDbContext _context;
+        private ILogger<ParticipacaoController> _logger;
         private ObjectCreator _objectCreator;
         private ParticipacaoController _controller;
         private List<Projeto> projetos;
@@ -40,7 +43,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
             _objectCreator.CriarEmpresaMock();
             _objectCreator.CriarProjetoMock();
 
-            _controller = new ParticipacaoController(_context);
+            _controller = new ParticipacaoController(_context, _logger);
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {

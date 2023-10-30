@@ -1,10 +1,12 @@
 ﻿using BaseDeProjetos.Controllers;
 using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
+using Castle.Core.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -19,6 +21,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
         private ParticipacaoController? _controller;
         private ApplicationDbContext? _context;
         private ObjectCreator? _objectCreator;
+        private ILogger<ParticipacaoController> _logger;
 
         [SetUp]
         public void Setup()
@@ -39,7 +42,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
             _objectCreator.CriarEmpresaMock();
             _objectCreator.CriarProjetoMock();
 
-            _controller = new ParticipacaoController(_context);
+            _controller = new ParticipacaoController(_context, _logger);
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
@@ -131,7 +134,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
             if (_objectCreator != null)
             {
                 int qtdMesesTotal = Helpers.Helpers.DiferencaMeses(_objectCreator.projeto.DataEncerramento, _objectCreator.projeto.DataInicio, true);
-                int qtdMesesFiltro = Helpers.Helpers.DiferencaMeses(dataFinalFiltro, _objectCreator.projeto.DataInicio, true);
+                int qtdMesesFiltro = Helpers.Helpers.DiferencaMeses(dataFinalFiltro, dataInicialFiltro, true);
 
                 decimal valorProjMes = (decimal)_objectCreator.projeto.ValorTotalProjeto / qtdMesesTotal;
 

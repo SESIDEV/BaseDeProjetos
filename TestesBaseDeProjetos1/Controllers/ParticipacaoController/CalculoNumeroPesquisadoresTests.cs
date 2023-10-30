@@ -1,8 +1,10 @@
 ﻿using BaseDeProjetos.Controllers;
 using BaseDeProjetos.Data;
+using Castle.Core.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -20,6 +22,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
         private ApplicationDbContext _context;
         private ObjectCreator _objectCreator;
         private ParticipacaoController _controller;
+        private ILogger<ParticipacaoController> _logger;
 
         private readonly static Dictionary<int, int> pesquisadores = new Dictionary<int, int>
         {
@@ -47,7 +50,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
             _objectCreator.CriarEmpresaMock();
             _objectCreator.CriarProjetoMock();
 
-            _controller = new ParticipacaoController(_context);
+            _controller = new ParticipacaoController(_context, _logger);
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
