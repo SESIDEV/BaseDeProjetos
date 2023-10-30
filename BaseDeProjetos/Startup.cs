@@ -42,7 +42,7 @@ namespace BaseDeProjetos
                 // This line split "server=localhost:[port]" in "server=localhost;port=[port]
                 ConStr = ConStr.Replace(":", ";port=");
 
-                System.Console.WriteLine(ConStr);
+                Console.WriteLine(ConStr);
 
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseMySql(ConStr, mysqlOptions => { mysqlOptions.ServerVersion(new Version(5, 7, 9), ServerType.MySql); }).UseLazyLoadingProxies());
@@ -50,7 +50,7 @@ namespace BaseDeProjetos
             else
             {
                 string conn = Configuration.GetConnectionString("DefaultConnection");
-                System.Console.WriteLine(conn);
+                Console.WriteLine(conn);
                 services.AddDbContext<ApplicationDbContext>(options =>
                         options.UseMySql(conn, mysqlOptions => { mysqlOptions.ServerVersion(new Version(5, 7, 9), ServerType.MySql); }).UseLazyLoadingProxies());
             }
@@ -62,7 +62,7 @@ namespace BaseDeProjetos
             services.Configure<IdentityOptions>(options =>
             {
                 options.User.AllowedUserNameCharacters =
-                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
+                    "âaáãbçcdeéfghiíjklmnoõópqrstuvwxyzAÂÃBCDEÉFGHIÍJKLMNOÓPQRSTUVWXYZ0123456789-._@+ ";
             });
 
             services.Configure<RequestLocalizationOptions>(
