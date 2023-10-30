@@ -171,6 +171,223 @@
 						}
 					}
 				</li>
+				<li class="nav-item">
+					@{
+						if (ViewContext.RouteData.Values["controller"] as string == "Empresas")
+						{
+							<a class="nav-link active" asp-area="" asp-controller="Empresas" asp-action="Index">
+								<span class="nav-icon active">
+									<i class="bi bi-building"></i>
+								</span>
+								<span class="nav-link-text">Empresas</span>
+							</a>
+						} 
+						else
+						{
+							<a class="nav-link" asp-area="" asp-controller="Empresas" asp-action="Index">
+								<span class="nav-icon active">
+									<i class="bi bi-building"></i>
+								</span>
+								<span class="nav-link-text">Empresas</span>
+							</a>
+						}
+					}
+				</li>
+				<li class="nav-item has-submenu">
+					@{
+						if (ViewContext.RouteData.Values["controller"] as string == "Producao")
+						{
+							<a class="nav-link submenu-toggle active" href="#" data-bs-toggle="collapse" data-bs-target="#submenu-gestao-conhecimento" aria-expanded="false" aria-controls="submenu-gestao-conhecimento">
+								<span class="nav-icon">
+									<i class="bi bi-book"></i>
+								</span>
+								<span class="nav-link-text">Gestão do Conhecimento</span>
+								<span class="submenu-arrow">
+									<i class="bi bi-chevron-down"></i>
+								</span>
+							</a>
+							<div id="submenu-gestao-conhecimento" class="collapse submenu" data-bs-parent="#menu-accordion">
+								<ul class="submenu-list list-unstyled">
+									@foreach (Instituto casa in institutos)
+									{
+										string casa_nome = Enum.GetName(typeof(Instituto), casa);
+										string id_casa = "collapse_" + casa_nome;
+
+										<li class="submenu-item"><a class="submenu-link" asp-action="Index" asp-controller="Producao" asp-route-casa="@casa_nome">@casa_nome</a></li>
+									}
+								</ul>
+							</div>
+						}
+						else 
+						{
+							<a class="nav-link submenu-toggle" href="#" data-bs-toggle="collapse" data-bs-target="#submenu-gestao-conhecimento" aria-expanded="false" aria-controls="submenu-gestao-conhecimento">
+								<span class="nav-icon">
+									<i class="bi bi-book"></i>
+								</span>
+								<span class="nav-link-text">Gestão do Conhecimento</span>
+								<span class="submenu-arrow">
+									<i class="bi bi-chevron-down"></i>
+								</span>
+							</a>
+							<div id="submenu-gestao-conhecimento" class="collapse submenu" data-bs-parent="#menu-accordion">
+								<ul class="submenu-list list-unstyled">
+									@foreach (Instituto casa in institutos)
+									{
+										string casa_nome = Enum.GetName(typeof(Instituto), casa);
+										string id_casa = "collapse_" + casa_nome;
+
+										<li class="submenu-item"><a class="submenu-link" asp-action="Index" asp-controller="Producao" asp-route-casa="@casa_nome">@casa_nome</a></li>
+									}
+								</ul>
+							</div>
+						}
+					}
+				</li>
+				<li class="nav-item has-submenu">
+					@{
+						if (ViewContext.RouteData.Values["controller"] as string == "FunilDeVendas")
+						{
+							<a class="nav-link submenu-toggle active" href="#" data-bs-toggle="collapse" data-bs-target="#submenu-funil-de-vendas" aria-expanded="false" aria-controls="submenu-funil-de-vendas">
+								<span class="nav-icon">
+									<i class="bi bi-funnel"></i>
+								</span>
+								<span class="nav-link-text">Funil de Vendas</span>
+								<span class="submenu-arrow">
+									<i class="bi bi-chevron-down"></i>
+								</span>
+							</a>
+							<div id="submenu-funil-de-vendas" class="collapse submenu" data-bs-parent="#menu-accordion">
+								<ul class="submenu-list list-unstyled">
+									@foreach (Instituto casa in institutos)
+									{
+										string casa_nome = Enum.GetName(typeof(Instituto), casa);
+										string id_casa = "collapse_" + casa_nome;
+
+										<li class="submenu-item"><a class="submenu-link" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa_nome" asp-route-aba="">@casa_nome</a></li>
+									}
+								</ul>
+							</div>
+						} else
+						{
+							<a class="nav-link submenu-toggle" href="#" data-bs-toggle="collapse" data-bs-target="#submenu-funil-de-vendas" aria-expanded="false" aria-controls="submenu-funil-de-vendas">
+								<span class="nav-icon">
+									<i class="bi bi-funnel"></i>
+								</span>
+								<span class="nav-link-text">Funil de Vendas</span>
+								<span class="submenu-arrow">
+									<i class="bi bi-chevron-down"></i>
+								</span>
+							</a>
+							<div id="submenu-funil-de-vendas" class="collapse submenu" data-bs-parent="#menu-accordion">
+								<ul class="submenu-list list-unstyled">
+									@foreach (Instituto casa in institutos)
+									{
+										string casa_nome = Enum.GetName(typeof(Instituto), casa);
+										string id_casa = "collapse_" + casa_nome;
+
+										<li class="submenu-item"><a class="submenu-link" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa_nome">@casa_nome</a></li>
+									}
+								</ul>
+							</div>
+						}
+					}
+				</li>
+				<li class="nav-item has-submenu">
+					@{
+						if (ViewContext.RouteData.Values["controller"] as string == "Projetos")
+						{
+							<a class="nav-link submenu-toggle active" href="#" data-bs-toggle="collapse" data-bs-target="#submenu-projetos" aria-expanded="false" aria-controls="submenu-projetos">
+								<span class="nav-icon">
+							
+									<i class="bi bi-files"></i>
+								</span>
+								<span class="nav-link-text">Projetos</span>
+								<span class="submenu-arrow">
+									<i class="bi bi-chevron-down"></i>
+								</span>
+							</a>
+							<div id="submenu-projetos" class="collapse submenu" data-bs-parent="#menu-accordion">
+								<ul class="submenu-list list-unstyled">
+									@foreach (Instituto casa in institutos)
+									{
+										string casa_nome = Enum.GetName(typeof(Instituto), casa);
+										string id_casa = "collapse_" + casa_nome;
+
+										<li class="submenu-item"><a class="submenu-link" asp-action="Index" asp-controller="Projetos" asp-route-casa="@casa_nome">@casa_nome</a></li>
+									}									
+								</ul>
+							</div>
+						} else
+						{
+							<a class="nav-link submenu-toggle" href="#" data-bs-toggle="collapse" data-bs-target="#submenu-projetos" aria-expanded="false" aria-controls="submenu-projetos">
+								<span class="nav-icon">
+
+									<i class="bi bi-files"></i>
+								</span>
+								<span class="nav-link-text">Projetos</span>
+								<span class="submenu-arrow">
+									<i class="bi bi-chevron-down"></i>
+								</span>
+							</a>
+							<div id="submenu-projetos" class="collapse submenu" data-bs-parent="#menu-accordion">
+								<ul class="submenu-list list-unstyled">
+									@foreach (Instituto casa in institutos)
+									{
+										string casa_nome = Enum.GetName(typeof(Instituto), casa);
+										string id_casa = "collapse_" + casa_nome;
+
+										<li class="submenu-item"><a class="submenu-link" asp-action="Index" asp-controller="Projetos" asp-route-casa="@casa_nome">@casa_nome</a></li>
+									}
+								</ul>
+							</div>
+
+						}
+					}
+				</li>
+				<li class="nav-item">
+					@{
+						if (ViewContext.RouteData.Values["controller"] as string == "Pessoas")
+						{
+							<a class="nav-link active" asp-action="Index" asp-controller="Pessoas">
+								<span class="nav-icon">
+									<i class="bi bi-people"></i>
+								</span>
+								<span class="nav-link-text">Pessoas</span>
+							</a>
+						} else
+						{
+							<a class="nav-link" asp-action="Index" asp-controller="Pessoas">
+								<span class="nav-icon">
+									<i class="bi bi-people"></i>
+								</span>
+								<span class="nav-link-text">Pessoas</span>
+							</a>
+						}
+					}
+				</li>
+
+				<li class="nav-item">
+					@{
+						if (ViewContext.RouteData.Values["controller"] as string == "CodigoAmostraProjeto")
+						{
+							<a class="nav-link active" asp-action="Index" asp-controller="CodigoAmostraProjeto">
+								<span class="nav-icon">
+									<i class="fa fa-barcode"></i>
+								</span>
+								<span class="nav-link-text">Códigos de Projetos</span>
+							</a>
+						} else
+						{
+							<a class="nav-link" asp-action="Index" asp-controller="CodigoAmostraProjeto">
+								<span class="nav-icon">
+									<i class="fa fa-barcode"></i>
+								</span>
+								<span class="nav-link-text">Códigos de Projetos</span>
+							</a>
+						}
+					}
+				</li>
+
 
 				@if (usuarioNivel.ToString() == "PMO" || usuarioNivel.ToString() == "Dev" || usuarioNivel.ToString() == "Supervisor")
 				{

@@ -159,10 +159,8 @@ namespace BaseDeProjetos.Helpers
         public static string PuxarDadosEmpresas(ApplicationDbContext _context)
         {
             var empresas = _context.Empresa.Where(e => e.Nome != null);//.Select(e => new {e.Nome, e.Segmento.GetDisplayName()}).ToList();
+            return JsonSerializer.Serialize(empresas);
 
-            string empresasJson = JsonSerializer.Serialize(empresas);
-
-            return empresasJson;
         }
 
         /// <summary>

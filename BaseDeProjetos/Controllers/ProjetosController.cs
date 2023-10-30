@@ -235,6 +235,7 @@ namespace BaseDeProjetos.Controllers
             {
                 return View("Forbidden");
             }
+
         }
 
         /// <summary>
@@ -468,30 +469,32 @@ namespace BaseDeProjetos.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(string id)
         {
-            if (HttpContext.User.Identity.IsAuthenticated)
-            {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+            //if (HttpContext.User.Identity.IsAuthenticated)
+            //{
+            //    Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            //    ViewBag.usuarioCasa = usuario.Casa;
+            //    ViewBag.usuarioNivel = usuario.Nivel;
 
-                if (id == null)
-                {
-                    return NotFound();
-                }
+            //    if (id == null)
+            //    {
+            //        return NotFound();
+            //    }
 
-                Projeto projeto = await _context.Projeto
-                    .FirstOrDefaultAsync(m => m.Id == id);
-                if (projeto == null)
-                {
-                    return NotFound();
-                }
+            //    Projeto projeto = await _context.Projeto
+            //        .FirstOrDefaultAsync(m => m.Id == id);
+            //    if (projeto == null)
+            //    {
+            //        return NotFound();
+            //    }
 
-                return View(projeto);
-            }
-            else
-            {
-                return View("Forbidden");
-            }
+            //    return View(projeto);
+            //}
+            //else
+            //{
+            //    return View("Forbidden");
+            //}
+
+            return View("Construcao");
         }
 
         // GET: Projetos/Create
@@ -634,6 +637,7 @@ namespace BaseDeProjetos.Controllers
             {
                 return View("Forbidden");
             }
+
         }
 
         //POST: Projetos/Edit/5
@@ -740,6 +744,7 @@ namespace BaseDeProjetos.Controllers
             {
                 return View("Forbidden");
             }
+
         }
 
         // POST

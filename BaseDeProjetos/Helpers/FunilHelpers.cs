@@ -327,7 +327,9 @@ namespace BaseDeProjetos.Helpers
 
         public static void RepassarStatusAoCancelarAncora(ApplicationDbContext _context, Prospeccao prospeccao)
         {
-            if (prospeccao != null)
+
+            if (!string.IsNullOrEmpty(prospeccao.Agregadas))
+
             {
                 var idsProspeccoesAgregadas = prospeccao.Agregadas.Split(";"); //separa os Ids
 
@@ -338,6 +340,7 @@ namespace BaseDeProjetos.Helpers
                         var prospeccaoAgregada = _context.Prospeccao.Where(prosp => prosp.Id == id).First();
                         var ultimoStatusProspeccaoAgregada = prospeccaoAgregada.Status.Last().Data;
                         var statusMaisRecentes = prospeccao.Status.Where(s => s.Data > ultimoStatusProspeccaoAgregada).ToList();
+
                         if (statusMaisRecentes != null)
                         {// se não houver diferença de status, add um novo status
                             FollowUp statusDeagg = new FollowUp
