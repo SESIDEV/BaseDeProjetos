@@ -1,4 +1,4 @@
-using BaseDeProjetos.Data;
+﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -306,7 +306,7 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private async Task<List<Prospeccao>> GetProspeccoesUsuarioMembroEquipe(Usuario usuario)
         {
-            return await _context.Prospeccao.Where(p => p.Usuario == usuario || p.MembrosEquipe.Contains(usuario.Email)).ToListAsync();
+            return await _context.Prospeccao.Where(p => (p.Usuario == usuario || p.MembrosEquipe.Contains(usuario.Email)) && p.Status.OrderBy(f => f.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToListAsync();
         }
 
         /// <summary>
@@ -500,7 +500,7 @@ namespace BaseDeProjetos.Controllers
 
         private async Task<List<Prospeccao>> GetProspeccoesUsuarioLider(Usuario usuario)
         {
-            return await _context.Prospeccao.Where(p => p.Usuario.Id == usuario.Id).ToListAsync();
+            return await _context.Prospeccao.Where(p => p.Usuario.Id == usuario.Id && p.Status.OrderBy(f => f.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToListAsync();
         }
 
         /// <summary>
@@ -725,7 +725,7 @@ namespace BaseDeProjetos.Controllers
             }
             else
             {
-                prospeccoes = _context.Prospeccao.ToList();
+                prospeccoes = _context.Prospeccao.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
             }
 
 
@@ -875,7 +875,7 @@ namespace BaseDeProjetos.Controllers
         private async Task<List<Prospeccao>> GetProspeccoesUsuarioMembro(Usuario usuario)
         {
             // Somente membro
-            return await _context.Prospeccao.Where(p => p.MembrosEquipe.Contains(usuario.Email)).ToListAsync();
+            return await _context.Prospeccao.Where(p => p.MembrosEquipe.Contains(usuario.Email) && p.Status.OrderBy(f => f.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToListAsync();
         }
 
         /// <summary>
