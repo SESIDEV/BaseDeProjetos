@@ -423,6 +423,14 @@ namespace BaseDeProjetos.Controllers
             int quantidadeProspeccoesConvertidas;
             int quantidadeProspeccoesLider;
 
+            // Apenas para calculo da Assertividade
+            decimal valorMedioProspeccoesComPropostaLider = 0;
+            decimal valorMedioProspeccoesConvertidasLider = 0;
+            decimal valorTotalProspeccoesComPropostaLider = 0;
+            decimal valorTotalProspeccoesConvertidasLider = 0;
+            int quantidadeProspeccoesComPropostaLider = 0;
+            int quantidadeProspeccoesConvertidasLider = 0;
+
             // Entender se, esse valor precisa ser das ativas apenas ou se posso incluir TUDO, TUDO
             participacao.ValorTotalProspeccoes = valorTotalProspeccoes = ExtrairValorProspeccoes(usuario, null);
             participacao.ValorTotalProspeccoesComProposta = valorTotalProspeccoesComProposta = ExtrairValorProspeccoes(usuario, StatusProspeccao.ComProposta);
@@ -433,6 +441,12 @@ namespace BaseDeProjetos.Controllers
             participacao.QuantidadeProspeccoesProjeto = quantidadeProspeccoesConvertidas = prospeccoesUsuarioConvertidas.Count();
             participacao.QuantidadeProspeccoesMembro = quantidadeProspeccoesMembro = prospeccoesUsuarioMembro.Count();
             participacao.QuantidadeProspeccoesLider = quantidadeProspeccoesLider = prospeccoesUsuarioLider.Count();
+
+            // Apenas para calculo da Assertividade
+            quantidadeProspeccoesComPropostaLider = prospeccoesUsuarioLider.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).Count();
+            quantidadeProspeccoesConvertidasLider = prospeccoesUsuarioLider.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida).Count();
+            valorTotalProspeccoesComPropostaLider = prospeccoesUsuarioLider.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).Sum(p => p.ValorProposta);
+            valorTotalProspeccoesConvertidasLider = prospeccoesUsuarioLider.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida).Sum(p => p.ValorProposta);
 
             participacao.Lider = usuario;
 
@@ -452,16 +466,18 @@ namespace BaseDeProjetos.Controllers
                 if (quantidadeProspeccoesComProposta > 0)
                 {
                     participacao.ValorMedioProspeccoesComProposta = valorMedioProspeccoesComProposta = valorTotalProspeccoesComProposta / quantidadeProspeccoesComProposta;
+                    valorMedioProspeccoesComPropostaLider = valorTotalProspeccoesComPropostaLider / quantidadeProspeccoesComPropostaLider;
                 }
 
                 if (quantidadeProspeccoesConvertidas > 0)
                 {
                     participacao.ValorMedioProspeccoesConvertidas = valorMedioProspeccoesConvertidas = valorTotalProspeccoesConvertidas / quantidadeProspeccoesConvertidas;
+                    valorMedioProspeccoesConvertidasLider = valorTotalProspeccoesConvertidasLider / quantidadeProspeccoesConvertidasLider;
                 }
 
                 if (valorMedioProspeccoesComProposta != 0)
                 {
-                    var calculoAbsoluto = Math.Abs((valorMedioProspeccoesConvertidas - valorMedioProspeccoesComProposta) / valorMedioProspeccoesComProposta);
+                    var calculoAbsoluto = Math.Abs((valorMedioProspeccoesConvertidasLider - valorMedioProspeccoesComPropostaLider) / valorMedioProspeccoesComPropostaLider);
                     if (calculoAbsoluto != 0)
                     {
                         participacao.AssertividadePrecificacao = 1 / calculoAbsoluto;
