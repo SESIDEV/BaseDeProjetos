@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,8 @@ namespace BaseDeProjetos.Controllers
     public class EditaisController : SGIController
     {
         private readonly ApplicationDbContext _context;
+
+        private readonly ILogger<EditaisController> _logger;
 
         private readonly UserManager<Usuario> _userManager;
 
@@ -80,17 +83,17 @@ namespace BaseDeProjetos.Controllers
                     // Handle error - for instance, the user might already exist, or there might be password validation errors.
                     foreach (var error in result.Errors)
                     {
-                        // Log or display the error description.
-                        Console.WriteLine(error.Description);
+                        _logger.LogError($"Um erro ocorreu ao criar o usuário: {error.Code} : {error.Description}");
                     }
                 }
             }
         }
 
-        public EditaisController(ApplicationDbContext context, UserManager<Usuario> userManager)
+        public EditaisController(ApplicationDbContext context, UserManager<Usuario> userManager, ILogger<EditaisController> logger)
         {
             _userManager = userManager;
             _context = context;
+            _logger = logger;
         }
 
         // GET: Editais
