@@ -315,7 +315,10 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private List<Prospeccao> GetProspeccoesUsuarioMembroEquipe(Usuario usuario)
         {
-            return _prospeccoes.Where(p => (p.Usuario == usuario || p.MembrosEquipe.Contains(usuario.Email)) && p.Status.OrderBy(f => f.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
+            return _prospeccoes.Where(p =>
+                (p.Usuario == usuario || (p.MembrosEquipe != null && p.MembrosEquipe.Contains(usuario.Email))) &&
+                (p.Status == null || p.Status.OrderBy(f => f.Data).LastOrDefault()?.Status != StatusProspeccao.Planejada)
+            ).ToList();
         }
 
         /// <summary>
@@ -394,7 +397,7 @@ namespace BaseDeProjetos.Controllers
 
             ParticipacaoTotalViewModel participacao = new ParticipacaoTotalViewModel() { Participacoes = new List<ParticipacaoViewModel>() };
             List<Projeto> projetosUsuarioEmExecucaoFiltrados = new List<Projeto>();
-            
+
             // !! Evite puxar prospecções direto do contexto, utilize esse objeto para não sobrecarregar o MySQL !!
 
             // Líder e Membro
@@ -953,7 +956,12 @@ namespace BaseDeProjetos.Controllers
         private List<Prospeccao> GetProspeccoesUsuarioMembro(Usuario usuario)
         {
             // Somente membro
-            return _prospeccoes.Where(p => p.MembrosEquipe.Contains(usuario.Email) && p.Status.OrderBy(f => f.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
+            return _prospeccoes.Where(p =>
+                p.MembrosEquipe != null &&
+                p.MembrosEquipe.Contains(usuario.Email) &&
+                (p.Status == null || p.Status.OrderBy(f => f.Data).LastOrDefault()?.Status != StatusProspeccao.Planejada)
+            ).ToList();
+
         }
 
         /// <summary>
@@ -1097,8 +1105,6 @@ namespace BaseDeProjetos.Controllers
             Usuario usuarioAtivo = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
             List<Usuario> usuarios;
 
-            _prospeccoes = await _context.Prospeccao.ToListAsync();
-
             if (usuarioAtivo.Casa == Instituto.ISIQV || usuarioAtivo.Casa == Instituto.CISHO)
             {
                 usuarios = await _context.Users.Where(u => (u.Casa == Instituto.ISIQV || u.Casa == Instituto.CISHO) && u.Cargo.Nome == nomeCargoPesquisador && u.EmailConfirmed == true && u.Nivel == Nivel.Usuario).ToListAsync();
@@ -1127,6 +1133,11 @@ namespace BaseDeProjetos.Controllers
         public async Task<IActionResult> Index(string mesInicio, string anoInicio, string mesFim, string anoFim)
         {
             Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+
+            anoInicio = string.IsNullOrEmpty(anoInicio) ? "2021" : anoInicio;
+            mesInicio = string.IsNullOrEmpty(mesInicio) ? "1" : mesInicio;
+            anoFim = string.IsNullOrEmpty(anoFim) ? DateTime.Now.Year.ToString() : anoFim;
+            mesFim = string.IsNullOrEmpty(mesFim) ? "12" : mesFim;
 
             ViewData["mesInicio"] = mesInicio;
             ViewData["anoInicio"] = anoInicio;
