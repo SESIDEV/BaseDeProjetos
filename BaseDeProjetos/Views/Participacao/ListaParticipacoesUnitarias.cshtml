@@ -1,0 +1,86 @@
+﻿@using System.Globalization;
+@model BaseDeProjetos.Models.ParticipacaoViewModel
+@{
+    var cultura = new CultureInfo("pt-BR");
+}
+
+<div class="col-6 col-md-4 col-xl-3 col-xxl-3">
+    <div class="app-card app-card-doc h-100 shadow-sm">
+        @{
+            if (Model.Convertida)
+            {
+                <div class="ribbon ribbon-top-right ribbon-green-yellow"><span>Convertida</span></div>
+            }
+            else if (Model.Planejada)
+            {
+                <div class="ribbon ribbon-top-right ribbon-blue"><span>Planejada</span></div>
+            }
+            else if (Model.Suspensa)
+            {
+                <div class="ribbon ribbon-top-right ribbon-yellow"><span>Suspensa</span></div>
+            }
+            else if (Model.NaoConvertida)
+            {
+                <div class="ribbon ribbon-top-right ribbon-red"><span>Não Convertida</span></div>
+            }
+            else if (Model.EmDiscussao)
+            {
+                <div class="ribbon ribbon-top-right ribbon-orange"><span>Em Discussão</span></div>
+            }
+            else if (Model.ComProposta)
+            {
+                <div class="ribbon ribbon-top-right ribbon-green"><span>Com Proposta</span></div>
+            }
+            else
+            {
+                <div class="ribbon ribbon-top-right ribbon-red"><span>Desconhecido</span></div>
+            }
+
+            <div class="app-card-body p-3">
+                <h4 class="app-doc-title truncate mb-0">
+                    @Model.NomeProjeto
+                </h4>
+                <div class="app-doc-meta">
+                    <ul class="list-unstyled mb-0">
+                        <li>
+                            <span style="display:block; font-weight:bold">
+                                Empresa:
+                            </span>@(Model.EmpresaProjeto)
+                        </li>
+                        <li>
+                            <span style="display:block; font-weight:bold">
+                                Valor:
+                            </span>@(Model.ValorNominal != 0 ? $"R${Model.ValorNominal.ToString("N", cultura)}" : "Sem valor especificado")
+                        </li>
+                        @if (Model.ValorNominal > 0)
+                        {
+                            <li>
+                                <span style="display:block; font-weight:bold">
+                                    Valor do Líder:
+                                </span>@(Model.ValorLider != 0 ? $"R${Model.ValorLider.ToString("N", cultura)}" : "Sem valor pro líder")
+                            </li>
+                            <li>
+                                <span style="display:block; font-weight:bold">
+                                    Valor dos Pesquisadores (@Model.QuantidadePesquisadores):
+                                </span>@(Model.ValorPesquisadores != 0 ? $"R${Model.ValorPesquisadores.ToString("N", cultura)}" : "Sem valor para os pesquisadores") /
+                                @(Model.ValorPorPesquisador != 0 ? $"R${Model.ValorPorPesquisador.ToString("N", cultura)}" : "Sem valor por pesquisador")
+                            </li>
+                            <li>
+                                <span style="display:block; font-weight:bold">
+                                    Valor dos Bolsistas (@Model.QuantidadeBolsistas):
+                                </span>@(Model.ValorBolsistas != 0 ? $"R${Model.ValorBolsistas.ToString("N", cultura)}" : "Sem valor para os bolsistas") /
+                                @(Model.ValorPorBolsista != 0 ? $"R${Model.ValorPorBolsista.ToString("N", cultura)}" : "Sem valor por bolsista")
+                            </li>
+                            <li>
+                                <span style="display:block; font-weight:bold">
+                                    Valor dos Estagiários (@Model.QuantidadeEstagiarios):
+                                </span>@(Model.ValorEstagiarios != 0 ? $"R${Model.ValorEstagiarios.ToString("N", cultura)}" : "Sem valor para os estagiários") /
+                                @(Model.ValorPorEstagiario != 0 ? $"R${Model.ValorPorEstagiario.ToString("N", cultura)}" : "Sem valor por estagiário")
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+    </div>
+</div>

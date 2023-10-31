@@ -1,8 +1,8 @@
-﻿using System;
-using BaseDeProjetos.Models;
+﻿using BaseDeProjetos.Models;
 using MailSenderApp.Services;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using MailSenderHelpers;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using System;
 
 namespace BaseDeProjetos.Helpers
 {
@@ -88,7 +88,5 @@ namespace BaseDeProjetos.Helpers
             notificacao.Status = followup.Status;
             return notificacao;
         }
-
     }
-
 }

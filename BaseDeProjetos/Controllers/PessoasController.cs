@@ -48,7 +48,6 @@ namespace BaseDeProjetos.Controllers
                 return Helpers.Helpers.PuxarDadosUsuarios(_context);
             else
                 return "403 Forbidden";
-
         }
 
         /// <summary>

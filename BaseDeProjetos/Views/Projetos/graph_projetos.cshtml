@@ -1,34 +1,6 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Projeto>
 @{
 
-    int cd_QV = Model.Where(p => p.Casa == Instituto.ISIQV && p.FonteFomento == TipoContratacao.ContratacaoDireta).ToList().Count;
-    int cd_II = Model.Where(p => p.Casa == Instituto.ISIII && p.FonteFomento == TipoContratacao.ContratacaoDireta).ToList().Count;
-    int cd_HO = Model.Where(p => p.Casa == Instituto.CISHO && p.FonteFomento == TipoContratacao.ContratacaoDireta).ToList().Count;
-
-    int ei_QV = Model.Where(p => p.Casa == Instituto.ISIQV && p.FonteFomento == TipoContratacao.EditalInovacao).ToList().Count;
-    int ei_II = Model.Where(p => p.Casa == Instituto.ISIII && p.FonteFomento == TipoContratacao.EditalInovacao).ToList().Count;
-    int ei_HO = Model.Where(p => p.Casa == Instituto.CISHO && p.FonteFomento == TipoContratacao.EditalInovacao).ToList().Count;
-
-    int emb_QV = Model.Where(p => p.Casa == Instituto.ISIQV && p.FonteFomento == TipoContratacao.Embrapii).ToList().Count;
-    int emb_II = Model.Where(p => p.Casa == Instituto.ISIII && p.FonteFomento == TipoContratacao.Embrapii).ToList().Count;
-    int emb_HO = Model.Where(p => p.Casa == Instituto.CISHO && p.FonteFomento == TipoContratacao.Embrapii).ToList().Count;
-
-    int af_QV = Model.Where(p => p.Casa == Instituto.ISIQV && p.FonteFomento == TipoContratacao.AgenciaFomento).ToList().Count;
-    int af_II = Model.Where(p => p.Casa == Instituto.ISIII && p.FonteFomento == TipoContratacao.AgenciaFomento).ToList().Count;
-    int af_HO = Model.Where(p => p.Casa == Instituto.CISHO && p.FonteFomento == TipoContratacao.AgenciaFomento).ToList().Count;
-
-    int ou_QV = Model.Where(p => p.Casa == Instituto.ISIQV && p.FonteFomento == TipoContratacao.Indefinida).ToList().Count;
-    int ou_II = Model.Where(p => p.Casa == Instituto.ISIII && p.FonteFomento == TipoContratacao.Indefinida).ToList().Count;
-    int ou_HO = Model.Where(p => p.Casa == Instituto.CISHO && p.FonteFomento == TipoContratacao.Indefinida).ToList().Count;
-
-    int anp_QV = Model.Where(p => p.Casa == Instituto.ISIQV && p.FonteFomento == TipoContratacao.ANP).ToList().Count;
-    int anp_II = Model.Where(p => p.Casa == Instituto.ISIII && p.FonteFomento == TipoContratacao.ANP).ToList().Count;
-    int anp_HO = Model.Where(p => p.Casa == Instituto.CISHO && p.FonteFomento == TipoContratacao.ANP).ToList().Count;
-
-    int par_QV = Model.Where(p => p.Casa == Instituto.ISIQV && p.FonteFomento == TipoContratacao.Parceiro).ToList().Count;
-    int par_II = Model.Where(p => p.Casa == Instituto.ISIII && p.FonteFomento == TipoContratacao.Parceiro).ToList().Count;
-    int par_HO = Model.Where(p => p.Casa == Instituto.CISHO && p.FonteFomento == TipoContratacao.Parceiro).ToList().Count;
-
 }
 <div>
     <div class="pb-4">
@@ -38,59 +10,107 @@
             </div>
             <div class="app-card-body p-4">
                 <figure class="col-12 highcharts-figure">
-                    <div id="projetos"></div>
+                    <div id="projetos"</div>
                 </figure>
             </div>
         </div>
     </div>
-
 </div>
 
-<script type="text/javascript">
-    Highcharts.chart('projetos', {
-        chart: {
-            type: 'column'
-        },
-        title: {
-            text: null
-        },
-        xAxis: {
-            categories: [
-                'Contratação Direta',
-                'Editais de inovação SESI/SENAI',
-                'Embrapii',
-                'Agências de Fomento',
-                'ANP',
-                'Parceiros de Edital',
-                'A definir',
-            ],
-        },
-        yAxis: {
-            min: 0,
+<script>
+    const projetosId = "projetos";
+    const projetosElem = document.querySelector(`#${projetosId}`);
+    const classesLoading = ['spinner-border', 'text-primary'];
+
+    async function fetchDadosGrafico() {
+        let fetchedData = null;
+        await fetch("/Projetos/RetornarDadosGrafico")
+            .then(response => response.json())
+            .then(data => {
+                if (data) {
+                    fetchedData = data;
+                } else {
+                    console.error("Não temos dados para exibir no gráfico");
+                }
+            })
+            .catch(err => {
+                console.error(`Houve um erro na obtenção dos dados do gráfico: ${err}`);
+            });
+        return fetchedData;
+    }
+
+
+    function obterSeries(data) {
+        let series = []
+        if (data) {
+            data.map(entrada => {
+                series.push({
+                    name: `${entrada['Casa']}`,
+                    data: [
+                        entrada['ProjetosANP'].length,
+                        entrada['ProjetosAgenciaFomento'].length,
+                        entrada['ProjetosContratacaoDireta'].length,
+                        entrada['ProjetosEditalInovacao'].length,
+                        entrada['ProjetosEmbrapii'].length,
+                        entrada['ProjetosIndefinido'].length]
+                })
+            });
+            return series;
+        } else {
+            console.error(`Os dados estão vazios: ${data}`);
+            return null;
+        }
+    }
+
+    function exibirGrafico(data) {
+        let chart = Highcharts.chart('projetos', {
+            chart: {
+                type: 'column'
+            },
             title: {
-                text: 'projetos'
+                text: null
+            },
+            xAxis: {
+                // TODO: Definir de forma dinâmica um dia?
+                categories: [
+                    'ANP',
+                    'Agências de Fomento',
+                    'Contratação Direta',
+                    'Editais de inovação SESI/SENAI',
+                    'Embrapii',
+                    // 'Parceiros de Edital', não estava no controller?
+                    'A definir',
+                ],
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Projetos'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.1f} projetos </b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            series: obterSeries(data)
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        fetchDadosGrafico().then(data => {
+            if (data) {
+                projetosElem.classList.remove(...classesLoading);
+                exibirGrafico(data);
             }
-        },
-        tooltip: {
-            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                '<td style="padding:0"><b>{point.y:.1f} projetos </b></td></tr>',
-            footerFormat: '</table>',
-            shared: true,
-            useHTML: true
-        },
-        series: [{
-            name: 'CIS-HO',
-            data: [@cd_HO, @ei_HO, @emb_HO, @af_HO, @anp_HO, @par_HO, @ou_HO]
-
-        }, {
-            name: 'ISI-II',
-            data: [@cd_II, @ei_II, @emb_II, @af_II, @anp_II, @par_II, @ou_II]
-
-        }, {
-            name: 'ISI-QV',
-            data: [@cd_QV, @ei_QV, @emb_QV, @af_QV, @anp_QV, @par_QV, @ou_QV]
-
-        }]
+            else {
+                console.error("Os dados estão nulos?");
+            }
+        });
     });
+
+    projetosElem.classList.add(...classesLoading);
 </script>

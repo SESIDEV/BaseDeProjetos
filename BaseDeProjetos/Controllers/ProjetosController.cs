@@ -1,13 +1,13 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
-using MailSenderHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 namespace BaseDeProjetos.Controllers
 {
     [Authorize]
-    public class ProjetosController : Controller
+    public class ProjetosController : SGIController
     {
         private readonly ApplicationDbContext _context;
 
@@ -27,22 +27,67 @@ namespace BaseDeProjetos.Controllers
             _context = context;
         }
 
-        [HttpPost]
+        [HttpGet("/Projetos/RetornarDadosGraficoCFF/{idProjeto}")]
+        public async Task<IActionResult> RetornarDadosGraficoCFF(string idProjeto)
+        {
+            List<object[]> dataPercentualFisico = new List<object[]>();
+            List<object[]> dataPercentualFinanceiro = new List<object[]>();
+
+            Dictionary<string, object> dadosGrafico = new Dictionary<string, object>();
+
+            var projeto = await _context.Projeto.FirstOrDefaultAsync(p => p.Id == idProjeto);
+
+            var curvaFisicoFinanceiraSort = projeto.CurvaFisicoFinanceira.OrderBy(p => p.Data);
+
+            foreach (var cff in curvaFisicoFinanceiraSort)
+            {
+                long timestamp = Helpers.Helpers.DateTimeToUnixTimestamp(cff.Data); // Multiply by 1000 to convert to JavaScript timestamp
+                object[] percentualFisico = new object[] { timestamp, cff.PercentualFisico };
+                object[] percentualFinanceiro = new object[] { timestamp, cff.PercentualFinanceiro };
+
+                dataPercentualFisico.Add(percentualFisico);
+                dataPercentualFinanceiro.Add(percentualFinanceiro);
+            }
+
+            dadosGrafico["dadosPercentualFisico"] = dataPercentualFisico;
+            dadosGrafico["dadosPercentualFinanceiro"] = dataPercentualFinanceiro;
+
+            var serializedResult = JsonConvert.SerializeObject(dadosGrafico);
+
+            return Ok(serializedResult);
+        }
+
+        /// <summary>
+        /// Adicionar um indicador e atrela ao projeto
+        /// </summary>
+        /// <param name="indicadores"></param>
+        /// <returns></returns>
+        [HttpPost("/Projetos/AdicionarIndicador/{idProjeto}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Atualizar([Bind("IdProjeto, Regramento, Repasse, ComprasServico, ComprasMaterial, Bolsista, SatisfacaoMetadeProjeto, SatisfacaoFimProjeto, Relatorios, PrestacaoContas")] ProjetoIndicadores indicadores)
+        public async Task<IActionResult> AdicionarIndicador(string idProjeto, [Bind("Regramento, Repasse, ComprasServico, ComprasMaterial, Bolsista, SatisfacaoMetadeProjeto, SatisfacaoFimProjeto, Relatorios, PrestacaoContas")] ProjetoIndicadores indicadores)
         {
             if (ModelState.IsValid)
             {
-                Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == indicadores.IdProjeto);
+                Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == idProjeto);
 
                 // Gerar id do indicador
                 string idIndicador = $"proj_ind_{Guid.NewGuid()}";
                 indicadores.Id = idIndicador;
 
                 // Atrelar o projeto ao indicador
-                indicadores.Projeto = projeto; 
+                if (projeto.Indicadores != null)
+                {
+                    if (projeto.Indicadores.Count == 0)
+                    {
+                        projeto.Indicadores = new List<ProjetoIndicadores> { indicadores };
+                    }
+                    else
+                    {
+                        projeto.Indicadores.Add(indicadores);
+                    }
+                }
 
-                // Criar o indicador da macroentrega no DB
+                // Criar o indicador no DB
                 await CriarIndicadores(indicadores);
 
                 await _context.SaveChangesAsync();
@@ -53,6 +98,84 @@ namespace BaseDeProjetos.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        /// <summary>
+        /// Edita uma CFF e atrela ao projeto
+        /// </summary>
+        /// <param name="cff">Objeto CFF</param>
+        /// <returns></returns>
+        [HttpPost("/Projetos/EditarCFF/{idCFF}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditarCFF(int idCFF, [Bind("Id, Data, PercentualFisico, PercentualFinanceiro")] CurvaFisicoFinanceira cff)
+        {
+            if (idCFF != cff.Id)
+            {
+                return View("Error");
+            }
+
+            if (ModelState.IsValid)
+            {
+                _context.Update(cff);
+
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                return View("Error");
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        /// <summary>
+        /// Adicionar uma CFF e atrela ao projeto
+        /// </summary>
+        /// <param name="cff">Objeto CFF</param>
+        /// <returns></returns>
+        [HttpPost("/Projetos/AdicionarCFF/{idProjeto}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AdicionarCFF(string idProjeto, [Bind("Id, Data, PercentualFisico, PercentualFinanceiro")] CurvaFisicoFinanceira cff)
+        {
+            if (ModelState.IsValid)
+            {
+                Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == idProjeto);
+
+                // Atrelar o projeto ao indicador
+                if (projeto.CurvaFisicoFinanceira != null)
+                {
+                    if (projeto.CurvaFisicoFinanceira.Count == 0)
+                    {
+                        projeto.CurvaFisicoFinanceira = new List<CurvaFisicoFinanceira> { cff };
+                    }
+                    else
+                    {
+                        projeto.CurvaFisicoFinanceira.Add(cff);
+                    }
+                }
+
+                // Criar o indicador no DB
+                await CriarCFF(cff);
+
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                return View("Error");
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        /// <summary>
+        /// Cria a curva físico financeira no banco
+        /// </summary>
+        /// <param name="cff">Objeto CurvaFisicoFinanceira</param>
+        /// <returns></returns>
+        private async Task CriarCFF(CurvaFisicoFinanceira cff)
+        {
+            await _context.AddAsync(cff);
+            await _context.SaveChangesAsync();
         }
 
         /// <summary>
@@ -86,31 +209,33 @@ namespace BaseDeProjetos.Controllers
 
         // GET: Projetos
         [HttpGet]
-        public IActionResult Index(string casa, string sortOrder = "", string searchString = "", string ano = "")
+        public async Task<IActionResult> Index(string casa, string sortOrder = "", string searchString = "", string ano = "")
         {
-            //if (HttpContext.User.Identity.IsAuthenticated)
-            //{
-            //    Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            //    ViewBag.usuarioCasa = usuario.Casa;
-            //    ViewBag.usuarioNivel = usuario.Nivel; // Já vi não funcionar, porquê? :: hhenriques1999
-            //    ViewData["NivelUsuario"] = usuario.Nivel;
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                var usuarios = await _context.Users.ToListAsync();
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel; // Já vi não funcionar, porquê? :: hhenriques1999
+                ViewData["NivelUsuario"] = usuario.Nivel;
+                ViewData["IdUsuario"] = usuario.Id;
+                ViewData["Usuarios"] = usuarios;
 
-            //    List<Empresa> empresas = _context.Empresa.ToList();
-            //    ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+                List<Empresa> empresas = await _context.Empresa.ToListAsync();
+                ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
 
-            //    SetarFiltros(sortOrder, searchString);
-            //    IQueryable<Projeto> projetos = ObterProjetosPorCasa(casa);
-            //    projetos = PeriodizarProjetos(ano, projetos);
-            //    CategorizarStatusProjetos(projetos);
-            //    GerarIndicadores(casa, _context);
-            //    return View(projetos.ToList());
-            //}
-            //else
-            //{
-            //    return View("Forbidden");
-            //}
+                SetarFiltros(sortOrder, searchString);
+                IQueryable<Projeto> projetos = ObterProjetosPorCasa(casa);
+                projetos = PeriodizarProjetos(ano, projetos);
+                CategorizarStatusProjetos(projetos);
+                await GerarIndicadores(_context);
+                return View(projetos.ToList());
+            }
+            else
+            {
+                return View("Forbidden");
+            }
 
-            return View("Construcao");
         }
 
         /// <summary>
@@ -175,7 +300,7 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="casa"></param>
         /// <param name="_context"></param>
-        private void GerarIndicadores(string casa, ApplicationDbContext _context)
+        private async Task GerarIndicadores(ApplicationDbContext _context)
         {
             ViewBag.n_projs = _context.Projeto.Where(p => p.Status == StatusProjeto.EmExecucao).Count();
             ViewBag.n_empresas = _context.Projeto.Count();
@@ -184,8 +309,8 @@ namespace BaseDeProjetos.Controllers
                 Select(p => p.ValorAporteRecursos).
                 Sum();
             ViewBag.n_pesquisadores = _context.Users.Count();
-            ViewBag.Embrapii_projs = _context.Projeto.ToList<Projeto>();
-            ViewBag.Embrapii_prosps = _context.Prospeccao.ToList<Prospeccao>();
+            ViewBag.Embrapii_projs = await _context.Projeto.ToListAsync();
+            ViewBag.Embrapii_prosps = await _context.Prospeccao.ToListAsync();
         }
 
         /// <summary>
@@ -255,7 +380,25 @@ namespace BaseDeProjetos.Controllers
             {
                 return View("Forbidden");
             }
+        }
 
+        /// <summary>
+        /// Retorna um modal específico a partir dos parâmetros especificados
+        /// </summary>
+        /// <param name="idProjeto">ID do CFF</param>
+        /// <returns></returns>
+        public IActionResult RetornarModalEditCFF(int idCFF)
+        {
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                ViewbagizarUsuario(_context);
+
+                return ViewComponent("ModalEditCFFProjeto", new { id = idCFF });
+            }
+            else
+            {
+                return View("Forbidden");
+            }
         }
 
         /// <summary>
@@ -297,6 +440,31 @@ namespace BaseDeProjetos.Controllers
             return true;
         }
 
+        [HttpGet("Projetos/RetornarDadosGrafico")]
+        public async Task<IActionResult> RetornarDadosGrafico()
+        {
+            List<ProjetoGraficoViewModel> projetosGrafico = new List<ProjetoGraficoViewModel>();
+
+            var projetos = await _context.Projeto.ToListAsync();
+
+            // Por instituto obter os tipos de projeto e adicionar ao ViewModel
+            foreach (Instituto instituto in Enum.GetValues(typeof(Instituto)))
+            {
+                projetosGrafico.Add(new ProjetoGraficoViewModel()
+                {
+                    Casa = instituto.GetDisplayName(),
+                    ProjetosAgenciaFomento = projetos.Where(p => p.FonteFomento == TipoContratacao.AgenciaFomento && p.Casa == instituto).ToList().Select(p => p.ToDto()).ToList(),
+                    ProjetosANP = projetos.Where(p => p.FonteFomento == TipoContratacao.ANP && p.Casa == instituto).ToList().Select(p => p.ToDto()).ToList(),
+                    ProjetosContratacaoDireta = projetos.Where(p => p.FonteFomento == TipoContratacao.ContratacaoDireta && p.Casa == instituto).ToList().Select(p => p.ToDto()).ToList(),
+                    ProjetosEditalInovacao = projetos.Where(p => p.FonteFomento == TipoContratacao.EditalInovacao && p.Casa == instituto).ToList().Select(p => p.ToDto()).ToList(),
+                    ProjetosEmbrapii = projetos.Where(p => p.FonteFomento == TipoContratacao.Embrapii && p.Casa == instituto).ToList().Select(p => p.ToDto()).ToList(),
+                    ProjetosIndefinido = projetos.Where(p => p.FonteFomento == TipoContratacao.Indefinida && p.Casa == instituto).ToList().Select(p => p.ToDto()).ToList(),
+                });
+            }
+
+            return Ok(JsonConvert.SerializeObject(projetosGrafico));
+        }
+
         // GET: Projetos/Details/5
         [HttpGet]
         public async Task<IActionResult> Details(string id)
@@ -333,22 +501,19 @@ namespace BaseDeProjetos.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-
-            //if (HttpContext.User.Identity.IsAuthenticated)
-            //{
-            //    List<Empresa> empresas = _context.Empresa.ToList();
-            //    ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-            //    Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            //    ViewBag.usuarioCasa = usuario.Casa;
-            //    ViewBag.usuarioNivel = usuario.Nivel;
-            //    return View();
-            //}
-            //else
-            //{
-            //    return View("Forbidden");
-            //}
-
-            return View("Construcao");
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                List<Empresa> empresas = _context.Empresa.ToList();
+                ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewBag.usuarioCasa = usuario.Casa;
+                ViewBag.usuarioNivel = usuario.Nivel;
+                return View();
+            }
+            else
+            {
+                return View("Forbidden");
+            }
         }
 
         // POST: Projetos/Create
@@ -356,171 +521,265 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NomeProjeto,MembrosEquipe,Casa,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos,Empresa,Indicadores")] Projeto projeto)
+        public async Task<IActionResult> Create([Bind("Id,NomeProjeto,MembrosEquipe,Casa,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos,Empresa,Indicadores,UsuarioId,SatisfacaoClienteParcial,SatisfacaoClienteFinal,ProponenteId,CustoHH,CustoHM")]
+            Projeto projeto,
+            string membrosSelect)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
+            ViewbagizarUsuario(_context);
 
-            List<Empresa> empresas = _context.Empresa.ToList();
-            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+            List<Usuario> usuarios = await ObterListaDeMembrosSelecionados(membrosSelect);
+
+            AtribuirEquipeProjeto(projeto, usuarios);
+
+            AtribuirCustoHH(projeto);
+
+            CriarSelectListNaViewbag();
 
             if (ModelState.IsValid)
             {
                 projeto.Empresa = _context.Empresa.FirstOrDefault(e => e.Id == projeto.Empresa.Id);
 
-                //projeto.Usuario = usuario;
-
                 _context.Add(projeto);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
-            } 
+            }
             else
             {
                 return NotFound();
             }
         }
 
+        public static int DiferencaMeses(DateTime dataFim, DateTime dataInicio)
+        {
+            return Math.Abs((dataFim.Month - dataInicio.Month) + 12 * (dataFim.Year - dataInicio.Year));
+        }
+
+        private void AtribuirCustoHH(Projeto projeto)
+        {
+            projeto.CustoHH = 0;
+
+            // Soma do custo da equipe (membros)
+            foreach (var relacao in projeto.EquipeProjeto)
+            {
+                if (relacao.Usuario != null)
+                {
+                    projeto.CustoHH += DiferencaMeses(projeto.DataEncerramento, projeto.DataInicio) * relacao.Usuario.Cargo.Salario;
+                }
+            }
+
+            // Soma do custo do líder
+            if (projeto.Usuario != null)
+            {
+                if (projeto.Usuario.Cargo != null)
+                {
+                    projeto.CustoHH += DiferencaMeses(projeto.DataEncerramento, projeto.DataInicio) * projeto.Usuario.Cargo.Salario;
+                }
+            }
+        }
+
+        private async Task<List<Usuario>> ObterListaDeMembrosSelecionados(string membrosSelect)
+        {
+            List<string> membrosEmails = new List<string>();
+
+            // TODO: Repensar a forma como o frontend implementa essa funcionalidade
+            if (!string.IsNullOrEmpty(membrosSelect))
+            {
+                membrosEmails.AddRange(membrosSelect.Split(';').ToList());
+            }
+
+            List<Usuario> usuarios = await _context.Users.Where(u => membrosEmails.Contains(u.Email)).ToListAsync();
+            return usuarios;
+        }
+
+        private void CriarSelectListNaViewbag()
+        {
+            List<Empresa> empresas = _context.Empresa.ToList();
+            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+        }
+
+        private static void AtribuirEquipeProjeto(Projeto projeto, List<Usuario> usuarios)
+        {
+            List<EquipeProjeto> equipe = new List<EquipeProjeto>();
+
+            foreach (var usuario in usuarios)
+            {
+                equipe.Add(new EquipeProjeto { IdUsuario = usuario.Id, IdTrabalho = projeto.Id });
+            }
+
+            projeto.EquipeProjeto = equipe;
+        }
+
         // GET: Projetos/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-            //if (HttpContext.User.Identity.IsAuthenticated)
-            //{
-            //    Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            //    ViewBag.usuarioCasa = usuario.Casa;
-            //    ViewBag.usuarioNivel = usuario.Nivel;
-            //    List<Empresa> empresas = _context.Empresa.ToList();
-            //    ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-            //    ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
-
-            //    if (id == null)
-            //    {
-            //        return NotFound();
-            //    }
-
-            //    Projeto projeto = await _context.Projeto.FindAsync(id);
-
-            //    if (projeto == null)
-            //    {
-            //        return NotFound();
-            //    }
-
-            //    //ConfigurarEquipe(projeto);
-
-            //    return View(projeto);
-            //}
-            //else
-            //{
-            //    return View("Forbidden");
-            //}
-
-            return View("Construcao");
-        }
-
-        /*private static void ConfigurarEquipe(Projeto projeto)
-        {
-            if (projeto.Equipe.Count() < 2)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                if (projeto.Equipe.Count() == 0)
+                ViewbagizarUsuario(_context);
+                List<Empresa> empresas = _context.Empresa.ToList();
+                ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+                ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
+
+                if (id == null)
                 {
-                    projeto.Equipe = new List<Usuario>() { new Usuario(), new Usuario() };
+                    return View("Error");
                 }
-                else
+
+                Projeto projeto = await _context.Projeto.FindAsync(id);
+
+                if (projeto == null)
                 {
-                    projeto.Equipe.Add(new Usuario());
+                    return View("Error");
                 }
+
+                return View(projeto);
             }
-        }*/
+            else
+            {
+                return View("Forbidden");
+            }
+
+        }
 
         //POST: Projetos/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Casa,NomeProjeto, MembrosEquipe,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos,Indicadores")] Projeto projeto)
+        public async Task<IActionResult> Edit(string id,
+            [Bind("Id,Casa,NomeProjeto,MembrosEquipe,AreaPesquisa,DataInicio,DataEncerramento,Estado,FonteFomento,Inovacao,Status,DuracaoProjetoEmMeses,ValorTotalProjeto,ValorAporteRecursos,Indicadores,UsuarioId,SatisfacaoClienteParcial,SatisfacaoClienteFinal,ProponenteId,CustoHH,CustoHM")]
+            Projeto projeto,
+            string membrosSelect)
         {
+            List<EquipeProjeto> equipe = new List<EquipeProjeto>();
+            var projetoExistente = await _context.Projeto.AsNoTracking().Include(p => p.Usuario).Include(p => p.EquipeProjeto).Include(p => p.Indicadores).FirstOrDefaultAsync(p => p.Id == projeto.Id);
+
+            if (projetoExistente == null)
+            {
+                return View("Error");
+            }
+
+            foreach (var relacao in projetoExistente.EquipeProjeto)
+            {
+                _context.EquipeProjeto.Remove(relacao);
+            }
+
+            await _context.SaveChangesAsync();
+
+            _context.Entry(projetoExistente).CurrentValues.SetValues(projeto);
+
+            List<string> membrosEmails = new List<string>();
+
+            // TODO: Repensar a forma como o frontend implementa essa funcionalidade
+            if (!string.IsNullOrEmpty(membrosSelect))
+            {
+                membrosEmails.AddRange(membrosSelect.Split(';').ToList());
+            }
+
+            List<Usuario> usuarios = await _context.Users.Where(u => membrosEmails.Contains(u.Email)).ToListAsync();
+
+            foreach (var usuario in usuarios)
+            {
+                var equipeProjeto = new EquipeProjeto { IdUsuario = usuario.Id, IdTrabalho = projeto.Id };
+                equipe.Add(equipeProjeto);
+            }
+
+            projetoExistente.EquipeProjeto = equipe;
+
+            /*
+             * Salvamos as alterações de equipe no banco pois enviamos apenas o ID do Projeto e do Usuário
+             * Se não efetuarmos o salvamento, o método seguinte AtribuirCustoHH apenas enxergará os IDs
+             * e não os objetos para Projeto e Usuário pois o relacionamento estará ""fraco""
+             * Sem sombra de dúvidas que existe uma forma "mais correta" de implementar essa funcionalidade.
+             * Mas acho desnecessário ir no banco em código para puxar o Projeto e o Usuário novamente pelos IDs
+            */
+            await _context.SaveChangesAsync();
+
+            AtribuirCustoHH(projetoExistente);
+
             if (id != projeto.Id)
             {
-                return NotFound();
+                return View("Error");
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Projeto.Update(projeto);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
-                    if (!ProjetoExists(projeto.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw ex;
                 }
                 return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
             }
-            return View(projeto);
-        }
-
-        /*private List<Usuario> ObterUsuarios(Projeto projeto)
+            else
             {
-                List<Usuario> usuarios_reais = new List<Usuario>();
-
-                for (int i = 0; i < projeto.Equipe.Count(); i++)
-                {
-                    usuarios_reais.Add(_context.Users.First(p => p.Id == projeto.Equipe[i].Id));
-                }
-
-                return usuarios_reais;
-            }*/
+                return View("Error");
+            }
+        }
 
         // GET: Projetos/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            //if (HttpContext.User.Identity.IsAuthenticated)
-            //{
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                ViewbagizarUsuario(_context);
 
-            //    Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-            //    ViewBag.usuarioCasa = usuario.Casa;
-            //    ViewBag.usuarioNivel = usuario.Nivel;
+                if (id == null)
+                {
+                    return NotFound();
+                }
 
-            //    if (id == null)
-            //    {
-            //        return NotFound();
-            //    }
+                Projeto projeto = await _context.Projeto
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (projeto == null)
+                {
+                    return NotFound();
+                }
 
-            //    Projeto projeto = await _context.Projeto
-            //        .FirstOrDefaultAsync(m => m.Id == id);
-            //    if (projeto == null)
-            //    {
-            //        return NotFound();
-            //    }
+                return View(projeto);
+            }
+            else
+            {
+                return View("Forbidden");
+            }
 
-            //    return View(projeto);
-            //}
-            //else
-            //{
-            //    return View("Forbidden");
-            //}
-
-            return View("Construcao");
         }
-
 
         // POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeletarMacroentrega(string id)
+        public async Task<IActionResult> DeletarIndicador(string id)
         {
             ProjetoIndicadores indicador = await _context.ProjetoIndicadores.FindAsync(id);
             _context.ProjetoIndicadores.Remove(indicador);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletarCurvaFisicoFinanceira(int id)
+        {
+            CurvaFisicoFinanceira cff = await _context.CurvaFisicoFinanceira.FindAsync(id);
+            _context.CurvaFisicoFinanceira.Remove(cff);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        /// <summary>
+        /// Obtem os membros em CSV do projeto dado o id
+        /// </summary>
+        /// <returns>A equipe de um projeto separadas por ponto e virgula</returns>
+        [HttpGet("Projetos/RetornarMembrosCSV/{idProjeto}")]
+        public async Task<IActionResult> RetornarMembrosCSV(string idProjeto)
+        {
+            string membros = string.Join(";", _context.Projeto.FirstOrDefault(p => p.Id == idProjeto)?.EquipeProjeto.Select(relacao => relacao.Usuario.Email));
+
+            Dictionary<string, string> dados = new Dictionary<string, string> { { "data", membros } };
+
+            return Ok(JsonConvert.SerializeObject(dados));
         }
 
         // POST: Projetos/Delete/5
@@ -529,6 +788,17 @@ namespace BaseDeProjetos.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             Projeto projeto = await _context.Projeto.FindAsync(id);
+
+            foreach (var relacao in projeto.EquipeProjeto)
+            {
+                _context.EquipeProjeto.Remove(relacao);
+            }
+
+            foreach (var indicador in projeto.Indicadores)
+            {
+                _context.ProjetoIndicadores.Remove(indicador);
+            }
+
             _context.Projeto.Remove(projeto);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -552,7 +822,6 @@ namespace BaseDeProjetos.Controllers
                 _context.Entry(local).State = EntityState.Detached;
             }
         }
-
 
         [HttpPost]
         public IActionResult CarregarProjetos(List<IFormFile> files)
@@ -605,7 +874,6 @@ namespace BaseDeProjetos.Controllers
                 _context.Add(projeto);
                 _context.SaveChanges();
             }
-
         }
 
         /// <summary>
@@ -616,13 +884,13 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario ativo = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                List<string> usuarios = _context.Users.AsEnumerable().
-                                            Where(u => u.Casa == ativo.Casa).
-                                            Where(usuario => usuario.EmailConfirmed == true).
-                                            Where(usuario => usuario.Nivel != Nivel.Dev && usuario.Nivel != Nivel.Externos).
-                                            Select((usuario) => usuario.Email.ToString().ToLower()).
-                                            ToList();
+                ViewbagizarUsuario(_context);
+                List<string> usuarios = _context.Users.AsEnumerable()
+                                            .Where(u => u.Casa == UsuarioAtivo.Casa)
+                                            .Where(usuario => usuario.EmailConfirmed == true)
+                                            .Where(usuario => usuario.Nivel != Nivel.Dev && usuario.Nivel != Nivel.Externos)
+                                            .Select((usuario) => usuario.Email.ToString().ToLower())
+                                            .ToList();
 
                 return Json(usuarios);
             }

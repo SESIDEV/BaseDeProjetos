@@ -1,13 +1,12 @@
 ﻿using BaseDeProjetos.Data;
-using System;
-using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
-using System.Linq;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Castle.Core.Internal;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Helpers
@@ -37,10 +36,12 @@ namespace BaseDeProjetos.Helpers
                 return new HtmlString($"<span class='badge bg-frio text-dark'>Congelado: ({qtdDias} Dias)</span>");
             }
         }
+
         public static bool ProspeccaoExists(string id, ApplicationDbContext _context)
         {
             return _context.Prospeccao.Any(prospeccao => prospeccao.Id == id);
         }
+
         public static List<Producao> VincularCasaProducao(Usuario usuario, List<Producao> listaProd)
         {
             if (usuario.Nivel == Nivel.Dev)
@@ -56,7 +57,6 @@ namespace BaseDeProjetos.Helpers
                 if (usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO)
                 {
                     return listaProd.Where(producao => producao.Casa == Instituto.ISIQV || producao.Casa == Instituto.CISHO).ToList();
-
                 }
                 else
                 {
@@ -64,6 +64,7 @@ namespace BaseDeProjetos.Helpers
                 }
             }
         }
+
         public static List<Prospeccao> VincularCasaProspeccao(Usuario usuario, List<Prospeccao> listaProsp)
         {
             if (usuario.Nivel == Nivel.Dev)
@@ -74,13 +75,11 @@ namespace BaseDeProjetos.Helpers
                 prospeccao.Casa == Instituto.ISIII ||
                 prospeccao.Casa == Instituto.ISISVP).ToList();
             }
-
             else
             {
                 if (usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO)
                 {
                     return listaProsp.Where(prospeccao => prospeccao.Casa == Instituto.ISIQV || prospeccao.Casa == Instituto.CISHO).ToList();
-
                 }
                 else
                 {
@@ -116,7 +115,6 @@ namespace BaseDeProjetos.Helpers
 
         public static List<Prospeccao> RetornarProspeccoesPorStatus(List<Prospeccao> lista, Usuario usuario, string aba, HttpContext HttpContext)
         {
-
             if (aba.ToLowerInvariant() == "ativas")
             {
                 List<Prospeccao> ativas = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
@@ -160,7 +158,7 @@ namespace BaseDeProjetos.Helpers
             }
         }
 
-        public static List<Prospeccao> DefinirCasaParaVisualizar(string? casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, ViewDataDictionary ViewData)
+        public static async Task<List<Prospeccao>> DefinirCasaParaVisualizar(string casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, ViewDataDictionary ViewData)
         {
             Instituto enum_casa;
 
@@ -168,18 +166,16 @@ namespace BaseDeProjetos.Helpers
 
             if (usuario.Nivel == Nivel.Dev)
             {
-                List<Prospeccao> lista = _context.Prospeccao.ToList();
+                List<Prospeccao> lista = await _context.Prospeccao.ToListAsync();
                 prospeccoes.AddRange(lista);
             }
-
             else
             {
-
                 if (Enum.IsDefined(typeof(Instituto), casa))
                 {
                     HttpContext.Session.SetString("_Casa", casa);
                     enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
-                    List<Prospeccao> lista = _context.Prospeccao.Where(prospeccao => prospeccao.Casa.Equals(enum_casa)).ToList();
+                    List<Prospeccao> lista = await _context.Prospeccao.Where(prospeccao => prospeccao.Casa.Equals(enum_casa)).ToListAsync();
 
                     prospeccoes.AddRange(lista);
 
@@ -190,7 +186,7 @@ namespace BaseDeProjetos.Helpers
             return prospeccoes.ToList();
         }
 
-        public static async Task<List<Producao>> DefinirCasaParaVisualizarEmProducao(string? casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, ViewDataDictionary ViewData)
+        public static async Task<List<Producao>> DefinirCasaParaVisualizarEmProducao(string casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, ViewDataDictionary ViewData)
         {
             Instituto enum_casa;
 
@@ -198,13 +194,11 @@ namespace BaseDeProjetos.Helpers
 
             if (usuario.Nivel == Nivel.Dev)
             {
-                List<Producao> lista = _context.Producao.ToList();
+                List<Producao> lista = await _context.Producao.ToListAsync();
                 producoes.AddRange(lista);
             }
-
             else
             {
-
                 if (Enum.IsDefined(typeof(Instituto), casa))
                 {
                     HttpContext.Session.SetString("_Casa", casa);
@@ -258,7 +252,6 @@ namespace BaseDeProjetos.Helpers
                 {
                     if (AggId != "")
                     {
-
                         if (!listaAggNova.Contains(AggId))
                         {
                             listaRemovidas.Add(AggId);
@@ -334,45 +327,48 @@ namespace BaseDeProjetos.Helpers
 
         public static void RepassarStatusAoCancelarAncora(ApplicationDbContext _context, Prospeccao prospeccao)
         {
-            if (!string.IsNullOrEmpty(prospeccao.Agregadas))
-            {
-                var listaAggIds = prospeccao.Agregadas.Split(";"); //separa os Ids
 
-                foreach (string AggId in listaAggIds) //itera pelas agregadas
+            if (!string.IsNullOrEmpty(prospeccao.Agregadas))
+
+            {
+                var idsProspeccoesAgregadas = prospeccao.Agregadas.Split(";"); //separa os Ids
+
+                foreach (string id in idsProspeccoesAgregadas) //itera pelas agregadas
                 {
-                    if (AggId != "")
+                    if (id != "")
                     {
-                        var prospAgg = _context.Prospeccao.Where(prosp => prosp.Id == AggId).First();
-                        var AggUltimoStatusData = prospAgg.Status.Last().Data;
-                        var statusMaisRecentes = prospeccao.Status.Where(s => s.Data > AggUltimoStatusData).ToList();
+                        var prospeccaoAgregada = _context.Prospeccao.Where(prosp => prosp.Id == id).First();
+                        var ultimoStatusProspeccaoAgregada = prospeccaoAgregada.Status.Last().Data;
+                        var statusMaisRecentes = prospeccao.Status.Where(s => s.Data > ultimoStatusProspeccaoAgregada).ToList();
+
                         if (statusMaisRecentes != null)
                         {// se não houver diferença de status, add um novo status
                             FollowUp statusDeagg = new FollowUp
                             {
-                                Status = prospAgg.Status.OrderByDescending(d => d.Data).ToList()[1].Status, // retorna ao status anterior ao agregado
+                                Status = prospeccaoAgregada.Status.OrderByDescending(d => d.Data).ToList()[1].Status, // retorna ao status anterior ao agregado
                                 Data = DateTime.Today,
                                 Anotacoes = "Esta prospecção foi desagregada de um grupo."
                             };
 
-                            prospAgg.Status.Add(statusDeagg); //adiciona o status ao final da lista de followups
+                            prospeccaoAgregada.Status.Add(statusDeagg); //adiciona o status ao final da lista de followups
                         }
                         else
                         {
                             List<FollowUp> listaCopia = new List<FollowUp>(statusMaisRecentes.Count);
 
-                            statusMaisRecentes.ForEach(s =>
+                            statusMaisRecentes.ForEach(status =>
                             {
                                 var copiaStatus = new FollowUp
                                 {
-                                    OrigemID = AggId, // essa é a própria id do loop, da prosp que está sendo removida
-                                    Anotacoes = s.Anotacoes,
-                                    AnoFiscal = s.AnoFiscal,
-                                    Status = s.Status,
-                                    Data = s.Data
+                                    OrigemID = id, // essa é a própria id do loop, da prosp que está sendo removida
+                                    Anotacoes = status.Anotacoes,
+                                    AnoFiscal = status.AnoFiscal,
+                                    Status = status.Status,
+                                    Data = status.Data
                                 };
                                 listaCopia.Add(copiaStatus);
                             });
-                            prospAgg.Status.AddRange(listaCopia);
+                            prospeccaoAgregada.Status.AddRange(listaCopia);
                         }
                     }
                 }
@@ -382,41 +378,52 @@ namespace BaseDeProjetos.Helpers
 
         public static Usuario ObterUsuarioAtivo(ApplicationDbContext _context, HttpContext HttpContext)
         {
-            return _context.Users.ToList().FirstOrDefault(usuario => usuario.UserName == HttpContext.User.Identity.Name);
+            if (HttpContext == null)
+            {
+                throw new ArgumentNullException(nameof(HttpContext));
+            }
+
+            if (_context == null)
+            {
+                throw new ArgumentNullException(nameof(_context));
+            }
+
+            var usuarioAtivo = _context.Users.ToList().FirstOrDefault(usuario => usuario.UserName == HttpContext.User.Identity.Name);
+
+            return usuarioAtivo;
         }
 
         /// <summary>
         /// Periodiza as prospecções de acordo com o ano no parâmetro
         /// </summary>
         /// <param name="ano">Ano que se deseja</param>
-        /// <param name="lista">Lista de prospecções a serem periodizadas</param>
+        /// <param name="prospeccoes">Lista de prospecções a serem periodizadas</param>
         /// <returns></returns>
-        public static List<Prospeccao> PeriodizarProspecções(string ano, List<Prospeccao> lista)
+        public static List<Prospeccao> PeriodizarProspecções(string ano, List<Prospeccao> prospeccoes)
         {
             if (ano.Equals("Todos") || string.IsNullOrEmpty(ano))
             {
-                return lista;
+                return prospeccoes;
             }
 
-            return lista.Where(prospeccao => prospeccao.Status.Any(followup => followup.Data.Year == Convert.ToInt32(ano))).ToList();
+            return prospeccoes.Where(prospeccao => prospeccao.Status.Any(followup => followup.Data.Year == Convert.ToInt32(ano))).ToList();
         }
 
         /// <summary>
         /// Periodiza produções de acordo com o ano no parâmetro
         /// </summary>
         /// <param name="ano">Ano que se deseja</param>
-        /// <param name="lista">Lista de produções a serem periodizadas</param>
+        /// <param name="producoes">Lista de produções a serem periodizadas</param>
         /// <returns></returns>
-        public static List<Producao> PeriodizarProduções(string ano, List<Producao> lista)
+        public static List<Producao> PeriodizarProduções(string ano, List<Producao> producoes)
         {
             if (ano.Equals("Todos") || string.IsNullOrEmpty(ano))
             {
-                return lista;
+                return producoes;
             }
 
-            return lista.Where(producao => producao.Data.Year == Convert.ToInt32(ano)).ToList();
+            return producoes.Where(producao => producao.Data.Year == Convert.ToInt32(ano)).ToList();
         }
-
 
         public static TimeSpan RetornarValorDiferencaTempo(List<Prospeccao> prospeccoes)
         {
@@ -454,12 +461,16 @@ namespace BaseDeProjetos.Helpers
         public static List<Prospeccao> OrdenarProspecções(string sortOrder, List<Prospeccao> lista)
         {
             var prospeccoes = lista.AsQueryable();
-            prospeccoes = sortOrder switch
+            switch (sortOrder)
             {
-                "name_desc" => prospeccoes.OrderByDescending(s => s.Empresa.Nome),
-                "TipoContratacao" => prospeccoes.OrderBy(s => s.TipoContratacao),
-                "tipo_desc" => prospeccoes.OrderByDescending(s => s.TipoContratacao),
-                _ => prospeccoes.OrderBy(s => s.Status.OrderBy(k => k.Data).Last().Data),
+                case "name_desc":
+                    return prospeccoes.OrderByDescending(s => s.Empresa.Nome).ToList();
+
+                case "TipoContratacao":
+                    return prospeccoes.OrderBy(s => s.TipoContratacao).ToList();
+
+                case "tipo_desc":
+                    return prospeccoes.OrderByDescending(s => s.TipoContratacao).ToList();
             };
             return prospeccoes.ToList();
         }
@@ -472,7 +483,6 @@ namespace BaseDeProjetos.Helpers
         /// <returns></returns>
         public static List<Prospeccao> FiltrarProspecções(string searchString, List<Prospeccao> prospeccoes)
         {
-
             if (!string.IsNullOrEmpty(searchString))
             {
                 searchString = searchString.ToLower();
@@ -517,27 +527,25 @@ namespace BaseDeProjetos.Helpers
         /// <returns></returns>
         public static List<Producao> FiltrarProduções(string searchString, List<Producao> producoes)
         {
-
             if (!string.IsNullOrEmpty(searchString))
             {
                 searchString = searchString.ToLower();
 
-                if (producoes[0].Empresa != null)
+                if (producoes != null && producoes.Any())
                 {
-
                     producoes = producoes.Where(producao =>
-                        producao.Autores.ToLower().Contains(searchString) ||
-                        producao.Titulo.ToLower().Contains(searchString) ||
-                        producao.Empresa.Nome.ToLower().Contains(searchString) ||
-                        producao.Projeto.NomeProjeto.ToLower().Contains(searchString)
-                        ).ToList();
+                        (producao?.Autores?.ToLower().Contains(searchString) ?? false) ||
+                        (producao?.Titulo?.ToLower().Contains(searchString) ?? false) ||
+                        (producao?.Empresa?.Nome?.ToLower().Contains(searchString) ?? false) ||
+                        (producao?.Projeto?.NomeProjeto?.ToLower().Contains(searchString) ?? false)
+                    ).ToList();
                 }
-                else
+                else if (producoes != null)
                 {
                     producoes = producoes.Where(producao =>
-                        producao.Autores.ToLower().Contains(searchString) ||
-                        producao.Titulo.ToLower().Contains(searchString)
-                        ).ToList();
+                        (producao?.Autores?.ToLower().Contains(searchString) ?? false) ||
+                        (producao?.Titulo?.ToLower().Contains(searchString) ?? false)
+                    ).ToList();
                 }
             }
 
@@ -556,18 +564,25 @@ namespace BaseDeProjetos.Helpers
             {
                 case TipoContratacao.ContratacaoDireta:
                     return prospeccao.TipoContratacao == tipoContratacao;
+
                 case TipoContratacao.EditalInovacao:
                     return prospeccao.TipoContratacao == tipoContratacao;
+
                 case TipoContratacao.AgenciaFomento:
                     return prospeccao.TipoContratacao == tipoContratacao;
+
                 case TipoContratacao.Embrapii:
                     return prospeccao.TipoContratacao == tipoContratacao;
+
                 case TipoContratacao.Indefinida:
                     return prospeccao.TipoContratacao == tipoContratacao;
+
                 case TipoContratacao.Parceiro:
                     return prospeccao.TipoContratacao == tipoContratacao;
+
                 case TipoContratacao.ANP:
                     return prospeccao.TipoContratacao == tipoContratacao;
+
                 default:
                     return false;
             }
@@ -590,10 +605,16 @@ namespace BaseDeProjetos.Helpers
             {
                 case StatusProspeccao.ContatoInicial:
                     return prospeccao.Status.Any(s => s.Status == status);
+
                 case StatusProspeccao.Discussao_EsbocoProjeto: // Status seria < 5 e > 0 1-4 INCLUSO, se precisar inclua um case acima sem execução de nenhuma instrução ou break
                     return prospeccao.Status.Any(followup => followup.Status < StatusProspeccao.ComProposta && followup.Status > StatusProspeccao.ContatoInicial);
+
                 case StatusProspeccao.ComProposta:
                     return prospeccao.Status.Any(followup => followup.Status == status);
+
+                case StatusProspeccao.Convertida:
+                    return prospeccao.Status.Any(followup => followup.Status == status);
+
                 default:
                     return false;
             }

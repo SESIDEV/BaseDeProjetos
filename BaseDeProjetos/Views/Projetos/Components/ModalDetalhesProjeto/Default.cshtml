@@ -13,6 +13,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body d-flex flex-column gap-1">
+                <h1 class="app-card-title">Id:</h1>
+                <span>@Model.Id</span>
                 <h1 class="app-card-title">Empresa:</h1>
                 <span>@Model.Empresa.Nome</span>
                 <h1 class="app-card-title">Projeto:</h1>
@@ -21,41 +23,97 @@
                 <span>@Model.Status.GetDisplayName()</span>
                 <h1 class="app-card-title">Valor:</h1>
                 <span>R$ @Helpers.FormatarValoresDashboards((decimal)Model.ValorAporteRecursos)</span>
+				<h1 class="app-card-title">Custo do HH:</h1>
+                <span>R$ @Model.CustoHH.ToString("N")</span>
                 <h1 class="app-card-title">Data de Início:</h1>
                 <span>@Model.DataInicio.ToString("dd/MM/yyyy")</span>
                 <h1 class="app-card-title">Data de Encerramento:</h1>
                 <span>@Model.DataEncerramento.ToString("dd/MM/yyyy")</span>
-                <h1 class="app-card-title">Duração em Meses:</h1>
-                <span>@Model.DuracaoProjetoEmMeses</span>
+                <h1 class="app-card-title">Duração do Projeto:</h1>
+                <span>@Model.DuracaoProjetoEmMeses meses</span>
+                <h1 class="app-card-title">Satisfação do Cliente (Parcial):</h1>
+                @if (Model.SatisfacaoClienteParcial != null && Model.SatisfacaoClienteParcial != 0)
+                {
+                    <span>@(Model.SatisfacaoClienteParcial)%</span>
+                }
+                else
+                {
+                    <span>Não há valor de Satisfação do Cliente (Parcial)</span>
+                }
+                <h1 class="app-card-title">Satisfação do Cliente (Final):</h1>
+                @if (Model.SatisfacaoClienteFinal != null && Model.SatisfacaoClienteFinal != 0)
+                {
+                    <span>@(Model.SatisfacaoClienteFinal)%</span>
+                }
+                else
+                {
+                    <span>Não há valor de Satisfação do Cliente (Final)</span>
+                }
                 <h1 class="app-card-title">Equipe do Projeto:</h1>
-                <div class="accordion" id="accordionExample">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingOne">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                <span id="qtdMembros" class="m-1"></span><span class="m-1">Membros</span>
-                            </button>
-                        </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
-                             data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                <ul id="lista"></ul>
+                @if (Model.EquipeProjeto.Count != 0)
+                {
+                    <div class="accordion" id="accordionEquipe">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingEquipe">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseEquipe" aria-expanded="true" aria-controls="collapseEquipe">
+                                    @if (Model.Usuario != null)
+                                    {
+                                        <span class="m-1">@(Model.EquipeProjeto.Count + 1) Membros</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="m-1">@Model.EquipeProjeto.Count Membros</span>
+                                    }
+                                </button>
+                            </h2>
+                            <div id="collapseEquipe" class="accordion-collapse collapse" aria-labelledby="headingEquipe"
+                                 data-bs-parent="#accordionEquipe">
+                                <div class="accordion-body">
+                                    @if (Model.Usuario != null)
+                                    {
+                                        <span class="badge bg-success">@Model.Usuario.UserName</span> @*Líder*@
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Sem Líder</span>
+                                    }
+                                    @foreach (var membro in Model.EquipeProjeto)
+                                    {
+                                        <span class="badge bg-info">@membro.Usuario.UserName</span>
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                }
+                else
+                {
+                    <span>Este projeto não tem uma equipe definida</span>
+                }
             </div>
             <div class="modal-footer">
-                @if (nivelUsuario.ToString() == "PMO" || nivelUsuario.ToString() == "Dev" || nivelUsuario.ToString() == "Supervisor")
+                @if (nivelUsuario.ToString() == "PMO" || nivelUsuario.ToString() == "Dev" || nivelUsuario.ToString() ==
+                "Supervisor")
                 {
                     <div class="d-flex">
-                        <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#incluirMacroentregaProjetoModal-@Model.Id"
-                           role="button">
-                            Incluir Macroentrega
+                        <a class="btn btn-outline-primary" data-bs-toggle="modal"
+                           href="#incluirIndicadorProjetoModal-@Model.Id" role="button">
+                            Incluir Checklist
                         </a>
-                        <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#detalhesMacroentregaProjetoModal-@Model.Id"
-                           role="button">
-                            Visualizar Macroentregas
+                        <a class="btn btn-outline-primary" data-bs-toggle="modal"
+                           href="#detalhesIndicadorProjetoModal-@Model.Id" role="button">
+                            Visualizar Checklists
+                        </a>
+                    </div>
+                    <div class="d-flex">
+                        <a class="btn btn-outline-primary" data-bs-toggle="modal"
+                           href="#incluirCFFProjetoModal-@Model.Id" role="button">
+                            Incluir CFF
+                        </a>
+                        <a class="btn btn-outline-primary" data-bs-toggle="modal"
+                           href="#detalhesCFFProjetoModal-@Model.Id" role="button">
+                            Visualizar CFF
                         </a>
                     </div>
                 }

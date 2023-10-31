@@ -1,0 +1,108 @@
+﻿function carregarGraficoTemporal(dadosRetornados, modelId) {
+    let dadosFisico = null;
+    let dadosFinanceiro = null;
+
+    if (dadosRetornados) {
+        dadosFisico = dadosRetornados.dadosPercentualFisico;
+        dadosFinanceiro = dadosRetornados.dadosPercentualFinanceiro;
+    }
+    else {
+        console.error("Os dados retornados estão nulos!");
+    }
+
+    let name = `cff-${modelId}`;
+
+    let chart = Highcharts.chart(name, {
+        chart: {
+            type: 'spline'
+        },
+        title: {
+            text: 'Curva Físico Financeira'
+        },
+        subtitle: {
+            text: 'Valores do Percentual Fisico e do Percentual Financeiro'
+        },
+        xAxis: {
+            type: 'datetime',
+            dateTimeLabelFormats: { // don't display the year
+                month: '%e. %b %Y',
+                year: '%b'
+            },
+            title: {
+                text: 'Date'
+            }
+        },
+        yAxis: {
+            title: {
+                text: 'Porcentagem'
+            },
+            min: 0,
+            max: 100
+        },
+        tooltip: {
+            headerFormat: '<b>{series.name}</b><br>',
+            pointFormat: '{point.x:%e %b %Y}: {point.y:.2f} %'
+        },
+
+        plotOptions: {
+            series: {
+                marker: {
+                    enabled: true,
+                    radius: 2.5
+                }
+            }
+        },
+
+        colors: ['#6CF', '#39F', '#06C', '#036', '#000'],
+
+        // Define the data points. All series have a year of 1970/71 in order
+        // to be compared on the same x axis. Note that in JavaScript, months start
+        // at 0 for January, 1 for February etc.
+        series: [
+            {
+                name: 'Curva Fisico',
+                data: dadosFisico
+            },
+            {
+                name: 'Curva Financeiro',
+                data: dadosFinanceiro
+            }
+        ]
+    });
+}
+
+function esconderBotao(idProjeto) {
+    document.querySelector(`#button-${idProjeto}`).style.display = 'none';
+}
+
+function exibirLoading(idProjeto) {
+    const internalDiv = document.querySelector(`#internalDiv-${idProjeto}`);
+    if (internalDiv) {
+        internalDiv.classList.add(...classesLoading);
+        internalDiv.innerHTML = '';
+    } else {
+        console.error(`Element with id 'internalDiv-${idProjeto}' not found.`);
+    }
+}
+
+function esconderLoading(idProjeto) {
+    const internalDiv = document.querySelector(`#internalDiv-${idProjeto}`);
+    if (internalDiv) {
+        internalDiv.classList.remove(...classesLoading);
+    }
+}
+
+async function puxarDadosGraficoTemporal(idProjeto) {
+    let response = await fetch(`${location.origin}/Projetos/RetornarDadosGraficoCFF/${idProjeto}`);
+    const data = await response.json();
+    return data;
+}
+
+function exibirDados(idProjeto, modelId) {
+    exibirLoading(idProjeto);
+    puxarDadosGraficoTemporal(idProjeto, modelId).then(data => {
+        esconderBotao(idProjeto);
+        esconderLoading(idProjeto);
+        carregarGraficoTemporal(data, modelId);
+    });
+}

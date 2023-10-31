@@ -1,5 +1,6 @@
 ﻿using BaseDeProjetos.Data;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BaseDeProjetos.ViewComponents.ProjetoViewComponents
@@ -16,6 +17,8 @@ namespace BaseDeProjetos.ViewComponents.ProjetoViewComponents
         public async Task<IViewComponentResult> InvokeAsync(string id)
         {
             var model = await _context.Projeto.FindAsync(id);
+            var usuarios = _context.Users.ToList();
+            ViewData["Usuarios"] = usuarios;
             return View(model);
         }
     }

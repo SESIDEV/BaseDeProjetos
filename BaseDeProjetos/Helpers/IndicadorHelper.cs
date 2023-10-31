@@ -7,14 +7,12 @@ namespace BaseDeProjetos.Helpers
 {
     public class IndicadorHelper
     {
-
         public IndicadorHelper(List<Prospeccao> listaDeProspeccoes)
         {
             ListaDeProspeccoes = listaDeProspeccoes;
         }
 
         public List<Prospeccao> ListaDeProspeccoes { get; set; }
-
 
         public Dictionary<string, int> QuantidadeDeProspeccoes(Func<Prospeccao, object> propriedade, int? ano)
         {
@@ -47,10 +45,8 @@ namespace BaseDeProjetos.Helpers
 
             foreach (var p in listaEmGrupo)
             {
-
                 if (quantidadeDeProspeccoesPorCasa.ContainsKey(p.Key.ToString()))
                 {
-
                     if (p.Count().GetType() == typeof(int))
                     {
                         quantidadeDeProspeccoesPorCasa[p.Key.ToString()] += p.Count();
@@ -59,7 +55,6 @@ namespace BaseDeProjetos.Helpers
                     {
                         quantidadeDeProspeccoesPorCasa[p.Key.ToString()] += 0;
                     }
-
                 }
                 else
                 {
@@ -72,11 +67,11 @@ namespace BaseDeProjetos.Helpers
                         quantidadeDeProspeccoesPorCasa.Add(p.Key.ToString(), 0);
                     }
                 }
-
             }
 
             return quantidadeDeProspeccoesPorCasa.OrderByDescending(p => p.Value).Take(10).ToDictionary(k => k.Key, v => v.Value);
         }
+
         public Dictionary<string, string> ValorSomaProspeccoes(Func<Prospeccao, object> propriedade, int? ano)
         {
             List<Prospeccao> listaProsps = ListaDeProspeccoes;
@@ -87,7 +82,6 @@ namespace BaseDeProjetos.Helpers
 
                 if (listaProsps == null)
                 {
-
                     return new Dictionary<string, string>() { };
                 }
             }
@@ -109,7 +103,6 @@ namespace BaseDeProjetos.Helpers
                 return new Dictionary<string, string>() { };
             }
 
-
             Dictionary<string, decimal> valorDeProspeccoesPorCasa = new Dictionary<string, decimal>();
 
             foreach (var p in listaEmGrupo)
@@ -124,7 +117,6 @@ namespace BaseDeProjetos.Helpers
                     {
                         valorDeProspeccoesPorCasa[p.Key.ToString()] += (decimal)0.0;
                     }
-
                 }
                 else
                 {
@@ -137,7 +129,6 @@ namespace BaseDeProjetos.Helpers
                         valorDeProspeccoesPorCasa.Add(p.Key.ToString(), (decimal)0.0);
                     }
                 }
-
             }
 
             return valorDeProspeccoesPorCasa.OrderByDescending(o => o.Value).Take(10).ToDictionary(e => e.Key, v =>
@@ -145,12 +136,12 @@ namespace BaseDeProjetos.Helpers
                 return Helpers.FormatarValoresDashboards(v.Value);
             });
         }
+
         public Dictionary<string, decimal> CalcularTaxaDeConversao(Func<Prospeccao, object> propriedade, int? ano)
         {
             List<Prospeccao> listaProsp = ListaDeProspeccoes;
 
             Dictionary<string, decimal> taxaDeConversaoPorPesquisador = new Dictionary<string, decimal>();
-
 
             if (ano != null)
             {
@@ -161,8 +152,6 @@ namespace BaseDeProjetos.Helpers
             {
                 listaProsp = ListaDeProspeccoes.Where(pesquisador => pesquisador.Usuario.EmailConfirmed == true).ToList();
             }
-
-            
 
             var listaEmGrupo = listaProsp.GroupBy(propriedade);
 
@@ -185,18 +174,12 @@ namespace BaseDeProjetos.Helpers
                         else
                         {
                             taxaDeConversaoPorPesquisador.Add(p.Key.ToString(), taxa);
-
                         }
                     }
-
                 }
             }
 
             return taxaDeConversaoPorPesquisador.OrderByDescending(v => v.Value).ToDictionary(p => p.Key, k => k.Value);
-
-
         }
-
     }
 }
-

@@ -46,8 +46,7 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Escritório/Responsável")]
         public virtual string Responsavel { get; set; }
 
-        [Display(Name = "Num Patente")]
+        [Display(Name = "Número de Patente")]
         public virtual string NumPatente { get; set; }
-
     }
 }

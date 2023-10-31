@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Http
 @using Microsoft.AspNetCore.Identity
+@using BaseDeProjetos.Helpers
 @inject SignInManager<Usuario> SignInManager
 @inject UserManager<Usuario> UserManager
 @{
@@ -7,7 +8,7 @@
 		<div class="app-header-inner">
 			<div class="container-fluid py-2">
 				<div class="app-header-content">
-					<div class="row" style="justify-content: flex-end;">
+					<div class="d-flex" style="justify-content: space-between;">
 
 						<div class="col-auto">
 							<a id="sidepanel-toggler" class="sidepanel-toggler d-inline-block d-xl-none" href="#">
@@ -181,8 +182,23 @@
 
 							<div class="app-utility-item app-user-dropdown dropdown">
 								<a class="dropdown-toggle" id="user-dropdown-toggle" data-bs-toggle="dropdown" href="#"
-									role="button" aria-expanded="false"><img src="~/assets/images/default_profile.png"
-									alt="user profile"></a>
+									role="button" aria-expanded="false">
+									@if (SignInManager.IsSignedIn(User) && !string.IsNullOrEmpty(ViewBag.usuarioFoto))
+									{
+										@if ((ViewBag.usuarioFoto as string).Contains("base64")) 
+										{
+											<img src="@ViewBag.usuarioFoto"/>
+										}
+										else {
+											<img src="data:image/png;base64,@ViewBag.usuarioFoto"/>
+										}
+									}
+									else
+									{
+										<img src="~/assets/images/default_profile.png"/>
+									}
+									
+								</a>
 								<ul class="dropdown-menu" aria-labelledby="user-dropdown-toggle">
 									@*<li><a class="dropdown-item" href="account.html">Account</a></li>
 										<li><a class="dropdown-item" href="settings.html">Settings</a></li>

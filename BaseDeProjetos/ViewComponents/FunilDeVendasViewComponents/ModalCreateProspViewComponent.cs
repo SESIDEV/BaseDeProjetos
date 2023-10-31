@@ -1,7 +1,6 @@
 ﻿using BaseDeProjetos.Data;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using BaseDeProjetos.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BaseDeProjetos.ViewComponents.FunilDeVendasViewComponents
 {
@@ -14,8 +13,7 @@ namespace BaseDeProjetos.ViewComponents.FunilDeVendasViewComponents
             _context = context;
         }
 
-
-        public async Task<IViewComponentResult> InvokeAsync()
+        public IViewComponentResult Invoke()
         {
             return View(new Prospeccao(new FollowUp()));
         }

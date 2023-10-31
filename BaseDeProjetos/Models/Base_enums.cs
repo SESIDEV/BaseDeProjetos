@@ -6,7 +6,6 @@ namespace BaseDeProjetos.Models
 {
     public enum SegmentoEmpresa
     {
-
         [Display(Name = "Abastecimento de água")]
         AbastecimentoAgua,
 
@@ -133,6 +132,7 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Tratamento de Efluentes")]
         TratamentEfluentes,
     }
+
     public enum GrupoProducao
     {
         [Display(Name = "Trabalho em Eventos", GroupName = "Produção Bibliográfica")]
@@ -173,10 +173,8 @@ namespace BaseDeProjetos.Models
 
         [Display(Name = "Prêmio", GroupName = "Outros")]
         Premio,
-
-
-
     }
+
     public enum Titulacao
     {
         [Display(Name = "Nível Médio")]
@@ -203,6 +201,7 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Pós-Graduado - Stricto Sensu (Pós-Doutor)")]
         PosDoutor
     }
+
     public enum JustificaEPI
     {
         [Display(Name = "Primeira Entrega")]
@@ -217,28 +216,37 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Danificado (sem condições de uso) ou extraviado")]
         Subs_DanificadoExtraviado
     }
+
     public enum Competencia
     {
         [Display(Name = "...")]
         Zero = 0,
+
         [Display(Name = "HTML/CSS")]
         HTMLCSS,
+
         [Display(Name = "Javascript")]
         JS,
+
         [Display(Name = "Python")]
         Python,
+
         [Display(Name = "MySQL")]
         MYSQL,
+
         [Display(Name = "C#")]
         CSharp,
+
         [Display(Name = "C++")]
         Cmm,
+
         [Display(Name = "Photoshop")]
         Photoshop,
+
         [Display(Name = "Excel")]
         Excel,
-
     }
+
     public enum TipoVinculo
     {
         Visitante,
@@ -247,6 +255,7 @@ namespace BaseDeProjetos.Models
         Estagiario,
         Empregado
     }
+
     public enum CasaFirjan
     {
         Firjan,
@@ -257,48 +266,67 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Firjan SENAI")]
         FirjanSENAI,
     }
+
     public enum LinhaPesquisa
     {
         [Display(Name = "QV - Quimica e Sustentabilidade", GroupName = "Quimica Verde")]
         QuimicaESustentabilidade,
+
         [Display(Name = "QV - Tecnologia para Solos e Efluentes", GroupName = "Quimica Verde")]
         TecnologiasSolosEfluentes,
+
         [Display(Name = "QV - Extraçao de Materias Primas Renovaveis", GroupName = "Quimica Verde")]
         ExtracaoMateriasPrimasRenovaveis,
+
         [Display(Name = "QV - Quimica Analítica Verde", GroupName = "Quimica Verde")]
         QuimicaAnaliticaVerde,
+
         [Display(Name = "QV - Petroleo e Petroquimica", GroupName = "Quimica Verde")]
         PetroleoEPetroQuimica,
+
         [Display(Name = "CIS - Saude e Segurança do Trabalho", GroupName = "Centro de Inovação Sesi - Saúde Ocupacional")]
         SST,
+
         [Display(Name = "II - Industria 4.0", GroupName = "Inspeção e Integridade")]
         Industria40,
+
         [Display(Name = "II - Novos Materiais", GroupName = "Inspeção e Integridade")]
         Materiais,
+
         [Display(Name = "II - Otimizaçao de parametros de Inspeçao nao destrutiva em materiais", GroupName = "Inspeção e Integridade")]
         OtPam,
+
         [Display(Name = "II - Sistemas computacionais de Inspeçao nao destrutiva", GroupName = "Inspeção e Integridade")]
         SisCompNaoDestrutivas,
+
         [Display(Name = "II - Pesquisa na área de corrosao", GroupName = "Inspeção e Integridade")]
         Corrosao,
+
         [Display(Name = "QV - Biotecnologia e Biologia Molecular", GroupName = "Quimica Verde")]
         Biotec,
+
         [Display(Name = "A definir")]
         Indefinida,
+
         [Display(Name = "SVP - Sistemas interativos inteligentes em realidade estendida", GroupName = "Sistemas Virtuais de Produção")]
         SistemasInterativosRealidadeEstendida,
+
         [Display(Name = "SVP - Modelagem matematica para realidade estendida", GroupName = "Sistemas Virtuais de Produção")]
         ModelagemMatematicaRealidadeEstendida,
+
         [Display(Name = "SVP - Simuladores hibridos", GroupName = "Sistemas Virtuais de Produção")]
         SimuladoresHibridos,
+
         [Display(Name = "QV - Quimica 4.0", GroupName = "Quimica Verde")]
         Quimica40,
+
         [Display(Name = "CIS - Biotecnologia Aplicada", GroupName = "Centro de Inovação Sesi - Saúde Ocupacional")]
         BiotecCIS,
+
         [Display(Name = "CIS - Suporte Científico para Processos e Produtos em Saude", GroupName = "Centro de Inovação Sesi - Saúde Ocupacional")]
         SuporteProcessosSaude,
-
     }
+
     public enum StatusProspeccao
     {
         [Display(Name = "Contato inicial")]
@@ -325,6 +353,7 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Agregada")]
         Agregada = 10
     }
+
     public enum StatusProjeto
     {
         [Display(Name = "Contratado/Em planejamento")]
@@ -342,6 +371,7 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Atrasado")]
         Atrasado,
     }
+
     public enum TipoContratacao
     {
         [Display(Name = "Contratação Direta")]
@@ -367,11 +397,13 @@ namespace BaseDeProjetos.Models
         [Display(Name = "A definir")]
         Indefinida
     }
+
     public enum TipoInovacao
     {
         Produto,
         Processo
     }
+
     //TODO: Separar tipos diferentes
     public enum TipoProducao
     {
@@ -397,6 +429,7 @@ namespace BaseDeProjetos.Models
         Trabalho_Técnico,
         Demais_Tipos_de_Produção_Técnica
     }
+
     public enum Estado
     {
         [Display(Name = "Rio de Janeiro")]
@@ -476,12 +509,15 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Fora do país")]
         Estrangeiro
     }
+
     public enum StatusPub
     {
         [Display(Name = "Submetido", GroupName = "Artigo")]
         Submetido,
+
         [Display(Name = "Aceito", GroupName = "Artigo")]
         Aceito,
+
         [Display(Name = "Publicado", GroupName = "Artigo")]
         Publicado,
 
@@ -496,9 +532,8 @@ namespace BaseDeProjetos.Models
 
         [Display(Name = "Concedida", GroupName = "Patente")]
         Concedida = 5,
-
-
     }
+
     public enum Origem
     {
         [Display(Name = "Recebida")]
@@ -506,7 +541,8 @@ namespace BaseDeProjetos.Models
 
         [Display(Name = "Iniciada")]
         Iniciada
-    }    
+    }
+
     public enum Instituto
     {
         [Display(Name = "ISI - Química Verde")]
@@ -524,6 +560,7 @@ namespace BaseDeProjetos.Models
         [Display(Name = "ISI - Sistemas Virtuais de Produção")]
         ISISVP
     }
+
     public enum Atividades
     {
         //Apoio
@@ -566,6 +603,7 @@ namespace BaseDeProjetos.Models
         //Outros
         Outros
     }
+
     public enum AreasAtividades
     {
         [Display(Name = "Atividades de apoio")]
@@ -582,6 +620,7 @@ namespace BaseDeProjetos.Models
 
         Outros
     }
+
     public enum MotivosNaoConversao
     {
         [Display(Name = "O cliente não aceitou o preço")]
@@ -599,6 +638,7 @@ namespace BaseDeProjetos.Models
         [Display(Name = "O cliente não quis informar o motivo")]
         NaoInformada
     }
+
     public enum Nivel
     {
         [Display(Name = "Usuário")]
@@ -616,6 +656,7 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Externos")]
         Externos
     }
+
     public enum SetoresDeAtividade
     {
         Administração_pública, _defesa_e_seguridade_social,
@@ -706,56 +747,91 @@ namespace BaseDeProjetos.Models
         Transporte_aquaviário,
         Transporte_terrestre,
     }
+
     public enum Pais
     {
         [Display(Name = "Brasil")]
         Brasil,
+
         [Display(Name = "Exterior")]
         Exterior
     }
+
     public enum Idioma
     {
         ptBR,
         enUS
     }
+
     public enum MeioDivulgacao
     {
         //TODO: Capitalizar Fonte
         IMPRESSO, WEB, MEIO_MAGNETICO, MEIO_DIGITAL, FILME, HIPERTEXTO, OUTRO, VARIOS, NAO_INFORMADO
     }
+
     public enum StatusSubmissaoEdital
     {
         [Display(Name = "Submissão de edital")]
         submetido,
+
         [Display(Name = "Submissão em análise")]
         emAnalise,
+
         [Display(Name = "Deferido")]
         deferido,
+
         [Display(Name = "Indeferido")]
         indeferido,
+
         [Display(Name = "Cancelado")]
         cancelado
     }
+
     public enum StatusEdital
     {
         [Display(Name = "Em aberto")]
         aberto,
+
         [Display(Name = "Edital Encerrado")]
         encerrado
     }
+
     public enum AgenciaDeFomento
     {
         [Display(Name = "Finep")]
         finep,
+
         [Display(Name = "Faperj")]
         faperj,
+
         [Display(Name = "Cnpq")]
         cnpq,
+
         [Display(Name = "Sesi/Senai de Inovação")]
         sesi_senai_inovacao,
+
         [Display(Name = "Outros")]
         outros
     }
+
+    public enum ResultadoOpiniao
+    {
+        [Display(Name = "Muito Insatisfeito")]
+        Pessimo,
+
+        [Display(Name = "Insatisfeito")]
+        Ruim,
+
+        [Display(Name = "Regular")]
+        Regular,
+
+        [Display(Name = "Satisfeito")]
+        Bom,
+
+        [Display(Name = "Muito Satisfeito")]
+        Otimo
+    }
+
     public static class EnumExtensions
     {
         public static string GetDisplayName(this Enum enu)

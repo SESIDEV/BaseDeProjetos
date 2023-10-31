@@ -29,5 +29,6 @@
     "js",
     "performance",
     "projetos-indicadores"
-  ]
+  ],
+  "dotnet.defaultSolution": "BaseDeProjetos.sln"
 }

@@ -1,0 +1,44 @@
+﻿@model BaseDeProjetos.Models.PesquisaProjeto
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>PesquisaProjeto</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdPesquisa" />
+            <div class="form-group">
+                <label asp-for="ProjetoId" class="control-label"></label>
+                <input asp-for="ProjetoId" class="form-control" />
+                <span asp-validation-for="ProjetoId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ResultadoFinal" class="control-label"></label>
+                <input asp-for="ResultadoFinal" class="form-control" />
+                <span asp-validation-for="ResultadoFinal" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RepresentacaoTextualQuestionario" class="control-label"></label>
+                <input asp-for="RepresentacaoTextualQuestionario" class="form-control" />
+                <span asp-validation-for="RepresentacaoTextualQuestionario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

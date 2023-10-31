@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BaseDeProjetos.Models
 {
     public class Projeto
     {
-        public Projeto() 
-        { 
-        
+        public Projeto()
+        {
         }
 
         public Projeto(ProjetoIndicadores indicador)
@@ -24,7 +24,6 @@ namespace BaseDeProjetos.Models
         public virtual string NomeProjeto { get; set; }
 
         public virtual Empresa Empresa { get; set; }
-        public virtual Empresa Proponente { get; set; }
 
         [Display(AutoGenerateFilter = true, Name = "Linha de Pesquisa")]
         public virtual LinhaPesquisa AreaPesquisa { get; set; }
@@ -32,10 +31,12 @@ namespace BaseDeProjetos.Models
         [Display(AutoGenerateFilter = true, Name = "Data de Início")]
         public virtual DateTime DataInicio { get; set; } = DateTime.Now;
 
+        [Display(AutoGenerateFilter = true, Name = "Data de Encerramento")]
+        
         public virtual DateTime DataEncerramento { get; set; } = DateTime.Now;
 
         [Display(AutoGenerateFilter = true, Name = "Membros da Equipe")]
-        public virtual string MembrosEquipe { get; set; }
+        public virtual List<EquipeProjeto> EquipeProjeto { get; set; }
 
         public virtual Estado Estado { get; set; }
 
@@ -61,7 +62,26 @@ namespace BaseDeProjetos.Models
 
         public virtual List<ProjetoIndicadores> Indicadores { get; set; } = new List<ProjetoIndicadores>();
 
-        //Relacionamento Usuário Líder (Pesquisador)
+        [ForeignKey("UsuarioId")]
         public virtual Usuario Usuario { get; set; }
+
+        public virtual string UsuarioId { get; set; }
+
+        [ForeignKey(nameof(ProponenteId))]
+        public virtual Usuario Proponente { get; set; }
+
+        public virtual string ProponenteId { get; set; }
+
+        public virtual List<CurvaFisicoFinanceira> CurvaFisicoFinanceira { get; set; }
+
+        public virtual double? SatisfacaoClienteParcial { get; set; }
+
+        public virtual double? SatisfacaoClienteFinal { get; set; }
+
+        [Display(AutoGenerateFilter = true, Name = "Custo de Hora Homem")]
+        public virtual decimal CustoHH { get; set; }
+        
+        [Display(AutoGenerateFilter = true, Name = "Custo de Hora Máquina")]
+        public virtual decimal CustoHM { get; set; }
     }
 }

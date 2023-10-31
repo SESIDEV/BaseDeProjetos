@@ -2,16 +2,19 @@
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : SGIController
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
@@ -27,11 +30,10 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="status">Status a se buscar</param>
         /// <returns>Quantidade de prospecções</returns>
-        private int GetQuantidadeProspStatus(StatusProspeccao status)
+        private async Task<List<Prospeccao>> GetProspStatus(StatusProspeccao status)
         {
-            return _context.Prospeccao.Where(p => p.Status.OrderByDescending(f => f.Data).FirstOrDefault().Status == status).Count();
+            return await _context.Prospeccao.Where(p => p.Status.OrderByDescending(f => f.Data).FirstOrDefault().Status == status).ToListAsync();
         }
-
 
         [Route("")]
         [Route("Home")]
@@ -41,99 +43,128 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
-
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
-
-                ObterDadosReceita();
+                ViewbagizarUsuario(_context);
 
                 var prospeccoes = _context.Prospeccao
-                    .Where(p => p.Casa == usuario.Casa)
+                    .Where(p => p.Casa == UsuarioAtivo.Casa)
                     .ToList();
 
                 var prospeccoesAtivas = prospeccoes
                     .Where(p => VerificarProspeccaoAtiva(p) == true)
                     .ToList();
 
-                // Volume de negocios é o somatório de todos os valores de prospecções
-                ViewData["Volume_Negocios"] = prospeccoesAtivas.Sum(p => p.ValorEstimado);
-                
-                // Para fins de debug
-                if (usuario.Casa == Instituto.Super)
-                {
-                    ViewData["Volume_Negocios"] = _context.Prospeccao
-                        .Where(p => p.Casa == Instituto.ISIQV).ToList()
-                        .Where(p => VerificarProspeccaoAtiva(p) == true)
-                        .Sum(p => p.ValorEstimado);
-                }
-
-                ViewData["n_prosp_ativas"] = prospeccoesAtivas.Count;
-                ViewData["n_prosp_total"] = prospeccoes.Count;
-
-                ViewData["n_prosp_emproposta"] = GetQuantidadeProspStatus(StatusProspeccao.ComProposta);
-                ViewData["n_prosp_planejadas"] = GetQuantidadeProspStatus(StatusProspeccao.Planejada);
-
-                int n_prosp_convertidas = GetQuantidadeProspStatus(StatusProspeccao.Convertida);
-                int n_prosp_naoconvertidas = GetQuantidadeProspStatus(StatusProspeccao.NaoConvertida);
-                int n_prosp_suspensa = GetQuantidadeProspStatus(StatusProspeccao.Suspensa);
-
-                ViewData["n_prosp_concluidas"] = n_prosp_convertidas + n_prosp_naoconvertidas + n_prosp_suspensa;
-                                
-                ViewData["n_proj"] = _context.Projeto.Where(p => p.Casa == usuario.Casa).Where(p => p.Status == StatusProjeto.EmExecucao).ToList().Count;
-                ViewData["n_empresas"] = _context.Prospeccao.Where(p => p.Status.Any(s => s.Status != StatusProspeccao.Planejada)).Select(e => e.Empresa).Distinct().Count();
                 ViewData["satisfacao"] = 0.8750; // TODO: Implementar lógica?
-                ViewData["Valor_Prosp_Proposta"] = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).Where(p => p.Status.Any(s => s.Status == StatusProspeccao.ComProposta)).Sum(p => p.ValorProposta);
-                ViewBag.Usuarios = _context.Users.AsEnumerable().Where(p => p.Casa == usuario.Casa).Where(u => u.Casa == usuario.Casa).Where(u => u.EmailConfirmed == true).Where(u => u.Nivel != Nivel.Dev && u.Nivel != Nivel.Externos).ToList().Count();
-                ViewBag.Estados = _context.Prospeccao.Where(p => p.Casa == usuario.Casa).Select(p => p.Empresa.Estado).ToList();
-                ViewBag.LinhaDePesquisa = _context.Prospeccao.Where(p => p.Casa == usuario.Casa && p.Status.Any(f => f.Status != StatusProspeccao.Planejada)).Select(p => p.LinhaPequisa).ToList();
-
+                ViewData["Valor_Prosp_Proposta"] = _context.Prospeccao.Where(p => p.Casa == UsuarioAtivo.Casa).Where(p => p.Status.Any(s => s.Status == StatusProspeccao.ComProposta)).Sum(p => p.ValorProposta);
+                ViewBag.Estados = _context.Prospeccao.Where(p => p.Casa == UsuarioAtivo.Casa).Select(p => p.Empresa.Estado).ToList();
             }
             return View();
-
         }
 
         /// <summary>
         /// Obtém os dados da receita de cada instituto, atribuindo-os ao ViewData
         /// </summary>
-        private void ObterDadosReceita()
+        [HttpGet("Home/ObterDadosReceita")]
+        public async Task<IActionResult> ObterDadosReceita()
         {
+            ViewbagizarUsuario(_context);
 
-            Usuario usuario = _context.Users.FirstOrDefault(u => u.UserName == HttpContext.User.Identity.Name);
+            Dictionary<string, object> dadosHome = new Dictionary<string, object>();
+            Dictionary<string, decimal> dadosFinanceiros = new Dictionary<string, decimal>();
+            Dictionary<string, int> dadosOperacionais = new Dictionary<string, int>();
+            Dictionary<string, DateTime> data = new Dictionary<string, DateTime>();
+            Dictionary<string, object> dadosGrafico = new Dictionary<string, object>();
+            Dictionary<string, float> dadosProspeccoes = new Dictionary<string, float>();
+
+            decimal receitaTotal = 0;
+            decimal despesaTotal = 0;
+            decimal investimentoTotal = 0;
+            decimal sustentabilidade = 0;
+
             //Implementar quando base tiver atualizada
-            ViewData["receita_isiqv"] = ReceitaCasa(Instituto.ISIQV);
-            ViewData["receita_isiii"] = ReceitaCasa(Instituto.ISIII);
-            ViewData["receita_cisho"] = ReceitaCasa(Instituto.CISHO);
+            // Quando? --HH
+            dadosFinanceiros["receitaISIQV"] = ReceitaCasa(Instituto.ISIQV);
+            dadosFinanceiros["receitaISIII"] = ReceitaCasa(Instituto.ISIII);
+            dadosFinanceiros["receitaCISHO"] = ReceitaCasa(Instituto.CISHO);
+
+            var prospeccoes = await _context.Prospeccao.Where(p => p.Casa == UsuarioAtivo.Casa).ToListAsync();
+            var prospeccoesAtivas = prospeccoes.Where(p => VerificarProspeccaoAtiva(p) == true).ToList();
+            var prospeccoesNaoPlanejadas = prospeccoes.Where(p => p.Status.Any(s => s.Status != StatusProspeccao.Planejada)).ToList();
+            var prospeccoesComProposta = await GetProspStatus(StatusProspeccao.ComProposta);
+            var prospeccoesConcluidas = await GetProspStatus(StatusProspeccao.Convertida);
+            var prospeccoesPlanejadas = await GetProspStatus(StatusProspeccao.Planejada);
+            var projetos = await _context.Projeto.Where(p => p.Casa == UsuarioAtivo.Casa).Where(p => p.Status == StatusProjeto.EmExecucao).ToListAsync();
+            var empresas = prospeccoesNaoPlanejadas.Select(e => e.Empresa).Distinct().ToList();
+            var usuarios = await _context.Users.Select(u => new { id = u.Id, casa = u.Casa, emailConfirmed = u.EmailConfirmed, nivel = u.Nivel }).Where(u => u.casa == UsuarioAtivo.Casa).Where(u => u.emailConfirmed == true).Where(u => u.nivel != Nivel.Dev && u.nivel != Nivel.Externos).ToListAsync();
+            var linhasDePesquisa = prospeccoesNaoPlanejadas.Select(p => p.LinhaPequisa).ToList();
+
+            // Separação do query SQL em algumas variáveis para clareza
+            var linhaDePesquisaDistintos = linhasDePesquisa.OrderByDescending(lp => linhasDePesquisa.Where(lp2 => lp2 == lp).Count()).Distinct();
+            List<int> quantidades = linhaDePesquisaDistintos.Select(p => linhasDePesquisa.Where(k => k == p).Count()).ToList();
+            List<string> labelsDePesquisa = linhaDePesquisaDistintos.Select(p => $"`{p.GetDisplayName().ToUpperInvariant()}`").ToList();
+
+            dadosOperacionais["prospTotais"] = prospeccoes.Count;
+            dadosOperacionais["prospAtivas"] = prospeccoesAtivas.Count;
+            dadosOperacionais["projetos"] = projetos.Count;
+            dadosOperacionais["empresas"] = empresas.Count;
+            dadosOperacionais["usuarios"] = usuarios.Count;
+
+            dadosGrafico["linhasDePesquisa"] = quantidades;
+            dadosGrafico["labels"] = labelsDePesquisa;
+
+            dadosProspeccoes["prospAtivas"] = prospeccoesAtivas.Count;
+            dadosProspeccoes["prospComProposta"] = prospeccoesComProposta.Count;
+            dadosProspeccoes["prospConcluidas"] = prospeccoesConcluidas.Count;
+            dadosProspeccoes["prospNaoPlanejadas"] = prospeccoesNaoPlanejadas.Count;
+            dadosProspeccoes["prospPlanejadas"] = prospeccoesPlanejadas.Count;
+
+            dadosProspeccoes["proporcaoAtivas"] = prospeccoesAtivas.Count / (float)prospeccoes.Count;
+            dadosProspeccoes["proporcaoComProposta"] = prospeccoesComProposta.Count / (float)prospeccoes.Count;
+            dadosProspeccoes["proporcaoConcluidas"] = prospeccoesConcluidas.Count / (float)prospeccoes.Count;
+            dadosProspeccoes["proporcaoPlanejadas"] = prospeccoesPlanejadas.Count / (float)prospeccoes.Count;
 
             try
             {
-
-                if (usuario.Casa == Instituto.Super || usuario.Casa == Instituto.ISIQV || usuario.Casa == Instituto.CISHO)
+                if (UsuarioAtivo.Casa == Instituto.Super || UsuarioAtivo.Casa == Instituto.ISIQV || UsuarioAtivo.Casa == Instituto.CISHO)
                 {
-                    ViewData["receita_total"] = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == Instituto.ISIQV).ToList().LastOrDefault().Receita;
-                    ViewData["despesa_total"] = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == Instituto.ISIQV).ToList().LastOrDefault().Despesa;
-                    ViewData["invest_total"] = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == Instituto.ISIQV).ToList().LastOrDefault().Investimento;
-                    ViewData["Data"] = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == Instituto.ISIQV).ToList().LastOrDefault().Data;
-                    ViewData["quali"] = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == Instituto.ISIQV).ToList().LastOrDefault().QualiSeguranca;
-
+                    // Volume de negocios é o somatório de todos os valores de prospecções
+                    dadosFinanceiros["volumeNegocios"] = prospeccoesAtivas.Where(p => p.Casa == Instituto.ISIQV || p.Casa == Instituto.CISHO).Sum(p => p.ValorEstimado);
+                    dadosFinanceiros["receitaTotal"] = receitaTotal = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == Instituto.ISIQV || lista.Casa == Instituto.CISHO).ToList().LastOrDefault().Receita;
+                    dadosFinanceiros["despesaTotal"] = despesaTotal = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == Instituto.ISIQV || lista.Casa == Instituto.CISHO).ToList().LastOrDefault().Despesa;
+                    dadosFinanceiros["investimentoTotal"] = investimentoTotal = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == Instituto.ISIQV || lista.Casa == Instituto.CISHO).ToList().LastOrDefault().Investimento;
+                    dadosFinanceiros["quali"] = (decimal)_context.IndicadoresFinanceiros.Where(lista => lista.Casa == Instituto.ISIQV || lista.Casa == Instituto.CISHO).ToList().LastOrDefault().QualiSeguranca;
+                    dadosFinanceiros["sustentabilidade"] = sustentabilidade = investimentoTotal / despesaTotal;
+                    data["data"] = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == Instituto.ISIQV || lista.Casa == Instituto.CISHO).ToList().LastOrDefault().Data;
                 }
                 else
                 {
-                    ViewData["receita_total"] = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == usuario.Casa).ToList().LastOrDefault().Receita;
-                    ViewData["despesa_total"] = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == usuario.Casa).ToList().LastOrDefault().Despesa;
-                    ViewData["invest_total"] = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == usuario.Casa).ToList().LastOrDefault().Investimento;
-                    ViewData["Data"] = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == usuario.Casa).ToList().LastOrDefault().Data;
-                    ViewData["quali"] = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == usuario.Casa).ToList().LastOrDefault().QualiSeguranca;
+                    dadosFinanceiros["volumeNegocios"] = prospeccoesAtivas.Sum(p => p.ValorEstimado);
+                    dadosFinanceiros["receitaTotal"] = receitaTotal = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == UsuarioAtivo.Casa).ToList().LastOrDefault().Receita;
+                    dadosFinanceiros["despesaTotal"] = despesaTotal = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == UsuarioAtivo.Casa).ToList().LastOrDefault().Despesa;
+                    dadosFinanceiros["investimentoTotal"] = investimentoTotal = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == UsuarioAtivo.Casa).ToList().LastOrDefault().Investimento;
+                    dadosFinanceiros["quali"] = (decimal)_context.IndicadoresFinanceiros.Where(lista => lista.Casa == UsuarioAtivo.Casa).ToList().LastOrDefault().QualiSeguranca;
+                    dadosFinanceiros["sustentabilidade"] = sustentabilidade = investimentoTotal / despesaTotal;
+                    data["data"] = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == UsuarioAtivo.Casa).ToList().LastOrDefault().Data;
                 }
             }
             catch (Exception)
             {
-                ViewData["receita_total"] = 0;
-                ViewData["despesa_total"] = 1;
-                ViewData["invest_total"] = 0;
-                ViewData["quali"] = 0;
-                ViewData["Data"] = DateTime.Today;
+                dadosFinanceiros["volumeNegocios"] = 0;
+                dadosFinanceiros["receitaTotal"] = 0;
+                dadosFinanceiros["despesaTotal"] = 1;
+                dadosFinanceiros["investimentoTotal"] = 0;
+                dadosFinanceiros["quali"] = 0;
+                dadosFinanceiros["sustentabilidade"] = 0;
+
+                data["data"] = DateTime.Today;
             }
+
+            dadosHome["dadosFinanceiros"] = dadosFinanceiros;
+            dadosHome["dadosOperacionais"] = dadosOperacionais;
+            dadosHome["dadosGrafico"] = dadosGrafico;
+            dadosHome["dadosProspeccoes"] = dadosProspeccoes;
+            dadosHome["data"] = data;
+
+            return Ok(JsonConvert.SerializeObject(dadosHome));
         }
 
         /// <summary>

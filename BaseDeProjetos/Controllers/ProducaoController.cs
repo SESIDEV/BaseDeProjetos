@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace BaseDeProjetos.Controllers
 {
     [Authorize]
-    public class ProducaoController : Controller
+    public class ProducaoController : SGIController
     {
         private readonly ApplicationDbContext _context;
 
@@ -30,17 +30,16 @@ namespace BaseDeProjetos.Controllers
             {
                 List<Producao> producoes;
 
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                this.ViewbagizarUsuario(_context);
+                this.ViewbagizarUsuario(_context);
 
                 if (string.IsNullOrEmpty(casa))
                 {
-                    casa = usuario.Casa.ToString();
+                    casa = UsuarioAtivo.Casa.ToString();
                 }
 
-                producoes = await FunilHelpers.DefinirCasaParaVisualizarEmProducao(casa, usuario, _context, HttpContext, ViewData);
-                producoes = FunilHelpers.VincularCasaProducao(usuario, producoes);
+                producoes = await FunilHelpers.DefinirCasaParaVisualizarEmProducao(casa, UsuarioAtivo, _context, HttpContext, ViewData);
+                producoes = FunilHelpers.VincularCasaProducao(UsuarioAtivo, producoes);
                 producoes = FunilHelpers.PeriodizarProduções(ano, producoes);
                 producoes = FunilHelpers.FiltrarProduções(searchString, producoes);
                 producoes = producoes.OrderBy(p => p.Data).ToList();
@@ -110,7 +109,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // POST: Producao/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -157,7 +156,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         // POST: Producao/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]

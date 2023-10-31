@@ -1,18 +1,15 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Projeto>
 @using BaseDeProjetos.Helpers
+@{
+    var usuarios = ViewData["Usuarios"] as List<Usuario>;
+}
+
 <style>
     .caixa-logo {
         max-width: 180px;
         height: 100%;
         justify-content: center;
         align-items: center;
-        padding: 20px;
-    }
-
-    #logoEmpresa {
-        object-fit: contain;
-        max-width: 180px;
-        max-height: 180px;
         padding: 20px;
     }
 
@@ -23,6 +20,20 @@
     }
 </style>
 
+<script>
+    function setupTippy(id) {
+        try {
+            if (!tippyDone.includes(id)) {
+                console.log("Setting up tippy for: " + id);
+                tippy(`#${id}`, { allowHTML: true, placement: 'left' });
+                tippyDone.push(id);
+            }
+        } catch (error) {
+            console.error(`Um erro ocorreu ao tentar setar o tippy... vamos tentar novamente. ${error}`);
+            tippy(`#${id}`, { allowHTML: true, placement: 'left' });
+        }
+    }
+</script>
 
 @foreach (var projeto in Model)
 {
@@ -38,18 +49,100 @@
     <div id="modalDetailsProjeto-@projeto.Id-container">
     </div>
 
-    <div id="modalIncluirMacroentregaProjeto-@projeto.Id-container">
+    <div id="modalIncluirIndicadorProjeto-@projeto.Id-container">
     </div>
 
-    <div id="modalDetalhesMacroentregaProjeto-@projeto.Id-container">
+    <div id="modalDetalhesIndicadorProjeto-@projeto.Id-container">
     </div>
+    
+    <div id="modalIncluirCFFProjeto-@projeto.Id-container">
+    </div>
+
+    <div id="modalDetalhesCFFProjeto-@projeto.Id-container">
+    </div>
+
+    <div id="modalEditCFFProjeto-@projeto.Id-container">
+    </div>
+
+    @foreach (var cff in projeto.CurvaFisicoFinanceira) {
+        <div id="modalEditCFFProjeto-@cff.Id-container">
+        </div>
+    }
 
     <tr>
-        <td class="cell">@projeto.Empresa.Nome</td>
-        <td class="cell">@projeto.NomeProjeto</td>
-        <td class="cell">@projeto.Status.GetDisplayName()</td>
-        <td class="cell">@projeto.DataInicio.ToString("dd/MM/yyyy")</td>
-        <td class="cell">@projeto.DataEncerramento.ToString("dd/MM/yyyy")</td>
+        <td class="cell">
+            <div class="d-flex gap-2 flex-column align-items-center">
+                <div>
+                    @*LOGO*@
+                    @if (projeto.Empresa.Logo != null)
+                    {
+                        <img style="border: 2px solid #999; border-radius: 10px; background-color: white" loading="lazy" src="@projeto.Empresa.Logo" id="logoEmpresa" alt="Logo da Empresa" />
+                    }
+                    else
+                    {
+                        <nobr id="logo_alt">Sem Logo</nobr>
+                    }
+                </div>
+                <div style="text-align:center;width:90px">
+                    @*NOME EMPRESA*@
+                    @projeto.Empresa.Nome @*FAVOR NAO EDITAR*@
+                </div>
+            </div>
+        </td>
+
+        <td class="cell">
+            @projeto.NomeProjeto
+        </td>
+        <td class="cell">
+            @if (projeto.Proponente != null)
+            {
+                <span onmouseover="setupTippy('cargoProponente-@(projeto.Id)')" data-tippy-content="@projeto.Proponente.Cargo?.Nome" id="cargoProponente-@projeto.Id" class="badge bg-success">@projeto.Proponente.UserName</span> @*Líder*@
+            }
+            else
+            {
+                <span class="badge bg-danger">Sem Proponente</span>
+            }
+        </td>
+        <td class="cell">
+            @if (projeto.Usuario != null)
+            {
+                <span onmouseover="setupTippy('cargoUsuario-@(projeto.Id)')" data-tippy-content="@projeto.Usuario.Cargo?.Nome" id="cargoUsuario-@projeto.Id" class="badge bg-success">@projeto.Usuario.UserName</span> @*Líder*@
+            }
+            else
+            {
+                <span class="badge bg-danger">Sem Líder</span>
+            }
+            @if (projeto.EquipeProjeto != null)
+            {
+                foreach (var relacao in projeto.EquipeProjeto)
+                {
+                    <span onmouseover="setupTippy('cargoMembro-@(relacao.Usuario?.Id)')" data-tippy-content="@relacao.Usuario.Cargo?.Nome" id="cargoMembro-@relacao.Usuario?.Id" class="badge bg-info">@relacao.Usuario?.UserName</span>
+                }
+            }
+        </td>
+        <td class="cell">
+            @if (projeto.Status == StatusProjeto.EmExecucao) 
+            {
+                if (DateTime.Now > projeto.DataEncerramento)
+                {
+                    <div class="d-flex flex-row gap-2 align-items-center justify-content-center">
+						<i class="text-danger fs-3 bi bi-hourglass-bottom"></i>
+						<span class="badge bg-danger" onmouseover="setupTippy('statusCargo-@(projeto.Id)')" data-tippy-content="Atrasado" id="statusCargo-@projeto.Id">@projeto.Status.GetDisplayName()</span>
+					</div>
+                }
+                else
+                {
+					<div class="d-flex flex-row gap-2 align-items-center justify-content-center">
+						<i class="text-success fs-3 bi bi-hourglass-split"></i>
+						<span class="badge bg-success" onmouseover="setupTippy('statusCargo-@(projeto.Id)')" data-tippy-content="Dentro do Prazo" id="statusCargo-@projeto.Id">@projeto.Status.GetDisplayName()</span>
+					</div>
+                }
+            } 
+            else
+            {
+                <span class="badge bg-info">@projeto.Status.GetDisplayName()</span>
+            }
+        </td>
         <td class="cell">
             @if (projeto.ValorAporteRecursos != 0 && projeto.ValorAporteRecursos > 0)
             {
@@ -61,8 +154,50 @@
             }
         </td>
         <td class="cell">
+            <span>R$ @projeto.CustoHH.ToString("N")</span>
+        </td>
+        <td class="cell">
+            <span>R$ @projeto.CustoHM.ToString("N")</span>
+        </td>
+        <td class="cell">
             @projeto.FonteFomento.GetDisplayName()
-        </td>        
+        </td>
+        <td class="cell">
+            <span>@projeto.DataInicio.ToString("dd/MM/yyyy")</span>
+        </td>
+        <td class="cell">
+            <span>@projeto.DataEncerramento.ToString("dd/MM/yyyy")</span>
+        </td>
+        @if (projeto.SatisfacaoClienteParcial != null)
+        {
+            <td class="cell">
+                <span>@(projeto.SatisfacaoClienteParcial?.ToString("N"))%</span>
+            </td>
+        }
+        else
+        {
+            <td class="cell">
+                <span>
+                    Sem pesquisa realizada
+                </span>
+            </td>
+        }
+
+        @if (projeto.SatisfacaoClienteFinal != null)
+        {
+            <td class="cell">
+                <span>@(projeto.SatisfacaoClienteFinal?.ToString("N"))%</span>
+            </td>
+        }
+        else
+        {
+            <td class="cell">
+                <span>
+                    Sem pesquisa realizada
+                </span>
+            </td>
+        }
+
 
         <td class="cell">
             <button type="button" data-bs-target="#modalDetalhes-@projeto.Id" id="button-@projeto.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary" onmouseover="carregarModaisProjeto('@projeto.Id')">Detalhes</button>
