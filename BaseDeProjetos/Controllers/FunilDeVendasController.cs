@@ -396,7 +396,7 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Empresa, Contato, Casa, Usuario, MembrosEquipe, ValorProposta, ValorEstimado, Status, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewbagizarUsuario(_context);
 
             if (id != prospeccao.Id)
             {
@@ -421,7 +421,7 @@ namespace BaseDeProjetos.Controllers
                         throw; // Outro erro de banco, lançar para depuração
                     }
                 }
-                return RedirectToAction("Index", "FunilDeVendas", new { casa = usuario.Casa });
+                return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
             }
             return View(prospeccao);
         }
@@ -485,7 +485,7 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditarFollowUp(int id, [Bind("Id", "OrigemID", "Status", "Anotacoes", "Data", "Vencimento")] FollowUp followup)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewbagizarUsuario(_context);
 
             if (id != followup.Id)
             {
@@ -497,7 +497,7 @@ namespace BaseDeProjetos.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction("Index", "FunilDeVendas", new { casa = usuario.Casa });
+            return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
         }
 
         // GET: FunilDeVendas/Delete/5
@@ -505,10 +505,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewbagizarUsuario(_context);
 
                 if (id == null)
                 {
@@ -560,14 +557,14 @@ namespace BaseDeProjetos.Controllers
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 //Verifica se o usuário está apto para remover o followup
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewbagizarUsuario(_context);
                 Prospeccao prospeccao = await _context.Prospeccao.FirstOrDefaultAsync(p => p.Id == followup.OrigemID);
 
-                if (VerificarCondicoesRemocao(prospeccao, usuario, followup.Origem.Usuario) || usuario.Nivel == Nivel.Dev)
+                if (VerificarCondicoesRemocao(prospeccao, UsuarioAtivo, followup.Origem.Usuario) || UsuarioAtivo.Nivel == Nivel.Dev)
                 {
                     _context.FollowUp.Remove(followup);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction("Index", "FunilDeVendas", new { casa = usuario.Casa });
+                    return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
                 }
                 else
                 {
@@ -598,7 +595,7 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewbagizarUsuario(_context);
 
             var prospeccao = await _context.Prospeccao.Where(prosp => prosp.Id == id).Include(f => f.Status).FirstAsync(); // o First converte de IQuerable para objeto Prospeccao
 
@@ -609,7 +606,7 @@ namespace BaseDeProjetos.Controllers
 
             _context.Remove(prospeccao);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index), new { casa = usuario.Casa });
+            return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
         }
 
         /// <summary>

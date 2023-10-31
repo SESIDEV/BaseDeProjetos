@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Controllers
 {
-    public class ParticipacaoController : Controller
+    public class ParticipacaoController : SGIController
     {
         // TODO: Precisamos não utilizar esses valores mágicos de string no futuro!!
         private const string nomeCargoPesquisador = "Pesquisador QMS";
@@ -237,7 +237,7 @@ namespace BaseDeProjetos.Controllers
         [HttpGet("Participacao/RetornarDadosGrafico")]
         public async Task<IActionResult> RetornarDadosGrafico()
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewbagizarUsuario(_context);
 
             if (HttpContext.User.Identity.IsAuthenticated)
             {
@@ -252,12 +252,12 @@ namespace BaseDeProjetos.Controllers
                     rankingsMedios = ObterRankingsMedios(participacoes);
                 }
 
-                var participacaoUsuario = participacoes.FirstOrDefault(p => p.Lider == usuario);
+                var participacaoUsuario = participacoes.FirstOrDefault(p => p.Lider.Id == UsuarioAtivo.Id);
 
                 dadosGrafico["Participacao"] = participacaoUsuario;
                 dadosGrafico["Rankings"] = rankingsMedios;
 
-                if (usuario != null)
+                if (UsuarioAtivo != null)
                 {
                     return Ok(JsonConvert.SerializeObject(dadosGrafico));
                 }
@@ -1102,16 +1102,16 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private async Task<List<ParticipacaoTotalViewModel>> GetParticipacoesTotaisUsuarios(string mesInicio = null, string anoInicio = null, string mesFim = null, string anoFim = null)
         {
-            Usuario usuarioAtivo = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewbagizarUsuario(_context);
             List<Usuario> usuarios;
 
-            if (usuarioAtivo.Casa == Instituto.ISIQV || usuarioAtivo.Casa == Instituto.CISHO)
+            if (UsuarioAtivo.Casa == Instituto.ISIQV || UsuarioAtivo.Casa == Instituto.CISHO)
             {
                 usuarios = await _context.Users.Where(u => (u.Casa == Instituto.ISIQV || u.Casa == Instituto.CISHO) && u.Cargo.Nome == nomeCargoPesquisador && u.EmailConfirmed == true && u.Nivel == Nivel.Usuario).ToListAsync();
             }
             else
             {
-                usuarios = await _context.Users.Where(u => u.Casa == usuarioAtivo.Casa && u.EmailConfirmed == true && u.Cargo.Nome == nomeCargoPesquisador && u.Nivel == Nivel.Usuario).ToListAsync();
+                usuarios = await _context.Users.Where(u => u.Casa == UsuarioAtivo.Casa && u.EmailConfirmed == true && u.Cargo.Nome == nomeCargoPesquisador && u.Nivel == Nivel.Usuario).ToListAsync();
             }
 
             List<ParticipacaoTotalViewModel> participacoes = new List<ParticipacaoTotalViewModel>();
@@ -1132,7 +1132,7 @@ namespace BaseDeProjetos.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string mesInicio, string anoInicio, string mesFim, string anoFim)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewbagizarUsuario(_context);
 
             anoInicio = string.IsNullOrEmpty(anoInicio) ? "2021" : anoInicio;
             mesInicio = string.IsNullOrEmpty(mesInicio) ? "1" : mesInicio;
@@ -1158,18 +1158,18 @@ namespace BaseDeProjetos.Controllers
                 participacoes = participacoes.OrderByDescending(p => p.MediaFatores).ToList();
             }
 
-            ViewBag.usuarioFoto = usuario.Foto;
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-            ViewBag.usuarioId = usuario.Id;
+            ViewBag.usuarioFoto = UsuarioAtivo.Foto;
+            ViewBag.usuarioCasa = UsuarioAtivo.Casa;
+            ViewBag.usuarioNivel = UsuarioAtivo.Nivel;
+            ViewBag.usuarioId = UsuarioAtivo.Id;
 
-            if (usuario.Nivel == Nivel.Dev || usuario.Nivel == Nivel.PMO)
+            if (UsuarioAtivo.Nivel == Nivel.Dev || UsuarioAtivo.Nivel == Nivel.PMO)
             {
                 return View(participacoes);
             }
             else
             {
-                var participacoesFiltradas = participacoes.Where(p => p.Lider.Id == usuario.Id).ToList();
+                var participacoesFiltradas = participacoes.Where(p => p.Lider.Id == UsuarioAtivo.Id).ToList();
                 return View(participacoesFiltradas);
             }
 

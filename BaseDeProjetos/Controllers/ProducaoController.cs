@@ -30,8 +30,7 @@ namespace BaseDeProjetos.Controllers
             {
                 List<Producao> producoes;
 
-                this.ViewbagizarUsuario(_context);
-                this.ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context);
 
                 if (string.IsNullOrEmpty(casa))
                 {
@@ -63,9 +62,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewbagizarUsuario(_context);
 
                 if (id == null)
                 {
@@ -92,9 +89,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewbagizarUsuario(_context);
 
                 List<Empresa> empresas = _context.Empresa.ToList();
                 List<Projeto> projetos = _context.Projeto.ToList();
@@ -129,9 +124,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewbagizarUsuario(_context);
 
                 if (id == null)
                 {
@@ -195,9 +188,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewbagizarUsuario(_context);
 
                 if (id == null)
                 {

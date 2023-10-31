@@ -388,7 +388,7 @@ namespace BaseDeProjetos.Helpers
                 throw new ArgumentNullException(nameof(_context));
             }
 
-            var usuarioAtivo = _context.Users.ToList().FirstOrDefault(usuario => usuario.UserName == HttpContext.User.Identity.Name);
+            var usuarioAtivo = _context.Users.Select(u => new Usuario { Id = u.Id, UserName = u.UserName, Casa = u.Casa, Nivel = u.Nivel }).FirstOrDefault(usuario => usuario.UserName == HttpContext.User.Identity.Name);
 
             return usuarioAtivo;
         }
