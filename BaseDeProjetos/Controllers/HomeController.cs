@@ -54,8 +54,8 @@ namespace BaseDeProjetos.Controllers
                     .ToList();
 
                 ViewData["satisfacao"] = 0.8750; // TODO: Implementar lógica?
-                ViewData["Valor_Prosp_Proposta"] = _context.Prospeccao.Where(p => p.Casa == UsuarioAtivo.Casa).Where(p => p.Status.Any(s => s.Status == StatusProspeccao.ComProposta)).Sum(p => p.ValorProposta);
-                ViewBag.Estados = _context.Prospeccao.Where(p => p.Casa == UsuarioAtivo.Casa).Select(p => p.Empresa.Estado).ToList();
+                ViewData["Valor_Prosp_Proposta"] = prospeccoes.Where(p => p.Status.Any(s => s.Status == StatusProspeccao.ComProposta)).Sum(p => p.ValorProposta);
+                ViewBag.Estados = prospeccoes.Select(p => p.Empresa.Estado).ToList();
             }
             return View();
         }
