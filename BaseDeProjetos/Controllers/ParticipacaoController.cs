@@ -25,7 +25,7 @@ namespace BaseDeProjetos.Controllers
         private const string nomeCargoBolsista = "Pesquisador Bolsista";
         private readonly ApplicationDbContext _context;
         private readonly ILogger<ParticipacaoController> _logger;
-
+        private List<Prospeccao> _prospeccoes = new List<Prospeccao>();
         private const int AnoPadrao = 2021;
         private const int MesInicioPadrao = 1;
         private const int MesFimPadrao = 12;
@@ -210,6 +210,8 @@ namespace BaseDeProjetos.Controllers
                     usuario = await _context.Users.Where(u => u.Id == idUsuario).FirstOrDefaultAsync();
                 }
 
+                _prospeccoes = await _context.Prospeccao.ToListAsync();
+
                 var participacao = await GetParticipacaoTotalUsuario(usuario);
 
                 if (participacao != null)
@@ -311,9 +313,9 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="usuario"></param>
         /// <returns></returns>
-        private async Task<List<Prospeccao>> GetProspeccoesUsuarioMembroEquipe(Usuario usuario)
+        private List<Prospeccao> GetProspeccoesUsuarioMembroEquipe(Usuario usuario)
         {
-            return await _context.Prospeccao.Where(p => (p.Usuario == usuario || p.MembrosEquipe.Contains(usuario.Email)) && p.Status.OrderBy(f => f.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToListAsync();
+            return _prospeccoes.Where(p => (p.Usuario == usuario || p.MembrosEquipe.Contains(usuario.Email)) && p.Status.OrderBy(f => f.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
         }
 
         /// <summary>
@@ -392,11 +394,13 @@ namespace BaseDeProjetos.Controllers
 
             ParticipacaoTotalViewModel participacao = new ParticipacaoTotalViewModel() { Participacoes = new List<ParticipacaoViewModel>() };
             List<Projeto> projetosUsuarioEmExecucaoFiltrados = new List<Projeto>();
+            
+            // !! Evite puxar prospecções direto do contexto, utilize esse objeto para não sobrecarregar o MySQL !!
 
             // Líder e Membro
-            var prospeccoesUsuarioLider = await GetProspeccoesUsuarioLider(usuario);
-            var prospeccoesUsuarioMembro = await GetProspeccoesUsuarioMembro(usuario);
-            var prospeccoesUsuarioMembroEquipe = await GetProspeccoesUsuarioMembroEquipe(usuario);
+            var prospeccoesUsuarioLider = GetProspeccoesUsuarioLider(usuario);
+            var prospeccoesUsuarioMembro = GetProspeccoesUsuarioMembro(usuario);
+            var prospeccoesUsuarioMembroEquipe = GetProspeccoesUsuarioMembroEquipe(usuario);
             var projetosUsuario = await GetProjetosUsuario(usuario);
             var projetosUsuarioEmExecucao = projetosUsuario.Where(p => p.Status == StatusProjeto.EmExecucao).ToList();
             var projetosUsuarioMembro = await GetProjetosUsuarioMembro(usuario);
@@ -572,9 +576,9 @@ namespace BaseDeProjetos.Controllers
             return participacao;
         }
 
-        private async Task<List<Prospeccao>> GetProspeccoesUsuarioLider(Usuario usuario)
+        private List<Prospeccao> GetProspeccoesUsuarioLider(Usuario usuario)
         {
-            return await _context.Prospeccao.Where(p => p.Usuario.Id == usuario.Id && p.Status.OrderBy(f => f.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToListAsync();
+            return _prospeccoes.Where(p => p.Usuario.Id == usuario.Id && p.Status.OrderBy(f => f.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
         }
 
         /// <summary>
@@ -794,12 +798,12 @@ namespace BaseDeProjetos.Controllers
 
             if (statusProspeccao != null)
             {
-                prospeccoes = _context.Prospeccao.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == statusProspeccao).ToList();
+                prospeccoes = _prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == statusProspeccao).ToList();
                 prospeccoes = FiltrarProspeccoesPorPeriodo(mesInicio, anoInicio, mesFim, anoFim, prospeccoes);
             }
             else
             {
-                prospeccoes = _context.Prospeccao.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
+                prospeccoes = _prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
                 prospeccoes = FiltrarProspeccoesPorPeriodo(mesInicio, anoInicio, mesFim, anoFim, prospeccoes);
             }
 
@@ -946,10 +950,10 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="usuario"></param>
         /// <returns></returns>
-        private async Task<List<Prospeccao>> GetProspeccoesUsuarioMembro(Usuario usuario)
+        private List<Prospeccao> GetProspeccoesUsuarioMembro(Usuario usuario)
         {
             // Somente membro
-            return await _context.Prospeccao.Where(p => p.MembrosEquipe.Contains(usuario.Email) && p.Status.OrderBy(f => f.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToListAsync();
+            return _prospeccoes.Where(p => p.MembrosEquipe.Contains(usuario.Email) && p.Status.OrderBy(f => f.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
         }
 
         /// <summary>
@@ -1093,7 +1097,7 @@ namespace BaseDeProjetos.Controllers
             Usuario usuarioAtivo = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
             List<Usuario> usuarios;
 
-            // List<Prospeccao> prospeccoesTotais = _context.Prospeccao.ToList();
+            _prospeccoes = await _context.Prospeccao.ToListAsync();
 
             if (usuarioAtivo.Casa == Instituto.ISIQV || usuarioAtivo.Casa == Instituto.CISHO)
             {
@@ -1128,6 +1132,8 @@ namespace BaseDeProjetos.Controllers
             ViewData["anoInicio"] = anoInicio;
             ViewData["mesFim"] = mesFim;
             ViewData["anoFim"] = anoFim;
+
+            _prospeccoes = await _context.Prospeccao.ToListAsync();
 
             var participacoes = await GetParticipacoesTotaisUsuarios(mesInicio, anoInicio, mesFim, anoFim);
 
