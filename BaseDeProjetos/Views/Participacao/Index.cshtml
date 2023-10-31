@@ -1,4 +1,4 @@
-@using System.Globalization;
+﻿@using System.Globalization;
 @using BaseDeProjetos.Models;
 @using BaseDeProjetos.Helpers;
 @model IEnumerable<ParticipacaoTotalViewModel>
@@ -252,7 +252,9 @@
                                             <td class="cell" style="overflow:hidden; max-width:100px">
                                                 @if (ViewBag.usuarioNivel == Nivel.Dev || ViewBag.usuarioNivel == Nivel.PMO) 
                                                 {
-                                                    @participacaoTotal.Lider
+                                                    @*Alterar quando for pra produção, dev, pmo devem poder ver os nomes@
+                                                    @* @participacaoTotal.Lider *@
+                                                    <p>Membro @(random.Next())</p>
                                                 } 
                                                 else {
                                                     <p>Membro @(random.Next())</p>
