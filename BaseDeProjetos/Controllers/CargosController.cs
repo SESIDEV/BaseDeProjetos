@@ -10,22 +10,27 @@ namespace BaseDeProjetos.Controllers
     public class CargosController : SGIController
     {
         private readonly ApplicationDbContext _context;
+        private readonly DbCache _dbCache;
 
-        public CargosController(ApplicationDbContext context)
+        public CargosController(ApplicationDbContext context, DbCache dbCache)
         {
             _context = context;
+            _dbCache = dbCache;
         }
 
         // GET: Cargos
         public async Task<IActionResult> Index()
         {
+            string cacheKey = "AllCargos";
+
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 ViewbagizarUsuario(_context);
 
                 if (UsuarioAtivo.Nivel != Nivel.Usuario && UsuarioAtivo.Nivel != Nivel.Externos)
                 {
-                    return View(await _context.Cargo.ToListAsync());
+                    var cargos = await _dbCache.GetCachedAsync(cacheKey, () => _context.Cargo.ToListAsync());
+                    return View(cargos);
                 }
                 else
                 {
@@ -35,31 +40,6 @@ namespace BaseDeProjetos.Controllers
             else
             {
                 return View("Forbidden");
-            }
-        }
-
-        // GET: Cargos/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (HttpContext.User.Identity.IsAuthenticated && UsuarioAtivo.Nivel != Nivel.Usuario && UsuarioAtivo.Nivel != Nivel.Externos)
-            {
-                if (id == null)
-                {
-                    return NotFound();
-                }
-
-                var cargo = await _context.Cargo
-                    .FirstOrDefaultAsync(m => m.Id == id);
-                if (cargo == null)
-                {
-                    return NotFound();
-                }
-
-                return View(cargo);
-            }
-            else
-            {
-                return View("Forbiden");
             }
         }
 
@@ -87,32 +67,11 @@ namespace BaseDeProjetos.Controllers
             {
                 _context.Add(cargo);
                 await _context.SaveChangesAsync();
+                await _dbCache.InvalidateCache("AllCargos");
+                await _dbCache.SetCachedAsync($"Cargos:{cargo.Id}", cargo);
                 return RedirectToAction(nameof(Index));
             }
             return View(cargo);
-        }
-
-        // GET: Cargos/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (HttpContext.User.Identity.IsAuthenticated && UsuarioAtivo.Nivel != Nivel.Usuario && UsuarioAtivo.Nivel != Nivel.Externos)
-            {
-                if (id == null)
-                {
-                    return NotFound();
-                }
-
-                var cargo = await _context.Cargo.FindAsync(id);
-                if (cargo == null)
-                {
-                    return NotFound();
-                }
-                return View(cargo);
-            }
-            else
-            {
-                return View("Forbidden");
-            }
         }
 
         // POST: Cargos/Edit/5
@@ -133,10 +92,12 @@ namespace BaseDeProjetos.Controllers
                 {
                     _context.Update(cargo);
                     await _context.SaveChangesAsync();
+                    await _dbCache.InvalidateCache("AllCargos");
+                    await _dbCache.SetCachedAsync($"Cargos:{id}", cargo);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CargoExists(cargo.Id))
+                    if (!await CargoExists(cargo.Id))
                     {
                         return NotFound();
                     }
@@ -150,39 +111,16 @@ namespace BaseDeProjetos.Controllers
             return View(cargo);
         }
 
-        // GET: Cargos/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (HttpContext.User.Identity.IsAuthenticated && UsuarioAtivo.Nivel != Nivel.Usuario && UsuarioAtivo.Nivel != Nivel.Externos)
-            {
-                if (id == null)
-                {
-                    return NotFound();
-                }
-
-                var cargo = await _context.Cargo
-                    .FirstOrDefaultAsync(m => m.Id == id);
-                if (cargo == null)
-                {
-                    return NotFound();
-                }
-
-                return View(cargo);
-            }
-            else
-            {
-                return View("Forbidden");
-            }
-        }
-
         // POST: Cargos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var cargo = await _context.Cargo.FindAsync(id);
+            var cargo = await _dbCache.GetCachedAsync("Cargos:{id}", () => _context.Cargo.FindAsync(id).AsTask());
             _context.Cargo.Remove(cargo);
             await _context.SaveChangesAsync();
+            await _dbCache.InvalidateCache("AllCargos");
+            await _dbCache.InvalidateCache("Cargos:{id}");
             return RedirectToAction(nameof(Index));
         }
 
@@ -206,9 +144,9 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
-        private bool CargoExists(int id)
-        {
-            return _context.Cargo.Any(e => e.Id == id);
-        }
+            private async Task<bool> CargoExists(int id)
+            {
+                return await _dbCache.GetCachedAsync($"Cargos:{id}:exists", async () => await Task.FromResult(_context.Cargo.Any(e => e.Id == id)));
+            }
     }
 }
