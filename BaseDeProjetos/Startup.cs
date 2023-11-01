@@ -83,6 +83,10 @@ namespace BaseDeProjetos
             services.AddSession();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
+            services.AddDistributedMemoryCache();
+
+            services.AddTransient<DbCache>();
+
 
             services.Configure<CookiePolicyOptions>(options =>
             {
