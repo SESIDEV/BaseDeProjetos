@@ -1,7 +1,7 @@
 using System;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 
 public class DbCache
 {
@@ -10,6 +10,35 @@ public class DbCache
     public DbCache(IDistributedCache cache)
     {
         _cache = cache;
+    }
+
+    /// <summary>
+    /// Obtem/Registra os dados no cache (não async). Os dados são invalidados após 1h de forma automática caso não especificado
+    /// </summary>
+    /// <param name="cacheKey">Chave dos dados a serem obtidos ou registrados para cache</param>
+    /// <param name="retrieveDataFunc">Método de obtenção dos dados</param>
+    /// <param name="expiration">Opcional: tempo em horas de expiração do cache</param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public async Task<T> GetCachedAsync<T>(string cacheKey, Func<T> retrieveDataFunc, TimeSpan? expiration = null)
+    {
+        string serializedData = await _cache.GetStringAsync(cacheKey);
+
+        if (!string.IsNullOrEmpty(serializedData))
+        {
+            return JsonConvert.DeserializeObject<T>(serializedData);
+        }
+
+        T data = retrieveDataFunc();
+
+        if (data != null)
+        {
+            var options = new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
+            var cacheOptions = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromHours(1) };
+            await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(data, options), cacheOptions);
+        }
+
+        return data;
     }
 
     /// <summary>
@@ -26,15 +55,16 @@ public class DbCache
 
         if (!string.IsNullOrEmpty(serializedData))
         {
-            return JsonSerializer.Deserialize<T>(serializedData);
+            return JsonConvert.DeserializeObject<T>(serializedData);
         }
 
         T data = await retrieveDataFunc();
 
         if (data != null)
         {
+            var options = new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
             var cacheOptions = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromHours(1) };
-            await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(data), cacheOptions);
+            await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(data, options), cacheOptions);
         }
 
         return data;
@@ -56,7 +86,8 @@ public class DbCache
             AbsoluteExpirationRelativeToNow = duration ?? TimeSpan.FromHours(1)
         };
 
-        var serializedValue = JsonSerializer.Serialize(value);
+        var options = new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
+        var serializedValue = JsonConvert.SerializeObject(value, options);
         await _cache.SetStringAsync(cacheKey, serializedValue, cacheEntryOptions);
     }
 
