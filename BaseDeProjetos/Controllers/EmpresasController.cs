@@ -6,7 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -22,6 +26,90 @@ namespace BaseDeProjetos.Controllers
         public EmpresasController(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        static string ReplaceBase64Data(string input)
+        {
+            // Define a regular expression pattern to match data URLs
+            string pattern = @"data:image/[^;]+;base64,";
+
+            // Use Regex.Replace to remove the matched pattern from the input string
+            return Regex.Replace(input, pattern, "");
+        }
+
+        [HttpGet("Empresas/ReprocessarImagens")]
+        public async Task<IActionResult> ReprocessarImagens()
+        {
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                var empresas = await _context.Empresa.ToListAsync();
+
+                foreach (var empresa in empresas)
+                {
+                    if (!string.IsNullOrEmpty(empresa.Logo))
+                    {
+                        if (!empresa.Logo.StartsWith("http"))
+                        {
+                            var logoSemHeader = ReplaceBase64Data(empresa.Logo); // Substituir caso haja esses coisos de header
+
+                            byte[] bytesImagem = Convert.FromBase64String(logoSemHeader);
+
+                            MemoryStream streamLogo;
+                            Image imagemSource;
+                            streamLogo = new MemoryStream(bytesImagem);
+                            try
+                            {
+                                imagemSource = Image.FromStream(streamLogo);
+                            }
+                            catch (ArgumentException)
+                            {
+                                // Handle the case where the image data is not valid
+                                // Log the base64 string for analysis or take other appropriate actions
+                                empresa.Logo = "";
+                                continue;
+                            }
+
+                            const int Tamanho = 96;
+                            Bitmap imagemFinal = new Bitmap(Tamanho, Tamanho);
+                            Graphics graphics = Graphics.FromImage(imagemFinal);
+
+                            graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Bilinear;
+                            graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+
+                            graphics.Clear(Color.White);
+
+                            if (imagemSource.Width > imagemSource.Height)
+                            {
+                                int x = 0;
+                                int y = (Tamanho - (imagemSource.Height * Tamanho / imagemSource.Width)) / 2;
+                                graphics.DrawImage(imagemSource, new Rectangle(x, y, Tamanho, imagemSource.Height * Tamanho / imagemSource.Width));
+                            }
+                            else
+                            {
+                                int x = (Tamanho - (imagemSource.Width * Tamanho / imagemSource.Height)) / 2;
+                                int y = 0;
+                                graphics.DrawImage(imagemSource, new Rectangle(x, y, imagemSource.Width * Tamanho / imagemSource.Height, Tamanho));
+                            }
+
+                            streamLogo.Position = 0;
+                            imagemFinal.Save(streamLogo, ImageFormat.Png);
+                            streamLogo.Position = 0;
+
+                            string resultadoDimensionamentoB64 = Convert.ToBase64String(streamLogo.ToArray());
+                            empresa.Logo = resultadoDimensionamentoB64;
+
+                            _context.Update(empresa);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                }
+                return View("Processamento");
+
+            }
+            else
+            {
+                return View("Forbidden");
+            }
         }
 
         // GET: Empresas

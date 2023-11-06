@@ -161,7 +161,12 @@
                             <div class="col-12 col-lg-auto text-center text-lg-start">
                                 @if (empresa.Logo != null)
                                 {
-                                    <img loading="lazy" style="background-color:white; object-fit:contain; width: 100px; height: 100px" id="logoEmpresa" src="@empresa.Logo" alt="Logo da Empresa" />
+                                    if (empresa.Logo.Contains("http")) {
+                                        <img loading="lazy" style="background-color:white; object-fit:contain; width: 100px; height: 100px" id="logoEmpresa" src="@empresa.Logo" alt="Logo da Empresa" />
+                                    }
+                                    else {
+                                        <img style="background-color:white; object-fit:contain; width: 100px; height: 100px" id="logoEmpresa" src="data:image/png;base64,@empresa.Logo" alt="Logo da Empresa" />
+                                    }
                                 }
                                 else
                                 {
