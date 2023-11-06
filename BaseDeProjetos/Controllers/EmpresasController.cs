@@ -1,4 +1,5 @@
 ﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -113,29 +114,49 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: Empresas
-        public IActionResult Index(string searchString = "")
+        public async Task<IActionResult> Index(string searchString = "", int numeroPagina = 1, int tamanhoPagina = 30)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 ViewbagizarUsuario(_context);
 
-                ViewBag.Prospeccoes = _context.Prospeccao.ToList();
+                ViewBag.searchString = searchString;
+                ViewBag.TamanhoPagina = tamanhoPagina;
 
-                ViewBag.ProspeccoesAtivas = _context.Prospeccao.Where(P => P.Status.All(S => S.Status != StatusProspeccao.NaoConvertida &&
+                var empresas = FiltrarEmpresas(searchString, _context.Empresa.OrderBy(e => e.Nome).ToList());
+
+                int qtdEmpresas = empresas.Count();
+                int qtdPaginasTodo = (int)Math.Ceiling((double)qtdEmpresas / tamanhoPagina);
+
+                List<Empresa> empresasPagina = ObterEmpresasPorPagina(empresas, numeroPagina, tamanhoPagina);
+
+                var pager = new Pager(qtdEmpresas, numeroPagina, tamanhoPagina, 50); // 50 paginas max
+
+                var model = new EmpresasViewModel
+                {
+                    Empresas = empresasPagina,
+                    Pager = pager,
+                };
+
+                var prospeccoes = await _context.Prospeccao.Select(p => new ProspeccaoEmpresasDTO { Empresa = p.Empresa, Id = p.Id, NomeProspeccao = p.NomeProspeccao, Status = p.Status, Usuario = p.Usuario }).ToListAsync();
+
+                ViewBag.Prospeccoes = prospeccoes;
+
+                ViewBag.ProspeccoesAtivas = prospeccoes.Where(P => P.Status.All(S => S.Status != StatusProspeccao.NaoConvertida &&
                                                                                         S.Status != StatusProspeccao.Convertida &&
                                                                                         S.Status != StatusProspeccao.Suspensa)
                                                                         && P.Status.OrderBy(k => k.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
 
-                ViewBag.ProspeccoesPlanejadas = _context.Prospeccao.Where(P => P.Status.All(S => S.Status == StatusProspeccao.Planejada)).ToList();
+                ViewBag.ProspeccoesPlanejadas = prospeccoes.Where(P => P.Status.All(S => S.Status == StatusProspeccao.Planejada)).ToList();
 
-                ViewBag.OutrasProspeccoes = _context.Prospeccao
+                ViewBag.OutrasProspeccoes = prospeccoes
                     .Where(P => P.Status.Any(S => S.Status == StatusProspeccao.NaoConvertida ||
                                   S.Status == StatusProspeccao.Convertida ||
                                   S.Status == StatusProspeccao.Suspensa)).ToList();
 
-                ViewBag.Projetos = _context.Projeto.ToList();
+                ViewBag.Projetos = await _context.Projeto.ToListAsync();
 
-                ViewBag.Contatos = _context.Pessoa.ToList();
+                ViewBag.Contatos = await _context.Pessoa.ToListAsync();
                 //Filtros e ordenadores
                 if (string.IsNullOrEmpty(searchString) && HttpContext.Session.Keys.Contains("_CurrentFilter"))
                 {
@@ -147,14 +168,18 @@ namespace BaseDeProjetos.Controllers
                     HttpContext.Session.SetString("_CurrentFilter", searchString);
                 }
 
-                var empresas = FiltrarEmpresas(searchString, _context.Empresa.OrderBy(e => e.Nome).ToList());
 
-                return View(empresas);
+                return View(model);
             }
             else
             {
                 return View("Forbidden");
             }
+        }
+
+        private List<Empresa> ObterEmpresasPorPagina(List<Empresa> empresas, int numeroPagina, int tamanhoPagina)
+        {
+            return empresas.Skip((numeroPagina - 1) * tamanhoPagina).Take(tamanhoPagina).ToList();
         }
 
         /// <summary>
@@ -487,4 +512,6 @@ namespace BaseDeProjetos.Controllers
             throw new NotImplementedException();
         }*/
     }
+
+
 }
