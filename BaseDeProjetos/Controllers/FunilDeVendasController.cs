@@ -1,4 +1,4 @@
-using BaseDeProjetos.Data;
+﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -23,10 +23,13 @@ namespace BaseDeProjetos.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IEmailSender _mailer;
 
-        public FunilDeVendasController(ApplicationDbContext context, IEmailSender mailer)
+        private readonly DbCache _cache;
+
+        public FunilDeVendasController(ApplicationDbContext context, IEmailSender mailer, DbCache cache)
         {
             _context = context;
             _mailer = mailer;
+            _cache = cache;
         }
 
         // GET: FunilDeVendas
@@ -37,6 +40,8 @@ namespace BaseDeProjetos.Controllers
             {
                 ViewbagizarUsuario(_context);
 
+                var prospeccoes = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.ToListAsync());
+
                 ViewBag.searchString = searchString;
                 ViewBag.TamanhoPagina = tamanhoPagina;
 
@@ -45,28 +50,30 @@ namespace BaseDeProjetos.Controllers
                     casa = UsuarioAtivo.Casa.ToString();
                 }
 
-                List<Empresa> empresas = await _context.Empresa.ToListAsync();
-                List<Prospeccao> prospeccoes;
-
+                var empresas = await _cache.GetCachedAsync("EmpresasFunil", () => _context.Empresa.Select(e => new EmpresasFunilDTO { Id = e.Id, Nome = e.Nome }).ToListAsync());
                 prospeccoes = await ObterProspeccoesFunilFiltradas(casa, aba, sortOrder, searchString, ano, UsuarioAtivo);
 
                 int qtdProspeccoes = prospeccoes.Count();
                 int qtdPaginasTodo = (int)Math.Ceiling((double)qtdProspeccoes / tamanhoPagina);
 
-                List<Prospeccao> prospeccoesPagina = ObterProspeccoesPorPagina(prospeccoes, numeroPagina, tamanhoPagina);
+                //List<Prospeccao> prospeccoesPagina = ObterProspeccoesPorPagina(prospeccoes, numeroPagina, tamanhoPagina);
 
                 var pager = new Pager(qtdProspeccoes, numeroPagina, tamanhoPagina, 50); // 50 paginas max
 
                 var model = new ProspeccoesViewModel
                 {
-                    Prospeccoes = prospeccoesPagina,
+                    Prospeccoes = prospeccoes,
                     Pager = pager,
                 };
 
-                ViewData["Usuarios"] = _context.Users.ToList();
+                var usuarios = await _cache.GetCachedAsync("UsuariosFunil", () => _context.Users.Select(u => new UsuariosFunilDTO { Id = u.Id, UserName = u.UserName, Email = u.Email }).ToListAsync());
+
+                ViewData["Usuarios"] = usuarios;
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "Nome");
-                ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
-                ViewData["ProspeccoesAgregadas"] = _context.Prospeccao.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
+                ViewData["Equipe"] = new SelectList(usuarios, "Id", "UserName");
+
+                var prospeccoesParaFiltragemAgregadas = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.ToListAsync());
+                ViewData["ProspeccoesAgregadas"] = prospeccoesParaFiltragemAgregadas.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
 
                 if (string.IsNullOrEmpty(aba))
                 {
@@ -142,7 +149,8 @@ namespace BaseDeProjetos.Controllers
             {
                 ViewbagizarUsuario(_context);
 
-                List<Empresa> empresas = await _context.Empresa.ToListAsync();
+                var empresas = await _cache.GetCachedAsync("EmpresasFunilUnique", () => _context.Empresa.Select(e => new EmpresasFunilComUniqueDTO { Id = e.Id, Nome = e.Nome, EmpresaUnique = e.EmpresaUnique }).ToListAsync());
+
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
                 ViewData["Equipe"] = new SelectList(await _context.Users.ToListAsync(), "Id", "UserName");
 
@@ -173,7 +181,7 @@ namespace BaseDeProjetos.Controllers
             {
                 ViewbagizarUsuario(_context);
 
-                List<Empresa> empresas = await _context.Empresa.ToListAsync();
+                var empresas = await _cache.GetCachedAsync("EmpresasFunilUnique", () => _context.Empresa.Select(e => new EmpresasFunilComUniqueDTO { Id = e.Id, Nome = e.Nome, EmpresaUnique = e.EmpresaUnique }).ToListAsync());
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
                 return View();
             }
@@ -195,31 +203,30 @@ namespace BaseDeProjetos.Controllers
             {
                 ViewbagizarUsuario(_context);
 
-                userId = HttpContext.User.Identity.Name;
-                Instituto usuarioCasa = _context.Users.FirstOrDefault(u => u.UserName == userId).Casa;
-
+                var empresas = await _cache.GetCachedAsync("AllEmpresas", () => _context.Empresa.ToListAsync());
                 Prospeccao prosp = new Prospeccao
                 {
                     Id = $"prosp_{DateTime.Now.Ticks}",
-                    Empresa = await _context.Empresa.FirstOrDefaultAsync(e => e.Id == id),
+                    Empresa = empresas.FirstOrDefault(e => e.Id == id),
                     Usuario = await _context.Users.FirstOrDefaultAsync(u => u.UserName == userId),
-                    Casa = usuarioCasa,
+                    Casa = UsuarioAtivo.Casa,
                     LinhaPequisa = LinhaPesquisa.Indefinida,
                     CaminhoPasta = ""
                 };
                 prosp.Status = new List<FollowUp>
-            {
-                new FollowUp
                 {
-                    OrigemID = prosp.Id,
-                    Data = DateTime.Today,
-                    Anotacoes = $"Incluído no plano de prospecção de {User.Identity.Name}",
-                    Status = StatusProspeccao.Planejada
-                }
-            };
+                    new FollowUp
+                    {
+                        OrigemID = prosp.Id,
+                        Data = DateTime.Today,
+                        Anotacoes = $"Incluído no plano de prospecção de {User.Identity.Name}",
+                        Status = StatusProspeccao.Planejada
+                    }
+                };
 
                 await _context.AddAsync(prosp);
                 await _context.SaveChangesAsync();
+                await CacheHelper.CleanupProspeccoesCache(_cache);
                 return RedirectToAction("Index", "Empresas");
             }
             else
@@ -259,6 +266,7 @@ namespace BaseDeProjetos.Controllers
 
                 bool enviou = MailHelper.NotificarProspecção(followup, _mailer);
                 await _context.SaveChangesAsync();
+                await CacheHelper.CleanupProspeccoesCache(_cache);
             }
 
             return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
@@ -287,13 +295,13 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {
-                    prospeccao = ValidarEmpresa(prospeccao);
+                    prospeccao = await ValidarEmpresa(prospeccao);
                 }
                 catch (Exception e)
                 {
                     return CapturarErro(e);
                 }
-                prospeccao.Contato.empresa = prospeccao.Empresa;
+                prospeccao.Contato.empresa = prospeccao.Empresa; // ????
                 await VincularUsuario(prospeccao, HttpContext, _context);
 
                 prospeccao.Status[0].Origem = prospeccao;
@@ -302,6 +310,7 @@ namespace BaseDeProjetos.Controllers
 
                 await _context.AddAsync(prospeccao);
                 await _context.SaveChangesAsync();
+                await CacheHelper.CleanupProspeccoesCache(_cache);
                 return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
             }
             var errors = ModelState.Values.SelectMany(v => v.Errors);
@@ -327,7 +336,7 @@ namespace BaseDeProjetos.Controllers
         /// <param name="prospeccao">Prospecção a ter uma empresa cadastrada</param>
         /// <returns></returns>
         /// <exception cref="Exception">Erro a ser lançado caso não seja possível cadastrar a empresa/seja uma empresa inválida</exception>
-        public Prospeccao ValidarEmpresa(Prospeccao prospeccao)
+        public async Task<Prospeccao> ValidarEmpresa(Prospeccao prospeccao)
         {
             if (prospeccao.Empresa.Nome != null && prospeccao.Empresa.CNPJ != null && prospeccao.Empresa.Id == -1)
             {
@@ -343,15 +352,16 @@ namespace BaseDeProjetos.Controllers
             }
             else
             {
-                var existe_empresa = _context.Empresa.FirstOrDefault(e => e.Id == prospeccao.Empresa.Id);
+                var empresas = await _cache.GetCachedAsync("AllEmpresas", () => _context.Empresa.ToListAsync());
+                var empresa = empresas.FirstOrDefault(e => e.Id == prospeccao.Empresa.Id);
 
-                if (existe_empresa == null)
+                if (empresa == null)
                 {
                     throw new Exception("Ocorreu um erro no registro da empresa. \n A empresa selecionada não foi encontrada. \n Contacte um administrador do sistema");
                 }
                 else
                 {
-                    prospeccao.Empresa = existe_empresa;
+                    prospeccao.Empresa = empresa;
                 }
             }
 
@@ -371,7 +381,10 @@ namespace BaseDeProjetos.Controllers
                     return NotFound();
                 }
 
-                Prospeccao prospeccao = await _context.Prospeccao.FindAsync(id);
+                var prospeccoes = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.ToListAsync());
+
+                Prospeccao prospeccao = prospeccoes.Find(p => p.Id == id);
+
                 if (prospeccao == null)
                 {
                     return NotFound();
@@ -389,7 +402,8 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         private async Task CriarSelectListsDaView()
         {
-            ViewData["Empresas"] = new SelectList(await _context.Empresa.ToListAsync(), "Id", "EmpresaUnique");
+            var empresas = await _cache.GetCachedAsync("EmpresasFunilUnique", () => _context.Empresa.Select(e => new EmpresasFunilComUniqueDTO { EmpresaUnique = e.EmpresaUnique, Id = e.Id, Nome = e.Nome }).ToListAsync());
+            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
             ViewData["Equipe"] = new SelectList(await _context.Users.ToListAsync(), "Id", "UserName");
         }
 
@@ -413,6 +427,7 @@ namespace BaseDeProjetos.Controllers
                 {
                     prospeccao = await EditarDadosDaProspecção(id, prospeccao);
                     await _context.SaveChangesAsync();
+                    await CacheHelper.CleanupProspeccoesCache(_cache);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -438,8 +453,9 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private async Task<Prospeccao> EditarDadosDaProspecção(string id, Prospeccao prospeccao)
         {
-            Empresa Empresa_antigo = await _context.Empresa.FirstAsync(e => e.Id == prospeccao.Empresa.Id);
-            prospeccao.Empresa = Empresa_antigo;
+            var empresas = await _cache.GetCachedAsync("AllEmpresas", () => _context.Empresa.ToListAsync());
+            Empresa empresaAntigo = empresas.First(e => e.Id == prospeccao.Empresa.Id);
+            prospeccao.Empresa = empresaAntigo;
             Usuario lider = await _context.Users.FirstAsync(p => p.Id == prospeccao.Usuario.Id);
             prospeccao.Usuario = lider;
 
@@ -465,7 +481,7 @@ namespace BaseDeProjetos.Controllers
             return prospeccao;
         }
 
-        public async Task<IActionResult> EditarFollowUp(int? id) // RETONAR VIEW
+        public async Task<IActionResult> EditarFollowUp(int? id) // Retornar view
         {
             ViewbagizarUsuario(_context);
 
@@ -499,6 +515,7 @@ namespace BaseDeProjetos.Controllers
             {
                 _context.Update(followup);
                 await _context.SaveChangesAsync();
+                await CacheHelper.CleanupProspeccoesCache(_cache);
             }
 
             return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
@@ -562,12 +579,14 @@ namespace BaseDeProjetos.Controllers
             {
                 //Verifica se o usuário está apto para remover o followup
                 ViewbagizarUsuario(_context);
-                Prospeccao prospeccao = await _context.Prospeccao.FirstOrDefaultAsync(p => p.Id == followup.OrigemID);
+                var prospeccoes = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.ToListAsync());
+                Prospeccao prospeccao = prospeccoes.Find(p => p.Id == followup.OrigemID);
 
                 if (VerificarCondicoesRemocao(prospeccao, UsuarioAtivo, followup.Origem.Usuario) || UsuarioAtivo.Nivel == Nivel.Dev)
                 {
                     _context.FollowUp.Remove(followup);
                     await _context.SaveChangesAsync();
+                    await CacheHelper.CleanupProspeccoesCache(_cache);
                     return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
                 }
                 else
@@ -601,7 +620,9 @@ namespace BaseDeProjetos.Controllers
         {
             ViewbagizarUsuario(_context);
 
-            var prospeccao = await _context.Prospeccao.Where(prosp => prosp.Id == id).Include(f => f.Status).FirstAsync(); // o First converte de IQuerable para objeto Prospeccao
+            var prospeccoes = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.Include(f => f.Status).ToListAsync());
+
+            var prospeccao = prospeccoes.Where(prosp => prosp.Id == id).First(); // o First converte de IQuerable para objeto Prospeccao
 
             if (prospeccao.Ancora)
             {
@@ -610,6 +631,7 @@ namespace BaseDeProjetos.Controllers
 
             _context.Remove(prospeccao);
             await _context.SaveChangesAsync();
+            await CacheHelper.CleanupProspeccoesCache(_cache);
             return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
         }
 
