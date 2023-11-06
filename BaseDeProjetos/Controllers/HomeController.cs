@@ -172,66 +172,56 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private decimal ReceitaCasa(Instituto casa)
         {
-            IQueryable<decimal> valores = _context.Projeto.
-                Where(p => p.Casa == casa && p.Status == StatusProjeto.EmExecucao).
-                Select(p => CalcularReceita(p));
+            IQueryable<decimal> valores = _context.Projeto
+                .Select(p => new { p.Casa, p.Status, p.ValorAporteRecursos, p.DuracaoProjetoEmMeses, p.DataEncerramento, p.DataInicio })
+                .Where(p => p.Casa == casa && p.Status == StatusProjeto.EmExecucao)
+                .Select(p => CalcularReceita(p.DataInicio, p.DataEncerramento, p.DuracaoProjetoEmMeses, p.ValorAporteRecursos, p.Status, p.Casa));
 
-            decimal sum = 0;
-            foreach (decimal valor in valores)
-            {
-                sum += valor;
-            }
-
-            return sum;
+            return valores.Sum();
         }
 
-        /// <summary>
-        /// Retorna a receita dado um projeto
-        /// </summary>
-        /// <param name="p">Projeto a se obter a receita</param>
-        /// <returns></returns>
-        private static decimal CalcularReceita(Projeto p)
+        private decimal CalcularReceita(DateTime DataInicio, DateTime DataEncerramento, int DuracaoProjetoEmMeses, double ValorAporteRecursos, StatusProjeto Status, Instituto Casa)
         {
             decimal valor_aportado = 0M;
-            if (p.DataEncerramento < DateTime.Today)
+            if (DataEncerramento < DateTime.Today)
             {
                 //O projeto está em execução, mas não recebe mais dinheiro
                 return valor_aportado;
             }
 
-            if (p.DataEncerramento.Year == DateTime.Today.Year)
+            if (DataEncerramento.Year == DateTime.Today.Year)
             {
-                if (p.DuracaoProjetoEmMeses >= 12)
+                if (DuracaoProjetoEmMeses >= 12)
                 {
                     //Caso relativamente simples, o projeto é longo e acaba neste ano, recebendo até o seu término (Jan/19 a Mar/21)
-                    return (decimal)((p.ValorAporteRecursos / p.DuracaoProjetoEmMeses) * p.DataEncerramento.Month);
+                    return (decimal)((ValorAporteRecursos / DuracaoProjetoEmMeses) * DataEncerramento.Month);
                 }
                 else
                 {
                     //É um projeto curto, que provavelmente começou e vai acabar neste ano (Abril a Outubro)
-                    if (p.DataInicio.Year == DateTime.Today.Year)
+                    if (DataInicio.Year == DateTime.Today.Year)
                     {
-                        return (decimal)p.ValorAporteRecursos;
+                        return (decimal)ValorAporteRecursos;
                     }
                     else
                     {
                         //É um projeto curto que já vinha em andamento e que vai terminar neste ano (Ex.: De setembro a março)
-                        return (decimal)((p.ValorAporteRecursos / p.DuracaoProjetoEmMeses) * p.DataEncerramento.Month);
+                        return (decimal)((ValorAporteRecursos / DuracaoProjetoEmMeses) * DataEncerramento.Month);
                     }
                 }
             }
             else
             {
                 //Caso mais simples, o projeto tem mais de 12 meses e não começou nem termina este ano (jan/20 a Dez/24)
-                if (p.DuracaoProjetoEmMeses >= 12 && p.DataInicio.Year != DateTime.Today.Year)
+                if (DuracaoProjetoEmMeses >= 12 && DataInicio.Year != DateTime.Today.Year)
                 {
-                    return (decimal)((p.ValorAporteRecursos / p.DuracaoProjetoEmMeses) * 12);
+                    return (decimal)((ValorAporteRecursos / DuracaoProjetoEmMeses) * 12);
                 }
 
                 //O projeto tem menos de 12 meses, mas só acaba no ano seguinte (Set/20 a Mar/21)
-                if (p.DataEncerramento.Year == (DateTime.Today.Year + 1))
+                if (DataEncerramento.Year == (DateTime.Today.Year + 1))
                 {
-                    return (decimal)((p.ValorAporteRecursos / p.DuracaoProjetoEmMeses) * (12 - p.DataInicio.Month));
+                    return (decimal)((ValorAporteRecursos / DuracaoProjetoEmMeses) * (12 - DataInicio.Month));
                 }
             }
 
