@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -117,7 +117,11 @@ namespace BaseDeProjetos.Controllers
         {
             List<Prospeccao> prospeccoes = await FunilHelpers.DefinirCasaParaVisualizar(casa, usuario, _context, HttpContext, ViewData);
 
-            prospeccoes = FunilHelpers.PeriodizarProspecções(ano, prospeccoes); // ANO DA PROSPEC
+            if (!string.IsNullOrEmpty(ano))
+            {
+                FunilHelpers.PeriodizarProspecções(ano, prospeccoes);
+            }
+            
             prospeccoes = FunilHelpers.OrdenarProspecções(sortOrder, prospeccoes); //SORT ORDEM ALFABETICA
             prospeccoes = FunilHelpers.FiltrarProspecções(searchString, prospeccoes); // APENAS NA BUSCA
 
