@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
@@ -8,6 +9,10 @@ public class DbCache
 {
     private readonly IDistributedCache _cache;
     private const string CacheKeyListKey = "CacheKeyList";
+
+    // Semaphore para threading
+    private readonly SemaphoreSlim _cacheKeyListSemaphore = new SemaphoreSlim(1, 1);
+
 
     public DbCache(IDistributedCache cache)
     {
@@ -21,9 +26,17 @@ public class DbCache
     /// <returns></returns>
     public async Task AddKeyToListAsync(string cacheKey)
     {
-        var keys = await GetCacheKeyListAsync();
-        keys.Add(cacheKey);
-        await _cache.SetStringAsync(CacheKeyListKey, JsonConvert.SerializeObject(keys));
+        await _cacheKeyListSemaphore.WaitAsync();
+        try
+        {
+            var keys = await GetCacheKeyListAsync();
+            keys.Add(cacheKey);
+            await _cache.SetStringAsync(CacheKeyListKey, JsonConvert.SerializeObject(keys));
+        }
+        finally
+        {
+            _cacheKeyListSemaphore.Release();
+        }
     }
 
     /// <summary>
@@ -91,6 +104,10 @@ public class DbCache
             var cacheOptions = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromHours(1) };
             await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(data, options), cacheOptions);
         }
+        else
+        {
+            Console.WriteLine($"No cache data for {cacheKey}");
+        }
 
         return data;
     }
@@ -132,28 +149,35 @@ public class DbCache
     /// <returns></returns>
     public async Task InvalidateCacheKeysAsync(string keyContent)
     {
-        var keys = await GetCacheKeyListAsync();
-        var keysToRemove = new HashSet<string>();
+        await _cacheKeyListSemaphore.WaitAsync();
 
-        foreach (var key in keys)
+        try
         {
-            if (key.Contains(keyContent))
+            var keys = await GetCacheKeyListAsync();
+            var keysToRemove = new HashSet<string>();
+
+            foreach (var key in keys)
             {
-                await _cache.RemoveAsync(key);
+                if (key.Contains(keyContent))
+                {
+                    await _cache.RemoveAsync(key);
+                }
             }
-        }
 
-        await _cache.RemoveAsync(CacheKeyListKey);
-
-        keys.ExceptWith(keysToRemove);
-
-        if (keys.Count > 0)
-        {
-            await _cache.SetStringAsync(CacheKeyListKey, JsonConvert.SerializeObject(keys));
-        }
-        else
-        {
             await _cache.RemoveAsync(CacheKeyListKey);
+
+            keys.ExceptWith(keysToRemove);
+
+            if (keys.Count > 0)
+            {
+                await _cache.SetStringAsync(CacheKeyListKey, JsonConvert.SerializeObject(keys));
+            }
+            else
+            {
+                await _cache.RemoveAsync(CacheKeyListKey);
+            }
+        }finally {
+            _cacheKeyListSemaphore.Release();
         }
     }
 }

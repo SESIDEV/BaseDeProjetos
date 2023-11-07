@@ -44,6 +44,7 @@ namespace BaseDeProjetos
 
                 Console.WriteLine(ConStr);
 
+
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseMySql(ConStr, mysqlOptions => { mysqlOptions.ServerVersion(new Version(5, 7, 9), ServerType.MySql); }).UseLazyLoadingProxies());
             }
@@ -84,9 +85,7 @@ namespace BaseDeProjetos
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
             services.AddDistributedMemoryCache();
-
-            services.AddTransient<DbCache>();
-
+            services.AddSingleton<DbCache>();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
