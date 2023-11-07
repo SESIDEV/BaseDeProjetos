@@ -24,6 +24,7 @@ namespace BaseDeProjetos.Controllers
         private const string nomeCargoEstagiário = "Estagiário";
         private const string nomeCargoBolsista = "Pesquisador Bolsista";
         private readonly ApplicationDbContext _context;
+        private readonly DbCache _cache;
         private readonly ILogger<ParticipacaoController> _logger;
         private List<Prospeccao> _prospeccoes = new List<Prospeccao>();
         private const int AnoPadrao = 2021;
@@ -44,9 +45,10 @@ namespace BaseDeProjetos.Controllers
             {2023, 23}
         };
 
-        public ParticipacaoController(ApplicationDbContext context, ILogger<ParticipacaoController> logger)
+        public ParticipacaoController(ApplicationDbContext context, DbCache cache, ILogger<ParticipacaoController> logger)
         {
             _context = context;
+            _cache = cache;
             _logger = logger;
         }
 
@@ -210,7 +212,7 @@ namespace BaseDeProjetos.Controllers
                     usuario = await _context.Users.Where(u => u.Id == idUsuario).FirstOrDefaultAsync();
                 }
 
-                _prospeccoes = await _context.Prospeccao.ToListAsync();
+                _prospeccoes = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.ToListAsync());
 
                 var participacao = await GetParticipacaoTotalUsuario(usuario);
 
@@ -1144,9 +1146,9 @@ namespace BaseDeProjetos.Controllers
             ViewData["mesFim"] = mesFim;
             ViewData["anoFim"] = anoFim;
 
-            _prospeccoes = await _context.Prospeccao.ToListAsync();
+            _prospeccoes = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.ToListAsync());
 
-            var participacoes = await GetParticipacoesTotaisUsuarios(mesInicio, anoInicio, mesFim, anoFim);
+            var participacoes = await _cache.GetCachedAsync($"Participacoes:{mesInicio}:{anoInicio}:{mesFim}:{anoFim}", () => GetParticipacoesTotaisUsuarios(mesInicio, anoInicio, mesFim, anoFim));
 
             if (participacoes.Count > 0)
             {
