@@ -56,7 +56,7 @@ namespace BaseDeProjetos.Controllers
                 int qtdProspeccoes = prospeccoes.Count();
                 int qtdPaginasTodo = (int)Math.Ceiling((double)qtdProspeccoes / tamanhoPagina);
 
-                //List<Prospeccao> prospeccoesPagina = ObterProspeccoesPorPagina(prospeccoes, numeroPagina, tamanhoPagina);
+                List<Prospeccao> prospeccoesPagina = ObterProspeccoesPorPagina(prospeccoes, numeroPagina, tamanhoPagina);
 
                 var pager = new Pager(qtdProspeccoes, numeroPagina, tamanhoPagina, 50); // 50 paginas max
 
@@ -75,7 +75,11 @@ namespace BaseDeProjetos.Controllers
                 var prospeccoesParaFiltragemAgregadas = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.ToListAsync());
                 ViewData["ProspeccoesAgregadas"] = prospeccoesParaFiltragemAgregadas.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
 
-                if (string.IsNullOrEmpty(aba))
+                if (!string.IsNullOrEmpty(aba))
+                {
+                    return View(model);
+                }
+                else
                 {
                     ViewData["ListaProspeccoes"] = prospeccoes.ToList();
                     ViewData["ProspeccoesAtivas"] = prospeccoes.Where(
@@ -88,14 +92,15 @@ namespace BaseDeProjetos.Controllers
                             p => p.Status.Any(k => k.Status > StatusProspeccao.ComProposta)).Where(
                                 p => (p.Status.First().Data - p.Status.FirstOrDefault(
                                     s => s.Status == StatusProspeccao.ComProposta).Data) > TimeSpan.Zero).ToList(); // filtrar lista para obter datas positivas (maior que zero)
+                    return View(model);
                 }
 
-                return View(model);
             }
             else
             {
                 return View("Forbidden");
             }
+
         }
 
         /// <summary>
@@ -128,7 +133,7 @@ namespace BaseDeProjetos.Controllers
             {
                 FunilHelpers.PeriodizarProspecções(ano, prospeccoes);
             }
-            
+
             prospeccoes = FunilHelpers.OrdenarProspecções(sortOrder, prospeccoes); //SORT ORDEM ALFABETICA
             prospeccoes = FunilHelpers.FiltrarProspecções(searchString, prospeccoes); // APENAS NA BUSCA
 
@@ -140,55 +145,6 @@ namespace BaseDeProjetos.Controllers
             }
 
             return prospeccoes;
-        }
-
-        // GET: FunilDeVendas/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (HttpContext.User.Identity.IsAuthenticated)
-            {
-                ViewbagizarUsuario(_context);
-
-                var empresas = await _cache.GetCachedAsync("EmpresasFunilUnique", () => _context.Empresa.Select(e => new EmpresasFunilComUniqueDTO { Id = e.Id, Nome = e.Nome, EmpresaUnique = e.EmpresaUnique }).ToListAsync());
-
-                ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-                ViewData["Equipe"] = new SelectList(await _context.Users.ToListAsync(), "Id", "UserName");
-
-                if (id == null)
-                {
-                    return NotFound();
-                }
-
-                Prospeccao prospeccao = await _context.Prospeccao
-                    .FirstOrDefaultAsync(m => m.Id == id);
-                if (prospeccao == null)
-                {
-                    return NotFound();
-                }
-
-                return View(prospeccao);
-            }
-            else
-            {
-                return View("Forbidden");
-            }
-        }
-
-        // GET: FunilDeVendas/Create
-        public async Task<IActionResult> Create(int id)
-        {
-            if (HttpContext.User.Identity.IsAuthenticated)
-            {
-                ViewbagizarUsuario(_context);
-
-                var empresas = await _cache.GetCachedAsync("EmpresasFunilUnique", () => _context.Empresa.Select(e => new EmpresasFunilComUniqueDTO { Id = e.Id, Nome = e.Nome, EmpresaUnique = e.EmpresaUnique }).ToListAsync());
-                ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-                return View();
-            }
-            else
-            {
-                return View("Forbidden");
-            }
         }
 
         /// <summary>
@@ -228,23 +184,6 @@ namespace BaseDeProjetos.Controllers
                 await _context.SaveChangesAsync();
                 await CacheHelper.CleanupProspeccoesCache(_cache);
                 return RedirectToAction("Index", "Empresas");
-            }
-            else
-            {
-                return View("Forbidden");
-            }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Atualizar(string id)
-        {
-            if (HttpContext.User.Identity.IsAuthenticated)
-            {
-                ViewbagizarUsuario(_context);
-
-                ViewData["origem"] = id;
-                ViewData["prosp"] = await _context.Prospeccao.FirstOrDefaultAsync(p => p.Id == id);
-                return View("CriarFollowUp");
             }
             else
             {
@@ -368,35 +307,6 @@ namespace BaseDeProjetos.Controllers
             return prospeccao;
         }
 
-        // GET: FunilDeVendas/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (HttpContext.User.Identity.IsAuthenticated)
-            {
-                await CriarSelectListsDaView();
-                ViewbagizarUsuario(_context);
-
-                if (id == null)
-                {
-                    return NotFound();
-                }
-
-                var prospeccoes = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.ToListAsync());
-
-                Prospeccao prospeccao = prospeccoes.Find(p => p.Id == id);
-
-                if (prospeccao == null)
-                {
-                    return NotFound();
-                }
-                return View(prospeccao);
-            }
-            else
-            {
-                return View("Forbidden");
-            }
-        }
-
         /// <summary>
         /// Cria uma selectlist para a View(?)
         /// </summary>
@@ -456,7 +366,8 @@ namespace BaseDeProjetos.Controllers
             var empresas = await _cache.GetCachedAsync("AllEmpresas", () => _context.Empresa.ToListAsync());
             Empresa empresaAntigo = empresas.First(e => e.Id == prospeccao.Empresa.Id);
             prospeccao.Empresa = empresaAntigo;
-            Usuario lider = await _context.Users.FirstAsync(p => p.Id == prospeccao.Usuario.Id);
+            var usuarios = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
+            Usuario lider = usuarios.First(p => p.Id == prospeccao.Usuario.Id);
             prospeccao.Usuario = lider;
 
             Prospeccao prospAntiga = await _context.Prospeccao.AsNoTracking().FirstAsync(p => p.Id == prospeccao.Id);

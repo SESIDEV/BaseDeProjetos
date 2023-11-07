@@ -19,6 +19,8 @@ namespace BaseDeProjetos.Helpers
 
         public static async Task CleanupUsuariosCache(DbCache cache) {
             await cache.InvalidateCache("UsuariosFunil");
+            await cache.InvalidateCache("AllUsuarios");
         }
+        
     }
 }

@@ -1,4 +1,5 @@
-﻿using BaseDeProjetos.Models;
+﻿using BaseDeProjetos.Helpers;
+using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,9 +16,12 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account
     {
         private readonly UserManager<Usuario> _userManager;
 
-        public ResetPasswordModel(UserManager<Usuario> userManager)
+        private readonly DbCache _cache;
+
+        public ResetPasswordModel(UserManager<Usuario> userManager, DbCache dbCache)
         {
             _userManager = userManager;
+            _cache = dbCache;
         }
 
         [BindProperty]
@@ -75,6 +79,8 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account
             IdentityResult result = await _userManager.ResetPasswordAsync(user, Input.Code, Input.Password);
             if (result.Succeeded)
             {
+                await CacheHelper.CleanupUsuariosCache(_cache);
+
                 return RedirectToPage("./ResetPasswordConfirmation");
             }
 
