@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
@@ -6,10 +7,33 @@ using Newtonsoft.Json;
 public class DbCache
 {
     private readonly IDistributedCache _cache;
+    private const string CacheKeyListKey = "CacheKeyList";
 
     public DbCache(IDistributedCache cache)
     {
         _cache = cache;
+    }
+
+    /// <summary>
+    /// Adiciona uma chave a lista de chvaes
+    /// </summary>
+    /// <param name="cacheKey"></param>
+    /// <returns></returns>
+    public async Task AddKeyToListAsync(string cacheKey)
+    {
+        var keys = await GetCacheKeyListAsync();
+        keys.Add(cacheKey);
+        await _cache.SetStringAsync(CacheKeyListKey, JsonConvert.SerializeObject(keys));
+    }
+
+    /// <summary>
+    /// Obtém a lista de keys
+    /// </summary>
+    /// <returns></returns>
+    private async Task<HashSet<string>> GetCacheKeyListAsync()
+    {
+        var keysJson = await _cache.GetStringAsync(CacheKeyListKey);
+        return keysJson != null ? JsonConvert.DeserializeObject<HashSet<string>>(keysJson) : new HashSet<string>();
     }
 
     /// <summary>
@@ -33,6 +57,7 @@ public class DbCache
 
         if (data != null)
         {
+            Console.WriteLine($"Cache miss or null data for: {cacheKey}");
             var options = new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
             var cacheOptions = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromHours(1) };
             await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(data, options), cacheOptions);
@@ -96,8 +121,39 @@ public class DbCache
     /// Invalida dados do cache de acordo com a chave na qual ele foi registrado
     /// </summary>
     /// <param name="cacheKey"></param>
-    public async Task InvalidateCache(string cacheKey)
+    public async Task InvalidateCacheAsync(string cacheKey)
     {
         await _cache.RemoveAsync(cacheKey);
+    }
+
+    /// <summary>
+    /// Invalida dados do cache nas keys que contém uma string específica
+    /// </summary>
+    /// <returns></returns>
+    public async Task InvalidateCacheKeysAsync(string keyContent)
+    {
+        var keys = await GetCacheKeyListAsync();
+        var keysToRemove = new HashSet<string>();
+
+        foreach (var key in keys)
+        {
+            if (key.Contains(keyContent))
+            {
+                await _cache.RemoveAsync(key);
+            }
+        }
+
+        await _cache.RemoveAsync(CacheKeyListKey);
+
+        keys.ExceptWith(keysToRemove);
+
+        if (keys.Count > 0)
+        {
+            await _cache.SetStringAsync(CacheKeyListKey, JsonConvert.SerializeObject(keys));
+        }
+        else
+        {
+            await _cache.RemoveAsync(CacheKeyListKey);
+        }
     }
 }

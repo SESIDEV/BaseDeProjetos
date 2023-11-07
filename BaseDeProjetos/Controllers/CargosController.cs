@@ -1,4 +1,5 @@
 ﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -67,7 +68,7 @@ namespace BaseDeProjetos.Controllers
             {
                 _context.Add(cargo);
                 await _context.SaveChangesAsync();
-                await _dbCache.InvalidateCache("AllCargos");
+                await CacheHelper.CleanupCargosCache(_dbCache);
                 await _dbCache.SetCachedAsync($"Cargos:{cargo.Id}", cargo);
                 return RedirectToAction(nameof(Index));
             }
@@ -92,7 +93,7 @@ namespace BaseDeProjetos.Controllers
                 {
                     _context.Update(cargo);
                     await _context.SaveChangesAsync();
-                    await _dbCache.InvalidateCache("AllCargos");
+                    await CacheHelper.CleanupCargosCache(_dbCache);
                     await _dbCache.SetCachedAsync($"Cargos:{id}", cargo);
                 }
                 catch (DbUpdateConcurrencyException)
@@ -119,8 +120,7 @@ namespace BaseDeProjetos.Controllers
             var cargo = await _dbCache.GetCachedAsync("Cargos:{id}", () => _context.Cargo.FindAsync(id).AsTask());
             _context.Cargo.Remove(cargo);
             await _context.SaveChangesAsync();
-            await _dbCache.InvalidateCache("AllCargos");
-            await _dbCache.InvalidateCache("Cargos:{id}");
+            await CacheHelper.CleanupCargosCache(_dbCache);
             return RedirectToAction(nameof(Index));
         }
 
