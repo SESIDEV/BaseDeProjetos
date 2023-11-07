@@ -81,7 +81,7 @@
                                                     }
                                                     else
                                                     {
-                                                        <span>A definir</span> @*Projeto*@
+                                                        <span>Prospecção sem nome</span> @*Projeto*@
                                                     }
                                                 </div>
                                             </div>
@@ -115,9 +115,6 @@
                                             <div class="cell">
                                                 <span>@prospeccao.TipoContratacao.GetDisplayName()</span> @*Tipo Contratação*@
                                             </div>
-                                            <div class="cell">
-                                                <span>@prospeccao.Status.OrderBy(followup => followup.Data).Last().Status.GetDisplayName()</span>
-                                            </div> @*Status*@
                                             @if (prospeccao.Status.OrderBy(followup => followup.Data).Last().Status != StatusProspeccao.Planejada)
                                             {
                                                 <div class="cell">
@@ -180,6 +177,11 @@
                                         <span>@prospeccao.LinhaPequisa.GetDisplayName()</span>
                                         <h1 class="app-card-title">Status:</h1>
                                         <span>@prospeccao.Status.OrderBy(followup => followup.Data).Last().Status.GetDisplayName()</span>
+                                        <br><span>@prospeccao.Status.OrderBy(p => p.Data).Last().Anotacoes</span>
+                                        <p>
+                                        Data: @prospeccao.Status.OrderBy(p => p.Data).Last().Data.ToString("dd/MM/yyyy",
+                                        CultureInfo.CreateSpecificCulture("pt-BR"))
+                                        </p>
                                         <h1 class="app-card-title">Valor Estimado:</h1>
                                         <nobr>
                                             @if (prospeccao.ValorEstimado != 0)
@@ -203,12 +205,24 @@
                                             }
                                         </nobr>
                                         <hr>
-                                        <h1 class="app-card-title">Último Status:</h1>
-                                        <span>@prospeccao.Status.OrderBy(p => p.Data).Last().Anotacoes</span>
-                                        <p>
-                                            Data: @prospeccao.Status.OrderBy(p => p.Data).Last().Data.ToString("dd/MM/yyyy",
-                                        CultureInfo.CreateSpecificCulture("pt-BR"))
-                                        </p>
+                                       <div class="button-footer d-flex justify-content-end">
+                                        <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#editarProspModal-@prospeccao.Id"
+                                           role="button" onclick="loadAncora('flexSwitchCheckDefault-@prospeccao.Id', 'iconAncora-@prospeccao.Id', 'campoAgg-@prospeccao.Id')">
+                                                Editar
+                                            </a>
+                                        <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#historyProspModal-@prospeccao.Id"
+                                               role="button">
+                                                Histórico
+                                            </a>
+                                            <a class="btn btn-outline-primary" data-bs-toggle="modal"
+                                           href="#CreateFollowupProspModal-@prospeccao.Id" role="button">
+                                                Incluir Status
+                                            </a>
+                                        <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#deletarProspModal-@prospeccao.Id"
+                                               role="button">
+                                                Deletar
+                                            </a>
+                                       </div>
                                     </div>
                                 </div>
                             </div>
