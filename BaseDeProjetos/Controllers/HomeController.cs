@@ -19,10 +19,13 @@ namespace BaseDeProjetos.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+        private readonly DbCache _cache;
+
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, DbCache cache)
         {
             _context = context;
             _logger = logger;
+            _cache = cache;
         }
 
         [Route("")]
@@ -62,20 +65,22 @@ namespace BaseDeProjetos.Controllers
 
             //Implementar quando base tiver atualizada
             // Quando? --HH
-            dadosFinanceiros["receitaISIQV"] = ReceitaCasa(Instituto.ISIQV);
-            dadosFinanceiros["receitaISIII"] = ReceitaCasa(Instituto.ISIII);
-            dadosFinanceiros["receitaCISHO"] = ReceitaCasa(Instituto.CISHO);
+            dadosFinanceiros["receitaISIQV"] = await ReceitaCasa(_context, _cache, Instituto.ISIQV);
+            dadosFinanceiros["receitaISIII"] = await ReceitaCasa(_context, _cache, Instituto.ISIII);
+            dadosFinanceiros["receitaCISHO"] = await ReceitaCasa(_context, _cache, Instituto.CISHO);
 
-            // var prospeccoes = await _context.Prospeccao.Where(p => p.Casa == UsuarioAtivo.Casa).ToListAsync();
-            var prospeccoes = await _context.Prospeccao.Select(p => new { p.Casa, p.ValorEstimado, p.Status, p.Empresa, p.LinhaPequisa }).Where(p => p.Casa == UsuarioAtivo.Casa).ToListAsync();
-            var prospeccoesAtivas = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).LastOrDefault().Status <= StatusProspeccao.ComProposta).ToList();
-            var prospeccoesNaoPlanejadas = prospeccoes.Where(p => p.Status.Any(s => s.Status != StatusProspeccao.Planejada)).ToList();
-            var prospeccoesComProposta = prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList();
-            var prospeccoesConcluidas = prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida).ToList();
-            var prospeccoesPlanejadas = prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Planejada).ToList();
-            var projetos = await _context.Projeto.Select(p => new { p.Casa, p.Status }).Where(p => p.Casa == UsuarioAtivo.Casa && p.Status == StatusProjeto.EmExecucao).ToListAsync();
+            var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Home", () => _context.Prospeccao
+                .Select(p => new ProspeccaoHomeDTO { Casa = p.Casa, ValorEstimado = p.ValorEstimado, Status = p.Status, Empresa = p.Empresa, LinhaPequisa = p.LinhaPequisa })
+                .Where(p => p.Casa == UsuarioAtivo.Casa).ToListAsync());
+
+            var prospeccoesAtivas = await _cache.GetCachedAsync("Prospeccoes:AtivasHome", () => prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).LastOrDefault().Status <= StatusProspeccao.ComProposta).ToList());
+            var prospeccoesNaoPlanejadas = await _cache.GetCachedAsync("Prospeccoes:NaoPlanejadasHome", () => prospeccoes.Where(p => p.Status.Any(s => s.Status != StatusProspeccao.Planejada)).ToList());
+            var prospeccoesComProposta = await _cache.GetCachedAsync("Prospeccoes:ComPropostaHome", () => prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList());
+            var prospeccoesConcluidas = await _cache.GetCachedAsync("Prospeccoes:ConcluidasHome", () => prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida).ToList());
+            var prospeccoesPlanejadas = await _cache.GetCachedAsync("Prospeccoes:PlanejadasHome", () => prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Planejada).ToList());
+            var projetos = await _cache.GetCachedAsync("Projetos:HomeDTO", () => _context.Projeto.Select(p => new ProjetosHomeDTO { Casa = p.Casa, Status = p.Status }).Where(p => p.Casa == UsuarioAtivo.Casa && p.Status == StatusProjeto.EmExecucao).ToListAsync());
             var empresas = prospeccoesNaoPlanejadas.Select(e => e.Empresa.Id).Distinct().ToList();
-            var usuarios = await _context.Users.Select(u => new { id = u.Id, casa = u.Casa, emailConfirmed = u.EmailConfirmed, nivel = u.Nivel }).Where(u => u.casa == UsuarioAtivo.Casa).Where(u => u.emailConfirmed == true).Where(u => u.nivel != Nivel.Dev && u.nivel != Nivel.Externos).ToListAsync();
+            var usuarios = await _cache.GetCachedAsync("Usuarios:HomeDTO", () => _context.Users.Select(u => new UsuariosHomeDTO {Id = u.Id, Casa = u.Casa, EmailConfirmed = u.EmailConfirmed, Nivel = u.Nivel }).Where(u => u.Casa == UsuarioAtivo.Casa).Where(u => u.EmailConfirmed == true).Where(u => u.Nivel != Nivel.Dev && u.Nivel != Nivel.Externos).ToListAsync());
             var linhasDePesquisa = prospeccoesNaoPlanejadas.Select(p => p.LinhaPequisa).ToList();
 
             // Separação do query SQL em algumas variáveis para clareza
@@ -170,17 +175,19 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="casa">Instituto a se obter o valor</param>
         /// <returns></returns>
-        private decimal ReceitaCasa(Instituto casa)
+        private async static Task<decimal> ReceitaCasa(ApplicationDbContext context, DbCache cache, Instituto casa)
         {
-            IQueryable<decimal> valores = _context.Projeto
-                .Select(p => new { p.Casa, p.Status, p.ValorAporteRecursos, p.DuracaoProjetoEmMeses, p.DataEncerramento, p.DataInicio })
+            var projetos = await cache.GetCachedAsync($"ProjetosExecucaoHome:{casa.GetDisplayName()}", () => context.Projeto
                 .Where(p => p.Casa == casa && p.Status == StatusProjeto.EmExecucao)
+                .ToList());
+
+            var receitas = projetos
                 .Select(p => CalcularReceita(p.DataInicio, p.DataEncerramento, p.DuracaoProjetoEmMeses, p.ValorAporteRecursos, p.Status, p.Casa));
 
-            return valores.Sum();
+            return receitas.Sum();
         }
 
-        private decimal CalcularReceita(DateTime DataInicio, DateTime DataEncerramento, int DuracaoProjetoEmMeses, double ValorAporteRecursos, StatusProjeto Status, Instituto Casa)
+        private static decimal CalcularReceita(DateTime DataInicio, DateTime DataEncerramento, int DuracaoProjetoEmMeses, double ValorAporteRecursos, StatusProjeto Status, Instituto Casa)
         {
             decimal valor_aportado = 0M;
             if (DataEncerramento < DateTime.Today)
