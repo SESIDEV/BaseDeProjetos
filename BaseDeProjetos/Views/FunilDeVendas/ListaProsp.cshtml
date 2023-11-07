@@ -36,148 +36,185 @@
     <div class="app-card app-card-orders-table shadow-sm mb-5">
         <div class="app-card-body">
             <div class="table-responsive">
-                <table class="table mb-0 text-left">
-                    <thead>
-                        <tr>
-                            <th class="cell" style="text-align: center;">Empresa</th>
-                            <th class="cell">Projeto</th>
-                            <th class="cell">Equipe</th>
-                            <th class="cell">Tipo Contratação</th>
-                            <th class="cell">Status</th>
-                            @if (@aba != "planejadas")
-                            {
-                                <th class="cell">Temperatura</th>
-                            }
-                            <th class="cell">Valor</th>
-                            <th class="cell">Origem</th>
-                            <th class="cell">Detalhes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                    <div class="accordion" id="accordionExample">
                         @foreach (var prospeccao in Model.Prospeccoes)
                         {
-                            <tr id="table-row-@prospeccao.Id">
-                                <td class="cell">
-                                    <div class="d-flex gap-2 flex-column align-items-center">
-                                        <div>
-                                            @*ICONES*@
-                                            @if (prospeccao.Empresa.Industrial == false)
-                                            {
-                                                <span id="tip_ind" class="translate-top-left badge rounded-circle bg-danger" data-tippy-content="<center>Esta empresa não possui<br>CNAE Industrial</center>">!</span>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="heading-@prospeccao.Id">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@prospeccao.Id" aria-expanded="true" aria-controls="collapse-@prospeccao.Id">
+                                        <div class="d-flex flex-row align-items-center justify-content-between" style="gap: 10px;">
+                                            <div>
+                                                <div class="d-flex gap-2 flex-column align-items-center">
+                                                    <div>
+                                                        @*ICONES*@
+                                                        @if (prospeccao.Empresa.Industrial == false)
+                                                        {
+                                                            <span id="tip_ind" class="translate-top-left badge rounded-circle bg-danger" data-tippy-content="<center>Esta empresa não possui<br>CNAE Industrial</center>">!</span>
+                                                        }
+                                                        @if (prospeccao.Ancora == true)
+                                                        {
+                                                            <span id="tip_agg" class="translate-top-right badge rounded-pill bg-warning" data-tippy-content='@FunilHelpers.MostrarAgregadas(agregadas, prospeccao.Agregadas)'>+@prospeccao.Agregadas.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Length</span>
+                                                        }
+                                                    </div>
+                                                    <div>
+                                                        @*LOGO*@
+                                                        @if (prospeccao.Empresa.Logo != null)
+                                                        {
+                                                            <img style="border: 2px solid #999; border-radius: 10px;" loading="lazy" src="@prospeccao.Empresa.Logo" id="logoEmpresa" alt="Logo da Empresa" style="background-color:white" width="175%">
+                                                        }
+                                                        else
+                                                        {
+                                                            <nobr id="logo_alt">Sem Logo</nobr>
+                                                        }
+                                                    </div>
+                                                    <div style="text-align:center;width:90px">
+                                                        @*NOME EMPRESA*@
+                                                        @prospeccao.Empresa.Nome @*FAVOR NAO EDITAR*@
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="cell">
+                                                <div style="display: flex;align-items: center;">
+                                                    @if (prospeccao.NomeProspeccao != null)
+                                                    {
+                                                        <span style="margin-right: 10px;">@prospeccao.NomeProspeccao</span> @*Projeto*@
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>A definir</span> @*Projeto*@
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="cell">
+                                                @if (prospeccao.Usuario != null)
+                                                {
+                                                    <span class="badge bg-success">@prospeccao.Usuario.UserName</span> @*Líder*@
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">Sem Líder</span>
+                                                }
+                                                @if (prospeccao.MembrosEquipe != null)
+                                                {
+                                                    foreach (var item in prospeccao.MembrosEquipe.Split(";"))
+                                                    {
+                                                        if (item != "")
+                                                        {
+                                                            var user = usuarios.Where(u => u.Email == item).FirstOrDefault();
+                                                            if (user != null)
+                                                            {
+                                                                <span class="badge bg-info">@user.UserName</span>
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            </div>
+                                            @{
+                                                var subtracaoUltimoStatus = @DateTime.Now.Subtract(prospeccao.Status.OrderBy(followup => followup.Data).Last().Data).Days;
                                             }
-                                            @if (prospeccao.Ancora == true)
+                                            <div class="cell">
+                                                <span>@prospeccao.TipoContratacao.GetDisplayName()</span> @*Tipo Contratação*@
+                                            </div>
+                                            <div class="cell">
+                                                <span>@prospeccao.Status.OrderBy(followup => followup.Data).Last().Status.GetDisplayName()</span>
+                                            </div> @*Status*@
+                                            @if (prospeccao.Status.OrderBy(followup => followup.Data).Last().Status != StatusProspeccao.Planejada)
                                             {
-                                                <span id="tip_agg" class="translate-top-right badge rounded-pill bg-warning" data-tippy-content='@FunilHelpers.MostrarAgregadas(agregadas, prospeccao.Agregadas)'>+@prospeccao.Agregadas.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Length</span>
+                                                <div class="cell">
+                                                    @FunilHelpers.VerificarTemperatura(subtracaoUltimoStatus)
+                                                </div>
                                             }
+                                            <div class="cell">
+                                                @if (prospeccao.ValorProposta != 0)
+                                                {
+                                                    <span>R$ @Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorProposta)</span>
+                                                }
+                                                else if (prospeccao.ValorEstimado != 0)
+                                                {
+                                                    <span>R$ @Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorEstimado)</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>Valor não informado</span>
+                                                }
+                                            </div>
+                                            <div class="cell">
+                                                <div style="width: 40px; height: 40px;" class="position-relative">
+                                                    @if (prospeccao.Status.OrderBy(p => p.Data).First().Status == StatusProspeccao.Planejada)
+                                                    {
+                                                        <span class="position-absolute top-10 start-100 translate-middle badge rounded-pill bg-info">Plan</span>
+                                                    }
+                                                    @if (prospeccao.Origem.GetDisplayName() == "Recebida")
+                                                    {
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M64 112c-8.8 0-16 7.2-16 16v22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1V128c0-8.8-7.2-16-16-16H64zM48 212.2V384c0 8.8 7.2 16 16 16H448c8.8 0 16-7.2 16-16V212.2L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64H448c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z" /></svg>
+                                                    }
+                                                    else
+                                                    {
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M16.1 260.2c-22.6 12.9-20.5 47.3 3.6 57.3L160 376V479.3c0 18.1 14.6 32.7 32.7 32.7c9.7 0 18.9-4.3 25.1-11.8l62-74.3 123.9 51.6c18.9 7.9 40.8-4.5 43.9-24.7l64-416c1.9-12.1-3.4-24.3-13.5-31.2s-23.3-7.5-34-1.4l-448 256zm52.1 25.5L409.7 90.6 190.1 336l1.2 1L68.2 285.7zM403.3 425.4L236.7 355.9 450.8 116.6 403.3 425.4z" /></svg>
+                                                    }
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div>
-                                            @*LOGO*@
-                                            @if (prospeccao.Empresa.Logo != null)
+                                    </button>
+                                </h2>
+                                <div id="collapse-@prospeccao.Id" class="accordion-collapse collapse " aria-labelledby="heading-@prospeccao.Id" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        <h1 class="app-card-title">ID da Prospecção:</h1>
+                                        <span>@prospeccao.Id</span>
+                                        <h1 class="app-card-title">Empresa:</h1>
+                                        <span>@prospeccao.Empresa.Nome</span>
+                                        <h1 class="app-card-title">Líder</h1>
+                                        @if (prospeccao.Usuario != null)
+                                        {
+                                            <span>@prospeccao.Usuario.UserName</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Sem Líder</span>
+                                        }
+                                        <h1 class="app-card-title">Nome:</h1>
+                                        <span>@prospeccao.NomeProspeccao</span>
+                                        <h1 class="app-card-title">Origem:</h1>
+                                        <span>@prospeccao.Origem.GetDisplayName()</span>
+                                        <h1 class="app-card-title">Linha de Pesquisa:</h1>
+                                        <span>@prospeccao.LinhaPequisa.GetDisplayName()</span>
+                                        <h1 class="app-card-title">Status:</h1>
+                                        <span>@prospeccao.Status.OrderBy(followup => followup.Data).Last().Status.GetDisplayName()</span>
+                                        <h1 class="app-card-title">Valor Estimado:</h1>
+                                        <nobr>
+                                            @if (prospeccao.ValorEstimado != 0)
                                             {
-                                                <img style="border: 2px solid #999; border-radius: 10px;" loading="lazy" src="@prospeccao.Empresa.Logo" id="logoEmpresa" alt="Logo da Empresa" style="background-color:white" width="175%">
+                                                <span>R$ @Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorEstimado)</span>
                                             }
                                             else
                                             {
-                                                <nobr id="logo_alt">Sem Logo</nobr>
+                                                <span>Valor não informado</span>
                                             }
-                                        </div>
-                                        <div style="text-align:center;width:90px">
-                                            @*NOME EMPRESA*@
-                                            @prospeccao.Empresa.Nome @*FAVOR NAO EDITAR*@
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="cell">
-                                    <div style="display: flex;align-items: center;">
-                                        @if (prospeccao.NomeProspeccao != null)
-                                        {
-                                            <span style="margin-right: 10px;">@prospeccao.NomeProspeccao</span> @*Projeto*@
-                                        }
-                                        else
-                                        {
-                                            <span>A definir</span> @*Projeto*@
-                                        }
-                                    </div>
-                                </td>
-                                <td class="cell">
-                                    @if (prospeccao.Usuario != null)
-                                    {
-                                        <span class="badge bg-success">@prospeccao.Usuario.UserName</span> @*Líder*@
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-danger">Sem Líder</span>
-                                    }
-                                    @if (prospeccao.MembrosEquipe != null)
-                                    {
-                                        foreach (var item in prospeccao.MembrosEquipe.Split(";"))
-                                        {
-                                            if (item != "")
+                                        </nobr>
+                                        <h1 class="app-card-title">Valor Proposta:</h1>
+                                        <nobr>
+                                            @if (prospeccao.ValorProposta != 0)
                                             {
-                                                var user = usuarios.Where(u => u.Email == item).FirstOrDefault();
-                                                if (user != null)
-                                                {
-                                                    <span class="badge bg-info">@user.UserName</span>
-                                                }
+                                                <span>R$ @Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorProposta)</span>
                                             }
-                                        }
-                                    }
-                                </td>
-                                @{
-                                    var subtracaoUltimoStatus = @DateTime.Now.Subtract(prospeccao.Status.OrderBy(followup => followup.Data).Last().Data).Days;
-                                }
-                                <td class="cell">
-                                    <span>@prospeccao.TipoContratacao.GetDisplayName()</span> @*Tipo Contratação*@
-                                </td>
-                                <td class="cell">
-                                    <span>@prospeccao.Status.OrderBy(followup => followup.Data).Last().Status.GetDisplayName()</span>
-                                </td> @*Status*@
-                                @if (prospeccao.Status.OrderBy(followup => followup.Data).Last().Status != StatusProspeccao.Planejada)
-                                {
-                                    <td class="cell">
-                                        @FunilHelpers.VerificarTemperatura(subtracaoUltimoStatus)
-                                    </td>
-                                }
-                                <td class="cell">
-                                    @if (prospeccao.ValorProposta != 0)
-                                    {
-                                        <span>R$ @Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorProposta)</span>
-                                    }
-                                    else if (prospeccao.ValorEstimado != 0)
-                                    {
-                                        <span>R$ @Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorEstimado)</span>
-                                    }
-                                    else
-                                    {
-                                        <span>Valor não informado</span>
-                                    }
-                                </td>
-                                <td class="cell">
-                                    <div style="width: 40px; height: 40px;" class="position-relative">
-                                        @if (prospeccao.Status.OrderBy(p => p.Data).First().Status == StatusProspeccao.Planejada)
-                                        {
-                                            <span class="position-absolute top-10 start-100 translate-middle badge rounded-pill bg-info">Plan</span>
-                                        }
-                                        @if (prospeccao.Origem.GetDisplayName() == "Recebida")
-                                        {
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M64 112c-8.8 0-16 7.2-16 16v22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1V128c0-8.8-7.2-16-16-16H64zM48 212.2V384c0 8.8 7.2 16 16 16H448c8.8 0 16-7.2 16-16V212.2L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64H448c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z" /></svg>
-                                        }
-                                        else
-                                        {
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M16.1 260.2c-22.6 12.9-20.5 47.3 3.6 57.3L160 376V479.3c0 18.1 14.6 32.7 32.7 32.7c9.7 0 18.9-4.3 25.1-11.8l62-74.3 123.9 51.6c18.9 7.9 40.8-4.5 43.9-24.7l64-416c1.9-12.1-3.4-24.3-13.5-31.2s-23.3-7.5-34-1.4l-448 256zm52.1 25.5L409.7 90.6 190.1 336l1.2 1L68.2 285.7zM403.3 425.4L236.7 355.9 450.8 116.6 403.3 425.4z" /></svg>
-                                        }
+                                            else
+                                            {
+                                                <span>Valor não informado</span>
+                                            }
+                                        </nobr>
+                                        <hr>
+                                        <h1 class="app-card-title">Último Status:</h1>
+                                        <span>@prospeccao.Status.OrderBy(p => p.Data).Last().Anotacoes</span>
+                                        <p>
+                                            Data: @prospeccao.Status.OrderBy(p => p.Data).Last().Data.ToString("dd/MM/yyyy",
+                                        CultureInfo.CreateSpecificCulture("pt-BR"))
+                                        </p>
                                     </div>
-                                </td>
-                                <td class="cell">
-                                    <button type="button" id="button-@prospeccao.Id" data-bs-target="#modalDetalhes-@prospeccao.Id"
-                                            data-bs-toggle="modal" class="btn-sm app-btn-primary">
-                                        Detalhes
-                                    </button>
-                                </td>
-                            </tr>
+                                </div>
+                            </div>
                         }
-                    </tbody>
-                </table>
+                    </div>
+                
             </div>
         </div>
     </div>
