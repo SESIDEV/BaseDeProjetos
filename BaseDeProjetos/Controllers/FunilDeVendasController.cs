@@ -66,7 +66,7 @@ namespace BaseDeProjetos.Controllers
                     Pager = pager,
                 };
 
-                var usuarios = await _cache.GetCachedAsync("UsuariosFunil", () => _context.Users.Select(u => new UsuariosFunilDTO { Id = u.Id, UserName = u.UserName, Email = u.Email }).ToListAsync());
+                var usuarios = await _cache.GetCachedAsync("Usuarios:Funil", () => _context.Users.Select(u => new UsuariosFunilDTO { Id = u.Id, UserName = u.UserName, Email = u.Email }).ToListAsync());
 
                 ViewData["Usuarios"] = usuarios;
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "Nome");
