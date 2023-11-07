@@ -115,46 +115,52 @@ namespace BaseDeProjetos.Helpers
 
         public static List<Prospeccao> RetornarProspeccoesPorStatus(List<Prospeccao> prospeccoes, Usuario usuario, string aba, HttpContext HttpContext)
         {
-            if (aba.ToLowerInvariant() == "ativas")
+            switch (aba.ToLowerInvariant())
             {
-                List<Prospeccao> ativas = prospeccoes.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
-                    followup.Data).LastOrDefault().Status < StatusProspeccao.ComProposta).ToList();
-                return ativas;
-            }
-            else if (aba.ToLowerInvariant() == "comproposta")
-            {
-                List<Prospeccao> emProposta = prospeccoes.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
-                    followup.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList();
-                return emProposta;
-            }
-            else if (aba.ToLowerInvariant() == "concluidas")
-            {
-                List<Prospeccao> concluidas = prospeccoes.Where(prospeccao => prospeccao.Status.Any(followup =>
-                    followup.Status == StatusProspeccao.Convertida ||
-                    followup.Status == StatusProspeccao.Suspensa ||
-                    followup.Status == StatusProspeccao.NaoConvertida
-                )).ToList();
-                return concluidas;
-            }
-            else if (aba.ToLowerInvariant() == "planejadas")
-            {
-                // Jesus cristo 😬
-                List<Prospeccao> planejadas = usuario.Nivel == Nivel.Dev ?
-                    prospeccoes.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).ToList() :
-                    prospeccoes.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).Where(prosp => prosp.Usuario.UserName.ToString() == HttpContext.User.Identity.Name).ToList();
-                return planejadas;
-            }
-            else if (aba.ToLowerInvariant() == "erradas")
-            {
-                List<Prospeccao> erradas = prospeccoes.Where(prospeccao =>
-                    prospeccao.Status.OrderBy(followup => followup.Data).FirstOrDefault().Status != StatusProspeccao.ContatoInicial &&
-                    prospeccao.Status.OrderBy(followup => followup.Data).FirstOrDefault().Status != StatusProspeccao.Planejada
-                ).ToList();
-                return erradas;
-            }
-            else
-            {
-                return null;
+                case "ativas":
+                    {
+                        List<Prospeccao> ativas = prospeccoes.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
+                            followup.Data).LastOrDefault().Status < StatusProspeccao.ComProposta).ToList();
+                        return ativas;
+                    }
+
+                case "comproposta":
+                    {
+                        List<Prospeccao> emProposta = prospeccoes.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
+                            followup.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList();
+                        return emProposta;
+                    }
+
+                case "concluidas":
+                    {
+                        List<Prospeccao> concluidas = prospeccoes.Where(prospeccao => prospeccao.Status.Any(followup =>
+                            followup.Status == StatusProspeccao.Convertida ||
+                            followup.Status == StatusProspeccao.Suspensa ||
+                            followup.Status == StatusProspeccao.NaoConvertida
+                        )).ToList();
+                        return concluidas;
+                    }
+
+                case "planejadas":
+                    {
+                        // Jesus cristo 😬
+                        List<Prospeccao> planejadas = usuario.Nivel == Nivel.Dev ?
+                            prospeccoes.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).ToList() :
+                            prospeccoes.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).Where(prosp => prosp.Usuario.UserName.ToString() == HttpContext.User.Identity.Name).ToList();
+                        return planejadas;
+                    }
+
+                case "erradas":
+                    {
+                        List<Prospeccao> erradas = prospeccoes.Where(prospeccao =>
+                            prospeccao.Status.OrderBy(followup => followup.Data).FirstOrDefault().Status != StatusProspeccao.ContatoInicial &&
+                            prospeccao.Status.OrderBy(followup => followup.Data).FirstOrDefault().Status != StatusProspeccao.Planejada
+                        ).ToList();
+                        return erradas;
+                    }
+
+                default:
+                    return null;
             }
         }
 
