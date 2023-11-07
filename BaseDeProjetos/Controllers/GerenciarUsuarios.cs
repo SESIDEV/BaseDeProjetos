@@ -1,4 +1,5 @@
 ﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,9 +14,12 @@ namespace BaseDeProjetos.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public GerenciarUsuarios(ApplicationDbContext context)
+        private readonly DbCache _cache;
+
+        public GerenciarUsuarios(ApplicationDbContext context, DbCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         /// <summary>
@@ -23,15 +27,10 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="nomeUsuario">Nome do Usuário</param>
         /// <returns></returns>
-        public Usuario UsuarioExiste(string nomeUsuario)
+        public async Task<Usuario> UsuarioExiste(string nomeUsuario)
         {
-            string usuarioLogado = nomeUsuario;
-
-            var usuarioExiste = _context.Users.Where(u => u.UserName == usuarioLogado).FirstOrDefault();
-
-            var usuario = _context.Users.Find(usuarioExiste.Id);
-
-            return usuario;
+            var usuarios = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
+            return usuarios.FirstOrDefault(u => u.UserName == nomeUsuario);
         }
 
         /// <summary>
@@ -39,17 +38,18 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="statusEmailUsuario">Status que se deseja obter (1 confirmado, 0 não confirmado)</param>
         /// <returns></returns>
-        public List<Usuario> VerificarStatusEmailUsuario(string statusEmailUsuario)
+        public async Task<List<Usuario>> VerificarStatusEmailUsuario(string statusEmailUsuario)
         {
-            var listaUsuarios = _context.Users.ToList();
+            var usuarios = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
 
-            listaUsuarios = statusEmailUsuario switch
+
+            usuarios = statusEmailUsuario switch
             {
                 "1" => _context.Users.Where(u => u.EmailConfirmed).ToList(),
                 "0" => _context.Users.Where(u => !u.EmailConfirmed).ToList(),
                 _ => _context.Users.ToList(),
             };
-            return listaUsuarios;
+            return usuarios;
         }
 
         /// <summary>
@@ -72,20 +72,20 @@ namespace BaseDeProjetos.Controllers
         [Route("GerenciarUsuarios")]
         [Route("GerenciarUsuarios/Index")]
         [Route("GerenciarUsuarios/Index/{id?}")]
-        public IActionResult Index(string statusEmailUsuario)
+        public async Task<IActionResult> Index(string statusEmailUsuario)
         {
             ViewData["CurrentFilter"] = statusEmailUsuario;
 
-            var lista = _context.Users.AsNoTracking().ToList();
+            var usuarios = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
 
-            Usuario usuario = UsuarioExiste(HttpContext.User.Identity.Name);
+            Usuario usuario = await UsuarioExiste(HttpContext.User.Identity.Name);
 
             if (usuario != null && VerificarNivelUsuario(usuario))
             {
-                lista = VerificarStatusEmailUsuario(statusEmailUsuario);
+                usuarios = await VerificarStatusEmailUsuario(statusEmailUsuario);
             }
 
-            return View(lista);
+            return View(usuarios);
         }
 
         // GET: GerenciarUsuarios/Details/5
@@ -125,6 +125,7 @@ namespace BaseDeProjetos.Controllers
 
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();
+                await CacheHelper.CleanupUsuariosCache(_cache);
                 return RedirectToAction(nameof(Index));
             }
             return View(usuario);
@@ -169,6 +170,7 @@ namespace BaseDeProjetos.Controllers
                     _context.Users.Remove(usuarioExiste);
                     _context.Add(usuarioEditado);
                     await _context.SaveChangesAsync();
+                    await CacheHelper.CleanupUsuariosCache(_cache);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
@@ -212,6 +214,7 @@ namespace BaseDeProjetos.Controllers
             var usuario = await _context.Users.FindAsync(id);
             _context.Users.Remove(usuario);
             await _context.SaveChangesAsync();
+            await CacheHelper.CleanupUsuariosCache(_cache);
             return RedirectToAction(nameof(Index));
         }
 
