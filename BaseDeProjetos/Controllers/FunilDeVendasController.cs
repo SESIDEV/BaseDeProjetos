@@ -54,15 +54,15 @@ namespace BaseDeProjetos.Controllers
                 prospeccoes = await ObterProspeccoesFunilFiltradas(casa, aba, sortOrder, searchString, ano, UsuarioAtivo);
 
                 int qtdProspeccoes = prospeccoes.Count();
-                int qtdPaginasTodo = (int)Math.Ceiling((double)qtdProspeccoes / tamanhoPagina);
+                int qtdPaginasTodo = (int)Math.Ceiling((double)qtdProspeccoes / (double)tamanhoPagina);
 
-                List<Prospeccao> prospeccoesPagina = ObterProspeccoesPorPagina(prospeccoes, numeroPagina, tamanhoPagina);
+                List<Prospeccao> prospeccoesPagina = ObterProspeccoesPorPagina(prospeccoes, numeroPagina, (int)tamanhoPagina);
 
-                var pager = new Pager(qtdProspeccoes, numeroPagina, tamanhoPagina, 50); // 50 paginas max
+                var pager = new Pager(qtdProspeccoes, numeroPagina, (int)tamanhoPagina, 50); // 50 paginas max
 
                 var model = new ProspeccoesViewModel
                 {
-                    Prospeccoes = prospeccoes,
+                    Prospeccoes = prospeccoesPagina,
                     Pager = pager,
                 };
 
