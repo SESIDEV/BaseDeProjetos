@@ -14,8 +14,10 @@ namespace BaseDeProjetos.Helpers
         public static async Task CleanupProspeccoesCache(DbCache cache)
         {
             cache.InvalidateCache("AllProspeccoes");
+            await cache.InvalidateCacheKeysAsync("Prospeccao:");
             await cache.InvalidateCacheKeysAsync("Prospeccoes:");
             await cache.InvalidateCacheKeysAsync("Participacoes:");
+            await cache.InvalidateCacheKeysAsync("Followup:");
         }
 
         public static async Task CleanupUsuariosCache(DbCache cache) {
