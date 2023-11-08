@@ -54,11 +54,11 @@ namespace BaseDeProjetos.Controllers
                 prospeccoes = await ObterProspeccoesFunilFiltradas(casa, aba, sortOrder, searchString, ano, UsuarioAtivo);
 
                 int qtdProspeccoes = prospeccoes.Count();
-                int qtdPaginasTodo = (int)Math.Ceiling((double)qtdProspeccoes / (double)tamanhoPagina);
+                int qtdPaginasTodo = (int)Math.Ceiling((double)qtdProspeccoes / tamanhoPagina);
 
-                List<Prospeccao> prospeccoesPagina = ObterProspeccoesPorPagina(prospeccoes, numeroPagina, (int)tamanhoPagina);
+                List<Prospeccao> prospeccoesPagina = ObterProspeccoesPorPagina(prospeccoes, numeroPagina, tamanhoPagina);
 
-                var pager = new Pager(qtdProspeccoes, numeroPagina, (int)tamanhoPagina, 50); // 50 paginas max
+                var pager = new Pager(qtdProspeccoes, numeroPagina, tamanhoPagina, 50); // 50 paginas max
 
                 var model = new ProspeccoesViewModel
                 {
@@ -72,15 +72,14 @@ namespace BaseDeProjetos.Controllers
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "Nome");
                 ViewData["Equipe"] = new SelectList(usuarios, "Id", "UserName");
 
-                var prospeccoesParaFiltragemAgregadas = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.ToListAsync());
-                ViewData["ProspeccoesAgregadas"] = prospeccoesParaFiltragemAgregadas.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
-
                 if (!string.IsNullOrEmpty(aba))
                 {
                     return View(model);
                 }
                 else
                 {
+                    var prospeccoesParaFiltragemAgregadas = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.ToListAsync());
+                    ViewData["ProspeccoesAgregadas"] = prospeccoesParaFiltragemAgregadas.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
                     ViewData["ListaProspeccoes"] = prospeccoes.ToList();
                     ViewData["ProspeccoesAtivas"] = prospeccoes.Where(
                         p => p.Status.OrderBy(k => k.Data).All(
