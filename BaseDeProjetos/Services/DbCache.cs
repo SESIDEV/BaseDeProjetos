@@ -62,10 +62,6 @@ public class DbCache
                     AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromHours(1)
                 });
             }
-            else
-            {
-                Console.WriteLine($"No data in cache for {cacheKey}");
-            }
         }
 
         return data;
@@ -90,10 +86,6 @@ public class DbCache
                 {
                     AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromHours(1)
                 });
-            }
-            else
-            {
-                Console.WriteLine($"No data in cache for {cacheKey}");
             }
         }
 
