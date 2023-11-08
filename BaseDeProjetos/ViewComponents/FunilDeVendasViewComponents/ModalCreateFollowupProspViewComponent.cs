@@ -9,14 +9,17 @@ namespace BaseDeProjetos.ViewComponents.FunilDeVendasViewComponents
     {
         private readonly ApplicationDbContext _context;
 
-        public ModalCreateFollowupProspViewComponent(ApplicationDbContext context)
+        private readonly DbCache _cache;
+        public ModalCreateFollowupProspViewComponent(ApplicationDbContext context, DbCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         public async Task<IViewComponentResult> InvokeAsync(string id)
         {
-            ViewData["prospeccao"] = await _context.Prospeccao.FindAsync(id);
+            var prospeccao = await _cache.GetCachedAsync($"Prospeccao:{id}", () => _context.Prospeccao.FindAsync(id).AsTask());
+            ViewData["prospeccao"] = prospeccao;
             return View(new FollowUp());
         }
     }
