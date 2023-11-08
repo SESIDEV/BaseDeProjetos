@@ -73,11 +73,11 @@ namespace BaseDeProjetos.Controllers
                 .Select(p => new ProspeccaoHomeDTO { Casa = p.Casa, ValorEstimado = p.ValorEstimado, Status = p.Status, Empresa = p.Empresa, LinhaPequisa = p.LinhaPequisa })
                 .Where(p => p.Casa == UsuarioAtivo.Casa).ToListAsync());
 
-            var prospeccoesAtivas = await _cache.GetCachedAsync("Prospeccoes:AtivasHome", () => prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).LastOrDefault().Status <= StatusProspeccao.ComProposta).ToList());
-            var prospeccoesNaoPlanejadas = await _cache.GetCachedAsync("Prospeccoes:NaoPlanejadasHome", () => prospeccoes.Where(p => p.Status.Any(s => s.Status != StatusProspeccao.Planejada)).ToList());
-            var prospeccoesComProposta = await _cache.GetCachedAsync("Prospeccoes:ComPropostaHome", () => prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList());
-            var prospeccoesConcluidas = await _cache.GetCachedAsync("Prospeccoes:ConcluidasHome", () => prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida).ToList());
-            var prospeccoesPlanejadas = await _cache.GetCachedAsync("Prospeccoes:PlanejadasHome", () => prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Planejada).ToList());
+            var prospeccoesAtivas = _cache.GetCached("Prospeccoes:AtivasHome", () => prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).LastOrDefault().Status <= StatusProspeccao.ComProposta).ToList());
+            var prospeccoesNaoPlanejadas = _cache.GetCached("Prospeccoes:NaoPlanejadasHome", () => prospeccoes.Where(p => p.Status.Any(s => s.Status != StatusProspeccao.Planejada)).ToList());
+            var prospeccoesComProposta = _cache.GetCached("Prospeccoes:ComPropostaHome", () => prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList());
+            var prospeccoesConcluidas = _cache.GetCached("Prospeccoes:ConcluidasHome", () => prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida).ToList());
+            var prospeccoesPlanejadas = _cache.GetCached("Prospeccoes:PlanejadasHome", () => prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Planejada).ToList());
             var projetos = await _cache.GetCachedAsync("Projetos:HomeDTO", () => _context.Projeto.Select(p => new ProjetosHomeDTO { Casa = p.Casa, Status = p.Status }).Where(p => p.Casa == UsuarioAtivo.Casa && p.Status == StatusProjeto.EmExecucao).ToListAsync());
             var empresas = prospeccoesNaoPlanejadas.Select(e => e.Empresa.Id).Distinct().ToList();
             var usuarios = await _cache.GetCachedAsync("Usuarios:HomeDTO", () => _context.Users.Select(u => new UsuariosHomeDTO {Id = u.Id, Casa = u.Casa, EmailConfirmed = u.EmailConfirmed, Nivel = u.Nivel }).Where(u => u.Casa == UsuarioAtivo.Casa).Where(u => u.EmailConfirmed == true).Where(u => u.Nivel != Nivel.Dev && u.Nivel != Nivel.Externos).ToListAsync());
@@ -177,9 +177,9 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private async static Task<decimal> ReceitaCasa(ApplicationDbContext context, DbCache cache, Instituto casa)
         {
-            var projetos = await cache.GetCachedAsync($"ProjetosExecucaoHome:{casa.GetDisplayName()}", () => context.Projeto
+            var projetos = await cache.GetCached($"ProjetosExecucaoHome:{casa.GetDisplayName()}", () => context.Projeto
                 .Where(p => p.Casa == casa && p.Status == StatusProjeto.EmExecucao)
-                .ToList());
+                .ToListAsync());
 
             var receitas = projetos
                 .Select(p => CalcularReceita(p.DataInicio, p.DataEncerramento, p.DuracaoProjetoEmMeses, p.ValorAporteRecursos, p.Status, p.Casa));

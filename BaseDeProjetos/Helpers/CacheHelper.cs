@@ -4,31 +4,32 @@ namespace BaseDeProjetos.Helpers
 {
     public class CacheHelper
     {
-        public static async Task CleanupEmpresasCache(DbCache cache)
+        public static void CleanupEmpresasCache(DbCache cache)
         {
-            await cache.InvalidateCacheAsync("AllEmpresas");
-            await cache.InvalidateCacheAsync("EmpresasFunil");
-            await cache.InvalidateCacheAsync("EmpresasFunilUnique");
-            await cache.InvalidateCacheAsync("EmpresasDTO");
+            cache.InvalidateCache("AllEmpresas");
+            cache.InvalidateCache("EmpresasFunil");
+            cache.InvalidateCache("EmpresasFunilUnique");
+            cache.InvalidateCache("EmpresasDTO");
         }
         public static async Task CleanupProspeccoesCache(DbCache cache)
         {
-            await cache.InvalidateCacheAsync("AllProspeccoes");
+            cache.InvalidateCache("AllProspeccoes");
             await cache.InvalidateCacheKeysAsync("Prospeccoes:");
+            await cache.InvalidateCacheKeysAsync("Participacoes:");
         }
 
         public static async Task CleanupUsuariosCache(DbCache cache) {
-            await cache.InvalidateCacheAsync("AllUsuarios");
+            cache.InvalidateCache("AllUsuarios");
             await cache.InvalidateCacheKeysAsync("Usuarios:");
         }
 
         public static async Task CleanupCargosCache(DbCache cache) {
-            await cache.InvalidateCacheAsync("AllCargos");
+            cache.InvalidateCache("AllCargos");
             await cache.InvalidateCacheKeysAsync("Cargos:");
         }
 
         public static async Task CleanupProjetosCache(DbCache cache) {
-            await cache.InvalidateCacheAsync("AllProjetos");
+            cache.InvalidateCache("AllProjetos");
             await cache.InvalidateCacheKeysAsync("Projetos:");
             await cache.InvalidateCacheKeysAsync("ProjetosExecucaoHome:");
         }

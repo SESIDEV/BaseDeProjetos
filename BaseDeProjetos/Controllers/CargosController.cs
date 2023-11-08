@@ -69,7 +69,7 @@ namespace BaseDeProjetos.Controllers
                 _context.Add(cargo);
                 await _context.SaveChangesAsync();
                 await CacheHelper.CleanupCargosCache(_dbCache);
-                await _dbCache.SetCachedAsync($"Cargos:{cargo.Id}", cargo);
+                _dbCache.SetCached($"Cargos:{cargo.Id}", cargo);
                 return RedirectToAction(nameof(Index));
             }
             return View(cargo);
@@ -94,7 +94,7 @@ namespace BaseDeProjetos.Controllers
                     _context.Update(cargo);
                     await _context.SaveChangesAsync();
                     await CacheHelper.CleanupCargosCache(_dbCache);
-                    await _dbCache.SetCachedAsync($"Cargos:{id}", cargo);
+                    _dbCache.SetCached($"Cargos:{id}", cargo);
                 }
                 catch (DbUpdateConcurrencyException)
                 {

@@ -329,7 +329,7 @@ namespace BaseDeProjetos.Controllers
             {
                 _context.Add(empresa);
                 await _context.SaveChangesAsync();
-                await CacheHelper.CleanupEmpresasCache(_cache);
+                CacheHelper.CleanupEmpresasCache(_cache);
 
                 return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
             }
@@ -382,7 +382,7 @@ namespace BaseDeProjetos.Controllers
                     empresa.CNPJ = Regex.Replace(empresa.CNPJ, "[^0-9]", "");
                     _context.Update(empresa);
                     await _context.SaveChangesAsync();
-                    await CacheHelper.CleanupEmpresasCache(_cache);
+                    CacheHelper.CleanupEmpresasCache(_cache);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -438,7 +438,7 @@ namespace BaseDeProjetos.Controllers
             _context.Pessoa.RemoveRange(pessoasRemove);
             _context.Empresa.Remove(empresa);
             await _context.SaveChangesAsync();
-            await CacheHelper.CleanupEmpresasCache(_cache);
+            CacheHelper.CleanupEmpresasCache(_cache);
             return RedirectToAction(nameof(Index));
         }
 
@@ -493,13 +493,15 @@ namespace BaseDeProjetos.Controllers
 
                 if (aprovado)
                 {
-                    Dictionary<string, object> dict = new Dictionary<string, object>();
-                    dict["Id"] = empresa.Id;
-                    dict["RazaoSocial"] = empresa.RazaoSocial;
-                    dict["NomeFantasia"] = empresa.Nome;
-                    dict["Segmento"] = empresa.Segmento.GetDisplayName();
-                    dict["Estado"] = empresa.Estado.GetDisplayName();
-                    dict["CNPJ"] = empresa.CNPJ;
+                    Dictionary<string, object> dict = new Dictionary<string, object>
+                    {
+                        ["Id"] = empresa.Id,
+                        ["RazaoSocial"] = empresa.RazaoSocial,
+                        ["NomeFantasia"] = empresa.Nome,
+                        ["Segmento"] = empresa.Segmento.GetDisplayName(),
+                        ["Estado"] = empresa.Estado.GetDisplayName(),
+                        ["CNPJ"] = empresa.CNPJ
+                    };
                     listaFull.Add(dict);
                 }
             }

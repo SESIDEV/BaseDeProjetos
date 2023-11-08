@@ -2,19 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Distributed;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Caching.Memory;
 
 public class DbCache
 {
-    private readonly IDistributedCache _cache;
+    private readonly IMemoryCache _cache;
     private const string CacheKeyListKey = "CacheKeyList";
 
-    // Semaphore para threading
+    // Semaphore for thread safety when accessing the cache key list
     private readonly SemaphoreSlim _cacheKeyListSemaphore = new SemaphoreSlim(1, 1);
 
-
-    public DbCache(IDistributedCache cache)
+    public DbCache(IMemoryCache cache)
     {
         _cache = cache;
     }
@@ -29,9 +27,9 @@ public class DbCache
         await _cacheKeyListSemaphore.WaitAsync();
         try
         {
-            var keys = await GetCacheKeyListAsync();
+            var keys = GetCacheKeyList();
             keys.Add(cacheKey);
-            await _cache.SetStringAsync(CacheKeyListKey, JsonConvert.SerializeObject(keys));
+            _cache.Set(CacheKeyListKey, keys);
         }
         finally
         {
@@ -39,44 +37,9 @@ public class DbCache
         }
     }
 
-    /// <summary>
-    /// Obtém a lista de keys
-    /// </summary>
-    /// <returns></returns>
-    private async Task<HashSet<string>> GetCacheKeyListAsync()
+    private HashSet<string> GetCacheKeyList()
     {
-        var keysJson = await _cache.GetStringAsync(CacheKeyListKey);
-        return keysJson != null ? JsonConvert.DeserializeObject<HashSet<string>>(keysJson) : new HashSet<string>();
-    }
-
-    /// <summary>
-    /// Obtem/Registra os dados no cache (não async). Os dados são invalidados após 1h de forma automática caso não especificado
-    /// </summary>
-    /// <param name="cacheKey">Chave dos dados a serem obtidos ou registrados para cache</param>
-    /// <param name="retrieveDataFunc">Método de obtenção dos dados</param>
-    /// <param name="expiration">Opcional: tempo em horas de expiração do cache</param>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    public async Task<T> GetCachedAsync<T>(string cacheKey, Func<T> retrieveDataFunc, TimeSpan? expiration = null)
-    {
-        string serializedData = await _cache.GetStringAsync(cacheKey);
-
-        if (!string.IsNullOrEmpty(serializedData))
-        {
-            return JsonConvert.DeserializeObject<T>(serializedData);
-        }
-
-        T data = retrieveDataFunc();
-
-        if (data != null)
-        {
-            Console.WriteLine($"Cache miss or null data for: {cacheKey}");
-            var options = new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
-            var cacheOptions = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromHours(1) };
-            await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(data, options), cacheOptions);
-        }
-
-        return data;
+        return _cache.GetOrCreate(CacheKeyListKey, entry => new HashSet<string>());
     }
 
     /// <summary>
@@ -89,29 +52,53 @@ public class DbCache
     /// <returns></returns>
     public async Task<T> GetCachedAsync<T>(string cacheKey, Func<Task<T>> retrieveDataFunc, TimeSpan? expiration = null)
     {
-        string serializedData = await _cache.GetStringAsync(cacheKey);
-
-        if (!string.IsNullOrEmpty(serializedData))
+        if (!_cache.TryGetValue(cacheKey, out T data))
         {
-            return JsonConvert.DeserializeObject<T>(serializedData);
-        }
-
-        T data = await retrieveDataFunc();
-
-        if (data != null)
-        {
-            var options = new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
-            var cacheOptions = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromHours(1) };
-            await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(data, options), cacheOptions);
-        }
-        else
-        {
-            Console.WriteLine($"No cache data for {cacheKey}");
+            data = await retrieveDataFunc();
+            if (data != null)
+            {
+                _cache.Set(cacheKey, data, new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromHours(1)
+                });
+            }
+            else
+            {
+                Console.WriteLine($"No data in cache for {cacheKey}");
+            }
         }
 
         return data;
     }
 
+    /// <summary>
+    /// Obtem/Registra os dados no cache (não async). Os dados são invalidados após 1h de forma automática caso não especificado
+    /// </summary>
+    /// <param name="cacheKey">Chave dos dados a serem obtidos ou registrados para cache</param>
+    /// <param name="retrieveDataFunc">Método de obtenção dos dados</param>
+    /// <param name="expiration">Opcional: tempo em horas de expiração do cache</param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public T GetCached<T>(string cacheKey, Func<T> retrieveDataFunc, TimeSpan? expiration = null)
+    {
+        if (!_cache.TryGetValue(cacheKey, out T data))
+        {
+            data = retrieveDataFunc();
+            if (data != null)
+            {
+                _cache.Set(cacheKey, data, new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromHours(1)
+                });
+            }
+            else
+            {
+                Console.WriteLine($"No data in cache for {cacheKey}");
+            }
+        }
+
+        return data;
+    }
 
     /// <summary>
     /// Guarda os dados em cache de acordo com uma chave e duração padrão de 1h caso não especificada
@@ -121,26 +108,21 @@ public class DbCache
     /// <param name="duration">Duração da Invalidação Automátioca</param>
     /// <typeparam name="T">Tipo Genérico para o Dado</typeparam>
     /// <returns></returns>
-    public async Task SetCachedAsync<T>(string cacheKey, T value, TimeSpan? duration = null)
+    public void SetCached<T>(string cacheKey, T value, TimeSpan? duration = null)
     {
-        var cacheEntryOptions = new DistributedCacheEntryOptions
+        _cache.Set(cacheKey, value, new MemoryCacheEntryOptions
         {
             AbsoluteExpirationRelativeToNow = duration ?? TimeSpan.FromHours(1)
-        };
-
-        var options = new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
-        var serializedValue = JsonConvert.SerializeObject(value, options);
-        await _cache.SetStringAsync(cacheKey, serializedValue, cacheEntryOptions);
+        });
     }
-
 
     /// <summary>
     /// Invalida dados do cache de acordo com a chave na qual ele foi registrado
     /// </summary>
     /// <param name="cacheKey"></param>
-    public async Task InvalidateCacheAsync(string cacheKey)
+    public void InvalidateCache(string cacheKey)
     {
-        await _cache.RemoveAsync(cacheKey);
+        _cache.Remove(cacheKey);
     }
 
     /// <summary>
@@ -150,33 +132,32 @@ public class DbCache
     public async Task InvalidateCacheKeysAsync(string keyContent)
     {
         await _cacheKeyListSemaphore.WaitAsync();
-
         try
         {
-            var keys = await GetCacheKeyListAsync();
+            var keys = GetCacheKeyList();
             var keysToRemove = new HashSet<string>();
 
             foreach (var key in keys)
             {
                 if (key.Contains(keyContent))
                 {
-                    await _cache.RemoveAsync(key);
+                    _cache.Remove(key);
+                    keysToRemove.Add(key);
                 }
             }
 
-            await _cache.RemoveAsync(CacheKeyListKey);
-
             keys.ExceptWith(keysToRemove);
-
             if (keys.Count > 0)
             {
-                await _cache.SetStringAsync(CacheKeyListKey, JsonConvert.SerializeObject(keys));
+                _cache.Set(CacheKeyListKey, keys);
             }
             else
             {
-                await _cache.RemoveAsync(CacheKeyListKey);
+                _cache.Remove(CacheKeyListKey);
             }
-        }finally {
+        }
+        finally
+        {
             _cacheKeyListSemaphore.Release();
         }
     }
