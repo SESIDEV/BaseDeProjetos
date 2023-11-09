@@ -212,7 +212,7 @@ namespace BaseDeProjetos.Controllers
                     usuario = await _context.Users.Where(u => u.Id == idUsuario).FirstOrDefaultAsync();
                 }
 
-                _prospeccoes = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.ToListAsync());
+                _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).ToListAsync());
 
                 var participacao = await GetParticipacaoTotalUsuario(usuario);
 
@@ -1168,7 +1168,7 @@ namespace BaseDeProjetos.Controllers
             ViewData["mesFim"] = mesFim;
             ViewData["anoFim"] = anoFim;
 
-            _prospeccoes = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.ToListAsync());
+            _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).ToListAsync());
 
             var participacoes = await _cache.GetCachedAsync($"Participacoes:{mesInicio}:{anoInicio}:{mesFim}:{anoFim}", () => GetParticipacoesTotaisUsuarios(mesInicio, anoInicio, mesFim, anoFim));
 
