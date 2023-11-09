@@ -11,7 +11,7 @@
 <form asp-action="Create" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="modal fade" id="criarProspModalToggle" aria-hidden="true" aria-labelledby="criarProspModalToggleLabel"
-        tabindex="-1">
+         tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -41,14 +41,14 @@
                         else
                         {
                             <select asp-for="Casa" class="form-control"
-                            asp-items="Html.GetEnumSelectList<Instituto>().OrderBy(p=>p.Text)"></select>
+                                    asp-items="Html.GetEnumSelectList<Instituto>().OrderBy(p=>p.Text)"></select>
                         }
                         <span asp-validation-for="Casa" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
                         <label asp-for="NomeProspeccao" class="col-form-label" style="font-weight: 600"></label>
                         <input asp-for="NomeProspeccao" class="form-control" autocomplete="off"
-                            placeholder="Um nome amigável para a prospecção. Ex.: Proposta dos biossurfactantes" />
+                               placeholder="Um nome amigável para a prospecção. Ex.: Proposta dos biossurfactantes" />
                         <span asp-validation-for="NomeProspeccao" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
@@ -59,35 +59,35 @@
                     <div class="mb-2">
                         <label class="col-form-label" style="font-weight: 600" for="inputTextPessoas">Membros</label>
                         <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectPessoas">
-                        <span class="visually-hidden">Loading...</span>
+                            <span class="visually-hidden">Loading...</span>
                         </div>
-                        <input asp-for="MembrosEquipe" class="form-control d-none" id="inputTextPessoas" type="text"/>
+                        <input asp-for="MembrosEquipe" class="form-control d-none" id="inputTextPessoas" type="text" />
                         <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestPessoas" onclick="gerarOpcoesSelect('Pessoas', 'criarProspModalToggle')">Buscar</button>
                         <div class="input-group flex-nowrap" id="caixaPesquisaPessoas" style="display:none;">
-                        <select id="campoSelectPessoas" class="form-select" multiple="true"></select>
+                            <select id="campoSelectPessoas" class="form-select" multiple="true"></select>
                         </div>
                     </div>
                     <div class="mb-2">
                         <label asp-for="TipoContratacao" class="col-form-label" style="font-weight: 600"></label>
                         <select asp-for="TipoContratacao" class="form-control"
-                            asp-items="Html.GetEnumSelectList<TipoContratacao>().OrderBy(p=>p.Text)"></select>
+                                asp-items="Html.GetEnumSelectList<TipoContratacao>().OrderBy(p=>p.Text)"></select>
                         <span asp-validation-for="TipoContratacao" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
                         <label asp-for="LinhaPequisa" class="col-form-label" style="font-weight: 600"></label>
                         <select asp-for="LinhaPequisa" class="form-control"
-                            asp-items="Html.GetEnumSelectList<LinhaPesquisa>().OrderBy(p=>p.Text)"></select>
+                                asp-items="Html.GetEnumSelectList<LinhaPesquisa>().OrderBy(p=>p.Text)"></select>
                         <span asp-validation-for="LinhaPequisa" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
-                        <label for="inputTextEmpresas" class="col-form-label" style="font-weight: 600"></label>
+                        <label for="inputTextEmpresas" class="col-form-label" style="font-weight: 600">Potenciais Parceiros</label>
                         <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectEmpresas">
-                          <span class="visually-hidden">Loading...</span>
+                            <span class="visually-hidden">Loading...</span>
                         </div>
-                        <input asp-for="PotenciaisParceiros" class="form-control d-none" id="inputTextEmpresas" type="text"/>
+                        <input asp-for="PotenciaisParceiros" class="form-control d-none" id="inputTextEmpresas" type="text" />
                         <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestEmpresas" onclick="gerarOpcoesSelect('Empresas', '#criarProspModalToggle')">Buscar</button>
                         <div class="input-group flex-nowrap" id="caixaPesquisaEmpresas" style="display:none;">
-                            <select id="campoSelectEmpresas" class="form-select" multiple="true" style="display:block;"></select>
+                            <select id="campoSelectEmpresas" class="form-select" multiple="true"></select>
                         </div>
                     </div>
                     <div class="mb-2">
@@ -101,7 +101,7 @@
                 <input style="display:none" type="checkbox" disabled class="changeCheck" value="Prospeccoes" id="checkProspeccoes-@Model.Id">
                 <div class="modal-footer">
                     <button type="button" class="btn app-btn-primary" data-bs-target="#criarProspModalToggle2"
-                        data-bs-toggle="modal" onclick="selectToText()">
+                            data-bs-toggle="modal" onclick="selectToText()">
                         Próximo
                     </button>
                 </div>
@@ -109,25 +109,27 @@
         </div>
     </div>
     <div class="modal fade" id="criarProspModalToggle2" aria-hidden="true" aria-labelledby="criarProspModalToggleLabel2"
-        tabindex="-1">
+         tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="criarProspModalToggleLabel2">Informações da Empresa</h1>
-                    <button class="btn btn-close" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="criarProspModalToggleLabel2">Informações da Empresa</h5>
+                    <button class="btn btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body border-bottom">
                     <div class="mb-2" id="group">
-                        <label asp-for="Empresa.Id" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="Empresa.Id" class="col-form-label" style="font-weight: 600">Empresa</label>
                         <select asp-for="Empresa.Id" class="form-control"
-                            asp-items='@(ViewData["Empresas"] as SelectList).OrderBy(p=>p.Text)'>
+                                asp-items='@(ViewData["Empresas"] as SelectList).OrderBy(p=>p.Text)'>
                             <option value="-1">Selecione a empresa</option>
                         </select>
                         <span asp-validation-for="Empresa.Id" class="text-danger"></span>
                     </div>
-                    <hr />
-                    <h1 class="modal-title fs-5">Dados do Contato</h1>
-                    <hr />
+                </div>
+                <div class="modal-header">
+                    <h5>Contato da Empresa</h5>
+                </div>
+                <div class="modal-body">
                     <div class="mb-2">
                         <label asp-for="Contato.Nome" class="col-form-label" style="font-weight: 600"></label>
                         <input asp-for="Contato.Nome" class="form-control" />
@@ -141,7 +143,7 @@
                     <div class="mb-2">
                         <label asp-for="Contato.Telefone" class="col-form-label" style="font-weight: 600"></label>
                         <input asp-for="Contato.Telefone" class="form-control"
-                            onkeypress="$(this).mask('(00) 0000-00009')" />
+                               onkeypress="$(this).mask('(00) 0000-00009')" />
                         <span asp-validation-for="Contato.Telefone" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
@@ -152,11 +154,11 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn app-btn-primary" data-bs-target="#criarProspModalToggle"
-                        data-bs-toggle="modal">
+                            data-bs-toggle="modal">
                         Anterior
                     </button>
                     <button type="button" class="btn app-btn-primary" data-bs-target="#criarProspModalToggle3"
-                        data-bs-toggle="modal">
+                            data-bs-toggle="modal">
                         Próximo
                     </button>
                 </div>
@@ -164,7 +166,7 @@
         </div>
     </div>
     <div class="modal fade" id="criarProspModalToggle3" aria-hidden="true" aria-labelledby="criarProspModalToggleLabel3"
-        tabindex="-1">
+         tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -175,22 +177,22 @@
                     <div class="col-form-label" style="font-weight: 600">
                         <label asp-for="Status[0].Data" class="control-label"></label>
                         <input type="date" class="form-control" asp-for="Status[0].Data" value="@DateTime.Now"
-                            required />
+                               required />
                         <span asp-validation-for="Status[0].Data" class="text-danger"></span>
                     </div>
                     <div class="col-form-label" style="font-weight: 600">
-                        <label asp-for="Status[0].OrigemID" class="control-label"></label>
+                        <label asp-for="Status[0].OrigemID" class="control-label">Identificador da Prospecção</label>
                         <input class="form-control" asp-for="Status[0].OrigemID" value="@unique_id" disabled />
                         <span asp-validation-for="Status[0].OrigemID" class="text-danger"></span>
                     </div>
                     <div class="col-form-label" style="font-weight: 600">
-                        <label for="tagsText" class="control-label"></label>
+                        <label for="tagsText" class="control-label">Tags</label>
                         <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectTags">
-                          <span class="visually-hidden">Loading...</span>
+                            <span class="visually-hidden">Loading...</span>
                         </div>
-                        <input type="text" asp-for="Tags" class="form-control" id="tagsText"/>
+                        <input type="text" asp-for="Tags" class="form-control" id="tagsText" />
                         <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestTags" onclick="gerarOpcoesSelect('Tags', '#criarProspModalToggle')">Adicionar</button>
-                        <div class="input-group flex-nowrap" id="caixaPesquisaTags" style="display:none;">
+                        <div class="input-group flex-nowrap" id="caixaPesquisaTags">
                             <select id="campoSelectTags" class="form-select" multiple="true"></select>
                             <span class="input-group-text" id="addon-wrapping" onclick="addTag('tagsText','campoSelectTags')" onmouseover="novaTag()">
                                 <i class="bi bi-plus-square-fill"></i>
@@ -213,7 +215,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn app-btn-primary" data-bs-target="#criarProspModalToggle2"
-                        data-bs-toggle="modal">
+                            data-bs-toggle="modal">
                         Anterior
                     </button>
                     <input type="submit" value="Concluir" class="btn-submit btn app-btn-primary">
