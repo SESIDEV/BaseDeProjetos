@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Helpers
@@ -113,49 +114,73 @@ namespace BaseDeProjetos.Helpers
             }
         }
 
-        public static List<Prospeccao> RetornarProspeccoesPorStatus(List<Prospeccao> prospeccoes, Usuario usuario, string aba, HttpContext HttpContext)
+        public static List<Prospeccao> RetornarProspeccoesPorStatus(List<Prospeccao> prospeccoes, Usuario usuario, string aba, HttpContext HttpContext, DbCache cache)
         {
             switch (aba.ToLowerInvariant())
             {
                 case "ativas":
                     {
-                        List<Prospeccao> ativas = prospeccoes.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
-                            followup.Data).LastOrDefault().Status < StatusProspeccao.ComProposta).ToList();
+                        List<Prospeccao> ativas = cache.GetCached($"Prospeccoes:Ativas", () => prospeccoes.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
+                            followup.Data).LastOrDefault().Status < StatusProspeccao.ComProposta).ToList());
                         return ativas;
                     }
 
                 case "comproposta":
                     {
-                        List<Prospeccao> emProposta = prospeccoes.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
-                            followup.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList();
+                        List<Prospeccao> emProposta = cache.GetCached("Prospeccoes:ComProposta", () => prospeccoes.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
+                            followup.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList());
                         return emProposta;
                     }
 
                 case "concluidas":
                     {
-                        List<Prospeccao> concluidas = prospeccoes.Where(prospeccao => prospeccao.Status.Any(followup =>
+                        List<Prospeccao> concluidas = cache.GetCached("Prospeccoes:Concluidas", () => prospeccoes.Where(prospeccao => prospeccao.Status.Any(followup =>
                             followup.Status == StatusProspeccao.Convertida ||
                             followup.Status == StatusProspeccao.Suspensa ||
                             followup.Status == StatusProspeccao.NaoConvertida
-                        )).ToList();
+                        )).ToList());
                         return concluidas;
                     }
 
                 case "planejadas":
                     {
-                        // Jesus cristo 😬
-                        List<Prospeccao> planejadas = usuario.Nivel == Nivel.Dev ?
-                            prospeccoes.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).ToList() :
-                            prospeccoes.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).Where(prosp => prosp.Usuario.UserName.ToString() == HttpContext.User.Identity.Name).ToList();
+                        string cacheKey = usuario.Nivel == Nivel.Dev ? "Prospeccoes:Planejadas:Dev" : "Prospeccoes:Planejadas:User:" + HttpContext.User.Identity.Name;
+                        List<Prospeccao> planejadas = cache.GetCached(cacheKey, () =>
+                        {
+                            if (usuario.Nivel == Nivel.Dev)
+                            {
+                                List<Prospeccao> prosps = new List<Prospeccao>();
+                                foreach (var prospeccao in prospeccoes)
+                                {
+                                    try
+                                    {
+                                        if (prospeccao.Usuario.UserName == HttpContext.User.Identity.Name)
+                                        {
+                                            prosps.Add(prospeccao);
+                                        }
+                                    }
+                                    catch (NullReferenceException ex)
+                                    {
+                                        throw ex;
+                                    }
+                                }
+                                return prosps;
+                                // return prospeccoes.Where(p => p.Usuario.UserName == HttpContext.User.Identity.Name).ToList();
+                            }
+                            else
+                            {
+                                return prospeccoes.Where(p => p.Usuario.UserName == HttpContext.User.Identity.Name).ToList();
+                            }
+                        });
                         return planejadas;
                     }
 
                 case "erradas":
                     {
-                        List<Prospeccao> erradas = prospeccoes.Where(prospeccao =>
+                        List<Prospeccao> erradas = cache.GetCached("Prospeccoes:Erradas", () => prospeccoes.Where(prospeccao =>
                             prospeccao.Status.OrderBy(followup => followup.Data).FirstOrDefault().Status != StatusProspeccao.ContatoInicial &&
                             prospeccao.Status.OrderBy(followup => followup.Data).FirstOrDefault().Status != StatusProspeccao.Planejada
-                        ).ToList();
+                        ).ToList());
                         return erradas;
                     }
 
@@ -164,7 +189,7 @@ namespace BaseDeProjetos.Helpers
             }
         }
 
-        public static async Task<List<Prospeccao>> DefinirCasaParaVisualizar(string casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, ViewDataDictionary ViewData)
+        public static async Task<List<Prospeccao>> DefinirCasaParaVisualizar(string casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, DbCache cache, ViewDataDictionary ViewData)
         {
             Instituto enum_casa;
 
@@ -172,8 +197,7 @@ namespace BaseDeProjetos.Helpers
 
             if (usuario.Nivel == Nivel.Dev)
             {
-                List<Prospeccao> lista = await _context.Prospeccao.ToListAsync();
-                prospeccoes.AddRange(lista);
+                prospeccoes = await cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.Include(p => p.Empresa).Include(p => p.Usuario).ToListAsync());
             }
             else
             {
@@ -181,10 +205,7 @@ namespace BaseDeProjetos.Helpers
                 {
                     HttpContext.Session.SetString("_Casa", casa);
                     enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
-                    List<Prospeccao> lista = await _context.Prospeccao.Where(prospeccao => prospeccao.Casa.Equals(enum_casa)).ToListAsync();
-
-                    prospeccoes.AddRange(lista);
-
+                    prospeccoes = await _context.Prospeccao.Where(prospeccao => prospeccao.Casa.Equals(enum_casa)).ToListAsync();
                     ViewData["Area"] = casa;
                 }
             }
@@ -465,13 +486,13 @@ namespace BaseDeProjetos.Helpers
             switch (sortOrder)
             {
                 case "name_desc":
-                    return prospeccoes.OrderByDescending(s => s.Empresa.Nome).ToList();
+                    return prospeccoes.Include(p => p.Usuario).OrderByDescending(s => s.Empresa.Nome).ToList();
 
                 case "TipoContratacao":
-                    return prospeccoes.OrderBy(s => s.TipoContratacao).ToList();
+                    return prospeccoes.Include(p => p.Usuario).OrderBy(s => s.TipoContratacao).ToList();
 
                 case "tipo_desc":
-                    return prospeccoes.OrderByDescending(s => s.TipoContratacao).ToList();
+                    return prospeccoes.Include(p => p.Usuario).OrderByDescending(s => s.TipoContratacao).ToList();
             };
             return prospeccoes.ToList();
         }

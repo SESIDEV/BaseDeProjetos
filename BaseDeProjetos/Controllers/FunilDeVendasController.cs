@@ -40,7 +40,7 @@ namespace BaseDeProjetos.Controllers
             {
                 ViewbagizarUsuario(_context);
 
-                var prospeccoes = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.ToListAsync());
+                var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.Include(p => p.Empresa).Include(p => p.Usuario).ToListAsync());
 
                 ViewBag.searchString = searchString;
                 ViewBag.TamanhoPagina = tamanhoPagina;
@@ -50,7 +50,6 @@ namespace BaseDeProjetos.Controllers
                     casa = UsuarioAtivo.Casa.ToString();
                 }
 
-                var empresas = await _cache.GetCachedAsync("EmpresasFunil", () => _context.Empresa.Select(e => new EmpresasFunilDTO { Id = e.Id, Nome = e.Nome }).ToListAsync());
                 prospeccoes = await ObterProspeccoesFunilFiltradas(casa, aba, sortOrder, searchString, ano, UsuarioAtivo);
 
                 int qtdProspeccoes = prospeccoes.Count();
@@ -66,11 +65,7 @@ namespace BaseDeProjetos.Controllers
                     Pager = pager,
                 };
 
-                var usuarios = await _cache.GetCachedAsync("Usuarios:Funil", () => _context.Users.Select(u => new UsuariosFunilDTO { Id = u.Id, UserName = u.UserName, Email = u.Email }).ToListAsync());
-
-                ViewData["Usuarios"] = usuarios;
-                ViewData["Empresas"] = new SelectList(empresas, "Id", "Nome");
-                ViewData["Equipe"] = new SelectList(usuarios, "Id", "UserName");
+                await InserirDadosEmpresasUsuariosViewData();
 
                 if (!string.IsNullOrEmpty(aba))
                 {
@@ -79,8 +74,9 @@ namespace BaseDeProjetos.Controllers
                 else
                 {
                     var prospeccoesParaFiltragemAgregadas = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.ToListAsync());
+
                     ViewData["ProspeccoesAgregadas"] = prospeccoesParaFiltragemAgregadas.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
-                    ViewData["ListaProspeccoes"] = prospeccoes.ToList();
+                    ViewData["ListaProspeccoes"] = prospeccoes;
                     ViewData["ProspeccoesAtivas"] = prospeccoes.Where(
                         p => p.Status.OrderBy(k => k.Data).All(
                             pa => pa.Status == StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto || pa.Status == StatusProspeccao.ComProposta)).ToList();
@@ -91,6 +87,7 @@ namespace BaseDeProjetos.Controllers
                             p => p.Status.Any(k => k.Status > StatusProspeccao.ComProposta)).Where(
                                 p => (p.Status.First().Data - p.Status.FirstOrDefault(
                                     s => s.Status == StatusProspeccao.ComProposta).Data) > TimeSpan.Zero).ToList(); // filtrar lista para obter datas positivas (maior que zero)
+
                     return View(model);
                 }
 
@@ -100,6 +97,16 @@ namespace BaseDeProjetos.Controllers
                 return View("Forbidden");
             }
 
+        }
+
+        private async Task InserirDadosEmpresasUsuariosViewData()
+        {
+            var empresas = await _cache.GetCachedAsync("EmpresasFunil", () => _context.Empresa.Select(e => new EmpresasFunilDTO { Id = e.Id, Nome = e.Nome }).ToListAsync());
+            var usuarios = await _cache.GetCachedAsync("Usuarios:Funil", () => _context.Users.Select(u => new UsuariosFunilDTO { Id = u.Id, UserName = u.UserName, Email = u.Email }).ToListAsync());
+
+            ViewData["Usuarios"] = usuarios;
+            ViewData["Empresas"] = new SelectList(empresas, "Id", "Nome");
+            ViewData["Equipe"] = new SelectList(usuarios, "Id", "UserName");
         }
 
         /// <summary>
@@ -126,7 +133,7 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private async Task<List<Prospeccao>> ObterProspeccoesFunilFiltradas(string casa, string aba, string sortOrder, string searchString, string ano, Usuario usuario)
         {
-            List<Prospeccao> prospeccoes = await FunilHelpers.DefinirCasaParaVisualizar(casa, usuario, _context, HttpContext, ViewData);
+            List<Prospeccao> prospeccoes = await FunilHelpers.DefinirCasaParaVisualizar(casa, usuario, _context, HttpContext, _cache, ViewData);
 
             if (!string.IsNullOrEmpty(ano))
             {
@@ -140,7 +147,7 @@ namespace BaseDeProjetos.Controllers
 
             if (!string.IsNullOrEmpty(aba))
             {
-                prospeccoes = FunilHelpers.RetornarProspeccoesPorStatus(prospeccoes, usuario, aba, HttpContext);
+                prospeccoes = FunilHelpers.RetornarProspeccoesPorStatus(prospeccoes, usuario, aba, HttpContext, _cache);
             }
 
             return prospeccoes;
