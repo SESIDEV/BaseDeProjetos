@@ -385,7 +385,7 @@
                             @if (Model.Pager.TemProximaPagina)
                             {
                                 <li class="page-item">
-                                    <a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-SearchString="@searchString" asp-route-aba="@aba" asp-route-numeroPagina="@(Model.Pager.PaginaAtual + 1)">Proximo</a>
+                                    <a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-SearchString="@searchString" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" asp-route-aba="@aba" asp-route-numeroPagina="@(Model.Pager.PaginaAtual + 1)">Proximo</a>
                                 </li>
                             }
                             else
