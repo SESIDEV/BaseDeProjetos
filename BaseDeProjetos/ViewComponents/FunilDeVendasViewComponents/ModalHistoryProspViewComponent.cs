@@ -8,17 +8,14 @@ namespace BaseDeProjetos.ViewComponents.FunilDeVendasViewComponents
     {
         private readonly ApplicationDbContext _context;
 
-        private readonly DbCache _cache;
-
-        public ModalHistoryProspViewComponent(ApplicationDbContext context, DbCache cache)
+        public ModalHistoryProspViewComponent(ApplicationDbContext context)
         {
             _context = context;
-            _cache = cache;
         }
 
         public async Task<IViewComponentResult> InvokeAsync(string id)
         {
-            var model = await _cache.GetCachedAsync($"Prospeccao:{id}", () => _context.Prospeccao.FindAsync(id).AsTask());
+            var model = await _context.Prospeccao.FindAsync(id);
             return View(model);
         }
     }

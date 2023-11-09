@@ -7,18 +7,16 @@ namespace BaseDeProjetos.ViewComponents.FunilDeVendasViewComponents
     public class ModalDeleteProspViewComponent : ViewComponent
     {
         private readonly ApplicationDbContext _context;
-        private readonly DbCache _cache;
 
-        public ModalDeleteProspViewComponent(ApplicationDbContext context, DbCache cache)
+        public ModalDeleteProspViewComponent(ApplicationDbContext context)
         {
             _context = context;
-            _cache = cache;
         }
 
         public async Task<IViewComponentResult> InvokeAsync(string id)
         {
-            var prospeccao = await _cache.GetCachedAsync($"Prospeccao:{id}", () => _context.Prospeccao.FindAsync(id).AsTask());
-            return View(prospeccao);
+            var model = await _context.Prospeccao.FindAsync(id);
+            return View(model);
         }
     }
 }

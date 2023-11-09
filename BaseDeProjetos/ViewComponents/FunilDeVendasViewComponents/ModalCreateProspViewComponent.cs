@@ -6,8 +6,11 @@ namespace BaseDeProjetos.ViewComponents.FunilDeVendasViewComponents
 {
     public class ModalCreateProspViewComponent : ViewComponent
     {
-        public ModalCreateProspViewComponent()
+        private readonly ApplicationDbContext _context;
+
+        public ModalCreateProspViewComponent(ApplicationDbContext context)
         {
+            _context = context;
         }
 
         public IViewComponentResult Invoke()
