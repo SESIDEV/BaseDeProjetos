@@ -232,7 +232,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, Empresa, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
+        public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
         {
             ViewbagizarUsuario(_context);
 
@@ -246,12 +246,24 @@ namespace BaseDeProjetos.Controllers
                 {
                     return CapturarErro(e);
                 }
-                prospeccao.Contato.empresa = prospeccao.Empresa; // ????
+
+                if (prospeccao.EmpresaId != -1 && !string.IsNullOrEmpty(prospeccao.Contato.Nome))
+                {
+                    var empresa = await _cache.GetCachedAsync($"Empresa:{prospeccao.EmpresaId}", () => _context.Empresa.FindAsync(prospeccao.EmpresaId).AsTask());
+                    if (empresa != null)
+                    {
+                        prospeccao.Contato.empresa = empresa;
+                    }
+                }
+                
                 await VincularUsuario(prospeccao, HttpContext, _context);
 
                 prospeccao.Status[0].Origem = prospeccao;
 
-                bool enviou = MailHelper.NotificarProspecção(prospeccao.Status[0], _mailer);
+                // Por necessidade da implementação do cache tive de omitir essa função, que no momento não está sendo utilizada pois o serviço de email não está habilitado.
+                // Ao ligar o serviço de email no futuro essa função estará quebrada (atrelamento de empresas)
+                // TODO: Consertar a funcionalidade de Notificar Prospecções pelo Email Helper
+                //bool enviou = MailHelper.NotificarProspecção(prospeccao.Status[0], _mailer);
 
                 await _context.AddAsync(prospeccao);
                 await _context.SaveChangesAsync();
@@ -274,7 +286,6 @@ namespace BaseDeProjetos.Controllers
             prospeccao.Usuario = user;
         }
 
-        // TODO: Conceito SOLID quebrado, desmembrar?
         /// <summary>
         /// Valida e cadastra uma empresa a uma prospecção
         /// </summary>
@@ -283,35 +294,22 @@ namespace BaseDeProjetos.Controllers
         /// <exception cref="Exception">Erro a ser lançado caso não seja possível cadastrar a empresa/seja uma empresa inválida</exception>
         public async Task<Prospeccao> ValidarEmpresa(Prospeccao prospeccao)
         {
-            if (prospeccao.Empresa.Nome != null && prospeccao.Empresa.CNPJ != null && prospeccao.Empresa.Id == -1)
-            {
-                Empresa atual = new Empresa { Estado = prospeccao.Empresa.Estado, CNPJ = prospeccao.Empresa.CNPJ, Nome = prospeccao.Empresa.Nome, Segmento = prospeccao.Empresa.Segmento };
-                if (atual.Nome != " " && atual.CNPJ != " ")
-                {
-                    prospeccao.Empresa = atual;
-                }
-                else
-                {
-                    throw new Exception("Ocorreu um erro no registro da empresa. \n As informações da empresa não foram submetidas ao banco. \n Contacte um administrador do sistema");
-                }
-            }
-            else
-            {
-                var empresas = await _cache.GetCachedAsync("AllEmpresas", () => _context.Empresa.ToListAsync());
-                var empresa = empresas.FirstOrDefault(e => e.Id == prospeccao.Empresa.Id);
+            var empresas = await _cache.GetCachedAsync("AllEmpresas", () => _context.Empresa.ToListAsync());
+            var empresa = empresas.FirstOrDefault(e => e.Id == prospeccao.EmpresaId);
 
-                if (empresa == null)
-                {
-                    throw new Exception("Ocorreu um erro no registro da empresa. \n A empresa selecionada não foi encontrada. \n Contacte um administrador do sistema");
-                }
-                else
-                {
-                    prospeccao.Empresa = empresa;
-                }
+            if (empresa == null)
+            {
+                throw new ArgumentNullException("Ocorreu um erro no registro da empresa. \n A empresa selecionada não foi encontrada. \n Contacte um administrador do sistema");
+            }
+
+            if (string.IsNullOrEmpty(empresa.Nome) || string.IsNullOrEmpty(empresa.CNPJ) || empresa.Id == -1)
+            {
+                throw new ArgumentException("Ocorreu um erro no registro da empresa. \n As informações da empresa estão inválidas \n Contacte um administrador do sistema");
             }
 
             return prospeccao;
         }
+
 
         /// <summary>
         /// Cria uma selectlist para a View(?)
