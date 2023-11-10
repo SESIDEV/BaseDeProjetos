@@ -26,7 +26,10 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Potenciais Parceiros da Prospeccção")]
         public virtual string PotenciaisParceiros { get; set; }
 
+        [ForeignKey("EmpresaId")]
         public virtual Empresa Empresa { get; set; }
+
+        public int EmpresaId { get; set; }
         public virtual Pessoa Contato { get; set; }
         public virtual Usuario Usuario { get; set; }
 
