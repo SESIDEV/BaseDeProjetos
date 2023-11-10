@@ -118,12 +118,12 @@
                 </div>
                 <div class="modal-body border-bottom">
                     <div class="mb-2" id="group">
-                        <label asp-for="Empresa.Id" class="col-form-label" style="font-weight: 600">Empresa</label>
-                        <select asp-for="Empresa.Id" class="form-control"
+                        <label asp-for="EmpresaId" class="col-form-label" style="font-weight: 600">Empresa</label>
+                        <select asp-for="EmpresaId" class="form-control"
                                 asp-items='@(ViewData["Empresas"] as SelectList).OrderBy(p=>p.Text)'>
                             <option value="-1">Selecione a empresa</option>
                         </select>
-                        <span asp-validation-for="Empresa.Id" class="text-danger"></span>
+                        <span asp-validation-for="EmpresaId" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="modal-header">
