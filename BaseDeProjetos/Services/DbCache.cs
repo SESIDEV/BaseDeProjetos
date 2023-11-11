@@ -15,6 +15,8 @@ public class DbCache
     public DbCache(IMemoryCache cache)
     {
         _cache = cache;
+
+        _cache.GetOrCreate(CacheKeyListKey, entry => new HashSet<string>());
     }
 
     /// <summary>
@@ -39,8 +41,17 @@ public class DbCache
 
     private HashSet<string> GetCacheKeyList()
     {
-        return _cache.GetOrCreate(CacheKeyListKey, entry => new HashSet<string>());
+        // Try to get the existing HashSet from the cache
+        if (!_cache.TryGetValue(CacheKeyListKey, out HashSet<string> keys))
+        {
+            // If it doesn't exist, create a new HashSet, add it to the cache, and return it
+            keys = new HashSet<string>();
+            _cache.Set(CacheKeyListKey, keys);
+        }
+
+        return keys;
     }
+
 
     /// <summary>
     /// Obtem/Registra os dados no cache. Os dados são invalidados após 1h de forma automática caso não especificado
@@ -61,6 +72,7 @@ public class DbCache
                 {
                     AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromHours(1)
                 });
+                await AddKeyToListAsync(cacheKey);
             }
         }
 
@@ -87,6 +99,7 @@ public class DbCache
                     AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromHours(1)
                 });
             }
+            AddKeyToListAsync(cacheKey).Wait();
         }
 
         return data;
@@ -106,6 +119,8 @@ public class DbCache
         {
             AbsoluteExpirationRelativeToNow = duration ?? TimeSpan.FromHours(1)
         });
+
+        AddKeyToListAsync(cacheKey).Wait();
     }
 
     /// <summary>
