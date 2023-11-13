@@ -5,58 +5,76 @@
 }
 
 <partial name="Header" view-data="@ViewData" />
-<div class="container" style="padding-left: 25em; padding-right: 10em; padding-top: 2em">
-    <a asp-action="Create" class="btn btn-primary m-4">Inserir Dados Financeiros</a>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Data)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Receita)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Despesa)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Investimento)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Casa)
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Data)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Receita)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Despesa)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Investimento)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Casa)
-                    </td>
-
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Editar</a>
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Detalhes</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Deletar</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <partial name="Footer" />
+<div class="app-wrapper">
+    <div class="app-content pt-3 p-md-3 p-lg-4">
+        <div>
+            <div class="d-flex flex-row justify-content-between align-items-center">
+                <h2 class="app-page-title">Indicadores Financeiros</h2>
+                <a asp-action="Create" class="btn app-btn-primary m-4">Inserir Dados Financeiros</a>
+            </div>
+            <div class="tab-content">
+                <div class="app-card app-card-orders-table shadow-sm mb-5">
+                    <div class="app-card-body">
+                        <div class="table-responsive">
+                            <table class="table mb-0 text-center">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Data)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Receita)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Despesa)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Investimento)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Casa)
+                                        </th>
+                                        <th>
+                                            Detalhes
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td class="cell">
+                                                @Html.DisplayFor(modelItem => item.Data)
+                                            </td>
+                                            <td class="cell">
+                                                @Html.DisplayFor(modelItem => item.Receita)
+                                            </td>
+                                            <td class="cell">
+                                                @Html.DisplayFor(modelItem => item.Despesa)
+                                            </td>
+                                            <td class="cell">
+                                                @Html.DisplayFor(modelItem => item.Investimento)
+                                            </td>
+                                            <td class="cell">
+                                                @Html.DisplayFor(modelItem => item.Casa)
+                                            </td>
+                                            <td class="cell">
+                                                <a asp-action="Edit" asp-route-id="@item.Id"
+                                                    class="btn app-btn-primary">Editar</a>
+                                                <a asp-action="Details" asp-route-id="@item.Id"
+                                                    class="btn app-btn-primary">Detalhes</a>
+                                                <a asp-action="Delete" asp-route-id="@item.Id"
+                                                    class="btn text-white btn-danger">Deletar</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <partial name="Footer" />
+            </div>
+        </div>
+    </div>
 </div>
-
-            
