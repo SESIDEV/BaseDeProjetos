@@ -101,7 +101,7 @@ namespace BaseDeProjetos.Controllers
 
         private async Task InserirDadosEmpresasUsuariosViewData()
         {
-            var empresas = await _cache.GetCachedAsync("EmpresasFunil", () => _context.Empresa.Select(e => new EmpresasFunilDTO { Id = e.Id, Nome = e.Nome }).ToListAsync());
+            var empresas = await _cache.GetCachedAsync("Empresas:Funil", () => _context.Empresa.Select(e => new EmpresasFunilDTO { Id = e.Id, Nome = e.Nome }).ToListAsync());
             var usuarios = await _cache.GetCachedAsync("Usuarios:Funil", () => _context.Users.Select(u => new UsuariosFunilDTO { Id = u.Id, UserName = u.UserName, Email = u.Email }).ToListAsync());
 
             ViewData["Usuarios"] = usuarios;
@@ -255,7 +255,7 @@ namespace BaseDeProjetos.Controllers
                         prospeccao.Contato.empresa = empresa;
                     }
                 }
-                
+
                 await VincularUsuario(prospeccao, HttpContext, _context);
 
                 prospeccao.Status[0].Origem = prospeccao;
@@ -270,8 +270,10 @@ namespace BaseDeProjetos.Controllers
                 await CacheHelper.CleanupProspeccoesCache(_cache);
                 return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
             }
-            var errors = ModelState.Values.SelectMany(v => v.Errors);
-            return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
+            else
+            {
+                return View("Error");
+            }
         }
 
         /// <summary>
@@ -316,7 +318,7 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         private async Task CriarSelectListsDaView()
         {
-            var empresas = await _cache.GetCachedAsync("EmpresasFunilUnique", () => _context.Empresa.Select(e => new EmpresasFunilComUniqueDTO { EmpresaUnique = e.EmpresaUnique, Id = e.Id, Nome = e.Nome }).ToListAsync());
+            var empresas = await _cache.GetCachedAsync("Empresas:FunilUnique", () => _context.Empresa.Select(e => new EmpresasFunilComUniqueDTO { EmpresaUnique = e.EmpresaUnique, Id = e.Id, Nome = e.Nome }).ToListAsync());
             ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
             ViewData["Equipe"] = new SelectList(await _context.Users.ToListAsync(), "Id", "UserName");
         }
@@ -535,7 +537,7 @@ namespace BaseDeProjetos.Controllers
         {
             ViewbagizarUsuario(_context);
 
-            var prospeccoes = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.Include(f => f.Status).ToListAsync());
+            var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:WithStatus", () => _context.Prospeccao.Include(f => f.Status).ToListAsync());
 
             var prospeccao = prospeccoes.Where(prosp => prosp.Id == id).First(); // o First converte de IQuerable para objeto Prospeccao
 

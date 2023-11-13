@@ -140,7 +140,7 @@ namespace BaseDeProjetos.Controllers
                     Pager = pager,
                 };
 
-                var prospeccoes = await _cache.GetCachedAsync("ProspeccoesEmpresas", () => _context.Prospeccao.Select(p => new ProspeccaoEmpresasDTO { Empresa = p.Empresa, Id = p.Id, NomeProspeccao = p.NomeProspeccao, Status = p.Status, Usuario = p.Usuario }).ToListAsync());
+                var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Empresas", () => _context.Prospeccao.Select(p => new ProspeccaoEmpresasDTO { Empresa = p.Empresa, Id = p.Id, NomeProspeccao = p.NomeProspeccao, Status = p.Status, Usuario = p.Usuario }).ToListAsync());
                 ViewBag.Prospeccoes = prospeccoes;
 
                 ViewBag.ProspeccoesAtivas = prospeccoes.Where(P => P.Status.All(S => S.Status != StatusProspeccao.NaoConvertida &&
@@ -449,7 +449,7 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private async Task<bool> EmpresaExists(int id)
         {
-            var empresas = await _cache.GetCachedAsync("EmpresasDTO", () => _context.Empresa.Select(e => new EmpresaDTO { Id = e.Id, CNPJ = e.CNPJ }).ToListAsync());
+            var empresas = await _cache.GetCachedAsync("Empresas:DTO", () => _context.Empresa.Select(e => new EmpresaDTO { Id = e.Id, CNPJ = e.CNPJ }).ToListAsync());
             return empresas.Any(e => e.Id == id);
         }
 
