@@ -4,7 +4,7 @@
     ViewData["Title"] = "Cadastrar";
 }
 
-<div class="row">
+@* <div class="row">
     <div class="card col-md-4 m-auto">
         <section class="card-body">
             <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
@@ -35,7 +35,82 @@
             </form>
         </section>
     </div>
-</div>
+</div> *@
+
+
+<div class="row g-0 app-auth-wrapper">
+	<div class="col-12 col-md-7 col-lg-6 auth-main-col text-center p-5">
+		<div class="d-flex flex-column align-content-end">
+			<div class="app-auth-body mx-auto">
+				<div class="app-auth-branding mb-4"><p class="app-logo" ><img class="logo-icon me-2" src="~/favicon.png" alt="logo"></p></div>
+				<h2 class="auth-heading text-center mb-4">Cadastre sua conta</h2><hr/><br/>
+					<div class="auth-form-container text-start mx-auto">
+						<form asp-route-returnUrl="@Model.ReturnUrl" method="post" class="auth-form auth-signup-form">
+							<div asp-validation-summary="All" class="text-danger">
+								<div class="email mb-3">
+									<label asp-for="Input.UserName" class="sr-only"></label>
+									<input asp-for="Input.UserName" name="signup-user" type="user" class="form-control signup-email" placeholder="Informe seu nome" required="required">
+									<span asp-validation-for="Input.UserName" class="text-danger"></span>
+								</div>
+								<div class="email mb-3">
+								<label asp-for="Input.Email" class="sr-only"></label>
+									<input asp-for="Input.Email" name="signup-email" type="email" class="form-control signup-email" placeholder="Adicionar email corporativo" required="required">
+									<span asp-validation-for="Input.Email" class="text-danger"></span>
+								</div>
+							<div class="password mb-3">
+									<label asp-for="Input.Password" class="sr-only"></label>
+									<input asp-for="Input.Password" name="signup-password" type="password" class="form-control signup-password" placeholder="Senha" required="required">
+									<span asp-validation-for="Input.Password" class="text-danger"></span>
+								</div>
+								<div class="password mb-3">
+								<label asp-for="Input.ConfirmPassword" class="sr-only"></label>
+									<input asp-for="Input.ConfirmPassword" name="signup-password" type="password" class="form-control signup-password" placeholder="Confirmar senha" required="required">
+									<span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+								</div>
+								<div class="col-auto">
+									<label asp-for="Input.Casa" class="sr-only"></label>
+									<select asp-for="Input.Casa" class="form-select w-100" style="color:#5d6778; border: 1px solid #ced4da" asp-items="Html.GetEnumSelectList<Instituto>()"></select>
+								</div><br/>
+
+								<div class="text-center">
+									<button type="submit" class="btn app-btn-primary w-100 theme-btn mx-auto">Cadastrar</button>
+								</div>
+							</div>
+						</form><!--//auth-form-->
+					<div class="auth-option text-center">Já possui uma conta? <a class="text-link" href="login.html">Entrar</a></div>
+				</div><!--//auth-form-container-->
+
+
+
+			</div><!--//auth-body-->
+
+			<footer class="app-auth-footer">
+				<div class="container text-center py-3">
+					<!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
+					<small class="copyright">Designed by Peter Parker</small>
+
+				</div>
+			</footer><!--//app-auth-footer-->
+		</div><!--//flex-column-->
+	</div><!--//auth-main-col-->
+	<div class="col-12 col-md-5 col-lg-6 h-100 auth-background-col">
+		<div class="auth-background-holder">
+			<img src="~/register-photo-test.jpg" style="height:100vh; object-fit:cover" alt="foto-fundo">
+		</div>
+		<div class="auth-background-mask"></div>
+		<div class="auth-background-overlay p-3 p-lg-5">
+			<div class="d-flex flex-column align-content-end h-100" >
+				<div class="h-100"></div>
+				<div class="overlay-content p-3 p-lg-4 rounded">
+					<h5 class="mb-3 overlay-title">Instituto Senai Inovação Química</h5>
+					<div>Bem-vindo ao SGI, Aqui você poderá gerenciar os dados das prospecções do nosso insituto, de maneira ampla, simples e organizada, a fim de aumentar nossa eficiência.</div>
+				</div>
+				
+			</div>
+		</div><!--//auth-background-overlay-->
+	</div><!--//auth-background-col-->
+
+</div><!--//row-->
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

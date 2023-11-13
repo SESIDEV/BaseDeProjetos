@@ -3,10 +3,12 @@ for details on configuring this project to bundle and minify static web assets. 
 
 /* common */
 
-#logoEmpresa {
+.logoEmpresa {
     width: 70px;
     height: 70px;
     object-fit: contain;
+    border-radius: 10px;
+    border: 2px solid #999;
 }
 
 .bg-esfriando {
