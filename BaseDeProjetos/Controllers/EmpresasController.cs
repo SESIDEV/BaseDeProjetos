@@ -23,10 +23,12 @@ namespace BaseDeProjetos.Controllers
     public class EmpresasController : SGIController
     {
         private readonly ApplicationDbContext _context;
+        private readonly DbCache _cache;
 
-        public EmpresasController(ApplicationDbContext context)
+        public EmpresasController(ApplicationDbContext context, DbCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         static string ReplaceBase64Data(string input)
@@ -123,7 +125,7 @@ namespace BaseDeProjetos.Controllers
                 ViewBag.searchString = searchString;
                 ViewBag.TamanhoPagina = tamanhoPagina;
 
-                var empresas = FiltrarEmpresas(searchString, _context.Empresa.OrderBy(e => e.Nome).ToList());
+                var empresas = await FiltrarEmpresas(_context, _cache, searchString);
 
                 int qtdEmpresas = empresas.Count();
                 int qtdPaginasTodo = (int)Math.Ceiling((double)qtdEmpresas / tamanhoPagina);
@@ -138,8 +140,7 @@ namespace BaseDeProjetos.Controllers
                     Pager = pager,
                 };
 
-                var prospeccoes = await _context.Prospeccao.Select(p => new ProspeccaoEmpresasDTO { Empresa = p.Empresa, Id = p.Id, NomeProspeccao = p.NomeProspeccao, Status = p.Status, Usuario = p.Usuario }).ToListAsync();
-
+                var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Empresas", () => _context.Prospeccao.Select(p => new ProspeccaoEmpresasDTO { Empresa = p.Empresa, Id = p.Id, NomeProspeccao = p.NomeProspeccao, Status = p.Status, Usuario = p.Usuario }).ToListAsync());
                 ViewBag.Prospeccoes = prospeccoes;
 
                 ViewBag.ProspeccoesAtivas = prospeccoes.Where(P => P.Status.All(S => S.Status != StatusProspeccao.NaoConvertida &&
@@ -149,8 +150,7 @@ namespace BaseDeProjetos.Controllers
 
                 ViewBag.ProspeccoesPlanejadas = prospeccoes.Where(P => P.Status.All(S => S.Status == StatusProspeccao.Planejada)).ToList();
 
-                ViewBag.OutrasProspeccoes = prospeccoes
-                    .Where(P => P.Status.Any(S => S.Status == StatusProspeccao.NaoConvertida ||
+                ViewBag.OutrasProspeccoes = prospeccoes.Where(P => P.Status.Any(S => S.Status == StatusProspeccao.NaoConvertida ||
                                   S.Status == StatusProspeccao.Convertida ||
                                   S.Status == StatusProspeccao.Suspensa)).ToList();
 
@@ -187,11 +187,12 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="cnpj">CNPJ da Empresa a ser buscada</param>
         /// <returns></returns>
-        public JsonResult SeExisteCnpj(string cnpj)
+        public async Task<JsonResult> SeExisteCnpj(string cnpj)
         {
             if (HttpContext.User.Identity.IsAuthenticated) // Não expor o banco a ataques
             {
-                var procurar_dado = _context.Empresa.Where(x => x.CNPJ == cnpj).FirstOrDefault();
+                var empresas = await _context.Empresa.Select(e => new { e.CNPJ }).ToListAsync();
+                var procurar_dado = empresas.Where(x => x.CNPJ == cnpj).FirstOrDefault();
                 if (procurar_dado != null) { return Json(1); } else { return Json(0); }
             }
             else
@@ -226,22 +227,27 @@ namespace BaseDeProjetos.Controllers
         /// <param name="searchString">Busca a ser realizada</param>
         /// <param name="empresas">Lista de empresas filtradas</param>
         /// <returns></returns>
-        private static List<Empresa> FiltrarEmpresas(string searchString, List<Empresa> empresas)
+        private static async Task<List<Empresa>> FiltrarEmpresas(ApplicationDbContext context, DbCache cache, string searchString)
         {
-            if (!string.IsNullOrEmpty(searchString))
+            var empresas = await cache.GetCachedAsync("AllEmpresas", () => context.Empresa.ToListAsync());
+
+            if (string.IsNullOrEmpty(searchString))
+            {
+                return empresas;
+            }
+            else
             {
                 searchString = searchString.ToLower();
 
                 string searchStringCNPJSemCaracteres = searchString.Replace("/", "").Replace(".", "").Replace("-", "");
 
-                empresas = empresas.Where(e =>
-                e.RazaoSocial != null && e.RazaoSocial.ToLower().Contains(searchString.ToLower()) ||
-                e.Nome != null && e.Nome.ToLower().Contains(searchString.ToLower()) ||
-                e.CNPJ != null && e.CNPJ.Contains(searchString) ||
-                e.CNPJ != null && e.CNPJ.Contains(searchStringCNPJSemCaracteres)).ToList();
+                var empresasFiltradas = empresas.Where(e =>
+                    e.RazaoSocial != null && e.RazaoSocial.ToLower().Contains(searchString.ToLower()) ||
+                    e.Nome != null && e.Nome.ToLower().Contains(searchString.ToLower()) ||
+                    e.CNPJ != null && e.CNPJ.Contains(searchString) ||
+                    e.CNPJ != null && e.CNPJ.Contains(searchStringCNPJSemCaracteres)).OrderBy(e => e.Nome).ToList();
+                return empresasFiltradas;
             }
-
-            return empresas;
         }
 
         /// <summary>
@@ -281,8 +287,9 @@ namespace BaseDeProjetos.Controllers
                     return NotFound();
                 }
 
-                Empresa empresa = await _context.Empresa
-                    .FirstOrDefaultAsync(m => m.Id == id);
+                var empresas = await _cache.GetCachedAsync("AllEmpresas", () => _context.Empresa.ToListAsync());
+                Empresa empresa = empresas.FirstOrDefault(m => m.Id == id);
+
                 if (empresa == null)
                 {
                     return NotFound();
@@ -322,6 +329,8 @@ namespace BaseDeProjetos.Controllers
             {
                 _context.Add(empresa);
                 await _context.SaveChangesAsync();
+                CacheHelper.CleanupEmpresasCache(_cache);
+
                 return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
             }
             return View(empresa);
@@ -339,7 +348,9 @@ namespace BaseDeProjetos.Controllers
                     return NotFound();
                 }
 
-                Empresa empresa = await _context.Empresa.FindAsync(id);
+                var empresas = await _cache.GetCachedAsync("AllEmpresas", () => _context.Empresa.ToListAsync());
+                Empresa empresa = empresas.FirstOrDefault(m => m.Id == id);
+
                 if (empresa == null)
                 {
                     return NotFound();
@@ -371,10 +382,11 @@ namespace BaseDeProjetos.Controllers
                     empresa.CNPJ = Regex.Replace(empresa.CNPJ, "[^0-9]", "");
                     _context.Update(empresa);
                     await _context.SaveChangesAsync();
+                    CacheHelper.CleanupEmpresasCache(_cache);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EmpresaExists(empresa.Id))
+                    if (!await EmpresaExists(empresa.Id))
                     {
                         return NotFound();
                     }
@@ -400,8 +412,9 @@ namespace BaseDeProjetos.Controllers
                     return NotFound();
                 }
 
-                Empresa empresa = await _context.Empresa
-                    .FirstOrDefaultAsync(m => m.Id == id);
+                var empresas = await _cache.GetCachedAsync("AllEmpresas", () => _context.Empresa.ToListAsync());
+                Empresa empresa = empresas.FirstOrDefault(m => m.Id == id);
+
                 if (empresa == null)
                 {
                     return NotFound();
@@ -421,10 +434,11 @@ namespace BaseDeProjetos.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             Empresa empresa = await _context.Empresa.FindAsync(id);
-            IQueryable<Pessoa> pessoas_a_remover = _context.Pessoa.Where(p => p.empresa.Id == empresa.Id);
-            _context.Pessoa.RemoveRange(pessoas_a_remover);
+            IQueryable<Pessoa> pessoasRemove = _context.Pessoa.Where(p => p.empresa.Id == empresa.Id);
+            _context.Pessoa.RemoveRange(pessoasRemove);
             _context.Empresa.Remove(empresa);
             await _context.SaveChangesAsync();
+            CacheHelper.CleanupEmpresasCache(_cache);
             return RedirectToAction(nameof(Index));
         }
 
@@ -433,9 +447,10 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="id">ID da empresa</param>
         /// <returns></returns>
-        private bool EmpresaExists(int id)
+        private async Task<bool> EmpresaExists(int id)
         {
-            return _context.Empresa.Any(e => e.Id == id);
+            var empresas = await _cache.GetCachedAsync("Empresas:DTO", () => _context.Empresa.Select(e => new EmpresaDTO { Id = e.Id, CNPJ = e.CNPJ }).ToListAsync());
+            return empresas.Any(e => e.Id == id);
         }
 
         /// <summary>
@@ -443,13 +458,13 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="estrangeiras">Parâmetro para definir se as empresa a serem retornadas ?são as estrangeiras ou não?</param>
         /// <returns></returns>
-        public string PuxarEmpresas(bool estrangeiras = false) // APENAS UM OU OUTRO POR ENQUANTO
+        public async Task<string> PuxarEmpresas(bool estrangeiras = false) // Apenas um ou outro por enquanto
         {
-            List<Empresa> lista_emp = _context.Empresa.ToList();
+            var empresas = await _cache.GetCachedAsync("AllEmpresas", () => _context.Empresa.ToListAsync());
 
             List<Dictionary<string, object>> listaFull = new List<Dictionary<string, object>>();
 
-            foreach (var empresa in lista_emp)
+            foreach (var empresa in empresas)
             {
                 bool aprovado = false;
 
@@ -478,40 +493,20 @@ namespace BaseDeProjetos.Controllers
 
                 if (aprovado)
                 {
-                    Dictionary<string, object> dict = new Dictionary<string, object>();
-                    dict["Id"] = empresa.Id;
-                    dict["RazaoSocial"] = empresa.RazaoSocial;
-                    dict["NomeFantasia"] = empresa.Nome;
-                    dict["Segmento"] = empresa.Segmento.GetDisplayName();
-                    dict["Estado"] = empresa.Estado.GetDisplayName();
-                    dict["CNPJ"] = empresa.CNPJ;
+                    Dictionary<string, object> dict = new Dictionary<string, object>
+                    {
+                        ["Id"] = empresa.Id,
+                        ["RazaoSocial"] = empresa.RazaoSocial,
+                        ["NomeFantasia"] = empresa.Nome,
+                        ["Segmento"] = empresa.Segmento.GetDisplayName(),
+                        ["Estado"] = empresa.Estado.GetDisplayName(),
+                        ["CNPJ"] = empresa.CNPJ
+                    };
                     listaFull.Add(dict);
                 }
             }
 
             return JsonSerializer.Serialize(listaFull);
         }
-
-        /*public async Task<IActionResult> RetornarKPIsEmbrapii()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IActionResult> RetornarKPIsFraunhofer()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IActionResult> IncluirCronograma()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IActionResult> AtualizarCronograma()
-        {
-            throw new NotImplementedException();
-        }*/
     }
-
-
 }

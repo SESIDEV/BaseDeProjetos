@@ -23,10 +23,13 @@ namespace BaseDeProjetos.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IEmailSender _mailer;
 
-        public FunilDeVendasController(ApplicationDbContext context, IEmailSender mailer)
+        private readonly DbCache _cache;
+
+        public FunilDeVendasController(ApplicationDbContext context, IEmailSender mailer, DbCache cache)
         {
             _context = context;
             _mailer = mailer;
+            _cache = cache;
         }
 
         // GET: FunilDeVendas
@@ -37,6 +40,8 @@ namespace BaseDeProjetos.Controllers
             {
                 ViewbagizarUsuario(_context);
 
+                var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.Include(p => p.Empresa).Include(p => p.Usuario).ToListAsync());
+
                 ViewBag.searchString = searchString;
                 ViewBag.TamanhoPagina = tamanhoPagina;
 
@@ -44,9 +49,6 @@ namespace BaseDeProjetos.Controllers
                 {
                     casa = UsuarioAtivo.Casa.ToString();
                 }
-
-                List<Empresa> empresas = await _context.Empresa.ToListAsync();
-                List<Prospeccao> prospeccoes;
 
                 prospeccoes = await ObterProspeccoesFunilFiltradas(casa, aba, sortOrder, searchString, ano, UsuarioAtivo);
 
@@ -63,14 +65,18 @@ namespace BaseDeProjetos.Controllers
                     Pager = pager,
                 };
 
-                ViewData["Usuarios"] = _context.Users.ToList();
-                ViewData["Empresas"] = new SelectList(empresas, "Id", "Nome");
-                ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
-                ViewData["ProspeccoesAgregadas"] = _context.Prospeccao.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
+                await InserirDadosEmpresasUsuariosViewData();
 
-                if (string.IsNullOrEmpty(aba))
+                if (!string.IsNullOrEmpty(aba))
                 {
-                    ViewData["ListaProspeccoes"] = prospeccoes.ToList();
+                    return View(model);
+                }
+                else
+                {
+                    var prospeccoesParaFiltragemAgregadas = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.ToListAsync());
+
+                    ViewData["ProspeccoesAgregadas"] = prospeccoesParaFiltragemAgregadas.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
+                    ViewData["ListaProspeccoes"] = prospeccoes;
                     ViewData["ProspeccoesAtivas"] = prospeccoes.Where(
                         p => p.Status.OrderBy(k => k.Data).All(
                             pa => pa.Status == StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto || pa.Status == StatusProspeccao.ComProposta)).ToList();
@@ -81,14 +87,26 @@ namespace BaseDeProjetos.Controllers
                             p => p.Status.Any(k => k.Status > StatusProspeccao.ComProposta)).Where(
                                 p => (p.Status.First().Data - p.Status.FirstOrDefault(
                                     s => s.Status == StatusProspeccao.ComProposta).Data) > TimeSpan.Zero).ToList(); // filtrar lista para obter datas positivas (maior que zero)
+
+                    return View(model);
                 }
 
-                return View(model);
             }
             else
             {
                 return View("Forbidden");
             }
+
+        }
+
+        private async Task InserirDadosEmpresasUsuariosViewData()
+        {
+            var empresas = await _cache.GetCachedAsync("Empresas:Funil", () => _context.Empresa.Select(e => new EmpresasFunilDTO { Id = e.Id, Nome = e.Nome }).ToListAsync());
+            var usuarios = await _cache.GetCachedAsync("Usuarios:Funil", () => _context.Users.Select(u => new UsuariosFunilDTO { Id = u.Id, UserName = u.UserName, Email = u.Email }).ToListAsync());
+
+            ViewData["Usuarios"] = usuarios;
+            ViewData["Empresas"] = new SelectList(empresas, "Id", "Nome");
+            ViewData["Equipe"] = new SelectList(usuarios, "Id", "UserName");
         }
 
         /// <summary>
@@ -115,9 +133,13 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private async Task<List<Prospeccao>> ObterProspeccoesFunilFiltradas(string casa, string aba, string sortOrder, string searchString, string ano, Usuario usuario)
         {
-            List<Prospeccao> prospeccoes = await FunilHelpers.DefinirCasaParaVisualizar(casa, usuario, _context, HttpContext, ViewData);
+            List<Prospeccao> prospeccoes = await FunilHelpers.DefinirCasaParaVisualizar(casa, usuario, _context, HttpContext, _cache, ViewData);
 
-            prospeccoes = FunilHelpers.PeriodizarProspecções(ano, prospeccoes); // ANO DA PROSPEC
+            if (!string.IsNullOrEmpty(ano))
+            {
+                FunilHelpers.PeriodizarProspecções(ano, prospeccoes);
+            }
+
             prospeccoes = FunilHelpers.OrdenarProspecções(sortOrder, prospeccoes); //SORT ORDEM ALFABETICA
             prospeccoes = FunilHelpers.FiltrarProspecções(searchString, prospeccoes); // APENAS NA BUSCA
 
@@ -125,58 +147,10 @@ namespace BaseDeProjetos.Controllers
 
             if (!string.IsNullOrEmpty(aba))
             {
-                prospeccoes = FunilHelpers.RetornarProspeccoesPorStatus(prospeccoes, usuario, aba, HttpContext);
+                prospeccoes = FunilHelpers.RetornarProspeccoesPorStatus(prospeccoes, usuario, aba, HttpContext, _cache);
             }
 
             return prospeccoes;
-        }
-
-        // GET: FunilDeVendas/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (HttpContext.User.Identity.IsAuthenticated)
-            {
-                ViewbagizarUsuario(_context);
-
-                List<Empresa> empresas = await _context.Empresa.ToListAsync();
-                ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-                ViewData["Equipe"] = new SelectList(await _context.Users.ToListAsync(), "Id", "UserName");
-
-                if (id == null)
-                {
-                    return NotFound();
-                }
-
-                Prospeccao prospeccao = await _context.Prospeccao
-                    .FirstOrDefaultAsync(m => m.Id == id);
-                if (prospeccao == null)
-                {
-                    return NotFound();
-                }
-
-                return View(prospeccao);
-            }
-            else
-            {
-                return View("Forbidden");
-            }
-        }
-
-        // GET: FunilDeVendas/Create
-        public async Task<IActionResult> Create(int id)
-        {
-            if (HttpContext.User.Identity.IsAuthenticated)
-            {
-                ViewbagizarUsuario(_context);
-
-                List<Empresa> empresas = await _context.Empresa.ToListAsync();
-                ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-                return View();
-            }
-            else
-            {
-                return View("Forbidden");
-            }
         }
 
         /// <summary>
@@ -191,49 +165,31 @@ namespace BaseDeProjetos.Controllers
             {
                 ViewbagizarUsuario(_context);
 
-                userId = HttpContext.User.Identity.Name;
-                Instituto usuarioCasa = _context.Users.FirstOrDefault(u => u.UserName == userId).Casa;
-
+                var empresas = await _cache.GetCachedAsync("AllEmpresas", () => _context.Empresa.ToListAsync());
                 Prospeccao prosp = new Prospeccao
                 {
                     Id = $"prosp_{DateTime.Now.Ticks}",
-                    Empresa = await _context.Empresa.FirstOrDefaultAsync(e => e.Id == id),
+                    Empresa = empresas.FirstOrDefault(e => e.Id == id),
                     Usuario = await _context.Users.FirstOrDefaultAsync(u => u.UserName == userId),
-                    Casa = usuarioCasa,
+                    Casa = UsuarioAtivo.Casa,
                     LinhaPequisa = LinhaPesquisa.Indefinida,
                     CaminhoPasta = ""
                 };
                 prosp.Status = new List<FollowUp>
-            {
-                new FollowUp
                 {
-                    OrigemID = prosp.Id,
-                    Data = DateTime.Today,
-                    Anotacoes = $"Incluído no plano de prospecção de {User.Identity.Name}",
-                    Status = StatusProspeccao.Planejada
-                }
-            };
+                    new FollowUp
+                    {
+                        OrigemID = prosp.Id,
+                        Data = DateTime.Today,
+                        Anotacoes = $"Incluído no plano de prospecção de {User.Identity.Name}",
+                        Status = StatusProspeccao.Planejada
+                    }
+                };
 
                 await _context.AddAsync(prosp);
                 await _context.SaveChangesAsync();
+                await CacheHelper.CleanupProspeccoesCache(_cache);
                 return RedirectToAction("Index", "Empresas");
-            }
-            else
-            {
-                return View("Forbidden");
-            }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Atualizar(string id)
-        {
-            if (HttpContext.User.Identity.IsAuthenticated)
-            {
-                ViewbagizarUsuario(_context);
-
-                ViewData["origem"] = id;
-                ViewData["prosp"] = await _context.Prospeccao.FirstOrDefaultAsync(p => p.Id == id);
-                return View("CriarFollowUp");
             }
             else
             {
@@ -255,6 +211,7 @@ namespace BaseDeProjetos.Controllers
 
                 bool enviou = MailHelper.NotificarProspecção(followup, _mailer);
                 await _context.SaveChangesAsync();
+                await CacheHelper.CleanupProspeccoesCache(_cache);
             }
 
             return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
@@ -275,7 +232,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, Empresa, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
+        public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
         {
             ViewbagizarUsuario(_context);
 
@@ -283,25 +240,40 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {
-                    prospeccao = ValidarEmpresa(prospeccao);
+                    prospeccao = await ValidarEmpresa(prospeccao);
                 }
                 catch (Exception e)
                 {
                     return CapturarErro(e);
                 }
-                prospeccao.Contato.empresa = prospeccao.Empresa;
+
+                if (prospeccao.EmpresaId != -1 && !string.IsNullOrEmpty(prospeccao.Contato.Nome))
+                {
+                    var empresa = await _cache.GetCachedAsync($"Empresa:{prospeccao.EmpresaId}", () => _context.Empresa.FindAsync(prospeccao.EmpresaId).AsTask());
+                    if (empresa != null)
+                    {
+                        prospeccao.Contato.empresa = empresa;
+                    }
+                }
+
                 await VincularUsuario(prospeccao, HttpContext, _context);
 
                 prospeccao.Status[0].Origem = prospeccao;
 
-                bool enviou = MailHelper.NotificarProspecção(prospeccao.Status[0], _mailer);
+                // Por necessidade da implementação do cache tive de omitir essa função, que no momento não está sendo utilizada pois o serviço de email não está habilitado.
+                // Ao ligar o serviço de email no futuro essa função estará quebrada (atrelamento de empresas)
+                // TODO: Consertar a funcionalidade de Notificar Prospecções pelo Email Helper
+                //bool enviou = MailHelper.NotificarProspecção(prospeccao.Status[0], _mailer);
 
                 await _context.AddAsync(prospeccao);
                 await _context.SaveChangesAsync();
+                await CacheHelper.CleanupProspeccoesCache(_cache);
                 return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
             }
-            var errors = ModelState.Values.SelectMany(v => v.Errors);
-            return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
+            else
+            {
+                return View("Error");
+            }
         }
 
         /// <summary>
@@ -316,76 +288,38 @@ namespace BaseDeProjetos.Controllers
             prospeccao.Usuario = user;
         }
 
-        // TODO: Conceito SOLID quebrado, desmembrar?
         /// <summary>
         /// Valida e cadastra uma empresa a uma prospecção
         /// </summary>
         /// <param name="prospeccao">Prospecção a ter uma empresa cadastrada</param>
         /// <returns></returns>
         /// <exception cref="Exception">Erro a ser lançado caso não seja possível cadastrar a empresa/seja uma empresa inválida</exception>
-        public Prospeccao ValidarEmpresa(Prospeccao prospeccao)
+        public async Task<Prospeccao> ValidarEmpresa(Prospeccao prospeccao)
         {
-            if (prospeccao.Empresa.Nome != null && prospeccao.Empresa.CNPJ != null && prospeccao.Empresa.Id == -1)
-            {
-                Empresa atual = new Empresa { Estado = prospeccao.Empresa.Estado, CNPJ = prospeccao.Empresa.CNPJ, Nome = prospeccao.Empresa.Nome, Segmento = prospeccao.Empresa.Segmento };
-                if (atual.Nome != " " && atual.CNPJ != " ")
-                {
-                    prospeccao.Empresa = atual;
-                }
-                else
-                {
-                    throw new Exception("Ocorreu um erro no registro da empresa. \n As informações da empresa não foram submetidas ao banco. \n Contacte um administrador do sistema");
-                }
-            }
-            else
-            {
-                var existe_empresa = _context.Empresa.FirstOrDefault(e => e.Id == prospeccao.Empresa.Id);
+            var empresas = await _cache.GetCachedAsync("AllEmpresas", () => _context.Empresa.ToListAsync());
+            var empresa = empresas.FirstOrDefault(e => e.Id == prospeccao.EmpresaId);
 
-                if (existe_empresa == null)
-                {
-                    throw new Exception("Ocorreu um erro no registro da empresa. \n A empresa selecionada não foi encontrada. \n Contacte um administrador do sistema");
-                }
-                else
-                {
-                    prospeccao.Empresa = existe_empresa;
-                }
+            if (empresa == null)
+            {
+                throw new ArgumentNullException("Ocorreu um erro no registro da empresa. \n A empresa selecionada não foi encontrada. \n Contacte um administrador do sistema");
+            }
+
+            if (string.IsNullOrEmpty(empresa.Nome) || string.IsNullOrEmpty(empresa.CNPJ) || empresa.Id == -1)
+            {
+                throw new ArgumentException("Ocorreu um erro no registro da empresa. \n As informações da empresa estão inválidas \n Contacte um administrador do sistema");
             }
 
             return prospeccao;
         }
 
-        // GET: FunilDeVendas/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (HttpContext.User.Identity.IsAuthenticated)
-            {
-                await CriarSelectListsDaView();
-                ViewbagizarUsuario(_context);
-
-                if (id == null)
-                {
-                    return NotFound();
-                }
-
-                Prospeccao prospeccao = await _context.Prospeccao.FindAsync(id);
-                if (prospeccao == null)
-                {
-                    return NotFound();
-                }
-                return View(prospeccao);
-            }
-            else
-            {
-                return View("Forbidden");
-            }
-        }
 
         /// <summary>
         /// Cria uma selectlist para a View(?)
         /// </summary>
         private async Task CriarSelectListsDaView()
         {
-            ViewData["Empresas"] = new SelectList(await _context.Empresa.ToListAsync(), "Id", "EmpresaUnique");
+            var empresas = await _cache.GetCachedAsync("Empresas:FunilUnique", () => _context.Empresa.Select(e => new EmpresasFunilComUniqueDTO { EmpresaUnique = e.EmpresaUnique, Id = e.Id, Nome = e.Nome }).ToListAsync());
+            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
             ViewData["Equipe"] = new SelectList(await _context.Users.ToListAsync(), "Id", "UserName");
         }
 
@@ -409,6 +343,7 @@ namespace BaseDeProjetos.Controllers
                 {
                     prospeccao = await EditarDadosDaProspecção(id, prospeccao);
                     await _context.SaveChangesAsync();
+                    await CacheHelper.CleanupProspeccoesCache(_cache);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -434,9 +369,11 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private async Task<Prospeccao> EditarDadosDaProspecção(string id, Prospeccao prospeccao)
         {
-            Empresa Empresa_antigo = await _context.Empresa.FirstAsync(e => e.Id == prospeccao.Empresa.Id);
-            prospeccao.Empresa = Empresa_antigo;
-            Usuario lider = await _context.Users.FirstAsync(p => p.Id == prospeccao.Usuario.Id);
+            var empresas = await _cache.GetCachedAsync("AllEmpresas", () => _context.Empresa.ToListAsync());
+            Empresa empresaAntigo = empresas.First(e => e.Id == prospeccao.Empresa.Id);
+            prospeccao.Empresa = empresaAntigo;
+            var usuarios = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
+            Usuario lider = usuarios.First(p => p.Id == prospeccao.Usuario.Id);
             prospeccao.Usuario = lider;
 
             Prospeccao prospAntiga = await _context.Prospeccao.AsNoTracking().FirstAsync(p => p.Id == prospeccao.Id);
@@ -461,7 +398,7 @@ namespace BaseDeProjetos.Controllers
             return prospeccao;
         }
 
-        public async Task<IActionResult> EditarFollowUp(int? id) // RETONAR VIEW
+        public async Task<IActionResult> EditarFollowUp(int? id) // Retornar view
         {
             ViewbagizarUsuario(_context);
 
@@ -495,6 +432,7 @@ namespace BaseDeProjetos.Controllers
             {
                 _context.Update(followup);
                 await _context.SaveChangesAsync();
+                await CacheHelper.CleanupProspeccoesCache(_cache);
             }
 
             return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
@@ -558,12 +496,14 @@ namespace BaseDeProjetos.Controllers
             {
                 //Verifica se o usuário está apto para remover o followup
                 ViewbagizarUsuario(_context);
-                Prospeccao prospeccao = await _context.Prospeccao.FirstOrDefaultAsync(p => p.Id == followup.OrigemID);
+                var prospeccoes = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.ToListAsync());
+                Prospeccao prospeccao = prospeccoes.Find(p => p.Id == followup.OrigemID);
 
                 if (VerificarCondicoesRemocao(prospeccao, UsuarioAtivo, followup.Origem.Usuario) || UsuarioAtivo.Nivel == Nivel.Dev)
                 {
                     _context.FollowUp.Remove(followup);
                     await _context.SaveChangesAsync();
+                    await CacheHelper.CleanupProspeccoesCache(_cache);
                     return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
                 }
                 else
@@ -597,7 +537,9 @@ namespace BaseDeProjetos.Controllers
         {
             ViewbagizarUsuario(_context);
 
-            var prospeccao = await _context.Prospeccao.Where(prosp => prosp.Id == id).Include(f => f.Status).FirstAsync(); // o First converte de IQuerable para objeto Prospeccao
+            var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:WithStatus", () => _context.Prospeccao.Include(f => f.Status).ToListAsync());
+
+            var prospeccao = prospeccoes.Where(prosp => prosp.Id == id).First(); // o First converte de IQuerable para objeto Prospeccao
 
             if (prospeccao.Ancora)
             {
@@ -606,6 +548,7 @@ namespace BaseDeProjetos.Controllers
 
             _context.Remove(prospeccao);
             await _context.SaveChangesAsync();
+            await CacheHelper.CleanupProspeccoesCache(_cache);
             return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
         }
 

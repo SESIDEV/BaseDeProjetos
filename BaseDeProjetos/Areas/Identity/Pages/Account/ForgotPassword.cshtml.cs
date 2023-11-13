@@ -1,4 +1,5 @@
-﻿using BaseDeProjetos.Models;
+﻿using BaseDeProjetos.Helpers;
+using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -17,11 +18,13 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account
     {
         private readonly UserManager<Usuario> _userManager;
         private readonly IEmailSender _emailSender;
+        private readonly DbCache _cache;
 
-        public ForgotPasswordModel(UserManager<Usuario> userManager, IEmailSender emailSender)
+        public ForgotPasswordModel(UserManager<Usuario> userManager, IEmailSender emailSender, DbCache cache)
         {
             _userManager = userManager;
             _emailSender = emailSender;
+            _cache = cache;
         }
 
         [BindProperty]
@@ -61,6 +64,8 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account
                         Input.Email,
                         "Reset Password",
                         $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                    await CacheHelper.CleanupUsuariosCache(_cache);
 
                     return RedirectToPage("./ForgotPasswordConfirmation");
                 }

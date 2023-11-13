@@ -22,7 +22,8 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
         private ApplicationDbContext _context;
         private ObjectCreator _objectCreator;
         private ParticipacaoController _controller;
-        private ILogger<ParticipacaoController> _logger;
+        private readonly ILogger<ParticipacaoController> _logger;
+        private readonly DbCache _cache;
 
         private readonly static Dictionary<int, int> pesquisadores = new Dictionary<int, int>
         {
@@ -50,7 +51,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
             _objectCreator.CriarEmpresaMock();
             _objectCreator.CriarProjetoMock();
 
-            _controller = new ParticipacaoController(_context, _logger);
+            _controller = new ParticipacaoController(_context, _cache, _logger);
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
