@@ -7,9 +7,9 @@ namespace BaseDeProjetos.Helpers
         public static void CleanupEmpresasCache(DbCache cache)
         {
             cache.InvalidateCache("AllEmpresas");
-            cache.InvalidateCache("EmpresasFunil");
-            cache.InvalidateCache("EmpresasFunilUnique");
-            cache.InvalidateCache("EmpresasDTO");
+            cache.InvalidateCache("Empresas:Funil");
+            cache.InvalidateCache("Empresas:FunilUnique");
+            cache.InvalidateCache("Empresas:DTO");
         }
         public static async Task CleanupProspeccoesCache(DbCache cache)
         {
