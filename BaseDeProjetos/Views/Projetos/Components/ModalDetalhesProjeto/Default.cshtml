@@ -1,4 +1,4 @@
-﻿@model BaseDeProjetos.Models.Projeto
+@model BaseDeProjetos.Models.Projeto
 @using BaseDeProjetos.Helpers
 @using System.Globalization
 @{
@@ -93,6 +93,16 @@
                 }
             </div>
             <div class="modal-footer">
+                <div class="d-flex">
+                    <a class="btn btn-outline-primary" data-bs-toggle="modal"
+                       href="#incluirRubricasProjetoModal-@Model.Id" role="button">
+                        Incluir Rubrica
+                    </a>
+                    <a class="btn btn-outline-primary" data-bs-toggle="modal"
+                       href="#detalhesRubricasProjetoModal-@Model.Id" role="button">
+                        Visualizar Rubricas
+                    </a>
+                </div>
                 @if (nivelUsuario.ToString() == "PMO" || nivelUsuario.ToString() == "Dev" || nivelUsuario.ToString() ==
                 "Supervisor")
                 {

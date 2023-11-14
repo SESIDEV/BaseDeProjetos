@@ -24,7 +24,7 @@
     }
 
     function carregarModalDetalhesProjeto(idProjeto) {
-        // Verifica se o modal da Projetoeccao ja foi carregada para que não se carregue-o duas vezes sem necessidade
+        // Verifica se o modal da Projeto ja foi carregada para que não se carregue-o duas vezes sem necessidade
         let buttonName = "#button-" + idProjeto
         let buttonDetalhes = document.querySelector(buttonName)
 
@@ -43,7 +43,7 @@
 
     function carregarModaisProjeto(idProjeto) {
         // O nome precisa bater com o nome da view, no sentido que, o sufixo será "ProjViewComponent". Em outras palavras, está acoplado.
-        modaisDisponiveis = ["DetalhesCFF", "IncluirCFF", "DetalhesIndicador", "IncluirIndicador", "Edit", "Delete"]
+        modaisDisponiveis = ["DetalhesRubricas", "DetalhesCFF", "IncluirCFF", "DetalhesIndicador", "IncluirIndicador", "Edit", "Delete"]
         modaisDisponiveis.forEach((tipo) => {
             carregarModalProjeto(idProjeto, tipo)
         })
