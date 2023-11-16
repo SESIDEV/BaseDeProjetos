@@ -96,17 +96,6 @@ namespace BaseDeProjetos.Migrations
                     b.ToTable("CodigoAmostraProjeto");
                 });
 
-            modelBuilder.Entity("BaseDeProjetos.Models.ConjuntoRubrica", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ConjuntoRubrica");
-                });
-
             modelBuilder.Entity("BaseDeProjetos.Models.CurvaFisicoFinanceira", b =>
                 {
                     b.Property<int>("Id")
@@ -444,9 +433,6 @@ namespace BaseDeProjetos.Migrations
                     b.Property<string>("ProponenteId")
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
-                    b.Property<int?>("RubricasId")
-                        .HasColumnType("int");
-
                     b.Property<double?>("SatisfacaoClienteFinal")
                         .HasColumnType("double");
 
@@ -470,8 +456,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasIndex("EmpresaId");
 
                     b.HasIndex("ProponenteId");
-
-                    b.HasIndex("RubricasId");
 
                     b.HasIndex("UsuarioId");
 
@@ -582,28 +566,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasIndex("UsuarioId");
 
                     b.ToTable("Prospeccao");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.Rubrica", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("ConjuntoRubricaId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Nome")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<decimal>("Valor")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ConjuntoRubricaId");
-
-                    b.ToTable("Rubrica");
                 });
 
             modelBuilder.Entity("BaseDeProjetos.Models.Submissao", b =>
@@ -933,10 +895,6 @@ namespace BaseDeProjetos.Migrations
                         .WithMany()
                         .HasForeignKey("ProponenteId");
 
-                    b.HasOne("BaseDeProjetos.Models.ConjuntoRubrica", "Rubricas")
-                        .WithMany()
-                        .HasForeignKey("RubricasId");
-
                     b.HasOne("BaseDeProjetos.Models.Usuario", "Usuario")
                         .WithMany()
                         .HasForeignKey("UsuarioId");
@@ -964,15 +922,6 @@ namespace BaseDeProjetos.Migrations
                     b.HasOne("BaseDeProjetos.Models.Usuario", "Usuario")
                         .WithMany()
                         .HasForeignKey("UsuarioId");
-                });
-
-            modelBuilder.Entity("BaseDeProjetos.Models.Rubrica", b =>
-                {
-                    b.HasOne("BaseDeProjetos.Models.ConjuntoRubrica", "ConjuntoRubrica")
-                        .WithMany("Rubricas")
-                        .HasForeignKey("ConjuntoRubricaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("BaseDeProjetos.Models.Submissao", b =>
