@@ -18,6 +18,7 @@ namespace BaseDeProjetos.Controllers.Tests
         private ProjetosController? _controller;
         private ApplicationDbContext? _context;
         private ObjectCreator? _objectCreator;
+        private DbCache? _cache;
 
         [SetUp]
         public void Setup()
@@ -38,7 +39,7 @@ namespace BaseDeProjetos.Controllers.Tests
             _objectCreator.CriarEmpresaMock();
             _objectCreator.CriarProjetoMock();
 
-            _controller = new ProjetosController(_context);
+            _controller = new ProjetosController(_context, _cache);
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
