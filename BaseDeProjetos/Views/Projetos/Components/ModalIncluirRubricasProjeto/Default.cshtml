@@ -1,0 +1,41 @@
+﻿@model BaseDeProjetos.Models.Rubrica
+@using Microsoft.AspNetCore.Http
+@using System.Globalization
+@using BaseDeProjetos.Models
+
+@{
+    var nivelUsuario = ViewData["NivelUsuario"];
+    var projeto = ViewData["Projeto"] as Projeto;
+    ViewData["Title"] = "Edit";
+    if (!(Context.Session.GetString("_Casa") is null))
+    {
+        ViewData["Area"] = Context.Session.GetString("_Casa");
+    }
+}
+<!-- Modal -->
+<div class="modal fade" id="incluirRubricasProjetoModal-@projeto.Id" aria-hidden="true"
+     aria-labelledby="#incluirRubricasProjetoModal-@projeto.Id-Label" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="incluirRubricasProjetoModal-@projeto.Id-Label2">
+                    Adicionar Rubrica
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form class="form-submit" asp-controller="Projetos" asp-action="AdicionarRubrica" asp-route-id="@projeto.Id" method="POST">
+                <div class="modal-body">
+                    <label class="form-label" asp-for="Nome">Nome</label>
+                    <input class="form-control" asp-for="Nome" type="text" />
+                </div>
+                <div class="modal-body">
+                    <label class="form-label" asp-for="Valor">Valor</label>
+                    <input class="form-control" asp-for="Valor" min="0" step="0.01" type="number" />
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" value="Incluir" class="btn-submit btn app-btn-primary">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
