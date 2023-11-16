@@ -29,3 +29,36 @@ function carregarModalCFF(event, idCFF) {
     modalCarregando = false; // Reset the flag if no fetch call is made
   }
 }
+
+function carregarModalRubrica(event, idRubrica) {
+    if (modalCarregando) {
+        return; // Exit function if it's already executing
+    }
+
+    modalCarregando = true; // Set the flag to true to indicate the function is executing
+
+    let sourceElement = event.target;
+    let modalRubricasContainer = document.querySelector(`#modalEditRubricasProjeto-${idRubrica}-container`);
+
+    if ((modalRubricasContainer.innerHTML != null || modalRubricasContainer.innerHTML != undefined) && modalRubricasContainer.innerHTML.trim() === '') {
+        console.log("Trimmed. Loading");
+        sourceElement.disabled = true;
+        let previousInner = sourceElement.innerHTML;
+        sourceElement.innerHTML = '<div class="spinner-border text-light"></div>';
+        fetch(`/Projetos/RetornarModalEditRubricas?idRubrica=${idRubrica}`)
+            .then(response => response.text())
+            .then(result => {
+                sourceElement.innerHTML = previousInner;
+                modalRubricasContainer.innerHTML = result;
+                sourceElement.disabled = false;
+                console.log(modalRubricasContainer);
+            })
+            .finally(() => {
+                modalCarregando = false; // Reset the flag to false after function has executed
+            });
+    } else {
+        console.log("Not trimmed?");
+
+        modalCarregando = false; // Reset the flag if no fetch call is made
+    }
+}
