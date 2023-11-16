@@ -1,0 +1,45 @@
+﻿@model BaseDeProjetos.Models.Rubrica
+@using Microsoft.AspNetCore.Http
+@using System.Globalization
+@using BaseDeProjetos.Models
+
+@{
+    var nivelUsuario = ViewData["NivelUsuario"];
+    ViewData["Title"] = "Edit";
+    if (!(Context.Session.GetString("_Casa") is null))
+    {
+        ViewData["Area"] = Context.Session.GetString("_Casa");
+    }
+}
+<!-- Modal -->
+<div class="modal fade" id="editarRubricasProjetoModal-@Model.Id" aria-hidden="true"
+     aria-labelledby="#editarRubricasProjetoModal-@Model.Id-Label" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="editarRubricasProjetoModal-@Model.Id-Label">
+                    Editar Rubrica
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form class="form-submit" asp-controller="Projetos" asp-action="EditarRubrica" asp-route-idRubrica="@Model.Id"
+                  method="POST">
+                <input type="hidden" asp-for="@Model.Id" />
+                <input type="hidden" asp-for="@Model.ConjuntoRubricaId" />
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label" asp-for="Nome">Nome</label>
+                        <input class="form-control" asp-for="Nome" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" asp-for="Valor">Valor</label>
+                        <input class="form-control" asp-for="Valor" min="0" type="number" step="0.01" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-submit btn app-btn-primary">Editar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
