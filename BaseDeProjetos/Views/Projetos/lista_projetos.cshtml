@@ -38,36 +38,16 @@
 
 @foreach (var projeto in Model)
 {
-    <div id="modalEditProjeto-@projeto.Id-container">
-    </div>
+    @ProjetoHelpers.GerarContainersModais(projeto.Id)
 
-    <div id="modalDeleteProjeto-@projeto.Id-container">
-    </div>
+    @ProjetoHelpers.GerarContainersModais(projeto.CurvaFisicoFinanceira)
 
-    <div id="modalHistoryProjeto-@projeto.Id-container">
-    </div>
-
-    <div id="modalDetailsProjeto-@projeto.Id-container">
-    </div>
-
-    <div id="modalIncluirIndicadorProjeto-@projeto.Id-container">
-    </div>
-
-    <div id="modalDetalhesIndicadorProjeto-@projeto.Id-container">
-    </div>
-    
-    <div id="modalIncluirCFFProjeto-@projeto.Id-container">
-    </div>
-
-    <div id="modalDetalhesCFFProjeto-@projeto.Id-container">
-    </div>
-
-    <div id="modalEditCFFProjeto-@projeto.Id-container">
-    </div>
-
-    @foreach (var cff in projeto.CurvaFisicoFinanceira) {
-        <div id="modalEditCFFProjeto-@cff.Id-container">
-        </div>
+    @if (projeto.ConjuntoRubricas != null)
+    {
+        if (projeto.ConjuntoRubricas.Rubricas.Count > 0)
+        {
+            @ProjetoHelpers.GerarContainersModais(projeto.ConjuntoRubricas.Rubricas)
+        }
     }
 
     <tr>
