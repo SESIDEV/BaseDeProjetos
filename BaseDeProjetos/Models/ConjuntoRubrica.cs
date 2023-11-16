@@ -9,6 +9,6 @@ namespace BaseDeProjetos.Models
         public int Id { get; set; }
         
         [Display(Name = "Lista de Rúbricas")]
-        public virtual List<Rubrica> RubricaList { get; set; }
+        public virtual List<Rubrica> Rubricas { get; set; }
     }
 }

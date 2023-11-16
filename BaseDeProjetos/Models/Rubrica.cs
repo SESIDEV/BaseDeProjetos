@@ -9,8 +9,6 @@ namespace BaseDeProjetos.Models
         public string Nome { get; set; }
         public decimal Valor { get; set; }
         public int ConjuntoRubricaId { get; set; }
-
-        [ForeignKey("ConjuntoRubricaId")]
-        public virtual ConjuntoRubrica ConjuntoRubrica {get;set;}
-}
+        public virtual ConjuntoRubrica ConjuntoRubrica { get; set; }
+    }
 }
