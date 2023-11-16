@@ -1,4 +1,4 @@
-@model BaseDeProjetos.Models.Projeto
+﻿@model BaseDeProjetos.Models.Projeto
 @using BaseDeProjetos.Helpers
 @using System.Globalization
 @{
@@ -23,7 +23,7 @@
                 <span>@Model.Status.GetDisplayName()</span>
                 <h1 class="app-card-title">Valor:</h1>
                 <span>R$ @Helpers.FormatarValoresDashboards((decimal)Model.ValorAporteRecursos)</span>
-				<h1 class="app-card-title">Custo do HH:</h1>
+                <h1 class="app-card-title">Custo do HH:</h1>
                 <span>R$ @Model.CustoHH.ToString("N")</span>
                 <h1 class="app-card-title">Data de Início:</h1>
                 <span>@Model.DataInicio.ToString("dd/MM/yyyy")</span>
