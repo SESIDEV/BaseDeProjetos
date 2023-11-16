@@ -43,7 +43,7 @@
 
     function carregarModaisProjeto(idProjeto) {
         // O nome precisa bater com o nome da view, no sentido que, o sufixo será "ProjViewComponent". Em outras palavras, está acoplado.
-        modaisDisponiveis = ["DetalhesRubricas", "DetalhesCFF", "IncluirCFF", "DetalhesIndicador", "IncluirIndicador", "Edit", "Delete"]
+        modaisDisponiveis = ["IncluirRubricas", "DetalhesRubricas", "DetalhesCFF", "IncluirCFF", "DetalhesIndicador", "IncluirIndicador", "Edit", "Delete"]
         modaisDisponiveis.forEach((tipo) => {
             carregarModalProjeto(idProjeto, tipo)
         })
