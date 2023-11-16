@@ -85,7 +85,9 @@ namespace BaseDeProjetos.Models
         public virtual decimal CustoHM { get; set; }
 
         [Display(Name = "Rúbricas do Projeto")]
-        public virtual ConjuntoRubrica Rubricas { get; set; }
+        [ForeignKey("ConjuntoRubricasId")]
+        public virtual ConjuntoRubrica ConjuntoRubricas { get; set; }
 
+        public virtual int? ConjuntoRubricasId { get; set; }
     }
 }
