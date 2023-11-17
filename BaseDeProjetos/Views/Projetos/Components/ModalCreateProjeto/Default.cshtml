@@ -35,7 +35,7 @@
                         <label asp-for="ProponenteId" class="control-label">Proponente</label>
                         <select asp-for="ProponenteId" class="form-control">
                             <option value="">Selecione o Proponente:</option>
-                            @foreach (var proponente in ViewData["Usuarios"] as List<Usuario>)
+                            @foreach (var proponente in ViewData["Usuarios"] as List<UsuarioProjetoDTO>)
                             {
                                 <option value="@proponente.Id">@proponente.UserName</option>
                             }
