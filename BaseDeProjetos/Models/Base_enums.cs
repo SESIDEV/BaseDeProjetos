@@ -551,7 +551,7 @@ namespace BaseDeProjetos.Models
         [Display(Name = "ISI - Inspeção & Integridade")]
         ISIII,
 
-        [Display(Name = "CIS - Higiene Ocupacional")]
+        [Display(Name = "CIS - Saúde Ocupacional")]
         CISHO,
 
         [Display(Name = "Supervisão")]

@@ -4,7 +4,39 @@
 @inject SignInManager<Usuario> SignInManager
 @inject UserManager<Usuario> UserManager
 
+<link rel="stylesheet" href="~/css/landing.css" />
+
 <style>
+    .app {
+        padding-top: 0px;
+    }
+
+    #between {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 100%;
+    }
+
+    .btn-empresa {
+        background-color: #0d6efd;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        padding: 5px;
+        width: 80px;
+    }
+
+    .efeito-hover:hover {
+        background-color: gray;
+        transition: 500ms ease-in-out;
+        border-radius: 10px;
+        outline: none;
+        border: none;
+    }
+
     @@media (max-width: 768px) {
         .flex-login {
             display: flex;
@@ -13,153 +45,177 @@
     }
 
     @@media (min-width: 768px) {
-
         .flex-login {
             display: flex;
             flex-direction: row;
         }
     }
 
+    .card {
+        box-shadow: 0px 0.25px 0.5px 0px rgba(0, 0, 0, 0.25);
+        border: none;
+        border-radius: 5px;
+    }
 </style>
 
-<div class="container" style="margin-bottom: 15em;">
-    <ul class="navbar-nav justify-content-end gap-2" style="flex-direction: row; margin-bottom: .5em;">
-        <li class="nav-item efeito-hover">
-            <a class="btn bg-success text-white" asp-area="Identity" asp-page="/Account/Register">Cadastrar</a>
-        </li>
-        <li class="nav-item efeito-hover">
-            <a class="btn bg-success text-white" asp-area="Identity" asp-page="/Account/Login">Login</a>
-        </li>
-    </ul>
+<div class="row g-0 app-auth-wrapper">
+    <div class="col-12 col-md-7 col-lg-6 auth-main-col text-center p-5 d-flex justify-content-center">
+        <div class="d-flex flex-column align-content-end">
+            <div class="mx-auto">
+                <div class="app-auth-branding mb-4"><p class="app-logo"><img class="logo-icon me-2" style="width:90px; height:90px" src="~/favicon.png" alt="logo"></p></div>
+                <h2 class="auth-heading text-center mb-5 fs-2 fw-bold">SGI - Sistema de Gestão de Inovação</h2>
+                <div class="auth-form-container text-start overflow-y-scroll" style="height: 60vh">
+                    <div class="card-body">
+                        <h6 class="card-title text-center">Notas da versão</h6>
+                        <hr>
 
-    <main class="flex-login gap-2">
-        <section class="card m-0">
-            <div class="card-body">
-                <h5 class="card-title text-center">Bem vindo ao sistema de Gestão de Inovação - SGI</h5>
-                <hr />
-                <center>
-                    <img class="card-img text-center" style="width:20%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Artemis_%28PSF%29.svg/587px-Artemis_%28PSF%29.svg.png" alt="" />
-                </center>
-                <hr />
-                <div class="card-text"> O SGI é uma plataforma unificada para gestão de dados referentes às equipes dos Insitituto SENAI de Inovação em Química Verde(ISI-QV) e Inspeção e Integridade(ISI-II), assim como do Centro de Inovação SESI em Higiene Ocupacional (CIS-HO)</div>
+                        <h6>Versão 1.1.4</h6>
+                        <ul style="font-size:small">
+                            <li class="card-text">Melhoria na interface da página principal</li>
+                        </ul>
+                        <h6>Versão 1.1.3</h6>
+                        <ul style="font-size:small">
+                            <li class="card-text">Melhorias na implementação da nova visualização dos dados de prospecções e projetos</li>
+                        </ul>
+                        <h6>Versão 1.1.2</h6>
+                        <ul style="font-size:small">
+                            <li class="card-text">Corrigido um bug que impedia o login após o cadastro</li>
+                            <li class="card-text">Corrigido um bug visual que fazia com que a imagem nas telas de login, cadastro não ocupassem todo o espaço disponível na tela</li>
+                        </ul>
+                        <h6>Versão 1.1.1</h6>
+                        <ul style="font-size:small">
+                            <li class="card-text">Novas telas de login, cadastro e recuperação de senha</li>
+                            <li class="card-text">Melhoria na visualização dos dados das prospecções</li>
+                        </ul>
+                        <h6>Versão 1.1.0</h6>
+                        <ul style="font-size:small">
+                            <li class="card-text">Melhorias de performance e tempo de resposta</li>
+                            <li class="card-text">Corrigido um bug em que não era possível alterar um status de um followup, apenas do primeiro</li>
+                        </ul>
+                        <h6>Versão 1.0.3</h6>
+                        <ul style="font-size:small">
+                            <li class="card-text">Melhorias internas de integridade de código</li>
+                        </ul>
+                        <h6>Versão 1.0.2</h6>
+                        <ul style="font-size:small">
+                            <li class="card-text">Pequenas melhorias de performance na página principal</li>
+                        </ul>
+                        <h6>Versão 1.0.1</h6>
+                        <ul style="font-size:small">
+                            <li class="card-text">Melhorias de performance na página principal e em participação</li>
+                            <li class="card-text">Corrigido um erro de nulidade ao entrar no módulo de participação</li>
+                        </ul>
+                        <h6>Versão 1.0.0 - Mudanças Gerais: 30/10/2023</h6>
+                        <ul style="font-size:small">
+                            <li class="card-text">Mudanças gerais na interface</li>
+                            <li class="card-text">Melhorias de performance</li>
+                            <li class="card-text">Introdução de novos módulos</li>
+                            <li class="card-text">Correção de Inúmeros Bugs</li>
+                        </ul>
+                        <h6>Versão 1.0.0 - Correções e Implementações</h6>
+                        <ul style="font-size:small">
+                            <li class="card-text">Ajustes na interface de edição (CFF) para uma melhor visualização das datas.</li>
+                            <li class="card-text">Aperfeiçoamentos na exibição dos detalhes e porcentagens da CFF.</li>
+                            <li class="card-text">Aprimoramento na visualização de curvas.</li>
+                            <li class="card-text">Melhorias ao adicionar indicadores em projetos.</li>
+                            <li class="card-text">Ajustes na lista de projetos para evitar sobreposições visuais.</li>
+                            <li class="card-text">Corrigido um erro que poderia afetar o cálculo de custos.</li>
+                            <li class="card-text">Aprimoramentos na interface de usuário para melhorar a verificação de níveis de acesso.</li>
+                            <li class="card-text">Melhorias na edição e criação de projetos.</li>
+                            <li class="card-text">Ajustes para evitar problemas ao adicionar membros em equipes de projeto.</li>
+                            <li class="card-text">Corrigido um problema que impedia a edição e criação de membros em determinadas situações.</li>
+                            <li class="card-text">Aperfeiçoamentos na visualização de gráficos, incluindo o gráfico de aranha.</li>
+                            <li class="card-text">Melhorias gerais na interface e experiência do usuário.</li>
+                            <li class="card-text">Correções de pequenos bugs identificados.</li>
+                            <li class="card-text">Melhoria na exibição das prospecções.</li>
+                            <li class="card-text">Atualização nos gráficos do painel.</li>
+                            <li class="card-text">Adicionada função para testes de visibilidade.</li>
+                            <li class="card-text">Aprimoramento nas funções de gráficos.</li>
+                            <li class="card-text">Introdução de novos pop-ups em projetos.</li>
+                            <li class="card-text">Detalhamento melhorado nos projetos.</li>
+                            <li class="card-text">Adicionada opção de escolha de proponente.</li>
+                            <li class="card-text">Novas opções em configurações de cargos.</li>
+                            <li class="card-text">Melhorias em testes e funções associadas.</li>
+                            <li class="card-text">Introdução de animações para carregamento.</li>
+                            <li class="card-text">Aprimoramento na contagem de líderes e prospecções.</li>
+                            <li class="card-text">Novos indicadores e métricas introduzidos.</li>
+                            <li class="card-text">Simplificação nas visualizações do sistema.</li>
+                            <li class="card-text">Correções e melhorias gerais no sistema.</li>
+                        </ul>
+
+                        <hr>
+
+                        <h6> Versão 0.4.21 - 06/04/2022</h6>
+                        <ul style="font-size:small">
+                            <li class="card-text"> Novas visualizações na lista de empresas</li>
+                            <li class="card-text"> Periodização no funil da página principal</li>
+                            <li class="card-text"> Adição de filtro para prospecções ativas</li>
+                            <li class="card-text"> Inclusão de Status Geral como subgráfico nas propostas em andamento</li>
+                            <li class="card-text"> Revisado cálculo das prospecções infrutíferas</li>
+                            <li class="card-text"> Ajuste de exibição dos indicadores de contatos iniciais</li>
+                            <li class="card-text"> Exibição do último status na lista de prospecções</li>
+                            <li class="card-text"> Novo atalho para a lista de empresas</li>
+                            <li class="card-text"> Scroll na listagem de updates na página principal</li>
+                            <li class="card-text"> Novas visualizações na lista de prospecções</li>
+                            <li class="card-text"> Iury fez um kruckshaw (favor promovê-lo)</li>
+                        </ul>
+                        <hr>
+
+                        <h6> Versão 0.3.08 - 07/04/2021</h6>
+                        <ul style="font-size:small">
+                            <li class="card-text"> Novas visualizações no dashboard de prospecções</li>
+                            <li class="card-text"> Implementado novas regras de notificação de prospecções</li>
+                            <li class="card-text"> Inclusão de campo referente ao valor das propostas</li>
+                            <li class="card-text"> Aumento da cobetura de testes automáticos</li>
+                        </ul>
+                        <hr>
+
+                        <h6> Versão 0.2.01 - 05/02/2021</h6>
+                        <ul style="font-size:small">
+                            <li class="card-text"> Acertado problema da inclusão de membros da equipe de projetos</li>
+                            <li class="card-text"> Implementado funcionalidade de gerenciamento de entregas de projeto</li>
+                            <li class="card-text"> Acertado estouro de layout da lista de projetos</li>
+                            <li class="card-text"> Aumento da cobetura de testes automáticos</li>
+                        </ul>
+                        <hr>
+
+                        <h6> Versão 0.1.31 - 06/01/2021</h6>
+                        <small class="card-text"> Ajuste de versão para inclusão de dados em 2021</small>
+                    </div>
+                </div><!--//auth-form-container-->
+            </div><!--//auth-body-->
+
+            <br />
+
+            <div class="d-flex flex-row justify-content-center gap-2">
+                <a class="btn text-decoration-none app-btn-primary" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                <a class="btn text-decoration-none app-btn-primary" asp-area="Identity" asp-page="/Account/Register">Cadastro</a>
             </div>
-        </section>
 
-        <aside class="card col-md-3 m-0" style="height: 75vh; overflow-y: scroll">
-            <div class="card-body">
-                <h6 class="card-title text-center">Notas da versão</h6>
-                <hr>
-                
-                <h6>Versão 1.1.3</h6>
-                <ul style="font-size:small">
-                    <li class="card-text">Melhorias na implementação da nova visualização dos dados de prospecções e projetos</li>
-                </ul>
-                <h6>Versão 1.1.2</h6>
-                <ul style="font-size:small">
-                    <li class="card-text">Corrigido um bug que impedia o login após o cadastro</li>
-                    <li class="card-text">Corrigido um bug visual que fazia com que a imagem nas telas de login, cadastro não ocupassem todo o espaço disponível na tela</li>
-                </ul>
-                <h6>Versão 1.1.1</h6>
-                <ul style="font-size:small">
-                    <li class="card-text">Novas telas de login, cadastro e recuperação de senha</li>
-                    <li class="card-text">Melhoria na visualização dos dados das prospecções</li>
-                </ul>
-                <h6>Versão 1.1.0</h6>
-                <ul style="font-size:small">
-                    <li class="card-text">Melhorias de performance e tempo de resposta</li>
-                    <li class="card-text">Corrigido um bug em que não era possível alterar um status de um followup, apenas do primeiro</li>
-                </ul>
-                <h6>Versão 1.0.3</h6>
-                <ul style="font-size:small">
-                    <li class="card-text">Melhorias internas de integridade de código</li>
-                </ul>
-                <h6>Versão 1.0.2</h6>
-                <ul style="font-size:small">
-                    <li class="card-text">Pequenas melhorias de performance na página principal</li>
-                </ul>
-                <h6>Versão 1.0.1</h6>
-                <ul style="font-size:small">
-                    <li class="card-text">Melhorias de performance na página principal e em participação</li>
-                    <li class="card-text">Corrigido um erro de nulidade ao entrar no módulo de participação</li>
-                </ul>
-                <h6>Versão 1.0.0 - Mudanças Gerais: 30/10/2023</h6>
-                <ul style="font-size:small">
-                    <li class="card-text">Mudanças gerais na interface</li>
-                    <li class="card-text">Melhorias de performance</li>
-                    <li class="card-text">Introdução de novos módulos</li>
-                    <li class="card-text">Correção de Inúmeros Bugs</li>
-                </ul>
-                <h6>Versão 1.0.0 - Correções e Implementações</h6>
-                <ul style="font-size:small">
-                    <li class="card-text">Ajustes na interface de edição (CFF) para uma melhor visualização das datas.</li>
-                    <li class="card-text">Aperfeiçoamentos na exibição dos detalhes e porcentagens da CFF.</li>
-                    <li class="card-text">Aprimoramento na visualização de curvas.</li>
-                    <li class="card-text">Melhorias ao adicionar indicadores em projetos.</li>
-                    <li class="card-text">Ajustes na lista de projetos para evitar sobreposições visuais.</li>
-                    <li class="card-text">Corrigido um erro que poderia afetar o cálculo de custos.</li>
-                    <li class="card-text">Aprimoramentos na interface de usuário para melhorar a verificação de níveis de acesso.</li>
-                    <li class="card-text">Melhorias na edição e criação de projetos.</li>
-                    <li class="card-text">Ajustes para evitar problemas ao adicionar membros em equipes de projeto.</li>
-                    <li class="card-text">Corrigido um problema que impedia a edição e criação de membros em determinadas situações.</li>
-                    <li class="card-text">Aperfeiçoamentos na visualização de gráficos, incluindo o gráfico de aranha.</li>
-                    <li class="card-text">Melhorias gerais na interface e experiência do usuário.</li>
-                    <li class="card-text">Correções de pequenos bugs identificados.</li>
-                    <li class="card-text">Melhoria na exibição das prospecções.</li>
-                    <li class="card-text">Atualização nos gráficos do painel.</li>
-                    <li class="card-text">Adicionada função para testes de visibilidade.</li>
-                    <li class="card-text">Aprimoramento nas funções de gráficos.</li>
-                    <li class="card-text">Introdução de novos pop-ups em projetos.</li>
-                    <li class="card-text">Detalhamento melhorado nos projetos.</li>
-                    <li class="card-text">Adicionada opção de escolha de proponente.</li>
-                    <li class="card-text">Novas opções em configurações de cargos.</li>
-                    <li class="card-text">Melhorias em testes e funções associadas.</li>
-                    <li class="card-text">Introdução de animações para carregamento.</li>
-                    <li class="card-text">Aprimoramento na contagem de líderes e prospecções.</li>
-                    <li class="card-text">Novos indicadores e métricas introduzidos.</li>
-                    <li class="card-text">Simplificação nas visualizações do sistema.</li>
-                    <li class="card-text">Correções e melhorias gerais no sistema.</li>
-                </ul>
+            <footer class="app-auth-footer text-muted">
+                <div class="container">
+                    <small>© @(DateTime.Now.Year) - SGI-GGI - <a href="/Home/Privacy">Privacidade</a></small>
+                </div>
+            </footer><!--//app-auth-footer-->
+        </div><!--//flex-column-->
+    </div><!--//auth-main-col-->
 
-                <hr>
-
-                <h6> Versão 0.4.21 - 06/04/2022</h6>
-                <ul style="font-size:small">
-                    <li class="card-text"> Novas visualizações na lista de empresas</li>
-                    <li class="card-text"> Periodização no funil da página principal</li>
-                    <li class="card-text"> Adição de filtro para prospecções ativas</li>
-                    <li class="card-text"> Inclusão de Status Geral como subgráfico nas propostas em andamento</li>
-                    <li class="card-text"> Revisado cálculo das prospecções infrutíferas</li>
-                    <li class="card-text"> Ajuste de exibição dos indicadores de contatos iniciais</li>
-                    <li class="card-text"> Exibição do último status na lista de prospecções</li>
-                    <li class="card-text"> Novo atalho para a lista de empresas</li>
-                    <li class="card-text"> Scroll na listagem de updates na página principal</li>
-                    <li class="card-text"> Novas visualizações na lista de prospecções</li>
-                    <li class="card-text"> Iury fez um kruckshaw (favor promovê-lo)</li>
-                </ul>
-                <hr>
-
-                <h6> Versão 0.3.08 - 07/04/2021</h6>
-                <ul style="font-size:small">
-                    <li class="card-text"> Novas visualizações no dashboard de prospecções</li>
-                    <li class="card-text"> Implementado novas regras de notificação de prospecções</li>
-                    <li class="card-text"> Inclusão de campo referente ao valor das propostas</li>
-                    <li class="card-text"> Aumento da cobetura de testes automáticos</li>
-                </ul>
-                <hr>
-
-                <h6> Versão 0.2.01 - 05/02/2021</h6>
-                <ul style="font-size:small">
-                    <li class="card-text"> Acertado problema da inclusão de membros da equipe de projetos</li>
-                    <li class="card-text"> Implementado funcionalidade de gerenciamento de entregas de projeto</li>
-                    <li class="card-text"> Acertado estouro de layout da lista de projetos</li>
-                    <li class="card-text"> Aumento da cobetura de testes automáticos</li>
-                </ul>
-                <hr>
-
-                <h6> Versão 0.1.31 - 06/01/2021</h6>
-                <small class="card-text"> Ajuste de versão para inclusão de dados em 2021</small>
+    <aside class="col-12 col-md-5 col-lg-6 h-100 auth-background-col">
+        <div class="auth-background-holder">
+            <img src="~/register-photo-test.jpg" class="img-lateral-sgi" alt="background-register-photo">
+        </div>
+        <div class="auth-background-mask"></div>
+        <div class="auth-background-overlay p-3 p-lg-5">
+            <div class="d-flex flex-column align-content-end h-100">
+                <div class="h-100"></div>
+                <div class="overlay-content p-3 p-lg-4 rounded">
+                    <h5 class="mb-3 overlay-title">Sistema de Gestão de Inovação</h5>
+                    <div>Bem-vindo, o SGI é uma plataforma unificada para gestão de dados referentes às equipes dos Insitituto SENAI de Inovação em Química Verde (ISI-QV) e Inspeção e Integridade (ISI-II), assim como do Centro de Inovação SESI em Saúde Ocupacional (CIS-SO).</div> @* Bem-vindo ao SGI, Aqui você poderá gerenciar os dados das prospecções do nosso insituto, de maneira ampla, simples e organizada, a fim de aumentar nossa eficiência. *@
+                </div>
             </div>
-        </aside>
-    </main>
-    <partial name="Footer" />
-</div>
+        </div><!--//auth-background-overlay-->
+    </aside><!--//auth-background-col-->
+</div><!--//row-->
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
