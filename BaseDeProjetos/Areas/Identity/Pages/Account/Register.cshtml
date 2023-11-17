@@ -46,31 +46,31 @@
 
 <div class="row g-0 app-auth-wrapper">
 	<div class="col-12 col-md-7 col-lg-6 auth-main-col text-center p-5">
-		<div class="d-flex flex-column align-content-end">
+		<div class="d-flex flex-column align-content-end" style="margin-top:90px">
 			<div class="app-auth-body mx-auto">
-				<div class="app-auth-branding mb-4"><p class="app-logo" ><img class="logo-icon me-2" src="~/favicon.png" alt="logo"></p></div>
-				<h2 class="auth-heading text-center mb-4 fs-2 fw-semibold">Cadastro</h2><hr /><br />
+				<div class="app-auth-branding mb-4"><p class="app-logo" ><img class="logo-icon me-2" style="width:90px; height:90px" src="~/favicon.png" alt="logo"></p></div>
+				<h2 class="auth-heading text-center mb-4 fs-2 fw-semibold">Cadastro</h2><hr/><br/>
 					<div class="auth-form-container text-start mx-auto">
 						<form asp-route-returnUrl="@Model.ReturnUrl" method="post" class="auth-form auth-signup-form">
 							<div asp-validation-summary="All" class="text-danger">
 								<div class="email mb-3">
 									<label asp-for="Input.UserName" class="sr-only"></label>
-									<input asp-for="Input.UserName" name="signup-user" type="user" class="form-control signup-email" placeholder="Informe seu nome" required="required">
+								<input asp-for="Input.UserName" name="signup-user" type="user" class="form-control signup-email" style="border-color:#ced4da" placeholder="Informe seu nome" required="required">
 									<span asp-validation-for="Input.UserName" class="text-danger"></span>
 								</div>
 								<div class="email mb-3">
 								<label asp-for="Input.Email" class="sr-only"></label>
-									<input asp-for="Input.Email" name="signup-email" type="email" class="form-control signup-email" placeholder="Adicionar email corporativo" required="required">
+								<input asp-for="Input.Email" name="signup-email" type="email" class="form-control signup-email" style="border-color:#ced4da" placeholder="Adicionar email corporativo" required="required">
 									<span asp-validation-for="Input.Email" class="text-danger"></span>
 								</div>
 							<div class="password mb-3">
 									<label asp-for="Input.Password" class="sr-only"></label>
-									<input asp-for="Input.Password" name="signup-password" type="password" class="form-control signup-password" placeholder="Senha" required="required">
+								<input asp-for="Input.Password" name="signup-password" type="password" class="form-control signup-password" style="border-color:#ced4da" placeholder="Senha" required="required">
 									<span asp-validation-for="Input.Password" class="text-danger"></span>
 								</div>
 								<div class="password mb-3">
 								<label asp-for="Input.ConfirmPassword" class="sr-only"></label>
-									<input asp-for="Input.ConfirmPassword" name="signup-password" type="password" class="form-control signup-password" placeholder="Confirmar senha" required="required">
+								<input asp-for="Input.ConfirmPassword" name="signup-password" type="password" class="form-control signup-password" style="border-color:#ced4da" placeholder="Confirmar senha" required="required">
 									<span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
 								</div>
 								<div class="col-auto">
