@@ -2,9 +2,13 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "Login";
 }
 <style>
+    .app {
+        padding-top: 0px;
+    }
+
     #between{
         display: flex;
         justify-content: space-between;
@@ -32,21 +36,21 @@
     }
 </style>
 
-<div class="row mt-5" style="margin-bottom: 30rem !important">
+@* <div class="row mt-5" style="margin-bottom: 30rem !important">
     <div class="card col-md-4 m-auto">
         <section class="card-body">
             <form id="account" method="post">
-                <h1>@ViewData["Title"]</h1>
+                <h1 class="d-flex justify-content-center">@ViewData["Title"]</h1>
                 <hr />
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">
                     <label asp-for="Input.Email"></label>
-                    <input asp-for="Input.Email" class="form-control" />
+                    <input asp-for="Input.Email" class="form-control" style="border:none;border-bottom: 1px solid #9D9D9D;border-radius: 0px;box-shadow: 0px 0.25px 0.5px 0px rgba(0, 0, 0, 0.25);" />
                     <span asp-validation-for="Input.Email" class="text-danger"></span>
                 </div>
                 <div class="form-group mt-3">
                     <label asp-for="Input.Password"></label>
-                    <input asp-for="Input.Password" class="form-control" />
+                    <input asp-for="Input.Password" class="form-control" style="border:none;border-bottom: 1px solid #9D9D9D;border-radius: 0px;box-shadow: 0px 0.25px 0.5px 0px rgba(0, 0, 0, 0.25);" />
                     <span asp-validation-for="Input.Password" class="text-danger"></span>
                 </div>
                 <div class="form-group mt-3">
@@ -64,7 +68,77 @@
             </form>
         </section>
     </div>
-</div>
+</div> *@
+
+<div class="row g-0 app-auth-wrapper">
+	<div class="col-12 col-md-7 col-lg-6 auth-main-col text-center p-5 d-flex justify-content-center">
+		<div class="d-flex flex-column align-content-end" style="margin-top:90px">
+			<div class="app-auth-body mx-auto">
+                <div class="app-auth-branding mb-4"><p class="app-logo"><img class="logo-icon me-2" style="width:90px; height:90px" src="~/favicon.png" alt="logo"></p></div>
+                <h2 class="auth-heading text-center mb-5 fs-2 fw-bold">@ViewData["Title"]</h2>
+				<div class="auth-form-container text-start">
+					<form class="auth-form login-form" id="account" method="post">
+                        <div>
+						    <div class="email mb-3">
+                                            <label asp-for="Input.Email"></label>
+                                            <input asp-for="Input.Email" class="form-control" style="border:none;border-bottom: 1px solid #9D9D9D;border-radius: 0px;box-shadow: 0px 0.25px 0.5px 0px rgba(0, 0, 0, 0.25);" />
+                                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+						        </div><!--//form-group-->
+						        <div class="password mb-3">
+                                            <label asp-for="Input.Password"></label>
+                                            <input asp-for="Input.Password" class="form-control" style="border:none;border-bottom: 1px solid #9D9D9D;border-radius: 0px;box-shadow: 0px 0.25px 0.5px 0px rgba(0, 0, 0, 0.25);" />
+                                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+							    <div class="extra mt-3 row justify-content-between">
+								    <div class="col-6">
+									    <div class="form-check">
+                                            <input asp-for="Input.RememberMe" style="color:#9D9D9D" class="form-check-input"/>
+                                            <label asp-for="Input.RememberMe" class="form-check-label">
+                                                @Html.DisplayNameFor(m => m.Input.RememberMe)
+                                            </label>
+									    </div>
+								    </div><!--//col-6-->
+								    <div class="col-6">
+									    <div class="forgot-password text-end">
+                                            <a class="text-primary text-decoration-none" asp-page="./ForgotPassword" asp-route-returnUrl="@Model.ReturnUrl">Esqueceu a senha?</a>
+									    </div>
+								    </div><!--//col-6-->
+							    </div><!--//extra-->
+						    </div><!--//form-group-->
+						    <div class="text-center" id="between">
+                                <button type="submit" class="btn app-btn-primary w-100 theme-btn mx-auto mt-3">Entrar</button>
+						    </div>
+                        </div>
+					</form>
+
+                    <div class="auth-option text-center pt-2">Não possui uma conta? <a class="text-link" asp-page="./Register">Cadastro</a>.</div>
+				</div><!--//auth-form-container-->
+
+			</div><!--//auth-body-->
+
+            <footer class="app-auth-footer text-muted">
+                <div class="container">
+                    <small>© 2023 - SGI-GGI - <a href="/Home/Privacy">Privacidade</a></small>
+                </div>
+            </footer><!--//app-auth-footer-->
+		</div><!--//flex-column-->
+	</div><!--//auth-main-col-->
+	<div class="col-12 col-md-5 col-lg-6 h-100 auth-background-col">
+		<div class="auth-background-holder">
+            <img src="~/register-photo-test.jpg" style="height:100vh; object-fit:cover" alt="background-register-photo">
+		</div>
+		<div class="auth-background-mask"></div>
+		<div class="auth-background-overlay p-3 p-lg-5">
+			<div class="d-flex flex-column align-content-end h-100">
+				<div class="h-100"></div>
+				<div class="overlay-content p-3 p-lg-4 rounded">
+                    <h5 class="mb-3 overlay-title">Instituto SENAI Inovação Química</h5>
+                    <div>Bem-vindo, o SGI é uma plataforma unificada para gestão de dados referentes às equipes dos Insitituto SENAI de Inovação em Química Verde(ISI-QV) e Inspeção e Integridade(ISI-II), assim como do Centro de Inovação SESI em Higiene Ocupacional (CIS-HO).</div> @* Bem-vindo ao SGI, Aqui você poderá gerenciar os dados das prospecções do nosso insituto, de maneira ampla, simples e organizada, a fim de aumentar nossa eficiência. *@
+				</div>
+			</div>
+		</div><!--//auth-background-overlay-->
+	</div><!--//auth-background-col-->
+
+</div><!--//row-->
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
