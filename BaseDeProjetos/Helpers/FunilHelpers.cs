@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Helpers
@@ -113,52 +114,82 @@ namespace BaseDeProjetos.Helpers
             }
         }
 
-        public static List<Prospeccao> RetornarProspeccoesPorStatus(List<Prospeccao> lista, Usuario usuario, string aba, HttpContext HttpContext)
+        public static List<Prospeccao> RetornarProspeccoesPorStatus(List<Prospeccao> prospeccoes, Usuario usuario, string aba, HttpContext HttpContext, DbCache cache)
         {
-            if (aba.ToLowerInvariant() == "ativas")
+            switch (aba.ToLowerInvariant())
             {
-                List<Prospeccao> ativas = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
-                    followup.Data).LastOrDefault().Status < StatusProspeccao.ComProposta).ToList();
-                return ativas;
-            }
-            else if (aba.ToLowerInvariant() == "comproposta")
-            {
-                List<Prospeccao> emProposta = lista.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
-                    followup.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList();
-                return emProposta;
-            }
-            else if (aba.ToLowerInvariant() == "concluidas")
-            {
-                List<Prospeccao> concluidas = lista.Where(prospeccao => prospeccao.Status.Any(followup =>
-                    followup.Status == StatusProspeccao.Convertida ||
-                    followup.Status == StatusProspeccao.Suspensa ||
-                    followup.Status == StatusProspeccao.NaoConvertida
-                )).ToList();
-                return concluidas;
-            }
-            else if (aba.ToLowerInvariant() == "planejadas")
-            {
-                // Jesus cristo 😬
-                List<Prospeccao> planejadas = usuario.Nivel == Nivel.Dev ?
-                    lista.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).ToList() :
-                    lista.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).Where(prosp => prosp.Usuario.UserName.ToString() == HttpContext.User.Identity.Name).ToList();
-                return planejadas;
-            }
-            else if (aba.ToLowerInvariant() == "erradas")
-            {
-                List<Prospeccao> erradas = lista.Where(prospeccao =>
-                    prospeccao.Status.OrderBy(followup => followup.Data).FirstOrDefault().Status != StatusProspeccao.ContatoInicial &&
-                    prospeccao.Status.OrderBy(followup => followup.Data).FirstOrDefault().Status != StatusProspeccao.Planejada
-                ).ToList();
-                return erradas;
-            }
-            else
-            {
-                return null;
+                case "ativas":
+                    {
+                        List<Prospeccao> ativas = cache.GetCached($"Prospeccoes:Ativas", () => prospeccoes.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
+                            followup.Data).LastOrDefault().Status < StatusProspeccao.ComProposta).ToList());
+                        return ativas;
+                    }
+
+                case "comproposta":
+                    {
+                        List<Prospeccao> emProposta = cache.GetCached("Prospeccoes:ComProposta", () => prospeccoes.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
+                            followup.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList());
+                        return emProposta;
+                    }
+
+                case "concluidas":
+                    {
+                        List<Prospeccao> concluidas = cache.GetCached("Prospeccoes:Concluidas", () => prospeccoes.Where(prospeccao => prospeccao.Status.Any(followup =>
+                            followup.Status == StatusProspeccao.Convertida ||
+                            followup.Status == StatusProspeccao.Suspensa ||
+                            followup.Status == StatusProspeccao.NaoConvertida
+                        )).ToList());
+                        return concluidas;
+                    }
+
+                case "planejadas":
+                    {
+                        string cacheKey = usuario.Nivel == Nivel.Dev ? "Prospeccoes:Planejadas:Dev" : "Prospeccoes:Planejadas:User:" + HttpContext.User.Identity.Name;
+                        List<Prospeccao> planejadas = cache.GetCached(cacheKey, () =>
+                        {
+                            if (usuario.Nivel == Nivel.Dev)
+                            {
+                                List<Prospeccao> prosps = new List<Prospeccao>();
+                                foreach (var prospeccao in prospeccoes)
+                                {
+                                    try
+                                    {
+                                        if (prospeccao.Usuario.UserName == HttpContext.User.Identity.Name)
+                                        {
+                                            prosps.Add(prospeccao);
+                                        }
+                                    }
+                                    catch (NullReferenceException ex)
+                                    {
+                                        throw ex;
+                                    }
+                                }
+                                return prosps;
+                                // return prospeccoes.Where(p => p.Usuario.UserName == HttpContext.User.Identity.Name).ToList();
+                            }
+                            else
+                            {
+                                return prospeccoes.Where(p => p.Usuario.UserName == HttpContext.User.Identity.Name).ToList();
+                            }
+                        });
+                        return planejadas;
+                    }
+
+                case "erradas":
+                    {
+                        List<Prospeccao> erradas = cache.GetCached("Prospeccoes:Erradas", () => prospeccoes.Where(prospeccao =>
+                            prospeccao.Status.OrderBy(followup => followup.Data).FirstOrDefault().Status != StatusProspeccao.ContatoInicial &&
+                            prospeccao.Status.OrderBy(followup => followup.Data).FirstOrDefault().Status != StatusProspeccao.Planejada
+                        ).ToList());
+                        return erradas;
+                    }
+
+                default:
+                    return null;
             }
         }
 
-        public static async Task<List<Prospeccao>> DefinirCasaParaVisualizar(string casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, ViewDataDictionary ViewData)
+        public static async Task<List<Prospeccao>> DefinirCasaParaVisualizar(string casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, DbCache cache, ViewDataDictionary ViewData)
         {
             Instituto enum_casa;
 
@@ -166,8 +197,7 @@ namespace BaseDeProjetos.Helpers
 
             if (usuario.Nivel == Nivel.Dev)
             {
-                List<Prospeccao> lista = await _context.Prospeccao.ToListAsync();
-                prospeccoes.AddRange(lista);
+                prospeccoes = await cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.Include(p => p.Empresa).Include(p => p.Usuario).ToListAsync());
             }
             else
             {
@@ -175,10 +205,7 @@ namespace BaseDeProjetos.Helpers
                 {
                     HttpContext.Session.SetString("_Casa", casa);
                     enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
-                    List<Prospeccao> lista = await _context.Prospeccao.Where(prospeccao => prospeccao.Casa.Equals(enum_casa)).ToListAsync();
-
-                    prospeccoes.AddRange(lista);
-
+                    prospeccoes = await _context.Prospeccao.Where(prospeccao => prospeccao.Casa.Equals(enum_casa)).ToListAsync();
                     ViewData["Area"] = casa;
                 }
             }
@@ -388,7 +415,7 @@ namespace BaseDeProjetos.Helpers
                 throw new ArgumentNullException(nameof(_context));
             }
 
-            var usuarioAtivo = _context.Users.ToList().FirstOrDefault(usuario => usuario.UserName == HttpContext.User.Identity.Name);
+            var usuarioAtivo = _context.Users.Select(u => new Usuario { Id = u.Id, UserName = u.UserName, Casa = u.Casa, Nivel = u.Nivel }).FirstOrDefault(usuario => usuario.UserName == HttpContext.User.Identity.Name);
 
             return usuarioAtivo;
         }
@@ -399,14 +426,9 @@ namespace BaseDeProjetos.Helpers
         /// <param name="ano">Ano que se deseja</param>
         /// <param name="prospeccoes">Lista de prospecções a serem periodizadas</param>
         /// <returns></returns>
-        public static List<Prospeccao> PeriodizarProspecções(string ano, List<Prospeccao> prospeccoes)
+        public static void PeriodizarProspecções(string ano, List<Prospeccao> prospeccoes)
         {
-            if (ano.Equals("Todos") || string.IsNullOrEmpty(ano))
-            {
-                return prospeccoes;
-            }
-
-            return prospeccoes.Where(prospeccao => prospeccao.Status.Any(followup => followup.Data.Year == Convert.ToInt32(ano))).ToList();
+            prospeccoes = prospeccoes.Where(prospeccao => prospeccao.Status.Any(followup => followup.Data.Year == Convert.ToInt32(ano))).ToList();
         }
 
         /// <summary>
@@ -464,13 +486,13 @@ namespace BaseDeProjetos.Helpers
             switch (sortOrder)
             {
                 case "name_desc":
-                    return prospeccoes.OrderByDescending(s => s.Empresa.Nome).ToList();
+                    return prospeccoes.Include(p => p.Usuario).OrderByDescending(s => s.Empresa.Nome).ToList();
 
                 case "TipoContratacao":
-                    return prospeccoes.OrderBy(s => s.TipoContratacao).ToList();
+                    return prospeccoes.Include(p => p.Usuario).OrderBy(s => s.TipoContratacao).ToList();
 
                 case "tipo_desc":
-                    return prospeccoes.OrderByDescending(s => s.TipoContratacao).ToList();
+                    return prospeccoes.Include(p => p.Usuario).OrderByDescending(s => s.TipoContratacao).ToList();
             };
             return prospeccoes.ToList();
         }

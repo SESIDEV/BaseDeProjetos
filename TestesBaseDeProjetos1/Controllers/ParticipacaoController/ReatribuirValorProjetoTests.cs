@@ -22,6 +22,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
         private ApplicationDbContext? _context;
         private ObjectCreator? _objectCreator;
         private ILogger<ParticipacaoController> _logger;
+        private DbCache _cache;
 
         [SetUp]
         public void Setup()
@@ -42,7 +43,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
             _objectCreator.CriarEmpresaMock();
             _objectCreator.CriarProjetoMock();
 
-            _controller = new ParticipacaoController(_context, _logger);
+            _controller = new ParticipacaoController(_context, _cache, _logger);
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {

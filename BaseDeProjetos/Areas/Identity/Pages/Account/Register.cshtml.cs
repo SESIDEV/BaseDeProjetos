@@ -1,4 +1,5 @@
-﻿using BaseDeProjetos.Models;
+﻿using BaseDeProjetos.Helpers;
+using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -24,16 +25,20 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
+        private readonly DbCache _cache;
+
         public RegisterModel(
             UserManager<Usuario> userManager,
             SignInManager<Usuario> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            DbCache dbCache)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _cache = dbCache;
         }
 
         [BindProperty]
@@ -103,10 +108,12 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
+                        await CacheHelper.CleanupUsuariosCache(_cache);
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
                     else
                     {
+                        await CacheHelper.CleanupUsuariosCache(_cache);
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
                     }

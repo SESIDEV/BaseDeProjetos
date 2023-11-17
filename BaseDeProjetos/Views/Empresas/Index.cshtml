@@ -1,13 +1,14 @@
-﻿@model IEnumerable<BaseDeProjetos.Models.Empresa>
+@model EmpresasViewModel
 @using System.Globalization
 @{
     ViewData["Title"] = "Empresas";
     List<Pessoa> contatos = ViewBag.Contatos as List<Pessoa>;
-    List<Prospeccao> prospeccoes = ViewBag.Prospeccoes as List<Prospeccao>;
-    List<Prospeccao> prospsPlanejadas = ViewBag.ProspeccoesPlanejadas as List<Prospeccao>;
-    List<Prospeccao> prospsAtivas = ViewBag.ProspeccoesAtivas as List<Prospeccao>;
-    List<Prospeccao> outrasProspeccoes = ViewBag.OutrasProspeccoes as List<Prospeccao>;
+    List<ProspeccaoEmpresasDTO> prospeccoes = ViewBag.Prospeccoes as List<ProspeccaoEmpresasDTO>;
+    List<ProspeccaoEmpresasDTO> prospsPlanejadas = ViewBag.ProspeccoesPlanejadas as List<ProspeccaoEmpresasDTO>;
+    List<ProspeccaoEmpresasDTO> prospsAtivas = ViewBag.ProspeccoesAtivas as List<ProspeccaoEmpresasDTO>;
+    List<ProspeccaoEmpresasDTO> outrasProspeccoes = ViewBag.OutrasProspeccoes as List<ProspeccaoEmpresasDTO>;
     List<Projeto> projetos = ViewBag.Projetos as List<Projeto>;
+    string searchString = ViewBag.searchString as string;
 }
 
 <script src="~/js/utils/Dicionario.js"></script>
@@ -21,7 +22,7 @@
     function carregarModalProspeccao(idProspeccao, tipo) {
         if (!prospeccoesDetalhes.includes(idProspeccao)) {
             if (tipo) {
-                fetch(`/FunildeVendas/RetornarModal?idProsp=${idProspeccao}&tipo=${tipo}`)
+                fetch(`/Empresas/RetornarModal?idProsp=${idProspeccao}&tipo=${tipo}`)
                     .then(response => response.text())
                     .then(result => {
                         document.querySelector(`#modal${tipo}Prosp-${idProspeccao}-container`).innerHTML = result;
@@ -34,19 +35,19 @@
         // Verifica se o modal da prospeccao ja foi carregada para que não se carregue-o duas vezes sem necessidade
         let buttonName = "#button-" + idProspeccao
         console.log(buttonName)
-        let buttonDetalhes = document.querySelector(buttonName)        
+        let buttonDetalhes = document.querySelector(buttonName)
 
         if (!prospeccoesDetalhes.includes(idProspeccao)) {
-          buttonDetalhes.disabled = true;
-          buttonDetalhes.innerHTML = '<div class="spinner-border spinner-border-sm text-light" role="status"><span class="visually-hidden">Loading...</span></div>';
-          fetch(`/FunildeVendas/RetornarModal?idProsp=${idProspeccao}&tipo=Details`)
-            .then(response => response.text())
-            .then(result => {
-              document.querySelector(`#modalDetalhesProsp-${idProspeccao}-container`).innerHTML = result;
+            buttonDetalhes.disabled = true;
+            buttonDetalhes.innerHTML = '<div class="spinner-border spinner-border-sm text-light" role="status"><span class="visually-hidden">Loading...</span></div>';
+            fetch(`/Empresas/RetornarModal?idProsp=${idProspeccao}&tipo=Details`)
+                .then(response => response.text())
+                .then(result => {
+                    document.querySelector(`#modalDetalhesProsp-${idProspeccao}-container`).innerHTML = result;
                     buttonDetalhes.innerHTML = 'Detalhes';
-              buttonDetalhes.disabled = false;
-              buttonDetalhes.removeAttribute("style");
-            });
+                    buttonDetalhes.disabled = false;
+                    buttonDetalhes.removeAttribute("style");
+                });
         }
     }
 
@@ -66,7 +67,7 @@
             if (tipo) {
                 let oldButtonEmpresaInnerHTML = buttonEmpresa.innerHTML;
                 buttonEmpresa.disabled = true;
-		        buttonEmpresa.innerHTML = '<div class="spinner-border spinner-border-sm text-light" role="status"><span class="visually-hidden">Loading...</span></div>';		
+                buttonEmpresa.innerHTML = '<div class="spinner-border spinner-border-sm text-light" role="status"><span class="visually-hidden">Loading...</span></div>';
 
                 fetch(`/Empresas/RetornarModal?idEmpresa=${idEmpresa}&tipo=${tipo}`)
                     .then(response => response.text())
@@ -88,7 +89,7 @@
         })
         empresasCarregadas.push(idEmpresa);
     }
-    
+
     function ChecarCNPJ() { //EXCLUSIVO PARA O CREATE PORQUE VERIFICA SE JÁ EXISTE NO BANCO (NO EDIT JÁ EXISTE)
         document.getElementById("valor_cnpj").value = document.getElementById("valor_cnpj").value.replace(/[^0-9]/g, '');
         $("#StatusCNPJ").html("Checando...");
@@ -109,50 +110,48 @@
 </script>
 <partial name="Header" view-data="@ViewData" />
 <div class="app-wrapper">
-	<div class="app-content pt-3 p-md-3 p-lg-4">
-		<div class="">
-			<div class="row g-3 mb-4 align-items-center justify-content-between">
-				<div class="col-auto">
-					<h1 class="app-page-title mb-0">Empresas</h1>
-				</div>
-				<div class="col-auto">
-					<div class="page-utilities">
-						<div class="row g-2 justify-content-start justify-content-md-end align-items-center">
-							<div class="col-auto">
-								<form class="table-search-form row gx-1 align-items-center">
-									<div class="col-auto">
-										<input type="text" id="search-orders" name="SearchString" value='@ViewData["CurrentFilter"]' class="form-control search-orders" placeholder="Buscar Empresa..." autocomplete="off">
-									</div>
-									<div class="col-auto">
-										<button type="submit" class="btn app-btn-primary">Pesquisar</button>
-									</div>
-									<div class="col-auto">
-										<button type="submit" class="btn app-btn-primary">Lista Completa</button>
-									</div>
-								</form>
-							</div>
-							<div class="col-auto">
+    <div class="app-content pt-3 p-md-3 p-lg-4">
+        <div class="">
+            <div class="row g-3 mb-4 align-items-center justify-content-between">
+                <div class="col-auto">
+                    <h1 class="app-page-title mb-0">Empresas</h1>
+                </div>
+                <div class="col-auto">
+                    <div class="page-utilities">
+                        <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+                            <div class="col-auto">
+                                <form class="table-search-form row gx-1 align-items-center">
+                                    <div class="col-auto">
+                                        <input type="text" id="search-orders" name="SearchString" value='@ViewData["CurrentFilter"]' class="form-control search-orders" placeholder="Buscar Empresa..." autocomplete="off">
+                                    </div>
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn app-btn-primary">Pesquisar</button>
+                                    </div>
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn app-btn-primary">Lista Completa</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-auto">
                                 @await Component.InvokeAsync("ModalCreateEmpresa")
                                 <button type="button" class="btn app-btn-primary" data-bs-toggle="modal" data-bs-target="#CreateEmpresaModalToggle">
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill"
-										 viewBox="0 0 16 16">
-										<path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
-									</svg> Adicionar Empresa
-								</button>
-								@*@await Component.InvokeAsync("ModalCreateProsp")*@
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-            @foreach (var empresa in Model)
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill"
+                                         viewBox="0 0 16 16">
+                                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
+                                    </svg> Adicionar Empresa
+                                </button>
+                                @*@await Component.InvokeAsync("ModalCreateProsp")*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @foreach (var empresa in Model.Empresas)
             {
                 <div id="modalDeleteEmpresa-@empresa.Id-container">
-
                 </div>
-                
-                <div id="modalEditEmpresa-@empresa.Id-container">
 
+                <div id="modalEditEmpresa-@empresa.Id-container">
                 </div>
 
                 <div class="app-card app-card-notification shadow-sm mb-4">
@@ -161,7 +160,14 @@
                             <div class="col-12 col-lg-auto text-center text-lg-start">
                                 @if (empresa.Logo != null)
                                 {
-                                    <img loading="lazy" style="background-color:white; object-fit:contain; width: 100px; height: 100px" id="logoEmpresa" src="@empresa.Logo" alt="Logo da Empresa" />
+                                    if (empresa.Logo.Contains("http"))
+                                    {
+                                        <img loading="lazy" style="background-color:white; object-fit:contain; width: 100px; height: 100px" id="logoEmpresa" src="@empresa.Logo" alt="Logo da Empresa" />
+                                    }
+                                    else
+                                    {
+                                        <img style="background-color:white; object-fit:contain; width: 100px; height: 100px" id="logoEmpresa" src="data:image/png;base64,@empresa.Logo" alt="Logo da Empresa" />
+                                    }
                                 }
                                 else
                                 {
@@ -180,11 +186,12 @@
                                             if (empresa.CNPJ == "" || empresa.CNPJ == null || empresa.CNPJ == "0" || empresa.CNPJ == "00000000000000")
                                             {
                                                 <nobr>CNPJ: Sem CNPJ Cadastrado</nobr>
-                                            } else
+                                            }
+                                            else
                                             {
                                                 <nobr>CNPJ: @empresa.CNPJ</nobr>
                                             }
-                                        }                                        
+                                        }
                                     </li>
                                     <li class="list-inline-item">|</li>
                                     <li class="list-inline-item">Setor: @empresa.Segmento</li>
@@ -192,13 +199,15 @@
                                     <li class="list-inline-item">Id: @empresa.Id</li>
                                 </ul>
                             </div>
-                            @if(empresa.Industrial == false){
-                            <div class="col-lg"></div> <!--Empty column to push the div bellow to the right-->
-                            <div class="col-lg-auto text-center">
-                                <span id="tip_ind" style="font-size:100%" class="badge bg-danger rounded-pill" data-tippy-content="Esta empresa não possui CNAE Industrial">
-                                    <i class="fa fa-exclamation-circle"></i>
-                                </span>
-                            </div>}
+                            @if (empresa.Industrial == false)
+                            {
+                                <div class="col-lg"></div> <!--Empty column to push the div bellow to the right-->
+                                <div class="col-lg-auto text-center">
+                                    <span id="tip_ind" style="font-size:100%" class="badge bg-danger rounded-pill" data-tippy-content="Esta empresa não possui CNAE Industrial">
+                                        <i class="fa fa-exclamation-circle"></i>
+                                    </span>
+                                </div>
+                            }
                         </div>
                     </div>
                     <div class="app-card-body p-4">
@@ -212,26 +221,28 @@
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="flush-heading-@empresa.Id-one">
                                 <button class="action-link app-card-footer accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-@empresa.Id-one" aria-expanded="false" aria-controls="flush-collapse-@empresa.Id-one">
-                                Ações
+                                    Ações
                                 </button>
                             </h2>
                             <div id="flush-collapse-@empresa.Id-one" class="accordion-collapse collapse" aria-labelledby="flush-heading-@empresa.Id-one" data-bs-parent="#accordionEmpresa-@empresa.Id">
                                 <div class="accordion-body">
                                     <div>
-                                        <button type="button" id="button-@empresa.Id-Edit" class="btn app-btn-primary" data-bs-target="#EditEmpresaModal-@empresa.Id" data-bs-toggle="modal" class="btn app-btn-primary" onmouseover="carregarModaisEmpresa('@empresa.Id')">   
-                                        Editar
+                                        <button type="button" id="button-@empresa.Id-Edit" class="btn app-btn-primary" data-bs-target="#EditEmpresaModal-@empresa.Id" data-bs-toggle="modal" class="btn app-btn-primary" onmouseover="carregarModaisEmpresa('@empresa.Id')">
+                                            Editar
                                         </button>
-                                        <a type="button" class="btn app-btn-primary" asp-controller="FunilDeVendas" asp-action="Planejar" asp-route-id="@empresa.Id">
+                                        <a type="button" class="btn app-btn-primary" asp-controller="Empresas" asp-action="Planejar" asp-route-id="@empresa.Id">
                                             Planejar
                                         </a>
                                         @*<a asp-action="Details" asp-route-id="@empresa.Id">
-                                            <button class="btn app-btn-primary">
-                                                Ver
-                                                Detalhes
-                                            </button>
-                                        </a>*@
+                                    <button class="btn app-btn-primary">
+                                    Ver
+                                    Detalhes
+                                    </button>
+                                    </a>*@
                                         <button type="button" id="button-@empresa.Id-Delete" data-bs-target="#deletarEmpresaModal-@empresa.Id"
-                                        data-bs-toggle="modal" class="btn app-btn-primary" onmouseover="carregarModaisEmpresa('@empresa.Id')">Deletar</button>
+                                                data-bs-toggle="modal" class="btn app-btn-primary" onmouseover="carregarModaisEmpresa('@empresa.Id')">
+                                            Deletar
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -253,7 +264,7 @@
                                             if (contato.Nome != null && contato.Email != null && contato.Telefone != null && contato.Cargo != null)
                                             {
                                                 <div class="mb-2">Contato @count:</div>
-                                                    <ul class="list-group">                                                    
+                                                <ul class="list-group">
                                                     @if (contato.Nome != null)
                                                     {
                                                         <li class="list-group-item">Nome: @contato.Nome</li>
@@ -270,11 +281,11 @@
                                                     {
                                                         <li class="list-group-item">Cargo: @contato.Cargo</li>
                                                     }
-                                                    </ul>                                                
+                                                </ul>
                                                 <hr />
                                                 count++;
-                                            }                                            
-                                        }                                        
+                                            }
+                                        }
                                     }
                                 </div>
                             </div>
@@ -289,7 +300,7 @@
                                 <div class="accordion-body">
                                     <h6>Prospecções Ativas:</h6>
                                     @if (prospsAtivas.Where(P => P.Empresa.Id == @empresa.Id).Count() > 0)
-                                    {                                        
+                                    {
                                         <table class="table table-striped">
                                             <tr>
                                                 <th>Nome</th>
@@ -298,7 +309,7 @@
                                                 <th>Detalhes</th>
                                             </tr>
 
-                                            @foreach (Prospeccao prospeccao in prospsAtivas.Where(P => P.Empresa.Id == @empresa.Id))
+                                            @foreach (var prospeccao in prospsAtivas.Where(P => P.Empresa.Id == @empresa.Id))
                                             {
                                                 <div id="modalEditProsp-@prospeccao.Id-container">
                                                 </div>
@@ -318,7 +329,7 @@
                                                         @if (prospeccao.NomeProspeccao != null)
                                                         {
                                                             <span style="text-overflow: ellipsis;">@prospeccao.NomeProspeccao</span>
-                                                        } 
+                                                        }
                                                         else
                                                         {
                                                             <span style="text-overflow: ellipsis;">Prospecção sem Nome</span>
@@ -326,10 +337,14 @@
                                                     </td>
                                                     <td>@prospeccao.Status.OrderBy(p => p.Data).LastOrDefault().Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))</td>
                                                     <td>@prospeccao.Usuario</td>
-                                                    <td><button type="button" id="button-@prospeccao.Id"
-                                                    data-bs-target="#modalDetalhes-@prospeccao.Id" data-bs-toggle="modal"
-                                                    class="btn-sm app-btn-primary"
-                                                    onmouseover="carregarModaisProspeccao('@prospeccao.Id')">Detalhes</button></td>
+                                                    <td>
+                                                        <button type="button" id="button-@prospeccao.Id"
+                                                                data-bs-target="#modalDetalhes-@prospeccao.Id" data-bs-toggle="modal"
+                                                                class="btn-sm app-btn-primary"
+                                                                onmouseover="carregarModaisProspeccao('@prospeccao.Id')">
+                                                            Detalhes
+                                                        </button>
+                                                    </td>
                                                 </tr>
                                             }
                                         </table>
@@ -350,7 +365,7 @@
                                                 <th>Detalhes</th>
                                             </tr>
 
-                                            @foreach (Prospeccao prospeccao in prospsPlanejadas.Where(P => P.Empresa.Id == @empresa.Id))
+                                            @foreach (var prospeccao in prospsPlanejadas.Where(P => P.Empresa.Id == @empresa.Id))
                                             {
                                                 <div id="modalEditProsp-@prospeccao.Id-container">
                                                 </div>
@@ -369,18 +384,22 @@
                                                         @if (prospeccao.NomeProspeccao != null)
                                                         {
                                                             <span style="text-overflow: ellipsis;">@prospeccao.NomeProspeccao</span>
-                                                        } 
+                                                        }
                                                         else
                                                         {
                                                             <span style="text-overflow: ellipsis;">Prospecção sem Nome</span>
                                                         }
-                                                    </td>                                                    
+                                                    </td>
                                                     <td>@prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))</td>
                                                     <td>@prospeccao.Usuario</td>
-                                                    <td><button type="button" id="button-@prospeccao.Id"
-                                                    data-bs-target="#modalDetalhes-@prospeccao.Id" data-bs-toggle="modal"
-                                                    class="btn-sm app-btn-primary"
-                                                    onmouseover="carregarModaisProspeccao('@prospeccao.Id','@prospeccao.NomeProspeccao')">Detalhes</button></td>
+                                                    <td>
+                                                        <button type="button" id="button-@prospeccao.Id"
+                                                                data-bs-target="#modalDetalhes-@prospeccao.Id" data-bs-toggle="modal"
+                                                                class="btn-sm app-btn-primary"
+                                                                onmouseover="carregarModaisProspeccao('@prospeccao.Id','@prospeccao.NomeProspeccao')">
+                                                            Detalhes
+                                                        </button>
+                                                    </td>
                                                 </tr>
                                             }
                                         </table>
@@ -401,7 +420,7 @@
                                                 <th>Detalhes</th>
                                             </tr>
 
-                                            @foreach (Prospeccao prospeccao in outrasProspeccoes.Where(P => P.Empresa.Id == @empresa.Id))
+                                            @foreach (var prospeccao in outrasProspeccoes.Where(P => P.Empresa.Id == @empresa.Id))
                                             {
                                                 <div id="modalEditProsp-@prospeccao.Id-container">
                                                 </div>
@@ -420,33 +439,87 @@
                                                         @if (prospeccao.NomeProspeccao != null)
                                                         {
                                                             <span style="text-overflow: ellipsis;">@prospeccao.NomeProspeccao</span>
-                                                        } 
+                                                        }
                                                         else
                                                         {
                                                             <span style="text-overflow: ellipsis;">Prospecção sem Nome</span>
                                                         }
-                                                    </td>                                                    
+                                                    </td>
                                                     <td>@prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))</td>
                                                     <td>@prospeccao.Usuario</td>
-                                                    <td><button type="button" id="button-@prospeccao.Id"
-                                                    data-bs-target="#modalDetalhes-@prospeccao.Id" data-bs-toggle="modal"
-                                                    class="btn-sm app-btn-primary"
-                                                    onmouseover="carregarModaisProspeccao('@prospeccao.Id','@prospeccao.NomeProspeccao')">Detalhes</button></td>
+                                                    <td>
+                                                        <button type="button" id="button-@prospeccao.Id"
+                                                                data-bs-target="#modalDetalhes-@prospeccao.Id" data-bs-toggle="modal"
+                                                                class="btn-sm app-btn-primary"
+                                                                onmouseover="carregarModaisProspeccao('@prospeccao.Id','@prospeccao.NomeProspeccao')">
+                                                            Detalhes
+                                                        </button>
+                                                    </td>
                                                 </tr>
                                             }
                                         </table>
                                     }
-                                    else 
+                                    else
                                     {
                                         <p>Não há outras prospecções para esta empresa</p>
                                     }
                                 </div>
                             </div>
                         </div>
-                    </div>                    
+                    </div>
                 </div>
             }
-		</div>
-	</div>
+
+            <nav class="app-pagination">
+                <ul class="pagination justify-content-center">
+                    @if (Model.Pager.TotalPaginas > 1)
+                    {
+                        @if (Model.Pager.TemPaginaAnterior)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-controller="Empresas" asp-action="Index" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" asp-route-SearchString="@searchString" asp-route-numeroPagina="@(Model.Pager.PaginaAtual - 1)">Anterior</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <a class="page-link" asp-action="">Anterior</a>
+                            </li>
+                        }
+
+                        @foreach (var numeroPagina in Model.Pager.Pages)
+                        {
+                            if (numeroPagina == Model.Pager.PaginaAtual)
+                            {
+                                <li class="page-item active">
+                                    <a class="page-link" asp-controller="Empresas" asp-action="Index" asp-route-tamanhopagina="@ViewBag.TamanhoPagina" asp-route-SearchString="@searchString" asp-route-numeroPagina="@(numeroPagina-1)">@numeroPagina</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-controller="Empresas" asp-action="Index" asp-route-tamanhopagina="@ViewBag.TamanhoPagina" asp-route-SearchString="@searchString" asp-route-numeroPagina="@numeroPagina">@numeroPagina</a>
+                                </li>
+                            }
+                        }
+
+                        @if (Model.Pager.TemProximaPagina)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-controller="Empresas" asp-action="Index" asp-route-SearchString="@searchString" asp-route-numeroPagina="@(Model.Pager.PaginaAtual + 1)">Proximo</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <a class="page-link">Proximo</a>
+                            </li>
+                        }
+                    }
+
+                </ul>
+            </nav>
+        </div>
+    </div>
     <partial name="Footer" />
 </div>

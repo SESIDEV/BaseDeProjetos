@@ -1,4 +1,4 @@
-﻿@model ProspeccoesViewModel
+@model ProspeccoesViewModel
 @using System.Globalization
 @using BaseDeProjetos.Helpers
 @using System.Linq;
@@ -10,7 +10,7 @@
     string casa = dadosDaRota.Values["casa"] as string;
     aba = aba.ToLowerInvariant();
     var agregadas = ViewData["ProspeccoesAgregadas"] as List<Prospeccao>;
-    var usuarios = ViewData["Usuarios"] as List<Usuario>;
+    var usuarios = ViewData["Usuarios"] as List<UsuariosFunilDTO>;
 }
 <style>
     * {

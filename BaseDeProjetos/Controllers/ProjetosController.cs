@@ -213,12 +213,10 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewbagizarUsuario(_context);
                 var usuarios = await _context.Users.ToListAsync();
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel; // Já vi não funcionar, porquê? :: hhenriques1999
-                ViewData["NivelUsuario"] = usuario.Nivel;
-                ViewData["IdUsuario"] = usuario.Id;
+                ViewData["NivelUsuario"] = UsuarioAtivo.Nivel;
+                ViewData["IdUsuario"] = UsuarioAtivo.Id;
                 ViewData["Usuarios"] = usuarios;
 
                 List<Empresa> empresas = await _context.Empresa.ToListAsync();
@@ -362,10 +360,8 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
-                ViewData["NivelUsuario"] = usuario.Nivel;
+                ViewbagizarUsuario(_context);
+                ViewData["NivelUsuario"] = UsuarioAtivo.Nivel;
 
                 if (!string.IsNullOrEmpty(tipo))
                 {
@@ -505,9 +501,7 @@ namespace BaseDeProjetos.Controllers
             {
                 List<Empresa> empresas = _context.Empresa.ToList();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
-                ViewBag.usuarioCasa = usuario.Casa;
-                ViewBag.usuarioNivel = usuario.Nivel;
+                ViewbagizarUsuario(_context);
                 return View();
             }
             else

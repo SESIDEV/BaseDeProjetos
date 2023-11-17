@@ -9,7 +9,7 @@ using System.Text.Json;
 namespace BaseDeProjetos.Controllers
 {
     [Authorize]
-    public class PessoasController : Controller
+    public class PessoasController : SGIController
     {
         private readonly ApplicationDbContext _context;
 
@@ -58,9 +58,9 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                ViewbagizarUsuario(_context);
 
-                return usuario.UserName;
+                return UsuarioAtivo.UserName;
             }
             else
             {

@@ -17,19 +17,25 @@ using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Controllers
 {
-    public class ParticipacaoController : Controller
+    public class ParticipacaoController : SGIController
     {
         // TODO: Precisamos não utilizar esses valores mágicos de string no futuro!!
         private const string nomeCargoPesquisador = "Pesquisador QMS";
         private const string nomeCargoEstagiário = "Estagiário";
         private const string nomeCargoBolsista = "Pesquisador Bolsista";
         private readonly ApplicationDbContext _context;
+        private readonly DbCache _cache;
         private readonly ILogger<ParticipacaoController> _logger;
         private List<Prospeccao> _prospeccoes = new List<Prospeccao>();
         private const int AnoPadrao = 2021;
         private const int MesInicioPadrao = 1;
         private const int MesFimPadrao = 12;
 
+
+        /// <summary>
+        /// Esses valores foram passados a mim manualmente pela Daniela Serrazine no passado, atualmente estamos fazendo um override puxando de IndicadoresFinanceiros do DB :: hhenriques1999
+        /// </summary>
+        /// <value></value>
         private readonly static Dictionary<int, decimal> despesas = new Dictionary<int, decimal>
         {
             { 2021, 290000M },
@@ -37,6 +43,10 @@ namespace BaseDeProjetos.Controllers
             { 2023, 440000M },
         };
 
+        /// <summary>
+        /// Esses valores foram passados a mim manualmente pela Daniela Serrazine :: hhenriques1999
+        /// </summary>
+        /// <value></value>
         private readonly static Dictionary<int, int> pesquisadores = new Dictionary<int, int>
         {
             {2021, 20},
@@ -44,9 +54,10 @@ namespace BaseDeProjetos.Controllers
             {2023, 23}
         };
 
-        public ParticipacaoController(ApplicationDbContext context, ILogger<ParticipacaoController> logger)
+        public ParticipacaoController(ApplicationDbContext context, DbCache cache, ILogger<ParticipacaoController> logger)
         {
             _context = context;
+            _cache = cache;
             _logger = logger;
         }
 
@@ -58,8 +69,15 @@ namespace BaseDeProjetos.Controllers
         /// <param name="mesFinal"></param>
         /// <param name="anoFinal"></param>
         /// <returns></returns>
-        internal static decimal CalculoDespesa(int mesInicial, int anoInicial, int mesFinal, int anoFinal)
+        internal static async Task<decimal> CalculoDespesa(ApplicationDbContext context, int mesInicial, int anoInicial, int mesFinal, int anoFinal)
         {
+            var indicadores = await context.IndicadoresFinanceiros.ToListAsync();
+
+            foreach (var indicador in indicadores)
+            {
+                despesas[indicador.Data.Year] = indicador.Despesa;
+            }
+
             if (anoInicial > anoFinal)
             {
                 throw new ArgumentException($"{nameof(anoInicial)} não pode ser maior que {nameof(anoFinal)}");
@@ -210,7 +228,7 @@ namespace BaseDeProjetos.Controllers
                     usuario = await _context.Users.Where(u => u.Id == idUsuario).FirstOrDefaultAsync();
                 }
 
-                _prospeccoes = await _context.Prospeccao.ToListAsync();
+                _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).ToListAsync());
 
                 var participacao = await GetParticipacaoTotalUsuario(usuario);
 
@@ -237,7 +255,7 @@ namespace BaseDeProjetos.Controllers
         [HttpGet("Participacao/RetornarDadosGrafico")]
         public async Task<IActionResult> RetornarDadosGrafico()
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewbagizarUsuario(_context);
 
             if (HttpContext.User.Identity.IsAuthenticated)
             {
@@ -252,12 +270,12 @@ namespace BaseDeProjetos.Controllers
                     rankingsMedios = ObterRankingsMedios(participacoes);
                 }
 
-                var participacaoUsuario = participacoes.FirstOrDefault(p => p.Lider == usuario);
+                var participacaoUsuario = participacoes.FirstOrDefault(p => p.Lider.Id == UsuarioAtivo.Id);
 
                 dadosGrafico["Participacao"] = participacaoUsuario;
                 dadosGrafico["Rankings"] = rankingsMedios;
 
-                if (usuario != null)
+                if (UsuarioAtivo != null)
                 {
                     return Ok(JsonConvert.SerializeObject(dadosGrafico));
                 }
@@ -468,26 +486,41 @@ namespace BaseDeProjetos.Controllers
 
             foreach (var prospeccao in prospeccoesUsuarioMembroEquipe)
             {
+                var membrosEquipe = TratarMembrosEquipeString(prospeccao);
+
                 if (prospeccao.Usuario.Id == usuario.Id)
                 {
-                    quantidadeProspeccoesComPeso += 1;
+
+                    var percBolsista = CalculoPercentualBolsista(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoBolsista).Count());
+                    var percEstagiario = CalculoPercentualEstagiario(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoEstagiário).Count());
+                    var percPesquisador = CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
+
+                    var percLider = 1 - (percBolsista + percEstagiario + percPesquisador);
+
+                    quantidadeProspeccoesComPeso += percLider;
                 }
                 else if (prospeccao.MembrosEquipe.Contains(usuario.Email))
                 {
-                    var membrosEquipe = TratarMembrosEquipeString(prospeccao);
                     quantidadeProspeccoesComPeso += CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
                 }
             }
 
             foreach (var prospeccao in prospeccoesUsuarioComProposta)
             {
+                var membrosEquipe = TratarMembrosEquipeString(prospeccao);
+
                 if (prospeccao.Usuario.Id == usuario.Id)
                 {
-                    quantidadeProspeccoesComProposta += 1;
+                    var percBolsista = CalculoPercentualBolsista(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoBolsista).Count());
+                    var percEstagiario = CalculoPercentualEstagiario(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoEstagiário).Count());
+                    var percPesquisador = CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
+
+                    var percLider = 1 - (percBolsista + percEstagiario + percPesquisador);
+
+                    quantidadeProspeccoesComProposta += percLider;
                 }
                 else if (prospeccao.MembrosEquipe.Contains(usuario.Email))
                 {
-                    var membrosEquipe = TratarMembrosEquipeString(prospeccao);
                     quantidadeProspeccoesComProposta += CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
                 }
             }
@@ -496,13 +529,20 @@ namespace BaseDeProjetos.Controllers
 
             foreach (var prospeccao in prospeccoesUsuarioConvertidas)
             {
+                var membrosEquipe = TratarMembrosEquipeString(prospeccao);
+
                 if (prospeccao.Usuario.Id == usuario.Id)
                 {
-                    quantidadeProspeccoesConvertidas += 1;
+                    var percBolsista = CalculoPercentualBolsista(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoBolsista).Count());
+                    var percEstagiario = CalculoPercentualEstagiario(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoEstagiário).Count());
+                    var percPesquisador = CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
+
+                    var percLider = 1 - (percBolsista + percEstagiario + percPesquisador);
+
+                    quantidadeProspeccoesConvertidas += percLider;
                 }
                 else
                 {
-                    var membrosEquipe = TratarMembrosEquipeString(prospeccao);
                     quantidadeProspeccoesConvertidas += CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
                 }
             }
@@ -569,7 +609,7 @@ namespace BaseDeProjetos.Controllers
 
                 HandleMesFimAnoFimInvalido(ref mesFim, ref anoFim);
 
-                despesaIsiMeses = CalculoDespesa(int.Parse(mesInicio), int.Parse(anoInicio), int.Parse(mesFim), int.Parse(anoFim));
+                despesaIsiMeses = await CalculoDespesa(_context, int.Parse(mesInicio), int.Parse(anoInicio), int.Parse(mesFim), int.Parse(anoFim));
 
                 quantidadePesquisadores = CalculoNumeroPesquisadores(int.Parse(anoInicio), int.Parse(anoFim));
 
@@ -1102,16 +1142,16 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private async Task<List<ParticipacaoTotalViewModel>> GetParticipacoesTotaisUsuarios(string mesInicio = null, string anoInicio = null, string mesFim = null, string anoFim = null)
         {
-            Usuario usuarioAtivo = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewbagizarUsuario(_context);
             List<Usuario> usuarios;
 
-            if (usuarioAtivo.Casa == Instituto.ISIQV || usuarioAtivo.Casa == Instituto.CISHO)
+            if (UsuarioAtivo.Casa == Instituto.ISIQV || UsuarioAtivo.Casa == Instituto.CISHO)
             {
                 usuarios = await _context.Users.Where(u => (u.Casa == Instituto.ISIQV || u.Casa == Instituto.CISHO) && u.Cargo.Nome == nomeCargoPesquisador && u.EmailConfirmed == true && u.Nivel == Nivel.Usuario).ToListAsync();
             }
             else
             {
-                usuarios = await _context.Users.Where(u => u.Casa == usuarioAtivo.Casa && u.EmailConfirmed == true && u.Cargo.Nome == nomeCargoPesquisador && u.Nivel == Nivel.Usuario).ToListAsync();
+                usuarios = await _context.Users.Where(u => u.Casa == UsuarioAtivo.Casa && u.EmailConfirmed == true && u.Cargo.Nome == nomeCargoPesquisador && u.Nivel == Nivel.Usuario).ToListAsync();
             }
 
             List<ParticipacaoTotalViewModel> participacoes = new List<ParticipacaoTotalViewModel>();
@@ -1132,7 +1172,7 @@ namespace BaseDeProjetos.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string mesInicio, string anoInicio, string mesFim, string anoFim)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            ViewbagizarUsuario(_context);
 
             anoInicio = string.IsNullOrEmpty(anoInicio) ? "2021" : anoInicio;
             mesInicio = string.IsNullOrEmpty(mesInicio) ? "1" : mesInicio;
@@ -1144,9 +1184,9 @@ namespace BaseDeProjetos.Controllers
             ViewData["mesFim"] = mesFim;
             ViewData["anoFim"] = anoFim;
 
-            _prospeccoes = await _context.Prospeccao.ToListAsync();
+            _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).ToListAsync());
 
-            var participacoes = await GetParticipacoesTotaisUsuarios(mesInicio, anoInicio, mesFim, anoFim);
+            var participacoes = await _cache.GetCachedAsync($"Participacoes:{mesInicio}:{anoInicio}:{mesFim}:{anoFim}", () => GetParticipacoesTotaisUsuarios(mesInicio, anoInicio, mesFim, anoFim));
 
             if (participacoes.Count > 0)
             {
@@ -1158,18 +1198,18 @@ namespace BaseDeProjetos.Controllers
                 participacoes = participacoes.OrderByDescending(p => p.MediaFatores).ToList();
             }
 
-            ViewBag.usuarioFoto = usuario.Foto;
-            ViewBag.usuarioCasa = usuario.Casa;
-            ViewBag.usuarioNivel = usuario.Nivel;
-            ViewBag.usuarioId = usuario.Id;
+            ViewBag.usuarioFoto = UsuarioAtivo.Foto;
+            ViewBag.usuarioCasa = UsuarioAtivo.Casa;
+            ViewBag.usuarioNivel = UsuarioAtivo.Nivel;
+            ViewBag.usuarioId = UsuarioAtivo.Id;
 
-            if (usuario.Nivel == Nivel.Dev || usuario.Nivel == Nivel.PMO)
+            if (UsuarioAtivo.Nivel == Nivel.Dev || UsuarioAtivo.Nivel == Nivel.PMO)
             {
                 return View(participacoes);
             }
             else
             {
-                var participacoesFiltradas = participacoes.Where(p => p.Lider.Id == usuario.Id).ToList();
+                var participacoesFiltradas = participacoes.Where(p => p.Lider.Id == UsuarioAtivo.Id).ToList();
                 return View(participacoesFiltradas);
             }
 

@@ -69,26 +69,27 @@
         <div id="modalEditCFFProjeto-@cff.Id-container">
         </div>
     }
-        <tr>
-            <td class="cell">
-                <div class="d-flex gap-2 flex-column align-items-center">
-                    <div>
-                        @*LOGO*@
-                        @if (projeto.Empresa.Logo != null)
-                        {
-                            <img @* style="border: 2px solid #999; border-radius: 10px; background-color: white" *@ loading="lazy" src="@projeto.Empresa.Logo" class="logoEmpresa" alt="Logo da Empresa" />
-                        }
-                        else
-                        {
-                            <nobr id="logo_alt">Sem Logo</nobr>
-                        }
-                    </div>
-                    <div style="text-align:center;width:90px">
-                        @*NOME EMPRESA*@
-                        @projeto.Empresa.Nome @*FAVOR NAO EDITAR*@
-                    </div>
+
+    <tr>
+        <td class="cell">
+            <div class="d-flex gap-2 flex-column align-items-center">
+                <div>
+                    @*LOGO*@
+                    @if (projeto.Empresa.Logo != null)
+                    {
+                        <img class="logoEmpresa" loading="lazy" src="@projeto.Empresa.Logo" alt="Logo da Empresa" />
+                    }
+                    else
+                    {
+                        <nobr id="logo_alt">Sem Logo</nobr>
+                    }
                 </div>
-            </td>
+                <div style="text-align:center;width:90px">
+                    @*NOME EMPRESA*@
+                    @projeto.Empresa.Nome @*FAVOR NAO EDITAR*@
+                </div>
+            </div>
+        </td>
 
             <td class="cell">
                 @projeto.NomeProjeto

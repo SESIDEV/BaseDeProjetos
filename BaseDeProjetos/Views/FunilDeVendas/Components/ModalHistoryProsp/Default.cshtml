@@ -16,7 +16,7 @@
 
 <!-- Modal -->
 <div class="modal fade" id="historyProspModal-@Model.Id" tabindex="-1"
-    aria-labelledby="historyProspModal-@Model.Id-Label" aria-hidden="true">
+     aria-labelledby="historyProspModal-@Model.Id-Label" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -30,20 +30,22 @@
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="panelsFollowups-heading-@followup.Id">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsFollowups-collapse-@followup.Id" aria-expanded="true"
-                                aria-controls="panelsFollowups-collapse-@followup.Id">
-                                    <div style="font-weight: 600">@followup.Data.ToString("dd/MM/yyyy",
+                                        aria-controls="panelsFollowups-collapse-@followup.Id">
+                                    <div style="font-weight: 600">
+                                        @followup.Data.ToString("dd/MM/yyyy",
                                     CultureInfo.CreateSpecificCulture("pt-BR")) - @(followup.Status.GetDisplayName())
                                     </div>
                                 </button>
                             </h2>
                             <div id="panelsFollowups-collapse-@followup.Id" class="accordion-collapse collapse"
-                            aria-labelledby="panelsFollowups-heading-@followup.Id">
+                                 aria-labelledby="panelsFollowups-heading-@followup.Id">
                                 <div class="accordion-body">
-                                    @if (string.IsNullOrEmpty(followup.Anotacoes)) 
+                                    @if (string.IsNullOrEmpty(followup.Anotacoes))
                                     {
                                         <span>Não há nada preenchido.</span>
                                     }
-                                    else {
+                                    else
+                                    {
                                         @followup.Anotacoes
                                     }
                                     <hr />
@@ -51,9 +53,11 @@
                                 CultureInfo.CreateSpecificCulture("pt-BR"))
                                     <a class="btn btn-outline-danger" asp-controller="FunilDeVendas" asp-action="RemoverFollowUp" asp-route-id="@followup.Id">Remover</a> |
                                     <button type="button" class="btn app-btn-secondary" data-bs-toggle="modal"
-                                    data-bs-target="#EditFollowupProspModal-@Model.Id">Editar</button>
+                                            data-bs-target="#EditFollowupProspModal-@followup.Id">
+                                        Editar
+                                    </button>
                                     <!-- O Model ID aqui se refere a prospeccao, é extremamente importante que esses IDs batam assim como no ViewComponent, caso o bootstrap alegue undefined para o backdrop, tente verificar esses dois IDs -->
-                            </div>
+                                </div>
                             </div>
                         </div>
                     }
@@ -61,7 +65,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn app-btn-secondary" data-bs-target="#modalDetalhes-@Model.Id"
-                    data-bs-toggle="modal">Voltar</button>
+                        data-bs-toggle="modal">
+                    Voltar
+                </button>
                 <button type="button" class="btn app-btn-primary" data-bs-dismiss="modal">Sair</button>
             </div>
         </div>
