@@ -461,6 +461,7 @@ namespace BaseDeProjetos.Controllers
             decimal valorMedioProspeccoesComProposta = 0;
             decimal valorMedioProspeccoesConvertidas = 0;
             decimal valorTotalProspeccoesConvertidas = 0;
+            decimal valorTotalProjetosParaFCF = 0;
             decimal taxaConversaoProposta;
             decimal taxaConversaoProjeto;
             int quantidadeProspeccoes;
@@ -481,6 +482,7 @@ namespace BaseDeProjetos.Controllers
             participacao.ValorTotalProspeccoes = valorTotalProspeccoes = ExtrairValorProspeccoes(usuario, null, mesInicio, anoInicio, mesFim, anoFim);
             participacao.ValorTotalProspeccoesComProposta = valorTotalProspeccoesComProposta = ExtrairValorProspeccoes(usuario, StatusProspeccao.ComProposta, mesInicio, anoInicio, mesFim, anoFim);
             participacao.ValorTotalProspeccoesConvertidas = valorTotalProspeccoesConvertidas = ExtrairValorProspeccoes(usuario, StatusProspeccao.Convertida, mesInicio, anoInicio, mesFim, anoFim);
+            valorTotalProjetosParaFCF = await ExtrairValorProjetos(usuario, mesInicio, anoInicio, mesFim, anoFim);
 
             participacao.QuantidadeProspeccoes = quantidadeProspeccoes = prospeccoesUsuarioMembroEquipe.Count();
 
@@ -613,10 +615,24 @@ namespace BaseDeProjetos.Controllers
 
                 quantidadePesquisadores = CalculoNumeroPesquisadores(int.Parse(anoInicio), int.Parse(anoFim));
 
-                participacao.FatorContribuicaoFinanceira = valorTotalProspeccoesConvertidas / despesaIsiMeses;
+                participacao.FatorContribuicaoFinanceira = valorTotalProjetosParaFCF / despesaIsiMeses;
             }
 
             return participacao;
+        }
+
+        private async Task<decimal> ExtrairValorProjetos(Usuario usuario, string mesInicio, string anoInicio, string mesFim, string anoFim)
+        {
+            var projetosUsuario = await _context.Projeto.Where(p => p.UsuarioId == usuario.Id).ToListAsync();
+            if (string.IsNullOrEmpty(mesInicio) && string.IsNullOrEmpty(anoInicio))
+            {
+                projetosUsuario = AcertarPrecificacaoProjetos(mesFim, anoFim, projetosUsuario);
+            }
+            else
+            {
+                projetosUsuario = AcertarPrecificacaoProjetos(mesInicio, anoInicio, mesFim, anoFim, projetosUsuario);
+            }
+            return (decimal)projetosUsuario.Sum(p => p.ValorTotalProjeto);
         }
 
         private List<Prospeccao> GetProspeccoesUsuarioLider(Usuario usuario)
