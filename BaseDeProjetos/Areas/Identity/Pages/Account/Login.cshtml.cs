@@ -40,11 +40,11 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
+            [Required(ErrorMessage = "O campo de email é obrigatório.")]
             [EmailAddress]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "O campo de senha é obrigatório.")]
             [DataType(DataType.Password)]
             [Display(Name = "Senha")]
             public string Password { get; set; }
