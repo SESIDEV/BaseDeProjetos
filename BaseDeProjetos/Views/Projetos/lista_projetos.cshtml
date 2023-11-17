@@ -6,14 +6,6 @@
 }
 
 <style>
-    .caixa-logo {
-        max-width: 180px;
-        height: 100%;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-    }
-
     #box-btn-actions {
         width: 100%;
         justify-content: center;
@@ -38,9 +30,16 @@
 
 @foreach (var projeto in Model)
 {
-    @ProjetoHelpers.GerarContainersModais(projeto.Id)
+    @await Component.InvokeAsync("ModalEditProjeto", new { id = projeto.Id })
+    @await Component.InvokeAsync("ModalDeleteProjeto", new { id = projeto.Id })
+    @await Component.InvokeAsync("ModalIncluirIndicadorProjeto", new { id = projeto.Id })
+    @await Component.InvokeAsync("ModalDetalhesIndicadorProjeto", new { id = projeto.Id })
+    @await Component.InvokeAsync("ModalIncluirCFFProjeto", new { id = projeto.Id })
+    @await Component.InvokeAsync("ModalDetalhesCFFProjeto", new { id = projeto.Id })
+    @await Component.InvokeAsync("ModalIncluirRubricasProjeto", new { id = projeto.Id })
+    @await Component.InvokeAsync("ModalDetalhesRubricasProjeto", new { id = projeto.Id })
 
-    @ProjetoHelpers.GerarContainersModais(projeto.CurvaFisicoFinanceira)
+    @ProjetoHelpers.GerarContainersModais(projeto.CurvaFisicoFinanceira) 
 
     @if (projeto.ConjuntoRubricas != null)
     {
@@ -71,81 +70,81 @@
             </div>
         </td>
 
-            <td class="cell">
-                @projeto.NomeProjeto
-            </td>
-            <td class="cell">
-                @if (projeto.Proponente != null)
+        <td class="cell">
+            @projeto.NomeProjeto
+        </td>
+        <td class="cell">
+            @if (projeto.Proponente != null)
+            {
+                <span onmouseover="setupTippy('cargoProponente-@(projeto.Id)')" data-tippy-content="@projeto.Proponente.Cargo?.Nome" id="cargoProponente-@projeto.Id" class="badge bg-success">@projeto.Proponente.UserName</span> @*Líder*@
+            }
+            else
+            {
+                <span class="badge bg-danger">Sem Proponente</span>
+            }
+        </td>
+        <td class="cell">
+            @if (projeto.Usuario != null)
+            {
+                <span onmouseover="setupTippy('cargoUsuario-@(projeto.Id)')" data-tippy-content="@projeto.Usuario.Cargo?.Nome" id="cargoUsuario-@projeto.Id" class="badge bg-success">@projeto.Usuario.UserName</span> @*Líder*@
+            }
+            else
+            {
+                <span class="badge bg-danger">Sem Líder</span>
+            }
+            @if (projeto.EquipeProjeto != null)
+            {
+                foreach (var relacao in projeto.EquipeProjeto)
                 {
-                    <span onmouseover="setupTippy('cargoProponente-@(projeto.Id)')" data-tippy-content="@projeto.Proponente.Cargo?.Nome" id="cargoProponente-@projeto.Id" class="badge bg-success">@projeto.Proponente.UserName</span> @*Líder*@
+                    <span onmouseover="setupTippy('cargoMembro-@(relacao.Usuario?.Id)')" data-tippy-content="@relacao.Usuario.Cargo?.Nome" id="cargoMembro-@relacao.Usuario?.Id" class="badge bg-info">@relacao.Usuario?.UserName</span>
+                }
+            }
+        </td>
+        <td class="cell">
+            @if (projeto.Status == StatusProjeto.EmExecucao)
+            {
+                if (DateTime.Now > projeto.DataEncerramento)
+                {
+                    <div class="d-flex flex-row gap-2 align-items-center justify-content-center">
+                        <i class="text-danger fs-3 bi bi-hourglass-bottom"></i>
+                        <span class="badge bg-danger" onmouseover="setupTippy('statusCargo-@(projeto.Id)')" data-tippy-content="Atrasado" id="statusCargo-@projeto.Id">@projeto.Status.GetDisplayName()</span>
+                    </div>
                 }
                 else
                 {
-                    <span class="badge bg-danger">Sem Proponente</span>
+                    <div class="d-flex flex-row gap-2 align-items-center justify-content-center">
+                        <i class="text-success fs-3 bi bi-hourglass-split"></i>
+                        <span class="badge bg-success" onmouseover="setupTippy('statusCargo-@(projeto.Id)')" data-tippy-content="Dentro do Prazo" id="statusCargo-@projeto.Id">@projeto.Status.GetDisplayName()</span>
+                    </div>
                 }
-            </td>
-            <td class="cell">
-                @if (projeto.Usuario != null)
-                {
-                    <span onmouseover="setupTippy('cargoUsuario-@(projeto.Id)')" data-tippy-content="@projeto.Usuario.Cargo?.Nome" id="cargoUsuario-@projeto.Id" class="badge bg-success">@projeto.Usuario.UserName</span> @*Líder*@
-                }
-                else
-                {
-                    <span class="badge bg-danger">Sem Líder</span>
-                }
-                @if (projeto.EquipeProjeto != null)
-                {
-                    foreach (var relacao in projeto.EquipeProjeto)
-                    {
-                        <span onmouseover="setupTippy('cargoMembro-@(relacao.Usuario?.Id)')" data-tippy-content="@relacao.Usuario.Cargo?.Nome" id="cargoMembro-@relacao.Usuario?.Id" class="badge bg-info">@relacao.Usuario?.UserName</span>
-                    }
-                }
-            </td>
-            <td class="cell">
-                @if (projeto.Status == StatusProjeto.EmExecucao)
-                {
-                    if (DateTime.Now > projeto.DataEncerramento)
-                    {
-                        <div class="d-flex flex-row gap-2 align-items-center justify-content-center">
-                            <i class="text-danger fs-3 bi bi-hourglass-bottom"></i>
-                            <span class="badge bg-danger" onmouseover="setupTippy('statusCargo-@(projeto.Id)')" data-tippy-content="Atrasado" id="statusCargo-@projeto.Id">@projeto.Status.GetDisplayName()</span>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="d-flex flex-row gap-2 align-items-center justify-content-center">
-                            <i class="text-success fs-3 bi bi-hourglass-split"></i>
-                            <span class="badge bg-success" onmouseover="setupTippy('statusCargo-@(projeto.Id)')" data-tippy-content="Dentro do Prazo" id="statusCargo-@projeto.Id">@projeto.Status.GetDisplayName()</span>
-                        </div>
-                    }
-                }
-                else
-                {
-                    <span class="badge bg-info">@projeto.Status.GetDisplayName()</span>
-                }
-            </td>
-            <td class="cell">
-                @if (projeto.ValorAporteRecursos != 0 && projeto.ValorAporteRecursos > 0)
-                {
-                    <span> R$ @Helpers.FormatarValoresDashboards((decimal)projeto.ValorAporteRecursos)</span>
-                }
-                else
-                {
-                    <span>A preencher</span>
-                }
-            </td>
+            }
+            else
+            {
+                <span class="badge bg-info">@projeto.Status.GetDisplayName()</span>
+            }
+        </td>
+        <td class="cell">
+            @if (projeto.ValorAporteRecursos != 0 && projeto.ValorAporteRecursos > 0)
+            {
+                <span> R$ @Helpers.FormatarValoresDashboards((decimal)projeto.ValorAporteRecursos)</span>
+            }
+            else
+            {
+                <span>A preencher</span>
+            }
+        </td>
 
-            <td class="cell">
-                <button type="button" id="button-@projeto.Id" data-bs-target="#detalhes-@projeto.Id"
-                        data-bs-toggle="collapse" class="btn text-primary">
-                    <i class="bi fs-4 bi-chevron-down"></i>
-                </button>
-            </td>
-            
-        </tr>
-        <tr class="border-bottom text-start">
-            <td colspan="14">
-                <div class="collapse" id="detalhes-@projeto.Id" style="margin-left: 20px; margin-right: 20px; margin-top: 10px; margin-bottom: 10px">
+        <td class="cell">
+            <button type="button" id="button-@projeto.Id" data-bs-target="#detalhes-@projeto.Id"
+                    data-bs-toggle="collapse" class="btn text-primary">
+                <i class="bi fs-4 bi-chevron-down"></i>
+            </button>
+        </td>
+
+    </tr>
+    <tr class="border-bottom text-start">
+        <td colspan="14">
+            <div class="collapse" id="detalhes-@projeto.Id" style="margin-left: 20px; margin-right: 20px; margin-top: 10px; margin-bottom: 10px">
                 <div class="modal-body d-flex flex-column gap-1">
                     <h1 class="app-card-title">Id:</h1>
                     <span>@projeto.Id</span>
@@ -227,8 +226,18 @@
                     {
                         <span>Este projeto não tem uma equipe definida</span>
                     }
-                </div><hr/>
+                </div><hr />
                 <div class="modal-footer">
+                    <div class="d-flex">
+                        <a class="btn btn-outline-primary" data-bs-toggle="modal"
+                           href="#incluirRubricasProjetoModal-@projeto.Id" role="button">
+                            Incluir Rubrica
+                        </a>
+                        <a class="btn btn-outline-primary" data-bs-toggle="modal"
+                           href="#detalhesRubricasProjetoModal-@projeto.Id" role="button">
+                            Visualizar Rubricas
+                        </a>
+                    </div>
                     @if (nivelUsuario.ToString() == "PMO" || nivelUsuario.ToString() == "Dev" || nivelUsuario.ToString() ==
                    "Supervisor")
                     {
@@ -263,9 +272,9 @@
                             Deletar
                         </a>
                     </div>
-                    
+
                 </div>
-                </div>
-            </td>
-        </tr>
-    }
+            </div>
+        </td>
+    </tr>
+}

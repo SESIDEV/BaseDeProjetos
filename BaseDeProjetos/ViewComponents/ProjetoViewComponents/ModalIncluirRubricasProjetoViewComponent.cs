@@ -1,4 +1,5 @@
 ﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -16,7 +17,7 @@ namespace BaseDeProjetos.ViewComponents.ProjetoViewComponents
         public async Task<IViewComponentResult> InvokeAsync(string id)
         {
             ViewData["Projeto"] = await _context.Projeto.FindAsync(id);
-            return View();
+            return View(new Rubrica());
         }
     }
 }

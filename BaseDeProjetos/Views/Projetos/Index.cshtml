@@ -23,31 +23,12 @@
         }
     }
 
-    function carregarModalDetalhesProjeto(idProjeto) {
-        // Verifica se o modal da Projeto ja foi carregada para que não se carregue-o duas vezes sem necessidade
-        let buttonName = "#button-" + idProjeto
-        let buttonDetalhes = document.querySelector(buttonName)
-
-        if (!projetosDetalhes.includes(idProjeto)) {
-            buttonDetalhes.disabled = true;
-            buttonDetalhes.innerHTML = '<div class="spinner-border spinner-border-sm text-light" role="status"><span class="visually-hidden">Loading...</span></div>';
-            fetch(`/Projetos/RetornarModalDetalhes?idProjeto=${idProjeto}`)
-                .then(response => response.text())
-                .then(result => {
-                    document.querySelector(`#modalDetailsProjeto-${idProjeto}-container`).innerHTML = result;
-                    buttonDetalhes.innerHTML = 'Detalhes';
-                    buttonDetalhes.disabled = false;
-                });
-        }
-    }
-
     function carregarModaisProjeto(idProjeto) {
         // O nome precisa bater com o nome da view, no sentido que, o sufixo será "ProjViewComponent". Em outras palavras, está acoplado.
         modaisDisponiveis = ["IncluirRubricas", "DetalhesRubricas", "DetalhesCFF", "IncluirCFF", "DetalhesIndicador", "IncluirIndicador", "Edit", "Delete"]
         modaisDisponiveis.forEach((tipo) => {
             carregarModalProjeto(idProjeto, tipo)
         })
-        carregarModalDetalhesProjeto(idProjeto);
         projetosDetalhes.push(idProjeto);
     }
 

@@ -8,24 +8,22 @@ namespace BaseDeProjetos.Helpers
 {
     public static class ProjetoHelpers
     {
-        public static HtmlString GerarContainersModais(string projetoId)
-        {
-            StringBuilder sb = new StringBuilder();
+        //public static HtmlString GerarContainersModais(string projetoId)
+        //{
+        //    StringBuilder sb = new StringBuilder();
 
-            string[] modalTypes = new string[]
-            {
-                "Edit", "Delete", "History", "Details",
-                "IncluirIndicador", "DetalhesIndicador", "IncluirCFF",
-                "DetalhesCFF", "EditCFF", "DetalhesRubricas", "IncluirRubricas"
-            };
+        //    string[] modalTypes = new string[]
+        //    {
+        //        "EditCFF", "DetalhesRubricas", "IncluirRubricas"
+        //    };
 
-            foreach (var modalType in modalTypes)
-            {
-                sb.Append($"<div id=\"modal{modalType}Projeto-{projetoId}-container\"></div>\n");
-            }
+        //    foreach (var modalType in modalTypes)
+        //    {
+        //        sb.Append($"<div id=\"modal{modalType}Projeto-{projetoId}-container\"></div>\n");
+        //    }
 
-            return new HtmlString(sb.ToString());
-        }
+        //    return new HtmlString(sb.ToString());
+        //}
 
         public static HtmlString GerarContainersModais(List<CurvaFisicoFinanceira> curvas)
         {

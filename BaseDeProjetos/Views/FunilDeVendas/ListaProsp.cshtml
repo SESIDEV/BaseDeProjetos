@@ -23,10 +23,9 @@
 <div class="app-card app-card-orders-table shadow-sm mb-5">
     @foreach (var prospeccao in Model.Prospeccoes)
     {
-        @* ["Edit", "Delete", "History", "CreateFollowup", "EditFollowup", "Detalhes"] *@
+        @* ["Edit", "Delete", "History", "CreateFollowup", "EditFollowup"] *@
         @await Component.InvokeAsync("ModalEditProsp", new { id = prospeccao.Id })
         @await Component.InvokeAsync("ModalDeleteProsp", new { id = prospeccao.Id })
-        @await Component.InvokeAsync("ModalDetailsProsp", new { id = prospeccao.Id })
         @await Component.InvokeAsync("ModalHistoryProsp", new { id = prospeccao.Id })
         @await Component.InvokeAsync("ModalCreateFollowupProsp", new { id = prospeccao.Id })
     }
