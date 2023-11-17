@@ -68,7 +68,7 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account
 
             public Instituto Casa { get; set; }
 
-            public string UserName { get; set; }
+            //public string UserName { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -83,7 +83,7 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                Usuario user = new Usuario { UserName = Input.UserName, Email = Input.Email, Casa = Input.Casa };
+                Usuario user = new Usuario { UserName = Input.Email, Email = Input.Email, Casa = Input.Casa };
                 IdentityResult result = new IdentityResult();
 
                 //Só aceitar e-mails da firjan

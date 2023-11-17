@@ -54,11 +54,11 @@
                 <div class="auth-form-container text-start mx-auto">
                     <form asp-route-returnUrl="@Model.ReturnUrl" method="post" class="auth-form auth-signup-form">
                         <div asp-validation-summary="All" class="text-danger">
-                            <div class="email mb-3">
+@*                             <div class="email mb-3">
                                 <label asp-for="Input.UserName" class="sr-only"></label>
                                 <input asp-for="Input.UserName" type="user" class="form-control signup-email" style="border-color:#ced4da" placeholder="Informe seu nome" required="required">
                                 <span asp-validation-for="Input.UserName" class="text-danger"></span>
-                            </div>
+                            </div> *@
                             <div class="email mb-3">
                                 <label asp-for="Input.Email" class="sr-only"></label>
                                 <input asp-for="Input.Email" type="email" class="form-control signup-email" style="border-color:#ced4da" placeholder="Adicionar email corporativo" required="required">
