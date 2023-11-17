@@ -3,6 +3,7 @@ using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -18,6 +19,7 @@ namespace BaseDeProjetos.Controllers.Tests
         private ProjetosController? _controller;
         private ApplicationDbContext? _context;
         private ObjectCreator? _objectCreator;
+        private DbCache? _cache;
 
         [SetUp]
         public void Setup()
@@ -29,6 +31,11 @@ namespace BaseDeProjetos.Controllers.Tests
             _context = new ApplicationDbContext(options);
             _context.Database.EnsureCreated();
 
+            var memoryCacheOptions = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(memoryCacheOptions);
+
+            _cache = new DbCache(memoryCache);
+
             _objectCreator = new ObjectCreator();
 
             // Não mude a ordem!!
@@ -38,7 +45,7 @@ namespace BaseDeProjetos.Controllers.Tests
             _objectCreator.CriarEmpresaMock();
             _objectCreator.CriarProjetoMock();
 
-            _controller = new ProjetosController(_context);
+            _controller = new ProjetosController(_context, _cache);
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
@@ -57,6 +64,44 @@ namespace BaseDeProjetos.Controllers.Tests
             {
                 HttpContext = httpContextMock.Object,
             };
+        }
+
+        [Test]
+        public async Task Test_Edit_ValidModel_ReturnsRedirectToAction_Cache()
+        {
+            if (_context == null)
+            {
+                Assert.Fail("DbContext is null");
+            }
+            else
+            {
+                await _context.Users.AddAsync(_objectCreator?.usuario);
+                await _context.Projeto.AddAsync(_objectCreator?.projeto);
+                await _context.SaveChangesAsync();
+                if (_cache == null)
+                {
+                    Assert.Fail("Cache is null");
+                }
+                else
+                {
+                    var existingProjeto = await _cache.GetCachedAsync($"Projeto:{_objectCreator?.projeto.Id}", () => _context.Projeto.FindAsync(_objectCreator?.projeto.Id).AsTask());
+                    existingProjeto.NomeProjeto = "Nome Alterado";
+                    existingProjeto.AreaPesquisa = LinhaPesquisa.QuimicaESustentabilidade;
+
+                    if (existingProjeto != null)
+                    {
+                        if (_context != null && _controller != null && _objectCreator != null)
+                        {
+                            _context.Entry(existingProjeto).State = EntityState.Detached;
+
+                            var result = await _controller.Edit(existingProjeto.Id, existingProjeto, "meuemail@firjan.com.br");
+                            Assert.IsInstanceOf<RedirectToActionResult>(result);
+                            var redirectResult = (RedirectToActionResult)result;
+                            Assert.AreEqual("Index", redirectResult?.ActionName);
+                        }
+                    }
+                }
+            }
         }
 
         [Test]

@@ -6,35 +6,53 @@ namespace BaseDeProjetos.Helpers
     {
         public static void CleanupEmpresasCache(DbCache cache)
         {
-            cache.InvalidateCache("AllEmpresas");
-            cache.InvalidateCache("Empresas:Funil");
-            cache.InvalidateCache("Empresas:FunilUnique");
-            cache.InvalidateCache("Empresas:DTO");
+            if (cache != null)
+            {
+                cache.InvalidateCache("AllEmpresas");
+                cache.InvalidateCache("Empresas:Funil");
+                cache.InvalidateCache("Empresas:FunilUnique");
+                cache.InvalidateCache("Empresas:DTO");
+            }
         }
         public static async Task CleanupProspeccoesCache(DbCache cache)
         {
-            cache.InvalidateCache("AllProspeccoes");
-            await cache.InvalidateCacheKeysAsync("Prospeccao:");
-            await cache.InvalidateCacheKeysAsync("Prospeccoes:");
-            await cache.InvalidateCacheKeysAsync("Participacoes:");
-            await cache.InvalidateCacheKeysAsync("Followup:");
+            if (cache != null)
+            {
+                cache.InvalidateCache("AllProspeccoes");
+                await cache.InvalidateCacheKeysAsync("Prospeccao:");
+                await cache.InvalidateCacheKeysAsync("Prospeccoes:");
+                await cache.InvalidateCacheKeysAsync("Participacoes:");
+                await cache.InvalidateCacheKeysAsync("Followup:");
+            }
         }
 
-        public static async Task CleanupUsuariosCache(DbCache cache) {
-            cache.InvalidateCache("AllUsuarios");
-            await cache.InvalidateCacheKeysAsync("Usuarios:");
+        public static async Task CleanupUsuariosCache(DbCache cache)
+        {
+            if (cache != null)
+            {
+                cache.InvalidateCache("AllUsuarios");
+                await cache.InvalidateCacheKeysAsync("Usuarios:");
+            }
         }
 
-        public static async Task CleanupCargosCache(DbCache cache) {
-            cache.InvalidateCache("AllCargos");
-            await cache.InvalidateCacheKeysAsync("Cargos:");
+        public static async Task CleanupCargosCache(DbCache cache)
+        {
+            if (cache != null)
+            {
+                cache.InvalidateCache("AllCargos");
+                await cache.InvalidateCacheKeysAsync("Cargos:");
+            }
         }
 
-        public static async Task CleanupProjetosCache(DbCache cache) {
-            cache.InvalidateCache("AllProjetos");
-            await cache.InvalidateCacheKeysAsync("Projetos:");
-            await cache.InvalidateCacheKeysAsync("ProjetosExecucaoHome:");
+        public static async Task CleanupProjetosCache(DbCache cache)
+        {
+            if (cache != null)
+            {
+                cache.InvalidateCache("AllProjetos");
+                await cache.InvalidateCacheKeysAsync("Projetos:");
+                await cache.InvalidateCacheKeysAsync("ProjetosExecucaoHome:");
+            }
         }
-        
+
     }
 }

@@ -32,7 +32,7 @@ namespace BaseDeProjetos.Models
         public virtual DateTime DataInicio { get; set; } = DateTime.Now;
 
         [Display(AutoGenerateFilter = true, Name = "Data de Encerramento")]
-        
+
         public virtual DateTime DataEncerramento { get; set; } = DateTime.Now;
 
         [Display(AutoGenerateFilter = true, Name = "Membros da Equipe")]
@@ -80,8 +80,14 @@ namespace BaseDeProjetos.Models
 
         [Display(AutoGenerateFilter = true, Name = "Custo de Hora Homem")]
         public virtual decimal CustoHH { get; set; }
-        
+
         [Display(AutoGenerateFilter = true, Name = "Custo de Hora Máquina")]
         public virtual decimal CustoHM { get; set; }
+
+        [Display(Name = "Rúbricas do Projeto")]
+        [ForeignKey("ConjuntoRubricasId")]
+        public virtual ConjuntoRubrica ConjuntoRubricas { get; set; }
+
+        public virtual int? ConjuntoRubricasId { get; set; }
     }
 }

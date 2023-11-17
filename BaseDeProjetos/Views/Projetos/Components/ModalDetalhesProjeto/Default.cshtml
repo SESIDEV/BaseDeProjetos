@@ -23,7 +23,7 @@
                 <span>@Model.Status.GetDisplayName()</span>
                 <h1 class="app-card-title">Valor:</h1>
                 <span>R$ @Helpers.FormatarValoresDashboards((decimal)Model.ValorAporteRecursos)</span>
-				<h1 class="app-card-title">Custo do HH:</h1>
+                <h1 class="app-card-title">Custo do HH:</h1>
                 <span>R$ @Model.CustoHH.ToString("N")</span>
                 <h1 class="app-card-title">Data de Início:</h1>
                 <span>@Model.DataInicio.ToString("dd/MM/yyyy")</span>
@@ -93,6 +93,16 @@
                 }
             </div>
             <div class="modal-footer">
+                <div class="d-flex">
+                    <a class="btn btn-outline-primary" data-bs-toggle="modal"
+                       href="#incluirRubricasProjetoModal-@Model.Id" role="button">
+                        Incluir Rubrica
+                    </a>
+                    <a class="btn btn-outline-primary" data-bs-toggle="modal"
+                       href="#detalhesRubricasProjetoModal-@Model.Id" role="button">
+                        Visualizar Rubricas
+                    </a>
+                </div>
                 @if (nivelUsuario.ToString() == "PMO" || nivelUsuario.ToString() == "Dev" || nivelUsuario.ToString() ==
                 "Supervisor")
                 {

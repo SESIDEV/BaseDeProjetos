@@ -21,10 +21,12 @@ namespace BaseDeProjetos.Controllers
     public class ProjetosController : SGIController
     {
         private readonly ApplicationDbContext _context;
+        private readonly DbCache _cache;
 
-        public ProjetosController(ApplicationDbContext context)
+        public ProjetosController(ApplicationDbContext context, DbCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         [HttpGet("/Projetos/RetornarDadosGraficoCFF/{idProjeto}")]
@@ -55,6 +57,47 @@ namespace BaseDeProjetos.Controllers
             var serializedResult = JsonConvert.SerializeObject(dadosGrafico);
 
             return Ok(serializedResult);
+        }
+
+        [HttpPost("/Projetos/AdicionarRubrica/{idProjeto}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AdicionarRubrica(string idProjeto, [Bind("Nome, Valor")] Rubrica rubrica)
+        {
+            if (ModelState.IsValid)
+            {
+                Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == idProjeto);
+
+                if (projeto.ConjuntoRubricas != null)
+                {
+                    if (projeto.ConjuntoRubricas.Rubricas.Count == 0)
+                    {
+                        projeto.ConjuntoRubricas = new ConjuntoRubrica { Rubricas = new List<Rubrica> { rubrica } };
+                    }
+                    else
+                    {
+                        projeto.ConjuntoRubricas.Rubricas.Add(rubrica);
+                    }
+                }
+                else
+                {
+                    projeto.ConjuntoRubricas = new ConjuntoRubrica { Rubricas = new List<Rubrica> { rubrica } };
+                }
+
+                await CriarRubrica(rubrica);
+                await _context.SaveChangesAsync();
+                await CacheHelper.CleanupProjetosCache(_cache);
+            }
+            else
+            {
+                return View("Error");
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        private async Task CriarRubrica(Rubrica rubrica)
+        {
+            await _context.AddAsync(rubrica);
         }
 
         /// <summary>
@@ -91,6 +134,29 @@ namespace BaseDeProjetos.Controllers
                 await CriarIndicadores(indicadores);
 
                 await _context.SaveChangesAsync();
+                await CacheHelper.CleanupProjetosCache(_cache);
+            }
+            else
+            {
+                return View("Error");
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> EditarRubrica(int idRubrica, [Bind("Id, Nome, Valor, ConjuntoRubricaId")] Rubrica rubrica)
+        {
+            if (idRubrica != rubrica.Id)
+            {
+                return View("Error");
+            }
+
+            if (ModelState.IsValid)
+            {
+                _context.Update(rubrica);
+
+                await _context.SaveChangesAsync();
+                await CacheHelper.CleanupProjetosCache(_cache);
             }
             else
             {
@@ -119,6 +185,7 @@ namespace BaseDeProjetos.Controllers
                 _context.Update(cff);
 
                 await _context.SaveChangesAsync();
+                await CacheHelper.CleanupProjetosCache(_cache);
             }
             else
             {
@@ -158,6 +225,8 @@ namespace BaseDeProjetos.Controllers
                 await CriarCFF(cff);
 
                 await _context.SaveChangesAsync();
+                await CacheHelper.CleanupProjetosCache(_cache);
+
             }
             else
             {
@@ -176,6 +245,7 @@ namespace BaseDeProjetos.Controllers
         {
             await _context.AddAsync(cff);
             await _context.SaveChangesAsync();
+            await CacheHelper.CleanupProjetosCache(_cache);
         }
 
         /// <summary>
@@ -187,6 +257,7 @@ namespace BaseDeProjetos.Controllers
         {
             await _context.AddAsync(indicadoresProjeto);
             await _context.SaveChangesAsync();
+            await CacheHelper.CleanupProjetosCache(_cache);
         }
 
         public IActionResult PopularBase()
@@ -378,6 +449,18 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        public IActionResult RetornarModalEditRubricas(int idRubrica)
+        {
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                return ViewComponent("ModalEditRubricasProjeto", new { id = idRubrica });
+            }
+            else
+            {
+                return View("Forbbiden");
+            }
+        }
+
         /// <summary>
         /// Retorna um modal específico a partir dos parâmetros especificados
         /// </summary>
@@ -535,6 +618,8 @@ namespace BaseDeProjetos.Controllers
 
                 _context.Add(projeto);
                 await _context.SaveChangesAsync();
+                await CacheHelper.CleanupProjetosCache(_cache);
+
                 return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
             }
             else
@@ -658,6 +743,7 @@ namespace BaseDeProjetos.Controllers
             }
 
             await _context.SaveChangesAsync();
+            await CacheHelper.CleanupProjetosCache(_cache);
 
             _context.Entry(projetoExistente).CurrentValues.SetValues(projeto);
 
@@ -687,6 +773,7 @@ namespace BaseDeProjetos.Controllers
              * Mas acho desnecessário ir no banco em código para puxar o Projeto e o Usuário novamente pelos IDs
             */
             await _context.SaveChangesAsync();
+            await CacheHelper.CleanupProjetosCache(_cache);
 
             AtribuirCustoHH(projetoExistente);
 
@@ -700,6 +787,7 @@ namespace BaseDeProjetos.Controllers
                 try
                 {
                     await _context.SaveChangesAsync();
+                    await CacheHelper.CleanupProjetosCache(_cache);
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
@@ -749,6 +837,8 @@ namespace BaseDeProjetos.Controllers
             ProjetoIndicadores indicador = await _context.ProjetoIndicadores.FindAsync(id);
             _context.ProjetoIndicadores.Remove(indicador);
             await _context.SaveChangesAsync();
+            await CacheHelper.CleanupProjetosCache(_cache);
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -759,6 +849,20 @@ namespace BaseDeProjetos.Controllers
             CurvaFisicoFinanceira cff = await _context.CurvaFisicoFinanceira.FindAsync(id);
             _context.CurvaFisicoFinanceira.Remove(cff);
             await _context.SaveChangesAsync();
+            await CacheHelper.CleanupProjetosCache(_cache);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletarRubrica(int id)
+        {
+            Rubrica rubrica = await _context.Rubrica.FindAsync(id);
+            _context.Rubrica.Remove(rubrica);
+            await _context.SaveChangesAsync();
+            await CacheHelper.CleanupProjetosCache(_cache);
+            
             return RedirectToAction(nameof(Index));
         }
 
@@ -767,7 +871,7 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <returns>A equipe de um projeto separadas por ponto e virgula</returns>
         [HttpGet("Projetos/RetornarMembrosCSV/{idProjeto}")]
-        public async Task<IActionResult> RetornarMembrosCSV(string idProjeto)
+        public IActionResult RetornarMembrosCSV(string idProjeto)
         {
             string membros = string.Join(";", _context.Projeto.FirstOrDefault(p => p.Id == idProjeto)?.EquipeProjeto.Select(relacao => relacao.Usuario.Email));
 
@@ -795,6 +899,8 @@ namespace BaseDeProjetos.Controllers
 
             _context.Projeto.Remove(projeto);
             await _context.SaveChangesAsync();
+            await CacheHelper.CleanupProjetosCache(_cache);
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -818,7 +924,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         [HttpPost]
-        public IActionResult CarregarProjetos(List<IFormFile> files)
+        public async Task<IActionResult> CarregarProjetos(List<IFormFile> files)
         {
             long size = files.Sum(f => f.Length);
 
@@ -832,14 +938,14 @@ namespace BaseDeProjetos.Controllers
                 if (formFile.Length > 0)
                 {
                     using StreamReader file = new StreamReader(formFile.OpenReadStream());
-                    CriarProjetos(file);
+                    await CriarProjetos(file);
                 }
             }
 
             return View("Index", "Home");
         }
 
-        private void CriarProjetos(StreamReader file)
+        private async Task CriarProjetos(StreamReader file)
         {
             List<string> lines = file.ReadToEnd().Split(Environment.NewLine).Skip(1).ToList();
 
@@ -866,7 +972,8 @@ namespace BaseDeProjetos.Controllers
                 };
 
                 _context.Add(projeto);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
+                await CacheHelper.CleanupProjetosCache(_cache);
             }
         }
 
