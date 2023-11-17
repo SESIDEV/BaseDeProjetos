@@ -37,85 +37,85 @@
     </div>
 </div> *@
 
+<link rel="stylesheet" href="~/css/landing.css" />
+
 <style>
-	.app
-	{
-		padding-top: 0px;
-	}
+    .app {
+        padding-top: 0px;
+    }
 </style>
 
 <div class="row g-0 app-auth-wrapper">
-	<div class="col-12 col-md-7 col-lg-6 auth-main-col text-center p-5">
-		<div class="d-flex flex-column align-content-end" style="margin-top:90px">
-			<div class="app-auth-body mx-auto">
-				<div class="app-auth-branding mb-4"><p class="app-logo" ><img class="logo-icon me-2" style="width:90px; height:90px" src="~/favicon.png" alt="logo"></p></div>
-				<h2 class="auth-heading text-center mb-4 fs-2 fw-semibold">Cadastro</h2><hr/><br/>
-					<div class="auth-form-container text-start mx-auto">
-						<form asp-route-returnUrl="@Model.ReturnUrl" method="post" class="auth-form auth-signup-form">
-							<div asp-validation-summary="All" class="text-danger">
-								<div class="email mb-3">
-									<label asp-for="Input.UserName" class="sr-only"></label>
-								<input asp-for="Input.UserName" name="signup-user" type="user" class="form-control signup-email" style="border-color:#ced4da" placeholder="Informe seu nome" required="required">
-									<span asp-validation-for="Input.UserName" class="text-danger"></span>
-								</div>
-								<div class="email mb-3">
-								<label asp-for="Input.Email" class="sr-only"></label>
-								<input asp-for="Input.Email" name="signup-email" type="email" class="form-control signup-email" style="border-color:#ced4da" placeholder="Adicionar email corporativo" required="required">
-									<span asp-validation-for="Input.Email" class="text-danger"></span>
-								</div>
-							<div class="password mb-3">
-									<label asp-for="Input.Password" class="sr-only"></label>
-								<input asp-for="Input.Password" name="signup-password" type="password" class="form-control signup-password" style="border-color:#ced4da" placeholder="Senha" required="required">
-									<span asp-validation-for="Input.Password" class="text-danger"></span>
-								</div>
-								<div class="password mb-3">
-								<label asp-for="Input.ConfirmPassword" class="sr-only"></label>
-								<input asp-for="Input.ConfirmPassword" name="signup-password" type="password" class="form-control signup-password" style="border-color:#ced4da" placeholder="Confirmar senha" required="required">
-									<span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-								</div>
-								<div class="col-auto">
-									<label asp-for="Input.Casa" class="sr-only"></label>
-									<select asp-for="Input.Casa" class="form-select w-100" style="color:#5d6778; border: 1px solid #ced4da" asp-items="Html.GetEnumSelectList<Instituto>()"></select>
-								</div><br/>
+    <div class="col-12 col-md-7 col-lg-6 auth-main-col text-center p-5">
+        <div class="d-flex flex-column align-content-end" style="margin-top:90px">
+            <div class="app-auth-body mx-auto">
+                <div class="app-auth-branding mb-4"><p class="app-logo"><img class="logo-icon me-2" style="width:90px; height:90px" src="~/favicon.png" alt="logo"></p></div>
+                <h2 class="auth-heading text-center mb-4 fs-2 fw-semibold">Cadastro</h2><hr /><br />
+                <div class="auth-form-container text-start mx-auto">
+                    <form asp-route-returnUrl="@Model.ReturnUrl" method="post" class="auth-form auth-signup-form">
+                        <div asp-validation-summary="All" class="text-danger">
+                            <div class="email mb-3">
+                                <label asp-for="Input.UserName" class="sr-only"></label>
+                                <input asp-for="Input.UserName" type="user" class="form-control signup-email" style="border-color:#ced4da" placeholder="Informe seu nome" required="required">
+                                <span asp-validation-for="Input.UserName" class="text-danger"></span>
+                            </div>
+                            <div class="email mb-3">
+                                <label asp-for="Input.Email" class="sr-only"></label>
+                                <input asp-for="Input.Email" type="email" class="form-control signup-email" style="border-color:#ced4da" placeholder="Adicionar email corporativo" required="required">
+                                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                            </div>
+                            <div class="password mb-3">
+                                <label asp-for="Input.Password" class="sr-only"></label>
+                                <input asp-for="Input.Password" type="password" class="form-control signup-password" style="border-color:#ced4da" placeholder="Senha" required="required">
+                                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                            </div>
+                            <div class="password mb-3">
+                                <label asp-for="Input.ConfirmPassword" class="sr-only"></label>
+                                <input asp-for="Input.ConfirmPassword" type="password" class="form-control signup-password" style="border-color:#ced4da" placeholder="Confirmar senha" required="required">
+                                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                            </div>
+                            <div class="col-auto">
+                                <label asp-for="Input.Casa" class="sr-only"></label>
+                                <select asp-for="Input.Casa" class="form-select w-100" style="color:#5d6778; border: 1px solid #ced4da" asp-items="Html.GetEnumSelectList<Instituto>()"></select>
+                            </div><br />
 
-								<div class="text-center">
-									<button type="submit" class="btn app-btn-primary w-100 theme-btn mx-auto">Cadastrar</button>
-								</div>
-							</div>
-						</form><!--//auth-form-->
-					<div class="auth-option text-center">Já possui uma conta? <a class="text-link" asp-page="./Login">Entrar</a></div>
-				</div><!--//auth-form-container-->
+                            <div class="text-center">
+                                <button type="submit" class="btn app-btn-primary w-100 theme-btn mx-auto">Cadastrar</button>
+                            </div>
+                        </div>
+                    </form><!--//auth-form-->
+                    <div class="auth-option text-center">Já possui uma conta? <a class="text-link" asp-page="./Login">Entrar</a></div>
+                </div><!--//auth-form-container-->
 
 
 
-			</div><!--//auth-body-->
+            </div><!--//auth-body-->
 
-			<footer class="app-auth-footer text-muted">
-				<div class="container">
-					<small>© 2023 - SGI-GGI - <a href="/Home/Privacy">Privacidade</a></small>
-				</div>
-			</footer><!--//app-auth-footer-->
-		</div><!--//flex-column-->
-	</div><!--//auth-main-col-->
-	<div class="col-12 col-md-5 col-lg-6 h-100 auth-background-col">
-		<div class="auth-background-holder">
-			<img src="~/register-photo-test.jpg" style="height:100vh; object-fit:cover" alt="background-register-photo">
-		</div>
-		<div class="auth-background-mask"></div>
-		<div class="auth-background-overlay p-3 p-lg-5">
-			<div class="d-flex flex-column align-content-end h-100" >
-				<div class="h-100"></div>
-				<div class="overlay-content p-3 p-lg-4 rounded">
-					<h5 class="mb-3 overlay-title">Instituto SENAI Inovação Química</h5>
-					<div>Bem-vindo, o SGI é uma plataforma unificada para gestão de dados referentes às equipes dos Insitituto SENAI de Inovação em Química Verde(ISI-QV) e Inspeção e Integridade(ISI-II), assim como do Centro de Inovação SESI em Higiene Ocupacional (CIS-HO).</div>
-				</div>    @* Bem-vindo ao SGI, Aqui você poderá gerenciar os dados das prospecções do nosso insituto, de maneira ampla, simples e organizada, a fim de aumentar nossa eficiência. *@
-				
-			</div>
-		</div><!--//auth-background-overlay-->
-	</div><!--//auth-background-col-->
+            <footer class="app-auth-footer text-muted">
+                <div class="container">
+                    <small>© 2023 - SGI-GGI - <a href="/Home/Privacy">Privacidade</a></small>
+                </div>
+            </footer><!--//app-auth-footer-->
+        </div><!--//flex-column-->
+    </div><!--//auth-main-col-->
+    <div class="col-12 col-md-5 col-lg-6 h-100 auth-background-col">
+        <div class="auth-background-holder">
+            <img src="~/register-photo-test.jpg" style="height:100vh; object-fit:cover" alt="background-register-photo">
+        </div>
+        <div class="auth-background-mask"></div>
+        <div class="auth-background-overlay p-3 p-lg-5">
+            <div class="d-flex flex-column align-content-end h-100">
+                <div class="h-100"></div>
+                <div class="overlay-content p-3 p-lg-4 rounded">
+                    <h5 class="mb-3 overlay-title">Instituto SENAI Inovação Química</h5>
+                    <div>Bem-vindo, o SGI é uma plataforma unificada para gestão de dados referentes às equipes dos Insitituto SENAI de Inovação em Química Verde(ISI-QV) e Inspeção e Integridade(ISI-II), assim como do Centro de Inovação SESI em Higiene Ocupacional (CIS-HO).</div>
+                </div>    @* Bem-vindo ao SGI, Aqui você poderá gerenciar os dados das prospecções do nosso insituto, de maneira ampla, simples e organizada, a fim de aumentar nossa eficiência. *@
+
+            </div>
+        </div><!--//auth-background-overlay-->
+    </div><!--//auth-background-col-->
 
 </div><!--//row-->
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
