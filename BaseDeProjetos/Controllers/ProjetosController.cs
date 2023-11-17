@@ -37,7 +37,7 @@ namespace BaseDeProjetos.Controllers
 
             Dictionary<string, object> dadosGrafico = new Dictionary<string, object>();
 
-            var projeto = await _context.Projeto.FirstOrDefaultAsync(p => p.Id == idProjeto);
+            var projeto = await _cache.GetCachedAsync($"Projeto:{idProjeto}", () => _context.Projeto.FirstOrDefaultAsync(p => p.Id == idProjeto));
 
             var curvaFisicoFinanceiraSort = projeto.CurvaFisicoFinanceira.OrderBy(p => p.Data);
 
@@ -65,7 +65,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (ModelState.IsValid)
             {
-                Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == idProjeto);
+                var projeto = await _cache.GetCachedAsync($"Projeto:{idProjeto}", () => _context.Projeto.FirstOrDefaultAsync(p => p.Id == idProjeto));
 
                 if (projeto.ConjuntoRubricas != null)
                 {
@@ -111,7 +111,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (ModelState.IsValid)
             {
-                Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == idProjeto);
+                var projeto = await _cache.GetCachedAsync($"Projeto:{idProjeto}", () => _context.Projeto.FirstOrDefaultAsync(p => p.Id == idProjeto));
 
                 // Gerar id do indicador
                 string idIndicador = $"proj_ind_{Guid.NewGuid()}";
@@ -206,7 +206,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (ModelState.IsValid)
             {
-                Projeto projeto = _context.Projeto.FirstOrDefault(p => p.Id == idProjeto);
+                var projeto = await _cache.GetCachedAsync($"Projeto:{idProjeto}", () => _context.Projeto.FirstOrDefaultAsync(p => p.Id == idProjeto));
 
                 // Atrelar o projeto ao indicador
                 if (projeto.CurvaFisicoFinanceira != null)
@@ -285,20 +285,22 @@ namespace BaseDeProjetos.Controllers
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 ViewbagizarUsuario(_context);
-                var usuarios = await _context.Users.ToListAsync();
+
+                var usuarios = await _cache.GetCachedAsync("Usuarios:Projetos", () => _context.Users.Select(p => new UsuarioProjetoDTO { Id = p.Id, UserName = p.UserName }).ToListAsync());
+
                 ViewData["NivelUsuario"] = UsuarioAtivo.Nivel;
                 ViewData["IdUsuario"] = UsuarioAtivo.Id;
                 ViewData["Usuarios"] = usuarios;
 
-                List<Empresa> empresas = await _context.Empresa.ToListAsync();
+                var empresas = await _cache.GetCachedAsync("Empresas:Projetos", () => _context.Empresa.Select(e => new EmpresasReadComUniqueDTO { Id = e.Id, EmpresaUnique = e.EmpresaUnique, Nome = e.Nome }).ToListAsync());
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
 
                 SetarFiltros(sortOrder, searchString);
-                IQueryable<Projeto> projetos = ObterProjetosPorCasa(casa);
+                List<Projeto> projetos = await ObterProjetosPorCasa(casa);
                 projetos = PeriodizarProjetos(ano, projetos);
                 CategorizarStatusProjetos(projetos);
                 await GerarIndicadores(_context);
-                return View(projetos.ToList());
+                return View(projetos);
             }
             else
             {
@@ -341,7 +343,7 @@ namespace BaseDeProjetos.Controllers
         /// Categoriza na View (ViewBag) os projetos como Ativos ou Encerrados
         /// </summary>
         /// <param name="projetos">Projetos a serem categorizados</param>
-        private void CategorizarStatusProjetos(IQueryable<Projeto> projetos)
+        private void CategorizarStatusProjetos(List<Projeto> projetos)
         {
             ViewBag.Ativos = projetos.Where(p => p.Status == StatusProjeto.EmExecucao || p.Status == StatusProjeto.Contratado).ToList();
             ViewBag.Encerrados = projetos.Where(p => p.Status == StatusProjeto.Concluido || p.Status == StatusProjeto.Cancelado).ToList();
@@ -351,17 +353,17 @@ namespace BaseDeProjetos.Controllers
         /// Retorna uma lista de projetos até um ano limite especificado
         /// </summary>
         /// <param name="ano">Ano limite</param>
-        /// <param name="lista">Lista contendo projetos a serem filtrados e retornados</param>
+        /// <param name="projetos">Lista contendo projetos a serem filtrados e retornados</param>
         /// <returns></returns>
-        private IQueryable<Projeto> PeriodizarProjetos(string ano, IQueryable<Projeto> lista)
+        private List<Projeto> PeriodizarProjetos(string ano, List<Projeto> projetos)
         {
             if (ano.Equals("Todos") || string.IsNullOrEmpty(ano))
             {
-                return lista;
+                return projetos;
             }
 
             int ano_limite = Convert.ToInt32(ano);
-            return lista.Where(s => s.DataEncerramento.Year >= ano_limite);
+            return projetos.Where(s => s.DataEncerramento.Year >= ano_limite).ToList();
         }
 
         /// <summary>
@@ -387,7 +389,7 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="casa">Nome do Instituto</param>
         /// <returns></returns>
-        private IQueryable<Projeto> ObterProjetosPorCasa(string casa)
+        private async Task<List<Projeto>> ObterProjetosPorCasa(string casa)
         {
             Instituto enum_casa;
 
@@ -414,11 +416,18 @@ namespace BaseDeProjetos.Controllers
 
             ViewData["Area"] = casa;
 
-            IQueryable<Projeto> lista = enum_casa == Instituto.Super ?
-                _context.Projeto :
-                _context.Projeto.Where(p => p.Casa.Equals(enum_casa));
+            List<Projeto> projetos;
 
-            return lista;
+            if (enum_casa == Instituto.Super)
+            {
+                projetos = await _cache.GetCachedAsync("AllProjetos", () => _context.Projeto.ToListAsync());
+            }
+            else
+            {
+                projetos = await _cache.GetCachedAsync($"Projetos:{enum_casa}", () => _context.Projeto.Where(p => p.Casa.Equals(enum_casa)).ToListAsync());
+            }
+
+            return projetos;
         }
 
         /// <summary>
@@ -862,7 +871,7 @@ namespace BaseDeProjetos.Controllers
             _context.Rubrica.Remove(rubrica);
             await _context.SaveChangesAsync();
             await CacheHelper.CleanupProjetosCache(_cache);
-            
+
             return RedirectToAction(nameof(Index));
         }
 

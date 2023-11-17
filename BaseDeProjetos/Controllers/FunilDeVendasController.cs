@@ -318,7 +318,7 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         private async Task CriarSelectListsDaView()
         {
-            var empresas = await _cache.GetCachedAsync("Empresas:FunilUnique", () => _context.Empresa.Select(e => new EmpresasFunilComUniqueDTO { EmpresaUnique = e.EmpresaUnique, Id = e.Id, Nome = e.Nome }).ToListAsync());
+            var empresas = await _cache.GetCachedAsync("Empresas:FunilUnique", () => _context.Empresa.Select(e => new EmpresasReadComUniqueDTO { EmpresaUnique = e.EmpresaUnique, Id = e.Id, Nome = e.Nome }).ToListAsync());
             ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
             ViewData["Equipe"] = new SelectList(await _context.Users.ToListAsync(), "Id", "UserName");
         }

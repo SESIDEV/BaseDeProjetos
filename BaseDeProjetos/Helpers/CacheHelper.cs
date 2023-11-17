@@ -49,6 +49,7 @@ namespace BaseDeProjetos.Helpers
             if (cache != null)
             {
                 cache.InvalidateCache("AllProjetos");
+                await cache.InvalidateCacheKeysAsync("Projeto:");
                 await cache.InvalidateCacheKeysAsync("Projetos:");
                 await cache.InvalidateCacheKeysAsync("ProjetosExecucaoHome:");
             }

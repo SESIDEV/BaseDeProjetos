@@ -4,7 +4,7 @@ public class EmpresasFunilDTO
     public string Nome { get; set; }
 }
 
-public class EmpresasFunilComUniqueDTO : EmpresasFunilDTO
+public class EmpresasReadComUniqueDTO : EmpresasFunilDTO
 {
     public string EmpresaUnique { get; set; }
 }
