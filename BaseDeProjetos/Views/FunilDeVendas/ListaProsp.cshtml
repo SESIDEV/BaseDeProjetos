@@ -71,7 +71,14 @@
                                             @*LOGO*@
                                             @if (prospeccao.Empresa.Logo != null)
                                             {
-                                                <img class="logoEmpresa" loading="lazy" src="@prospeccao.Empresa.Logo" alt="Logo da Empresa">
+                                                @if (!prospeccao.Empresa.Logo.Contains("data:image"))
+                                                {
+                                                    <img class="logoEmpresa" loading="lazy" src="data:image/png;base64,@prospeccao.Empresa.Logo" alt="Logo da Empresa">
+                                                }
+                                                else
+                                                {
+                                                    <img class="logoEmpresa" loading="lazy" src="@prospeccao.Empresa.Logo" alt="Logo da Empresa">
+                                                }
                                             }
                                             else
                                             {

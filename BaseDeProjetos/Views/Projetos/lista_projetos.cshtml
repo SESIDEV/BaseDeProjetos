@@ -55,8 +55,16 @@
                     @*LOGO*@
                     @if (projeto.Empresa.Logo != null)
                     {
-                        <img class="logoEmpresa" loading="lazy" src="@projeto.Empresa.Logo" alt="Logo da Empresa" />
-                    }
+                        @if (!projeto.Empresa.Logo.Contains("data:image"))
+                        {
+                            <img class="logoEmpresa" loading="lazy" src="data:image/png;base64,@projeto.Empresa.Logo" alt="Logo da Empresa" />
+                        }
+                        else
+                        {
+                            <img class="logoEmpresa" loading="lazy" src="@projeto.Empresa.Logo" alt="Logo da Empresa" />
+                        }
+
+                }
                     else
                     {
                         <nobr id="logo_alt">Sem Logo</nobr>
