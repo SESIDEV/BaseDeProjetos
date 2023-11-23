@@ -190,8 +190,6 @@
                                         <span>@prospeccao.Origem.GetDisplayName()</span>
                                         <h1 class="app-card-title">Linha de Pesquisa:</h1>
                                         <span>@prospeccao.LinhaPequisa.GetDisplayName()</span>
-                                        <h1 class="app-card-title">Status:</h1>
-                                        <span>@prospeccao.Status.OrderBy(followup => followup.Data).Last().Status.GetDisplayName()</span>
                                         <h1 class="app-card-title">Valor Estimado:</h1>
                                         <nobr>
                                             @if (prospeccao.ValorEstimado != 0)
