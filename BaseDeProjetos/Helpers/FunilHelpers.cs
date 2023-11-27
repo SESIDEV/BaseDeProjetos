@@ -120,21 +120,21 @@ namespace BaseDeProjetos.Helpers
             {
                 case "ativas":
                     {
-                        List<Prospeccao> ativas = cache.GetCached($"Prospeccoes:Ativas:{usuario.Casa}", () => prospeccoes.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
+                        List<Prospeccao> ativas = cache.GetCached($"Prospeccoes:Ativas:{usuario.Casa}:{usuario.Nivel}", () => prospeccoes.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
                             followup.Data).LastOrDefault().Status < StatusProspeccao.ComProposta).ToList());
                         return ativas;
                     }
 
                 case "comproposta":
                     {
-                        List<Prospeccao> emProposta = cache.GetCached($"Prospeccoes:ComProposta:{usuario.Casa}", () => prospeccoes.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
+                        List<Prospeccao> emProposta = cache.GetCached($"Prospeccoes:ComProposta:{usuario.Casa}:{usuario.Nivel}", () => prospeccoes.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
                             followup.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList());
                         return emProposta;
                     }
 
                 case "concluidas":
                     {
-                        List<Prospeccao> concluidas = cache.GetCached($"Prospeccoes:Concluidas:{usuario.Casa}", () => prospeccoes.Where(prospeccao => prospeccao.Status.Any(followup =>
+                        List<Prospeccao> concluidas = cache.GetCached($"Prospeccoes:Concluidas:{usuario.Casa}:{usuario.Nivel}", () => prospeccoes.Where(prospeccao => prospeccao.Status.Any(followup =>
                             followup.Status == StatusProspeccao.Convertida ||
                             followup.Status == StatusProspeccao.Suspensa ||
                             followup.Status == StatusProspeccao.NaoConvertida
@@ -493,8 +493,9 @@ namespace BaseDeProjetos.Helpers
 
                 case "tipo_desc":
                     return prospeccoes.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).OrderByDescending(s => s.TipoContratacao).ToList();
-            };
-            return prospeccoes.ToList();
+                default:
+                    return prospeccoes.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).OrderBy(p => p.Status.OrderByDescending(s => s.Data).Select(s => s.Data).FirstOrDefault()).ToList();
+            }
         }
 
         /// <summary>
