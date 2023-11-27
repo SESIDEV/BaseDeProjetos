@@ -197,7 +197,7 @@ namespace BaseDeProjetos.Helpers
 
             if (usuario.Nivel == Nivel.Dev)
             {
-                prospeccoes = await cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.Include(p => p.Empresa).Include(p => p.Usuario).ToListAsync());
+                prospeccoes = await cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).ToListAsync());
             }
             else
             {
@@ -205,7 +205,7 @@ namespace BaseDeProjetos.Helpers
                 {
                     HttpContext.Session.SetString("_Casa", casa);
                     enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
-                    prospeccoes = await cache.GetCachedAsync("Prospeccoes:Funil:Filtradas", () => _context.Prospeccao.Include(p => p.Empresa).Include(p => p.Usuario).Where(prospeccao => prospeccao.Casa.Equals(enum_casa)).ToListAsync());
+                    prospeccoes = await cache.GetCachedAsync("Prospeccoes:Funil:Filtradas", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).Where(prospeccao => prospeccao.Casa.Equals(enum_casa)).ToListAsync());
                     ViewData["Area"] = casa;
                 }
             }
@@ -486,13 +486,13 @@ namespace BaseDeProjetos.Helpers
             switch (sortOrder)
             {
                 case "name_desc":
-                    return prospeccoes.Include(p => p.Empresa).Include(p => p.Usuario).OrderByDescending(s => s.Empresa.Nome).ToList();
+                    return prospeccoes.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).OrderByDescending(s => s.Empresa.Nome).ToList();
 
                 case "TipoContratacao":
-                    return prospeccoes.Include(p => p.Empresa).Include(p => p.Usuario).OrderBy(s => s.TipoContratacao).ToList();
+                    return prospeccoes.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).OrderBy(s => s.TipoContratacao).ToList();
 
                 case "tipo_desc":
-                    return prospeccoes.Include(p => p.Empresa).Include(p => p.Usuario).OrderByDescending(s => s.TipoContratacao).ToList();
+                    return prospeccoes.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).OrderByDescending(s => s.TipoContratacao).ToList();
             };
             return prospeccoes.ToList();
         }

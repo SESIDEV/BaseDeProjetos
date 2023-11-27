@@ -40,7 +40,7 @@ namespace BaseDeProjetos.Controllers
             {
                 ViewbagizarUsuario(_context);
 
-                var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.Include(p => p.Empresa).Include(p => p.Usuario).ToListAsync());
+                var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).ToListAsync());
 
                 ViewBag.searchString = searchString;
                 ViewBag.TamanhoPagina = tamanhoPagina;
