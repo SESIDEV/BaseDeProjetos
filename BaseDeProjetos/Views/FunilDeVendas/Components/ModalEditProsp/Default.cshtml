@@ -50,7 +50,6 @@
                 </div>
                 <div class="mb-2">
                     <label asp-for="MembrosEquipe" class="col-form-label" style="font-weight: 600">Membros</label>
-                    <!-- <label for="inputTextPessoas-@Model.Id" class="col-form-label" style="font-weight: 600">Membros</label> TESTAR SAPORRA -->
                     <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectPessoas-@Model.Id">
                         <span class="visually-hidden">Loading...</span>
                     </div>
@@ -72,12 +71,11 @@
                 </div>
                 <div class="mb-2">
                     <label asp-for="PotenciaisParceiros" class="col-form-label" style="font-weight: 600"></label>
-                    <!-- <label asp-for="inputTextEmpresas-@Model.Id" class="col-form-label" style="font-weight: 600">Potenciais Parceiros da Prospeccção</label> TESTAR SAPORRA -->
                     <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectEmpresas-@Model.Id">
                         <span class="visually-hidden">Loading...</span>
                     </div>
                     <input asp-for="PotenciaisParceiros" class="form-control d-none" id="inputTextEmpresas-@Model.Id" type="text"/>
-                        <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestEmpresas-@Model.Id" onclick="gerarOpcoesSelect('Empresas','editarProspModal-@Model.Id','-@Model.Id',true)">Alterar</button>
+                        <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestEmpresas-@Model.Id" onclick="gerarOpcoesSelect('Empresas','editarProspModal','-@Model.Id',true)">Alterar</button>
                     <div class="input-group flex-nowrap" id="caixaPesquisaEmpresas-@Model.Id" style="display:none;">
                         <select id="campoSelectEmpresas-@Model.Id" class="form-select" multiple="true"></select>
                     </div>
@@ -95,7 +93,6 @@
                 </div>
                 <div class="mb-2 d-none" id="campoAgg-@Model.Id">
                     <label asp-for="Agregadas" class="col-form-label" style="font-weight: 600"></label>
-                    <!-- <label for="inputTextProspeccoes-@Model.Id" class="col-form-label" style="font-weight: 600">Agregadas</label> TESTAR SAPORRA -->
                     <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectProspeccoes-@Model.Id">
                         <span class="visually-hidden">Loading...</span>
                     </div>
