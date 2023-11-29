@@ -20,7 +20,7 @@
                 <h1 class="modal-title fs-5" id="editarProspModal-@Model.Id-ToggleLabel">Dados da Prospecção</h1>
                 <div class="form-check form-switch" style="margin-left: 25%">
                     <input asp-for="Ancora" value="@Model.Ancora" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault-@Model.Id" style="margin-top: 30%;" onchange="checkAncora(this, 'iconAncora-@Model.Id', 'campoAgg-@Model.Id')">
-                    <label class="form-check-label" for="flexSwitchCheckDefault-@Model.Id">
+                    <label asp-for="Ancora" class="form-check-label">
                         <i id="iconAncora-@Model.Id" class='fa fa-anchor' style='color:rgba(111, 111, 111, 0.2); margin-bottom: 10%; font-size:200%'></i>
                     </label>
                 </div>
