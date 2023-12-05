@@ -126,10 +126,10 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="mb-2" id="group">
                     <label asp-for="Empresa" class="col-form-label" style="font-weight: 600"></label>
-                    <select asp-for="Empresa" class="form-control" asp-items='@(ViewData["Empresas"] as SelectList).OrderBy(p=>p.Text)'>
+                    <select asp-for="EmpresaId" class="form-control" asp-items='@(ViewData["Empresas"] as SelectList).OrderBy(p=>p.Text)'>
                         <option value="-1">Selecione a empresa</option>
                     </select>
-                    <span asp-validation-for="Empresa.Id" class="text-danger"></span>
+                    <span asp-validation-for="EmpresaId" class="text-danger"></span>
                 </div>
                 <hr />
                 <h1 class="modal-title fs-5">Dados do Contato</h1>
