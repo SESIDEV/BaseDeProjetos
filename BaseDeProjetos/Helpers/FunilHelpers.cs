@@ -114,27 +114,27 @@ namespace BaseDeProjetos.Helpers
             }
         }
 
-        public static List<Prospeccao> RetornarProspeccoesPorStatus(List<Prospeccao> prospeccoes, Usuario usuario, string aba, HttpContext HttpContext, DbCache cache)
+        public static List<Prospeccao> RetornarProspeccoesPorStatus(List<Prospeccao> prospeccoes, string casa, Usuario usuario, string aba, HttpContext HttpContext, DbCache cache)
         {
             switch (aba.ToLowerInvariant())
             {
                 case "ativas":
                     {
-                        List<Prospeccao> ativas = cache.GetCached($"Prospeccoes:Ativas:{usuario.Casa}:{usuario.Nivel}", () => prospeccoes.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
+                        List<Prospeccao> ativas = cache.GetCached($"Prospeccoes:Ativas:{casa}:{usuario.Nivel}", () => prospeccoes.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
                             followup.Data).LastOrDefault().Status < StatusProspeccao.ComProposta).ToList());
                         return ativas;
                     }
 
                 case "comproposta":
                     {
-                        List<Prospeccao> emProposta = cache.GetCached($"Prospeccoes:ComProposta:{usuario.Casa}:{usuario.Nivel}", () => prospeccoes.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
+                        List<Prospeccao> emProposta = cache.GetCached($"Prospeccoes:ComProposta:{casa}:{usuario.Nivel}", () => prospeccoes.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
                             followup.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList());
                         return emProposta;
                     }
 
                 case "concluidas":
                     {
-                        List<Prospeccao> concluidas = cache.GetCached($"Prospeccoes:Concluidas:{usuario.Casa}:{usuario.Nivel}", () => prospeccoes.Where(prospeccao => prospeccao.Status.Any(followup =>
+                        List<Prospeccao> concluidas = cache.GetCached($"Prospeccoes:Concluidas:{casa}:{usuario.Nivel}", () => prospeccoes.Where(prospeccao => prospeccao.Status.Any(followup =>
                             followup.Status == StatusProspeccao.Convertida ||
                             followup.Status == StatusProspeccao.Suspensa ||
                             followup.Status == StatusProspeccao.NaoConvertida
@@ -205,7 +205,7 @@ namespace BaseDeProjetos.Helpers
                 {
                     HttpContext.Session.SetString("_Casa", casa);
                     enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
-                    prospeccoes = await cache.GetCachedAsync($"Prospeccoes:Funil:Filtradas:{usuario.Casa}", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).Where(prospeccao => prospeccao.Casa.Equals(usuario.Casa)).ToListAsync());
+                    prospeccoes = await cache.GetCachedAsync($"Prospeccoes:Funil:Filtradas:{enum_casa}", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).Where(prospeccao => prospeccao.Casa.Equals(enum_casa)).ToListAsync());
                     ViewData["Area"] = casa;
                 }
             }
