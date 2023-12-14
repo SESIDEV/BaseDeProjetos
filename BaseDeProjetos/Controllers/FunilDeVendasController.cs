@@ -62,7 +62,7 @@ namespace BaseDeProjetos.Controllers
                 var model = new ProspeccoesViewModel
                 {
                     Prospeccoes = prospeccoesPagina,
-                    Pager = pager,      
+                    Pager = pager,
                 };
 
                 await InserirDadosEmpresasUsuariosViewData();
@@ -147,7 +147,16 @@ namespace BaseDeProjetos.Controllers
 
             if (!string.IsNullOrEmpty(aba))
             {
-                prospeccoes = FunilHelpers.RetornarProspeccoesPorStatus(prospeccoes, casa, usuario, aba, HttpContext, _cache);
+                ParametrosFiltroFunil parametros = new ParametrosFiltroFunil(casa, usuario, _cache, aba, HttpContext);
+
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    prospeccoes = FunilHelpers.RetornarProspeccoesPorStatus(prospeccoes, parametros, true);
+                }
+                else
+                {
+                    prospeccoes = FunilHelpers.RetornarProspeccoesPorStatus(prospeccoes, parametros, false);
+                }
             }
 
             return prospeccoes;
