@@ -212,7 +212,6 @@
 
                 @if (!string.IsNullOrEmpty(@aba))
                 {
-
                     <div>Quantidade de Prospecções:</div>
                     <form method="get" asp-action="Index" asp-controller="FunildeVendas" asp-route-casa="@casa" asp-route-aba="@aba">
                         <select class="form-select" id="tamanhoPagina" onchange="changePageSize()">
@@ -252,99 +251,118 @@
                                 <option value="100">100</option>
                             }
                         </select>
-                </form>
+                    </form>
                 }
             </div>
 
-
-            <nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
-                @if (string.IsNullOrEmpty(aba))
-                {
-                    <a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-dashboard-tab" data-bs-toggle="tab" href="#prospeccao-dashboard" role="tab" aria-controls="prospeccao-dashboard" aria-selected="true">Dashboard</a>
-                }
-                else
-                {
-                    <a class="flex-sm-fill text-sm-center nav-link" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="" id="prospeccao-dashboard-tab" aria-controls="prospeccao-dashboard" aria-selected="false">Dashboard</a>
-                }
-                @if (!string.IsNullOrEmpty(aba))
-                {
-                    if (aba.ToLowerInvariant() == "ativas")
+            @if (Model.Prospeccoes.Count() != 0)
+            {
+                <nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
+                    @if (string.IsNullOrEmpty(aba))
                     {
-                        <a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-ativas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="ativas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" aria-controls="prospeccao-ativas" aria-selected="true">Ativas (@Model.Prospeccoes.Count())</a>
-                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="comproposta" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta</a>
-                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="concluidas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas</a>
-                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="planejadas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas</a>
-                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="erradas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas</a>
+                        <a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-dashboard-tab" data-bs-toggle="tab" href="#prospeccao-dashboard" role="tab" aria-controls="prospeccao-dashboard" aria-selected="true">Dashboard</a>
                     }
-                    else if (aba.ToLowerInvariant() == "comproposta")
+                    else
                     {
-                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="ativas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" aria-controls="prospeccao-ativas" aria-selected="false">Ativas</a>
-                        <a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-comproposta-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="comproposta" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-comproposta" aria-selected="true">Com Proposta (@Model.Prospeccoes.Count())</a>
-                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="concluidas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas</a>
-                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="planejadas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas</a>
-                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="erradas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas</a>
+                        <a class="flex-sm-fill text-sm-center nav-link" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="" id="prospeccao-dashboard-tab" aria-controls="prospeccao-dashboard" aria-selected="false">Dashboard</a>
                     }
-                    else if (aba.ToLowerInvariant() == "concluidas")
+                    @if (!string.IsNullOrEmpty(aba))
                     {
-                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="ativas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" aria-controls="prospeccao-ativas" aria-selected="false">Ativas</a>
-                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="comproposta" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta</a>
-                        <a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-concluidas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="concluidas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-concluidas" aria-selected="true">Concluídas (@Model.Prospeccoes.Count())</a>
-                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="planejadas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas</a>
-                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="erradas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas</a>
-                    }
-                    else if (aba.ToLowerInvariant() == "planejadas")
-                    {
-                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="ativas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" aria-controls="prospeccao-ativas" aria-selected="false">Ativas</a>
-                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="comproposta" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta</a>
-                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="concluidas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas</a>
-                        <a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-planejadas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="planejadas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-planejadas" aria-selected="true">Planejadas (@Model.Prospeccoes.Count())</a>
-                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="erradas"  asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas</a>
-                    }
-                    else if (aba.ToLowerInvariant() == "erradas")
-                    {
-                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="ativas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" aria-controls="prospeccao-ativas" aria-selected="false">Ativas</a>
-                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="comproposta" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina"  role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta</a>
-                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="concluidas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas</a>
-                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="planejadas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas</a>
-                        <a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-erradas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="erradas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-erradas" aria-selected="true">Erradas (@Model.Prospeccoes.Count())</a>
+                        if (aba.ToLowerInvariant() == "ativas")
+                        {
+                            <a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-ativas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="ativas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" aria-controls="prospeccao-ativas" aria-selected="true">Ativas (@Model.Prospeccoes.Count())</a>
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="comproposta" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta</a>
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="concluidas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas</a>
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="planejadas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas</a>
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="erradas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas</a>
+                        }
+                        else if (aba.ToLowerInvariant() == "comproposta")
+                        {
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="ativas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" aria-controls="prospeccao-ativas" aria-selected="false">Ativas</a>
+                            <a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-comproposta-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="comproposta" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-comproposta" aria-selected="true">Com Proposta (@Model.Prospeccoes.Count())</a>
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="concluidas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas</a>
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="planejadas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas</a>
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="erradas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas</a>
+                        }
+                        else if (aba.ToLowerInvariant() == "concluidas")
+                        {
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="ativas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" aria-controls="prospeccao-ativas" aria-selected="false">Ativas</a>
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="comproposta" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta</a>
+                            <a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-concluidas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="concluidas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-concluidas" aria-selected="true">Concluídas (@Model.Prospeccoes.Count())</a>
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="planejadas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas</a>
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="erradas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas</a>
+                        }
+                        else if (aba.ToLowerInvariant() == "planejadas")
+                        {
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="ativas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" aria-controls="prospeccao-ativas" aria-selected="false">Ativas</a>
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="comproposta" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta</a>
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="concluidas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas</a>
+                            <a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-planejadas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="planejadas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-planejadas" aria-selected="true">Planejadas (@Model.Prospeccoes.Count())</a>
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="erradas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas</a>
+                        }
+                        else if (aba.ToLowerInvariant() == "erradas")
+                        {
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="ativas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" aria-controls="prospeccao-ativas" aria-selected="false">Ativas</a>
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="comproposta" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta</a>
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="concluidas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas</a>
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="planejadas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas</a>
+                            <a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-erradas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="erradas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-erradas" aria-selected="true">Erradas (@Model.Prospeccoes.Count())</a>
+                        }
+                        else
+                        {
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="ativas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" aria-controls="prospeccao-ativas" aria-selected="false">Ativas</a>
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="comproposta" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta</a>
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="concluidas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas</a>
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="planejadas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas</a>
+                            <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="erradas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas</a>
+                        }
                     }
                     else
                     {
                         <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="ativas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" aria-controls="prospeccao-ativas" aria-selected="false">Ativas</a>
                         <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="comproposta" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta</a>
                         <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="concluidas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas</a>
-                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="planejadas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-planejadas" aria-selected="false">Planejadas</a>
+                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="planejadas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" aria-selected="false">Planejadas</a>
                         <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="erradas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas</a>
                     }
-                }
-                else
-                {
-                    <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-ativas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="ativas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" aria-controls="prospeccao-ativas" aria-selected="false">Ativas</a>
-                    <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-comproposta-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="comproposta" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-comproposta" aria-selected="false">Com Proposta</a>
-                    <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-concluidas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="concluidas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-concluidas" aria-selected="false">Concluídas</a>
-                    <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-planejadas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="planejadas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" aria-selected="false">Planejadas</a>
-                    <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-erradas-tab" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casa" asp-route-aba="erradas" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" role="tab" aria-controls="prospeccao-erradas" aria-selected="false">Erradas</a>
-                }
 
-            </nav>
-
-            <div class="tab-content" id="orders-table-tab-content">
-                @if (string.IsNullOrEmpty(aba))
-                {
-                    <div class="tab-pane fade show active" id="prospeccao-dashboard" role="tabpanel" aria-labelledby="prospeccao-dashboard-tab">
-                        <div class="app-card app-card-orders-table mb-5">
-                            <div class="app-card-body">
-                                <partial name="graph_funil" view-data="@ViewData" />
+                </nav>
+                <div class="tab-content" id="orders-table-tab-content">
+                    @if (string.IsNullOrEmpty(aba))
+                    {
+                        <div class="tab-pane fade show active" id="prospeccao-dashboard" role="tabpanel" aria-labelledby="prospeccao-dashboard-tab">
+                            <div class="app-card app-card-orders-table mb-5">
+                                <div class="app-card-body">
+                                    <partial name="graph_funil" view-data="@ViewData" />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                }
-                else
-                {
-                    @await Html.PartialAsync("ListaProsp", Model)
-                    ;
-                }
-            </div>
+                    }
+                    else
+                    {
+                        @await Html.PartialAsync("ListaProsp", Model)
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="d-flex justify-content-center align-items-center flex-column" style="height: 50vh">
+                    <h1 class="bi bi-exclamation-triangle text-warning"></h1>
+                    @if (string.IsNullOrEmpty(searchString))
+                    {
+                        <h2>
+                            Página de Prospecções não encontrada.
+                        </h2>
+                    }
+                    else
+                    {
+                        <h2>
+                            Não foram encontradas prospecções com o termo "@searchString".
+                        </h2>
+                    }
+                    <div>Clique <a asp-controller="FunilDeVendas" asp-action="Index" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" asp-route-casa="@casa" asp-route-aba="@aba" asp-route-numeroPagina="1">aqui</a> para voltar para a primeira página.</div>
+                </div>
+            }
 
             @if (!string.IsNullOrEmpty(aba))
             {
