@@ -52,20 +52,30 @@ namespace BaseDeProjetos.Controllers
 
                 prospeccoes = await ObterProspeccoesFunilFiltradas(casa, aba, sortOrder, searchString, ano, UsuarioAtivo);
 
+                await InserirDadosEmpresasUsuariosViewData();
+
                 int qtdProspeccoes = prospeccoes.Count();
                 int qtdPaginasTodo = (int)Math.Ceiling((double)qtdProspeccoes / tamanhoPagina);
 
-                List<Prospeccao> prospeccoesPagina = ObterProspeccoesPorPagina(prospeccoes, numeroPagina, tamanhoPagina);
-
                 var pager = new Pager(qtdProspeccoes, numeroPagina, tamanhoPagina, 50); // 50 paginas max
+                
+                if (numeroPagina > qtdPaginasTodo)
+                {
+                    var paginaVazia = new ProspeccoesViewModel
+                    {
+                        Prospeccoes = new List<Prospeccao>(),
+                        Pager = pager
+                    };
+                    return View(paginaVazia);
+                }
+
+                List<Prospeccao> prospeccoesPagina = ObterProspeccoesPorPagina(prospeccoes, numeroPagina, tamanhoPagina);
 
                 var model = new ProspeccoesViewModel
                 {
                     Prospeccoes = prospeccoesPagina,
                     Pager = pager,
                 };
-
-                await InserirDadosEmpresasUsuariosViewData();
 
                 if (!string.IsNullOrEmpty(aba))
                 {
