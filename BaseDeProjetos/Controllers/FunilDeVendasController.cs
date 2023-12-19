@@ -85,14 +85,14 @@ namespace BaseDeProjetos.Controllers
                 {
                     var prospeccoesParaFiltragemAgregadas = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.ToListAsync());
 
-                    ViewData["ProspeccoesAgregadas"] = prospeccoesParaFiltragemAgregadas.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
-                    ViewData["ListaProspeccoes"] = prospeccoes;
-                    ViewData["ProspeccoesAtivas"] = prospeccoes.Where(
+                    model.ProspeccoesAgregadas = prospeccoesParaFiltragemAgregadas.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
+                    model.ProspeccoesGrafico = prospeccoes;
+                    model. ProspeccoesAtivas = prospeccoes.Where(
                         p => p.Status.OrderBy(k => k.Data).All(
                             pa => pa.Status == StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto || pa.Status == StatusProspeccao.ComProposta)).ToList();
-                    ViewData["ProspeccoesTotais"] = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(pa => pa.Status != StatusProspeccao.Planejada)).ToList();
-                    ViewData["ProspeccoesNaoPlanejadas"] = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(f => f.Status != StatusProspeccao.Planejada)).ToList();
-                    ViewData["ProspeccoesAvancadas"] = prospeccoes.Where(
+                    model.ProspeccoesTotais = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(pa => pa.Status != StatusProspeccao.Planejada)).ToList();
+                    model.ProspeccoesNaoPlanejadas = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(f => f.Status != StatusProspeccao.Planejada)).ToList();
+                    model.ProspeccoesAvancadas = prospeccoes.Where(
                         p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)).Where(
                             p => p.Status.Any(k => k.Status > StatusProspeccao.ComProposta)).Where(
                                 p => (p.Status.First().Data - p.Status.FirstOrDefault(
