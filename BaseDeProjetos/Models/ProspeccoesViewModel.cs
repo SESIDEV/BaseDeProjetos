@@ -9,7 +9,6 @@ namespace BaseDeProjetos.Models
         public List<Prospeccao>? ProspeccoesGrafico { get; set; }
         public List<Prospeccao>? ProspeccoesAgregadas { get; set; }
         public List<Prospeccao>? ProspeccoesAtivas { get; set; }
-        public List<Prospeccao>? ProspeccoesTotais { get; set; }
         public List<Prospeccao>? ProspeccoesNaoPlanejadas { get; set; }
         public List<Prospeccao>? ProspeccoesAvancadas { get; set; }
 

@@ -90,7 +90,6 @@ namespace BaseDeProjetos.Controllers
                     model. ProspeccoesAtivas = prospeccoes.Where(
                         p => p.Status.OrderBy(k => k.Data).All(
                             pa => pa.Status == StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto || pa.Status == StatusProspeccao.ComProposta)).ToList();
-                    model.ProspeccoesTotais = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(pa => pa.Status != StatusProspeccao.Planejada)).ToList();
                     model.ProspeccoesNaoPlanejadas = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(f => f.Status != StatusProspeccao.Planejada)).ToList();
                     model.ProspeccoesAvancadas = prospeccoes.Where(
                         p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)).Where(
