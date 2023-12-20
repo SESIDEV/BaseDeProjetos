@@ -322,18 +322,18 @@ namespace BaseDeProjetos.Helpers
             }
         }
 
-        public static string MostrarAgregadas(List<Prospeccao> aggTodas, string agregadas)
+        public static string MostrarAgregadas(List<Prospeccao> prospeccoesAgregadas, string agregadas)
         {
-            if (aggTodas != null)
+            if (prospeccoesAgregadas != null)
             {
                 string empresas = "";
-                List<string> agg = agregadas.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                List<string> agregadasComoString = agregadas.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-                foreach (var p in aggTodas)
+                foreach (var prospeccao in prospeccoesAgregadas)
                 {
-                    if (agg.Contains(p.Id))
+                    if (agregadasComoString.Contains(prospeccao.Id))
                     {
-                        empresas += p.Empresa.Nome + ";";
+                        empresas += prospeccao.Empresa.Nome + ";";
                     }
                 }
 

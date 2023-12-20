@@ -87,7 +87,7 @@ namespace BaseDeProjetos.Controllers
 
                     model.ProspeccoesAgregadas = prospeccoesParaFiltragemAgregadas.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
                     model.ProspeccoesGrafico = prospeccoes;
-                    model. ProspeccoesAtivas = prospeccoes.Where(
+                    model.ProspeccoesAtivas = prospeccoes.Where(
                         p => p.Status.OrderBy(k => k.Data).All(
                             pa => pa.Status == StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto || pa.Status == StatusProspeccao.ComProposta)).ToList();
                     model.ProspeccoesNaoPlanejadas = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(f => f.Status != StatusProspeccao.Planejada)).ToList();
