@@ -58,7 +58,7 @@ namespace BaseDeProjetos.Controllers
             Dictionary<string, object> dadosGrafico = new Dictionary<string, object>();
             Dictionary<string, float> dadosProspeccoes = new Dictionary<string, float>();
 
-            decimal receitaTotal = 0;
+            decimal receitaTotalISI = 0;
             decimal despesaTotal = 0;
             decimal investimentoTotal = 0;
             decimal sustentabilidade = 0;
@@ -115,7 +115,7 @@ namespace BaseDeProjetos.Controllers
                     var indicadoresFinanceiros = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == Instituto.ISIQV || lista.Casa == Instituto.CISHO).ToList().LastOrDefault();
                     // Volume de negocios é o somatório de todos os valores de prospecções
                     dadosFinanceiros["volumeNegocios"] = prospeccoesAtivas.Where(p => p.Casa == Instituto.ISIQV || p.Casa == Instituto.CISHO).Sum(p => p.ValorEstimado);
-                    dadosFinanceiros["receitaTotal"] = receitaTotal = indicadoresFinanceiros.Receita;
+                    dadosFinanceiros["receitaTotal"] = receitaTotalISI = indicadoresFinanceiros.Receita;
                     dadosFinanceiros["despesaTotal"] = despesaTotal = indicadoresFinanceiros.Despesa;
                     dadosFinanceiros["investimentoTotal"] = investimentoTotal = indicadoresFinanceiros.Investimento;
                     dadosFinanceiros["quali"] = (decimal)indicadoresFinanceiros.QualiSeguranca;
@@ -126,7 +126,7 @@ namespace BaseDeProjetos.Controllers
                 {
                     var indicadoresFinanceiros = _context.IndicadoresFinanceiros.Where(lista => lista.Casa == UsuarioAtivo.Casa).ToList().LastOrDefault();
                     dadosFinanceiros["volumeNegocios"] = prospeccoesAtivas.Sum(p => p.ValorEstimado);
-                    dadosFinanceiros["receitaTotal"] = receitaTotal = indicadoresFinanceiros.Receita;
+                    dadosFinanceiros["receitaTotal"] = receitaTotalISI = indicadoresFinanceiros.Receita;
                     dadosFinanceiros["despesaTotal"] = despesaTotal = indicadoresFinanceiros.Despesa;
                     dadosFinanceiros["investimentoTotal"] = investimentoTotal = indicadoresFinanceiros.Investimento;
                     dadosFinanceiros["quali"] = (decimal)indicadoresFinanceiros.QualiSeguranca;
