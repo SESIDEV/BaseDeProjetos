@@ -79,13 +79,13 @@ namespace BaseDeProjetos.Controllers
 
                 if (!string.IsNullOrEmpty(aba))
                 {
+                    var prospeccoesParaFiltragemAgregadas = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.ToListAsync());
+                    model.ProspeccoesAgregadas = prospeccoesParaFiltragemAgregadas.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
                     return View(model);
                 }
                 else
                 {
-                    var prospeccoesParaFiltragemAgregadas = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.ToListAsync());
 
-                    model.ProspeccoesAgregadas = prospeccoesParaFiltragemAgregadas.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
                     model.ProspeccoesGrafico = prospeccoes;
                     model.ProspeccoesAtivas = prospeccoes.Where(
                         p => p.Status.OrderBy(k => k.Data).All(

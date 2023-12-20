@@ -9,7 +9,6 @@
     string aba = dadosDaRota.Values["aba"] as string;
     string casa = dadosDaRota.Values["casa"] as string;
     aba = aba.ToLowerInvariant();
-    var agregadas = ViewData["ProspeccoesAgregadas"] as List<Prospeccao>;
     var usuarios = ViewData["Usuarios"] as List<UsuariosFunilDTO>;
 }
 <style>
@@ -64,7 +63,7 @@
                                             }
                                             @if (prospeccao.Ancora == true)
                                             {
-                                                <span id="tip_agg" class="translate-top-right badge rounded-pill bg-warning" data-tippy-content='@FunilHelpers.MostrarAgregadas(agregadas, prospeccao.Agregadas)'>+@prospeccao.Agregadas.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Length</span>
+                                                <span id="tip_agg" class="translate-top-right badge rounded-pill bg-warning" data-tippy-content='@FunilHelpers.MostrarAgregadas(Model.ProspeccoesAgregadas, prospeccao.Agregadas)'>+@prospeccao.Agregadas.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Length</span>
                                             }
                                         </div>
                                         <div>
