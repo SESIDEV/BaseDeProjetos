@@ -19,118 +19,7 @@
 
 }
 
-<script>
-    window.onload = () => {
-        let loadAnimGraficoParticipacao = document.getElementById("participacao");
-        loadAnimGraficoParticipacao.innerHTML = "<div class='d-flex justify-content-center align-items-center'><div class='mt-2 mb-2 spinner-border text-primary'></div></div>"
-        puxarDadosParticipacao().then(data => {
-            carregarGraficoParticipacao(data);
-        }).catch(error => {
-            console.log(error);
-        });
-    }
 
-    function carregarGraficoParticipacao(dadosParticipacao) {
-        let dados = dadosParticipacao["Participacao"];
-        let rankings = dados["RankPorIndicador"];
-        let valoresMedios = dadosParticipacao["Rankings"];
-        Highcharts.chart('participacao', {
-
-            exporting: {
-                enabled: false
-            },
-
-            tooltip: {
-                pointFormat: '{series.name}: <b>{point.y:.2f}</b>'
-            },
-
-            chart: {
-                polar: true,
-                type: 'line'
-            },
-
-            title: {
-                text: undefined
-            },
-
-            pane: {
-                startAngle: 0,
-                endAngle: 360
-            },
-
-            xAxis: {
-                categories: [
-                    'Valor Total das Prospecções',
-                    'Quantidade de Prospecções',
-                    'Valor Médio (Prospecções)',
-                    'Valor Total das Prospecções (Em Proposta)',
-                    'Valor Médio das Prospecções (Em Proposta)',
-                    'Valor Total das Prospecções (Convertidas)',
-                    'Valor Médio das Prospecções (Convertidas)',
-                    'Prospecções em Proposta',
-                    'Prospecções Convertidas',
-                    'Taxa de Conversão em Proposta',
-                    'Taxa de Conversão em Projeto',
-                    'Assertividade na Precificação',
-                    'Fator de Contribuição Financeira',
-                ],
-                tickmarkPlacement: 'on',
-                labels: {
-                    enabled: false
-                }
-            },
-
-            yAxis: {
-                gridLineInterpolation: 'polygon',
-                lineWidth: 0,
-                min: 0,
-                max: 1,
-                tickInterval: 0.25, // Sets the interval between grid lines
-                endOnTick: false,
-                showLastLabel: true
-            },
-
-            series: [{
-                name: 'Indicador',
-                data:
-                    [
-                        rankings['RankValorTotalProspeccoes'],
-                        rankings['RankQuantidadeProspeccoes'],
-                        rankings['RankValorMedioProspeccoes'],
-                        rankings['RankValorTotalProspeccoesComProposta'],
-                        rankings['RankValorMedioProspeccoesComProposta'],
-                        rankings['RankValorTotalProspeccoesConvertidas'],
-                        rankings['RankValorMedioProspeccoesConvertidas'],
-                        rankings['RankQuantidadeProspeccoesComProposta'],
-                        rankings['RankQuantidadeProspeccoesProjeto'],
-                        dados['TaxaConversaoProposta'],
-                        dados['TaxaConversaoProjeto'],
-                        rankings['RankAssertividadePrecificacao'],
-                        rankings['RankFatorContribuicaoFinanceira'],
-                    ],
-                pointPlacement: 'on',
-                showInLegend: false,
-                color: '#15a362'
-            }, {
-                name: 'Media',
-                type: 'area',
-                data: valoresMedios,
-                pointPlacement: 'on',
-                showInLegend: false,
-                color: '#E6B50D'
-            }],
-            legend: {
-                enabled: false
-            }
-        });
-    }
-
-    async function puxarDadosParticipacao() {
-        const response = await fetch(`${location.origin}/Participacao/RetornarDadosGrafico/`);
-        const data = await response.json();
-        return data;
-    }
-</script>
 
 
 <div id="app-sidepanel" class="app-sidepanel">
@@ -139,13 +28,6 @@
         <a href="#" id="sidepanel-close" class="sidepanel-close d-xl-none">&times;</a>
         <div class="app-branding">
             <span class="logo-text">SGI</span>
-        </div>
-
-        <div class="align-self-center">
-            <h5 class="logo-text">Gráfico de Participação</h5>
-        </div>
-
-        <div id="participacao">
         </div>
 
         <nav id="app-nav-main" class="app-nav app-nav-main flex-grow-1">
