@@ -25,7 +25,7 @@
 
         let rankings = dados["RankPorIndicador"];
         let valoresMedios = dadosParticipacao["Rankings"];
-        Highcharts.chart('participacao', {
+        Highcharts.chart('graficoParticipacao', {
 
             exporting: {
                 enabled: false
@@ -128,7 +128,7 @@
     <button class="btn btn-secondary dropdown-toggle" type="button" onclick="exibirGraficoParticipacao()" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
         Gráfico de Participação
     </button>
-    <div class="dropdown-menu p-4" style="max-width: 350px;">
+    <div class="dropdown-menu" style="width: 600px">
         <div id="graficoParticipacao">
         </div>
     </div>
