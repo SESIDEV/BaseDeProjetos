@@ -77,6 +77,14 @@ namespace BaseDeProjetos.Controllers
                     Pager = pager,
                 };
 
+                model.ProspeccoesAtivas = prospeccoes.Where(
+                        p => p.Status.OrderBy(k => k.Data).All(
+                            pa => pa.Status == StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto || pa.Status == StatusProspeccao.ComProposta)).ToList();
+                model.ProspeccoesComProposta = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(f => f.Status == StatusProspeccao.ComProposta)).ToList();
+                model.ProspeccoesConcluidas = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(f => f.Status == StatusProspeccao.Convertida)).ToList();
+                model.ProspeccoesPlanejadas = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(f => f.Status == StatusProspeccao.Planejada)).ToList();
+                model.ProspeccoesNaoPlanejadas = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(f => f.Status != StatusProspeccao.Planejada)).ToList();
+
                 if (!string.IsNullOrEmpty(aba))
                 {
                     var prospeccoesParaFiltragemAgregadas = await _cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).ToListAsync());
@@ -87,10 +95,9 @@ namespace BaseDeProjetos.Controllers
                 {
 
                     model.ProspeccoesGrafico = prospeccoes;
-                    model.ProspeccoesAtivas = prospeccoes.Where(
-                        p => p.Status.OrderBy(k => k.Data).All(
-                            pa => pa.Status == StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto || pa.Status == StatusProspeccao.ComProposta)).ToList();
-                    model.ProspeccoesNaoPlanejadas = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(f => f.Status != StatusProspeccao.Planejada)).ToList();
+                    
+
+
                     model.ProspeccoesAvancadas = prospeccoes.Where(
                         p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)).Where(
                             p => p.Status.Any(k => k.Status > StatusProspeccao.ComProposta)).Where(
