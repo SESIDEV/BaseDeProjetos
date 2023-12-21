@@ -1,4 +1,5 @@
 ﻿using BaseDeProjetos.Models;
+using BaseDeProjetos.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;

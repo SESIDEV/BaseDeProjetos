@@ -1,4 +1,5 @@
 ﻿using BaseDeProjetos.Models;
+using BaseDeProjetos.Models.Enums;
 using MailSenderApp.Services;
 using MailSenderHelpers;
 using Microsoft.AspNetCore.Identity.UI.Services;
