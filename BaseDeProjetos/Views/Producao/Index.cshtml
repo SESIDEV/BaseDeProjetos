@@ -1,6 +1,8 @@
 ﻿@model IEnumerable<BaseDeProjetos.Models.Producao>
 @addTagHelper *, BaseDeProjetos.Models.Producao
-@using BaseDeProjetos.Models
+@using BaseDeProjetos.Models;
+@using BaseDeProjetos.Models.Enums;
+    using BaseDeProjetos.Models.Enums
 
 @{
 	SelectList ListProjetos = ViewData["Projetos"] as SelectList;
