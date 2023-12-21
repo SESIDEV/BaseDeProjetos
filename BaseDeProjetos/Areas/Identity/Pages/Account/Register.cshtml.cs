@@ -1,5 +1,6 @@
 ﻿using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
+using BaseDeProjetos.Models.Enums;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
