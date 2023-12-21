@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BaseDeProjetos.Models
+namespace BaseDeProjetos.Models.ViewModels
 {
     public class ParticipacaoViewModel
     {

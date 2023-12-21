@@ -1,7 +1,7 @@
 ﻿using BaseDeProjetos.Helpers;
 using System.Collections.Generic;
 
-namespace BaseDeProjetos.Models
+namespace BaseDeProjetos.Models.ViewModels
 {
     public class ProspeccoesViewModel
     {
@@ -9,11 +9,11 @@ namespace BaseDeProjetos.Models
         public List<Prospeccao> ProspeccoesConcluidas { get; set; }
         public List<Prospeccao> ProspeccoesComProposta { get; set; }
         public List<Prospeccao> ProspeccoesPlanejadas { get; set; }
-        public List<Prospeccao>? ProspeccoesGrafico { get; set; }
-        public List<Prospeccao>? ProspeccoesAgregadas { get; set; }
-        public List<Prospeccao>? ProspeccoesAtivas { get; set; }
-        public List<Prospeccao>? ProspeccoesNaoPlanejadas { get; set; }
-        public List<Prospeccao>? ProspeccoesAvancadas { get; set; }
+        public List<Prospeccao> ProspeccoesGrafico { get; set; }
+        public List<Prospeccao> ProspeccoesAgregadas { get; set; }
+        public List<Prospeccao> ProspeccoesAtivas { get; set; }
+        public List<Prospeccao> ProspeccoesNaoPlanejadas { get; set; }
+        public List<Prospeccao> ProspeccoesAvancadas { get; set; }
 
         public Pager Pager { get; set; }
     }
