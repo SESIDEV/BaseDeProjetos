@@ -1,5 +1,6 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
+using BaseDeProjetos.Models.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

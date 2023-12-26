@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using BaseDeProjetos.Models.Enums;
 
 namespace BaseDeProjetos.Models
 {

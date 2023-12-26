@@ -1,6 +1,7 @@
 ﻿// Classe Bean simples para armazenar a receita do período
 using System;
 using System.ComponentModel.DataAnnotations;
+using BaseDeProjetos.Models.Enums;
 
 namespace BaseDeProjetos.Models
 {

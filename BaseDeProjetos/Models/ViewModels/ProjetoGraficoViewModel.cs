@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using BaseDeProjetos.Models.DTOs;
 
-namespace BaseDeProjetos.Models
+namespace BaseDeProjetos.Models.ViewModels
 {
     public class ProjetoGraficoViewModel
     {

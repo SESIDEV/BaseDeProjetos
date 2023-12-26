@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using BaseDeProjetos.Models.Enums;
 
-namespace BaseDeProjetos.Models
+namespace BaseDeProjetos.Models.DTOs
 {
     public class ProspeccaoHomeDTO
     {

@@ -1,5 +1,5 @@
 ﻿using BaseDeProjetos.Data;
-using BaseDeProjetos.Models;
+using BaseDeProjetos.Models.Enums;
 using Microsoft.AspNetCore.Html;
 using System;
 using System.Linq;

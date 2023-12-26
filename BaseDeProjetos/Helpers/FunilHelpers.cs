@@ -1,5 +1,6 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
+using BaseDeProjetos.Models.Enums;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace BaseDeProjetos.Models
+namespace BaseDeProjetos.Models.DTOs
 {
 
     public class ProspeccaoEmpresasDTO

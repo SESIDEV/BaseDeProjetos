@@ -1,5 +1,6 @@
 ﻿using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
+using BaseDeProjetos.Models.Enums;
 using System;
 
 namespace TestesBaseDeProjetos1.TestHelper

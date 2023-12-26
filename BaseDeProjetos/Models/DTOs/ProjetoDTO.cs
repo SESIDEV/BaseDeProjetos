@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using BaseDeProjetos.Models.Enums;
 
-namespace BaseDeProjetos.Models
+namespace BaseDeProjetos.Models.DTOs
 {
     /// <summary>
     /// DTO utilizado para o ProjetoGraficoViewModel em que não precisamos de todas as propriedades

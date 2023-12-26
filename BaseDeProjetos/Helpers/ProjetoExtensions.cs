@@ -1,4 +1,5 @@
 using BaseDeProjetos.Models;
+using BaseDeProjetos.Models.DTOs;
 
 public static class ProjetoExtensions
 {

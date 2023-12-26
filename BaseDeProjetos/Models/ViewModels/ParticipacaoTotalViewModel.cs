@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BaseDeProjetos.Models
+namespace BaseDeProjetos.Models.ViewModels
 {
     public class ParticipacaoTotalViewModel
     {

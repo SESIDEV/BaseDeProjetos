@@ -1,4 +1,5 @@
 ﻿using BaseDeProjetos.Models;
+using BaseDeProjetos.Models.Enums;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using System.Collections.Generic;

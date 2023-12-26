@@ -1,4 +1,4 @@
-﻿namespace BaseDeProjetos.Models
+﻿namespace BaseDeProjetos.Models.DTOs
 {
     public class UsuarioProjetoDTO
     {
