@@ -259,6 +259,8 @@ namespace BaseDeProjetos.Controllers
 
             if (HttpContext.User.Identity.IsAuthenticated)
             {
+                _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).ToListAsync());
+
                 var participacoes = await GetParticipacoesTotaisUsuarios();
                 Dictionary<string, object> dadosGrafico = new Dictionary<string, object>();
                 List<decimal> rankingsMedios = new List<decimal>();
@@ -581,7 +583,7 @@ namespace BaseDeProjetos.Controllers
                     valorMedioProspeccoesComPropostaLider = valorTotalProspeccoesComPropostaLider / quantidadeProspeccoesComPropostaLider;
                 }
 
-                if (quantidadeProspeccoesConvertidasLider > 0)
+                if (quantidadeProspeccoesConvertidasLider > 0 && quantidadeProspeccoesConvertidas > 0)
                 {
                     participacao.ValorMedioProspeccoesConvertidas = valorMedioProspeccoesConvertidas = valorTotalProspeccoesConvertidas / quantidadeProspeccoesConvertidas;
                     valorMedioProspeccoesConvertidasLider = valorTotalProspeccoesConvertidasLider / quantidadeProspeccoesConvertidasLider;

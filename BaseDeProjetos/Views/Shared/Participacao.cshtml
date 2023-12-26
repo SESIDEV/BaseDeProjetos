@@ -1,0 +1,135 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<script>
+    function exibirGraficoParticipacao() {
+        let loadAnimGraficoParticipacao = document.querySelector("#graficoParticipacao");
+        loadAnimGraficoParticipacao.innerHTML = "<div class='d-flex justify-content-center align-items-center'><div class='mt-2 mb-2 spinner-border text-primary'></div></div>"
+        puxarDadosParticipacao().then(data => {
+            carregarGraficoParticipacao(data);
+        }).catch(error => {
+            console.log(error);
+        });
+    }
+
+    function carregarGraficoParticipacao(dadosParticipacao) {
+        let dados = dadosParticipacao["Participacao"];
+
+        if (dados === null || dados === undefined) 
+        {
+            let loadAnimGraficoParticipacao = document.querySelector("#graficoParticipacao");
+            loadAnimGraficoParticipacao.innerHTML = "Você não possui dados de participação!";
+            console.log("No data");
+            return null;
+        }
+
+        let rankings = dados["RankPorIndicador"];
+        let valoresMedios = dadosParticipacao["Rankings"];
+        Highcharts.chart('graficoParticipacao', {
+
+            exporting: {
+                enabled: false
+            },
+
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.y:.2f}</b>'
+            },
+
+            chart: {
+                polar: true,
+                type: 'line'
+            },
+
+            title: {
+                text: undefined
+            },
+
+            pane: {
+                startAngle: 0,
+                endAngle: 360
+            },
+
+            xAxis: {
+                categories: [
+                    'Valor Total das Prospecções',
+                    'Quantidade de Prospecções',
+                    'Valor Médio (Prospecções)',
+                    'Valor Total das Prospecções (Em Proposta)',
+                    'Valor Médio das Prospecções (Em Proposta)',
+                    'Valor Total das Prospecções (Convertidas)',
+                    'Valor Médio das Prospecções (Convertidas)',
+                    'Prospecções em Proposta',
+                    'Prospecções Convertidas',
+                    'Taxa de Conversão em Proposta',
+                    'Taxa de Conversão em Projeto',
+                    'Assertividade na Precificação',
+                    'Fator de Contribuição Financeira',
+                ],
+                tickmarkPlacement: 'on',
+                labels: {
+                    enabled: false
+                }
+            },
+
+            yAxis: {
+                gridLineInterpolation: 'polygon',
+                lineWidth: 0,
+                min: 0,
+                max: 1,
+                tickInterval: 0.25, // Sets the interval between grid lines
+                endOnTick: false,
+                showLastLabel: true
+            },
+
+            series: [{
+                name: 'Indicador',
+                data:
+                    [
+                        rankings['RankValorTotalProspeccoes'],
+                        rankings['RankQuantidadeProspeccoes'],
+                        rankings['RankValorMedioProspeccoes'],
+                        rankings['RankValorTotalProspeccoesComProposta'],
+                        rankings['RankValorMedioProspeccoesComProposta'],
+                        rankings['RankValorTotalProspeccoesConvertidas'],
+                        rankings['RankValorMedioProspeccoesConvertidas'],
+                        rankings['RankQuantidadeProspeccoesComProposta'],
+                        rankings['RankQuantidadeProspeccoesProjeto'],
+                        dados['TaxaConversaoProposta'],
+                        dados['TaxaConversaoProjeto'],
+                        rankings['RankAssertividadePrecificacao'],
+                        rankings['RankFatorContribuicaoFinanceira'],
+                    ],
+                pointPlacement: 'on',
+                showInLegend: false,
+                color: '#15a362'
+            }, {
+                name: 'Media',
+                type: 'area',
+                data: valoresMedios,
+                pointPlacement: 'on',
+                showInLegend: false,
+                color: '#E6B50D'
+            }],
+            legend: {
+                enabled: false
+            }
+        });
+    }
+
+    async function puxarDadosParticipacao() {
+        const response = await fetch(`${location.origin}/Participacao/RetornarDadosGrafico/`);
+        const data = await response.json();
+        console.log(data);
+        return data;
+    }
+</script>
+
+<div class="dropdown">
+    <button class="btn app-btn-primary dropdown-toggle" type="button" onclick="exibirGraficoParticipacao()" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+        Gráfico de Participação
+    </button>
+    <div class="dropdown-menu" style="width: 600px">
+        <div id="graficoParticipacao">
+        </div>
+    </div>
+</div>
