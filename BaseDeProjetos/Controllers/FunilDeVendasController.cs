@@ -34,6 +34,17 @@ namespace BaseDeProjetos.Controllers
             _cache = cache;
         }
 
+        public async Task<IActionResult> GerarIndicadoresProsp()
+        {
+            int prospeccoes =  _context.Prospeccao.Select(p => new {p.Empresa}).Distinct().Count();
+
+            int prospeccoesContatoInicial = _context.Prospeccao.Select(p => new {p.Status}).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial)).Count();
+
+            int prospeccoesInfrutiferas = _context.Prospeccao.Select(p => new {p.Status}).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida).Count();
+            double percentInfrutiferas = (double) prospeccoesInfrutiferas / _context.Prospeccao.Select(p => new { p.Id }).Count() * 100;
+        }
+
+
         // GET: FunilDeVendas
         [Route("FunilDeVendas/Index/{casa?}/{aba?}/{ano?}")]
         public async Task<IActionResult> Index(string casa, string aba, string sortOrder = "", string searchString = "", string ano = "", int numeroPagina = 1, int tamanhoPagina = 20)
@@ -82,10 +93,10 @@ namespace BaseDeProjetos.Controllers
                 model.ProspeccoesAtivas = prospeccoes.Where(
                         p => p.Status.OrderBy(k => k.Data).All(
                             pa => pa.Status == StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto || pa.Status == StatusProspeccao.ComProposta)).ToList();
-                model.ProspeccoesComProposta = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(f => f.Status == StatusProspeccao.ComProposta)).ToList();
-                model.ProspeccoesConcluidas = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(f => f.Status == StatusProspeccao.Convertida)).ToList();
-                model.ProspeccoesPlanejadas = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(f => f.Status == StatusProspeccao.Planejada)).ToList();
-                model.ProspeccoesNaoPlanejadas = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(f => f.Status != StatusProspeccao.Planejada)).ToList();
+                model.ProspeccoesComProposta = prospeccoes.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.ComProposta).ToList().Count();
+                model.ProspeccoesConcluidas = prospeccoes.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Convertida).ToList().Count();
+                model.ProspeccoesPlanejadas = prospeccoes.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Planejada).ToList().Count();
+                model.ProspeccoesNaoPlanejadas= prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).Last().Status != StatusProspeccao.Planejada).ToList();
 
                 if (!string.IsNullOrEmpty(aba))
                 {
