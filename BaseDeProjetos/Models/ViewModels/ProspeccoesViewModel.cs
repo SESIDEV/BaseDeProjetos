@@ -6,9 +6,9 @@ namespace BaseDeProjetos.Models.ViewModels
     public class ProspeccoesViewModel
     {
         public List<Prospeccao> Prospeccoes { get; set; }
-        public List<Prospeccao> ProspeccoesConcluidas { get; set; }
-        public List<Prospeccao> ProspeccoesComProposta { get; set; }
-        public List<Prospeccao> ProspeccoesPlanejadas { get; set; }
+        public int ProspeccoesConcluidas { get; set; }
+        public int ProspeccoesComProposta { get; set; }
+        public int ProspeccoesPlanejadas { get; set; }
         public List<Prospeccao> ProspeccoesGrafico { get; set; }
         public List<Prospeccao> ProspeccoesAgregadas { get; set; }
         public List<Prospeccao> ProspeccoesAtivas { get; set; }
