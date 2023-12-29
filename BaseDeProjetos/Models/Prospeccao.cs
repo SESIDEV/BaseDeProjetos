@@ -1,9 +1,9 @@
-﻿using System;
+﻿using BaseDeProjetos.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
-using BaseDeProjetos.Models.Enums;
 
 namespace BaseDeProjetos.Models
 {

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using BaseDeProjetos.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using BaseDeProjetos.Models.Enums;
 
 namespace BaseDeProjetos.Models
 {
@@ -33,7 +33,6 @@ namespace BaseDeProjetos.Models
         public virtual DateTime DataInicio { get; set; } = DateTime.Now;
 
         [Display(AutoGenerateFilter = true, Name = "Data de Encerramento")]
-
         public virtual DateTime DataEncerramento { get; set; } = DateTime.Now;
 
         [Display(AutoGenerateFilter = true, Name = "Membros da Equipe")]

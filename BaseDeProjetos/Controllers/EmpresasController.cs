@@ -13,7 +13,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -109,7 +108,6 @@ namespace BaseDeProjetos.Controllers
                     }
                 }
                 return View("Processamento");
-
             }
             else
             {
@@ -169,7 +167,6 @@ namespace BaseDeProjetos.Controllers
                     ViewData["CurrentFilter"] = searchString;
                     HttpContext.Session.SetString("_CurrentFilter", searchString);
                 }
-
 
                 return View(model);
             }

@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
+using System.Collections.Generic;
 
 public class EmpresasViewModel
 {

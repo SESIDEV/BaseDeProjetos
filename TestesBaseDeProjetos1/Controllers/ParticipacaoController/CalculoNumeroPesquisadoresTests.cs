@@ -1,6 +1,4 @@
-﻿using BaseDeProjetos.Controllers;
-using BaseDeProjetos.Data;
-using Castle.Core.Logging;
+﻿using BaseDeProjetos.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,12 +8,10 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
-using System.Text;
 using TestesBaseDeProjetos1.TestHelper;
 
 namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
 {
-
     [TestFixture]
     internal class CalculoNumeroPesquisadoresTests
     {
@@ -25,7 +21,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
         private readonly ILogger<ParticipacaoController> _logger;
         private readonly DbCache _cache;
 
-        private readonly static Dictionary<int, int> pesquisadores = new Dictionary<int, int>
+        private static readonly Dictionary<int, int> pesquisadores = new Dictionary<int, int>
         {
             {2021, 20},
             {2022, 20},

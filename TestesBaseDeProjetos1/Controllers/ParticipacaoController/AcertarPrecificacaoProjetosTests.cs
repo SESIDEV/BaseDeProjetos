@@ -1,6 +1,5 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
-using Castle.Core.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +9,6 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
-using System.Text;
 using TestesBaseDeProjetos1.TestHelper;
 
 namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
@@ -123,7 +121,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
         public void Test_AcertarPrecificacaoProjetos_FiltroFinalPosteriorComecoPosteriorFim()
         {
             TestContext.Out.WriteLine($"Results for: {nameof(Test_AcertarPrecificacaoProjetos_FiltroFinalPosteriorComecoPosteriorFim)}");
-         
+
             var result = _controller.AcertarPrecificacaoProjetos("1", "2024", projetos);
 
             TestContext.Out.WriteLine($"Expected: {_objectCreator.projeto.ValorTotalProjeto}");
@@ -142,7 +140,6 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
         {
             TestContext.Out.WriteLine($"Results for: {nameof(Test_AcertarPrecificacaoProjetos_FiltroInicialAnteriorComeco_FiltroFinalAnteriorFim)}");
 
-            
             DateTime dataInicioFiltro = new DateTime(2022, 1, 1);
             DateTime dataFimFiltro = Helpers.Helpers.ObterUltimoDiaMes(2023, 11);
 
@@ -157,7 +154,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
 
             TestContext.Out.WriteLine("Pass");
         }
-        
+
         /// <summary>
         /// Testa um filtro com data inicial anterior ao começo do projeto e data final posterior ao fim do projeto
         /// </summary>
@@ -165,7 +162,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
         public void Test_AcertarPrecificacaoProjetos_FiltroInicialAnteriorComeco_FiltroFinalPosteriorFim()
         {
             TestContext.Out.WriteLine($"Results for: {nameof(Test_AcertarPrecificacaoProjetos_FiltroInicialAnteriorComeco_FiltroFinalPosteriorFim)}");
-            
+
             DateTime dataInicioFiltro = new DateTime(2022, 1, 1);
             DateTime dataFimFiltro = Helpers.Helpers.ObterUltimoDiaMes(2024, 1);
 
@@ -175,7 +172,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
 
             TestContext.Out.WriteLine("Pass");
         }
-        
+
         /// <summary>
         /// Testa um filtro com data inicial anterior ao começo do projeto e data final posterior ao fim do projeto
         /// </summary>
@@ -183,7 +180,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
         public void Test_AcertarPrecificacaoProjetos_FiltroInicialPosteriorComeco_FiltroFinalAnteriorFim()
         {
             TestContext.Out.WriteLine($"Results for: {nameof(Test_AcertarPrecificacaoProjetos_FiltroInicialAnteriorComeco_FiltroFinalPosteriorFim)}");
-            
+
             DateTime dataInicioFiltro = new DateTime(2023, 6, 1);
             DateTime dataFimFiltro = Helpers.Helpers.ObterUltimoDiaMes(2023, 11);
 

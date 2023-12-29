@@ -43,7 +43,6 @@ namespace BaseDeProjetos.Controllers
         {
             var usuarios = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
 
-
             usuarios = statusEmailUsuario switch
             {
                 "1" => _context.Users.Where(u => u.EmailConfirmed).ToList(),

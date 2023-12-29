@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using BaseDeProjetos.Models.DTOs;
+using System.Collections.Generic;
 
 namespace BaseDeProjetos.Models.ViewModels
 {

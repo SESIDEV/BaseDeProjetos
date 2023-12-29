@@ -1,5 +1,4 @@
 ﻿using BaseDeProjetos.Data;
-using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 

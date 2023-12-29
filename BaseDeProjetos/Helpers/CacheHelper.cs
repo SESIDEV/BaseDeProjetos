@@ -14,6 +14,7 @@ namespace BaseDeProjetos.Helpers
                 cache.InvalidateCache("Empresas:DTO");
             }
         }
+
         public static async Task CleanupProspeccoesCache(DbCache cache)
         {
             if (cache != null)
@@ -54,6 +55,5 @@ namespace BaseDeProjetos.Helpers
                 await cache.InvalidateCacheKeysAsync("ProjetosExecucaoHome:");
             }
         }
-
     }
 }

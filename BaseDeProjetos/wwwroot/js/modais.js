@@ -33,7 +33,6 @@ function carregarModalCFF(event, idCFF) {
     else {
         console.error("ModalCFFContainer is null for idCFF: ", idCFF);
     }
-
 }
 
 function carregarModalRubrica(event, idRubrica) {

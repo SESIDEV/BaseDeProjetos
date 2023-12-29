@@ -1,10 +1,6 @@
-﻿using BaseDeProjetos.Controllers;
-using BaseDeProjetos.Data;
-using BaseDeProjetos.Models;
-using Castle.Core.Logging;
+﻿using BaseDeProjetos.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -100,7 +96,7 @@ namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
 
             Assert.Pass("Condição não válida para o método, sempre passa");
         }
-        
+
         /// <summary>
         /// Testa um filtro com data inicial anterior ao começo do projeto e data final anterior ao final do projeto
         /// </summary>

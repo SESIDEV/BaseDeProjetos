@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using BaseDeProjetos.Models.Enums;
+using System.Collections.Generic;
 
 namespace BaseDeProjetos.Models.DTOs
 {

@@ -160,7 +160,6 @@ namespace BaseDeProjetos.Helpers
         {
             var empresas = _context.Empresa.Where(e => e.Nome != null);//.Select(e => new {e.Nome, e.Segmento.GetDisplayName()}).ToList();
             return JsonSerializer.Serialize(empresas);
-
         }
 
         /// <summary>

@@ -145,9 +145,9 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
-            private async Task<bool> CargoExists(int id)
-            {
-                return await _dbCache.GetCachedAsync($"Cargos:{id}:exists", async () => await Task.FromResult(_context.Cargo.Any(e => e.Id == id)));
-            }
+        private async Task<bool> CargoExists(int id)
+        {
+            return await _dbCache.GetCachedAsync($"Cargos:{id}:exists", async () => await Task.FromResult(_context.Cargo.Any(e => e.Id == id)));
+        }
     }
 }

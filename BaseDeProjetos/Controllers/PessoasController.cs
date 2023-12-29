@@ -1,6 +1,4 @@
 using BaseDeProjetos.Data;
-using BaseDeProjetos.Helpers;
-using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -35,7 +33,7 @@ namespace BaseDeProjetos.Controllers
             // {
             //     return View("Forbidden");
             // }
-			return View("Construcao");
+            return View("Construcao");
         }
 
         /// <summary>

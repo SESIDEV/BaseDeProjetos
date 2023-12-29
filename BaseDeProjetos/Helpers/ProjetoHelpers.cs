@@ -1,5 +1,4 @@
-﻿using BaseDeProjetos.Migrations;
-using BaseDeProjetos.Models;
+﻿using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Html;
 using System.Collections.Generic;
 using System.Text;

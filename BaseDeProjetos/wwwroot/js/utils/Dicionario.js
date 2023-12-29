@@ -1,13 +1,13 @@
 class Dicionario {
-	constructor() {
-		this.dataStore = [];
-	}
+    constructor() {
+        this.dataStore = [];
+    }
 
-	add(key, value) {
-		this.dataStore[key] = value;
-	}
+    add(key, value) {
+        this.dataStore[key] = value;
+    }
 
-	find(key) {
-		return this.dataStore[key];
-	}
+    find(key) {
+        return this.dataStore[key];
+    }
 }

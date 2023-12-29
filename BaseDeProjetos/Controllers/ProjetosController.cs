@@ -229,7 +229,6 @@ namespace BaseDeProjetos.Controllers
 
                 await _context.SaveChangesAsync();
                 await CacheHelper.CleanupProjetosCache(_cache);
-
             }
             else
             {
@@ -309,7 +308,6 @@ namespace BaseDeProjetos.Controllers
             {
                 return View("Forbidden");
             }
-
         }
 
         /// <summary>
@@ -728,7 +726,6 @@ namespace BaseDeProjetos.Controllers
             {
                 return View("Forbidden");
             }
-
         }
 
         //POST: Projetos/Edit/5
@@ -838,7 +835,6 @@ namespace BaseDeProjetos.Controllers
             {
                 return View("Forbidden");
             }
-
         }
 
         // POST

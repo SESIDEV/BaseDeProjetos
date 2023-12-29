@@ -68,7 +68,7 @@ namespace BaseDeProjetos.Controllers
             {
                 Projeto proj = _context.Projeto.First(p => p.Id == codigoAmostraProjeto.Projeto.Id);
                 codigoAmostraProjeto.Projeto = proj;
-                
+
                 int novoNumCod = int.Parse(_context.CodigoAmostraProjeto.AsEnumerable().Last().Codigo.Split("/")[0]);
                 codigoAmostraProjeto.Codigo = (novoNumCod + 1).ToString().PadLeft(3, '0') + "/" + DateTime.Now.ToString("yy");
 

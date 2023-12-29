@@ -1,6 +1,6 @@
 ﻿using BaseDeProjetos.Data;
-using Microsoft.AspNetCore.Mvc;
 using BaseDeProjetos.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace BaseDeProjetos.ViewComponents.ProjetoViewComponents

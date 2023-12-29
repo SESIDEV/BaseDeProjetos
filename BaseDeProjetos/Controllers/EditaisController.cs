@@ -41,7 +41,6 @@ namespace BaseDeProjetos.Controllers
 
         public async Task AddMultipleUsers()
         {
-
             var users = new List<Usuario>
             {
                 // Cadastro bolsistas
@@ -52,7 +51,7 @@ namespace BaseDeProjetos.Controllers
                 new Usuario { UserName = "Thuanny Moraes", Email = "tmoraes@pesquisador.firjan.com.br", Casa = Instituto.ISIQV, CargoId = 2, Matricula = 0, Nivel = 0, Vinculo = 0 , EmailConfirmed = false},
                 new Usuario { UserName = "Geovanna Batista", Email = "gbflorentino@pesquisador.firjan.com.br", Casa = Instituto.ISIQV, CargoId = 2, Matricula = 0, Nivel = 0, Vinculo = 0 , EmailConfirmed = false},
                 new Usuario { UserName = "Carlos Magno", Email = "carlosms@pesquisador.firjan.com.br", Casa = Instituto.ISIQV, CargoId = 2, Matricula = 0, Nivel = 0, Vinculo = 0 , EmailConfirmed = false},
-         
+
                 // Cadastro estagiários
                 new Usuario { UserName = "Gabriel Mattos", Email = "gserra@firjan.com.br", Casa = Instituto.ISIQV, CargoId = 3, Matricula = 0, Nivel = 0, Vinculo = 0, EmailConfirmed = false },
                 new Usuario { UserName = "Caio Vitor", Email = "ccadete@firjan.com.br", Casa = Instituto.ISIQV, CargoId = 3, Matricula = 0, Nivel = 0, Vinculo = 0, EmailConfirmed = false },
@@ -62,7 +61,7 @@ namespace BaseDeProjetos.Controllers
                 new Usuario { UserName = "Maria Carolina", Email = "mcmarques@firjan.com.br", Casa = Instituto.ISIQV, CargoId = 3, Matricula = 0, Nivel = 0, Vinculo = 0 , EmailConfirmed = false},
                 new Usuario { UserName = "Juliana Peres", Email = "jpborges@firjan.com.br", Casa = Instituto.ISIQV, CargoId = 3, Matricula = 0, Nivel = 0, Vinculo = 0 , EmailConfirmed = false},
                 new Usuario { UserName = "Pedro Tagliabui", Email = "ppduarte@firjan.com.br", Casa = Instituto.ISIQV, CargoId = 3, Matricula = 0, Nivel = 0, Vinculo = 0 , EmailConfirmed = false},
-                
+
                 // Cadastro de usuários "dummy" (idealmente deveremos encontrar uma forma mais dinâmica de fazer isso no futuro, mas pela "correria", vai desse jeito.
                 new Usuario { UserName = "Estagiário 1", Email = "estag1@firjan.com.br", Casa = Instituto.ISIQV, CargoId = 3, Matricula = 0, Nivel = 0, Vinculo = 0 , EmailConfirmed = false},
                 new Usuario { UserName = "Estagiário 2", Email = "estag2@firjan.com.br", Casa = Instituto.ISIQV, CargoId = 3, Matricula = 0, Nivel = 0, Vinculo = 0 , EmailConfirmed = false},

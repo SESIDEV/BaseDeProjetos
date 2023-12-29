@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BaseDeProjetos.Models
+﻿namespace BaseDeProjetos.Models
 {
     public class AbaFunil
     {

@@ -139,15 +139,15 @@ function changeDisplayStyle(element, style) {
 }
 
 function preencherInputEditProjeto(idProjeto) {
-	let elementoInput = document.querySelector(`#inputTextPessoas-${idProjeto}`);
-	fetch(`/Projetos/RetornarMembrosCSV/${idProjeto}`)
-		.then(response => response.json())
-		.then(data => {
-			console.log(data);
-			elementoInput.value = data['data'];
-		}).catch(err => {
-			console.error(err);
-		});
+    let elementoInput = document.querySelector(`#inputTextPessoas-${idProjeto}`);
+    fetch(`/Projetos/RetornarMembrosCSV/${idProjeto}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            elementoInput.value = data['data'];
+        }).catch(err => {
+            console.error(err);
+        });
 }
 
 function gerarOpcoesSelect(rota, elementoPai, modelId = "", fillValues = false) { // os últimos 2 parâmetros para tratar no Edit
