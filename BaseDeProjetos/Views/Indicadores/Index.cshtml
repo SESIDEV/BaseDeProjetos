@@ -35,6 +35,9 @@
                                             @Html.DisplayNameFor(model => model.Casa)
                                         </th>
                                         <th>
+                                            @Html.DisplayNameFor(model => model.QtdPesquisadores)
+                                        </th>
+                                        <th>
                                             Detalhes
                                         </th>
                                     </tr>
@@ -57,6 +60,9 @@
                                             </td>
                                             <td class="cell">
                                                 @Html.DisplayFor(modelItem => item.Casa)
+                                            </td>
+                                            <td class="cell">
+                                                @Html.DisplayFor(modelItem => item.QtdPesquisadores)
                                             </td>
                                             <td class="cell">
                                                 <a asp-action="Edit" asp-route-id="@item.Id"

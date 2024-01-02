@@ -44,6 +44,11 @@
                 <span asp-validation-for="QualiSeguranca" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="QtdPesquisadores" class="control-label"></label>
+                <input asp-for="QtdPesquisadores" class="form-control" />
+                <span asp-validation-for="QtdPesquisadores" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Casa" class="control-label"></label>
                     @if (!(Context.Session.GetString("_Casa") is null))
                     {
@@ -61,12 +66,12 @@
                 <span asp-validation-for="Casa" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn app-btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Voltar para a Lista</a>
 </div>

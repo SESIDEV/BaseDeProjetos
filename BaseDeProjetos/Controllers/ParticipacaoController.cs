@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using OfficeOpenXml.ConditionalFormatting.Contracts;
+using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,28 +34,8 @@ namespace BaseDeProjetos.Controllers
         private const int MesInicioPadrao = 1;
         private const int MesFimPadrao = 12;
 
-
-        /// <summary>
-        /// Esses valores foram passados a mim manualmente pela Daniela Serrazine no passado, atualmente estamos fazendo um override puxando de IndicadoresFinanceiros do DB :: hhenriques1999
-        /// </summary>
-        /// <value></value>
-        private readonly static Dictionary<int, decimal> despesas = new Dictionary<int, decimal>
-        {
-            { 2021, 290000M },
-            { 2022, 400000M },
-            { 2023, 440000M },
-        };
-
-        /// <summary>
-        /// Esses valores foram passados a mim manualmente pela Daniela Serrazine :: hhenriques1999
-        /// </summary>
-        /// <value></value>
-        private readonly static Dictionary<int, int> pesquisadores = new Dictionary<int, int>
-        {
-            {2021, 20},
-            {2022, 20},
-            {2023, 23}
-        };
+        private readonly static Dictionary<int, decimal> despesas = new Dictionary<int, decimal>();
+        private readonly static Dictionary<int, int> pesquisadores = new Dictionary<int, int>();
 
         public ParticipacaoController(ApplicationDbContext context, DbCache cache, ILogger<ParticipacaoController> logger)
         {
@@ -73,13 +54,6 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         internal static async Task<decimal> CalculoDespesa(ApplicationDbContext context, int mesInicial, int anoInicial, int mesFinal, int anoFinal)
         {
-            var indicadores = await context.IndicadoresFinanceiros.ToListAsync();
-
-            foreach (var indicador in indicadores)
-            {
-                despesas[indicador.Data.Year] = indicador.Despesa;
-            }
-
             if (anoInicial > anoFinal)
             {
                 throw new ArgumentException($"{nameof(anoInicial)} não pode ser maior que {nameof(anoFinal)}");
@@ -104,8 +78,9 @@ namespace BaseDeProjetos.Controllers
                 valorCustoFinal += despesas[anoInicial] / 12 * quantidadeDeMesesAnoInicial;
 
                 int quantidadeDeMesesAnoFinal = mesFinal;
+              
                 valorCustoFinal += despesas[anoFinal] / 12 * quantidadeDeMesesAnoFinal;
-
+               
                 int subtracaoAno = anoFinal - anoInicial - 1;
 
                 if (subtracaoAno <= 0)
@@ -230,7 +205,7 @@ namespace BaseDeProjetos.Controllers
                     usuario = await _context.Users.Where(u => u.Id == idUsuario).FirstOrDefaultAsync();
                 }
 
-                _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).ToListAsync());
+                _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).Include(p => p.Empresa).ToListAsync());
 
                 var participacao = await GetParticipacaoTotalUsuario(usuario);
 
@@ -261,7 +236,7 @@ namespace BaseDeProjetos.Controllers
 
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).ToListAsync());
+                _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).Include(p => p.Empresa).ToListAsync());
 
                 var participacoes = await GetParticipacoesTotaisUsuarios();
                 Dictionary<string, object> dadosGrafico = new Dictionary<string, object>();
@@ -413,6 +388,9 @@ namespace BaseDeProjetos.Controllers
             anoFim = string.IsNullOrEmpty(anoFim) ? DateTime.Now.Year.ToString() : anoFim;
             mesInicio = string.IsNullOrEmpty(mesInicio) ? "1" : mesInicio;
             mesFim = string.IsNullOrEmpty(mesFim) ? "12" : mesFim;
+
+            // Isso aqui é péssimo, mas é o jeito de lidar com um ano que não está cadastrado
+            GambiarraAnoInvalido(anoFim);
 
             decimal despesaIsiMeses = 0;
             double quantidadePesquisadores = 0;
@@ -625,6 +603,25 @@ namespace BaseDeProjetos.Controllers
             return participacao;
         }
 
+
+      /// <summary>
+        /// Popula os dicionários contendo os dados sobre as despesas e a quantidade de pesquisadores de forma a não causar erros no código
+        /// Isso nunca deveria ter sido feito...
+        /// </summary>
+        /// <param name="anoFim"></param>
+        private static void GambiarraAnoInvalido(string anoFim)
+        {
+            if (!despesas.ContainsKey(int.Parse(anoFim)))
+            {
+                despesas[int.Parse(anoFim)] = 0;
+            }
+
+            if (!pesquisadores.ContainsKey(int.Parse(anoFim)))
+            {
+                pesquisadores[int.Parse(anoFim)] = pesquisadores[int.Parse(anoFim) - 1];
+            }
+        }
+        
         private async Task<decimal> ExtrairValorProjetos(Usuario usuario, string mesInicio, string anoInicio, string mesFim, string anoFim)
         {
             var projetosUsuario = await _context.Projeto.Where(p => p.UsuarioId == usuario.Id).ToListAsync();
@@ -1193,6 +1190,14 @@ namespace BaseDeProjetos.Controllers
         public async Task<IActionResult> Index(string mesInicio, string anoInicio, string mesFim, string anoFim)
         {
             ViewbagizarUsuario(_context);
+
+            var indicadores = await _context.IndicadoresFinanceiros.ToListAsync();
+
+            foreach (var indicador in indicadores)
+            {
+                despesas[indicador.Data.Year] = indicador.Despesa;
+                pesquisadores[indicador.Data.Year] = (int)indicador.QtdPesquisadores;
+            }
 
             anoInicio = string.IsNullOrEmpty(anoInicio) ? "2021" : anoInicio;
             mesInicio = string.IsNullOrEmpty(mesInicio) ? "1" : mesInicio;

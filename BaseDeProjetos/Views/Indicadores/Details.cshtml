@@ -45,10 +45,16 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Casa)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.QtdPesquisadores)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.QtdPesquisadores)
+        </dd>
         </dl>
     </div>
     <div>
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
-        <a asp-action="Index" class="btn btn-primary">Back to List</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn app-btn-primary">Edit</a>
+        <a asp-action="Index" class="btn app-btn-primary">Voltar para a Lista</a>
     </div>
 </div>
