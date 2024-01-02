@@ -611,14 +611,24 @@ namespace BaseDeProjetos.Controllers
         /// <param name="anoFim"></param>
         private static void GambiarraAnoInvalido(string anoFim)
         {
-            if (!despesas.ContainsKey(int.Parse(anoFim)))
+            int anoFimParse = int.Parse(anoFim);
+            if (!despesas.ContainsKey(anoFimParse))
             {
-                despesas[int.Parse(anoFim)] = 0;
+                despesas[anoFimParse] = 0;
             }
 
             if (!pesquisadores.ContainsKey(int.Parse(anoFim)))
             {
-                pesquisadores[int.Parse(anoFim)] = pesquisadores[int.Parse(anoFim) - 1];
+                try
+                {
+                    pesquisadores[anoFimParse] = pesquisadores[anoFimParse - 1];
+                }
+                // Em ultimo caso, o ano anterior também não existe (2023 não está lá no momento)
+                catch (KeyNotFoundException)
+                {
+                    pesquisadores[anoFimParse - 1] = pesquisadores[anoFimParse - 2];
+                    pesquisadores[anoFimParse] = pesquisadores[anoFimParse - 2];
+                }
             }
         }
         
