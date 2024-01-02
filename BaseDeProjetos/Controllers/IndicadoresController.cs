@@ -255,7 +255,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Data,Receita,Despesa,Investimento,QualiSeguranca")] IndicadoresFinanceiros indicadoresFinanceiros)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Data,Receita,Despesa,Investimento,QualiSeguranca,QtdPesquisadores")] IndicadoresFinanceiros indicadoresFinanceiros)
         {
             if (id != indicadoresFinanceiros.Id)
             {
