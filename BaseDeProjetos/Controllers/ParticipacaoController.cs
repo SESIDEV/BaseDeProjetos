@@ -557,7 +557,7 @@ namespace BaseDeProjetos.Controllers
                 participacao.TaxaConversaoProposta = taxaConversaoProposta = quantidadeProspeccoesComProposta / quantidadeProspeccoesComPeso;
                 participacao.ValorMedioProspeccoes = valorMedioProspeccoes = valorTotalProspeccoes / quantidadeProspeccoes;
 
-                if (quantidadeProspeccoesComPropostaLider > 0)
+                if (quantidadeProspeccoesComPropostaLider > 0 && quantidadeProspeccoesComProposta > 0)
                 {
                     participacao.ValorMedioProspeccoesComProposta = valorMedioProspeccoesComProposta = valorTotalProspeccoesComProposta / quantidadeProspeccoesComProposta;
                     valorMedioProspeccoesComPropostaLider = valorTotalProspeccoesComPropostaLider / quantidadeProspeccoesComPropostaLider;
