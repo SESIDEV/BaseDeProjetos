@@ -100,25 +100,23 @@ namespace BaseDeProjetos.Controllers
             }
             else
             {
-                if (despesas.ContainsKey(anoFinal))
+                int quantidadeDeMesesAnoInicial = 12 - mesInicial + 1;
+                valorCustoFinal += despesas[anoInicial] / 12 * quantidadeDeMesesAnoInicial;
+
+                int quantidadeDeMesesAnoFinal = mesFinal;
+                valorCustoFinal += despesas[anoFinal] / 12 * quantidadeDeMesesAnoFinal;
+
+                int subtracaoAno = anoFinal - anoInicial - 1;
+
+                if (subtracaoAno <= 0)
                 {
-                    int quantidadeDeMesesAnoInicial = 12 - mesInicial + 1;
-                    valorCustoFinal += despesas[anoInicial] / 12 * quantidadeDeMesesAnoInicial;
-
-                    int quantidadeDeMesesAnoFinal = mesFinal;
-
-                    valorCustoFinal += despesas[anoFinal] / 12 * quantidadeDeMesesAnoFinal;
-                    int subtracaoAno = anoFinal - anoInicial - 1;
-                    if (subtracaoAno <= 0)
+                    return valorCustoFinal;
+                }
+                else
+                {
+                    for (int i = 1; i <= subtracaoAno; i++)
                     {
-                        return valorCustoFinal;
-                    }
-                    else
-                    {
-                        for (int i = 1; i <= subtracaoAno; i++)
-                        {
-                            valorCustoFinal += despesas[anoInicial + i];
-                        }
+                        valorCustoFinal += despesas[anoInicial + i];
                     }
                 }
 
