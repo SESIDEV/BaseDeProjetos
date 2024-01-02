@@ -26,6 +26,6 @@ namespace BaseDeProjetos.Models
         public float QualiSeguranca { get; set; }
         public Instituto Casa { get; set; }
         [Display(Name = "Quantidade de Pesquisadores")]
-        public int? QtdPesquisadores { get; set; }
+        public int QtdPesquisadores { get; set; }
     }
 }

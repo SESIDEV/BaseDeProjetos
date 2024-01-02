@@ -1196,7 +1196,7 @@ namespace BaseDeProjetos.Controllers
             foreach (var indicador in indicadores)
             {
                 despesas[indicador.Data.Year] = indicador.Despesa;
-                pesquisadores[indicador.Data.Year] = (int)indicador.QtdPesquisadores;
+                pesquisadores[indicador.Data.Year] = indicador.QtdPesquisadores;
             }
 
             anoInicio = string.IsNullOrEmpty(anoInicio) ? "2021" : anoInicio;
@@ -1216,8 +1216,6 @@ namespace BaseDeProjetos.Controllers
             if (participacoes.Count > 0)
             {
                 RankearParticipacoes(participacoes, false);
-                // CalcularValorSobreMediaDoFCF(participacoes);
-                //ObterRankingsMedios(participacoes);
                 DefinirValoresMinMax(participacoes);
 
                 participacoes = participacoes.OrderByDescending(p => p.MediaFatores).ToList();
