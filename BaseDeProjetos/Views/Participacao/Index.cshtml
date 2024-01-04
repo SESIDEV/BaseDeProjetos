@@ -258,15 +258,16 @@
                                                 </div>
                                             </div>
                                             <td class="cell" style="overflow:hidden; max-width:100px">
-                                                @if (ViewBag.usuarioNivel == Nivel.Dev || ViewBag.usuarioNivel == Nivel.PMO) 
+                                                @if (ViewBag.usuarioNivel == Nivel.Dev || ViewBag.usuarioNivel == Nivel.PMO)
                                                 {
                                                     @*Alterar quando for pra produção, dev, pmo devem poder ver os nomes@
-                                                    @* @participacaoTotal.Lider *@
-                                                    <p>Membro @(random.Next())</p>
-                                                } 
-                                                else {
-                                                    <p>Membro @(random.Next())</p>
-                                                }   
+                                            @* @participacaoTotal.Lider *@
+                                                    <p>Membro @(participacaoTotal.Lider.UserName.GetHashCode())</p>
+                                                }
+                                                else
+                                                {
+                                                    <p>Membro @(participacaoTotal.Lider.UserName.GetHashCode())</p>
+                                                }
                                             </td>
                                             <td class="cell">
                                                 @{
