@@ -397,92 +397,30 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private async Task<ParticipacaoTotalViewModel> GetParticipacaoTotalUsuario(Usuario usuario, string mesInicio = null, string anoInicio = null, string mesFim = null, string anoFim = null)
         {
-            DateTime filtroInicio = InicializarDatetimes(mesInicio, anoInicio, AnoPadrao, MesInicioPadrao);
-            DateTime filtroFim = InicializarDatetimes(mesFim, anoFim, DateTime.Now.Year, MesFimPadrao);
 
-            anoInicio = string.IsNullOrEmpty(anoInicio) ? "2021" : anoInicio;
-            anoFim = string.IsNullOrEmpty(anoFim) ? DateTime.Now.Year.ToString() : anoFim;
-            mesInicio = string.IsNullOrEmpty(mesInicio) ? "1" : mesInicio;
-            mesFim = string.IsNullOrEmpty(mesFim) ? "12" : mesFim;
+        private async Task AtribuirAssertividadePrecificacao(Usuario usuario, DateTime dataInicio, DateTime dataFim, ParticipacaoTotalViewModel participacao, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
+        {
+            var prospeccoesUsuarioLiderComProposta = prospeccoesUsuario.ProspeccoesLider.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.ComProposta);
+            decimal quantidadeProspeccoesComPropostaLider = prospeccoesUsuarioLiderComProposta.Count();
+            decimal valorTotalProspeccoesComPropostaLider = prospeccoesUsuarioLiderComProposta.Sum(p => p.ValorProposta);
+            var prospeccoesUsuarioLiderConvertida = prospeccoesUsuario.ProspeccoesLider.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida);
+            decimal quantidadeProspeccoesConvertidasLider = prospeccoesUsuarioLiderConvertida.Count();
+            decimal valorTotalProspeccoesConvertidasLider = prospeccoesUsuarioLiderConvertida.Sum(p => p.ValorProposta);
+            decimal valorMedioProspeccoesComPropostaLider = IndicadorHelper.DivisaoSegura(valorTotalProspeccoesComPropostaLider, quantidadeProspeccoesComPropostaLider);
+            decimal valorMedioProspeccoesConvertidasLider = IndicadorHelper.DivisaoSegura(valorTotalProspeccoesConvertidasLider, quantidadeProspeccoesConvertidasLider);
 
-            // Isso aqui é péssimo, mas é o jeito de lidar com um ano que não está cadastrado
-            GambiarraAnoInvalido(anoFim);
+            // Erro relativo
+            participacao.AssertividadePrecificacao = IndicadorHelper.DivisaoSegura(Math.Abs(valorMedioProspeccoesConvertidasLider - valorMedioProspeccoesComPropostaLider), Math.Abs(valorMedioProspeccoesConvertidasLider));
+            participacao.ValorMedioProspeccoesConvertidas = valorMedioProspeccoesConvertidasLider;
+            participacao.TaxaConversaoProjeto = IndicadorHelper.DivisaoSegura(quantidadeProspeccoesConvertidasLider, quantidadeProspeccoesComPropostaLider);
+            participacao.TaxaConversaoProposta = IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesComProposta, participacao.QuantidadeProspeccoes);
 
-            decimal despesaIsiMeses = 0;
-            double quantidadePesquisadores = 0;
+            decimal despesaIsiMeses = CalculoDespesa(dataInicio, dataFim);
+            decimal valorTotalProjetosParaFCF = await ExtrairValorProjetos(usuario, dataInicio, dataFim);
 
-            ParticipacaoTotalViewModel participacao = new ParticipacaoTotalViewModel() { Participacoes = new List<ParticipacaoViewModel>() };
-            List<Projeto> projetosUsuarioEmExecucaoFiltrados = new List<Projeto>();
+            participacao.FatorContribuicaoFinanceira = IndicadorHelper.DivisaoSegura(valorTotalProjetosParaFCF, despesaIsiMeses);
+        }
 
-            // !! Evite puxar prospecções direto do contexto, utilize esse objeto para não sobrecarregar o MySQL !!
-
-            // Líder e Membro
-            var prospeccoesUsuarioLider = GetProspeccoesUsuarioLider(usuario);
-            var prospeccoesUsuarioMembro = GetProspeccoesUsuarioMembro(usuario);
-            var prospeccoesUsuarioMembroEquipe = GetProspeccoesUsuarioMembroEquipe(usuario);
-            var projetosUsuario = await GetProjetosUsuario(usuario);
-            var projetosUsuarioEmExecucao = projetosUsuario.Where(p => p.Status == StatusProjeto.EmExecucao).ToList();
-            var projetosUsuarioMembro = await GetProjetosUsuarioMembro(usuario);
-
-            prospeccoesUsuarioLider = FiltrarProspeccoesPorPeriodo(mesInicio, anoInicio, mesFim, anoFim, prospeccoesUsuarioLider);
-            prospeccoesUsuarioMembro = FiltrarProspeccoesPorPeriodo(mesInicio, anoInicio, mesFim, anoFim, prospeccoesUsuarioMembro);
-            prospeccoesUsuarioMembroEquipe = FiltrarProspeccoesPorPeriodo(mesInicio, anoInicio, mesFim, anoFim, prospeccoesUsuarioMembroEquipe);
-            projetosUsuarioEmExecucao = FiltrarProjetosPorPeriodo(mesInicio, anoInicio, mesFim, anoFim, projetosUsuario);
-            projetosUsuarioEmExecucaoFiltrados = AcertarPrecificacaoProjetos(mesInicio, anoInicio, mesFim, anoFim, projetosUsuarioEmExecucao);
-
-            var prospeccoesUsuarioComProposta = prospeccoesUsuarioMembroEquipe.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.ComProposta)).ToList();
-            var prospeccoesUsuarioConvertidas = prospeccoesUsuarioMembroEquipe.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida));
-            var prospeccoesUsuarioConvertidasLider = prospeccoesUsuarioLider.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida)).ToList();
-
-            // Evitar exibir usuários sem prospecção
-            if (prospeccoesUsuarioMembroEquipe.Count == 0)
-            {
-                return null;
-            }
-            else
-            {
-                ComputarRangeGraficoParticipacao(participacao, prospeccoesUsuarioLider); // TODO considerar novas mudanças
-            }
-
-            // Evitar exibir usuários sem prospecção
-            if (prospeccoesUsuarioLider.Count + prospeccoesUsuarioMembro.Count == 0)
-            {
-                return null;
-            }
-
-            await AtribuirParticipacoesIndividuais(participacao, prospeccoesUsuarioMembroEquipe);
-
-            decimal valorTotalProspeccoes = 0;
-            decimal valorTotalProspeccoesComProposta = 0;
-            decimal quantidadeProspeccoesComPeso = 0;
-            decimal valorMedioProspeccoes = 0;
-            decimal valorMedioProspeccoesComProposta = 0;
-            decimal valorMedioProspeccoesConvertidas = 0;
-            decimal valorTotalProspeccoesConvertidas = 0;
-            decimal valorTotalProjetosParaFCF = 0;
-            decimal taxaConversaoProposta;
-            decimal taxaConversaoProjeto;
-            int quantidadeProspeccoes;
-            int quantidadeProspeccoesMembro;
-            decimal quantidadeProspeccoesComProposta = 0;
-            decimal quantidadeProspeccoesConvertidas = 0;
-            int quantidadeProspeccoesLider;
-
-            // Apenas para calculo da Assertividade
-            decimal valorMedioProspeccoesComPropostaLider = 0;
-            decimal valorMedioProspeccoesConvertidasLider = 0;
-            decimal valorTotalProspeccoesComPropostaLider = 0;
-            decimal valorTotalProspeccoesConvertidasLider = 0;
-            int quantidadeProspeccoesComPropostaLider = 0;
-            int quantidadeProspeccoesConvertidasLider = 0;
-
-            // Entender se, esse valor precisa ser das ativas apenas ou se posso incluir TUDO, TUDO
-            participacao.ValorTotalProspeccoes = valorTotalProspeccoes = ExtrairValorProspeccoes(usuario, null, mesInicio, anoInicio, mesFim, anoFim);
-            participacao.ValorTotalProspeccoesComProposta = valorTotalProspeccoesComProposta = ExtrairValorProspeccoes(usuario, StatusProspeccao.ComProposta, mesInicio, anoInicio, mesFim, anoFim);
-            participacao.ValorTotalProspeccoesConvertidas = valorTotalProspeccoesConvertidas = ExtrairValorProspeccoes(usuario, StatusProspeccao.Convertida, mesInicio, anoInicio, mesFim, anoFim);
-            valorTotalProjetosParaFCF = await ExtrairValorProjetos(usuario, mesInicio, anoInicio, mesFim, anoFim);
-
-            participacao.QuantidadeProspeccoes = quantidadeProspeccoes = prospeccoesUsuarioMembroEquipe.Count();
 
             foreach (var prospeccao in prospeccoesUsuarioMembroEquipe)
             {
