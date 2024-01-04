@@ -664,6 +664,9 @@ namespace BaseDeProjetos.Controllers
             return (decimal)projetosUsuario.Sum(p => p.ValorTotalProjeto);
         }
 
+        private List<Prospeccao> GetProspeccoesUsuarioLider(Usuario usuario)
+        {
+            return _prospeccoes.Where(p => p.Usuario.Id == usuario.Id && p.Status.OrderBy(f => f.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
         }
 
         /// <summary>
