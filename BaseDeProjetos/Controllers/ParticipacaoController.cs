@@ -672,34 +672,31 @@ namespace BaseDeProjetos.Controllers
         /// <param name="anoFim">Ano de fim do filtro</param>
         /// <param name="projetos">Lista de projetos a serem ajustados</param>
         /// <returns></returns>
-        internal List<Projeto> AcertarPrecificacaoProjetos(string mesInicio, string anoInicio, string mesFim, string anoFim, List<Projeto> projetos)
+        internal List<Projeto> AcertarPrecificacaoProjetos(DateTime dataInicio, DateTime dataFim, List<Projeto> projetos)
         {
-            var dataInicialFiltro = new DateTime(int.Parse(anoInicio), int.Parse(mesInicio), 1);
-            var dataFinalFiltro = Helpers.Helpers.ObterUltimoDiaMes(int.Parse(anoFim), int.Parse(mesFim));
-
             foreach (var projeto in projetos)
             {
-                if (dataInicialFiltro > projeto.DataEncerramento || dataFinalFiltro < projeto.DataInicio)
+                if (dataInicio > projeto.DataEncerramento || dataFim < projeto.DataInicio)
                 {
                     projeto.ValorTotalProjeto = 0;
                 }
                 else
                 {
-                    if (dataFinalFiltro < projeto.DataEncerramento)
+                    if (dataInicio < projeto.DataEncerramento)
                     {
                         // TODO: E se o inicio do filtro for maior que o começo do projeto?
-                        if (projeto.DataInicio < dataInicialFiltro)
+                        if (projeto.DataInicio < dataInicio)
                         {
-                            ReatribuirValorProjeto(projeto, dataFinalFiltro, dataInicialFiltro);
+                            ReatribuirValorProjeto(projeto, dataFim, dataInicio);
                         }
                         else
                         {
-                            ReatribuirValorProjeto(projeto, dataFinalFiltro);
+                            ReatribuirValorProjeto(projeto, dataFim);
                         }
                     }
                     else
                     {
-                        ReatribuirValorProjeto(dataInicialFiltro, projeto);
+                        ReatribuirValorProjeto(dataInicio, projeto);
                     }
                 }
             }
