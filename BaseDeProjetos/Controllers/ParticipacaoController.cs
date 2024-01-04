@@ -1165,7 +1165,7 @@ namespace BaseDeProjetos.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string mesInicio, string anoInicio, string mesFim, string anoFim)
+        public async Task<IActionResult> Index(DateTime? dataInicio, DateTime? dataFim)
         {
             ViewbagizarUsuario(_context);
 
@@ -1177,32 +1177,28 @@ namespace BaseDeProjetos.Controllers
                 pesquisadores[indicador.Data.Year] = indicador.QtdPesquisadores;
             }
 
-            anoInicio = string.IsNullOrEmpty(anoInicio) ? "2021" : anoInicio;
-            mesInicio = string.IsNullOrEmpty(mesInicio) ? "1" : mesInicio;
-            anoFim = string.IsNullOrEmpty(anoFim) ? DateTime.Now.Year.ToString() : anoFim;
-            mesFim = string.IsNullOrEmpty(mesFim) ? "12" : mesFim;
-
-            ViewData["mesInicio"] = mesInicio;
-            ViewData["anoInicio"] = anoInicio;
-            ViewData["mesFim"] = mesFim;
-            ViewData["anoFim"] = anoFim;
+            if (dataInicio != null && dataFim != null)
+            {
+                ViewData["mesInicio"] = dataInicio.Value.Month;
+                ViewData["anoInicio"] = dataInicio.Value.Year;
+                ViewData["mesFim"] = dataFim.Value.Month;
+                ViewData["anoFim"] = dataFim.Value.Year;
+            }
+            else
+            {
+                ViewData["mesInicio"] = 01;
+                ViewData["anoInicio"] = 2021;
+                ViewData["mesFim"] = 12;
+                ViewData["anoFim"] = DateTime.Now.Year;
+                dataInicio = new DateTime(2021, 01, 21);
+                dataFim = new DateTime(DateTime.Now.Year, 12, 31);
+            }
 
             _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).Include(p => p.Empresa).ToListAsync());
 
-            var participacoes = await _cache.GetCachedAsync($"Participacoes:{mesInicio}:{anoInicio}:{mesFim}:{anoFim}", () => GetParticipacoesTotaisUsuarios(mesInicio, anoInicio, mesFim, anoFim));
-
-            if (participacoes.Count > 0)
-            {
-                RankearParticipacoes(participacoes, false);
-                DefinirValoresMinMax(participacoes);
-
-                participacoes = participacoes.OrderByDescending(p => p.MediaFatores).ToList();
-            }
-
-            ViewBag.usuarioFoto = UsuarioAtivo.Foto;
-            ViewBag.usuarioCasa = UsuarioAtivo.Casa;
-            ViewBag.usuarioNivel = UsuarioAtivo.Nivel;
-            ViewBag.usuarioId = UsuarioAtivo.Id;
+            string chaveCache = $"Participacoes:{dataInicio.Value.Month}:{dataInicio.Value.Year}:{dataFim.Value.Month}:{dataFim.Value.Year}";
+            var participacoes = await _cache.GetCachedAsync(chaveCache, () => GetParticipacoesTotaisUsuarios((DateTime)dataInicio, (DateTime)dataFim));
+            participacoes = PrepararDadosParticipacao(participacoes);
 
             if (UsuarioAtivo.Nivel == Nivel.Dev || UsuarioAtivo.Nivel == Nivel.PMO)
             {
