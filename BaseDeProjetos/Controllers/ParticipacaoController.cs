@@ -882,7 +882,7 @@ namespace BaseDeProjetos.Controllers
                     if (prospeccao.Usuario.Id == usuario.Id)
                     {
                         valorProspeccoes += percentualLider * prospeccao.ValorProposta;
-                    } // Se não...
+                    } // Se não for líder...
                     else
                     {
                         // Em tese não haveria necessidade de verificar o cargo...
@@ -1213,6 +1213,19 @@ namespace BaseDeProjetos.Controllers
                 return View(participacoesFiltradas);
             }
 
+        }
+
+        private List<ParticipacaoTotalViewModel> PrepararDadosParticipacao(List<ParticipacaoTotalViewModel> participacoes)
+        {
+            if (participacoes.Count > 0)
+            {
+                RankearParticipacoes(participacoes, false);
+                DefinirValoresMinMax(participacoes);
+
+                participacoes = participacoes.OrderByDescending(p => p.MediaFatores).ToList();
+            }
+
+            return participacoes;
         }
 
         /// <summary>
