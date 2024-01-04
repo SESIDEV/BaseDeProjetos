@@ -2,6 +2,7 @@ using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.Enums;
+using BaseDeProjetos.Models.Helpers;
 using BaseDeProjetos.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -395,8 +396,43 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="usuario">Usuário do sistema a ter participações retornadas</param>
         /// <returns></returns>
-        private async Task<ParticipacaoTotalViewModel> GetParticipacaoTotalUsuario(Usuario usuario, string mesInicio = null, string anoInicio = null, string mesFim = null, string anoFim = null)
+        private async Task<ParticipacaoTotalViewModel> GetParticipacaoTotalUsuario(Usuario usuario, DateTime dataInicio, DateTime dataFim)
         {
+            ParticipacaoTotalViewModel participacao = new ParticipacaoTotalViewModel
+            {
+                Participacoes = new List<ParticipacaoViewModel>(),
+                Lider = usuario
+            };
+
+            var prospeccoesUsuario = new ProspeccoesUsuarioParticipacao
+            {
+                ProspeccoesLider = GetProspeccoesUsuarioLider(usuario),
+                ProspeccoesMembro = GetProspeccoesUsuarioMembro(usuario),
+                ProspeccoesTotais = GetProspeccoesUsuarioMembroEquipe(usuario),
+            };
+
+            FiltrarProspeccoesUsuario(prospeccoesUsuario, dataInicio, dataFim);
+
+            // Evitar exibir usuários sem prospecção
+            if (prospeccoesUsuario.ProspeccoesTotais.Count == 0)
+            {
+                return null;
+            }
+
+            // TODO: Computar range do gráfico? (Obs: eu acho que faz mais sentido a lógica referente ao grafico estar abstraída em outro lugar...)
+
+            await AtribuirParticipacoesIndividuais(participacao, prospeccoesUsuario.ProspeccoesTotais);
+
+            AtribuirValoresFinanceirosDeProspeccao(usuario, dataInicio, dataFim, participacao);
+            AtribuirQuantidadesDeProspeccao(usuario, participacao, prospeccoesUsuario);
+
+            await AtribuirAssertividadePrecificacao(usuario, dataInicio, dataFim, participacao, prospeccoesUsuario);
+
+            // TODO: Código inutilizado??
+            //double quantidadePesquisadores = CalculoNumeroPesquisadores(dataInicio.Year, dataFim.Year);
+
+            return participacao;
+        }
 
         private async Task AtribuirAssertividadePrecificacao(Usuario usuario, DateTime dataInicio, DateTime dataFim, ParticipacaoTotalViewModel participacao, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
         {
@@ -1048,7 +1084,7 @@ namespace BaseDeProjetos.Controllers
 
             foreach (var usuario in usuarios)
             {
-                var participacao = await GetParticipacaoTotalUsuario(usuario, mesInicio, anoInicio, mesFim, anoFim);
+                var participacao = await GetParticipacaoTotalUsuario(usuario, dataInicio, dataFim);
 
                 if (participacao != null)
                 {
