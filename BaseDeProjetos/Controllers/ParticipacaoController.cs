@@ -506,57 +506,34 @@ namespace BaseDeProjetos.Controllers
             return quantidadeProspeccoesComProposta;
         }
 
-                }
-                else
-                {
-                    participacao.TaxaConversaoProjeto = taxaConversaoProjeto = 0;
-                }
-
-                if (mesInicio == null || anoInicio == null)
-                {
-                    mesInicio = "01";
-                    anoInicio = "2021";
-                }
-
-                HandleMesFimAnoFimInvalido(ref mesFim, ref anoFim);
-
-                despesaIsiMeses = await CalculoDespesa(_context, int.Parse(mesInicio), int.Parse(anoInicio), int.Parse(mesFim), int.Parse(anoFim));
-
-                quantidadePesquisadores = CalculoNumeroPesquisadores(int.Parse(anoInicio), int.Parse(anoFim));
-
-                participacao.FatorContribuicaoFinanceira = valorTotalProjetosParaFCF / despesaIsiMeses;
-            }
-
-            return participacao;
-        }
-
-        /// <summary>
-        /// Popula os dicionários contendo os dados sobre as despesas e a quantidade de pesquisadores de forma a não causar erros no código
-        /// Isso nunca deveria ter sido feito...
-        /// </summary>
-        /// <param name="anoFim"></param>
-        private static void GambiarraAnoInvalido(string anoFim)
+        private decimal CalcularQuantidadeDeProspeccoes(Usuario usuario, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
         {
-            int anoFimParse = int.Parse(anoFim);
-            if (!despesas.ContainsKey(anoFimParse))
+            decimal quantidadeProspeccoesComPeso = 0;
+
+            foreach (var prospeccao in prospeccoesUsuario.ProspeccoesTotais)
             {
-                despesas[anoFimParse] = 0;
+                var membrosEquipe = TratarMembrosEquipeString(prospeccao);
+
+                if (prospeccao.Usuario.Id == usuario.Id)
+                {
+
+                    var percBolsista = CalculoPercentualBolsista(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoBolsista).Count());
+                    var percEstagiario = CalculoPercentualEstagiario(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoEstagiário).Count());
+                    var percPesquisador = CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
+
+                    var percLider = 1 - (percBolsista + percEstagiario + percPesquisador);
+
+                    quantidadeProspeccoesComPeso += percLider;
+                }
+                else if (prospeccao.MembrosEquipe.Contains(usuario.Email))
+                {
+                    quantidadeProspeccoesComPeso += CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
+                }
             }
 
-            if (!pesquisadores.ContainsKey(int.Parse(anoFim)))
-            {
-                try
-                {
-                    pesquisadores[anoFimParse] = pesquisadores[anoFimParse - 1];
-                }
-                // Em ultimo caso, o ano anterior também não existe (2023 não está lá no momento)
-                catch (KeyNotFoundException)
-                {
-                    pesquisadores[anoFimParse - 1] = pesquisadores[anoFimParse - 2];
-                    pesquisadores[anoFimParse] = pesquisadores[anoFimParse - 2];
-                }
-            }
+            return quantidadeProspeccoesComPeso;
         }
+
 
         /// <summary>
         /// TODO: SRP
