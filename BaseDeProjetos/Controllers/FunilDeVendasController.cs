@@ -153,7 +153,7 @@ namespace BaseDeProjetos.Controllers
                 FunilHelpers.PeriodizarProspecções(ano, prospeccoes);
             }
 
-            prospeccoes = FunilHelpers.OrdenarProspecções(sortOrder, prospeccoes); //SORT ORDEM ALFABETICA
+            prospeccoes = FunilHelpers.OrdenarProspecções(sortOrder, prospeccoes); // SORT ORDEM ALFABETICA
             prospeccoes = FunilHelpers.FiltrarProspecções(searchString, prospeccoes); // APENAS NA BUSCA
 
             FunilHelpers.SetarFiltrosNaView(HttpContext, ViewData, sortOrder, searchString);
