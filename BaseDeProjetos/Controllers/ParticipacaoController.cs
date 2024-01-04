@@ -927,30 +927,16 @@ namespace BaseDeProjetos.Controllers
         }
 
         /// <summary>
-        /// Filtra as prospecções passadas por parâmetro com status até o mês e ano especificado
-        /// </summary>
-        /// <param name="mesFim"></param>
-        /// <param name="anoFim"></param>
-        /// <param name="prospeccoes"></param>
-        /// <returns></returns>
-        private static List<Prospeccao> FiltrarProspeccoesPorPeriodo(string mesFim, string anoFim, List<Prospeccao> prospeccoes)
-        {
-            return prospeccoes.Where(p => p.Status.Any(f => f.Data.Year <= int.Parse(anoFim) && f.Data.Month <= int.Parse(mesFim))).ToList();
-        }
-
-        /// <summary>
         /// Filtra as prospecções passadas por parâmetro com status do mês e ano inicial até o mês e ano final
         /// </summary>
-        /// <param name="mesInicio"></param>
-        /// <param name="anoInicio"></param>
-        /// <param name="mesFim"></param>
-        /// <param name="anoFim"></param>
-        /// <param name="prospeccoes"></param>
         /// <returns></returns>
-        private static List<Prospeccao> FiltrarProspeccoesPorPeriodo(string mesInicio, string anoInicio, string mesFim, string anoFim, List<Prospeccao> prospeccoes)
+        private static List<Prospeccao> FiltrarProspeccoesPorPeriodo(DateTime dataInicio, DateTime dataFim, List<Prospeccao> prospeccoes)
         {
-            return prospeccoes.Where(p => p.Status.Any(f => f.Data.Year >= int.Parse(anoInicio) && f.Data.Year <= int.Parse(anoFim) && f.Data.Month >= int.Parse(mesInicio) && f.Data.Month <= int.Parse(mesFim))).ToList();
+            return prospeccoes
+                .Where(p => p.Status.Any(f => f.Data >= dataInicio && f.Data <= dataFim))
+                .ToList();
         }
+
 
         /// <summary>
         /// Filtra os projetos passados por parâmetro com status do mês e ano inicial até o mês e ano final
