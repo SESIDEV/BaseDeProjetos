@@ -1,4 +1,5 @@
 ﻿using BaseDeProjetos.Helpers;
+using BaseDeProjetos.Models.Helpers;
 using System.Collections.Generic;
 
 namespace BaseDeProjetos.Models.ViewModels
