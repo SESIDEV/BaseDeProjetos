@@ -642,57 +642,22 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
-        private async Task<decimal> ExtrairValorProjetos(Usuario usuario, string mesInicio, string anoInicio, string mesFim, string anoFim)
+        /// <summary>
+        /// TODO: SRP
+        /// TODO: Apenas como lider??
+        /// </summary>
+        /// <param name="usuario"></param>
+        /// <param name="dataInicio"></param>
+        /// <param name="dataFim"></param>
+        /// <returns></returns>
+        private async Task<decimal> ExtrairValorProjetos(Usuario usuario, DateTime dataInicio, DateTime dataFim)
         {
             var projetosUsuario = await _context.Projeto.Where(p => p.UsuarioId == usuario.Id).ToListAsync();
-            if (string.IsNullOrEmpty(mesInicio) && string.IsNullOrEmpty(anoInicio))
-            {
-                projetosUsuario = AcertarPrecificacaoProjetos(mesFim, anoFim, projetosUsuario);
-            }
-            else
-            {
-                projetosUsuario = AcertarPrecificacaoProjetos(mesInicio, anoInicio, mesFim, anoFim, projetosUsuario);
-            }
+
+            projetosUsuario = AcertarPrecificacaoProjetos(dataInicio, dataFim, projetosUsuario);
             return (decimal)projetosUsuario.Sum(p => p.ValorTotalProjeto);
         }
 
-        private List<Prospeccao> GetProspeccoesUsuarioLider(Usuario usuario)
-        {
-            return _prospeccoes.Where(p => p.Usuario.Id == usuario.Id && p.Status.OrderBy(f => f.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
-        }
-
-        /// <summary>
-        /// Retorna uma lista de projetos com o seu valor ajustado para o custo de acordo com o filtro
-        /// (Apenas considera uma data limite)
-        /// </summary>
-        /// <param name="mesFim">Mes de fim do filtro</param>
-        /// <param name="anoFim">Ano de fim do filtro</param>
-        /// <param name="projetos">Projetos a serem ajustados</param>
-        /// <returns></returns>
-        internal List<Projeto> AcertarPrecificacaoProjetos(string mesFim, string anoFim, List<Projeto> projetos)
-        {
-            int qtdMesesCalculavel;
-            var dataFinalFiltro = Helpers.Helpers.ObterUltimoDiaMes(int.Parse(anoFim), int.Parse(mesFim));
-
-            foreach (var projeto in projetos)
-            {
-                if (dataFinalFiltro > projeto.DataInicio)
-                {
-                    if (dataFinalFiltro < projeto.DataEncerramento)
-                    {
-                        qtdMesesCalculavel = Helpers.Helpers.DiferencaMeses(dataFinalFiltro, projeto.DataInicio, true);
-                        double valorProjetoPorMes = projeto.ValorTotalProjeto / Helpers.Helpers.DiferencaMeses(projeto.DataEncerramento, projeto.DataInicio, true);
-                        projeto.ValorTotalProjeto = valorProjetoPorMes * qtdMesesCalculavel;
-                    }
-                }
-                else
-                {
-                    // Não considerar o custo caso o filtro esteja fora?
-                    projeto.ValorTotalProjeto = 0;
-                }
-            }
-
-            return projetos;
         }
 
         /// <summary>
