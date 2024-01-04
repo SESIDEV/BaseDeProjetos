@@ -428,27 +428,37 @@ namespace BaseDeProjetos.Controllers
         }
 
 
-            foreach (var prospeccao in prospeccoesUsuarioComProposta)
+        private decimal CalcularQuantidadeDeProspeccoesConvertidas(Usuario usuario, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
+        {
+            decimal quantidadeProspeccoesConvertidas = 0;
+
+            foreach (var prospeccao in prospeccoesUsuario.ProspeccoesTotais)
             {
-                var membrosEquipe = TratarMembrosEquipeString(prospeccao);
-
-                if (prospeccao.Usuario.Id == usuario.Id)
+                // Ordeno, ou simplesmente faço um any()?
+                if (prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida)
                 {
-                    var percBolsista = CalculoPercentualBolsista(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoBolsista).Count());
-                    var percEstagiario = CalculoPercentualEstagiario(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoEstagiário).Count());
-                    var percPesquisador = CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
+                    var membrosEquipe = TratarMembrosEquipeString(prospeccao);
 
-                    var percLider = 1 - (percBolsista + percEstagiario + percPesquisador);
+                    if (prospeccao.Usuario.Id == usuario.Id)
+                    {
+                        var percBolsista = CalculoPercentualBolsista(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoBolsista).Count());
+                        var percEstagiario = CalculoPercentualEstagiario(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoEstagiário).Count());
+                        var percPesquisador = CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
 
-                    quantidadeProspeccoesComProposta += percLider;
-                }
-                else if (prospeccao.MembrosEquipe.Contains(usuario.Email))
-                {
-                    quantidadeProspeccoesComProposta += CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
+                        var percLider = 1 - (percBolsista + percEstagiario + percPesquisador);
+
+                        quantidadeProspeccoesConvertidas += percLider;
+                    }
+                    else
+                    {
+                        quantidadeProspeccoesConvertidas += CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
+                    }
                 }
             }
 
-            participacao.QuantidadeProspeccoesComProposta = quantidadeProspeccoesComProposta;
+            return quantidadeProspeccoesConvertidas;
+        }
+
 
             foreach (var prospeccao in prospeccoesUsuarioConvertidas)
             {
