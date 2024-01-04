@@ -1,5 +1,10 @@
+﻿using Microsoft.AspNetCore.Html;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Reflection;
+using System.Text;
+using BaseDeProjetos.Helpers;
 
 namespace BaseDeProjetos.Models.ViewModels
 {
@@ -30,5 +35,54 @@ namespace BaseDeProjetos.Models.ViewModels
         public List<string> Labels { get; set; }
         public List<decimal> Valores { get; set; }
         public List<decimal> RankingsMedios { get; set; }
+
+        public HtmlString AsHtml(string nomeVariavel, bool financeiro, Dictionary<string, decimal> valoresMinimos, Dictionary<string, decimal> valoresMaximos)
+        {
+            var rankIndicador = RankPorIndicador[$"Rank{nomeVariavel}"];
+            decimal valor = ExtrairValorDaVariavel(nomeVariavel);
+
+            CultureInfo cultura = new CultureInfo("pt-BR");
+
+            StringBuilder sb = new StringBuilder();
+
+            string valorRank = rankIndicador.ToString("N", cultura);
+            string comecoDiv = $"<div data-text=\"{valorRank}\" class=\"d-flex flex-row align-items-center gap-2 tooltip-indicadores\">";
+            int intervalo = BaseDeProjetos.Helpers.Helpers.VerificarIntervalo(valor, valoresMinimos[nomeVariavel], valoresMaximos[nomeVariavel]);
+            HtmlString iconeParticipacao = BaseDeProjetos.Helpers.Helpers.ObterIconeParticipacao(intervalo);
+
+            sb.Append(comecoDiv);
+            sb.Append(iconeParticipacao.ToString());
+            if (financeiro)
+            {
+                sb.Append($"{valor:C2}");
+            }
+            else
+            {
+                sb.Append(valor.ToString());
+            }
+
+            return new HtmlString(sb.ToString());
+        }
+
+        private decimal ExtrairValorDaVariavel(string nomeVariavel)
+        {
+            PropertyInfo propertyInfo = this.GetType().GetProperty(nomeVariavel);
+
+            decimal valor = 0;
+
+            if (propertyInfo != null)
+            {
+                try
+                {
+                    valor = (decimal)propertyInfo.GetValue(this);
+                }
+                catch (InvalidCastException)
+                {
+                    valor = (int)propertyInfo.GetValue(this);
+                }
+            }
+
+            return valor;
+        }
     }
 }
