@@ -3,8 +3,8 @@
     public class IndicadoresProspeccao
     {
         public int EmpresasProspectadas { get; set; }
-        public int TempoMedioContato { get; set; }
-        public int ProspContatoIncial { get; set; }
+        public double TempoMedioContato { get; set; }
+        public int ProspContatoInicial { get; set; }
         public double PercentualInfrutiferas { get; set; }
     }
 }

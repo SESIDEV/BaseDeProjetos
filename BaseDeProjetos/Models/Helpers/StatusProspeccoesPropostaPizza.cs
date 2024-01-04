@@ -2,9 +2,9 @@
 {
     public class StatusProspeccoesPropostaPizza
     {
-        public double QuantidadeEmAndamento {  get; set; }
-        public double QuantidadeConvertidas { get; set; }
-        public double QuantidadeNaoConvertidas { get; set; }
+        public int QuantidadeEmAndamento {  get; set; }
+        public int QuantidadeConvertidas { get; set; }
+        public int QuantidadeNaoConvertidas { get; set; }
 
     }
 }
