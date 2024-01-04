@@ -1,4 +1,4 @@
-﻿@using System.Globalization
+@using System.Globalization
 @using BaseDeProjetos.Models
 @using BaseDeProjetos.Helpers
 @using BaseDeProjetos.Models.Enums
@@ -206,6 +206,9 @@
                                         <tr>
                                             <div class="modal fade" id="ModalDetalhesParticipacaoTotal-@participacaoTotal.Id" tabindex="-1" aria-labelledby="ModalDetalhesParticipacaoTotal-@participacaoTotal.Id-Label"
                                                  aria-hidden="true">
+                                                
+                                                @* Começo do accordion *@
+                                                
                                                 <div class="modal-dialog modal-dialog-centered modal-xl">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
@@ -214,6 +217,9 @@
                                                         </div>
                                                         <div class="modal-body d-flex flex-column gap-1" style="background: #f5f6fe;">
                                                             <partial name="GraficoParticipacaoTotal" model="@participacaoTotal" />
+
+                                                            <!-- A partir daqui começa o acordion -->
+
                                                             <div class="accordion" id="accordionProspeccoes">
                                                                 <div class="accordion-item">
                                                                     <h2 class="accordion-header" id="headingProspeccoes">
