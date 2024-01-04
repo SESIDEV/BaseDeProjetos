@@ -475,74 +475,37 @@ namespace BaseDeProjetos.Controllers
             return quantidadeProspeccoesConvertidas;
         }
 
+        private decimal CalcularQuantidadeDeProspeccoesComProposta(Usuario usuario, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
+        {
+            decimal quantidadeProspeccoesComProposta = 0;
 
-            foreach (var prospeccao in prospeccoesUsuarioConvertidas)
+            foreach (var prospeccao in prospeccoesUsuario.ProspeccoesTotais)
             {
-                var membrosEquipe = TratarMembrosEquipeString(prospeccao);
-
-                if (prospeccao.Usuario.Id == usuario.Id)
+                // Ordeno, ou simplesmente faço um any()?
+                if (prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.ComProposta)
                 {
-                    var percBolsista = CalculoPercentualBolsista(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoBolsista).Count());
-                    var percEstagiario = CalculoPercentualEstagiario(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoEstagiário).Count());
-                    var percPesquisador = CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
+                    var membrosEquipe = TratarMembrosEquipeString(prospeccao);
 
-                    var percLider = 1 - (percBolsista + percEstagiario + percPesquisador);
+                    if (prospeccao.Usuario.Id == usuario.Id)
+                    {
+                        var percBolsista = CalculoPercentualBolsista(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoBolsista).Count());
+                        var percEstagiario = CalculoPercentualEstagiario(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoEstagiário).Count());
+                        var percPesquisador = CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
 
-                    quantidadeProspeccoesConvertidas += percLider;
-                }
-                else
-                {
-                    quantidadeProspeccoesConvertidas += CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
+                        var percLider = 1 - (percBolsista + percEstagiario + percPesquisador);
+
+                        quantidadeProspeccoesComProposta += percLider;
+                    }
+                    else if (prospeccao.MembrosEquipe.Contains(usuario.Email))
+                    {
+                        quantidadeProspeccoesComProposta += CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
+                    }
                 }
             }
 
-            participacao.QuantidadeProspeccoesProjeto = quantidadeProspeccoesConvertidas;
+            return quantidadeProspeccoesComProposta;
+        }
 
-            participacao.QuantidadeProspeccoesMembro = quantidadeProspeccoesMembro = prospeccoesUsuarioMembro.Count();
-            participacao.QuantidadeProspeccoesLider = quantidadeProspeccoesLider = prospeccoesUsuarioLider.Count();
-
-            // Apenas para calculo da Assertividade
-            quantidadeProspeccoesComPropostaLider = prospeccoesUsuarioLider.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).Count();
-            quantidadeProspeccoesConvertidasLider = prospeccoesUsuarioLider.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida).Count();
-            valorTotalProspeccoesComPropostaLider = prospeccoesUsuarioLider.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).Sum(p => p.ValorProposta);
-            valorTotalProspeccoesConvertidasLider = prospeccoesUsuarioLider.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida).Sum(p => p.ValorProposta);
-
-            participacao.Lider = usuario;
-
-            // Evita divisão por 0
-            if (prospeccoesUsuarioMembroEquipe.Count() == 0)
-            {
-                participacao.ValorMedioProspeccoes = 0;
-                participacao.ValorMedioProspeccoesComProposta = 0;
-                participacao.TaxaConversaoProposta = 0;
-                participacao.TaxaConversaoProjeto = 0;
-            }
-            else
-            {
-                participacao.TaxaConversaoProposta = taxaConversaoProposta = quantidadeProspeccoesComProposta / quantidadeProspeccoesComPeso;
-                participacao.ValorMedioProspeccoes = valorMedioProspeccoes = valorTotalProspeccoes / quantidadeProspeccoes;
-
-                if (quantidadeProspeccoesComPropostaLider > 0 && quantidadeProspeccoesComProposta > 0)
-                {
-                    participacao.ValorMedioProspeccoesComProposta = valorMedioProspeccoesComProposta = valorTotalProspeccoesComProposta / quantidadeProspeccoesComProposta;
-                    valorMedioProspeccoesComPropostaLider = valorTotalProspeccoesComPropostaLider / quantidadeProspeccoesComPropostaLider;
-                }
-
-                if (quantidadeProspeccoesConvertidasLider > 0 && quantidadeProspeccoesConvertidas > 0)
-                {
-                    participacao.ValorMedioProspeccoesConvertidas = valorMedioProspeccoesConvertidas = valorTotalProspeccoesConvertidas / quantidadeProspeccoesConvertidas;
-                    valorMedioProspeccoesConvertidasLider = valorTotalProspeccoesConvertidasLider / quantidadeProspeccoesConvertidasLider;
-                }
-
-                if (valorMedioProspeccoesConvertidasLider != 0)
-                {
-                    var erroRelativo = Math.Abs(valorMedioProspeccoesConvertidasLider - valorMedioProspeccoesComPropostaLider) / Math.Abs(valorMedioProspeccoesConvertidasLider);
-                    participacao.AssertividadePrecificacao = erroRelativo;
-                }
-
-                if (quantidadeProspeccoesComProposta != 0)
-                {
-                    participacao.TaxaConversaoProjeto = taxaConversaoProjeto = quantidadeProspeccoesConvertidas / quantidadeProspeccoesComProposta;
                 }
                 else
                 {
