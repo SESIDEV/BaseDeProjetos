@@ -297,8 +297,8 @@ namespace BaseDeProjetos.Controllers
                     int valorMaximo = participacoes.Max(x => (int)property.GetValue(x));
                     int valorMinimo = participacoes.Min(x => (int)property.GetValue(x));
 
-                    valoresMaximos[$"{property.Name}"] = (decimal)valorMaximo;
-                    valoresMinimos[$"{property.Name}"] = (decimal)valorMinimo;
+                    valoresMaximos[$"{property.Name}"] = valorMaximo;
+                    valoresMinimos[$"{property.Name}"] = valorMinimo;
                 }
             }
 
