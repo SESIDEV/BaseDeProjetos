@@ -52,13 +52,21 @@ namespace BaseDeProjetos.Models.ViewModels
 
             sb.Append(comecoDiv);
             sb.Append(iconeParticipacao.ToString());
+
             if (financeiro)
             {
                 sb.Append($"{valor:C2}");
             }
             else
             {
-                sb.Append(valor.ToString());
+                if (valor == Math.Floor(valor))
+                {
+                    sb.Append(valor);
+                }
+                else
+                {
+                    sb.Append($"{valor:F}");
+                }
             }
 
             return new HtmlString(sb.ToString());
