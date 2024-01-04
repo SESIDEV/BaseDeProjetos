@@ -2,6 +2,7 @@
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.Enums;
+using BaseDeProjetos.Models.Helpers;
 using BaseDeProjetos.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +10,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using NUnit.Framework.Constraints;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,14 +37,80 @@ namespace BaseDeProjetos.Controllers
             _cache = cache;
         }
 
+        public int GerarQuantidadeProsp(List<Prospeccao> prospeccoes, Func<Prospeccao, bool> filtro)
+        {
+            return prospeccoes.Count(filtro);
+        }
+
         public async Task<IActionResult> GerarIndicadoresProsp()
         {
-            int prospeccoes =  _context.Prospeccao.Select(p => new {p.Empresa}).Distinct().Count();
 
-            int prospeccoesContatoInicial = _context.Prospeccao.Select(p => new {p.Status}).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial)).Count();
+            //todas prospepccoes que possui status em proposta e status inicial, duracao de dias 
 
-            int prospeccoesInfrutiferas = _context.Prospeccao.Select(p => new {p.Status}).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida).Count();
-            double percentInfrutiferas = (double) prospeccoesInfrutiferas / _context.Prospeccao.Select(p => new { p.Id }).Count() * 100;
+            List<TimeSpan> intervaloDatas = new List<TimeSpan>();
+            var prospeccoesComPropostaEContatoInicial = _context.Prospeccao.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta) && p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial)).ToList();
+            int empresasProspectadas = _context.Prospeccao.Select(p => new { p.Empresa }).Distinct().Count();
+            for (int i = 0; i < prospeccoesComPropostaEContatoInicial.Count; i++)
+            {
+                var dataContatoInicial = prospeccoesComPropostaEContatoInicial[i].Status.Where(p => p.Status == StatusProspeccao.ContatoInicial).First().Data;
+                var dataComProposta = prospeccoesComPropostaEContatoInicial[i].Status.Where(p => p.Status == StatusProspeccao.ComProposta).First().Data;
+                intervaloDatas.Add(dataComProposta - dataContatoInicial);
+            }
+            var mediaintervalos = new TimeSpan(Convert.ToInt64(intervaloDatas.Average(t => t.Ticks)));
+            double tempoMedioContato = mediaintervalos.TotalDays;
+            int prospContatoInicial = _context.Prospeccao.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial)).Count();
+            int prospeccoesInfrutiferas = _context.Prospeccao.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida || p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa).Count();
+            double percentInfrutiferas = (double)prospeccoesInfrutiferas / ObterProspeccoesTotais() * 100;
+            IndicadoresProspeccao indicadoresProspeccao = new IndicadoresProspeccao { EmpresasProspectadas = empresasProspectadas, TempoMedioContato = tempoMedioContato, PercentualInfrutiferas = percentInfrutiferas, ProspContatoInicial = prospContatoInicial };
+            return Ok(JsonConvert.SerializeObject(indicadoresProspeccao));
+        }
+
+        public async Task<IActionResult> GerarStatusGeralProspPizza()
+        {
+            int prospSuspensas = _context.Prospeccao.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa).Count();
+            double percentCanceladas = (double)prospSuspensas / ObterProspeccoesTotais() * 100;
+
+            int prospConvertidas = _context.Prospeccao.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida)).Count();
+            double percentConvertidas = (double)prospConvertidas / ObterProspeccoesTotais() * 100;
+
+            int prospNaoConvertidas = _context.Prospeccao.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida).Count();
+            double percentNaoConvertidas = (double)prospNaoConvertidas / ObterProspeccoesTotais() * 100;
+
+            int prospEmAndamento = ObterProspeccoesTotais() - prospConvertidas - prospNaoConvertidas - prospSuspensas;
+            double percentEmAndamento = (double)prospEmAndamento / ObterProspeccoesTotais() * 100;
+
+            StatusGeralProspeccaoPizza statusGeralProspeccaoPizza = new StatusGeralProspeccaoPizza { PercentualCanceladas = percentCanceladas, PercentualConvertidas = percentConvertidas, PercentualEmAndamento = percentEmAndamento, PercentualNaoConvertidas = percentNaoConvertidas };
+            return Ok(JsonConvert.SerializeObject(statusGeralProspeccaoPizza));
+        }
+
+        public async Task<IActionResult> GerarStatusProspPropostaPizza()
+        {
+            List<Prospeccao> prospeccoes = _context.Prospeccao.ToList();
+            int prospConvertidas = GerarQuantidadeProsp(prospeccoes, p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida));
+            int prospEmAndamento = GerarQuantidadeProsp(prospeccoes, p => p.Status.Any(p => p.Status != StatusProspeccao.Convertida) && p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida) && p.Status.Any(p => p.Status == StatusProspeccao.Suspensa));
+            int prospNaoConvertidas = GerarQuantidadeProsp(prospeccoes, p => p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida));
+
+            StatusProspeccoesPropostaPizza statusProspeccoesPropostaPizza = new StatusProspeccoesPropostaPizza { QuantidadeEmAndamento = prospEmAndamento, QuantidadeConvertidas = prospConvertidas, QuantidadeNaoConvertidas = prospNaoConvertidas };
+            return Ok(JsonConvert.SerializeObject(statusProspeccoesPropostaPizza));
+        }
+
+        private int ObterProspeccoesTotais()
+        {
+            return _context.Prospeccao.Select(p => new { p.Id }).Count();
+        }
+
+        public async Task<IActionResult> GerarStatusProspComProposta()
+        {
+            int prospConvertidas = _context.Prospeccao.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida)).Count();
+            double taxaConversaoProsp = (double)prospConvertidas / _context.Prospeccao.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta)).Count() * 100 ;
+
+            decimal ticketMedioProsp = _context.Prospeccao.Select(p => new { p.ValorProposta, p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.ComProposta).Average(p => p.ValorProposta);
+            int propostasComerciais = _context.Prospeccao.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta)).Count();
+
+            int projetosContratados = _context.Prospeccao.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Convertida).Count();
+
+            StatusProspPropostaIndicadores statusProspPropostaIndicadores = new StatusProspPropostaIndicadores { TaxaConversao = taxaConversaoProsp, TicketMedioProsp = ticketMedioProsp, PropostasEnviadas = propostasComerciais, ProjetosContratados = projetosContratados };
+            return Ok(JsonConvert.SerializeObject(statusProspPropostaIndicadores));
         }
 
 
