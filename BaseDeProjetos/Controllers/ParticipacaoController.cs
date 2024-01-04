@@ -1387,59 +1387,20 @@ namespace BaseDeProjetos.Controllers
         private static void CalcularMediaFatores(List<ParticipacaoTotalViewModel> participacoes, ParticipacaoTotalViewModel participacao)
         {
             decimal calculoMediaFatores = 0;
-
-            if (participacoes.Max(p => p.ValorTotalProspeccoes) != 0)
-            {
-                calculoMediaFatores += participacao.ValorTotalProspeccoes / participacoes.Max(p => p.ValorTotalProspeccoes);
-            }
-            if (participacoes.Max(p => p.ValorMedioProspeccoes) != 0)
-            {
-                calculoMediaFatores += participacao.ValorMedioProspeccoes / participacoes.Max(p => p.ValorMedioProspeccoes);
-            }
-            if ((decimal)participacoes.Max(p => p.QuantidadeProspeccoes) != 0)
-            {
-                calculoMediaFatores += participacao.QuantidadeProspeccoes / (decimal)participacoes.Max(p => p.QuantidadeProspeccoes);
-            }
-            if ((decimal)participacoes.Max(p => p.QuantidadeProspeccoesLider) != 0)
-            {
-                calculoMediaFatores += participacao.QuantidadeProspeccoesLider / (decimal)participacoes.Max(p => p.QuantidadeProspeccoesLider);
-            }
-            if ((decimal)participacoes.Max(p => p.QuantidadeProspeccoesProjeto) != 0)
-            {
-                calculoMediaFatores += participacao.QuantidadeProspeccoesProjeto / (decimal)participacoes.Max(p => p.QuantidadeProspeccoesProjeto);
-            }
-            if ((decimal)participacoes.Max(p => p.QuantidadeProspeccoesComProposta) != 0)
-            {
-                calculoMediaFatores += participacao.QuantidadeProspeccoesComProposta / (decimal)participacoes.Max(p => p.QuantidadeProspeccoesComProposta);
-            }
-            if (participacoes.Max(p => p.ValorMedioProspeccoesComProposta) != 0)
-            {
-                calculoMediaFatores += participacao.ValorMedioProspeccoesComProposta / participacoes.Max(p => p.ValorMedioProspeccoesComProposta);
-            }
-            if (participacoes.Max(p => p.TaxaConversaoProjeto) != 0)
-            {
-                calculoMediaFatores += participacao.TaxaConversaoProjeto / participacoes.Max(p => p.TaxaConversaoProjeto);
-            }
-            if (participacoes.Max(p => p.TaxaConversaoProposta) != 0)
-            {
-                calculoMediaFatores += participacao.TaxaConversaoProposta / participacoes.Max(p => p.TaxaConversaoProposta);
-            }
-            if ((decimal)participacoes.Max(p => p.QuantidadeProspeccoesMembro) != 0)
-            {
-                calculoMediaFatores += participacao.QuantidadeProspeccoesMembro / (decimal)participacoes.Max(p => p.QuantidadeProspeccoesMembro);
-            }
-            if (participacoes.Max(p => p.AssertividadePrecificacao) != 0)
-            {
-                calculoMediaFatores += participacao.AssertividadePrecificacao / participacoes.Max(p => p.AssertividadePrecificacao);
-            }
-            if (participacoes.Max(p => p.ValorMedioProspeccoesConvertidas != 0))
-            {
-                calculoMediaFatores += participacao.ValorMedioProspeccoesConvertidas / participacoes.Max(p => p.ValorMedioProspeccoesConvertidas);
-            }
-            if (participacoes.Max(p => p.ValorTotalProspeccoesConvertidas != 0))
-            {
-                calculoMediaFatores += participacao.ValorTotalProspeccoesConvertidas / participacoes.Max(p => p.ValorTotalProspeccoesConvertidas);
-            }
+            
+            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoes, participacoes.Max(p => p.ValorTotalProspeccoes));
+            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.ValorMedioProspeccoes, participacoes.Max(p => p.ValorMedioProspeccoes));
+            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoes, participacoes.Max(p => p.QuantidadeProspeccoes));
+            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesLider, participacoes.Max(p => p.QuantidadeProspeccoesLider));
+            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesProjeto, participacoes.Max(p => p.QuantidadeProspeccoesProjeto));
+            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesComProposta, participacoes.Max(p => p.QuantidadeProspeccoesComProposta));
+            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.ValorMedioProspeccoesComProposta, participacoes.Max(p => p.ValorMedioProspeccoesComProposta));
+            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.TaxaConversaoProjeto, participacoes.Max(p => p.TaxaConversaoProjeto));
+            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.TaxaConversaoProposta, participacoes.Max(p => p.TaxaConversaoProposta));
+            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesMembro, participacoes.Max(p => p.QuantidadeProspeccoesMembro));
+            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.AssertividadePrecificacao, participacoes.Max(p => p.AssertividadePrecificacao));
+            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.ValorMedioProspeccoesConvertidas, participacoes.Max(p => p.ValorMedioProspeccoesConvertidas));
+            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoesConvertidas, participacoes.Max(p => p.ValorTotalProspeccoesConvertidas));
 
             participacao.MediaFatores = calculoMediaFatores /= 13;
         }
