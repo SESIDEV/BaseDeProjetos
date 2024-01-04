@@ -430,6 +430,22 @@ namespace BaseDeProjetos.Controllers
             participacao.ValorMedioProspeccoesComProposta = IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoesComProposta, participacao.QuantidadeProspeccoesComProposta);
         }
 
+        private void AtribuirQuantidadesDeProspeccao(Usuario usuario, ParticipacaoTotalViewModel participacao, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
+        {
+            var prospeccoesUsuarioComProposta = prospeccoesUsuario.ProspeccoesTotais.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.ComProposta)).ToList();
+            var prospeccoesUsuarioConvertidas = prospeccoesUsuario.ProspeccoesTotais.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida));
+            var prospeccoesUsuarioConvertidasLider = prospeccoesUsuario.ProspeccoesLider.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida)).ToList();
+
+            decimal quantidadeProspeccoesTotaisPeso = CalcularQuantidadeDeProspeccoes(usuario, prospeccoesUsuario);
+            decimal quantidadeProspeccoesComPropostaPeso = CalcularQuantidadeDeProspeccoesComProposta(usuario, prospeccoesUsuario);
+            decimal quantidadeProspeccoesConvertidasPeso = CalcularQuantidadeDeProspeccoesConvertidas(usuario, prospeccoesUsuario);
+
+            participacao.QuantidadeProspeccoes = (int)Math.Round(quantidadeProspeccoesTotaisPeso);
+            participacao.QuantidadeProspeccoesComProposta = quantidadeProspeccoesComPropostaPeso;
+            participacao.QuantidadeProspeccoesProjeto = quantidadeProspeccoesConvertidasPeso;
+            participacao.QuantidadeProspeccoesMembro = prospeccoesUsuario.ProspeccoesMembro.Count();
+            participacao.QuantidadeProspeccoesLider = prospeccoesUsuario.ProspeccoesLider.Count();
+        }
 
         private decimal CalcularQuantidadeDeProspeccoesConvertidas(Usuario usuario, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
         {
