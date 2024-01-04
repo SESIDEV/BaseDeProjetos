@@ -652,7 +652,7 @@ namespace BaseDeProjetos.Controllers
                 }
             }
 
-            return quantidadeProspeccoesComProposta;
+            return Math.Round(quantidadeProspeccoesComProposta);
         }
 
         private decimal CalcularQuantidadeDeProspeccoesConvertidas(Usuario usuario, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
@@ -683,7 +683,7 @@ namespace BaseDeProjetos.Controllers
                 }
             }
 
-            return quantidadeProspeccoesConvertidas;
+            return Math.Round(quantidadeProspeccoesConvertidas);
         }
 
         /// <summary>
