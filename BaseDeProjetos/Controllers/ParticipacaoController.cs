@@ -333,31 +333,6 @@ namespace BaseDeProjetos.Controllers
         }
 
         /// <summary>
-        /// Filtra os projetos passados por parâmetro com status do mês e ano inicial até o mês e ano final
-        /// </summary>
-        /// <param name="mesInicio"></param>
-        /// <param name="anoInicio"></param>
-        /// <param name="mesFim"></param>
-        /// <param name="anoFim"></param>
-        /// <param name="projetos"></param>
-        /// <returns></returns>
-        private static List<Projeto> FiltrarProjetosPorPeriodo(string mesInicio, string anoInicio, string mesFim, string anoFim, List<Projeto> projetos)
-        {
-            int yearInicio = int.Parse(anoInicio);
-            int monthInicio = int.Parse(mesInicio);
-
-            int yearFim = int.Parse(anoFim);
-            int monthFim = int.Parse(mesFim);
-
-            DateTime dataInicioFiltro = new DateTime(yearInicio, monthInicio, 1);
-            DateTime dataFimFiltro = new DateTime(yearFim, monthFim, DateTime.DaysInMonth(yearFim, monthFim));
-
-            return projetos
-                .Where(p => p.DataInicio <= dataFimFiltro && p.DataEncerramento >= dataInicioFiltro)
-                .ToList();
-        }
-
-        /// <summary>
         /// Filtra as prospecções passadas por parâmetro com status do mês e ano inicial até o mês e ano final
         /// </summary>
         /// <returns></returns>
@@ -366,13 +341,6 @@ namespace BaseDeProjetos.Controllers
             return prospeccoes
                 .Where(p => p.Status.Any(f => f.Data >= dataInicio && f.Data <= dataFim))
                 .ToList();
-        }
-
-        private static void HandleMesFimAnoFimInvalido(ref string mesFim, ref string anoFim)
-        {
-            // Ano/Mes nulo?
-            mesFim ??= DateTime.Now.Month.ToString();
-            anoFim ??= DateTime.Now.Year.ToString();
         }
 
         /// <summary>
