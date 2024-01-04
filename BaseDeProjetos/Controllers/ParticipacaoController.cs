@@ -727,26 +727,30 @@ namespace BaseDeProjetos.Controllers
         }
 
         /// <summary>
-        /// Extrai o valor total das prospecções considerando o valor da proposta se presente, se não, o valor estimado
+        /// Extrai o valor total das prospecções do usuário considerando o valor da proposta se presente, se não, o valor estimado
         /// </summary>
         /// <param name="prospeccoes"></param>
         /// <param name="valorTotalProspeccoes"></param>
         /// <returns></returns>
-        private decimal ExtrairValorProspeccoes(Usuario usuario, StatusProspeccao? statusProspeccao, string mesInicio, string anoInicio, string mesFim, string anoFim)
+        private decimal ExtrairValorProspeccoes(Usuario usuario, StatusProspeccao? statusProspeccao, DateTime dataInicio, DateTime dataFim)
         {
             decimal valorProspeccoes = 0;
             List<Prospeccao> prospeccoes = new List<Prospeccao>();
 
+            // Caso se deseje filtrar por algum status específico
+            // TODO: Problema de SRP ?
             if (statusProspeccao != null)
             {
                 prospeccoes = _prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == statusProspeccao).ToList();
-                prospeccoes = FiltrarProspeccoesPorPeriodo(mesInicio, anoInicio, mesFim, anoFim, prospeccoes);
+                prospeccoes = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes);
             }
+            // Por padrão sempre queremos as não planejadas
             else
             {
                 prospeccoes = _prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
-                prospeccoes = FiltrarProspeccoesPorPeriodo(mesInicio, anoInicio, mesFim, anoFim, prospeccoes);
+                prospeccoes = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes);
             }
+            // --- ENDTODO ---
 
             foreach (var prospeccao in prospeccoes)
             {
