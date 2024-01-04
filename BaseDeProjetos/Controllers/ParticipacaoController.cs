@@ -52,36 +52,39 @@ namespace BaseDeProjetos.Controllers
         /// <param name="mesFinal"></param>
         /// <param name="anoFinal"></param>
         /// <returns></returns>
-        internal static async Task<decimal> CalculoDespesa(ApplicationDbContext context, int mesInicial, int anoInicial, int mesFinal, int anoFinal)
+        internal static decimal CalculoDespesa(DateTime dataInicio, DateTime dataFim)
         {
-            if (anoInicial > anoFinal)
+            if (dataInicio > dataFim)
             {
-                throw new ArgumentException($"{nameof(anoInicial)} não pode ser maior que {nameof(anoFinal)}");
+                throw new ArgumentException($"{nameof(dataInicio)} não pode ser maior que {nameof(dataFim)}");
             }
 
             decimal valorCustoFinal = 0;
 
-            if (anoInicial == anoFinal)
+            if (dataFim.Year == dataInicio.Year)
             {
-                if (mesInicial > mesFinal)
+                if (dataInicio.Month > dataFim.Month)
                 {
-                    throw new ArgumentException($"{nameof(mesInicial)} não pode ser maior que {nameof(mesFinal)}");
+                    throw new ArgumentException($"O mês da data inicial não pode ser maior que o mês da data final");
                 }
 
-                int quantidadeDeMesesAno = mesFinal - mesInicial + 1;
-                valorCustoFinal = despesas[anoInicial] / 12 * quantidadeDeMesesAno;
+                int quantidadeDeMesesAno = dataFim.Month - dataInicio.Month + 1;
+                valorCustoFinal = despesas[dataInicio.Year] / 12 * quantidadeDeMesesAno;
                 return valorCustoFinal;
             }
             else
             {
-                int quantidadeDeMesesAnoInicial = 12 - mesInicial + 1;
-                valorCustoFinal += despesas[anoInicial] / 12 * quantidadeDeMesesAnoInicial;
+                int quantidadeDeMesesAnoInicial = 12 - dataInicio.Month + 1;
+                // Evitar misses do dicionário
+                int anoFinalTruncado = Math.Min(dataFim.Year, despesas.Keys.Last());
 
-                int quantidadeDeMesesAnoFinal = mesFinal;
-              
-                valorCustoFinal += despesas[anoFinal] / 12 * quantidadeDeMesesAnoFinal;
-               
-                int subtracaoAno = anoFinal - anoInicial - 1;
+                valorCustoFinal += despesas[dataInicio.Year] / 12 * quantidadeDeMesesAnoInicial;
+
+                int quantidadeDeMesesAnoFinal = dataFim.Month;
+
+                valorCustoFinal += despesas[anoFinalTruncado] / 12 * quantidadeDeMesesAnoFinal;
+
+                int subtracaoAno = anoFinalTruncado - dataInicio.Year - 1;
 
                 if (subtracaoAno <= 0)
                 {
@@ -91,7 +94,7 @@ namespace BaseDeProjetos.Controllers
                 {
                     for (int i = 1; i <= subtracaoAno; i++)
                     {
-                        valorCustoFinal += despesas[anoInicial + i];
+                        valorCustoFinal += despesas[dataInicio.Year + i];
                     }
                 }
 
