@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.Enums;
@@ -372,6 +372,19 @@ namespace BaseDeProjetos.Controllers
             }
 
             return new DateTime(anoParse, mesParse, 1);
+        }
+
+        /// <summary>
+        /// Filtra as prospecções do usuario de acordo com a data de inicio e data de fim do filtro
+        /// </summary>
+        /// <param name="prospeccoes"></param>
+        /// <param name="dataInicio"></param>
+        /// <param name="dataFim"></param>
+        private void FiltrarProspeccoesUsuario(ProspeccoesUsuarioParticipacao prospeccoes, DateTime dataInicio, DateTime dataFim)
+        {
+            prospeccoes.ProspeccoesMembro = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesMembro);
+            prospeccoes.ProspeccoesLider = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesLider);
+            prospeccoes.ProspeccoesTotais = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesTotais);
         }
 
         /// <summary>
