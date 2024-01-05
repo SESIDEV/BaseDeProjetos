@@ -1,6 +1,7 @@
-using BaseDeProjetos.Data;
+﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
+using BaseDeProjetos.Models.DTOs;
 using BaseDeProjetos.Models.Enums;
 using BaseDeProjetos.Models.Helpers;
 using BaseDeProjetos.Models.ViewModels;
@@ -495,7 +496,7 @@ namespace BaseDeProjetos.Controllers
         /// <param name="prospeccoesUsuario">Prospecções de um usuário (membro e lider)</param>
         private async Task AtribuirParticipacoesIndividuais(ParticipacaoTotalViewModel participacao, List<Prospeccao> prospeccoesUsuario)
         {
-            List<Usuario> usuarios = await _context.Users.ToListAsync();
+            List<UsuarioParticipacaoDTO> usuarios = await _context.Users.Select(u => new UsuarioParticipacaoDTO { Id = u.Id, Cargo = u.Cargo, Casa = u.Casa, EmailConfirmed = u.EmailConfirmed, Nivel = u.Nivel, Email = u.Email }).ToListAsync();
 
             foreach (var prospeccao in prospeccoesUsuario)
             {
@@ -534,7 +535,7 @@ namespace BaseDeProjetos.Controllers
                     {
                         if (!string.IsNullOrEmpty(membro))
                         {
-                            Usuario usuarioEquivalente = usuarios.Find(u => u.Email == membro);
+                            Usuario usuarioEquivalente = usuarios.Find(u => u.Email == membro).ToUsuario();
                             if (usuarioEquivalente != null)
                             {
                                 membrosEquipe.Add(usuarioEquivalente);
@@ -1152,22 +1153,28 @@ namespace BaseDeProjetos.Controllers
             // TODO: Isso precisava mesmo estar aqui?
             ViewbagizarUsuario(_context);
 
-            List<Usuario> usuarios;
+            List<UsuarioParticipacaoDTO> usuarios;
 
             if (UsuarioAtivo.Casa == Instituto.ISIQV || UsuarioAtivo.Casa == Instituto.CISHO)
             {
-                usuarios = await _context.Users.Where(u => (u.Casa == Instituto.ISIQV || u.Casa == Instituto.CISHO) && u.Cargo.Nome == nomeCargoPesquisador && u.EmailConfirmed == true && u.Nivel == Nivel.Usuario).ToListAsync();
+                usuarios = await _context.Users
+                    .Select(u => new UsuarioParticipacaoDTO { Cargo = u.Cargo, Casa = u.Casa, Email = u.Email, EmailConfirmed = u.EmailConfirmed, Nivel = u.Nivel, Id = u.Id })
+                    .Where(u => (u.Casa == Instituto.ISIQV || u.Casa == Instituto.CISHO) && u.Cargo.Nome == nomeCargoPesquisador && u.EmailConfirmed == true && u.Nivel == Nivel.Usuario)
+                    .ToListAsync();
             }
             else
             {
-                usuarios = await _context.Users.Where(u => u.Casa == UsuarioAtivo.Casa && u.EmailConfirmed == true && u.Cargo.Nome == nomeCargoPesquisador && u.Nivel == Nivel.Usuario).ToListAsync();
+                usuarios = await _context.Users
+                    .Select(u => new UsuarioParticipacaoDTO { Cargo = u.Cargo, Casa = u.Casa, Email = u.Email, EmailConfirmed = u.EmailConfirmed, Nivel = u.Nivel, Id = u.Id })
+                    .Where(u => u.Casa == UsuarioAtivo.Casa && u.EmailConfirmed == true && u.Cargo.Nome == nomeCargoPesquisador && u.Nivel == Nivel.Usuario)
+                    .ToListAsync();
             }
 
             List<ParticipacaoTotalViewModel> participacoes = new List<ParticipacaoTotalViewModel>();
 
             foreach (var usuario in usuarios)
             {
-                var participacao = await GetParticipacaoTotalUsuario(usuario, dataInicio, dataFim);
+                var participacao = await GetParticipacaoTotalUsuario(usuario.ToUsuario(), dataInicio, dataFim);
 
                 if (participacao != null)
                 {
@@ -1328,7 +1335,10 @@ namespace BaseDeProjetos.Controllers
         private List<Usuario> TratarMembrosEquipeString(Prospeccao prospeccao)
         {
             List<string> membrosNaoTratados = prospeccao.MembrosEquipe?.Split(";").ToList();
-            List<Usuario> usuarios = _context.Users.ToList();
+            List<UsuarioParticipacaoDTO> usuarios = _context.Users
+                .Select(u => new UsuarioParticipacaoDTO { Cargo = u.Cargo, Casa = u.Casa, Email = u.Email, EmailConfirmed = u.EmailConfirmed, Nivel = u.Nivel, Id = u.Id })
+                .ToList();
+
             List<Usuario> membrosEquipe = new List<Usuario>();
 
             if (membrosNaoTratados != null)
@@ -1337,7 +1347,7 @@ namespace BaseDeProjetos.Controllers
                 {
                     if (!string.IsNullOrEmpty(membro))
                     {
-                        Usuario usuarioEquivalente = usuarios.Find(u => u.Email == membro);
+                        Usuario usuarioEquivalente = usuarios.Find(u => u.Email == membro).ToUsuario();
                         if (usuarioEquivalente != null)
                         {
                             membrosEquipe.Add(usuarioEquivalente);
