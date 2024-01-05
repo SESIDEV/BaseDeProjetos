@@ -141,9 +141,11 @@
             input.placeholder = new Date().getFullYear().toString();
         }
     }
+
 </script>
 
 <partial name="Header" view-data="@ViewData" />
+<script src="~/js/participacao/indicadores.js"></script>
 <div class="app-wrapper">
     <div class="app-content pt-3 p-md-3 p-lg-4">
         <div class="">
@@ -177,191 +179,65 @@
             </div>
 
             <div class="tab-pane fade show active" id="valores" role="tabpanel" aria-labelledby="valores-tab">
-                <div class="app-card app-card-orders-table shadow-sm mb-5">
-                    <div class="app-card-body">
-                        <div class="table-responsive">
-                            <table class="table mb-0 text-left">
-                                <thead>
-                                    <tr>
-                                        <th class="cell">Membro</th>
-                                        <th class="cell">Valor Total (Prospecção)</th>
-                                        <th class="cell">Quantidade (Prospecção)</th>
-                                        <th class="cell">Quantidade (Lider)</th>
-                                        <th class="cell">Quantidade (Membro)</th>
-                                        <th class="cell">Valor Médio (Prospecção)</th>
-                                        <th class="cell">Valor Total (Em Proposta)</th>
-                                        <th class="cell">Valor Médio (Em Proposta)</th>
-                                        <th class="cell">Propostas Enviadas</th>
-                                        <th class="cell">Propostas Convertidas</th>
-                                        <th class="cell">Valor Total (Convertida)</th>
-                                        <th class="cell">Valor Médio (Convertida)</th>
-                                        <th class="cell">Proposta/Prospecção</th>
-                                        <th class="cell">Projeto/Proposta</th>
-                                        <th class="cell">Assertividade Precificação</th>
-                                        <th data-text="Fator de Contribuição Financeira" class="cell tooltip-indicadores">FCF</th>
-                                        <th class="cell">Média dos Fatores</th>
-                                        <th class="cell">Detalhes</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var participacaoTotal in @Model)
-                                    {
+                <div class="d-flex flex-wrap gap-2 justify-content-start">
+                    <div class="dropdown">
+                        <button class="btn app-btn-primary dropdown-toggle" type="button" id="dropdownParticipacaoFinanceiros" data-bs-toggle="dropdown" aria-expanded="false">
+                            Indicadores Financeiros
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownParticipacaoFinanceiros">
+                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#" onclick='puxarIndicador("ValorTotalProspeccoes", "Valor Total das Prospecções")'>Valor Total das Prospecções</a></li>
+                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#" onclick='puxarIndicador("ValorMedioProspeccoes", "Valor Médio das Prospecções")'>Valor Médio das Prospecções</a></li>
+                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Valor Total das Prospecções em Proposta</a></li>
+                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Valor Médio das Prospecções em Proposta</a></li>
+                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Valor Total das Prospecções Convertidas</a></li>
+                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Valor Médio das Prospecções Convertidas</a></li>
+                        </ul>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn app-btn-primary dropdown-toggle" type="button" id="dropdownParticipacaoContribuicao" data-bs-toggle="dropdown" aria-expanded="false">
+                            Indicadores de Contribuição
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownParticipacaoContribuicao">
+                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Quantidade de Prospecções</a></li>
+                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Quantidade de Prospecções (Líder)</a></li>
+                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Quantidade de Prospecções (Membro)</a></li>
+                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Taxa de Conversão em Proposta</a></li>
+                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Taxa de Conversão em Projetos</a></li>
+                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Quantidade de Projetos</a></li>
+                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Quantidade de Prospecções em Proposta</a></li>
+                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Quantidade de Prospecções Convertidas</a></li>
+                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Assertividade na Precificação</a></li>
+                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Fator de Contribuição Financeira</a></li>
+                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse">Média dos Fatores</a></li>
+                        </ul>
+                    </div>
+
+                </div>
+                <div class="collapse" id="collapseIndicador">
+                    <h4 class="app-card-title" id="tituloIndicador">Indicador: PLACEHOLDER</h4>
+                    <div class="app-card app-card-orders-table shadow-sm mb-5">
+                        <div class="app-card-body">
+                            <div class="table-responsive">
+                                <table class="table app-table-hover mb-0 text-left">
+                                    <thead>
                                         <tr>
-                                            <div class="modal fade" id="ModalDetalhesParticipacaoTotal-@participacaoTotal.Id" tabindex="-1" aria-labelledby="ModalDetalhesParticipacaoTotal-@participacaoTotal.Id-Label"
-                                                 aria-hidden="true">
-                                                
-                                                @* Começo do accordion *@
-                                                
-                                                <div class="modal-dialog modal-dialog-centered modal-xl">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h1 class="modal-title fs-5" id="ModalDetalhesParticipacaoTotal-@participacaoTotal.Id-Label">Detalhes das Participações do Pesquisador</h1>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body d-flex flex-column gap-1" style="background: #f5f6fe;">
-                                                            <partial name="GraficoParticipacaoTotal" model="@participacaoTotal" />
-
-                                                            <!-- A partir daqui começa o acordion -->
-
-                                                            <div class="accordion" id="accordionProspeccoes">
-                                                                <div class="accordion-item">
-                                                                    <h2 class="accordion-header" id="headingProspeccoes">
-                                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProspeccoes"
-                                                                                aria-expanded="false" aria-controls="collapseProspeccoes">
-                                                                            Lista de Prospecções
-                                                                        </button>
-                                                                    </h2>
-                                                                    <div id="collapseProspeccoes" class="accordion-collapse collapse" aria-labelledby="headingProspeccoes"
-                                                                         data-bs-parent="#accordionProspeccoes">
-                                                                        <div class="accordion-body">
-                                                                            @{
-                                                                                var participacoes = participacaoTotal.Participacoes;
-
-                                                                                participacoes.Sort((p1, p2) => p1.Convertida.CompareTo(p2.Convertida));
-                                                                                participacoes.Sort((p1, p2) => decimal.Compare(p1.ValorNominal, p2.ValorNominal));
-
-                                                                                <div class="row g-4">
-                                                                                    @foreach (var participacaoUnitaria in participacoes)
-                                                                                    {
-                                                                                        @await Html.PartialAsync("ListaParticipacoesUnitarias", participacaoUnitaria, ViewData)
-                                                                                    }
-                                                                                </div>
-                                                                            }
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <a class="btn btn-outline-primary" data-bs-dismiss="modal" aria-label="Close" role="button">
-                                                                Fechar
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <td class="cell" style="overflow:hidden; max-width:100px">
-                                                @if (ViewBag.usuarioNivel == Nivel.Dev || ViewBag.usuarioNivel == Nivel.PMO)
-                                                {
-                                                    @*Alterar quando for pra produção, dev, pmo devem poder ver os nomes@
-                                            @* @participacaoTotal.Lider *@
-                                                    <p>Membro @(participacaoTotal.Lider.UserName.GetHashCode())</p>
-                                                }
-                                                else
-                                                {
-                                                    <p>Membro @(participacaoTotal.Lider.UserName.GetHashCode())</p>
-                                                }
-                                            </td>
-                                            <td class="cell">
-                                                @participacaoTotal.AsHtml("ValorTotalProspeccoes", true, valoresMinimos, valoresMaximos)
-                                            </td>
-                                            <td class="cell">
-                                                @participacaoTotal.AsHtml("QuantidadeProspeccoes", false, valoresMinimos, valoresMaximos)
-                                            </td>
-                                            <td class="cell">
-                                                @participacaoTotal.AsHtml("QuantidadeProspeccoesLider", false, valoresMinimos, valoresMaximos)
-                                            </td>
-                                            <td class="cell">
-                                                @participacaoTotal.AsHtml("QuantidadeProspeccoesMembro", false, valoresMinimos, valoresMaximos)
-                                            </td>
-                                            <td class="cell">
-                                                @participacaoTotal.AsHtml("ValorMedioProspeccoes", true, valoresMinimos, valoresMaximos)
-                                            </td>
-                                            <td class="cell">
-                                                @participacaoTotal.AsHtml("ValorTotalProspeccoesComProposta", true, valoresMinimos, valoresMaximos)
-                                            </td>
-                                            <td class="cell">
-                                                @participacaoTotal.AsHtml("ValorMedioProspeccoesComProposta", true, valoresMinimos, valoresMaximos)
-                                            </td>
-                                            <td class="cell">
-                                                @participacaoTotal.AsHtml("QuantidadeProspeccoesComProposta", false, valoresMinimos, valoresMaximos)
-                                            </td>
-                                            <td class="cell">
-                                                @participacaoTotal.AsHtml("QuantidadeProspeccoesProjeto", false, valoresMinimos, valoresMaximos)
-                                            </td>
-                                            <td class="cell">
-                                                @participacaoTotal.AsHtml("ValorTotalProspeccoesConvertidas", true, valoresMinimos, valoresMaximos)
-                                            </td>
-                                            <td class="cell">
-                                                @participacaoTotal.AsHtml("ValorMedioProspeccoesConvertidas", true, valoresMinimos, valoresMaximos)
-                                            </td>
-                                            <td class="cell">
-                                                <div class="d-flex flex-row align-items-center gap-2">
-                                                    @{
-                                                        var taxaConversaoProposta = participacaoTotal.TaxaConversaoProposta;
-                                                    }
-                                                    @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(taxaConversaoProposta, valoresMinimos["TaxaConversaoProposta"], valoresMaximos["TaxaConversaoProposta"])))
-                                                    @((taxaConversaoProposta * 100).ToString("N", cultura))%
-                                                </div>
-                                            </td>
-                                            <td class="cell">
-                                                <div class="d-flex flex-row align-items-center gap-2">
-                                                    @{
-                                                        var taxaConversaoProjeto = participacaoTotal.TaxaConversaoProjeto;
-                                                    }
-                                                    @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(taxaConversaoProjeto, valoresMinimos["TaxaConversaoProjeto"], valoresMaximos["TaxaConversaoProjeto"])))
-                                                    @((taxaConversaoProjeto * 100).ToString("N", cultura))%
-                                                </div>
-                                            </td>
-                                            <td class="cell">
-                                                @participacaoTotal.AsHtml("AssertividadePrecificacao", false, valoresMinimos, valoresMaximos)
-                                            </td>
-                                            <td class="cell">
-                                                @{
-                                                    decimal fatorContribuicaoFinanceira = participacaoTotal.FatorContribuicaoFinanceira;
-                                                    decimal fcfMaximo = valoresMaximos["FatorContribuicaoFinanceira"];
-                                                    decimal fcfMinimo = valoresMinimos["FatorContribuicaoFinanceira"];
-                                                    <div class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(fatorContribuicaoFinanceira, fcfMinimo, fcfMaximo)))
-                                                        @(fatorContribuicaoFinanceira.ToString("N", cultura))
-                                                    </div>
-                                                }
-                                            </td>
-                                            <td class="cell">
-                                                <div class="d-flex align-items-center flex-row gap-2">
-                                                    @{
-                                                        decimal mediaFatores = participacaoTotal.MediaFatores;
-                                                    }
-                                                    <div class="d-flex flex-row align-items-center gap-2">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(mediaFatores, valoresMinimos["MediaFatores"], valoresMaximos["MediaFatores"])))
-                                                        @((mediaFatores).ToString("N", cultura))
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="cell">
-                                                <button type="button" data-bs-target="#ModalDetalhesParticipacaoTotal-@participacaoTotal.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary">
-                                                    Detalhes
-                                                </button>
-                                            </td>
+                                            <th class="cell">Pesquisador</th>
+                                            <th class="cell">Valor</th>
+                                            <th class="cell">Rank</th>
+                                            <th class="cell">Detalhes</th>
                                         </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody id="corpoTabela">
+                                        <!-- Preencher os dados aqui-->
+                                    </tbody>
+                                </table>
+                            </div><!--//table-responsive-->
+
+                        </div><!--//app-card-body-->
                     </div>
                 </div>
             </div>
         </div>
+        <partial name="Footer" />
     </div>
-    <partial name="Footer" />
 </div>
