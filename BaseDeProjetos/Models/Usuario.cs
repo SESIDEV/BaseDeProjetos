@@ -1,4 +1,5 @@
-﻿using BaseDeProjetos.Models.Enums;
+﻿using BaseDeProjetos.Models.DTOs;
+using BaseDeProjetos.Models.Enums;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -29,5 +30,20 @@ namespace BaseDeProjetos.Models
         public virtual Cargo? Cargo { get; set; }
 
         public virtual int? CargoId { get; set; }
+
+        public UsuarioParticipacaoDTO ToUsuarioParticipacao()
+        {
+            return new UsuarioParticipacaoDTO
+            {
+                Id = Id,
+                Cargo = Cargo,
+                Email = Email,
+                EmailConfirmed = EmailConfirmed,
+                Nivel = Nivel,
+                Casa = Casa
+            };
+        }
     }
+
+
 }
