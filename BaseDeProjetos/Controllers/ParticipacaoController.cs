@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.Enums;
@@ -94,6 +94,56 @@ namespace BaseDeProjetos.Controllers
                 return View(participacoesFiltradas);
             }
 
+        }
+
+        public async Task<IActionResult> RetornarDadosIndicador(string nomeIndicador, DateTime? dataInicio, DateTime? dataFim)
+        {
+            var indicadores = await _context.IndicadoresFinanceiros.ToListAsync();
+
+            foreach (var indicador in indicadores)
+            {
+                despesas[indicador.Data.Year] = indicador.Despesa;
+                pesquisadores[indicador.Data.Year] = indicador.QtdPesquisadores;
+            }
+
+            if (_prospeccoes.Count == 0)
+            {
+                _prospeccoes = _context.Prospeccao.Include(p => p.Empresa).Include(p => p.Status).ToList();
+            }
+
+            if (string.IsNullOrEmpty(nomeIndicador))
+            {
+                throw new Exception("O nome do indicador jamais pode estar vazio");
+            }
+
+            if (dataInicio == null)
+            {
+                dataInicio = new DateTime(2021, 01, 01);
+            }
+
+            if (dataFim == null)
+            {
+                dataFim = new DateTime(DateTime.Now.Year, 12, 31);
+            }
+
+            string chaveCache = $"Participacoes:{dataInicio.Value.Month}:{dataInicio.Value.Year}:{dataFim.Value.Month}:{dataFim.Value.Year}";
+            List<ParticipacaoTotalViewModel> participacoes = await _cache.GetCachedAsync(chaveCache, () => GetParticipacoesTotaisUsuarios((DateTime)dataInicio, (DateTime)dataFim));
+            List<IndicadorResultadoViewModel> resultados = new List<IndicadorResultadoViewModel>();
+
+            foreach (var participacao in participacoes)
+            {
+                var valor = typeof(ParticipacaoTotalViewModel).GetProperty(nomeIndicador).GetValue(participacao, null);
+                if (valor != null)
+                {
+                    resultados.Add(new IndicadorResultadoViewModel
+                    {
+                        Pesquisador = participacao.Lider.ToUsuarioParticipacao(),
+                        Valor = valor
+                    });
+                }
+            }
+
+            return Ok(JsonConvert.SerializeObject(resultados));
         }
 
         /// <summary>
