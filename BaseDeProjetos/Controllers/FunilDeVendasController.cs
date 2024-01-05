@@ -60,7 +60,7 @@ namespace BaseDeProjetos.Controllers
                 int qtdPaginasTodo = (int)Math.Ceiling((double)qtdProspeccoes / tamanhoPagina);
 
                 var pager = new Pager(qtdProspeccoes, numeroPagina, tamanhoPagina, 50); // 50 paginas max
-                
+
                 if (numeroPagina > qtdPaginasTodo)
                 {
                     var paginaVazia = new ProspeccoesViewModel
@@ -95,10 +95,7 @@ namespace BaseDeProjetos.Controllers
                 }
                 else
                 {
-
                     model.ProspeccoesGrafico = prospeccoes;
-                    
-
 
                     model.ProspeccoesAvancadas = prospeccoes.Where(
                         p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)).Where(
@@ -108,13 +105,11 @@ namespace BaseDeProjetos.Controllers
 
                     return View(model);
                 }
-
             }
             else
             {
                 return View("Forbidden");
             }
-
         }
 
         private async Task InserirDadosEmpresasUsuariosViewData()
@@ -338,7 +333,6 @@ namespace BaseDeProjetos.Controllers
 
             return prospeccao;
         }
-
 
         /// <summary>
         /// Cria uma selectlist para a View(?)

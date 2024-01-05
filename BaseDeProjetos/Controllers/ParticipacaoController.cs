@@ -1,5 +1,4 @@
 ﻿using BaseDeProjetos.Data;
-using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.Enums;
 using BaseDeProjetos.Models.ViewModels;
@@ -7,8 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using OfficeOpenXml.ConditionalFormatting.Contracts;
-using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +21,7 @@ namespace BaseDeProjetos.Controllers
     {
         // TODO: Precisamos não utilizar esses valores mágicos de string no futuro!!
         private const string nomeCargoPesquisador = "Pesquisador QMS";
+
         private const string nomeCargoEstagiário = "Estagiário";
         private const string nomeCargoBolsista = "Pesquisador Bolsista";
         private readonly ApplicationDbContext _context;
@@ -34,8 +32,8 @@ namespace BaseDeProjetos.Controllers
         private const int MesInicioPadrao = 1;
         private const int MesFimPadrao = 12;
 
-        private readonly static Dictionary<int, decimal> despesas = new Dictionary<int, decimal>();
-        private readonly static Dictionary<int, int> pesquisadores = new Dictionary<int, int>();
+        private static readonly Dictionary<int, decimal> despesas = new Dictionary<int, decimal>();
+        private static readonly Dictionary<int, int> pesquisadores = new Dictionary<int, int>();
 
         public ParticipacaoController(ApplicationDbContext context, DbCache cache, ILogger<ParticipacaoController> logger)
         {
@@ -78,9 +76,9 @@ namespace BaseDeProjetos.Controllers
                 valorCustoFinal += despesas[anoInicial] / 12 * quantidadeDeMesesAnoInicial;
 
                 int quantidadeDeMesesAnoFinal = mesFinal;
-              
+
                 valorCustoFinal += despesas[anoFinal] / 12 * quantidadeDeMesesAnoFinal;
-               
+
                 int subtracaoAno = anoFinal - anoInicial - 1;
 
                 if (subtracaoAno <= 0)
@@ -348,7 +346,6 @@ namespace BaseDeProjetos.Controllers
                 participacao.Valores = valoresProposta;
                 participacao.Labels = mesAno;
             }
-
         }
 
         /// <summary>
@@ -474,7 +471,6 @@ namespace BaseDeProjetos.Controllers
 
                 if (prospeccao.Usuario.Id == usuario.Id)
                 {
-
                     var percBolsista = CalculoPercentualBolsista(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoBolsista).Count());
                     var percEstagiario = CalculoPercentualEstagiario(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoEstagiário).Count());
                     var percPesquisador = CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
@@ -584,7 +580,6 @@ namespace BaseDeProjetos.Controllers
                     participacao.TaxaConversaoProjeto = taxaConversaoProjeto = 0;
                 }
 
-
                 if (mesInicio == null || anoInicio == null)
                 {
                     mesInicio = "01";
@@ -603,8 +598,7 @@ namespace BaseDeProjetos.Controllers
             return participacao;
         }
 
-
-      /// <summary>
+        /// <summary>
         /// Popula os dicionários contendo os dados sobre as despesas e a quantidade de pesquisadores de forma a não causar erros no código
         /// Isso nunca deveria ter sido feito...
         /// </summary>
@@ -631,7 +625,7 @@ namespace BaseDeProjetos.Controllers
                 }
             }
         }
-        
+
         private async Task<decimal> ExtrairValorProjetos(Usuario usuario, string mesInicio, string anoInicio, string mesFim, string anoFim)
         {
             var projetosUsuario = await _context.Projeto.Where(p => p.UsuarioId == usuario.Id).ToListAsync();
@@ -917,6 +911,7 @@ namespace BaseDeProjetos.Controllers
                                     valorProspeccoes += percentualEstagiario * prospeccao.ValorEstimado;
                                 }
                                 break;
+
                             case nomeCargoPesquisador:
                                 if (prospeccao.ValorProposta != 0)
                                 {
@@ -927,6 +922,7 @@ namespace BaseDeProjetos.Controllers
                                     valorProspeccoes += percentualPesquisador * prospeccao.ValorEstimado;
                                 }
                                 break;
+
                             case nomeCargoBolsista:
                                 if (prospeccao.ValorProposta != 0)
                                 {
@@ -1028,7 +1024,6 @@ namespace BaseDeProjetos.Controllers
                 p.MembrosEquipe.Contains(usuario.Email) &&
                 (p.Status == null || p.Status.OrderBy(f => f.Data).LastOrDefault()?.Status != StatusProspeccao.Planejada)
             ).ToList();
-
         }
 
         /// <summary>
@@ -1109,22 +1104,28 @@ namespace BaseDeProjetos.Controllers
                     case StatusProspeccao.Convertida:
                         prospConvertida = true;
                         break;
+
                     case StatusProspeccao.Planejada:
                         prospPlanejada = true;
                         break;
+
                     case StatusProspeccao.Suspensa:
                         prospSuspensa = true;
                         break;
+
                     case StatusProspeccao.NaoConvertida:
                         prospNaoConvertida = true;
                         break;
+
                     case StatusProspeccao.ContatoInicial:
                     case StatusProspeccao.Discussao_EsbocoProjeto:
                         prospEmDiscussao = true;
                         break;
+
                     case StatusProspeccao.ComProposta:
                         prospComProposta = true;
                         break;
+
                     default:
                         prospSuspensa = false;
                         prospConvertida = false;
@@ -1245,7 +1246,6 @@ namespace BaseDeProjetos.Controllers
                 var participacoesFiltradas = participacoes.Where(p => p.Lider.Id == UsuarioAtivo.Id).ToList();
                 return View(participacoesFiltradas);
             }
-
         }
 
         /// <summary>

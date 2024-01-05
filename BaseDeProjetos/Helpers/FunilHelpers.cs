@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Helpers
@@ -348,7 +347,6 @@ namespace BaseDeProjetos.Helpers
 
         public static void RepassarStatusAoCancelarAncora(ApplicationDbContext _context, Prospeccao prospeccao)
         {
-
             if (!string.IsNullOrEmpty(prospeccao.Agregadas))
 
             {
@@ -487,6 +485,7 @@ namespace BaseDeProjetos.Helpers
 
                 case "tipo_desc":
                     return prospeccoes.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).OrderByDescending(s => s.TipoContratacao).ToList();
+
                 default:
                     return prospeccoes.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).OrderBy(p => p.Status.OrderByDescending(s => s.Data).Select(s => s.Data).FirstOrDefault()).ToList();
             }

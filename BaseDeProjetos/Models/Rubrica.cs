@@ -1,7 +1,4 @@
-﻿using NUnit.Framework;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace BaseDeProjetos.Models
+﻿namespace BaseDeProjetos.Models
 {
     public class Rubrica
     {

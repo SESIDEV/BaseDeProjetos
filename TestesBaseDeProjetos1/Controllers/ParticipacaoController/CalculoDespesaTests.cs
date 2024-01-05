@@ -1,11 +1,4 @@
-﻿using BaseDeProjetos.Data;
-using Microsoft.EntityFrameworkCore;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
+﻿namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
 {
     public class CalculoDespesaTests
     {

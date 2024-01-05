@@ -75,8 +75,8 @@ namespace BaseDeProjetos.Models
         public virtual String Agregadas { get; set; }
     }
 
-    public class FollowUp
-    {
+        public class FollowUp
+        {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public virtual int Id { get; set; }

@@ -1,7 +1,4 @@
 ﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace TestesBaseDeProjetos1.Services
 {
@@ -11,7 +8,6 @@ namespace TestesBaseDeProjetos1.Services
         [SetUp]
         public void Setup()
         {
-
         }
     }
 }

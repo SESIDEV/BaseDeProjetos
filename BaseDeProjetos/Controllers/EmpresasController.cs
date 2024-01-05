@@ -32,7 +32,7 @@ namespace BaseDeProjetos.Controllers
             _cache = cache;
         }
 
-        static string ReplaceBase64Data(string input)
+        private static string ReplaceBase64Data(string input)
         {
             // Define a regular expression pattern to match data URLs
             string pattern = @"data:image/[^;]+;base64,";
