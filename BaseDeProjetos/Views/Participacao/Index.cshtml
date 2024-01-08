@@ -90,66 +90,7 @@
                     </form>
                 </div>
             </div>
-
-            <div class="tab-pane fade show active" id="valores" role="tabpanel" aria-labelledby="valores-tab">
-                <div class="d-flex flex-wrap gap-2 justify-content-start">
-                    <div class="dropdown">
-                        <button class="btn app-btn-primary dropdown-toggle" type="button" id="dropdownParticipacaoFinanceiros" data-bs-toggle="dropdown" aria-expanded="false">
-                            Indicadores Financeiros
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownParticipacaoFinanceiros">
-                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#" onclick='puxarIndicador("ValorTotalProspeccoes", "Valor Total das Prospecções")'>Valor Total das Prospecções</a></li>
-                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#" onclick='puxarIndicador("ValorMedioProspeccoes", "Valor Médio das Prospecções")'>Valor Médio das Prospecções</a></li>
-                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Valor Total das Prospecções em Proposta</a></li>
-                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Valor Médio das Prospecções em Proposta</a></li>
-                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Valor Total das Prospecções Convertidas</a></li>
-                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Valor Médio das Prospecções Convertidas</a></li>
-                        </ul>
-                    </div>
-                    <div class="dropdown">
-                        <button class="btn app-btn-primary dropdown-toggle" type="button" id="dropdownParticipacaoContribuicao" data-bs-toggle="dropdown" aria-expanded="false">
-                            Indicadores de Contribuição
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownParticipacaoContribuicao">
-                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Quantidade de Prospecções</a></li>
-                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Quantidade de Prospecções (Líder)</a></li>
-                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Quantidade de Prospecções (Membro)</a></li>
-                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Taxa de Conversão em Proposta</a></li>
-                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Taxa de Conversão em Projetos</a></li>
-                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Quantidade de Projetos</a></li>
-                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Quantidade de Prospecções em Proposta</a></li>
-                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Quantidade de Prospecções Convertidas</a></li>
-                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Assertividade na Precificação</a></li>
-                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse" href="#">Fator de Contribuição Financeira</a></li>
-                            <li><a class="dropdown-item" data-bs-target="#collapseIndicador" data-bs-toggle="collapse">Média dos Fatores</a></li>
-                        </ul>
-                    </div>
-
-                </div>
-                <div class="collapse" id="collapseIndicador">
-                    <h4 class="app-card-title" id="tituloIndicador">Indicador: PLACEHOLDER</h4>
-                    <div class="app-card app-card-orders-table shadow-sm mb-5">
-                        <div class="app-card-body">
-                            <div class="table-responsive">
-                                <table class="table app-table-hover mb-0 text-left">
-                                    <thead>
-                                        <tr>
-                                            <th class="cell">Pesquisador</th>
-                                            <th class="cell">Valor</th>
-                                            <th class="cell">Rank</th>
-                                            <th class="cell">Detalhes</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="corpoTabela">
-                                        <!-- Preencher os dados aqui-->
-                                    </tbody>
-                                </table>
-                            </div><!--//table-responsive-->
-
-                        </div><!--//app-card-body-->
-                    </div>
-                </div>
-            </div>
+            <partial name="TabelaParticipacoes" />
         </div>
         <partial name="Footer" />
     </div>
