@@ -135,6 +135,49 @@ function preencherDadosStatusGeralProspPizza(dadosProsp) {
     });
 }
 
+async function fetchDadosGraficoBarraTipoContratacao() {
+    let fetchedData;
+    await fetch("/FunildeVendas/GerarGraficoBarraTipoContratacao")
+        .then(res => res.json())
+        .then(data => fetchedData = data)
+        .catch(err => console.error(`Houve um erro ao obter os dados dos indicadores: ${err}`))
+    return fetchedData;
+}
+function preencherDadosGraficoBarraTipoContratacao(dadosProsp) {
+    console.log(dadosProsp)
+
+    let comProposta = "ComProposta"
+    let contatoInicial = "ContatoInicial"
+    let emDiscussao = "EmDiscussao"
+
+    const seriespadrao = [
+        { name: 'Contratação Direta', data: [dadosProsp[contatoInicial]["ContratacaoDireta"], dadosProsp[emDiscussao]["ContratacaoDireta"], dadosProsp[comProposta]["ContratacaoDireta"]] },
+        { name: 'Editais de Inovação SESI/SENAI', data: [dadosProsp[contatoInicial]["EditaisInovacao"], dadosProsp[emDiscussao]["EditaisInovacao"], dadosProsp[comProposta]["EditaisInovacao"]] },
+        { name: 'Agências de Fomento', data: [dadosProsp[contatoInicial]["AgenciaFomento"], dadosProsp[emDiscussao]["AgenciaFomento"], dadosProsp[comProposta]["AgenciaFomento"]] },
+        { name: 'Embrapii', data: [dadosProsp[contatoInicial]["Embrapii"], dadosProsp[emDiscussao]["Embrapii"], dadosProsp[comProposta]["Embrapii"]] },
+        { name: 'A definir', data: [dadosProsp[contatoInicial]["Definir"], dadosProsp[emDiscussao]["Definir"], dadosProsp[comProposta]["Definir"]] },
+        { name: 'Parceiros de Edital', data: [dadosProsp[contatoInicial]["ParceiroEdital"], dadosProsp[emDiscussao]["ParceiroEdital"], dadosProsp[comProposta]["ParceiroEdital"]["Parceiro_ComProposta"]] },
+        { name: 'ANP/ANEEL', data: [dadosProsp[contatoInicial]["ANP_ANEEL"], dadosProsp[emDiscussao]["ANP_ANEEL"], dadosProsp[comProposta]["ANP_ANEEL"]] }
+    ];
+    
+    let chart1 = Highcharts.chart('funil', {
+        chart: { type: 'column', allowMutatingData: false },
+        title: { text: null },
+        xAxis: { categories: ["Contato inicial", "Em discussão", "Com Proposta"], },
+        yAxis: { min: 0, title: { text: 'Ocorrências' } },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f} prospecções</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: { column: { pointPadding: 0.2, borderWidth: 0 } },
+        series: seriespadrao
+    })
+}
+
 async function fetchDadosStatusProspeccoesPropostaPizza() {
     let fetchedData;
     await fetch("/FunildeVendas/GerarStatusProspPropostaPizza")
@@ -223,6 +266,14 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(data => {
             if (data) {
                 preencherDadosStatusProspeccoesPropostaPizza(data);
+            } else {
+                console.error("Não há dados para exibir no dashboard.");
+            }
+        });
+    fetchDadosGraficoBarraTipoContratacao()
+        .then(data => {
+            if (data) {
+                preencherDadosGraficoBarraTipoContratacao(data);
             } else {
                 console.error("Não há dados para exibir no dashboard.");
             }
