@@ -133,14 +133,20 @@ namespace BaseDeProjetos.Controllers
 
             foreach (var participacao in participacoes)
             {
-                var valor = typeof(ParticipacaoTotalViewModel).GetProperty(nomeIndicador).GetValue(participacao, null);
-                if (valor != null)
+                try
                 {
-                    resultados.Add(new IndicadorResultadoViewModel
+                    var valor = typeof(ParticipacaoTotalViewModel).GetProperty(nomeIndicador).GetValue(participacao, null);
+                    if (valor != null)
                     {
-                        Pesquisador = participacao.Lider.ToUsuarioParticipacao(),
-                        Valor = valor
-                    });
+                        resultados.Add(new IndicadorResultadoViewModel
+                        {
+                            Pesquisador = participacao.Lider.ToUsuarioParticipacao(),
+                            Valor = valor
+                        });
+                    }
+                } catch (Exception)
+                {
+                    return Ok(JsonConvert.SerializeObject(resultados));
                 }
             }
 
@@ -631,7 +637,7 @@ namespace BaseDeProjetos.Controllers
             decimal quantidadeProspeccoesComPropostaPeso = CalcularQuantidadeDeProspeccoesComProposta(usuario, prospeccoesUsuario);
             decimal quantidadeProspeccoesConvertidasPeso = CalcularQuantidadeDeProspeccoesConvertidas(usuario, prospeccoesUsuario);
 
-            participacao.QuantidadeProspeccoes = (int)Math.Round(quantidadeProspeccoesTotaisPeso);
+            participacao.QuantidadeProspeccoes = prospeccoesUsuario.ProspeccoesTotais.Count();
             participacao.QuantidadeProspeccoesComProposta = quantidadeProspeccoesComPropostaPeso;
             participacao.QuantidadeProspeccoesProjeto = quantidadeProspeccoesConvertidasPeso;
             participacao.QuantidadeProspeccoesMembro = prospeccoesUsuario.ProspeccoesMembro.Count();
@@ -657,7 +663,6 @@ namespace BaseDeProjetos.Controllers
 
                 if (prospeccao.Usuario.Id == usuario.Id)
                 {
-
                     var percBolsista = CalculoPercentualBolsista(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoBolsista).Count());
                     var percEstagiario = CalculoPercentualEstagiario(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoEstagiário).Count());
                     var percPesquisador = CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
@@ -1133,8 +1138,8 @@ namespace BaseDeProjetos.Controllers
 
             await AtribuirParticipacoesIndividuais(participacao, prospeccoesUsuario.ProspeccoesTotais);
 
-            AtribuirValoresFinanceirosDeProspeccao(usuario, dataInicio, dataFim, participacao);
             AtribuirQuantidadesDeProspeccao(usuario, participacao, prospeccoesUsuario);
+            AtribuirValoresFinanceirosDeProspeccao(usuario, dataInicio, dataFim, participacao);
 
             await AtribuirAssertividadePrecificacao(usuario, dataInicio, dataFim, participacao, prospeccoesUsuario);
 
