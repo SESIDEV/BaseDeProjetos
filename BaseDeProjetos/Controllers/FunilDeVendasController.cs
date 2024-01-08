@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using NUnit.Framework.Constraints;
 using System;
@@ -42,14 +43,77 @@ namespace BaseDeProjetos.Controllers
             return prospeccoes.Count(filtro);
         }
 
+        public int GerarQuantidadeTipoContratacao(List<Prospeccao> prospeccoes, StatusProspeccao status, TipoContratacao tipo)
+        {
+            return GerarQuantidadeProsp(prospeccoes, p => p.Status.Any(p => p.Status == status) && p.TipoContratacao == tipo);
+        }
+
+        public async Task<IActionResult> GerarGraficoBarraTipoContratacao()
+        {
+            Dictionary<string, int> statusprospeccao = new Dictionary<string, int>();
+            List<Prospeccao> prospeccoes = _context.Prospeccao.ToList();
+
+            foreach (int tipo in Enum.GetValues(typeof(TipoContratacao)))
+            {
+                int prospContatoInicial = GerarQuantidadeTipoContratacao(prospeccoes, StatusProspeccao.ContatoInicial, (TipoContratacao)tipo);
+
+                int prospEmDiscussao = GerarQuantidadeTipoContratacao(prospeccoes, StatusProspeccao.Discussao_EsbocoProjeto, (TipoContratacao)tipo);
+
+                int prospComProposta = GerarQuantidadeTipoContratacao(prospeccoes, StatusProspeccao.ComProposta, (TipoContratacao)tipo);
+
+                statusprospeccao[$"ContatoInicial_{tipo}"] = prospContatoInicial;
+
+                statusprospeccao[$"EmDiscussao_{tipo}"] = prospEmDiscussao;
+
+                statusprospeccao[$"ComProposta_{tipo}"] = prospComProposta;
+            }
+            DadosBarra dadosBarra_contatoInicial = new DadosBarra
+            {
+                ContratacaoDireta = statusprospeccao["ContatoInicial_0"],
+                EditaisInovacao = statusprospeccao["ContatoInicial_1"],
+                AgenciaFomento = statusprospeccao["ContatoInicial_2"],
+                Embrapii = statusprospeccao["ContatoInicial_3"],
+                Definir = statusprospeccao["ContatoInicial_4"],
+                ParceiroEdital = statusprospeccao["ContatoInicial_5"],
+                ANP_ANEEL = statusprospeccao["ContatoInicial_6"]
+            };
+            DadosBarra dadosBarra_EmDiscussao = new DadosBarra
+            {
+                ContratacaoDireta = statusprospeccao["EmDiscussao_0"],
+                EditaisInovacao = statusprospeccao["EmDiscussao_1"],
+                AgenciaFomento = statusprospeccao["EmDiscussao_2"],
+                Embrapii = statusprospeccao["EmDiscussao_3"],
+                Definir = statusprospeccao["EmDiscussao_4"],
+                ParceiroEdital = statusprospeccao["EmDiscussao_5"],
+                ANP_ANEEL = statusprospeccao["EmDiscussao_6"]
+            };
+            DadosBarra dadosBarra_ComProposta = new DadosBarra
+            {
+                ContratacaoDireta = statusprospeccao["ComProposta_0"],
+                EditaisInovacao = statusprospeccao["ComProposta_1"],
+                AgenciaFomento = statusprospeccao["ComProposta_2"],
+                Embrapii = statusprospeccao["ComProposta_3"],
+                Definir = statusprospeccao["ComProposta_4"],
+                ParceiroEdital = statusprospeccao["ComProposta_5"],
+                ANP_ANEEL = statusprospeccao["ComProposta_6"]
+            };
+            GraficoBarraTipoContratacao graficoBarraTipoContratacao = new GraficoBarraTipoContratacao 
+            { 
+                ContatoInicial = dadosBarra_contatoInicial,
+                EmDiscussao = dadosBarra_EmDiscussao,
+                ComProposta = dadosBarra_ComProposta 
+            };
+            return Ok(JsonConvert.SerializeObject(graficoBarraTipoContratacao));
+        }
+
         public async Task<IActionResult> GerarIndicadoresProsp()
         {
-
             //todas prospepccoes que possui status em proposta e status inicial, duracao de dias 
-
             List<TimeSpan> intervaloDatas = new List<TimeSpan>();
+
             var prospeccoesComPropostaEContatoInicial = _context.Prospeccao.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta) && p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial)).ToList();
             int empresasProspectadas = _context.Prospeccao.Select(p => new { p.Empresa }).Distinct().Count();
+
             for (int i = 0; i < prospeccoesComPropostaEContatoInicial.Count; i++)
             {
                 var dataContatoInicial = prospeccoesComPropostaEContatoInicial[i].Status.Where(p => p.Status == StatusProspeccao.ContatoInicial).First().Data;
@@ -61,6 +125,7 @@ namespace BaseDeProjetos.Controllers
             int prospContatoInicial = _context.Prospeccao.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial)).Count();
             int prospeccoesInfrutiferas = _context.Prospeccao.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida || p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa).Count();
             double percentInfrutiferas = (double)prospeccoesInfrutiferas / ObterProspeccoesTotais() * 100;
+
             IndicadoresProspeccao indicadoresProspeccao = new IndicadoresProspeccao { EmpresasProspectadas = empresasProspectadas, TempoMedioContato = tempoMedioContato, PercentualInfrutiferas = percentInfrutiferas, ProspContatoInicial = prospContatoInicial };
             return Ok(JsonConvert.SerializeObject(indicadoresProspeccao));
         }
@@ -96,7 +161,10 @@ namespace BaseDeProjetos.Controllers
 
         private int ObterProspeccoesTotais()
         {
-            return _context.Prospeccao.Select(p => new { p.Id }).Count();
+            return _context.Prospeccao.Select(p => new { p.Status })
+                .Where(p => p.Status.OrderBy(f => f.Data)
+                .First().Status != StatusProspeccao.Planejada && p.Status.Count() != 1)
+                .Count();
         }
 
         public async Task<IActionResult> GerarStatusProspComProposta()
