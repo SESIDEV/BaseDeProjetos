@@ -13,7 +13,7 @@
 function criarTableDataComClasseCell(conteudo) {
     let tableData = document.createElement("td");
     tableData.classList.add("cell");
-    tableData.innerText = conteudo;
+    tableData.innerHTML = conteudo;
     return tableData
 }
 
@@ -151,3 +151,5 @@ function inicializarPaginaIndicadores() {
     popularDropdown('ulFinanceira', indicadoresFinanceiros);
     popularDropdown('ulContribuicao', indicadoresContribuicao);
 }
+
+document.addEventListener('DOMContentLoaded', inicializarPaginaIndicadores());
