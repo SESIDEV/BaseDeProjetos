@@ -44,6 +44,4 @@ namespace BaseDeProjetos.Models
             };
         }
     }
-
-
 }

@@ -15,7 +15,6 @@ namespace BaseDeProjetos.Helpers
 
         public List<Prospeccao> ListaDeProspeccoes { get; set; }
 
-
         public static decimal DivisaoSegura(decimal numerador, decimal denominador)
         {
             if (denominador == 0)

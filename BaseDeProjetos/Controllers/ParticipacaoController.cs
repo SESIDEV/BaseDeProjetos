@@ -33,12 +33,14 @@ namespace BaseDeProjetos.Controllers
 
         // TODO: Precisamos não utilizar esses valores mágicos de string no futuro!!
         private const string nomeCargoPesquisador = "Pesquisador QMS";
-        private readonly static Dictionary<int, int> pesquisadores = new Dictionary<int, int>();
+
+        private static readonly Dictionary<int, int> pesquisadores = new Dictionary<int, int>();
         private static Dictionary<int, decimal> despesas = new Dictionary<int, decimal>();
         private readonly DbCache _cache;
         private readonly ApplicationDbContext _context;
         private readonly ILogger<ParticipacaoController> _logger;
         private List<Prospeccao> _prospeccoes = new List<Prospeccao>();
+
         public ParticipacaoController(ApplicationDbContext context, DbCache cache, ILogger<ParticipacaoController> logger)
         {
             _context = context;
@@ -91,7 +93,6 @@ namespace BaseDeProjetos.Controllers
                 var participacoesFiltradas = participacoes.Where(p => p.Lider.Id == UsuarioAtivo.Id).ToList();
                 return View(participacoesFiltradas);
             }
-
         }
 
         public async Task<IActionResult> RetornarDadosIndicador(string nomeIndicador, DateTime? dataInicio, DateTime? dataFim)
@@ -141,7 +142,8 @@ namespace BaseDeProjetos.Controllers
                             Valor = valor
                         });
                     }
-                } catch (Exception)
+                }
+                catch (Exception)
                 {
                     return Ok(JsonConvert.SerializeObject(resultados));
                 }
@@ -570,22 +572,28 @@ namespace BaseDeProjetos.Controllers
                     case StatusProspeccao.Convertida:
                         prospConvertida = true;
                         break;
+
                     case StatusProspeccao.Planejada:
                         prospPlanejada = true;
                         break;
+
                     case StatusProspeccao.Suspensa:
                         prospSuspensa = true;
                         break;
+
                     case StatusProspeccao.NaoConvertida:
                         prospNaoConvertida = true;
                         break;
+
                     case StatusProspeccao.ContatoInicial:
                     case StatusProspeccao.Discussao_EsbocoProjeto:
                         prospEmDiscussao = true;
                         break;
+
                     case StatusProspeccao.ComProposta:
                         prospComProposta = true;
                         break;
+
                     default:
                         prospSuspensa = false;
                         prospConvertida = false;
@@ -829,6 +837,7 @@ namespace BaseDeProjetos.Controllers
                 return percentual;
             }
         }
+
         /// <summary>
         /// Método para calculo da porcentagem relativa ao pesquisador
         /// </summary>
@@ -847,6 +856,7 @@ namespace BaseDeProjetos.Controllers
                 return percentual;
             }
         }
+
         ///// <summary>
         ///// Retorna os dados para o gráfico de participação do usuário
         ///// </summary>
@@ -922,7 +932,6 @@ namespace BaseDeProjetos.Controllers
                 participacao.Valores = valoresProposta;
                 participacao.Labels = mesAno;
             }
-
         }
 
         /// <summary>
@@ -1228,7 +1237,6 @@ namespace BaseDeProjetos.Controllers
                 p.MembrosEquipe.Contains(usuario.Email) &&
                 (p.Status == null || p.Status.OrderBy(f => f.Data).LastOrDefault()?.Status != StatusProspeccao.Planejada)
             ).ToList();
-
         }
 
         /// <summary>
@@ -1243,6 +1251,7 @@ namespace BaseDeProjetos.Controllers
                 (p.Status == null || p.Status.OrderBy(f => f.Data).LastOrDefault()?.Status != StatusProspeccao.Planejada)
             ).ToList();
         }
+
         /// <summary>
         /// Converter strings contendo mes e ano em datetimes considerando ano e mes padrões
         /// </summary>
@@ -1265,6 +1274,7 @@ namespace BaseDeProjetos.Controllers
 
             return new DateTime(anoParse, mesParse, 1);
         }
+
         /// <summary>
         /// Cálculo o rank médio de todos os atributos de participacação total
         /// </summary>

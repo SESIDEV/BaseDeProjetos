@@ -182,7 +182,6 @@ namespace BaseDeProjetos.Helpers
             }
         }
 
-
         public static async Task<List<Prospeccao>> DefinirCasaParaVisualizar(string casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, DbCache cache, ViewDataDictionary ViewData)
         {
             // Converte a string casa pra enum

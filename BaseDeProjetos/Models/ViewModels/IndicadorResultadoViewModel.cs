@@ -4,7 +4,7 @@ namespace BaseDeProjetos.Models.ViewModels
 {
     public class IndicadorResultadoViewModel
     {
-        public UsuarioParticipacaoDTO Pesquisador {  get; set; }
+        public UsuarioParticipacaoDTO Pesquisador { get; set; }
 
         public object Valor { get; set; }
     }
