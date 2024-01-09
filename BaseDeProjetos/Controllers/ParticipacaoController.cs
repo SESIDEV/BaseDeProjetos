@@ -62,7 +62,7 @@ namespace BaseDeProjetos.Controllers
             else
             {
                 ViewData["dataInicio"] = "2021-01-01";
-                ViewData["dataFim"] = $"{DateTime.Now.Year} + -12-31";
+                ViewData["dataFim"] = $"{DateTime.Now.Year}-12-31";
                 dataInicio = new DateTime(2021, 01, 01);
                 dataFim = new DateTime(DateTime.Now.Year, 12, 31);
             }
@@ -236,9 +236,9 @@ namespace BaseDeProjetos.Controllers
                     usuario = await _context.Users.Where(u => u.Id == idUsuario).FirstOrDefaultAsync();
                 }
 
-
                 var participacoes = await GetParticipacoesTotaisUsuarios(new DateTime(2021, 01, 01), new DateTime(DateTime.Now.Year, 12, 31));
-                ObterRankingsMedios(participacoes);
+                // Quebrado
+                //ObterRankingsMedios(participacoes);
 
                 _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).Include(p => p.Empresa).Include(p => p.Status).ToListAsync());
 
