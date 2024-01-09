@@ -56,18 +56,14 @@ namespace BaseDeProjetos.Controllers
 
             if (dataInicio != null && dataFim != null)
             {
-                ViewData["mesInicio"] = dataInicio.Value.Month;
-                ViewData["anoInicio"] = dataInicio.Value.Year;
-                ViewData["mesFim"] = dataFim.Value.Month;
-                ViewData["anoFim"] = dataFim.Value.Year;
+                ViewData["dataInicio"] = dataInicio.Value.ToString("yyyy-MM-dd");
+                ViewData["dataFim"] = dataFim.Value.ToString("yyyy-MM-dd");  
             }
             else
             {
-                ViewData["mesInicio"] = 01;
-                ViewData["anoInicio"] = 2021;
-                ViewData["mesFim"] = 12;
-                ViewData["anoFim"] = DateTime.Now.Year;
-                dataInicio = new DateTime(2021, 01, 21);
+                ViewData["dataInicio"] = "2021-01-01";
+                ViewData["dataFim"] = $"{DateTime.Now.Year} + -12-31";
+                dataInicio = new DateTime(2021, 01, 01);
                 dataFim = new DateTime(DateTime.Now.Year, 12, 31);
             }
 
