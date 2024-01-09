@@ -145,6 +145,73 @@ namespace BaseDeProjetos.Controllers
             return Ok(JsonConvert.SerializeObject(resultados));
         }
 
+
+        /// <summary>
+        /// Obtém o rank de uma participacao de acordo com o nome do indicador
+        /// </summary>
+        /// <param name="participacao"></param>
+        /// <param name="nomeIndicador"></param>
+        /// <returns></returns>
+        private decimal ObterRankingParticipacao(ParticipacaoTotalViewModel participacao, string nomeIndicador)
+        {
+            if (nomeIndicador.Contains(nameof(participacao.AssertividadePrecificacao)))
+            {
+                return participacao.RankPorIndicador.RankAssertividadePrecificacao;
+            }
+            else if (nomeIndicador.Contains(nameof(participacao.FatorContribuicaoFinanceira)))
+            {
+                return participacao.RankPorIndicador.RankFatorContribuicaoFinanceira;
+            }
+            else if (nomeIndicador.Contains(nameof(participacao.QuantidadeProjetos)))
+            {
+                return participacao.RankPorIndicador.RankQuantidadeProspeccoesProjeto;
+            }
+            else if (nomeIndicador.Contains(nameof(participacao.QuantidadeProspeccoes)))
+            {
+                return participacao.RankPorIndicador.RankQuantidadeProspeccoes;
+            }
+            else if (nomeIndicador.Contains(nameof(participacao.QuantidadeProspeccoesComProposta)))
+            {
+                return participacao.RankPorIndicador.RankQuantidadeProspeccoesComProposta;
+            }
+            else if (nomeIndicador.Contains(nameof(participacao.QuantidadeProspeccoesLider)))
+            {
+                return participacao.RankPorIndicador.RankQuantidadeProspeccoesLider;
+            }
+            else if (nomeIndicador.Contains(nameof(participacao.QuantidadeProspeccoesMembro)))
+            {
+                return participacao.RankPorIndicador.RankQuantidadeProspeccoesMembro;
+            }
+            else if (nomeIndicador.Contains(nameof(participacao.ValorMedioProspeccoes)))
+            {
+                return participacao.RankPorIndicador.RankValorMedioProspeccoes;
+            }
+            else if (nomeIndicador.Contains(nameof(participacao.ValorMedioProspeccoesComProposta)))
+            {
+                return participacao.RankPorIndicador.RankValorMedioProspeccoesComProposta;
+            }
+            else if (nomeIndicador.Contains(nameof(participacao.ValorMedioProspeccoesConvertidas)))
+            {
+                return participacao.RankPorIndicador.RankValorMedioProspeccoesConvertidas;
+            }
+            else if (nomeIndicador.Contains(nameof(participacao.ValorTotalProspeccoes)))
+            {
+                return participacao.RankPorIndicador.RankValorTotalProspeccoes;
+            }
+            else if (nomeIndicador.Contains(nameof(participacao.ValorTotalProspeccoesComProposta)))
+            {
+                return participacao.RankPorIndicador.RankValorTotalProspeccoesComProposta;
+            }
+            else if (nomeIndicador.Contains(nameof(participacao.ValorTotalProspeccoesConvertidas)))
+            {
+                return participacao.RankPorIndicador.RankValorTotalProspeccoesConvertidas;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
         /// <summary>
         /// Retorna os dados do gráfico temporal considerando o id do usuário passado por parâmetro
         /// </summary>
