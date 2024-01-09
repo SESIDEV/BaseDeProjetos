@@ -9,8 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using OfficeOpenXml.ConditionalFormatting.Contracts;
-using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +24,6 @@ namespace BaseDeProjetos.Controllers
     {
 
         private const string nomeCargoBolsista = "Pesquisador Bolsista";
-
         private const string nomeCargoEstagiário = "Estagiário";
 
         // TODO: Precisamos não utilizar esses valores mágicos de string no futuro!!
