@@ -405,17 +405,6 @@ namespace BaseDeProjetos.Controllers
         /// <param name="participacoes">Lista de participações (normalmente de um usuário específico mas pode ser genérica)</param>
         private static void RankearParticipacoes(List<ParticipacaoTotalViewModel> participacoes, bool rankPorMaximo)
         {
-            decimal RankValorTotalProspeccoesComProposta = 0;
-            decimal RankValorTotalProspeccoesConvertidas = 0;
-            decimal RankValorMedioProspeccoesComProposta = 0;
-            decimal RankValorMedioProspeccoesConvertidas = 0;
-            decimal RankQuantidadeProspeccoesProjeto = 0;
-            decimal RankQuantidadeProspeccoes = 0;
-            decimal RankQuantidadeProspeccoesLider = 0;
-            decimal RankQuantidadeProspeccoesMembro = 0;
-            decimal RankAssertividadePrecificacao = 0;
-            decimal RankFatorContribuicaoFinanceira = 0;
-
             decimal medValorTotalProsp = participacoes.Average(p => p.ValorTotalProspeccoes);
             decimal medValorMedioProsp = participacoes.Average(p => p.ValorMedioProspeccoes);
             decimal medValorMedioProspComProposta = participacoes.Average(p => p.ValorMedioProspeccoesComProposta);
@@ -433,41 +422,25 @@ namespace BaseDeProjetos.Controllers
 
             foreach (var participacao in participacoes)
             {
-                participacao.RankPorIndicador = new Dictionary<string, decimal>();
-
-                decimal RankQuantidadeProspeccoesComProposta = 0;
-                decimal RankValorTotalProspeccoes = 0;
-                decimal RankValorMedioProspeccoes = 0;
-
                 CalcularMediaFatores(participacoes, participacao);
 
-                RankValorTotalProspeccoes = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoes, participacoes.Max(p => p.ValorTotalProspeccoes)) : IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoes, medValorTotalProsp);
-                RankValorMedioProspeccoes = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.ValorMedioProspeccoes, participacoes.Max(p => p.ValorMedioProspeccoes)) : IndicadorHelper.DivisaoSegura(participacao.ValorMedioProspeccoes, medValorMedioProsp);
-                RankValorTotalProspeccoesComProposta = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoesComProposta, participacoes.Max(p => p.ValorTotalProspeccoesComProposta)) : IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoesComProposta, medTotalProspComProposta);
-                RankValorTotalProspeccoesConvertidas = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoesConvertidas, participacoes.Max(p => p.ValorTotalProspeccoesConvertidas)) : IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoesConvertidas, medTotalProspConvertidas);
-                RankValorMedioProspeccoesComProposta = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.ValorMedioProspeccoesComProposta, participacoes.Max(p => p.ValorMedioProspeccoesComProposta)) : IndicadorHelper.DivisaoSegura(participacao.ValorMedioProspeccoesComProposta, medValorMedioProspComProposta);
-                RankValorMedioProspeccoesConvertidas = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.ValorMedioProspeccoesConvertidas, participacoes.Max(p => p.ValorMedioProspeccoesConvertidas)) : IndicadorHelper.DivisaoSegura(participacao.ValorMedioProspeccoesConvertidas, medValorMedioProspConvertidas);
-                RankQuantidadeProspeccoes = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoes, participacoes.Max(p => p.QuantidadeProspeccoes)) : IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoes, medQtdProspeccoes);
-                RankQuantidadeProspeccoesLider = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesLider, participacoes.Max(p => p.QuantidadeProspeccoes)) : IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesLider, medQtdProspeccoes);
-                RankQuantidadeProspeccoesProjeto = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesProjeto, participacoes.Max(p => p.QuantidadeProspeccoesProjeto)) : IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesProjeto, medQtdProspProjetizadas);
-                RankQuantidadeProspeccoesComProposta = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesComProposta, participacoes.Max(p => p.QuantidadeProspeccoesComProposta)) : IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesComProposta, medQtdProspeccoesComProposta);
-                RankQuantidadeProspeccoesMembro = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesMembro, participacoes.Max(p => p.QuantidadeProspeccoesMembro)) : IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesMembro, medQtdProspeccoesMembro);
-                RankAssertividadePrecificacao = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.AssertividadePrecificacao, participacoes.Max(p => p.AssertividadePrecificacao)) : IndicadorHelper.DivisaoSegura(participacao.AssertividadePrecificacao, participacoes.Average(p => p.AssertividadePrecificacao));
-                RankFatorContribuicaoFinanceira = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.FatorContribuicaoFinanceira, participacoes.Max(p => p.FatorContribuicaoFinanceira)) : IndicadorHelper.DivisaoSegura(participacao.FatorContribuicaoFinanceira, participacoes.Average(p => p.FatorContribuicaoFinanceira));
+                RankParticipacao rp = new RankParticipacao();
 
-                participacao.RankPorIndicador[nameof(RankValorTotalProspeccoes)] = RankValorTotalProspeccoes;
-                participacao.RankPorIndicador[nameof(RankValorTotalProspeccoesComProposta)] = RankValorTotalProspeccoesComProposta;
-                participacao.RankPorIndicador[nameof(RankValorTotalProspeccoesConvertidas)] = RankValorTotalProspeccoesConvertidas;
-                participacao.RankPorIndicador[nameof(RankValorMedioProspeccoes)] = RankValorMedioProspeccoes;
-                participacao.RankPorIndicador[nameof(RankValorMedioProspeccoesComProposta)] = RankValorMedioProspeccoesComProposta;
-                participacao.RankPorIndicador[nameof(RankValorMedioProspeccoesConvertidas)] = RankValorMedioProspeccoesConvertidas;
-                participacao.RankPorIndicador[nameof(RankQuantidadeProspeccoes)] = RankQuantidadeProspeccoes;
-                participacao.RankPorIndicador[nameof(RankQuantidadeProspeccoesLider)] = RankQuantidadeProspeccoesLider;
-                participacao.RankPorIndicador[nameof(RankQuantidadeProspeccoesComProposta)] = RankQuantidadeProspeccoesComProposta;
-                participacao.RankPorIndicador[nameof(RankQuantidadeProspeccoesProjeto)] = RankQuantidadeProspeccoesProjeto;
-                participacao.RankPorIndicador[nameof(RankQuantidadeProspeccoesMembro)] = RankQuantidadeProspeccoesMembro;
-                participacao.RankPorIndicador[nameof(RankAssertividadePrecificacao)] = RankAssertividadePrecificacao;
-                participacao.RankPorIndicador[nameof(RankFatorContribuicaoFinanceira)] = RankFatorContribuicaoFinanceira;
+                rp.RankValorTotalProspeccoes = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoes, participacoes.Max(p => p.ValorTotalProspeccoes)) : IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoes, medValorTotalProsp);
+                rp.RankValorMedioProspeccoes = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.ValorMedioProspeccoes, participacoes.Max(p => p.ValorMedioProspeccoes)) : IndicadorHelper.DivisaoSegura(participacao.ValorMedioProspeccoes, medValorMedioProsp);
+                rp.RankValorTotalProspeccoesComProposta = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoesComProposta, participacoes.Max(p => p.ValorTotalProspeccoesComProposta)) : IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoesComProposta, medTotalProspComProposta);
+                rp.RankValorTotalProspeccoesConvertidas = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoesConvertidas, participacoes.Max(p => p.ValorTotalProspeccoesConvertidas)) : IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoesConvertidas, medTotalProspConvertidas);
+                rp.RankValorMedioProspeccoesComProposta = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.ValorMedioProspeccoesComProposta, participacoes.Max(p => p.ValorMedioProspeccoesComProposta)) : IndicadorHelper.DivisaoSegura(participacao.ValorMedioProspeccoesComProposta, medValorMedioProspComProposta);
+                rp.RankValorMedioProspeccoesConvertidas = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.ValorMedioProspeccoesConvertidas, participacoes.Max(p => p.ValorMedioProspeccoesConvertidas)) : IndicadorHelper.DivisaoSegura(participacao.ValorMedioProspeccoesConvertidas, medValorMedioProspConvertidas);
+                rp.RankQuantidadeProspeccoes = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoes, participacoes.Max(p => p.QuantidadeProspeccoes)) : IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoes, medQtdProspeccoes);
+                rp.RankQuantidadeProspeccoesLider = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesLider, participacoes.Max(p => p.QuantidadeProspeccoes)) : IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesLider, medQtdProspeccoes);
+                rp.RankQuantidadeProspeccoesProjeto = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesProjeto, participacoes.Max(p => p.QuantidadeProspeccoesProjeto)) : IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesProjeto, medQtdProspProjetizadas);
+                rp.RankQuantidadeProspeccoesComProposta = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesComProposta, participacoes.Max(p => p.QuantidadeProspeccoesComProposta)) : IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesComProposta, medQtdProspeccoesComProposta);
+                rp.RankQuantidadeProspeccoesMembro = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesMembro, participacoes.Max(p => p.QuantidadeProspeccoesMembro)) : IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesMembro, medQtdProspeccoesMembro);
+                rp.RankAssertividadePrecificacao = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.AssertividadePrecificacao, participacoes.Max(p => p.AssertividadePrecificacao)) : IndicadorHelper.DivisaoSegura(participacao.AssertividadePrecificacao, participacoes.Average(p => p.AssertividadePrecificacao));
+                rp.RankFatorContribuicaoFinanceira = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.FatorContribuicaoFinanceira, participacoes.Max(p => p.FatorContribuicaoFinanceira)) : IndicadorHelper.DivisaoSegura(participacao.FatorContribuicaoFinanceira, participacoes.Average(p => p.FatorContribuicaoFinanceira));
+
+                participacao.RankPorIndicador = rp;
             }
         }
 
@@ -1285,19 +1258,19 @@ namespace BaseDeProjetos.Controllers
             List<decimal> rankings = new List<decimal>();
 
             decimal rankMedio = participacoes.Average(p => p.MediaFatores);
-            decimal rankMedioValorTotalProspeccao = participacoes.Average(p => p.RankPorIndicador["RankValorTotalProspeccoes"]);
-            decimal rankMedioValorTotalProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador["RankValorTotalProspeccoesComProposta"]);
-            decimal rankMedioValorMedioProspeccoes = participacoes.Average(p => p.RankPorIndicador["RankValorMedioProspeccoes"]);
-            decimal rankMedioValorMedioProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador["RankValorMedioProspeccoesComProposta"]);
-            decimal rankMedioValorTotalProspeccoesConvertidas = participacoes.Average(p => p.RankPorIndicador["RankValorTotalProspeccoesConvertidas"]);
-            decimal rankMedioValorMedioProspeccoesConvertidas = participacoes.Average(p => p.RankPorIndicador["RankValorMedioProspeccoesConvertidas"]);
-            decimal rankMedioQuantidadeProspeccoes = participacoes.Average(p => p.RankPorIndicador["RankQuantidadeProspeccoes"]);
-            decimal rankMedioQuantidadeProspeccoesLider = participacoes.Average(p => p.RankPorIndicador["RankQuantidadeProspeccoesLider"]);
-            decimal rankMedioQuantidadeProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador["RankQuantidadeProspeccoesComProposta"]);
-            decimal rankMedioQuantidadeProspeccoesProjeto = participacoes.Average(p => p.RankPorIndicador["RankQuantidadeProspeccoesProjeto"]);
-            decimal rankMedioQuantidadeProspeccoesMembro = participacoes.Average(p => p.RankPorIndicador["RankQuantidadeProspeccoesMembro"]);
-            decimal rankMedioAssertividadePrecificacao = participacoes.Average(p => p.RankPorIndicador["RankAssertividadePrecificacao"]);
-            decimal rankMedioFatorContribuicaoFinanceira = participacoes.Average(p => p.RankPorIndicador["RankFatorContribuicaoFinanceira"]);
+            decimal rankMedioValorTotalProspeccao = participacoes.Average(p => p.RankPorIndicador.RankValorTotalProspeccoes);
+            decimal rankMedioValorTotalProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador.RankValorTotalProspeccoesComProposta);
+            decimal rankMedioValorMedioProspeccoes = participacoes.Average(p => p.RankPorIndicador.RankValorMedioProspeccoes);
+            decimal rankMedioValorMedioProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador.RankValorMedioProspeccoesComProposta);
+            decimal rankMedioValorTotalProspeccoesConvertidas = participacoes.Average(p => p.RankPorIndicador.RankValorTotalProspeccoesConvertidas);
+            decimal rankMedioValorMedioProspeccoesConvertidas = participacoes.Average(p => p.RankPorIndicador.RankValorMedioProspeccoesConvertidas);
+            decimal rankMedioQuantidadeProspeccoes = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoes);
+            decimal rankMedioQuantidadeProspeccoesLider = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesLider);
+            decimal rankMedioQuantidadeProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesComProposta);
+            decimal rankMedioQuantidadeProspeccoesProjeto = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesProjeto);
+            decimal rankMedioQuantidadeProspeccoesMembro = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesMembro);
+            decimal rankMedioAssertividadePrecificacao = participacoes.Average(p => p.RankPorIndicador.RankAssertividadePrecificacao);
+            decimal rankMedioFatorContribuicaoFinanceira = participacoes.Average(p => p.RankPorIndicador.RankFatorContribuicaoFinanceira);
 
             rankings.AddRange(new List<decimal> {
                 rankMedio,
