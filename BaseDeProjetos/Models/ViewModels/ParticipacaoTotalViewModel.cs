@@ -47,41 +47,41 @@ namespace BaseDeProjetos.Models.ViewModels
             }
         }
 
-        public HtmlString AsHtml(string nomeVariavel, bool financeiro, Dictionary<string, decimal> valoresMinimos, Dictionary<string, decimal> valoresMaximos)
-        {
-            var rankIndicador = RankPorIndicador[$"Rank{nomeVariavel}"];
-            decimal valor = ExtrairValorDaVariavel(nomeVariavel);
+        //public HtmlString AsHtml(string nomeVariavel, bool financeiro, Dictionary<string, decimal> valoresMinimos, Dictionary<string, decimal> valoresMaximos)
+        //{
+        //    var rankIndicador = RankPorIndicador[$"Rank{nomeVariavel}"];
+        //    decimal valor = ExtrairValorDaVariavel(nomeVariavel);
 
-            CultureInfo cultura = new CultureInfo("pt-BR");
+        //    CultureInfo cultura = new CultureInfo("pt-BR");
 
-            StringBuilder sb = new StringBuilder();
+        //    StringBuilder sb = new StringBuilder();
 
-            string valorRank = rankIndicador.ToString("N", cultura);
-            string comecoDiv = $"<div data-text=\"{valorRank}\" class=\"d-flex flex-row align-items-center gap-2 tooltip-indicadores\">";
-            int intervalo = BaseDeProjetos.Helpers.Helpers.VerificarIntervalo(valor, valoresMinimos[nomeVariavel], valoresMaximos[nomeVariavel]);
-            HtmlString iconeParticipacao = BaseDeProjetos.Helpers.Helpers.ObterIconeParticipacao(intervalo);
+        //    string valorRank = rankIndicador.ToString("N", cultura);
+        //    string comecoDiv = $"<div data-text=\"{valorRank}\" class=\"d-flex flex-row align-items-center gap-2 tooltip-indicadores\">";
+        //    int intervalo = BaseDeProjetos.Helpers.Helpers.VerificarIntervalo(valor, valoresMinimos[nomeVariavel], valoresMaximos[nomeVariavel]);
+        //    HtmlString iconeParticipacao = BaseDeProjetos.Helpers.Helpers.ObterIconeParticipacao(intervalo);
 
-            sb.Append(comecoDiv);
-            sb.Append(iconeParticipacao.ToString());
+        //    sb.Append(comecoDiv);
+        //    sb.Append(iconeParticipacao.ToString());
 
-            if (financeiro)
-            {
-                sb.Append($"{valor:C2}");
-            }
-            else
-            {
-                if (valor == Math.Floor(valor))
-                {
-                    sb.Append(valor);
-                }
-                else
-                {
-                    sb.Append($"{valor:F}");
-                }
-            }
+        //    if (financeiro)
+        //    {
+        //        sb.Append($"{valor:C2}");
+        //    }
+        //    else
+        //    {
+        //        if (valor == Math.Floor(valor))
+        //        {
+        //            sb.Append(valor);
+        //        }
+        //        else
+        //        {
+        //            sb.Append($"{valor:F}");
+        //        }
+        //    }
 
-            return new HtmlString(sb.ToString());
-        }
+        //    return new HtmlString(sb.ToString());
+        //}
 
         private decimal ExtrairValorDaVariavel(string nomeVariavel)
         {
