@@ -20,12 +20,13 @@ function criarTableDataComClasseCell(conteudo) {
 function criarLinhaPesquisadorIndicador(indicador, tipoDado) {
     let pesquisador = indicador["Pesquisador"]["Email"];
     let valor = formatarValor(tipoDado, indicador);
-    let conteudosDetalhe = "<a href='#'>Teste</a>"
+    let rank = indicador["Rank"].toFixed(2);
+    let conteudosDetalhe = `<a href='#' data-bs-toggle='collapse' data-bs-target='#collapsePesquisador' onclick=puxarPesquisador("${indicador['Pesquisador']['Id']}")>Ver mais</a>`
 
     let tableRow = document.createElement("tr");
     let tableDataPesquisador = criarTableDataComClasseCell(pesquisador);
     let tableDataValor = criarTableDataComClasseCell(valor);
-    let tableDataRank = criarTableDataComClasseCell("PLACEHOLDER");
+    let tableDataRank = criarTableDataComClasseCell(rank);
     let tableDataDetalhes = criarTableDataComClasseCell(conteudosDetalhe);
     tableRow.appendChild(tableDataPesquisador)
     tableRow.appendChild(tableDataValor);
@@ -89,7 +90,7 @@ async function puxarIndicador(identificadorIndicador, nomeIndicador, tipoDado) {
     }
 }
 
-function resetTabela(event) {
+function resetTabela() {
     let tituloIndicador = document.querySelector("#tituloIndicador");
     let corpoTabela = document.querySelector("#corpoTabela");
     let collapseIndicador = document.querySelector("#collapseIndicador");
@@ -119,6 +120,76 @@ function popularDropdown(idDropdown, indicadores) {
         a.classList.add("dropdown-item");
         listItem.appendChild(a);
         menuDropdown.appendChild(listItem);
+    });
+}
+
+async function puxarPesquisador(idPesquisador) {
+    try {
+        let dadosPesquisador = await puxarDadosPesquisador(idPesquisador);
+        inicializarTabelaPesquisadores(dadosPesquisador);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function puxarDadosPesquisador(id) {
+    try {
+        const response = await fetch(`/Participacao/RetornarDadosPesquisador/${id}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+function inicializarTabelaPesquisadores(dadosPesquisador) {
+    // TipoDado: F = Financeiro, f = float, flutuante, i = inteiro (case-sensitive)
+    const indicadoresFinanceiros = [
+        { id: "ValorTotalProspeccoes", nome: "Valor Total das Prospecções", tipoDado: 'F' },
+        { id: "ValorMedioProspeccoes", nome: "Valor Médio das Prospecções", tipoDado: 'F' },
+        { id: "ValorTotalProspeccoesComProposta", nome: "Valor Total das Prospecções em Proposta", tipoDado: 'F' },
+        { id: "ValorMedioProspeccoesComProposta", nome: "Valor Médio das Prospecções em Proposta", tipoDado: 'F' },
+        { id: "ValorTotalProspeccoesConvertidas", nome: "Valor Total das Prospecções Convertidas", tipoDado: 'F' },
+        { id: "ValorMedioProspeccoesConvertidas", nome: "Valor Médio das Prospecções Convertidas", tipoDado: 'F' },
+    ];
+
+    // TipoDado: F = Financeiro, f = float, flutuante, i = inteiro (case-sensitive)
+    const indicadoresContribuicao = [
+        { id: "QuantidadeProspeccoes", nome: "Quantidade de Prospecções", tipoDado: 'i' },
+        { id: "QuantidadeProspeccoesLider", nome: "Quantidade de Prospecções (Líder)", tipoDado: 'i' },
+        { id: "QuantidadeProspeccoesMembro", nome: "Quantidade de Prospecções (Membro)", tipoDado: 'i' },
+        { id: "TaxaConversaoProposta", nome: "Taxa de Conversão em Proposta", tipoDado: 'p' },
+        { id: "TaxaConversaoProjeto", nome: "Taxa de Conversão em Projetos", tipoDado: 'p' },
+        { id: "QuantidadeProjetos", nome: "Quantidade de Projetos", tipoDado: 'i' },
+        { id: "QuantidadeProspeccoesComProposta", nome: "Quantidade de Prospecções em Proposta", tipoDado: 'i' },
+        { id: "QuantidadeProspeccoesProjeto", nome: "Quantidade de Prospecções Convertidas", tipoDado: 'i' },
+        { id: "AssertividadePrecificacao", nome: "Assertividade na Precificação", tipoDado: 'f' },
+        { id: "FatorContribuicaoFinanceira", nome: "Fator de Contribuição Financeira", tipoDado: 'f' },
+        { id: "MediaFatores", nome: "Média dos Fatores", tipoDado: 'f' },
+    ];
+
+    // TODO: Verificar se isso é valido
+    let indicadores = indicadoresContribuicao.concat(indicadoresFinanceiros);
+
+    console.log(indicadores);
+
+    popularTabelaPesquisadores(indicadores, dadosPesquisador);
+}
+
+function popularTabelaPesquisadores(indicadores, dadosPesquisador) {
+    let tabelaPesquisadores = document.querySelector("#corpoTabelaPesquisadores");
+    tabelaPesquisadores.innerHTML = "";
+
+    indicadores.forEach(indicador => {
+        let tableRow = document.createElement("tr");
+        let tableDataPesquisador = criarTableDataComClasseCell(indicador.nome);
+        let tableDataValor = criarTableDataComClasseCell(dadosPesquisador[indicador["id"]]);
+
+        tableRow.appendChild(tableDataPesquisador);
+        tableRow.appendChild(tableDataValor);
+        tabelaPesquisadores.appendChild(tableRow);
     });
 }
 
