@@ -21,11 +21,6 @@ namespace BaseDeProjetos.Controllers
 {
     public class ParticipacaoController : SGIController
     {
-        private const int AnoPadrao = 2021;
-
-        private const int MesFimPadrao = 12;
-
-        private const int MesInicioPadrao = 1;
 
         private const string nomeCargoBolsista = "Pesquisador Bolsista";
 
