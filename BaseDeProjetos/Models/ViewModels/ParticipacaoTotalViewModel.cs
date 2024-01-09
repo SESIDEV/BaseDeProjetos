@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Html;
+﻿using BaseDeProjetos.Models.Helpers;
+using Microsoft.AspNetCore.Html;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -29,7 +30,7 @@ namespace BaseDeProjetos.Models.ViewModels
         public decimal AssertividadePrecificacao { get; set; } = 0;
         public decimal FatorContribuicaoFinanceira { get; set; } = 0;
         public decimal MediaFatores { get; set; } = 0;
-        public Dictionary<string, decimal> RankPorIndicador { get; set; }
+        public RankParticipacao RankPorIndicador { get; set; }
         public Dictionary<string, decimal> ValoresMinMedMax { get; set; }
         public List<string> Labels { get; set; }
         public List<decimal> Valores { get; set; }
