@@ -1,8 +1,8 @@
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Memory;
 
 public class DbCache
 {
@@ -51,7 +51,6 @@ public class DbCache
 
         return keys;
     }
-
 
     /// <summary>
     /// Obtem/Registra os dados no cache. Os dados são invalidados após 1h de forma automática caso não especificado

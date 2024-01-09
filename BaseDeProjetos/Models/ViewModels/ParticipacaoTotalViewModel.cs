@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
-using BaseDeProjetos.Helpers;
 
 namespace BaseDeProjetos.Models.ViewModels
 {
@@ -35,6 +34,7 @@ namespace BaseDeProjetos.Models.ViewModels
         public List<string> Labels { get; set; }
         public List<decimal> Valores { get; set; }
         public List<decimal> RankingsMedios { get; set; }
+
         public string GuidVisualizacao
         {
             get
@@ -43,7 +43,6 @@ namespace BaseDeProjetos.Models.ViewModels
             }
             set
             {
-
             }
         }
 

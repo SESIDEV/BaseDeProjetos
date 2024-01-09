@@ -1,14 +1,4 @@
-﻿using BaseDeProjetos.Data;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using TestesBaseDeProjetos1.TestHelper;
+﻿using NUnit.Framework;
 
 namespace BaseDeProjetos.Controllers.Tests.ParticipacaoControllerTests
 {
