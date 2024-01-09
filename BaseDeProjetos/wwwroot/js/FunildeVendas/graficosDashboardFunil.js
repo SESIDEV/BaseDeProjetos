@@ -1,6 +1,6 @@
 ﻿async function fetchDadosIndicadoresProspeccao() {
     let fetchedData;
-    await fetch("/FunildeVendas/GerarIndicadoresProsp")
+    await fetch(`/FunildeVendas/GerarIndicadoresProsp/${casa}`)
         .then(res => res.json())
         .then(data => fetchedData = data)
         .catch(err => console.error(`Houve um erro ao obter os dados dos indicadores: ${err}`))
@@ -35,7 +35,7 @@ function preencherDadosIndicadoresProsp(dadosProsp) {
 
 async function fetchDadosStatusProspComProposta() {
     let fetchedData;
-    await fetch("/FunildeVendas/GerarStatusProspComProposta")
+    await fetch(`/FunildeVendas/GerarStatusProspComProposta/${casa}`)
         .then(res => res.json())
         .then(data => fetchedData = data)
         .catch(err => console.error(`Houve um erro ao obter os dados dos indicadores: ${err}`))
@@ -71,7 +71,7 @@ function preencherDadosStatusProspComProposta(dadosProsp) {
 
 async function fetchDadosStatusGeralProspPizza() {
     let fetchedData;
-    await fetch("/FunildeVendas/GerarStatusGeralProspPizza")
+    await fetch(`/FunildeVendas/GerarStatusGeralProspPizza/${casa}`)
         .then(res => res.json())
         .then(data => fetchedData = data)
         .catch(err => console.error(`Houve um erro ao obter os dados dos indicadores: ${err}`))
@@ -137,7 +137,7 @@ function preencherDadosStatusGeralProspPizza(dadosProsp) {
 
 async function fetchDadosGraficoBarraTipoContratacao() {
     let fetchedData;
-    await fetch("/FunildeVendas/GerarGraficoBarraTipoContratacao")
+    await fetch(`/FunildeVendas/GerarGraficoBarraTipoContratacao/${casa}`)
         .then(res => res.json())
         .then(data => fetchedData = data)
         .catch(err => console.error(`Houve um erro ao obter os dados dos indicadores: ${err}`))
@@ -180,7 +180,7 @@ function preencherDadosGraficoBarraTipoContratacao(dadosProsp) {
 
 async function fetchDadosStatusProspeccoesPropostaPizza() {
     let fetchedData;
-    await fetch("/FunildeVendas/GerarStatusProspPropostaPizza")
+    await fetch(`/FunildeVendas/GerarStatusProspPropostaPizza/${casa}`)
         .then(res => res.json())
         .then(data => fetchedData = data)
         .catch(err => console.error(`Houve um erro ao obter os dados dos indicadores: ${err}`))

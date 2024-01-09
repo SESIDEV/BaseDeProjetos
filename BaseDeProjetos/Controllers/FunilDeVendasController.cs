@@ -49,7 +49,7 @@ namespace BaseDeProjetos.Controllers
             return GerarQuantidadeProsp(prospeccoes, p => p.Status.Any(p => p.Status == status) && p.TipoContratacao == tipo );
         }
 
-        [Route("{casa}")]
+        [Route("FunilDeVendas/GerarGraficoBarraTipoContratacao/{casa}")]
         public async Task<IActionResult> GerarGraficoBarraTipoContratacao(string casa)
         {
 
@@ -117,7 +117,7 @@ namespace BaseDeProjetos.Controllers
         }
 
 
-        [Route("{casa}")]
+        [Route("FunilDeVendas/GerarIndicadoresProsp/{casa}")]
         public async Task<IActionResult> GerarIndicadoresProsp(string casa)
         {
 
@@ -127,7 +127,17 @@ namespace BaseDeProjetos.Controllers
             {
                 throw new ArgumentException("A casa selecionada é inválida");
             }
-            
+
+
+            var x = _context.Prospeccao
+                .Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida
+                || p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa)
+                .Where(p => p.Casa == Instituto.ISIQV)
+                .Count();
+
+            double z = _context.Prospeccao.Where(p => p.Casa == Instituto.ISIQV).Count();
+
+            var resultado = x / z;
 
             //todas prospepccoes que possui status em proposta e status inicial, duracao de dias 
             List<TimeSpan> intervaloDatas = new List<TimeSpan>();
@@ -144,14 +154,18 @@ namespace BaseDeProjetos.Controllers
             var mediaintervalos = new TimeSpan(Convert.ToInt64(intervaloDatas.Average(t => t.Ticks)));
             double tempoMedioContato = mediaintervalos.TotalDays;
             int prospContatoInicial = _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial) && p.Casa == enumCasa).Count();
-            int prospeccoesInfrutiferas = _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida || p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa && p.Casa == enumCasa).Count();
+            int prospeccoesInfrutiferas = _context.Prospeccao
+                .Select(p => new { p.Status, p.Casa })
+                .Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida 
+                || p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa)
+                .Where(p => p.Casa == enumCasa).Count();
             double percentInfrutiferas = (double)prospeccoesInfrutiferas / ObterProspeccoesTotais(enumCasa) * 100;
 
             IndicadoresProspeccao indicadoresProspeccao = new IndicadoresProspeccao { EmpresasProspectadas = empresasProspectadas, TempoMedioContato = tempoMedioContato, PercentualInfrutiferas = percentInfrutiferas, ProspContatoInicial = prospContatoInicial };
             return Ok(JsonConvert.SerializeObject(indicadoresProspeccao));
         }
 
-        [Route("{casa}")]
+        [Route("FunilDeVendas/GerarStatusGeralProspPizza/{casa}")]
         public async Task<IActionResult> GerarStatusGeralProspPizza(string casa)
         {
             Instituto enumCasa;
@@ -177,7 +191,7 @@ namespace BaseDeProjetos.Controllers
             return Ok(JsonConvert.SerializeObject(statusGeralProspeccaoPizza));
         }
 
-        [Route("{casa}")]
+        [Route("FunilDeVendas/GerarStatusProspPropostaPizza/{casa}")]
         public async Task<IActionResult> GerarStatusProspPropostaPizza(string casa)
         {
             Instituto enumCasa;
@@ -200,10 +214,10 @@ namespace BaseDeProjetos.Controllers
         {
             return _context.Prospeccao.Select(p => new { p.Status, p.Casa })
                 .Where(p => p.Status.OrderBy(f => f.Data)
-                .First().Status != StatusProspeccao.Planejada && p.Status.Count() != 1 && p.Casa == casa)
+                .Last().Status != StatusProspeccao.Planejada && p.Casa == casa)
                 .Count();
         }
-        [Route("{casa}")]
+        [Route("FunilDeVendas/GerarStatusProspComProposta/{casa}")]
         public async Task<IActionResult> GerarStatusProspComProposta(string casa)
         {
 
