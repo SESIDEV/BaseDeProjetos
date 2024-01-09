@@ -1229,29 +1229,6 @@ namespace BaseDeProjetos.Controllers
         }
 
         /// <summary>
-        /// Converter strings contendo mes e ano em datetimes considerando ano e mes padrões
-        /// </summary>
-        /// <param name="mes">string do mes: "01"</param>
-        /// <param name="ano">string do ano: "2023"</param>
-        /// <param name="anoPadrao"></param>
-        /// <param name="mesPadrao"></param>
-        /// <returns></returns>
-        private DateTime InicializarDatetimes(string mes, string ano, int anoPadrao, int mesPadrao)
-        {
-            if (!int.TryParse(ano, out int anoParse))
-            {
-                anoParse = anoPadrao;
-            }
-
-            if (!int.TryParse(mes, out int mesParse))
-            {
-                mesParse = mesPadrao;
-            }
-
-            return new DateTime(anoParse, mesParse, 1);
-        }
-
-        /// <summary>
         /// Cálculo o rank médio de todos os atributos de participacação total
         /// </summary>
         /// <param name="participacoes"></param>
