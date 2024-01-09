@@ -128,12 +128,14 @@ namespace BaseDeProjetos.Controllers
                 try
                 {
                     var valor = typeof(ParticipacaoTotalViewModel).GetProperty(nomeIndicador).GetValue(participacao, null);
+                    decimal rank = ObterRankingParticipacao(participacao, nomeIndicador);
                     if (valor != null)
                     {
                         resultados.Add(new IndicadorResultadoViewModel
                         {
                             Pesquisador = participacao.Lider.ToUsuarioParticipacao(),
-                            Valor = valor
+                            Valor = valor,
+                            Rank = rank
                         });
                     }
                 }
