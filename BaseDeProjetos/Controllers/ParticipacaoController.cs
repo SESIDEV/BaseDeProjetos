@@ -22,7 +22,6 @@ namespace BaseDeProjetos.Controllers
 {
     public class ParticipacaoController : SGIController
     {
-
         private const string nomeCargoBolsista = "Pesquisador Bolsista";
         private const string nomeCargoEstagiário = "Estagiário";
 
@@ -155,6 +154,14 @@ namespace BaseDeProjetos.Controllers
         [HttpGet("Participacao/RetornarDadosGraficoTemporal/{idUsuario}")]
         public async Task<IActionResult> RetornarDadosGraficoTemporal(string idUsuario)
         {
+            var indicadores = await _context.IndicadoresFinanceiros.ToListAsync();
+
+            foreach (var indicador in indicadores)
+            {
+                despesas[indicador.Data.Year] = indicador.Despesa;
+                pesquisadores[indicador.Data.Year] = indicador.QtdPesquisadores;
+            }
+
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 Usuario usuario = new Usuario();
@@ -166,17 +173,16 @@ namespace BaseDeProjetos.Controllers
 
                 _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).Include(p => p.Empresa).ToListAsync());
 
-                //var participacao = await GetParticipacaoTotalUsuario(usuario);
+                var participacao = await GetParticipacaoTotalUsuario(usuario, new DateTime(2021, 01, 01), new DateTime(DateTime.Now.Year, 12, 31));
 
-                //if (participacao != null)
-                //{
-                //    return Ok(JsonConvert.SerializeObject(participacao));
-                //}
-                //else
-                //{
-                //    return Ok(null);
-                //}
-                return Ok(null);
+                if (participacao != null)
+                {
+                    return Ok(JsonConvert.SerializeObject(participacao));
+                }
+                else
+                {
+                    return Ok(null);
+                }
             }
             else
             {
@@ -825,50 +831,58 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
-        ///// <summary>
-        ///// Retorna os dados para o gráfico de participação do usuário
-        ///// </summary>
-        ///// <param name="idUsuario"></param>
-        ///// <returns></returns>
-        //[HttpGet("Participacao/RetornarDadosGrafico")]
-        //public async Task<IActionResult> RetornarDadosGrafico()
-        //{
-        //    ViewbagizarUsuario(_context);
+        /// <summary>
+        /// Retorna os dados para o gráfico de participação do usuário
+        /// </summary>
+        /// <param name="idUsuario"></param>
+        /// <returns></returns>
+        [HttpGet("Participacao/RetornarDadosGrafico")]
+        public async Task<IActionResult> RetornarDadosGrafico()
+        {
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                ViewbagizarUsuario(_context);
+                
+                var indicadores = await _context.IndicadoresFinanceiros.ToListAsync();
 
-        //    if (HttpContext.User.Identity.IsAuthenticated)
-        //    {
-        //        _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).Include(p => p.Empresa).ToListAsync());
+                foreach (var indicador in indicadores)
+                {
+                    despesas[indicador.Data.Year] = indicador.Despesa;
+                    pesquisadores[indicador.Data.Year] = indicador.QtdPesquisadores;
+                }
 
-        //        var participacoes = await GetParticipacoesTotaisUsuarios();
-        //        Dictionary<string, object> dadosGrafico = new Dictionary<string, object>();
-        //        List<decimal> rankingsMedios = new List<decimal>();
+                _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).Include(p => p.Empresa).Include(p => p.Status).ToListAsync());
 
-        //        if (participacoes.Count > 0)
-        //        {
-        //            RankearParticipacoes(participacoes, true);
-        //            CalcularValorSobreMediaDoFCF(participacoes);
-        //            rankingsMedios = ObterRankingsMedios(participacoes);
-        //        }
+                var participacoes = await GetParticipacoesTotaisUsuarios(new DateTime(2021, 01, 01), new DateTime(DateTime.Now.Year, 12, 31));
+                Dictionary<string, object> dadosGrafico = new Dictionary<string, object>();
+                List<decimal> rankingsMedios = new List<decimal>();
 
-        //        var participacaoUsuario = participacoes.FirstOrDefault(p => p.Lider.Id == UsuarioAtivo.Id);
+                if (participacoes.Count > 0)
+                {
+                    RankearParticipacoes(participacoes, true);
+                    CalcularValorSobreMediaDoFCF(participacoes);
+                    rankingsMedios = ObterRankingsMedios(participacoes);
+                }
 
-        //        dadosGrafico["Participacao"] = participacaoUsuario;
-        //        dadosGrafico["Rankings"] = rankingsMedios;
+                var participacaoUsuario = participacoes.FirstOrDefault(p => p.Lider.Id == UsuarioAtivo.Id);
 
-        //        if (UsuarioAtivo != null)
-        //        {
-        //            return Ok(JsonConvert.SerializeObject(dadosGrafico));
-        //        }
-        //        else
-        //        {
-        //            return View("Error");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return View("Forbidden");
-        //    }
-        //}
+                dadosGrafico["Participacao"] = participacaoUsuario;
+                dadosGrafico["Rankings"] = rankingsMedios;
+
+                if (UsuarioAtivo != null)
+                {
+                    return Ok(JsonConvert.SerializeObject(dadosGrafico));
+                }
+                else
+                {
+                    return View("Error");
+                }
+            }
+            else
+            {
+                return View("Forbidden");
+            }
+        }
 
         /// <summary>
         /// Percorre o range de data inicio até data fim e cria valores e labels para o gráfico de prospeccoes
@@ -1111,7 +1125,6 @@ namespace BaseDeProjetos.Controllers
             }
 
             // TODO: Computar range do gráfico? (Obs: eu acho que faz mais sentido a lógica referente ao grafico estar abstraída em outro lugar...)
-
             await AtribuirParticipacoesIndividuais(participacao, prospeccoesUsuario.ProspeccoesTotais);
 
             AtribuirQuantidadesDeProspeccao(usuario, participacao, prospeccoesUsuario);
