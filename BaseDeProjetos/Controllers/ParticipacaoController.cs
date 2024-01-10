@@ -321,7 +321,8 @@ namespace BaseDeProjetos.Controllers
                     valorMedio = (decimal)participacoes.Average(p => Convert.ToDouble(propriedadeBase.GetValue(p)));
                 }
 
-                participacao.RankSobreMedia = new RankParticipacao();
+                participacao.RankSobreMedia ??= new RankParticipacao();
+
                 var instancia = participacao.RankSobreMedia;
 
                 propriedadeRank.SetValue(instancia, IndicadorHelper.DivisaoSegura(valor, valorMedio));
