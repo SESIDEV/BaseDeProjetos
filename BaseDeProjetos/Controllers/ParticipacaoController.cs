@@ -1457,37 +1457,11 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private List<Prospeccao> GetProspeccoesUsuarioMembroEquipe(Usuario usuario)
         {
-            return _prospeccoes.Where(p =>
-                (p.Usuario == usuario || (p.MembrosEquipe != null && p.MembrosEquipe.Contains(usuario.Email))) &&
+            return _prospeccoes
+                .Where(p =>
+                (p.Usuario.Id == usuario.Id || (p.MembrosEquipe != null && p.MembrosEquipe.Contains(usuario.Email))) &&
                 (p.Status == null || p.Status.OrderBy(f => f.Data).LastOrDefault()?.Status != StatusProspeccao.Planejada)
             ).ToList();
-        }
-
-        /// <summary>
-        /// Cálculo o rank médio de todos os atributos de participacação total
-        /// </summary>
-        /// <param name="participacoes"></param>
-        /// <returns></returns>
-        private RankParticipacao ObterRankingsMedios(List<ParticipacaoTotalViewModel> participacoes)
-        {
-            RankParticipacao rp = new RankParticipacao
-            {
-                RankAssertividadePrecificacao = participacoes.Average(p => p.RankPorIndicador.RankAssertividadePrecificacao),
-                RankValorTotalProspeccoes = participacoes.Average(p => p.RankPorIndicador.RankValorTotalProspeccoes),
-                RankValorTotalProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador.RankValorTotalProspeccoesComProposta),
-                RankValorMedioProspeccoes = participacoes.Average(p => p.RankPorIndicador.RankValorMedioProspeccoes),
-                RankValorMedioProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador.RankValorMedioProspeccoesComProposta),
-                RankValorTotalProspeccoesConvertidas = participacoes.Average(p => p.RankPorIndicador.RankValorTotalProspeccoesConvertidas),
-                RankValorMedioProspeccoesConvertidas = participacoes.Average(p => p.RankPorIndicador.RankValorMedioProspeccoesConvertidas),
-                RankFatorContribuicaoFinanceira = participacoes.Average(p => p.RankPorIndicador.RankFatorContribuicaoFinanceira),
-                RankQuantidadeProspeccoes = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoes),
-                RankQuantidadeProspeccoesLider = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesLider),
-                RankQuantidadeProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesComProposta),
-                RankQuantidadeProspeccoesMembro = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesMembro),
-                RankQuantidadeProspeccoesProjeto = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesProjeto),
-            };
-
-            return rp;
         }
 
         private List<ParticipacaoTotalViewModel> PrepararDadosParticipacao(List<ParticipacaoTotalViewModel> participacoes)
