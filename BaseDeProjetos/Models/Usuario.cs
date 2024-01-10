@@ -40,7 +40,8 @@ namespace BaseDeProjetos.Models
                 Email = Email,
                 EmailConfirmed = EmailConfirmed,
                 Nivel = Nivel,
-                Casa = Casa
+                Casa = Casa,
+                UserName = UserName,
             };
         }
     }
