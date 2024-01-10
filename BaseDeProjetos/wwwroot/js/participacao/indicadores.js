@@ -216,6 +216,9 @@ function popularTabelaPesquisadores(indicadores, dadosPesquisador) {
     let tabelaPesquisadores = document.querySelector("#corpoTabelaPesquisadores");
     tabelaPesquisadores.innerHTML = "";
 
+    let tituloPesquisador = document.querySelector("#tituloPesquisador");
+    tituloPesquisador.innerText = `Indicadores do Pesquisador: ${dadosPesquisador["Lider"]["UserName"]}`;
+
     let blockListIndicadores = ["TaxaConversaoProposta", "TaxaConversaoProjeto", "MediaFatores"];
 
     indicadores.forEach(indicador => {
