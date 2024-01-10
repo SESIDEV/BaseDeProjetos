@@ -18,7 +18,7 @@ function criarTableDataComClasseCell(conteudo) {
 }
 
 function criarLinhaPesquisadorIndicador(indicador, tipoDado) {
-    let pesquisador = indicador["Pesquisador"]["Email"];
+    let pesquisador = indicador["Pesquisador"]["UserName"];
     let valor = formatarValor(tipoDado, indicador);
     let rank = indicador["Rank"].toFixed(2);
     let conteudosDetalhe = `<a href='#' data-bs-toggle='collapse' data-bs-target='#collapsePesquisador' onclick=puxarPesquisador("${indicador['Pesquisador']['Id']}")>Ver mais</a>`
