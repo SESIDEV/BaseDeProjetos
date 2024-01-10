@@ -57,7 +57,7 @@ namespace BaseDeProjetos.Controllers
             if (dataInicio != null && dataFim != null)
             {
                 ViewData["dataInicio"] = dataInicio.Value.ToString("yyyy-MM-dd");
-                ViewData["dataFim"] = dataFim.Value.ToString("yyyy-MM-dd");  
+                ViewData["dataFim"] = dataFim.Value.ToString("yyyy-MM-dd");
             }
             else
             {
@@ -152,61 +152,68 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private decimal ObterRankingParticipacao(ParticipacaoTotalViewModel participacao, string nomeIndicador)
         {
-            if (nomeIndicador.Contains(nameof(participacao.AssertividadePrecificacao)))
+            if (participacao.RankPorIndicador != null)
             {
-                return participacao.RankPorIndicador.RankAssertividadePrecificacao;
-            }
-            else if (nomeIndicador.Contains(nameof(participacao.FatorContribuicaoFinanceira)))
-            {
-                return participacao.RankPorIndicador.RankFatorContribuicaoFinanceira;
-            }
-            else if (nomeIndicador.Contains(nameof(participacao.QuantidadeProjetos)))
-            {
-                return participacao.RankPorIndicador.RankQuantidadeProspeccoesProjeto;
-            }
-            else if (nomeIndicador.Contains(nameof(participacao.QuantidadeProspeccoes)))
-            {
-                return participacao.RankPorIndicador.RankQuantidadeProspeccoes;
-            }
-            else if (nomeIndicador.Contains(nameof(participacao.QuantidadeProspeccoesComProposta)))
-            {
-                return participacao.RankPorIndicador.RankQuantidadeProspeccoesComProposta;
-            }
-            else if (nomeIndicador.Contains(nameof(participacao.QuantidadeProspeccoesLider)))
-            {
-                return participacao.RankPorIndicador.RankQuantidadeProspeccoesLider;
-            }
-            else if (nomeIndicador.Contains(nameof(participacao.QuantidadeProspeccoesMembro)))
-            {
-                return participacao.RankPorIndicador.RankQuantidadeProspeccoesMembro;
-            }
-            else if (nomeIndicador.Contains(nameof(participacao.ValorMedioProspeccoes)))
-            {
-                return participacao.RankPorIndicador.RankValorMedioProspeccoes;
-            }
-            else if (nomeIndicador.Contains(nameof(participacao.ValorMedioProspeccoesComProposta)))
-            {
-                return participacao.RankPorIndicador.RankValorMedioProspeccoesComProposta;
-            }
-            else if (nomeIndicador.Contains(nameof(participacao.ValorMedioProspeccoesConvertidas)))
-            {
-                return participacao.RankPorIndicador.RankValorMedioProspeccoesConvertidas;
-            }
-            else if (nomeIndicador.Contains(nameof(participacao.ValorTotalProspeccoes)))
-            {
-                return participacao.RankPorIndicador.RankValorTotalProspeccoes;
-            }
-            else if (nomeIndicador.Contains(nameof(participacao.ValorTotalProspeccoesComProposta)))
-            {
-                return participacao.RankPorIndicador.RankValorTotalProspeccoesComProposta;
-            }
-            else if (nomeIndicador.Contains(nameof(participacao.ValorTotalProspeccoesConvertidas)))
-            {
-                return participacao.RankPorIndicador.RankValorTotalProspeccoesConvertidas;
+                if (nomeIndicador.Contains(nameof(participacao.AssertividadePrecificacao)))
+                {
+                    return participacao.RankPorIndicador.RankAssertividadePrecificacao;
+                }
+                else if (nomeIndicador.Contains(nameof(participacao.FatorContribuicaoFinanceira)))
+                {
+                    return participacao.RankPorIndicador.RankFatorContribuicaoFinanceira;
+                }
+                else if (nomeIndicador.Contains(nameof(participacao.QuantidadeProjetos)))
+                {
+                    return participacao.RankPorIndicador.RankQuantidadeProspeccoesProjeto;
+                }
+                else if (nomeIndicador.Contains(nameof(participacao.QuantidadeProspeccoes)))
+                {
+                    return participacao.RankPorIndicador.RankQuantidadeProspeccoes;
+                }
+                else if (nomeIndicador.Contains(nameof(participacao.QuantidadeProspeccoesComProposta)))
+                {
+                    return participacao.RankPorIndicador.RankQuantidadeProspeccoesComProposta;
+                }
+                else if (nomeIndicador.Contains(nameof(participacao.QuantidadeProspeccoesLider)))
+                {
+                    return participacao.RankPorIndicador.RankQuantidadeProspeccoesLider;
+                }
+                else if (nomeIndicador.Contains(nameof(participacao.QuantidadeProspeccoesMembro)))
+                {
+                    return participacao.RankPorIndicador.RankQuantidadeProspeccoesMembro;
+                }
+                else if (nomeIndicador.Contains(nameof(participacao.ValorMedioProspeccoes)))
+                {
+                    return participacao.RankPorIndicador.RankValorMedioProspeccoes;
+                }
+                else if (nomeIndicador.Contains(nameof(participacao.ValorMedioProspeccoesComProposta)))
+                {
+                    return participacao.RankPorIndicador.RankValorMedioProspeccoesComProposta;
+                }
+                else if (nomeIndicador.Contains(nameof(participacao.ValorMedioProspeccoesConvertidas)))
+                {
+                    return participacao.RankPorIndicador.RankValorMedioProspeccoesConvertidas;
+                }
+                else if (nomeIndicador.Contains(nameof(participacao.ValorTotalProspeccoes)))
+                {
+                    return participacao.RankPorIndicador.RankValorTotalProspeccoes;
+                }
+                else if (nomeIndicador.Contains(nameof(participacao.ValorTotalProspeccoesComProposta)))
+                {
+                    return participacao.RankPorIndicador.RankValorTotalProspeccoesComProposta;
+                }
+                else if (nomeIndicador.Contains(nameof(participacao.ValorTotalProspeccoesConvertidas)))
+                {
+                    return participacao.RankPorIndicador.RankValorTotalProspeccoesConvertidas;
+                }
+                else
+                {
+                    return 0;
+                }
             }
             else
             {
-                return 0;
+                return -1;
             }
         }
 
@@ -236,14 +243,16 @@ namespace BaseDeProjetos.Controllers
                     usuario = await _context.Users.Where(u => u.Id == idUsuario).FirstOrDefaultAsync();
                 }
 
+                _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).Include(p => p.Empresa).Include(p => p.Status).ToListAsync());
+                
                 var participacoes = await GetParticipacoesTotaisUsuarios(new DateTime(2021, 01, 01), new DateTime(DateTime.Now.Year, 12, 31));
+                
                 // Quebrado
                 //ObterRankingsMedios(participacoes);
 
-                _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).Include(p => p.Empresa).Include(p => p.Status).ToListAsync());
+                var participacao = participacoes.Where(p => p.Lider.Id == idUsuario).First();
 
-                var participacao = await GetParticipacaoTotalUsuario(usuario, new DateTime(2021, 01, 01), new DateTime(DateTime.Now.Year, 12, 31));
-
+                ObterRankingMedioPesquisador(participacao, participacoes);
 
                 if (participacao != null)
                 {
@@ -257,6 +266,52 @@ namespace BaseDeProjetos.Controllers
             else
             {
                 return View("Forbidden");
+            }
+        }
+
+        private void ObterRankingMedioPesquisador(ParticipacaoTotalViewModel participacao, List<ParticipacaoTotalViewModel> participacoes)
+        {
+            if (participacao == null || participacoes == null)
+            {
+                throw new ArgumentNullException(nameof(participacao) + " não pode estar nulo");
+            }
+
+            var tipoValor = typeof(ParticipacaoTotalViewModel);
+            var tipoRankSobreMedia = typeof(RankParticipacao);
+
+            foreach (var propriedadeRank in tipoRankSobreMedia.GetProperties())
+            {
+                string nomePropriedadeBase = propriedadeRank.Name.Substring("Rank".Length);
+                var propriedadeBase = tipoValor.GetProperty(nomePropriedadeBase);
+
+                if (propriedadeBase == null)
+                {
+                    throw new InvalidOperationException($"A propriedade base {nomePropriedadeBase} não foi encontrada para {propriedadeRank.Name}");
+                }
+
+                decimal valor;
+                decimal valorMedio;
+
+                if (propriedadeBase.PropertyType == typeof(int))
+                {
+                    // Handle int type
+                    int valorInt = (int)propriedadeBase.GetValue(participacao);
+                    double valorMedioDouble = participacoes.Average(p => (int)propriedadeBase.GetValue(p));
+                    valor = valorInt;
+                    valorMedio = (decimal)valorMedioDouble;
+                }
+                else
+                {
+                    // Handle decimal type
+                    valor = (decimal)propriedadeBase.GetValue(participacao);
+                    valorMedio = (decimal)participacoes.Average(p => Convert.ToDouble(propriedadeBase.GetValue(p)));
+                }
+
+                participacao.RankSobreMedia = new RankParticipacao();
+                var instancia = participacao.RankSobreMedia;
+
+                propriedadeRank.SetValue(instancia, IndicadorHelper.DivisaoSegura(valor, valorMedio));
+
             }
         }
 
@@ -1364,7 +1419,7 @@ namespace BaseDeProjetos.Controllers
                 RankQuantidadeProspeccoesMembro = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesMembro),
                 RankQuantidadeProspeccoesProjeto = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesProjeto),
             };
-            
+
             return rp;
         }
 
