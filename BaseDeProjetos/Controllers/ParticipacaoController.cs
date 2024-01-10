@@ -1,4 +1,4 @@
-using BaseDeProjetos.Data;
+﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.DTOs;
@@ -900,7 +900,7 @@ namespace BaseDeProjetos.Controllers
                 }
             }
 
-            return Math.Round(quantidadeProspeccoesConvertidas);
+            return quantidadeProspeccoesConvertidas;
         }
 
         /// <summary>
