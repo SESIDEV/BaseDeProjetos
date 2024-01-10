@@ -54,6 +54,25 @@ function formatarValor(tipoDado, indicador) {
     }
 }
 
+function formatarValorPesquisador(tipoDado, valor) {
+    const formatadorFinanceiro = new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+    });
+
+    if (tipoDado == 'i') {
+        return valor;
+    } else if (tipoDado == 'F') {
+        return formatadorFinanceiro.format(valor);
+    } else if (tipoDado == 'f') {
+        return valor.toFixed(2);
+    } else if (tipoDado == 'p') {
+        return (valor * 100).toFixed(2) + "%";
+    } else {
+        return '';
+    }
+}
+
 function popularTabelaIndicadores(dadosIndicador, nomeIndicador, tipoDado) {
     let corpoTabela = document.querySelector("#corpoTabela");
     let tituloIndicador = document.querySelector("#tituloIndicador");
