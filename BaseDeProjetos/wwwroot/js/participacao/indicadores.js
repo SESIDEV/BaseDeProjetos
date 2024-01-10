@@ -1,4 +1,4 @@
-async function puxarDados(nomeIndicador) {
+﻿async function puxarDados(nomeIndicador) {
     try {
         const response = await fetch(`/Participacao/RetornarDadosIndicador/?nomeIndicador=${nomeIndicador}`);
         if (!response.ok) {
