@@ -126,6 +126,8 @@ namespace BaseDeProjetos.Controllers
             List<ParticipacaoTotalViewModel> participacoes = await _cache.GetCachedAsync(chaveCache, () => GetParticipacoesTotaisUsuarios((DateTime)dataInicio, (DateTime)dataFim));
             List<IndicadorResultadoViewModel> resultados = new List<IndicadorResultadoViewModel>();
 
+            RankearParticipacoes(participacoes, false);
+
             foreach (var participacao in participacoes)
             {
                 try
