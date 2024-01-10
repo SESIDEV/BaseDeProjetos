@@ -85,6 +85,14 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        /// <summary>
+        /// Retorna os dados de indicadores de acordo com o seu nome e datas de filtragem
+        /// </summary>
+        /// <param name="nomeIndicador"></param>
+        /// <param name="dataInicio"></param>
+        /// <param name="dataFim"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task<IActionResult> RetornarDadosIndicador(string nomeIndicador, DateTime? dataInicio, DateTime? dataFim)
         {
             var indicadores = await _context.IndicadoresFinanceiros.ToListAsync();
@@ -613,7 +621,9 @@ namespace BaseDeProjetos.Controllers
         /// <param name="prospeccoesUsuario">Prospecções de um usuário (membro e lider)</param>
         private async Task AtribuirParticipacoesIndividuais(ParticipacaoTotalViewModel participacao, List<Prospeccao> prospeccoesUsuario)
         {
-            List<UsuarioParticipacaoDTO> usuarios = await _context.Users.Select(u => new UsuarioParticipacaoDTO { Id = u.Id, Cargo = u.Cargo, Casa = u.Casa, EmailConfirmed = u.EmailConfirmed, Nivel = u.Nivel, Email = u.Email }).ToListAsync();
+            List<UsuarioParticipacaoDTO> usuarios = await _context.Users
+                .Select(u => new UsuarioParticipacaoDTO { Id = u.Id, Cargo = u.Cargo, Casa = u.Casa, EmailConfirmed = u.EmailConfirmed, Nivel = u.Nivel, Email = u.Email, UserName = u.UserName })
+                .ToListAsync();
 
             foreach (var prospeccao in prospeccoesUsuario)
             {
@@ -783,6 +793,12 @@ namespace BaseDeProjetos.Controllers
             participacao.ValorMedioProspeccoesComProposta = IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoesComProposta, participacao.QuantidadeProspeccoesComProposta);
         }
 
+        /// <summary>
+        /// Calcula a quantidade de prospeccoes do usuario de acordo com suas prospeccoes
+        /// </summary>
+        /// <param name="usuario"></param>
+        /// <param name="prospeccoesUsuario"></param>
+        /// <returns></returns>
         private decimal CalcularQuantidadeDeProspeccoes(Usuario usuario, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
         {
             decimal quantidadeProspeccoesComPeso = 0;
@@ -1355,18 +1371,19 @@ namespace BaseDeProjetos.Controllers
 
             List<UsuarioParticipacaoDTO> usuarios;
 
+            // Obs: Incluir pesquisadores da Q4.0 que façam prospecções abaixo. Eles possuem nível 3/2 logo podem acabar não apareçendo na listagem de participação
             if (UsuarioAtivo.Casa == Instituto.ISIQV || UsuarioAtivo.Casa == Instituto.CISHO)
             {
                 usuarios = await _context.Users
-                    .Select(u => new UsuarioParticipacaoDTO { Cargo = u.Cargo, Casa = u.Casa, Email = u.Email, EmailConfirmed = u.EmailConfirmed, Nivel = u.Nivel, Id = u.Id })
-                    .Where(u => (u.Casa == Instituto.ISIQV || u.Casa == Instituto.CISHO) && u.Cargo.Nome == nomeCargoPesquisador && u.EmailConfirmed == true && u.Nivel == Nivel.Usuario)
+                    .Select(u => new UsuarioParticipacaoDTO { Cargo = u.Cargo, Casa = u.Casa, Email = u.Email, EmailConfirmed = u.EmailConfirmed, Nivel = u.Nivel, Id = u.Id, UserName = u.UserName })
+                    .Where(u => ((u.Casa == Instituto.ISIQV || u.Casa == Instituto.CISHO) && u.Cargo.Nome == nomeCargoPesquisador && u.EmailConfirmed == true && u.Nivel == Nivel.Usuario) || u.Email.Contains("lednascimento"))
                     .ToListAsync();
             }
             else
             {
                 usuarios = await _context.Users
-                    .Select(u => new UsuarioParticipacaoDTO { Cargo = u.Cargo, Casa = u.Casa, Email = u.Email, EmailConfirmed = u.EmailConfirmed, Nivel = u.Nivel, Id = u.Id })
-                    .Where(u => u.Casa == UsuarioAtivo.Casa && u.EmailConfirmed == true && u.Cargo.Nome == nomeCargoPesquisador && u.Nivel == Nivel.Usuario)
+                    .Select(u => new UsuarioParticipacaoDTO { Cargo = u.Cargo, Casa = u.Casa, Email = u.Email, EmailConfirmed = u.EmailConfirmed, Nivel = u.Nivel, Id = u.Id, UserName = u.UserName })
+                    .Where(u => (u.Casa == UsuarioAtivo.Casa && u.EmailConfirmed == true && u.Cargo.Nome == nomeCargoPesquisador && u.Nivel == Nivel.Usuario) || u.Email.Contains("lednascimento"))
                     .ToListAsync();
             }
 
@@ -1483,12 +1500,11 @@ namespace BaseDeProjetos.Controllers
 
             return participacoes;
         }
-
         private List<Usuario> TratarMembrosEquipeString(Prospeccao prospeccao)
         {
             List<string> membrosNaoTratados = prospeccao.MembrosEquipe?.Split(";").ToList();
             List<UsuarioParticipacaoDTO> usuarios = _context.Users
-                .Select(u => new UsuarioParticipacaoDTO { Cargo = u.Cargo, Casa = u.Casa, Email = u.Email, EmailConfirmed = u.EmailConfirmed, Nivel = u.Nivel, Id = u.Id })
+                .Select(u => new UsuarioParticipacaoDTO { Cargo = u.Cargo, Casa = u.Casa, Email = u.Email, EmailConfirmed = u.EmailConfirmed, Nivel = u.Nivel, Id = u.Id, UserName = u.UserName })
                 .ToList();
 
             List<Usuario> membrosEquipe = new List<Usuario>();
