@@ -186,9 +186,12 @@ function popularTabelaPesquisadores(indicadores, dadosPesquisador) {
         let tableRow = document.createElement("tr");
         let tableDataPesquisador = criarTableDataComClasseCell(indicador.nome);
         let tableDataValor = criarTableDataComClasseCell(dadosPesquisador[indicador["id"]]);
+        let nomeIndicador = `Rank${indicador.id}`;
+        let tableDataRank = criarTableDataComClasseCell(dadosPesquisador["RankSobreMedia"][nomeIndicador])
 
         tableRow.appendChild(tableDataPesquisador);
         tableRow.appendChild(tableDataValor);
+        tableRow.appendChild(tableDataRank);
         tabelaPesquisadores.appendChild(tableRow);
     });
 }
