@@ -1,4 +1,4 @@
-﻿async function puxarDados(nomeIndicador) {
+async function puxarDados(nomeIndicador) {
     try {
         const response = await fetch(`/Participacao/RetornarDadosIndicador/?nomeIndicador=${nomeIndicador}`);
         if (!response.ok) {
@@ -17,11 +17,27 @@ function criarTableDataComClasseCell(conteudo) {
     return tableData
 }
 
+function resetTabelaPesquisadores() {
+    let corpoTabela = document.querySelector("#corpoTabelaPesquisadores");
+    let tabelaContentsReset = "<tr>" +
+        "<td><div class='mt-2 mb-2 spinner-border text-primary'></div></td>" +
+        "<td><div class='mt-2 mb-2 spinner-border text-primary'></div></td>" +
+        "<td><div class='mt-2 mb-2 spinner-border text-primary'></div></td>" +
+        "</tr>";
+    corpoTabela.innerHTML = tabelaContentsReset;
+
+    let tituloPesquisador = document.querySelector("#tituloPesquisador");
+    tituloPesquisador.innerText = "Indicadores do Pesquisador: ";
+
+    let collapsePesquisador = document.querySelector("#collapsePesquisador");
+    collapsePesquisador.classList.remove("show");
+}
+
 function criarLinhaPesquisadorIndicador(indicador, tipoDado) {
     let pesquisador = indicador["Pesquisador"]["UserName"];
     let valor = formatarValor(tipoDado, indicador);
     let rank = indicador["Rank"].toFixed(2);
-    let conteudosDetalhe = `<a href='#' data-bs-toggle='collapse' data-bs-target='#collapsePesquisador' onclick=puxarPesquisador("${indicador['Pesquisador']['Id']}")>Ver mais</a>`
+    let conteudosDetalhe = `<a href='#' data-bs-toggle='collapse' data-bs-target='#collapsePesquisador' onmouseover=resetTabelaPesquisadores() onclick=puxarPesquisador("${indicador['Pesquisador']['Id']}")>Ver mais</a>`
 
     let tableRow = document.createElement("tr");
     let tableDataPesquisador = criarTableDataComClasseCell(pesquisador);
