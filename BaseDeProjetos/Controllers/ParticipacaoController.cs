@@ -1,4 +1,5 @@
 using BaseDeProjetos.Data;
+using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.DTOs;
 using BaseDeProjetos.Models.Enums;
