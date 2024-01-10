@@ -899,7 +899,7 @@ namespace BaseDeProjetos.Controllers
                 }
             }
 
-            return Math.Round(quantidadeProspeccoesConvertidas);
+            return quantidadeProspeccoesConvertidas;
         }
 
         /// <summary>
