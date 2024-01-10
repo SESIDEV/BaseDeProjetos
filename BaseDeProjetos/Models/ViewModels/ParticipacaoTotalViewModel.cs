@@ -34,7 +34,7 @@ namespace BaseDeProjetos.Models.ViewModels
         public Dictionary<string, decimal> ValoresMinMedMax { get; set; }
         public List<string> Labels { get; set; }
         public List<decimal> Valores { get; set; }
-        public List<decimal> RankingsMedios { get; set; }
+        public RankParticipacao RankSobreMedia { get; set; }
 
         public string GuidVisualizacao
         {
