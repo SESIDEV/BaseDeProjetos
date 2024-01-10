@@ -1,4 +1,4 @@
-async function puxarDados(nomeIndicador) {
+﻿async function puxarDados(nomeIndicador) {
     try {
         const response = await fetch(`/Participacao/RetornarDadosIndicador/?nomeIndicador=${nomeIndicador}`);
         if (!response.ok) {
@@ -228,7 +228,15 @@ function popularTabelaPesquisadores(indicadores, dadosPesquisador) {
             let valorFormatado = formatarValorPesquisador(indicador.tipoDado, dadosPesquisador[indicador["id"]]);
             let tableDataValor = criarTableDataComClasseCell(valorFormatado);
             let nomeIndicador = `Rank${indicador.id}`;
-            let tableDataRank = criarTableDataComClasseCell(dadosPesquisador["RankSobreMedia"][nomeIndicador])
+            let valorRank = dadosPesquisador["RankSobreMedia"][nomeIndicador];
+            let tableDataRank;
+
+            if (valorRank) {
+                tableDataRank = criarTableDataComClasseCell(valorRank.toFixed(2));
+            }
+            else {
+                tableDataRank = criarTableDataComClasseCell("Sem valor");
+            }
 
             tableRow.appendChild(tableDataPesquisador);
             tableRow.appendChild(tableDataValor);
