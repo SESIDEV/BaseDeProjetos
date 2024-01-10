@@ -1,11 +1,8 @@
 ﻿using BaseDeProjetos.Models.DTOs;
 using BaseDeProjetos.Models.Helpers;
-using Microsoft.AspNetCore.Html;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Reflection;
-using System.Text;
 
 namespace BaseDeProjetos.Models.ViewModels
 {

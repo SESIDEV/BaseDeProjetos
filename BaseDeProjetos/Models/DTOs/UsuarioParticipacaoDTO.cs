@@ -1,6 +1,5 @@
 ﻿using BaseDeProjetos.Models.Enums;
 using BaseDeProjetos.Models.ViewModels;
-using System;
 
 namespace BaseDeProjetos.Models.DTOs
 {

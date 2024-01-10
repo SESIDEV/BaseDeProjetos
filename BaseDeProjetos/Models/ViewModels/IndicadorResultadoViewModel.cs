@@ -1,6 +1,4 @@
-﻿using BaseDeProjetos.Models.DTOs;
-
-namespace BaseDeProjetos.Models.ViewModels
+﻿namespace BaseDeProjetos.Models.ViewModels
 {
     public class IndicadorResultadoViewModel
     {

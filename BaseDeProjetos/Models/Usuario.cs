@@ -2,7 +2,6 @@
 using BaseDeProjetos.Models.Enums;
 using BaseDeProjetos.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

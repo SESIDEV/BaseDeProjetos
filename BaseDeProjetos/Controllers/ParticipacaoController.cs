@@ -154,7 +154,6 @@ namespace BaseDeProjetos.Controllers
             return Ok(JsonConvert.SerializeObject(resultados));
         }
 
-
         /// <summary>
         /// Obtém o rank de uma participacao de acordo com o nome do indicador
         /// </summary>
@@ -1478,6 +1477,7 @@ namespace BaseDeProjetos.Controllers
 
             return participacoes;
         }
+
         private List<Usuario> TratarMembrosEquipeString(Prospeccao prospeccao)
         {
             List<string> membrosNaoTratados = prospeccao.MembrosEquipe?.Split(";").ToList();
