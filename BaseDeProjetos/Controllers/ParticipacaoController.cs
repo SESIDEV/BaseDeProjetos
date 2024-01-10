@@ -154,55 +154,55 @@ namespace BaseDeProjetos.Controllers
         {
             if (participacao.RankPorIndicador != null)
             {
-                if (nomeIndicador.Contains(nameof(participacao.AssertividadePrecificacao)))
+                if (nameof(participacao.AssertividadePrecificacao).Contains(nomeIndicador))
                 {
                     return participacao.RankPorIndicador.RankAssertividadePrecificacao;
                 }
-                else if (nomeIndicador.Contains(nameof(participacao.FatorContribuicaoFinanceira)))
+                else if (nameof(participacao.FatorContribuicaoFinanceira).Contains(nomeIndicador))
                 {
                     return participacao.RankPorIndicador.RankFatorContribuicaoFinanceira;
                 }
-                else if (nomeIndicador.Contains(nameof(participacao.QuantidadeProjetos)))
+                else if (nameof(participacao.QuantidadeProjetos).Contains(nomeIndicador))
                 {
                     return participacao.RankPorIndicador.RankQuantidadeProspeccoesProjeto;
                 }
-                else if (nomeIndicador.Contains(nameof(participacao.QuantidadeProspeccoes)))
+                else if (nameof(participacao.QuantidadeProspeccoes).Contains(nomeIndicador))
                 {
                     return participacao.RankPorIndicador.RankQuantidadeProspeccoes;
                 }
-                else if (nomeIndicador.Contains(nameof(participacao.QuantidadeProspeccoesComProposta)))
+                else if (nameof(participacao.QuantidadeProspeccoesComProposta).Contains(nomeIndicador))
                 {
                     return participacao.RankPorIndicador.RankQuantidadeProspeccoesComProposta;
                 }
-                else if (nomeIndicador.Contains(nameof(participacao.QuantidadeProspeccoesLider)))
+                else if (nameof(participacao.QuantidadeProspeccoesLider).Contains(nomeIndicador))
                 {
                     return participacao.RankPorIndicador.RankQuantidadeProspeccoesLider;
                 }
-                else if (nomeIndicador.Contains(nameof(participacao.QuantidadeProspeccoesMembro)))
+                else if (nameof(participacao.QuantidadeProspeccoesMembro).Contains(nomeIndicador))
                 {
                     return participacao.RankPorIndicador.RankQuantidadeProspeccoesMembro;
                 }
-                else if (nomeIndicador.Contains(nameof(participacao.ValorMedioProspeccoes)))
+                else if (nameof(participacao.ValorMedioProspeccoes).Contains(nomeIndicador))
                 {
                     return participacao.RankPorIndicador.RankValorMedioProspeccoes;
                 }
-                else if (nomeIndicador.Contains(nameof(participacao.ValorMedioProspeccoesComProposta)))
+                else if (nameof(participacao.ValorMedioProspeccoesComProposta).Contains(nomeIndicador))
                 {
                     return participacao.RankPorIndicador.RankValorMedioProspeccoesComProposta;
                 }
-                else if (nomeIndicador.Contains(nameof(participacao.ValorMedioProspeccoesConvertidas)))
+                else if (nameof(participacao.ValorMedioProspeccoesConvertidas).Contains(nomeIndicador))
                 {
                     return participacao.RankPorIndicador.RankValorMedioProspeccoesConvertidas;
                 }
-                else if (nomeIndicador.Contains(nameof(participacao.ValorTotalProspeccoes)))
+                else if (nameof(participacao.ValorTotalProspeccoes).Contains(nomeIndicador))
                 {
                     return participacao.RankPorIndicador.RankValorTotalProspeccoes;
                 }
-                else if (nomeIndicador.Contains(nameof(participacao.ValorTotalProspeccoesComProposta)))
+                else if (nameof(participacao.ValorTotalProspeccoesComProposta).Contains(nomeIndicador))
                 {
                     return participacao.RankPorIndicador.RankValorTotalProspeccoesComProposta;
                 }
-                else if (nomeIndicador.Contains(nameof(participacao.ValorTotalProspeccoesConvertidas)))
+                else if (nameof(participacao.ValorTotalProspeccoesConvertidas).Contains(nomeIndicador))
                 {
                     return participacao.RankPorIndicador.RankValorTotalProspeccoesConvertidas;
                 }
