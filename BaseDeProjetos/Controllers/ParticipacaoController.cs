@@ -247,9 +247,6 @@ namespace BaseDeProjetos.Controllers
                 _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).Include(p => p.Empresa).Include(p => p.Status).ToListAsync());
                 
                 var participacoes = await GetParticipacoesTotaisUsuarios(new DateTime(2021, 01, 01), new DateTime(DateTime.Now.Year, 12, 31));
-                
-                // Quebrado
-                //ObterRankingsMedios(participacoes);
 
                 var participacao = participacoes.Where(p => p.Lider.Id == idUsuario).First();
 
