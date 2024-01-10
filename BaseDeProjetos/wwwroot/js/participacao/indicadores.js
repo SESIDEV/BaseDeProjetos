@@ -48,7 +48,6 @@ function formatarValor(tipoDado, indicador) {
     } else if (tipoDado == 'f') {
         return indicador["Valor"].toFixed(2);
     } else if (tipoDado == 'p') {
-        console.log(indicador["Valor"]);
         return (indicador["Valor"] * 100).toFixed(2) + "%";
     } else {
         return '';
@@ -170,11 +169,7 @@ function inicializarTabelaPesquisadores(dadosPesquisador) {
         { id: "MediaFatores", nome: "Média dos Fatores", tipoDado: 'f' },
     ];
 
-    // TODO: Verificar se isso é valido
     let indicadores = indicadoresContribuicao.concat(indicadoresFinanceiros);
-
-    console.log(indicadores);
-
     popularTabelaPesquisadores(indicadores, dadosPesquisador);
 }
 
@@ -182,17 +177,23 @@ function popularTabelaPesquisadores(indicadores, dadosPesquisador) {
     let tabelaPesquisadores = document.querySelector("#corpoTabelaPesquisadores");
     tabelaPesquisadores.innerHTML = "";
 
-    indicadores.forEach(indicador => {
-        let tableRow = document.createElement("tr");
-        let tableDataPesquisador = criarTableDataComClasseCell(indicador.nome);
-        let tableDataValor = criarTableDataComClasseCell(dadosPesquisador[indicador["id"]]);
-        let nomeIndicador = `Rank${indicador.id}`;
-        let tableDataRank = criarTableDataComClasseCell(dadosPesquisador["RankSobreMedia"][nomeIndicador])
+    let blockListIndicadores = ["TaxaConversaoProposta", "TaxaConversaoProjeto", "MediaFatores"];
 
-        tableRow.appendChild(tableDataPesquisador);
-        tableRow.appendChild(tableDataValor);
-        tableRow.appendChild(tableDataRank);
-        tabelaPesquisadores.appendChild(tableRow);
+    console.log(dadosPesquisador);
+
+    indicadores.forEach(indicador => {
+        if (!blockListIndicadores.includes(indicador.id)) {
+            let tableRow = document.createElement("tr");
+            let tableDataPesquisador = criarTableDataComClasseCell(indicador.nome);
+            let tableDataValor = criarTableDataComClasseCell(dadosPesquisador[indicador["id"]]);
+            let nomeIndicador = `Rank${indicador.id}`;
+            let tableDataRank = criarTableDataComClasseCell(dadosPesquisador["RankSobreMedia"][nomeIndicador])
+
+            tableRow.appendChild(tableDataPesquisador);
+            tableRow.appendChild(tableDataValor);
+            tableRow.appendChild(tableDataRank);
+            tabelaPesquisadores.appendChild(tableRow);
+        }
     });
 }
 
