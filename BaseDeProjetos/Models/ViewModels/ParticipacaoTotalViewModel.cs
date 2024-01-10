@@ -1,4 +1,5 @@
-﻿using BaseDeProjetos.Models.Helpers;
+﻿using BaseDeProjetos.Models.DTOs;
+using BaseDeProjetos.Models.Helpers;
 using Microsoft.AspNetCore.Html;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace BaseDeProjetos.Models.ViewModels
     public class ParticipacaoTotalViewModel
     {
         public Guid Id { get; set; } = Guid.NewGuid();
-        public Usuario Lider { get; set; }
+        public UsuarioParticipacaoDTO Lider { get; set; }
         public decimal ValorTotalProspeccoes { get; set; } = 0;
         public decimal ValorMedioProspeccoes { get; set; } = 0;
         public int QuantidadeProspeccoes { get; set; } = 0;

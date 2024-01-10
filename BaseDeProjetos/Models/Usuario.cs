@@ -1,6 +1,8 @@
 ﻿using BaseDeProjetos.Models.DTOs;
 using BaseDeProjetos.Models.Enums;
+using BaseDeProjetos.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -41,6 +43,16 @@ namespace BaseDeProjetos.Models
                 EmailConfirmed = EmailConfirmed,
                 Nivel = Nivel,
                 Casa = Casa,
+                UserName = UserName,
+            };
+        }
+
+        internal PesquisadorParticipacaoViewModel ToPesquisadorViewModel()
+        {
+            return new PesquisadorParticipacaoViewModel
+            {
+                Id = Id,
+                Email = Email,
                 UserName = UserName,
             };
         }
