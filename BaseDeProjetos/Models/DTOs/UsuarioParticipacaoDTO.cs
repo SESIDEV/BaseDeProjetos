@@ -1,4 +1,6 @@
 ﻿using BaseDeProjetos.Models.Enums;
+using BaseDeProjetos.Models.ViewModels;
+using System;
 
 namespace BaseDeProjetos.Models.DTOs
 {
@@ -24,6 +26,11 @@ namespace BaseDeProjetos.Models.DTOs
                 Email = Email,
                 UserName = UserName
             };
+        }
+
+        internal PesquisadorParticipacaoViewModel ToPesquisadorViewModel()
+        {
+            return new PesquisadorParticipacaoViewModel { Id = Id, Email = Email, UserName = UserName };
         }
     }
 }

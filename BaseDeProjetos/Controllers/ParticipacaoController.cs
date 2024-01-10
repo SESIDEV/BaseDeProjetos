@@ -138,7 +138,7 @@ namespace BaseDeProjetos.Controllers
                     {
                         resultados.Add(new IndicadorResultadoViewModel
                         {
-                            Pesquisador = participacao.Lider.ToUsuarioParticipacao(),
+                            Pesquisador = participacao.Lider.ToPesquisadorViewModel(),
                             Valor = valor,
                             Rank = rank
                         });
@@ -1331,7 +1331,7 @@ namespace BaseDeProjetos.Controllers
             ParticipacaoTotalViewModel participacao = new ParticipacaoTotalViewModel
             {
                 Participacoes = new List<ParticipacaoViewModel>(),
-                Lider = usuario
+                Lider = usuario.ToUsuarioParticipacao(),
             };
 
             var prospeccoesUsuario = new ProspeccoesUsuarioParticipacao
