@@ -267,6 +267,13 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        /// <summary>
+        /// Atribui as propriedades de RankMedio de acordo com as participacoes (incluindo a do próprio usuario)
+        /// </summary>
+        /// <param name="participacao"></param>
+        /// <param name="participacoes"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
         private void ObterRankingMedioPesquisador(ParticipacaoTotalViewModel participacao, List<ParticipacaoTotalViewModel> participacoes)
         {
             if (participacao == null || participacoes == null)
@@ -309,7 +316,6 @@ namespace BaseDeProjetos.Controllers
                 var instancia = participacao.RankSobreMedia;
 
                 propriedadeRank.SetValue(instancia, IndicadorHelper.DivisaoSegura(valor, valorMedio));
-
             }
         }
 
@@ -568,6 +574,15 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        /// <summary>
+        /// Atribui os valores relativos a assertividade na precificação dado um usuario, sua participacao e prospeccoes
+        /// </summary>
+        /// <param name="usuario"></param>
+        /// <param name="dataInicio"></param>
+        /// <param name="dataFim"></param>
+        /// <param name="participacao"></param>
+        /// <param name="prospeccoesUsuario"></param>
+        /// <returns></returns>
         private async Task AtribuirAssertividadePrecificacao(Usuario usuario, DateTime dataInicio, DateTime dataFim, ParticipacaoTotalViewModel participacao, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
         {
             var prospeccoesUsuarioLiderComProposta = prospeccoesUsuario.ProspeccoesLider.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.ComProposta);
@@ -729,6 +744,12 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        /// <summary>
+        /// Atribui as quantidades de prospecção de acordo com a participacao de um usuario, um usuario e suas prospeccoes
+        /// </summary>
+        /// <param name="usuario"></param>
+        /// <param name="participacao"></param>
+        /// <param name="prospeccoesUsuario"></param>
         private void AtribuirQuantidadesDeProspeccao(Usuario usuario, ParticipacaoTotalViewModel participacao, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
         {
             var prospeccoesUsuarioComProposta = prospeccoesUsuario.ProspeccoesTotais.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.ComProposta)).ToList();
@@ -746,6 +767,13 @@ namespace BaseDeProjetos.Controllers
             participacao.QuantidadeProspeccoesLider = prospeccoesUsuario.ProspeccoesLider.Count();
         }
 
+        /// <summary>
+        /// Atribui os valores financeiros relativos a participação de um usuário
+        /// </summary>
+        /// <param name="usuario"></param>
+        /// <param name="dataInicio"></param>
+        /// <param name="dataFim"></param>
+        /// <param name="participacao"></param>
         private void AtribuirValoresFinanceirosDeProspeccao(Usuario usuario, DateTime dataInicio, DateTime dataFim, ParticipacaoTotalViewModel participacao)
         {
             participacao.ValorTotalProspeccoes = ExtrairValorProspeccoes(usuario, null, dataInicio, dataFim);
@@ -782,6 +810,12 @@ namespace BaseDeProjetos.Controllers
             return quantidadeProspeccoesComPeso;
         }
 
+        /// <summary>
+        /// Calcula a quantidade de prospeccoes com proposta de acordo com um usuario e suas prospeccoes
+        /// </summary>
+        /// <param name="usuario"></param>
+        /// <param name="prospeccoesUsuario"></param>
+        /// <returns></returns>
         private decimal CalcularQuantidadeDeProspeccoesComProposta(Usuario usuario, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
         {
             decimal quantidadeProspeccoesComProposta = 0;
@@ -813,6 +847,12 @@ namespace BaseDeProjetos.Controllers
             return Math.Round(quantidadeProspeccoesComProposta);
         }
 
+        /// <summary>
+        /// Calcula a quantidade de prospeccoes convertidas de acordo com um usuario e suas prospeccoes
+        /// </summary>
+        /// <param name="usuario"></param>
+        /// <param name="prospeccoesUsuario"></param>
+        /// <returns></returns>
         private decimal CalcularQuantidadeDeProspeccoesConvertidas(Usuario usuario, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
         {
             decimal quantidadeProspeccoesConvertidas = 0;
@@ -954,6 +994,11 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        /// <summary>
+        /// Obtém os rankings médios para serem utilizados no gráfico de aranha
+        /// </summary>
+        /// <param name="participacoes"></param>
+        /// <returns></returns>
         private List<decimal> ObterRankingsMediosGrafico(List<ParticipacaoTotalViewModel> participacoes)
         {
             List<decimal> rankings = new List<decimal>();
@@ -1361,6 +1406,11 @@ namespace BaseDeProjetos.Controllers
             return await _context.Projeto.Where(p => p.EquipeProjeto.Any(e => e.Usuario == usuario)).ToListAsync();
         }
 
+        /// <summary>
+        /// Obtém a lista de prospecções do usuário passa por parâmetro nas quais ele é lider (somente)
+        /// </summary>
+        /// <param name="usuario"></param>
+        /// <returns></returns>
         private List<Prospeccao> GetProspeccoesUsuarioLider(Usuario usuario)
         {
             return _prospeccoes.Where(p => p.Usuario.Id == usuario.Id && p.Status.OrderBy(f => f.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
