@@ -10,6 +10,7 @@ namespace BaseDeProjetos.Models.DTOs
         public Nivel Nivel { get; set; }
         public bool EmailConfirmed { get; set; }
         public string Email { get; set; }
+        public string UserName { get; set; }
 
         public Usuario ToUsuario()
         {
@@ -20,7 +21,8 @@ namespace BaseDeProjetos.Models.DTOs
                 Cargo = Cargo,
                 Nivel = Nivel,
                 EmailConfirmed = EmailConfirmed,
-                Email = Email
+                Email = Email,
+                UserName = UserName
             };
         }
     }
