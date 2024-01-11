@@ -13,16 +13,18 @@ namespace BaseDeProjetos.Controllers
     public class PesquisaProjetosController : SGIController
     {
         private readonly ApplicationDbContext _context;
+        private readonly DbCache _cache;
 
-        public PesquisaProjetosController(ApplicationDbContext context)
+        public PesquisaProjetosController(ApplicationDbContext context, DbCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         // GET: PesquisaProjetos
         public async Task<IActionResult> Index()
         {
-            ViewbagizarUsuario(_context);
+            ViewbagizarUsuario(_context, _cache);
             return View(await _context.PesquisaProjeto.ToListAsync());
         }
 

@@ -10,9 +10,9 @@ namespace BaseDeProjetos.Controllers
     {
         public Usuario UsuarioAtivo { get; set; }
 
-        public void ViewbagizarUsuario(ApplicationDbContext _context)
+        public void ViewbagizarUsuario(ApplicationDbContext _context, DbCache cache)
         {
-            UsuarioAtivo = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+            UsuarioAtivo = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext, cache);
 
             if (UsuarioAtivo != null)
             {

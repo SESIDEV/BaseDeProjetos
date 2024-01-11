@@ -2,7 +2,8 @@
 @using BaseDeProjetos.Models
 @using BaseDeProjetos.Helpers
 @using BaseDeProjetos.Models.Enums
-@using BaseDeProjetos.Models.ViewModels;
+@using BaseDeProjetos.Models.ViewModels
+@using System.Web
 @model IEnumerable<ParticipacaoTotalViewModel>
 
 @{
@@ -11,111 +12,22 @@
 
     Random random = new Random();
 
-    var mesInicio = ViewData["mesInicio"] as string;
-    var anoInicio = ViewData["anoInicio"] as string;
-    var mesFim = ViewData["mesFim"] as string;
-    var anoFim = ViewData["anoFim"] as string;
+    var dataInicio = ViewData["dataInicio"] as string;
+    var dataFim = ViewData["dataFim"] as string;
 
     Dictionary<string, decimal> valoresMaximos = ViewData["ValoresMaximos"] as Dictionary<string, decimal>;
     Dictionary<string, decimal> valoresMinimos = ViewData["ValoresMinimos"] as Dictionary<string, decimal>;
 }
 
-<style>
-    .tooltip-indicadores {
-        position: relative;
-    }
-
-        .tooltip-indicadores:before {
-            content: attr(data-text);
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            left: 100%;
-            margin-left: 15px;
-            width: auto; /* Funcionou supreendentemente bem */
-            padding: 10px;
-            border-radius: 10px;
-            background: black;
-            opacity: 100%;
-            text-align: center;
-            display: none;
-            z-index: 1;
-            color: #fff;
-        }
-
-        .tooltip-indicadores:hover:before {
-            display: block;
-        }
-
-    .ribbon {
-        width: 60px;
-        height: 90px;
-        position: absolute;
-    }
-
-        .ribbon span {
-            position: absolute;
-            display: block;
-            width: 80px;
-            padding: 5px 0;
-            box-shadow: 0 5px 10px rgba(0,0,0,.1);
-            font: 700 .7em sans-serif;
-            text-shadow: 0 1px 1px rgba(0,0,0,.2);
-            text-transform: uppercase;
-            text-align: center;
-        }
-
-    /* top right*/
-    .ribbon-top-right {
-        top: -1.0em;
-        right: -1.5em;
-    }
-
-        .ribbon-top-right span {
-            left: -25px;
-            top: 30px;
-            transform: rotate(45deg);
-        }
-
-    .ribbon-red span {
-        color: white;
-        background-color: #aa0000;
-    }
-
-    .ribbon-blue span {
-        color: white;
-        background-color: #0088ff;
-    }
-
-    .ribbon-yellow span {
-        color: black;
-        background-color: #FFC90E;
-    }
-
-    .ribbon-green span {
-        color: white;
-        background-color: #22B14C;
-    }
-
-    .ribbon-green-yellow span {
-        color: gold;
-        background-color: #22B14C;
-    }
-
-    .ribbon-orange span {
-        color: white;
-        background-color: orangered;
-    }
-</style>
-
+<link rel="stylesheet" href="~/css/participacao.css" />
 <script>
-    function zerarInputMes(event) {
+    function zerarInputDataInicio(event) {
         let input = event.target;
-        let mesSelecionado = input.value;
+        let dataInicio = input.value;
 
-        let valorMinimo = 1;
+        let valorMinimo = 1; // date.time.now em js
 
-        if (mesSelecionado < valorMinimo) {
+        if (dataInicio < valorMinimo) {
             input.value = null;
             input.placeholder = "Sem filtro";
         }
@@ -138,9 +50,13 @@
             input.placeholder = new Date().getFullYear().toString();
         }
     }
+
+    var dataInicio = "@dataInicio";
+    var dataFim = "@dataFim";
 </script>
 
 <partial name="Header" view-data="@ViewData" />
+<script defer src="~/js/participacao/indicadores.js"></script>
 <div class="app-wrapper">
     <div class="app-content pt-3 p-md-3 p-lg-4">
         <div class="">
@@ -152,290 +68,21 @@
 
                     <form class="d-flex flex-row align-items-end gap-2" asp-controller="Participacao" asp-action="Index" method="get">
                         <div class="form-group">
-                            <label for="mesInicio">Mês Inicial:</label>
-                            <input id="mesInicio" name="mesInicio" class="form-control" type="number" placeholder="@(string.IsNullOrEmpty(mesInicio) ? "Sem filtro" : mesInicio)" value="@(string.IsNullOrEmpty(mesInicio) ? null : mesInicio)" max="12" oninput="zerarInputMes(event)" />
+                            <label for="dataInicio">Data Inicial:</label>
+                            <input id="dataInicio" name="dataInicio" class="form-control" type="date" placeholder="@(string.IsNullOrEmpty(dataInicio) ? "Sem filtro" : dataInicio)" value="@(string.IsNullOrEmpty(dataInicio) ? null : dataInicio)" max="12" oninput="zerarInputMes(event)" />
                         </div>
-                        <div class="form-group">
-                            <label for="anoInicio">Ano Inicial:</label>
-                            <input id="anoInicio" name="anoInicio" class="form-control" type="number" placeholder="@(string.IsNullOrEmpty(anoInicio) ? "Sem filtro" : anoInicio)" value="@(string.IsNullOrEmpty(anoInicio) ? null : anoInicio)" oninput="zerarInputAno(event)" />
-                        </div>
+                        
                         até
                         <div class="form-group">
-                            <label for="mesFim">Mês Final:</label>
-                            <input id="mesFim" name="mesFim" class="form-control" type="number" placeholder="@(string.IsNullOrEmpty(mesFim) ? "Sem filtro" : mesFim)" value="@(string.IsNullOrEmpty(mesFim) ? null : mesFim)" max="12" oninput="zerarInputMes(event)" />
-                        </div>
-                        <div class="form-group">
-                            <label for="ano">Ano Final:</label>
-                            <input id="anoFim" name="anoFim" class="form-control" type="number" placeholder="@(string.IsNullOrEmpty(anoFim) ? "Sem filtro" : anoFim)" value="@(string.IsNullOrEmpty(anoFim) ? null : anoFim)" oninput="zerarInputAno(event)" />
+                            <label for="dataFim">Data Final:</label>
+                            <input id="dataFim" name="dataFim" class="form-control" type="date" placeholder="@(string.IsNullOrEmpty(dataFim) ? "Sem filtro" : dataFim)" value="@(string.IsNullOrEmpty(dataFim) ? null : dataFim)" max="12" oninput="zerarInputMes(event)" />
                         </div>
                         <button type="submit" class="btn app-btn-primary">Filtrar</button>
                     </form>
                 </div>
             </div>
-
-            <div class="tab-pane fade show active" id="valores" role="tabpanel" aria-labelledby="valores-tab">
-                <div class="app-card app-card-orders-table shadow-sm mb-5">
-                    <div class="app-card-body">
-                        <div class="table-responsive">
-                            <table class="table mb-0 text-left">
-                                <thead>
-                                    <tr>
-                                        <th class="cell">Membro</th>
-                                        <th class="cell">Valor Total (Prospecção)</th>
-                                        <th class="cell">Quantidade (Prospecção)</th>
-                                        <th class="cell">Quantidade (Lider)</th>
-                                        <th class="cell">Quantidade (Membro)</th>
-                                        <th class="cell">Valor Médio (Prospecção)</th>
-                                        <th class="cell">Valor Total (Em Proposta)</th>
-                                        <th class="cell">Valor Médio (Em Proposta)</th>
-                                        <th class="cell">Propostas Enviadas</th>
-                                        <th class="cell">Propostas Convertidas</th>
-                                        <th class="cell">Valor Total (Convertida)</th>
-                                        <th class="cell">Valor Médio (Convertida)</th>
-                                        <th class="cell">Proposta/Prospecção</th>
-                                        <th class="cell">Projeto/Proposta</th>
-                                        <th class="cell">Assertividade Precificação</th>
-                                        <th data-text="Fator de Contribuição Financeira" class="cell tooltip-indicadores">FCF</th>
-                                        <th class="cell">Média dos Fatores</th>
-                                        <th class="cell">Detalhes</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var participacaoTotal in @Model)
-                                    {
-                                        <tr>
-                                            <div class="modal fade" id="ModalDetalhesParticipacaoTotal-@participacaoTotal.Id" tabindex="-1" aria-labelledby="ModalDetalhesParticipacaoTotal-@participacaoTotal.Id-Label"
-                                                 aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered modal-xl">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h1 class="modal-title fs-5" id="ModalDetalhesParticipacaoTotal-@participacaoTotal.Id-Label">Detalhes das Participações do Pesquisador</h1>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body d-flex flex-column gap-1" style="background: #f5f6fe;">
-                                                            <partial name="GraficoParticipacaoTotal" model="@participacaoTotal" />
-                                                            <div class="accordion" id="accordionProspeccoes">
-                                                                <div class="accordion-item">
-                                                                    <h2 class="accordion-header" id="headingProspeccoes">
-                                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProspeccoes"
-                                                                                aria-expanded="false" aria-controls="collapseProspeccoes">
-                                                                            Lista de Prospecções
-                                                                        </button>
-                                                                    </h2>
-                                                                    <div id="collapseProspeccoes" class="accordion-collapse collapse" aria-labelledby="headingProspeccoes"
-                                                                         data-bs-parent="#accordionProspeccoes">
-                                                                        <div class="accordion-body">
-                                                                            @{
-                                                                                var participacoes = participacaoTotal.Participacoes;
-
-                                                                                participacoes.Sort((p1, p2) => p1.Convertida.CompareTo(p2.Convertida));
-                                                                                participacoes.Sort((p1, p2) => decimal.Compare(p1.ValorNominal, p2.ValorNominal));
-
-                                                                                <div class="row g-4">
-                                                                                    @foreach (var participacaoUnitaria in participacoes)
-                                                                                    {
-                                                                                        @await Html.PartialAsync("ListaParticipacoesUnitarias", participacaoUnitaria, ViewData)
-                                                                                    }
-                                                                                </div>
-                                                                            }
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <a class="btn btn-outline-primary" data-bs-dismiss="modal" aria-label="Close" role="button">
-                                                                Fechar
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <td class="cell" style="overflow:hidden; max-width:100px">
-                                                @if (ViewBag.usuarioNivel == Nivel.Dev || ViewBag.usuarioNivel == Nivel.PMO) 
-                                                {
-                                                    @*Alterar quando for pra produção, dev, pmo devem poder ver os nomes@
-                                                    @* @participacaoTotal.Lider *@
-                                                    <p>Membro @(random.Next())</p>
-                                                } 
-                                                else {
-                                                    <p>Membro @(random.Next())</p>
-                                                }   
-                                            </td>
-                                            <td class="cell">
-                                                @{
-                                                    var rankValorTotalProspeccoes = participacaoTotal.RankPorIndicador["RankValorTotalProspeccoes"];
-                                                    var valorTotalProspeccoes = participacaoTotal.ValorTotalProspeccoes;
-                                                    <div data-text="(@rankValorTotalProspeccoes.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(valorTotalProspeccoes, valoresMinimos["ValorTotalProspeccoes"], valoresMaximos["ValorTotalProspeccoes"])))
-                                                        R$ @valorTotalProspeccoes.ToString("N", cultura)
-                                                    </div>
-                                                }
-                                            </td>
-                                            <td class="cell">
-                                                @{
-                                                    var rankQuantidadeProspeccoes = participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoes"];
-                                                    var quantidadeProspeccoes = participacaoTotal.QuantidadeProspeccoes;
-                                                    <div data-text="(@rankQuantidadeProspeccoes.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(quantidadeProspeccoes, valoresMinimos["QuantidadeProspeccoes"], valoresMaximos["QuantidadeProspeccoes"])))
-                                                        @quantidadeProspeccoes
-                                                    </div>
-                                                }
-                                            </td>
-                                            <td class="cell">
-                                                @{
-                                                    var rankQuantidadeProspeccoesLider = participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoesLider"];
-                                                    var quantidadeProspeccoesLider = participacaoTotal.QuantidadeProspeccoesLider;
-                                                    <div data-text="(@rankQuantidadeProspeccoes.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(quantidadeProspeccoesLider, valoresMinimos["QuantidadeProspeccoesLider"], valoresMaximos["QuantidadeProspeccoesLider"])))
-                                                        @quantidadeProspeccoesLider
-                                                    </div>
-                                                }
-                                            </td>
-                                            <td class="cell">
-                                                @{
-                                                    var rankQuantidadeProspeccoesMembro = participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoesMembro"];
-                                                    var quantidadeProspeccoesMembro = participacaoTotal.QuantidadeProspeccoesMembro;
-                                                    <div data-text="(@rankQuantidadeProspeccoesMembro.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(quantidadeProspeccoesMembro, valoresMinimos["QuantidadeProspeccoesMembro"], valoresMaximos["QuantidadeProspeccoesMembro"])))
-                                                        @quantidadeProspeccoesMembro
-                                                    </div>
-                                                }
-                                            </td>
-                                            <td class="cell">
-                                                @{
-                                                    var rankValorMedioProspeccoes = participacaoTotal.RankPorIndicador["RankValorMedioProspeccoes"];
-                                                    var valorMedioProspeccoes = participacaoTotal.ValorMedioProspeccoes;
-                                                    <div data-text="(@rankValorMedioProspeccoes.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(valorMedioProspeccoes, valoresMinimos["ValorMedioProspeccoes"], valoresMaximos["ValorMedioProspeccoes"])))
-                                                        R$ @valorMedioProspeccoes.ToString("N", cultura)
-                                                    </div>
-                                                }
-                                            </td>
-                                            <td class="cell">
-                                                @{
-                                                    var rankValorTotalProspeccoesComProposta = participacaoTotal.RankPorIndicador["RankValorTotalProspeccoesComProposta"];
-                                                    var valorTotalProspeccoesComProposta = participacaoTotal.ValorTotalProspeccoesComProposta;
-                                                }
-                                                <div data-text="(@rankValorTotalProspeccoesComProposta.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                    @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(valorTotalProspeccoesComProposta, valoresMinimos["ValorTotalProspeccoesComProposta"], valoresMaximos["ValorTotalProspeccoesComProposta"])))
-                                                    R$ @valorTotalProspeccoesComProposta.ToString("N", cultura)
-                                                </div>
-                                            </td>
-                                            <td class="cell">
-                                                @{
-                                                    var rankValorMedioProposta = participacaoTotal.RankPorIndicador["RankValorMedioProspeccoesComProposta"];
-                                                    var valorMedioProspeccoesComProposta = participacaoTotal.ValorMedioProspeccoesComProposta;
-                                                    <div data-text="(@rankValorMedioProposta.ToString("N", cultura))" class="d-flex align-items-center flex-row gap-2 tooltip-indicadores">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(valorMedioProspeccoesComProposta, valoresMinimos["ValorMedioProspeccoesComProposta"], valoresMaximos["ValorMedioProspeccoesComProposta"])))
-                                                        R$ @valorMedioProspeccoesComProposta.ToString("N", cultura)
-                                                    </div>
-                                                }
-                                            </td>
-                                            <td class="cell">
-                                                @{
-                                                    var rankProspeccoesComProposta = participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoesComProposta"];
-                                                    var prospeccoesComProposta = participacaoTotal.QuantidadeProspeccoesComProposta;
-                                                    <div data-text="(@rankProspeccoesComProposta.ToString("N", cultura))" class="d-flex align-items-center flex-row gap-2 tooltip-indicadores">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(prospeccoesComProposta, valoresMinimos["QuantidadeProspeccoesComProposta"], valoresMaximos["QuantidadeProspeccoesComProposta"])))
-                                                        @(Math.Round(prospeccoesComProposta))
-                                                    </div>
-                                                }
-                                            </td>
-                                            <td class="cell">
-                                                @{
-                                                    var rankProspeccoesProjeto = participacaoTotal.RankPorIndicador["RankQuantidadeProspeccoesProjeto"];
-                                                    var quantidadeProspeccoesProjeto = participacaoTotal.QuantidadeProspeccoesProjeto;
-                                                    <div data-text='(@rankProspeccoesProjeto.ToString("N", cultura))' class="d-flex align-items-center flex-row gap-2 tooltip-indicadores">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(quantidadeProspeccoesProjeto, valoresMinimos["QuantidadeProspeccoesProjeto"], valoresMaximos["QuantidadeProspeccoesProjeto"])))
-                                                        @(Math.Round(quantidadeProspeccoesProjeto))
-                                                    </div>
-                                                }
-                                            </td>
-                                            <td class="cell">
-                                                @{
-                                                    var rankProspeccoesConvertidas = participacaoTotal.RankPorIndicador["RankValorTotalProspeccoesConvertidas"];
-                                                    var valorTotalProspeccoesConvertidas = participacaoTotal.ValorTotalProspeccoesConvertidas;
-                                                    <div data-text='(@rankProspeccoesConvertidas.ToString("N", cultura))' class="d-flex align-items-center flex-row gap-2 tooltip-indicadores">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(valorTotalProspeccoesConvertidas, valoresMinimos["ValorTotalProspeccoesConvertidas"], valoresMaximos["ValorTotalProspeccoesConvertidas"])))
-                                                        R$ @valorTotalProspeccoesConvertidas.ToString("N", cultura)
-                                                    </div>
-                                                }
-                                            </td>
-                                            <td class="cell">
-                                                @{
-                                                    var rankMedioProspeccoesConvertidas = participacaoTotal.RankPorIndicador["RankValorMedioProspeccoesConvertidas"];
-                                                    var valorMedioProspeccoesConvertidas = participacaoTotal.ValorMedioProspeccoesConvertidas;
-                                                    <div data-text='(@rankMedioProspeccoesConvertidas.ToString("N", cultura))' class="d-flex align-items-center flex-row gap-2 tooltip-indicadores">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(valorMedioProspeccoesConvertidas, valoresMinimos["ValorMedioProspeccoesConvertidas"], valoresMaximos["ValorMedioProspeccoesConvertidas"])))
-                                                        R$ @valorMedioProspeccoesConvertidas.ToString("N", cultura)
-                                                    </div>
-                                                }
-                                            </td>
-                                            <td class="cell">
-                                                <div class="d-flex flex-row align-items-center gap-2">
-                                                    @{
-                                                        var taxaConversaoProposta = participacaoTotal.TaxaConversaoProposta;
-                                                    }
-                                                    @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(taxaConversaoProposta, valoresMinimos["TaxaConversaoProposta"], valoresMaximos["TaxaConversaoProposta"])))
-                                                    @((taxaConversaoProposta * 100).ToString("N", cultura))%
-                                                </div>
-                                            </td>
-                                            <td class="cell">
-                                                <div class="d-flex flex-row align-items-center gap-2">
-                                                    @{
-                                                        var taxaConversaoProjeto = participacaoTotal.TaxaConversaoProjeto;
-                                                    }
-                                                    @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(taxaConversaoProjeto, valoresMinimos["TaxaConversaoProjeto"], valoresMaximos["TaxaConversaoProjeto"])))
-                                                    @((taxaConversaoProjeto * 100).ToString("N", cultura))%
-                                                </div>
-                                            </td>
-                                            <td class="cell">
-                                                @{
-                                                    var rankAssertividadePrecificacao = participacaoTotal.RankPorIndicador["RankAssertividadePrecificacao"];
-                                                    var taxaAssertividadePrecificacao = participacaoTotal.AssertividadePrecificacao;
-                                                }
-                                                <div data-text="(@rankAssertividadePrecificacao.ToString("N", cultura))" class="d-flex flex-row align-items-center gap-2">
-                                                    @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(taxaAssertividadePrecificacao, valoresMinimos["AssertividadePrecificacao"], valoresMaximos["AssertividadePrecificacao"])))
-                                                    @((taxaAssertividadePrecificacao).ToString("0.###", cultura))
-                                                </div>
-                                            </td>
-                                            <td class="cell">
-                                                @{
-                                                    decimal fatorContribuicaoFinanceira = participacaoTotal.FatorContribuicaoFinanceira;
-                                                    decimal fcfMaximo = valoresMaximos["FatorContribuicaoFinanceira"];
-                                                    decimal fcfMinimo = valoresMinimos["FatorContribuicaoFinanceira"];
-                                                    <div class="d-flex flex-row align-items-center gap-2 tooltip-indicadores">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(fatorContribuicaoFinanceira, fcfMinimo, fcfMaximo)))
-                                                        @(fatorContribuicaoFinanceira.ToString("N", cultura))
-                                                    </div>
-                                                }
-                                            </td>
-                                            <td class="cell">
-                                                <div class="d-flex align-items-center flex-row gap-2">
-                                                    @{
-                                                        decimal mediaFatores = participacaoTotal.MediaFatores;
-                                                    }
-                                                    <div class="d-flex flex-row align-items-center gap-2">
-                                                        @(Helpers.ObterIconeParticipacao(Helpers.VerificarIntervalo(mediaFatores, valoresMinimos["MediaFatores"], valoresMaximos["MediaFatores"])))
-                                                        @((mediaFatores).ToString("N", cultura))
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="cell">
-                                                <button type="button" data-bs-target="#ModalDetalhesParticipacaoTotal-@participacaoTotal.Id" data-bs-toggle="modal" class="btn-sm app-btn-primary">
-                                                    Detalhes
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <partial name="TabelaParticipacoes" />
         </div>
+        <partial name="Footer" />
     </div>
-    <partial name="Footer" />
 </div>

@@ -184,7 +184,8 @@ namespace BaseDeProjetos.Helpers
 
         public static async Task<List<Prospeccao>> DefinirCasaParaVisualizar(string casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, DbCache cache, ViewDataDictionary ViewData)
         {
-            Instituto enum_casa;
+            // Converte a string casa pra enum
+            Enum.TryParse(casa, out Instituto enum_casa);
 
             List<Prospeccao> prospeccoes = new List<Prospeccao>();
 
@@ -197,7 +198,6 @@ namespace BaseDeProjetos.Helpers
                 if (Enum.IsDefined(typeof(Instituto), casa))
                 {
                     HttpContext.Session.SetString("_Casa", casa);
-                    enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
                     prospeccoes = await cache.GetCachedAsync($"Prospeccoes:Funil:Filtradas:{enum_casa}", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).Where(prospeccao => prospeccao.Casa.Equals(enum_casa)).ToListAsync());
                     ViewData["Area"] = casa;
                 }
@@ -395,7 +395,7 @@ namespace BaseDeProjetos.Helpers
             prospeccao.Agregadas = "";
         }
 
-        public static Usuario ObterUsuarioAtivo(ApplicationDbContext _context, HttpContext HttpContext)
+        public static Usuario ObterUsuarioAtivo(ApplicationDbContext _context, HttpContext HttpContext, DbCache cache)
         {
             if (HttpContext == null)
             {
@@ -407,7 +407,8 @@ namespace BaseDeProjetos.Helpers
                 throw new ArgumentNullException(nameof(_context));
             }
 
-            var usuarioAtivo = _context.Users.Select(u => new Usuario { Id = u.Id, UserName = u.UserName, Casa = u.Casa, Nivel = u.Nivel }).FirstOrDefault(usuario => usuario.UserName == HttpContext.User.Identity.Name);
+            string cacheKey = $"Usuarios:UsuarioAtivo:FunilHelper:{HttpContext.User.Identity.Name}";
+            var usuarioAtivo = cache.GetCached(cacheKey, () => _context.Users.Select(u => new Usuario { Id = u.Id, UserName = u.UserName, Casa = u.Casa, Nivel = u.Nivel }).FirstOrDefault(usuario => usuario.UserName == HttpContext.User.Identity.Name));
 
             return usuarioAtivo;
         }

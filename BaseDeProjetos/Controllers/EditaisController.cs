@@ -18,6 +18,7 @@ namespace BaseDeProjetos.Controllers
     public class EditaisController : SGIController
     {
         private readonly ApplicationDbContext _context;
+        private readonly DbCache _cache;
 
         private readonly ILogger<EditaisController> _logger;
 
@@ -26,7 +27,7 @@ namespace BaseDeProjetos.Controllers
         [HttpGet]
         public async Task<IActionResult> CreateUsers()
         {
-            ViewbagizarUsuario(_context);
+            ViewbagizarUsuario(_context, _cache);
 
             if (HttpContext.User.Identity.IsAuthenticated && UsuarioAtivo.Nivel == Nivel.Dev) // Apenas devs
             {
@@ -101,7 +102,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
                 List<Empresa> empresas = _context.Empresa.ToList();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
                 return View(await _context.Editais.ToListAsync());
@@ -117,7 +118,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
 
                 if (id == null)
                 {
@@ -144,7 +145,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
 
                 return View();
             }
@@ -175,7 +176,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
 
                 if (id == null)
                 {
@@ -235,7 +236,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
 
                 if (id == null)
                 {
@@ -312,7 +313,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
                 Editais Edital = _context.Editais.FirstOrDefault(e => e.Id == id);
                 string prospeccaoId = $"prosp_{DateTime.Now.Ticks}";
 

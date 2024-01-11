@@ -27,6 +27,15 @@ namespace BaseDeProjetos.Helpers
             }
         }
 
+        public static async Task CleanupIndicadoresFinanceirosCache(DbCache cache)
+        {
+            if (cache != null)
+            {
+                cache.InvalidateCache("AllIndicadoresFinanceiros");
+                await cache.InvalidateCacheKeysAsync("IndicadoresFinanceiros:");
+            }
+        }
+
         public static async Task CleanupUsuariosCache(DbCache cache)
         {
             if (cache != null)

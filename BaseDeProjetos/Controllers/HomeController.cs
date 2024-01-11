@@ -39,7 +39,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
 
                 ViewData["satisfacao"] = 0.8750; // TODO: Implementar lógica?
             }
@@ -52,7 +52,7 @@ namespace BaseDeProjetos.Controllers
         [HttpGet("Home/ObterDadosReceita")]
         public async Task<IActionResult> ObterDadosReceita()
         {
-            ViewbagizarUsuario(_context);
+            ViewbagizarUsuario(_context, _cache);
 
             Dictionary<string, object> dadosHome = new Dictionary<string, object>();
             Dictionary<string, decimal> dadosFinanceiros = new Dictionary<string, decimal>();

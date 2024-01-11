@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BaseDeProjetos.Models.DTOs;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace BaseDeProjetos.Models
 {
@@ -11,5 +13,6 @@ namespace BaseDeProjetos.Models
         public virtual decimal Salario { get; set; }
         public virtual int HorasSemanais { get; set; }
         public virtual bool Tributos { get; set; }
+        
     }
 }

@@ -15,6 +15,18 @@ namespace BaseDeProjetos.Helpers
 
         public List<Prospeccao> ListaDeProspeccoes { get; set; }
 
+        public static decimal DivisaoSegura(decimal numerador, decimal denominador)
+        {
+            if (denominador == 0)
+            {
+                return 0;
+            }
+            else
+            {
+                return numerador / denominador;
+            }
+        }
+
         public Dictionary<string, int> QuantidadeDeProspeccoes(Func<Prospeccao, object> propriedade, int? ano)
         {
             List<Prospeccao> listaProsps = ListaDeProspeccoes;

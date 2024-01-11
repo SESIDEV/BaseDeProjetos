@@ -1,0 +1,77 @@
+﻿<div class="tab-pane fade show active" id="valores" role="tabpanel" aria-labelledby="valores-tab">
+    <div class="d-flex flex-wrap gap-2 justify-content-start">
+        <div class="dropdown">
+            <button class="btn app-btn-primary dropdown-toggle" type="button" id="dropdownParticipacaoFinanceira" onclick="resetTabela()" data-bs-toggle="dropdown" aria-expanded="false">
+                Indicadores Financeiros
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownParticipacaoFinanceira" id="ulFinanceira">
+            </ul>
+        </div>
+        <div class="dropdown">
+            <button class="btn app-btn-primary dropdown-toggle" type="button" id="dropdownParticipacaoContribuicao" onclick="resetTabela()" data-bs-toggle="dropdown" aria-expanded="false">
+                Indicadores de Contribuição
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownParticipacaoContribuicao" id="ulContribuicao">
+            </ul>
+        </div>
+    </div>
+    <br />
+    <div class="collapse" id="collapseIndicador">
+        <div class="d-flex flex-row gap-2">
+            <div style="width: 50%">
+                <h4 class="app-card-title" id="tituloIndicador">Indicador:</h4>
+                <div class="app-card app-card-orders-table shadow-sm mb-5">
+                    <div class="app-card-body">
+                        <div class="table-responsive" id="tabelaIndicadores">
+                            <table class="table app-table-hover mb-0 text-left">
+                                <thead>
+                                    <tr>
+                                        <th class="cell">Pesquisador</th>
+                                        <th class="cell">Valor</th>
+                                        <th class="cell">Rank</th>
+                                        <th class="cell">Detalhes</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="corpoTabela">
+                                    <tr>
+                                        <td><div class='mt-2 mb-2 spinner-border text-primary'></div></td>
+                                        <td><div class='mt-2 mb-2 spinner-border text-primary'></div></td>
+                                        <td><div class='mt-2 mb-2 spinner-border text-primary'></div></td>
+                                        <td><div class='mt-2 mb-2 spinner-border text-primary'></div></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div><!--//table-responsive-->
+                    </div><!--//app-card-body-->
+                </div>
+            </div>
+            <div class="collapse" id="collapsePesquisador">
+                <h4 class="app-card-title" id="tituloPesquisador">
+                    Indicadores do Pesquisador:
+                </h4>
+                <div class="app-card app-card-orders-table shadow-sm mb-5">
+                    <div class="app-card-body">
+                        <div class="table-responsive" id="tabelaPesquisador">
+                            <table class="table app-table-hover mb-0 text-left">
+                                <thead>
+                                    <tr>
+                                        <th class="cell">Indicador</th>
+                                        <th class="cell">Valor</th>
+                                        <th class="cell">Rank</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="corpoTabelaPesquisadores">
+                                    <tr>
+                                        <td><div class='mt-2 mb-2 spinner-border text-primary'></div></td>
+                                        <td><div class='mt-2 mb-2 spinner-border text-primary'></div></td>
+                                        <td><div class='mt-2 mb-2 spinner-border text-primary'></div></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div><!--//table-responsive-->
+                    </div><!--//app-card-body-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

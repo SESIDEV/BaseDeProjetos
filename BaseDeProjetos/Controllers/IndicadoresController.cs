@@ -18,10 +18,12 @@ namespace BaseDeProjetos.Controllers
     public class IndicadoresController : SGIController
     {
         private readonly ApplicationDbContext _context;
+        private readonly DbCache _cache;
 
-        public IndicadoresController(ApplicationDbContext context)
+        public IndicadoresController(ApplicationDbContext context, DbCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         // GET: IndicadoresFinanceiros
@@ -29,7 +31,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
 
                 List<IndicadoresFinanceiros> listaIndicadoresFinanceiros = await _context.IndicadoresFinanceiros.ToListAsync();
                 if (string.IsNullOrEmpty(casa))
@@ -154,7 +156,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
                 if (UsuarioAtivo.Nivel == Nivel.PMO || UsuarioAtivo.Nivel == Nivel.Dev)
                 {
                     if (id == null)
@@ -187,7 +189,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
                 if (UsuarioAtivo.Nivel == Nivel.PMO || UsuarioAtivo.Nivel == Nivel.Dev)
                 {
                     return View();
@@ -214,6 +216,7 @@ namespace BaseDeProjetos.Controllers
             {
                 _context.Add(indicadoresFinanceiros);
                 await _context.SaveChangesAsync();
+                await CacheHelper.CleanupIndicadoresFinanceirosCache(_cache);
                 return RedirectToAction(nameof(Index));
             }
             return View(indicadoresFinanceiros);
@@ -224,7 +227,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
                 if (UsuarioAtivo.Nivel == Nivel.PMO || UsuarioAtivo.Nivel == Nivel.Dev)
                 {
                     if (id == null)
@@ -268,6 +271,7 @@ namespace BaseDeProjetos.Controllers
                 {
                     _context.Update(indicadoresFinanceiros);
                     await _context.SaveChangesAsync();
+                    await CacheHelper.CleanupIndicadoresFinanceirosCache(_cache);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -290,7 +294,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
                 if (UsuarioAtivo.Nivel == Nivel.PMO || UsuarioAtivo.Nivel == Nivel.Dev)
                 {
                     if (id == null)
@@ -326,6 +330,7 @@ namespace BaseDeProjetos.Controllers
             IndicadoresFinanceiros indicadoresFinanceiros = await _context.IndicadoresFinanceiros.FindAsync(id);
             _context.IndicadoresFinanceiros.Remove(indicadoresFinanceiros);
             await _context.SaveChangesAsync();
+            await CacheHelper.CleanupIndicadoresFinanceirosCache(_cache);
             return RedirectToAction(nameof(Index));
         }
 
