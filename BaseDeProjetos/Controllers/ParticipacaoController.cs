@@ -97,63 +97,87 @@ namespace BaseDeProjetos.Controllers
         /// <exception cref="Exception"></exception>
         public async Task<IActionResult> RetornarDadosIndicador(string nomeIndicador, DateTime? dataInicio, DateTime? dataFim)
         {
-            var indicadores = await _context.IndicadoresFinanceiros.ToListAsync();
-
-            foreach (var indicador in indicadores)
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                despesas[indicador.Data.Year] = indicador.Despesa;
-                pesquisadores[indicador.Data.Year] = indicador.QtdPesquisadores;
-            }
+                ViewbagizarUsuario(_context);
 
-            if (_prospeccoes.Count == 0)
-            {
-                _prospeccoes = _context.Prospeccao.Include(p => p.Empresa).Include(p => p.Status).ToList();
-            }
+                var indicadores = await _context.IndicadoresFinanceiros.ToListAsync();
 
-            if (string.IsNullOrEmpty(nomeIndicador))
-            {
-                throw new Exception("O nome do indicador jamais pode estar vazio");
-            }
-
-            if (dataInicio == null)
-            {
-                dataInicio = new DateTime(2021, 01, 01);
-            }
-
-            if (dataFim == null)
-            {
-                dataFim = new DateTime(DateTime.Now.Year, 12, 31);
-            }
-
-            string chaveCache = $"Participacoes:{dataInicio.Value.Month}:{dataInicio.Value.Year}:{dataFim.Value.Month}:{dataFim.Value.Year}";
-            List<ParticipacaoTotalViewModel> participacoes = await _cache.GetCachedAsync(chaveCache, () => GetParticipacoesTotaisUsuarios((DateTime)dataInicio, (DateTime)dataFim));
-            List<IndicadorResultadoViewModel> resultados = new List<IndicadorResultadoViewModel>();
-
-            RankearParticipacoes(participacoes, false);
-
-            foreach (var participacao in participacoes)
-            {
-                try
+                foreach (var indicador in indicadores)
                 {
-                    var valor = typeof(ParticipacaoTotalViewModel).GetProperty(nomeIndicador).GetValue(participacao, null);
-                    decimal rank = ObterRankingParticipacao(participacao, nomeIndicador);
-                    if (valor != null)
+                    despesas[indicador.Data.Year] = indicador.Despesa;
+                    pesquisadores[indicador.Data.Year] = indicador.QtdPesquisadores;
+                }
+
+                if (_prospeccoes.Count == 0)
+                {
+                    _prospeccoes = _context.Prospeccao.Include(p => p.Empresa).Include(p => p.Status).ToList();
+                }
+
+                if (string.IsNullOrEmpty(nomeIndicador))
+                {
+                    throw new Exception("O nome do indicador jamais pode estar vazio");
+                }
+
+                if (dataInicio == null)
+                {
+                    dataInicio = new DateTime(2021, 01, 01);
+                }
+
+                if (dataFim == null)
+                {
+                    dataFim = new DateTime(DateTime.Now.Year, 12, 31);
+                }
+
+                string chaveCache = $"Participacoes:{dataInicio.Value.Month}:{dataInicio.Value.Year}:{dataFim.Value.Month}:{dataFim.Value.Year}";
+                List<ParticipacaoTotalViewModel> participacoes = await _cache.GetCachedAsync(chaveCache, () => GetParticipacoesTotaisUsuarios((DateTime)dataInicio, (DateTime)dataFim));
+                List<IndicadorResultadoViewModel> resultados = new List<IndicadorResultadoViewModel>();
+
+                RankearParticipacoes(participacoes, false);
+
+                foreach (var participacao in participacoes)
+                {
+                    try
                     {
-                        resultados.Add(new IndicadorResultadoViewModel
+                        var valor = typeof(ParticipacaoTotalViewModel).GetProperty(nomeIndicador).GetValue(participacao, null);
+                        decimal rank = ObterRankingParticipacao(participacao, nomeIndicador);
+                        if (valor != null)
                         {
-                            Pesquisador = participacao.Lider.ToPesquisadorViewModel(),
-                            Valor = valor,
-                            Rank = rank
-                        });
+                            if (UsuarioAtivo.Nivel == Nivel.Usuario || UsuarioAtivo.Nivel == Nivel.Externos)
+                            {
+                                if (participacao.Lider.Id == UsuarioAtivo.Id)
+                                {
+                                    resultados.Add(new IndicadorResultadoViewModel
+                                    {
+                                        Pesquisador = participacao.Lider.ToPesquisadorViewModel(),
+                                        Valor = valor,
+                                        Rank = rank
+                                    });
+                                }
+                            }
+                            else
+                            {
+                                resultados.Add(new IndicadorResultadoViewModel
+                                {
+                                    Pesquisador = participacao.Lider.ToPesquisadorViewModel(),
+                                    Valor = valor,
+                                    Rank = rank
+                                });
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        return Ok(JsonConvert.SerializeObject(resultados));
                     }
                 }
-                catch (Exception)
-                {
-                    return Ok(JsonConvert.SerializeObject(resultados));
-                }
-            }
 
-            return Ok(JsonConvert.SerializeObject(resultados));
+                return Ok(JsonConvert.SerializeObject(resultados));
+            }
+            else
+            {
+                return View("Forbidden");
+            }
         }
 
         /// <summary>
