@@ -620,8 +620,8 @@ namespace BaseDeProjetos.Controllers
             // Erro relativo
             participacao.AssertividadePrecificacao = IndicadorHelper.DivisaoSegura(Math.Abs(valorMedioProspeccoesConvertidasLider - valorMedioProspeccoesComPropostaLider), Math.Abs(valorMedioProspeccoesConvertidasLider));
             participacao.ValorMedioProspeccoesConvertidas = valorMedioProspeccoesConvertidasLider;
-            participacao.TaxaConversaoProjeto = IndicadorHelper.DivisaoSegura(quantidadeProspeccoesConvertidasLider, quantidadeProspeccoesComPropostaLider);
             participacao.TaxaConversaoProposta = IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesComProposta, participacao.QuantidadeProspeccoes);
+            participacao.TaxaConversaoProjeto = IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesProjeto, participacao.QuantidadeProspeccoesComProposta);
 
             decimal despesaIsiMeses = CalculoDespesa(dataInicio, dataFim);
             decimal valorTotalProjetosParaFCF = await ExtrairValorProjetos(usuario, dataInicio, dataFim);
@@ -854,7 +854,7 @@ namespace BaseDeProjetos.Controllers
             foreach (var prospeccao in prospeccoesUsuario.ProspeccoesTotais)
             {
                 // Ordeno, ou simplesmente faço um any()?
-                if (prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.ComProposta)
+                if (prospeccao.Status.Any(f => f.Status == StatusProspeccao.ComProposta))
                 {
                     var membrosEquipe = TratarMembrosEquipeString(prospeccao);
 
@@ -891,7 +891,7 @@ namespace BaseDeProjetos.Controllers
             foreach (var prospeccao in prospeccoesUsuario.ProspeccoesTotais)
             {
                 // Ordeno, ou simplesmente faço um any()?
-                if (prospeccao.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida)
+                if (prospeccao.Status.Any(f => f.Status == StatusProspeccao.Convertida))
                 {
                     var membrosEquipe = TratarMembrosEquipeString(prospeccao);
 
