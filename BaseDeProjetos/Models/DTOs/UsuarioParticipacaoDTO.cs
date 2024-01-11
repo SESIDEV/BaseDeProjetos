@@ -7,7 +7,7 @@ namespace BaseDeProjetos.Models.DTOs
     {
         public string Id { get; set; }
         public Instituto Casa { get; set; }
-        public Cargo Cargo { get; set; }
+        public CargoDTO Cargo { get; set; }
         public Nivel Nivel { get; set; }
         public bool EmailConfirmed { get; set; }
         public string Email { get; set; }
@@ -19,7 +19,7 @@ namespace BaseDeProjetos.Models.DTOs
             {
                 Id = Id,
                 Casa = Casa,
-                Cargo = Cargo,
+                Cargo = new Cargo { Id = Cargo.Id, Nome = Cargo.Nome, HorasSemanais = 0, Salario = 0, Tributos = false },
                 Nivel = Nivel,
                 EmailConfirmed = EmailConfirmed,
                 Email = Email,

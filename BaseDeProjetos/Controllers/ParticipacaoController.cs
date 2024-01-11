@@ -45,7 +45,7 @@ namespace BaseDeProjetos.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(DateTime? dataInicio, DateTime? dataFim)
         {
-            ViewbagizarUsuario(_context);
+            ViewbagizarUsuario(_context, _cache);
 
             var indicadores = await _context.IndicadoresFinanceiros.ToListAsync();
 
@@ -70,7 +70,7 @@ namespace BaseDeProjetos.Controllers
 
             return View();
 
-            //_prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).Include(p => p.Empresa).ToListAsync());
+            //_prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).Include(p => p.Empresa).Include(p => p.Status).ToListAsync());
 
             //string chaveCache = $"Participacoes:{dataInicio.Value.Month}:{dataInicio.Value.Year}:{dataFim.Value.Month}:{dataFim.Value.Year}";
             //var participacoes = await _cache.GetCachedAsync(chaveCache, () => GetParticipacoesTotaisUsuarios((DateTime)dataInicio, (DateTime)dataFim));
@@ -661,7 +661,7 @@ namespace BaseDeProjetos.Controllers
         private async Task AtribuirParticipacoesIndividuais(ParticipacaoTotalViewModel participacao, List<Prospeccao> prospeccoesUsuario)
         {
             List<UsuarioParticipacaoDTO> usuarios = await _context.Users
-                .Select(u => new UsuarioParticipacaoDTO { Id = u.Id, Cargo = u.Cargo, Casa = u.Casa, EmailConfirmed = u.EmailConfirmed, Nivel = u.Nivel, Email = u.Email, UserName = u.UserName })
+                .Select(u => new UsuarioParticipacaoDTO { Id = u.Id, Cargo = new CargoDTO { Nome = u.Cargo.Nome, Id = u.Cargo.Id }, Casa = u.Casa, EmailConfirmed = u.EmailConfirmed, Nivel = u.Nivel, Email = u.Email, UserName = u.UserName })
                 .ToListAsync();
 
             foreach (var prospeccao in prospeccoesUsuario)
@@ -1102,7 +1102,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
 
                 var indicadores = await _context.IndicadoresFinanceiros.ToListAsync();
 
@@ -1406,31 +1406,31 @@ namespace BaseDeProjetos.Controllers
         private async Task<List<ParticipacaoTotalViewModel>> GetParticipacoesTotaisUsuarios(DateTime dataInicio, DateTime dataFim)
         {
             // TODO: Isso precisava mesmo estar aqui?
-            ViewbagizarUsuario(_context);
+            ViewbagizarUsuario(_context, _cache);
 
-            List<UsuarioParticipacaoDTO> usuarios;
+            List<UsuarioParticipacaoDTO> usuariosDTO;
 
             // Obs: Incluir pesquisadores da Q4.0 que façam prospecções abaixo. Eles possuem nível 3/2 logo podem acabar não apareçendo na listagem de participação
             if (UsuarioAtivo.Casa == Instituto.ISIQV || UsuarioAtivo.Casa == Instituto.CISHO)
             {
-                usuarios = await _context.Users
-                    .Select(u => new UsuarioParticipacaoDTO { Cargo = u.Cargo, Casa = u.Casa, Email = u.Email, EmailConfirmed = u.EmailConfirmed, Nivel = u.Nivel, Id = u.Id, UserName = u.UserName })
-                    .Where(u => ((u.Casa == Instituto.ISIQV || u.Casa == Instituto.CISHO) && u.Cargo.Nome == nomeCargoPesquisador && u.EmailConfirmed == true && u.Nivel == Nivel.Usuario) || u.Email.Contains("lednascimento"))
-                    .ToListAsync();
+                usuariosDTO = await _cache.GetCachedAsync($"Usuarios:Participacao:{dataInicio}:{dataFim}:{UsuarioAtivo.Casa}", () => 
+                    _context.Users.Select(u => new UsuarioParticipacaoDTO { Cargo = new CargoDTO { Nome = u.Cargo.Nome, Id = u.Cargo.Id }, Casa = u.Casa, Email = u.Email, EmailConfirmed = u.EmailConfirmed, Nivel = u.Nivel, Id = u.Id, UserName = u.UserName })
+                        .Where(u => ((u.Casa == Instituto.ISIQV || u.Casa == Instituto.CISHO) && u.Cargo.Nome == nomeCargoPesquisador && u.EmailConfirmed == true && u.Nivel == Nivel.Usuario) || u.Email.Contains("lednascimento"))
+                        .ToListAsync());
             }
             else
             {
-                usuarios = await _context.Users
-                    .Select(u => new UsuarioParticipacaoDTO { Cargo = u.Cargo, Casa = u.Casa, Email = u.Email, EmailConfirmed = u.EmailConfirmed, Nivel = u.Nivel, Id = u.Id, UserName = u.UserName })
-                    .Where(u => (u.Casa == UsuarioAtivo.Casa && u.EmailConfirmed == true && u.Cargo.Nome == nomeCargoPesquisador && u.Nivel == Nivel.Usuario) || u.Email.Contains("lednascimento"))
-                    .ToListAsync();
+                usuariosDTO = await _cache.GetCachedAsync($"Usuarios:Participacao:{dataInicio}:{dataFim}:{UsuarioAtivo.Casa}", () =>
+                    _context.Users.Select(u => new UsuarioParticipacaoDTO { Cargo = new CargoDTO { Nome = u.Cargo.Nome, Id = u.Cargo.Id }, Casa = u.Casa, Email = u.Email, EmailConfirmed = u.EmailConfirmed, Nivel = u.Nivel, Id = u.Id, UserName = u.UserName })
+                        .Where(u => (u.Casa == UsuarioAtivo.Casa && u.EmailConfirmed == true && u.Cargo.Nome == nomeCargoPesquisador && u.Nivel == Nivel.Usuario) || u.Email.Contains("lednascimento"))
+                        .ToListAsync());
             }
 
             List<ParticipacaoTotalViewModel> participacoes = new List<ParticipacaoTotalViewModel>();
 
-            foreach (var usuario in usuarios)
+            foreach (var usuarioDTO in usuariosDTO)
             {
-                var participacao = await GetParticipacaoTotalUsuario(usuario.ToUsuario(), dataInicio, dataFim);
+                var participacao = await GetParticipacaoTotalUsuario(usuarioDTO.ToUsuario(), dataInicio, dataFim);
 
                 if (participacao != null)
                 {
@@ -1518,7 +1518,16 @@ namespace BaseDeProjetos.Controllers
         {
             List<string> membrosNaoTratados = prospeccao.MembrosEquipe?.Split(";").ToList();
             List<UsuarioParticipacaoDTO> usuarios = _context.Users
-                .Select(u => new UsuarioParticipacaoDTO { Cargo = u.Cargo, Casa = u.Casa, Email = u.Email, EmailConfirmed = u.EmailConfirmed, Nivel = u.Nivel, Id = u.Id, UserName = u.UserName })
+                .Select(u => new UsuarioParticipacaoDTO
+                {
+                    Cargo = new CargoDTO { Nome = u.Cargo.Nome, Id = u.Cargo.Id },
+                    Casa = u.Casa,
+                    Email = u.Email,
+                    EmailConfirmed = u.EmailConfirmed,
+                    Nivel = u.Nivel,
+                    Id = u.Id,
+                    UserName = u.UserName
+                })
                 .ToList();
 
             List<Usuario> membrosEquipe = new List<Usuario>();

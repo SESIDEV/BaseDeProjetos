@@ -37,7 +37,7 @@ namespace BaseDeProjetos.Models
             return new UsuarioParticipacaoDTO
             {
                 Id = Id,
-                Cargo = Cargo,
+                Cargo = new CargoDTO { Id = Cargo.Id, Nome = Cargo.Nome },
                 Email = Email,
                 EmailConfirmed = EmailConfirmed,
                 Nivel = Nivel,

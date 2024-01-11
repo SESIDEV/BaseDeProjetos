@@ -9,17 +9,19 @@ namespace BaseDeProjetos.ViewComponents.Sidebar
     public class SidebarViewComponent : ViewComponent
     {
         private readonly ApplicationDbContext _context;
+        private readonly DbCache _cache;
 
-        public SidebarViewComponent(ApplicationDbContext context)
+        public SidebarViewComponent(ApplicationDbContext context, DbCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext, _cache);
 
                 ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;
