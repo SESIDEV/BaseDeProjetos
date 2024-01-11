@@ -99,9 +99,9 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
 
-                var indicadores = await _context.IndicadoresFinanceiros.ToListAsync();
+                var indicadores = await _cache.GetCachedAsync("IndicadoresFinanceiros:Participacao", () => _context.IndicadoresFinanceiros.Select(i => new { i.Despesa, i.QtdPesquisadores, i.Data }).ToListAsync());
 
                 foreach (var indicador in indicadores)
                 {
@@ -111,7 +111,7 @@ namespace BaseDeProjetos.Controllers
 
                 if (_prospeccoes.Count == 0)
                 {
-                    _prospeccoes = _context.Prospeccao.Include(p => p.Empresa).Include(p => p.Status).ToList();
+                    _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Usuario).Include(p => p.Empresa).ToListAsync());
                 }
 
                 if (string.IsNullOrEmpty(nomeIndicador))
@@ -262,7 +262,9 @@ namespace BaseDeProjetos.Controllers
         [HttpGet("Participacao/RetornarDadosPesquisador/{idUsuario}")]
         public async Task<IActionResult> RetornarDadosGraficoTemporal(string idUsuario, DateTime? dataInicio, DateTime? dataFim)
         {
-            var indicadores = await _context.IndicadoresFinanceiros.ToListAsync();
+            var indicadores = await _context.IndicadoresFinanceiros
+                .Select(i => new { i.Data, i.Despesa, i.QtdPesquisadores })
+                .ToListAsync();
 
             foreach (var indicador in indicadores)
             {
@@ -282,14 +284,7 @@ namespace BaseDeProjetos.Controllers
 
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = new Usuario();
-
-                if (!string.IsNullOrEmpty(idUsuario))
-                {
-                    usuario = await _context.Users.Where(u => u.Id == idUsuario).FirstOrDefaultAsync();
-                }
-
-                _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).Include(p => p.Empresa).Include(p => p.Status).ToListAsync());
+                _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Usuario).Include(p => p.Empresa).ToListAsync());
 
                 var participacoes = await GetParticipacoesTotaisUsuarios((DateTime)dataInicio, (DateTime)dataFim);
 
