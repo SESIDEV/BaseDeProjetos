@@ -118,7 +118,7 @@ function popularTabelaIndicadores(dadosIndicador, nomeIndicador, tipoDado) {
     corpoTabela.innerHTML = "";
     tituloIndicador.innerText = "Carregando indicador...";
 
-    dadosIndicador.sort((a, b) => b.Rank - a.Rank);
+    dadosIndicador.sort((a, b) => b.Valor - a.Valor);
 
     dadosIndicador.forEach(indicador => {
         if (indicador) {
