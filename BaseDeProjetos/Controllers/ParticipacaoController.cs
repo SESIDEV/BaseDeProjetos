@@ -236,7 +236,7 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         [HttpGet("Participacao/RetornarDadosGraficoTemporal/{idUsuario}")]
         [HttpGet("Participacao/RetornarDadosPesquisador/{idUsuario}")]
-        public async Task<IActionResult> RetornarDadosGraficoTemporal(string idUsuario)
+        public async Task<IActionResult> RetornarDadosGraficoTemporal(string idUsuario, DateTime? dataInicio, DateTime? dataFim)
         {
             var indicadores = await _context.IndicadoresFinanceiros.ToListAsync();
 
@@ -244,6 +244,16 @@ namespace BaseDeProjetos.Controllers
             {
                 despesas[indicador.Data.Year] = indicador.Despesa;
                 pesquisadores[indicador.Data.Year] = indicador.QtdPesquisadores;
+            }
+
+            if (!dataInicio.HasValue)
+            {
+                dataInicio = new DateTime(2021, 01, 01);
+            }
+
+            if (!dataFim.HasValue)
+            {
+                dataFim = new DateTime(DateTime.Now.Year, 12, 31);
             }
 
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -257,7 +267,7 @@ namespace BaseDeProjetos.Controllers
 
                 _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).Include(p => p.Empresa).Include(p => p.Status).ToListAsync());
 
-                var participacoes = await GetParticipacoesTotaisUsuarios(new DateTime(2021, 01, 01), new DateTime(DateTime.Now.Year, 12, 31));
+                var participacoes = await GetParticipacoesTotaisUsuarios((DateTime)dataInicio, (DateTime)dataFim);
 
                 var participacao = participacoes.Where(p => p.Lider.Id == idUsuario).First();
 

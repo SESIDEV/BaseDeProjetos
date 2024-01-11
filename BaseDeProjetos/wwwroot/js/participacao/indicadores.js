@@ -181,8 +181,14 @@ async function puxarPesquisador(idPesquisador) {
 }
 
 async function puxarDadosPesquisador(id) {
+    let url = `/Participacao/RetornarDadosPesquisador/${id}`
+
+    if (dataInicio && dataFim) {
+        url += `?dataInicio=${dataInicio}&dataFim=${dataFim}`
+    }
+
     try {
-        const response = await fetch(`/Participacao/RetornarDadosPesquisador/${id}`);
+        const response = await fetch(url);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
