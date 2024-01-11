@@ -62,27 +62,29 @@ namespace BaseDeProjetos.Controllers
             }
             else
             {
-                ViewData["dataInicio"] = "2021-01-01";
-                ViewData["dataFim"] = $"{DateTime.Now.Year}-12-31";
                 dataInicio = new DateTime(2021, 01, 01);
                 dataFim = new DateTime(DateTime.Now.Year, 12, 31);
+                ViewData["dataInicio"] = dataInicio.Value.ToString("yyyy-MM-dd");
+                ViewData["dataFim"] = dataFim.Value.ToString("yyyy-MM-dd");
             }
 
-            _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).Include(p => p.Empresa).ToListAsync());
+            return View();
 
-            string chaveCache = $"Participacoes:{dataInicio.Value.Month}:{dataInicio.Value.Year}:{dataFim.Value.Month}:{dataFim.Value.Year}";
-            var participacoes = await _cache.GetCachedAsync(chaveCache, () => GetParticipacoesTotaisUsuarios((DateTime)dataInicio, (DateTime)dataFim));
-            participacoes = PrepararDadosParticipacao(participacoes);
+            //_prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).Include(p => p.Empresa).ToListAsync());
 
-            if (UsuarioAtivo.Nivel == Nivel.Dev || UsuarioAtivo.Nivel == Nivel.PMO)
-            {
-                return View(participacoes);
-            }
-            else
-            {
-                var participacoesFiltradas = participacoes.Where(p => p.Lider.Id == UsuarioAtivo.Id).ToList();
-                return View(participacoesFiltradas);
-            }
+            //string chaveCache = $"Participacoes:{dataInicio.Value.Month}:{dataInicio.Value.Year}:{dataFim.Value.Month}:{dataFim.Value.Year}";
+            //var participacoes = await _cache.GetCachedAsync(chaveCache, () => GetParticipacoesTotaisUsuarios((DateTime)dataInicio, (DateTime)dataFim));
+            //participacoes = PrepararDadosParticipacao(participacoes);
+
+            //if (UsuarioAtivo.Nivel == Nivel.Dev || UsuarioAtivo.Nivel == Nivel.PMO)
+            //{
+            //    return View(participacoes);
+            //}
+            //else
+            //{
+            //    var participacoesFiltradas = participacoes.Where(p => p.Lider.Id == UsuarioAtivo.Id).ToList();
+            //    return View(participacoesFiltradas);
+            //}
         }
 
         /// <summary>

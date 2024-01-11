@@ -1,6 +1,16 @@
 ﻿async function puxarDados(nomeIndicador) {
+    let url = `/Participacao/RetornarDadosIndicador/?nomeIndicador=${nomeIndicador}`;
+
+    if (dataInicio) {
+        url += `&dataInicio=${dataInicio}`;
+    }
+
+    if (dataFim) {
+        url += `&dataFim=${dataFim}`
+    }
+
     try {
-        const response = await fetch(`/Participacao/RetornarDadosIndicador/?nomeIndicador=${nomeIndicador}`);
+        const response = await fetch(url);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -153,7 +163,7 @@ function popularDropdown(idDropdown, indicadores) {
         a.setAttribute("data-bs-target", "#collapseIndicador");
         a.setAttribute("data-bs-toggle", "collapse");
         a.setAttribute("href", "#");
-        a.setAttribute("onclick", `puxarIndicador("${indicador.id}", "${indicador.nome}", "${indicador.tipoDado}")`);
+        a.setAttribute("onclick", `puxarIndicador("${indicador.id}", "${indicador.nome}", "${indicador.tipoDado}", "${dataInicio}", "${dataFim}")`);
         a.textContent = indicador.nome;
         a.classList.add("dropdown-item");
         listItem.appendChild(a);
