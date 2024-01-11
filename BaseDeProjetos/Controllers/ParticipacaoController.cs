@@ -174,7 +174,7 @@ namespace BaseDeProjetos.Controllers
                 {
                     return participacao.RankPorIndicador.RankFatorContribuicaoFinanceira;
                 }
-                else if (nameof(participacao.QuantidadeProjetos).Contains(nomeIndicador))
+                else if (nameof(participacao.QuantidadeProspeccoesProjeto).Contains(nomeIndicador))
                 {
                     return participacao.RankPorIndicador.RankQuantidadeProspeccoesProjeto;
                 }
