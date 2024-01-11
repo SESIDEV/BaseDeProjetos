@@ -27,7 +27,7 @@ namespace BaseDeProjetos.Controllers
 
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _dbCache);
 
                 if (UsuarioAtivo.Nivel != Nivel.Usuario && UsuarioAtivo.Nivel != Nivel.Externos)
                 {

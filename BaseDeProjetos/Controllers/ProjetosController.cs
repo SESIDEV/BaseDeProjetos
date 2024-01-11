@@ -286,7 +286,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
 
                 var usuarios = await _cache.GetCachedAsync("Usuarios:Projetos", () => _context.Users.Select(p => new UsuarioProjetoDTO { Id = p.Id, UserName = p.UserName }).ToListAsync());
 
@@ -441,7 +441,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
                 ViewData["NivelUsuario"] = UsuarioAtivo.Nivel;
 
                 if (!string.IsNullOrEmpty(tipo))
@@ -480,7 +480,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
 
                 return ViewComponent("ModalEditCFFProjeto", new { id = idCFF });
             }
@@ -594,7 +594,7 @@ namespace BaseDeProjetos.Controllers
             {
                 List<Empresa> empresas = _context.Empresa.ToList();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
                 return View();
             }
             else
@@ -612,7 +612,7 @@ namespace BaseDeProjetos.Controllers
             Projeto projeto,
             string membrosSelect)
         {
-            ViewbagizarUsuario(_context);
+            ViewbagizarUsuario(_context, _cache);
 
             List<Usuario> usuarios = await ObterListaDeMembrosSelecionados(membrosSelect);
 
@@ -703,7 +703,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
                 List<Empresa> empresas = _context.Empresa.ToList();
                 ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
                 ViewData["Equipe"] = new SelectList(_context.Users.ToList(), "Id", "UserName");
@@ -815,7 +815,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
 
                 if (id == null)
                 {
@@ -993,7 +993,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
                 List<string> usuarios = _context.Users.AsEnumerable()
                                             .Where(u => u.Casa == UsuarioAtivo.Casa)
                                             .Where(usuario => usuario.EmailConfirmed == true)

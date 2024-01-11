@@ -18,6 +18,8 @@ namespace BaseDeProjetos.Controllers
     {
         private readonly ApplicationDbContext _context;
 
+        private readonly DbCache _cache;
+
         public ProducaoController(ApplicationDbContext context)
         {
             _context = context;
@@ -30,7 +32,7 @@ namespace BaseDeProjetos.Controllers
             {
                 List<Producao> producoes;
 
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
 
                 if (string.IsNullOrEmpty(casa))
                 {
@@ -62,7 +64,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
 
                 if (id == null)
                 {
@@ -89,7 +91,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
 
                 List<Empresa> empresas = _context.Empresa.ToList();
                 List<Projeto> projetos = _context.Projeto.ToList();
@@ -124,7 +126,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
 
                 if (id == null)
                 {
@@ -188,7 +190,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
 
                 if (id == null)
                 {

@@ -11,9 +11,12 @@ namespace BaseDeProjetos.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public PessoasController(ApplicationDbContext context)
+        private readonly DbCache _cache;
+
+        public PessoasController(ApplicationDbContext context, DbCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         // GET: Pessoas
@@ -56,7 +59,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
 
                 return UsuarioAtivo.UserName;
             }

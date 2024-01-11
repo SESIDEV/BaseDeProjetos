@@ -395,7 +395,7 @@ namespace BaseDeProjetos.Helpers
             prospeccao.Agregadas = "";
         }
 
-        public static Usuario ObterUsuarioAtivo(ApplicationDbContext _context, HttpContext HttpContext)
+        public static Usuario ObterUsuarioAtivo(ApplicationDbContext _context, HttpContext HttpContext, DbCache cache)
         {
             if (HttpContext == null)
             {
@@ -407,7 +407,8 @@ namespace BaseDeProjetos.Helpers
                 throw new ArgumentNullException(nameof(_context));
             }
 
-            var usuarioAtivo = _context.Users.Select(u => new Usuario { Id = u.Id, UserName = u.UserName, Casa = u.Casa, Nivel = u.Nivel }).FirstOrDefault(usuario => usuario.UserName == HttpContext.User.Identity.Name);
+            string cacheKey = $"Usuarios:UsuarioAtivo:FunilHelper:{HttpContext.User.Identity.Name}";
+            var usuarioAtivo = cache.GetCached(cacheKey, () => _context.Users.Select(u => new Usuario { Id = u.Id, UserName = u.UserName, Casa = u.Casa, Nivel = u.Nivel }).FirstOrDefault(usuario => usuario.UserName == HttpContext.User.Identity.Name));
 
             return usuarioAtivo;
         }

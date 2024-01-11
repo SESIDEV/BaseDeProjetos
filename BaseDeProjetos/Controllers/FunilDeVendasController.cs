@@ -40,7 +40,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
 
                 var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).ToListAsync());
 
@@ -185,7 +185,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
 
                 var empresas = await _cache.GetCachedAsync("AllEmpresas", () => _context.Empresa.ToListAsync());
                 Prospeccao prosp = new Prospeccao
@@ -222,7 +222,7 @@ namespace BaseDeProjetos.Controllers
         [HttpPost]
         public async Task<IActionResult> Atualizar([Bind("OrigemID, Data, Status, Anotacoes, MotivoNaoConversao")] FollowUp followup)
         {
-            ViewbagizarUsuario(_context);
+            ViewbagizarUsuario(_context, _cache);
 
             if (ModelState.IsValid)
             {
@@ -256,7 +256,7 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
         {
-            ViewbagizarUsuario(_context);
+            ViewbagizarUsuario(_context, _cache);
 
             if (ModelState.IsValid)
             {
@@ -351,7 +351,7 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, EmpresaId, Contato, Casa, Usuario, MembrosEquipe, ValorProposta, ValorEstimado, Status, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
         {
-            ViewbagizarUsuario(_context);
+            ViewbagizarUsuario(_context, _cache);
 
             if (id != prospeccao.Id)
             {
@@ -418,7 +418,7 @@ namespace BaseDeProjetos.Controllers
 
         public async Task<IActionResult> EditarFollowUp(int? id) // Retornar view
         {
-            ViewbagizarUsuario(_context);
+            ViewbagizarUsuario(_context, _cache);
 
             if (id == null)
             {
@@ -440,7 +440,7 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditarFollowUp(int id, [Bind("Id", "OrigemID", "Status", "Anotacoes", "Data", "Vencimento")] FollowUp followup)
         {
-            ViewbagizarUsuario(_context);
+            ViewbagizarUsuario(_context, _cache);
 
             if (id != followup.Id)
             {
@@ -461,7 +461,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
 
                 if (id == null)
                 {
@@ -513,7 +513,7 @@ namespace BaseDeProjetos.Controllers
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 //Verifica se o usuário está apto para remover o followup
-                ViewbagizarUsuario(_context);
+                ViewbagizarUsuario(_context, _cache);
                 var prospeccoes = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.ToListAsync());
                 Prospeccao prospeccao = prospeccoes.Find(p => p.Id == followup.OrigemID);
 
@@ -553,7 +553,7 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            ViewbagizarUsuario(_context);
+            ViewbagizarUsuario(_context, _cache);
 
             var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:WithStatus", () => _context.Prospeccao.Include(f => f.Status).ToListAsync());
 
