@@ -629,10 +629,10 @@ namespace BaseDeProjetos.Controllers
         {
             var prospeccoesUsuarioLiderComProposta = prospeccoesUsuario.ProspeccoesLider.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.ComProposta);
             decimal quantidadeProspeccoesComPropostaLider = prospeccoesUsuarioLiderComProposta.Count();
-            decimal valorTotalProspeccoesComPropostaLider = prospeccoesUsuarioLiderComProposta.Sum(p => p.ValorProposta);
+            decimal valorTotalProspeccoesComPropostaLider = prospeccoesUsuarioLiderComProposta.Sum(p => p.ValorProposta == 0 ? p.ValorEstimado : p.ValorProposta);
             var prospeccoesUsuarioLiderConvertida = prospeccoesUsuario.ProspeccoesLider.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida);
             decimal quantidadeProspeccoesConvertidasLider = prospeccoesUsuarioLiderConvertida.Count();
-            decimal valorTotalProspeccoesConvertidasLider = prospeccoesUsuarioLiderConvertida.Sum(p => p.ValorProposta);
+            decimal valorTotalProspeccoesConvertidasLider = prospeccoesUsuarioLiderConvertida.Sum(p => p.ValorProposta == 0 ? p.ValorEstimado : p.ValorProposta);
             decimal valorMedioProspeccoesComPropostaLider = IndicadorHelper.DivisaoSegura(valorTotalProspeccoesComPropostaLider, quantidadeProspeccoesComPropostaLider);
             decimal valorMedioProspeccoesConvertidasLider = IndicadorHelper.DivisaoSegura(valorTotalProspeccoesConvertidasLider, quantidadeProspeccoesConvertidasLider);
 
