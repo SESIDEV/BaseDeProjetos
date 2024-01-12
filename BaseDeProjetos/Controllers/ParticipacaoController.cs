@@ -796,9 +796,9 @@ namespace BaseDeProjetos.Controllers
         /// <param name="prospeccoesUsuario"></param>
         private void AtribuirQuantidadesDeProspeccao(Usuario usuario, ParticipacaoTotalViewModel participacao, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
         {
-            var prospeccoesUsuarioComProposta = prospeccoesUsuario.ProspeccoesTotais.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.ComProposta) || p.Status.Any(f => f.Status == StatusProspeccao.Convertida)).ToList();
-            var prospeccoesUsuarioConvertidas = prospeccoesUsuario.ProspeccoesTotais.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida)).ToList();
-            var prospeccoesUsuarioConvertidasLider = prospeccoesUsuario.ProspeccoesLider.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida)).ToList();
+            var prospeccoesUsuarioComProposta = prospeccoesUsuario.ProspeccoesTotaisComProposta;
+            var prospeccoesUsuarioConvertidas = prospeccoesUsuario.ProspeccoesTotaisConvertidas;
+            var prospeccoesUsuarioConvertidasLider = prospeccoesUsuario.ProspeccoesLiderConvertidas;
 
             decimal quantidadeProspeccoesTotaisPeso = CalcularQuantidadeDeProspeccoes(usuario, prospeccoesUsuario);
             decimal quantidadeProspeccoesComPropostaPeso = CalcularQuantidadeDeProspeccoesComProposta(usuario, prospeccoesUsuario);
@@ -818,11 +818,11 @@ namespace BaseDeProjetos.Controllers
         /// <param name="dataInicio"></param>
         /// <param name="dataFim"></param>
         /// <param name="participacao"></param>
-        private void AtribuirValoresFinanceirosDeProspeccao(Usuario usuario, DateTime dataInicio, DateTime dataFim, ParticipacaoTotalViewModel participacao)
+        private void AtribuirValoresFinanceirosDeProspeccao(Usuario usuario, ParticipacaoTotalViewModel participacao, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
         {
-            participacao.ValorTotalProspeccoes = ExtrairValorProspeccoes(usuario, null, dataInicio, dataFim);
-            participacao.ValorTotalProspeccoesComProposta = ExtrairValorProspeccoes(usuario, StatusProspeccao.ComProposta, dataInicio, dataFim);
-            participacao.ValorTotalProspeccoesConvertidas = ExtrairValorProspeccoes(usuario, StatusProspeccao.Convertida, dataInicio, dataFim);
+            participacao.ValorTotalProspeccoes = ExtrairValorProspeccoes(prospeccoesUsuario.ProspeccoesTotais, usuario);
+            participacao.ValorTotalProspeccoesComProposta = ExtrairValorProspeccoes(prospeccoesUsuario.ProspeccoesTotaisComProposta, usuario);
+            participacao.ValorTotalProspeccoesConvertidas = ExtrairValorProspeccoes(prospeccoesUsuario.ProspeccoesTotaisConvertidas, usuario);
             participacao.ValorMedioProspeccoes = IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoes, participacao.QuantidadeProspeccoes);
             participacao.ValorMedioProspeccoesComProposta = IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoesComProposta, participacao.QuantidadeProspeccoesComProposta);
             participacao.ValorMedioProspeccoesConvertidas = IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoesConvertidas, Math.Ceiling(participacao.QuantidadeProspeccoesConvertidas));
@@ -1229,34 +1229,9 @@ namespace BaseDeProjetos.Controllers
         /// <param name="prospeccoes"></param>
         /// <param name="valorTotalProspeccoes"></param>
         /// <returns></returns>
-        private decimal ExtrairValorProspeccoes(Usuario usuario, StatusProspeccao? statusProspeccao, DateTime dataInicio, DateTime dataFim)
+        private decimal ExtrairValorProspeccoes(List<Prospeccao> prospeccoes, Usuario usuario)
         {
             decimal valorProspeccoes = 0;
-            List<Prospeccao> prospeccoes = new List<Prospeccao>();
-
-            // Caso se deseje filtrar por algum status específico
-            // TODO: Problema de SRP ?
-            if (statusProspeccao != null)
-            {
-                if (statusProspeccao == StatusProspeccao.ComProposta)
-                {
-                    prospeccoes = _prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == statusProspeccao || p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida).ToList();
-                    prospeccoes = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes);
-                }
-                else
-                {
-                    prospeccoes = _prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == statusProspeccao).ToList();
-                    prospeccoes = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes);
-                }
-
-            }
-            // Por padrão sempre queremos as não planejadas
-            else
-            {
-                prospeccoes = _prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
-                prospeccoes = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes);
-            }
-            // --- ENDTODO ---
 
             foreach (var prospeccao in prospeccoes)
             {
@@ -1355,11 +1330,13 @@ namespace BaseDeProjetos.Controllers
         /// <param name="prospeccoes"></param>
         /// <param name="dataInicio"></param>
         /// <param name="dataFim"></param>
-        private void FiltrarProspeccoesUsuario(ProspeccoesUsuarioParticipacao prospeccoes, DateTime dataInicio, DateTime dataFim)
+        private void PeriodizarProspeccoesUsuario(ProspeccoesUsuarioParticipacao prospeccoes, DateTime dataInicio, DateTime dataFim)
         {
             prospeccoes.ProspeccoesMembro = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesMembro);
             prospeccoes.ProspeccoesLider = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesLider);
             prospeccoes.ProspeccoesTotais = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesTotais);
+            prospeccoes.ProspeccoesTotaisComProposta = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesTotaisComProposta);
+            prospeccoes.ProspeccoesTotaisConvertidas = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesTotaisConvertidas);
         }
 
         /// <summary>
@@ -1375,14 +1352,9 @@ namespace BaseDeProjetos.Controllers
                 Lider = usuario.ToUsuarioParticipacao(),
             };
 
-            var prospeccoesUsuario = new ProspeccoesUsuarioParticipacao
-            {
-                ProspeccoesLider = GetProspeccoesUsuarioLider(usuario),
-                ProspeccoesMembro = GetProspeccoesUsuarioMembro(usuario),
-                ProspeccoesTotais = GetProspeccoesUsuarioMembroEquipe(usuario),
-            };
+            ProspeccoesUsuarioParticipacao prospeccoesUsuario = ObterProspeccoesUsuario(usuario);
 
-            FiltrarProspeccoesUsuario(prospeccoesUsuario, dataInicio, dataFim);
+            PeriodizarProspeccoesUsuario(prospeccoesUsuario, dataInicio, dataFim);
 
             // Evitar exibir usuários sem prospecção
             if (prospeccoesUsuario.ProspeccoesTotais.Count == 0)
@@ -1394,7 +1366,7 @@ namespace BaseDeProjetos.Controllers
             await AtribuirParticipacoesIndividuais(participacao, prospeccoesUsuario.ProspeccoesTotais);
 
             AtribuirQuantidadesDeProspeccao(usuario, participacao, prospeccoesUsuario);
-            AtribuirValoresFinanceirosDeProspeccao(usuario, dataInicio, dataFim, participacao);
+            AtribuirValoresFinanceirosDeProspeccao(usuario, participacao, prospeccoesUsuario);
 
             await AtribuirAssertividadePrecificacao(usuario, dataInicio, dataFim, participacao, prospeccoesUsuario);
 
@@ -1402,6 +1374,44 @@ namespace BaseDeProjetos.Controllers
             //double quantidadePesquisadores = CalculoNumeroPesquisadores(dataInicio.Year, dataFim.Year);
 
             return participacao;
+        }
+
+        /// <summary>
+        /// Obtém as prospecções do usuário para serem utilizadas em participação
+        /// </summary>
+        /// <param name="usuario"></param>
+        /// <returns></returns>
+        private ProspeccoesUsuarioParticipacao ObterProspeccoesUsuario(Usuario usuario)
+        {
+            var prospeccoesTotais = GetProspeccoesUsuarioMembroEquipe(usuario);
+            var prospeccoesTotaisConvertidas = FiltrarProspeccoesConvertidas(prospeccoesTotais);
+            var prospeccoesTotaisComProposta = FiltrarProspeccoesComProposta(prospeccoesTotais);
+            var prospeccoesLider = GetProspeccoesUsuarioLider(usuario);
+            var prospeccoesLiderConvertidas = FiltrarProspeccoesConvertidas(prospeccoesLider);
+            var prospeccoesMembro = GetProspeccoesUsuarioMembro(usuario);
+
+
+            var prospeccoesUsuario = new ProspeccoesUsuarioParticipacao
+            {
+                ProspeccoesLider = prospeccoesLider,
+                ProspeccoesLiderConvertidas = prospeccoesLiderConvertidas,
+                ProspeccoesMembro = prospeccoesMembro,
+                ProspeccoesTotais = prospeccoesTotais,
+                ProspeccoesTotaisConvertidas = prospeccoesTotaisConvertidas,
+                ProspeccoesTotaisComProposta = prospeccoesTotaisComProposta,
+            };
+            return prospeccoesUsuario;
+        }
+
+        /// <summary>
+        /// Filtra as prospecções que possuam status "Com Proposta"
+        /// Convertidas também se incluem de acordo com a logica
+        /// </summary>
+        /// <param name="prospeccoes"></param>
+        /// <returns></returns>
+        private List<Prospeccao> FiltrarProspeccoesComProposta(List<Prospeccao> prospeccoes)
+        {
+            return prospeccoes.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida || p.Status.Any(f => f.Status == StatusProspeccao.ComProposta))).ToList();
         }
 
         /// <summary>
@@ -1475,6 +1485,16 @@ namespace BaseDeProjetos.Controllers
         private List<Prospeccao> GetProspeccoesUsuarioLider(Usuario usuario)
         {
             return _prospeccoes.Where(p => p.Usuario.Id == usuario.Id && p.Status.OrderBy(f => f.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
+        }
+
+        /// <summary>
+        /// Filtra a lista de prospecções para obter as convertidas
+        /// </summary>
+        /// <param name="prospeccoes"></param>
+        /// <returns></returns>
+        private List<Prospeccao> FiltrarProspeccoesConvertidas(List<Prospeccao> prospeccoes)
+        {
+            return prospeccoes.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida)).ToList();
         }
 
         /// <summary>
