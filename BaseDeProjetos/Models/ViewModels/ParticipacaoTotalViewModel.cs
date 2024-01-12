@@ -24,7 +24,7 @@ namespace BaseDeProjetos.Models.ViewModels
         public decimal QuantidadeProspeccoesComProposta { get; set; }
         public int QuantidadeProspeccoesMembro { get; set; } = 0;
         public decimal TaxaConversaoProjeto { get; set; } = 0;
-        public decimal QuantidadeProspeccoesProjeto { get; set; } = 0;
+        public decimal QuantidadeProspeccoesConvertidas { get; set; } = 0;
         public decimal AssertividadePrecificacao { get; set; } = 0;
         public decimal FatorContribuicaoFinanceira { get; set; } = 0;
         public decimal MediaFatores { get; set; } = 0;

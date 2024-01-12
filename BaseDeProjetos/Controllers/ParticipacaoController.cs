@@ -198,9 +198,9 @@ namespace BaseDeProjetos.Controllers
                 {
                     return participacao.RankPorIndicador.RankFatorContribuicaoFinanceira;
                 }
-                else if (nameof(participacao.QuantidadeProspeccoesProjeto).Contains(nomeIndicador))
+                else if (nameof(participacao.QuantidadeProspeccoesConvertidas).Contains(nomeIndicador))
                 {
-                    return participacao.RankPorIndicador.RankQuantidadeProspeccoesProjeto;
+                    return participacao.RankPorIndicador.RankQuantidadeProspeccoesConvertidas;
                 }
                 else if (nameof(participacao.QuantidadeProspeccoes).Contains(nomeIndicador))
                 {
@@ -546,7 +546,7 @@ namespace BaseDeProjetos.Controllers
             calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.ValorMedioProspeccoes, participacoes.Max(p => p.ValorMedioProspeccoes));
             calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoes, participacoes.Max(p => p.QuantidadeProspeccoes));
             calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesLider, participacoes.Max(p => p.QuantidadeProspeccoesLider));
-            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesProjeto, participacoes.Max(p => p.QuantidadeProspeccoesProjeto));
+            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesConvertidas, participacoes.Max(p => p.QuantidadeProspeccoesConvertidas));
             calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesComProposta, participacoes.Max(p => p.QuantidadeProspeccoesComProposta));
             calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.ValorMedioProspeccoesComProposta, participacoes.Max(p => p.ValorMedioProspeccoesComProposta));
             calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.TaxaConversaoProjeto, participacoes.Max(p => p.TaxaConversaoProjeto));
@@ -586,7 +586,7 @@ namespace BaseDeProjetos.Controllers
             decimal medQtdProspeccoesLider = (decimal)participacoes.Average(p => p.QuantidadeProspeccoesLider);
             decimal medQtdProspeccoesMembro = (decimal)participacoes.Average(p => p.QuantidadeProspeccoesMembro);
             decimal medQtdProspeccoesComProposta = participacoes.Average(p => p.QuantidadeProspeccoesComProposta);
-            decimal medQtdProspProjetizadas = participacoes.Average(p => p.QuantidadeProspeccoesProjeto);
+            decimal medQtdProspProjetizadas = participacoes.Average(p => p.QuantidadeProspeccoesConvertidas);
             decimal medConversaoProjeto = participacoes.Average(p => p.TaxaConversaoProjeto);
             decimal medConversaoProposta = participacoes.Average(p => p.TaxaConversaoProposta);
             decimal medFatorContribuicaoFinanceira = participacoes.Average(p => p.FatorContribuicaoFinanceira);
@@ -605,7 +605,7 @@ namespace BaseDeProjetos.Controllers
                     RankValorMedioProspeccoesConvertidas = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.ValorMedioProspeccoesConvertidas, participacoes.Max(p => p.ValorMedioProspeccoesConvertidas)) : IndicadorHelper.DivisaoSegura(participacao.ValorMedioProspeccoesConvertidas, medValorMedioProspConvertidas),
                     RankQuantidadeProspeccoes = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoes, participacoes.Max(p => p.QuantidadeProspeccoes)) : IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoes, medQtdProspeccoes),
                     RankQuantidadeProspeccoesLider = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesLider, participacoes.Max(p => p.QuantidadeProspeccoes)) : IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesLider, medQtdProspeccoes),
-                    RankQuantidadeProspeccoesProjeto = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesProjeto, participacoes.Max(p => p.QuantidadeProspeccoesProjeto)) : IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesProjeto, medQtdProspProjetizadas),
+                    RankQuantidadeProspeccoesConvertidas = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesConvertidas, participacoes.Max(p => p.QuantidadeProspeccoesConvertidas)) : IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesConvertidas, medQtdProspProjetizadas),
                     RankQuantidadeProspeccoesComProposta = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesComProposta, participacoes.Max(p => p.QuantidadeProspeccoesComProposta)) : IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesComProposta, medQtdProspeccoesComProposta),
                     RankQuantidadeProspeccoesMembro = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesMembro, participacoes.Max(p => p.QuantidadeProspeccoesMembro)) : IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesMembro, medQtdProspeccoesMembro),
                     RankAssertividadePrecificacao = rankPorMaximo ? IndicadorHelper.DivisaoSegura(participacao.AssertividadePrecificacao, participacoes.Max(p => p.AssertividadePrecificacao)) : IndicadorHelper.DivisaoSegura(participacao.AssertividadePrecificacao, participacoes.Average(p => p.AssertividadePrecificacao)),
@@ -639,7 +639,7 @@ namespace BaseDeProjetos.Controllers
             // Erro relativo
             participacao.AssertividadePrecificacao = IndicadorHelper.DivisaoSegura(Math.Abs(valorMedioProspeccoesConvertidasLider - valorMedioProspeccoesComPropostaLider), Math.Abs(valorMedioProspeccoesConvertidasLider));
             participacao.TaxaConversaoProposta = IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesComProposta, participacao.QuantidadeProspeccoes);
-            participacao.TaxaConversaoProjeto = IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesProjeto, participacao.QuantidadeProspeccoesComProposta);
+            participacao.TaxaConversaoProjeto = IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesConvertidas, participacao.QuantidadeProspeccoesComProposta);
 
             decimal despesaIsiMeses = CalculoDespesa(dataInicio, dataFim);
             decimal valorTotalProjetosParaFCF = await ExtrairValorProjetos(usuario, dataInicio, dataFim);
@@ -806,7 +806,7 @@ namespace BaseDeProjetos.Controllers
 
             participacao.QuantidadeProspeccoes = prospeccoesUsuario.ProspeccoesTotais.Count();
             participacao.QuantidadeProspeccoesComProposta = quantidadeProspeccoesComPropostaPeso;
-            participacao.QuantidadeProspeccoesProjeto = quantidadeProspeccoesConvertidasPeso;
+            participacao.QuantidadeProspeccoesConvertidas = quantidadeProspeccoesConvertidasPeso;
             participacao.QuantidadeProspeccoesMembro = prospeccoesUsuario.ProspeccoesMembro.Count();
             participacao.QuantidadeProspeccoesLider = prospeccoesUsuario.ProspeccoesLider.Count();
         }
@@ -1062,7 +1062,7 @@ namespace BaseDeProjetos.Controllers
             decimal rankMedioQuantidadeProspeccoes = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoes);
             decimal rankMedioQuantidadeProspeccoesLider = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesLider);
             decimal rankMedioQuantidadeProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesComProposta);
-            decimal rankMedioQuantidadeProspeccoesProjeto = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesProjeto);
+            decimal rankMedioQuantidadeProspeccoesConvertidas = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesConvertidas);
             decimal rankMedioQuantidadeProspeccoesMembro = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesMembro);
             decimal rankMedioAssertividadePrecificacao = participacoes.Average(p => p.RankPorIndicador.RankAssertividadePrecificacao);
             decimal rankMedioFatorContribuicaoFinanceira = participacoes.Average(p => p.RankPorIndicador.RankFatorContribuicaoFinanceira);
@@ -1077,7 +1077,7 @@ namespace BaseDeProjetos.Controllers
                 rankMedioQuantidadeProspeccoes,
                 rankMedioQuantidadeProspeccoesLider,
                 rankMedioQuantidadeProspeccoesComProposta,
-                rankMedioQuantidadeProspeccoesProjeto,
+                rankMedioQuantidadeProspeccoesConvertidas,
                 rankMedioQuantidadeProspeccoesMembro,
                 rankMedioAssertividadePrecificacao,
                 rankMedioFatorContribuicaoFinanceira,
@@ -1418,7 +1418,7 @@ namespace BaseDeProjetos.Controllers
             // Obs: Incluir pesquisadores da Q4.0 que façam prospecções abaixo. Eles possuem nível 3/2 logo podem acabar não apareçendo na listagem de participação
             if (UsuarioAtivo.Casa == Instituto.ISIQV || UsuarioAtivo.Casa == Instituto.CISHO)
             {
-                usuariosDTO = await _cache.GetCachedAsync($"Usuarios:Participacao:{dataInicio}:{dataFim}:{UsuarioAtivo.Casa}", () => 
+                usuariosDTO = await _cache.GetCachedAsync($"Usuarios:Participacao:{dataInicio}:{dataFim}:{UsuarioAtivo.Casa}", () =>
                     _context.Users.Select(u => new UsuarioParticipacaoDTO { Cargo = new CargoDTO { Nome = u.Cargo.Nome, Id = u.Cargo.Id }, Casa = u.Casa, Email = u.Email, EmailConfirmed = u.EmailConfirmed, Nivel = u.Nivel, Id = u.Id, UserName = u.UserName })
                         .Where(u => ((u.Casa == Instituto.ISIQV || u.Casa == Instituto.CISHO) && u.Cargo.Nome == nomeCargoPesquisador && u.EmailConfirmed == true && u.Nivel == Nivel.Usuario) || u.Email.Contains("lednascimento"))
                         .ToListAsync());
