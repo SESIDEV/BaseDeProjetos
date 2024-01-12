@@ -1272,7 +1272,9 @@ namespace BaseDeProjetos.Controllers
                     // Se for lider...
                     if (prospeccao.Usuario.Id == usuario.Id)
                     {
-                        valorProspeccoes += percentualLider * prospeccao.ValorProposta;
+                        // Usaremos o valor da proposta se não tivermos o valor estimado
+                        decimal valorMultiplicado = prospeccao.ValorProposta == 0 ? prospeccao.ValorEstimado : prospeccao.ValorProposta;
+                        valorProspeccoes += percentualLider * valorMultiplicado;
                     } // Se não for líder...
                     else
                     {
