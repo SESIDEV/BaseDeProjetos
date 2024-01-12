@@ -1238,8 +1238,17 @@ namespace BaseDeProjetos.Controllers
             // TODO: Problema de SRP ?
             if (statusProspeccao != null)
             {
-                prospeccoes = _prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == statusProspeccao).ToList();
-                prospeccoes = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes);
+                if (statusProspeccao == StatusProspeccao.ComProposta)
+                {
+                    prospeccoes = _prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == statusProspeccao || p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida).ToList();
+                    prospeccoes = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes);
+                }
+                else
+                {
+                    prospeccoes = _prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == statusProspeccao).ToList();
+                    prospeccoes = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes);
+                }
+
             }
             // Por padrão sempre queremos as não planejadas
             else
