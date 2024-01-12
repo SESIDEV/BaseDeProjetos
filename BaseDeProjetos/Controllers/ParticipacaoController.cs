@@ -566,7 +566,7 @@ namespace BaseDeProjetos.Controllers
         private static List<Prospeccao> FiltrarProspeccoesPorPeriodo(DateTime dataInicio, DateTime dataFim, List<Prospeccao> prospeccoes)
         {
             return prospeccoes
-                .Where(p => p.Status.Any(f => f.Data >= dataInicio && f.Data <= dataFim))
+                .Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Data >= dataInicio && p.Status.OrderBy(f => f.Data).LastOrDefault().Data <= dataFim)
                 .ToList();
         }
 
@@ -645,6 +645,7 @@ namespace BaseDeProjetos.Controllers
             decimal despesaIsiMeses = CalculoDespesa(dataInicio, dataFim);
             decimal valorTotalProjetosParaFCF = await ExtrairValorProjetos(usuario, dataInicio, dataFim);
 
+            // projetos convertidos / despesa
             participacao.FatorContribuicaoFinanceira = IndicadorHelper.DivisaoSegura(valorTotalProjetosParaFCF, despesaIsiMeses);
         }
 
@@ -797,7 +798,7 @@ namespace BaseDeProjetos.Controllers
         private void AtribuirQuantidadesDeProspeccao(Usuario usuario, ParticipacaoTotalViewModel participacao, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
         {
             var prospeccoesUsuarioComProposta = prospeccoesUsuario.ProspeccoesTotais.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.ComProposta)).ToList();
-            var prospeccoesUsuarioConvertidas = prospeccoesUsuario.ProspeccoesTotais.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida));
+            var prospeccoesUsuarioConvertidas = prospeccoesUsuario.ProspeccoesTotais.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida)).ToList();
             var prospeccoesUsuarioConvertidasLider = prospeccoesUsuario.ProspeccoesLider.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida)).ToList();
 
             decimal quantidadeProspeccoesTotaisPeso = CalcularQuantidadeDeProspeccoes(usuario, prospeccoesUsuario);
@@ -872,7 +873,6 @@ namespace BaseDeProjetos.Controllers
 
             foreach (var prospeccao in prospeccoesUsuario.ProspeccoesTotais)
             {
-                // Ordeno, ou simplesmente faço um any()?
                 if (prospeccao.Status.Any(f => f.Status == StatusProspeccao.ComProposta))
                 {
                     var membrosEquipe = TratarMembrosEquipeString(prospeccao);
@@ -909,7 +909,6 @@ namespace BaseDeProjetos.Controllers
 
             foreach (var prospeccao in prospeccoesUsuario.ProspeccoesTotais)
             {
-                // Ordeno, ou simplesmente faço um any()?
                 if (prospeccao.Status.Any(f => f.Status == StatusProspeccao.Convertida))
                 {
                     var membrosEquipe = TratarMembrosEquipeString(prospeccao);
