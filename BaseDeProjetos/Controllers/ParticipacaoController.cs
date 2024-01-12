@@ -645,7 +645,7 @@ namespace BaseDeProjetos.Controllers
             decimal valorTotalProjetosParaFCF = await ExtrairValorProjetos(usuario, dataInicio, dataFim);
 
             // projetos convertidos / despesa
-            participacao.FatorContribuicaoFinanceira = IndicadorHelper.DivisaoSegura(valorTotalProjetosParaFCF, despesaIsiMeses);
+            participacao.FatorContribuicaoFinanceira = IndicadorHelper.DivisaoSegura(valorTotalProspeccoesConvertidasLider, despesaIsiMeses);
         }
 
         /// <summary>
