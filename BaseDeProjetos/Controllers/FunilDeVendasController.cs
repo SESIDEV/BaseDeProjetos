@@ -612,12 +612,34 @@ namespace BaseDeProjetos.Controllers
                 await _context.AddAsync(prosp);
                 await _context.SaveChangesAsync();
                 await CacheHelper.CleanupProspeccoesCache(_cache);
+                await CacheHelper.CleanupParticipacoesCache(_cache);
                 return RedirectToAction("Index", "Empresas");
             }
             else
             {
                 return View("Forbidden");
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Atualizar([Bind("OrigemID, Data, Status, Anotacoes, MotivoNaoConversao")] FollowUp followup)
+        {
+            ViewbagizarUsuario(_context, _cache);
+
+            if (ModelState.IsValid)
+            {
+                Prospeccao prospeccao_origem = await _context.Prospeccao.FirstOrDefaultAsync(p => p.Id == followup.OrigemID);
+                followup.Origem = prospeccao_origem;
+
+                await CriarFollowUp(followup);
+
+                bool enviou = MailHelper.NotificarProspecção(followup, _mailer);
+                await _context.SaveChangesAsync();
+                await CacheHelper.CleanupProspeccoesCache(_cache);
+                await CacheHelper.CleanupParticipacoesCache(_cache);
+            }
+
+            return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
         }
 
         /// <summary>
@@ -628,73 +650,141 @@ namespace BaseDeProjetos.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> PuxarDadosProspeccoes()
         {
-            List<Prospeccao> lista_prosp = await _context.Prospeccao.ToListAsync();
-
-            List<Dictionary<string, object>> listaFull = new List<Dictionary<string, object>>();
-
-            foreach (var p in lista_prosp)
-            {
-                Dictionary<string, object> dict = new Dictionary<string, object>
-                {
-                    ["idProsp"] = p.Id,
-                    ["Líder"] = p.Usuario.UserName,
-                    ["Membros"] = p.MembrosEquipe,
-                    ["Status"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Status.GetDisplayName(),
-                    ["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data.ToString("MM/yyyy"),
-                    ["Empresa"] = p.Empresa.Nome,
-                    ["CNPJ"] = p.Empresa.CNPJ,
-                    ["Segmento"] = p.Empresa.Segmento.GetDisplayName(),
-                    ["Estado"] = p.Empresa.Estado.GetDisplayName(),
-                    ["Casa"] = p.Casa.GetDisplayName(),
-                    ["Origem"] = p.Origem.GetDisplayName(),
-                    ["TipoContratacao"] = p.TipoContratacao.GetDisplayName(),
-                    ["LinhaPesquisa"] = p.LinhaPequisa.GetDisplayName(),
-                    ["ValorEstimado"] = p.ValorEstimado,
-                    ["ValorProposta"] = p.ValorProposta,
-                    ["ValorFinal"] = p.ValorProposta,
-                };
-
-                if (string.IsNullOrEmpty(p.NomeProspeccao))
-                {
-                    dict["Titulo"] = "Sem título";
-                }
-                else
-                {
-                    dict["Titulo"] = p.NomeProspeccao;
-                }
-
-                if (p.ValorProposta == 0)
-                {
-                    dict["ValorFinal"] = p.ValorEstimado;
-                }
-
-                listaFull.Add(dict);
-            }
-
-            return Json(listaFull);
+            await _context.AddAsync(followup);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task<IActionResult> PuxarDadosProspeccoes2() //para puxar em selectList
+        // POST: FunilDeVendas/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
         {
-            List<Prospeccao> lista_prosp = await _context.Prospeccao.ToListAsync();
+            ViewbagizarUsuario(_context, _cache);
 
-            List<Dictionary<string, object>> listaFull = new List<Dictionary<string, object>>();
-
-            foreach (var p in lista_prosp)
+            if (ModelState.IsValid)
             {
-                Dictionary<string, object> dict = new Dictionary<string, object>();
-
-                if (p.NomeProspeccao != null)
+                try
                 {
-                    dict["idProsp"] = p.Id;
-                    dict["Titulo"] = p.NomeProspeccao + " [" + p.Empresa.Nome + "]";
+                    prospeccao = await ValidarEmpresa(prospeccao);
                 }
-                else
+                catch (Exception e)
                 {
-                    continue;
+                    return CapturarErro(e);
                 }
 
-                listaFull.Add(dict);
+                if (prospeccao.EmpresaId != -1 && !string.IsNullOrEmpty(prospeccao.Contato.Nome))
+                {
+                    var empresa = await _cache.GetCachedAsync($"Empresa:{prospeccao.EmpresaId}", () => _context.Empresa.FindAsync(prospeccao.EmpresaId).AsTask());
+                    if (empresa != null)
+                    {
+                        prospeccao.Contato.empresa = empresa;
+                    }
+                }
+
+                await VincularUsuario(prospeccao, HttpContext, _context);
+
+                prospeccao.Status[0].Origem = prospeccao;
+
+                // Por necessidade da implementação do cache tive de omitir essa função, que no momento não está sendo utilizada pois o serviço de email não está habilitado.
+                // Ao ligar o serviço de email no futuro essa função estará quebrada (atrelamento de empresas)
+                // TODO: Consertar a funcionalidade de Notificar Prospecções pelo Email Helper
+                //bool enviou = MailHelper.NotificarProspecção(prospeccao.Status[0], _mailer);
+
+                await _context.AddAsync(prospeccao);
+                await _context.SaveChangesAsync();
+                await CacheHelper.CleanupProspeccoesCache(_cache); 
+                await CacheHelper.CleanupParticipacoesCache(_cache);
+                return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
+            }
+            else
+            {
+                return View("Error");
+            }
+        }
+
+        /// <summary>
+        /// Vincula o usuário logado a uma prospecção
+        /// </summary>
+        /// <param name="prospeccao">Prospecção que se deseja vincular ao usuário logado</param>
+        /// <returns></returns>
+        internal static async Task VincularUsuario(Prospeccao prospeccao, HttpContext httpContext, ApplicationDbContext context)
+        {
+            string userId = httpContext.User.Identity.Name;
+            Usuario user = await context.Users.FirstAsync(u => u.UserName == userId);
+            prospeccao.Usuario = user;
+        }
+
+        /// <summary>
+        /// Valida e cadastra uma empresa a uma prospecção
+        /// </summary>
+        /// <param name="prospeccao">Prospecção a ter uma empresa cadastrada</param>
+        /// <returns></returns>
+        /// <exception cref="Exception">Erro a ser lançado caso não seja possível cadastrar a empresa/seja uma empresa inválida</exception>
+        public async Task<Prospeccao> ValidarEmpresa(Prospeccao prospeccao)
+        {
+            var empresas = await _cache.GetCachedAsync("AllEmpresas", () => _context.Empresa.ToListAsync());
+            var empresa = empresas.FirstOrDefault(e => e.Id == prospeccao.EmpresaId);
+
+            if (empresa == null)
+            {
+                throw new ArgumentNullException("Ocorreu um erro no registro da empresa. \n A empresa selecionada não foi encontrada. \n Contacte um administrador do sistema");
+            }
+
+            if (string.IsNullOrEmpty(empresa.Nome) || string.IsNullOrEmpty(empresa.CNPJ) || empresa.Id == -1)
+            {
+                throw new ArgumentException("Ocorreu um erro no registro da empresa. \n As informações da empresa estão inválidas \n Contacte um administrador do sistema");
+            }
+
+            return prospeccao;
+        }
+
+        /// <summary>
+        /// Cria uma selectlist para a View(?)
+        /// </summary>
+        private async Task CriarSelectListsDaView()
+        {
+            var empresas = await _cache.GetCachedAsync("Empresas:FunilUnique", () => _context.Empresa.Select(e => new EmpresasReadComUniqueDTO { EmpresaUnique = e.EmpresaUnique, Id = e.Id, Nome = e.Nome }).ToListAsync());
+            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+            ViewData["Equipe"] = new SelectList(await _context.Users.ToListAsync(), "Id", "UserName");
+        }
+
+        // POST: FunilDeVendas/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, [Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, EmpresaId, Contato, Casa, Usuario, MembrosEquipe, ValorProposta, ValorEstimado, Status, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
+        {
+            ViewbagizarUsuario(_context, _cache);
+
+            if (id != prospeccao.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    prospeccao = await EditarDadosDaProspecção(id, prospeccao);
+                    await _context.SaveChangesAsync();
+                    await CacheHelper.CleanupProspeccoesCache(_cache);
+                    await CacheHelper.CleanupParticipacoesCache(_cache);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!FunilHelpers.ProspeccaoExists(prospeccao.Id, _context))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw; // Outro erro de banco, lançar para depuração
+                    }
+                }
+                return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
             }
 
             return Json(listaFull);
@@ -722,13 +812,19 @@ namespace BaseDeProjetos.Controllers
             {
                 return Helpers.Helpers.PuxarTagsProspecoes(_context);
             }
-            else
+            if (ModelState.IsValid)
             {
-                return "403 Forbidden";
+                _context.Update(followup);
+                await _context.SaveChangesAsync();
+                await CacheHelper.CleanupProspeccoesCache(_cache);
+                await CacheHelper.CleanupParticipacoesCache(_cache);
             }
+
+            return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
         }
 
-        public async Task<IActionResult> RemoverFollowUp(int? id)
+        // GET: FunilDeVendas/Delete/5
+        public async Task<IActionResult> Delete(string id)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
@@ -793,7 +889,11 @@ namespace BaseDeProjetos.Controllers
                 await CriarSelectListsDaView();
                 if (tipo != null || tipo != "")
                 {
-                    return ViewComponent($"Modal{tipo}Prosp", new { id = idProsp, id2 = idFollowup });
+                    _context.FollowUp.Remove(followup);
+                    await _context.SaveChangesAsync();
+                    await CacheHelper.CleanupProspeccoesCache(_cache);
+                    await CacheHelper.CleanupParticipacoesCache(_cache);
+                    return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
                 }
                 else
                 {
@@ -842,16 +942,27 @@ namespace BaseDeProjetos.Controllers
             return prospeccao.Status.Count() > 1 && ativoNaSessao == donoProsp;
         }
 
-        /// <summary>
-        /// Vincula o usuário logado a uma prospecção
-        /// </summary>
-        /// <param name="prospeccao">Prospecção que se deseja vincular ao usuário logado</param>
-        /// <returns></returns>
-        internal static async Task VincularUsuario(Prospeccao prospeccao, HttpContext httpContext, ApplicationDbContext context)
+        // POST: FunilDeVendas/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            string userId = httpContext.User.Identity.Name;
-            Usuario user = await context.Users.FirstAsync(u => u.UserName == userId);
-            prospeccao.Usuario = user;
+            ViewbagizarUsuario(_context, _cache);
+
+            var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:WithStatus", () => _context.Prospeccao.Include(f => f.Status).ToListAsync());
+
+            var prospeccao = prospeccoes.Where(prosp => prosp.Id == id).First(); // o First converte de IQuerable para objeto Prospeccao
+
+            if (prospeccao.Ancora)
+            {
+                FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
+            }
+
+            _context.Remove(prospeccao);
+            await _context.SaveChangesAsync();
+            await CacheHelper.CleanupProspeccoesCache(_cache);
+            await CacheHelper.CleanupParticipacoesCache(_cache);
+            return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
         }
 
         /// <summary>

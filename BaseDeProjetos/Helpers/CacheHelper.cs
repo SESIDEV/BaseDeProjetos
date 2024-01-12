@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Helpers
@@ -62,6 +63,14 @@ namespace BaseDeProjetos.Helpers
                 await cache.InvalidateCacheKeysAsync("Projeto:");
                 await cache.InvalidateCacheKeysAsync("Projetos:");
                 await cache.InvalidateCacheKeysAsync("ProjetosExecucaoHome:");
+            }
+        }
+
+        public static async Task CleanupParticipacoesCache(DbCache cache)
+        {
+            if (cache != null)
+            {
+                await cache.InvalidateCacheKeysAsync("Participacoes:");
             }
         }
     }
