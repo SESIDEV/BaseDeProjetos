@@ -190,66 +190,22 @@ namespace BaseDeProjetos.Controllers
         {
             if (participacao.RankPorIndicador != null)
             {
-                if (nameof(participacao.AssertividadePrecificacao).Contains(nomeIndicador))
+                PropertyInfo[] propriedadesParticipacao = participacao.RankPorIndicador.GetType().GetProperties();
+                foreach (var property in propriedadesParticipacao)
                 {
-                    return participacao.RankPorIndicador.RankAssertividadePrecificacao;
+                    if (property.Name.Contains(nomeIndicador))
+                    {
+                        if (property.PropertyType == typeof(decimal))
+                        {
+                            return (decimal)property.GetValue(participacao.RankPorIndicador);
+                        }
+                    }
                 }
-                else if (nameof(participacao.FatorContribuicaoFinanceira).Contains(nomeIndicador))
-                {
-                    return participacao.RankPorIndicador.RankFatorContribuicaoFinanceira;
-                }
-                else if (nameof(participacao.QuantidadeProspeccoesConvertidas).Contains(nomeIndicador))
-                {
-                    return participacao.RankPorIndicador.RankQuantidadeProspeccoesConvertidas;
-                }
-                else if (nameof(participacao.QuantidadeProspeccoes).Contains(nomeIndicador))
-                {
-                    return participacao.RankPorIndicador.RankQuantidadeProspeccoes;
-                }
-                else if (nameof(participacao.QuantidadeProspeccoesComProposta).Contains(nomeIndicador))
-                {
-                    return participacao.RankPorIndicador.RankQuantidadeProspeccoesComProposta;
-                }
-                else if (nameof(participacao.QuantidadeProspeccoesLider).Contains(nomeIndicador))
-                {
-                    return participacao.RankPorIndicador.RankQuantidadeProspeccoesLider;
-                }
-                else if (nameof(participacao.QuantidadeProspeccoesMembro).Contains(nomeIndicador))
-                {
-                    return participacao.RankPorIndicador.RankQuantidadeProspeccoesMembro;
-                }
-                else if (nameof(participacao.ValorMedioProspeccoes).Contains(nomeIndicador))
-                {
-                    return participacao.RankPorIndicador.RankValorMedioProspeccoes;
-                }
-                else if (nameof(participacao.ValorMedioProspeccoesComProposta).Contains(nomeIndicador))
-                {
-                    return participacao.RankPorIndicador.RankValorMedioProspeccoesComProposta;
-                }
-                else if (nameof(participacao.ValorMedioProspeccoesConvertidas).Contains(nomeIndicador))
-                {
-                    return participacao.RankPorIndicador.RankValorMedioProspeccoesConvertidas;
-                }
-                else if (nameof(participacao.ValorTotalProspeccoes).Contains(nomeIndicador))
-                {
-                    return participacao.RankPorIndicador.RankValorTotalProspeccoes;
-                }
-                else if (nameof(participacao.ValorTotalProspeccoesComProposta).Contains(nomeIndicador))
-                {
-                    return participacao.RankPorIndicador.RankValorTotalProspeccoesComProposta;
-                }
-                else if (nameof(participacao.ValorTotalProspeccoesConvertidas).Contains(nomeIndicador))
-                {
-                    return participacao.RankPorIndicador.RankValorTotalProspeccoesConvertidas;
-                }
-                else
-                {
-                    return 0;
-                }
+                throw new Exception("Nenhuma propriedade foi encontrada.");
             }
             else
             {
-                return -1;
+                throw new ArgumentNullException("O rank por indicador está nulo.");
             }
         }
 
