@@ -8,10 +8,10 @@ namespace BaseDeProjetos.Models
         public string IdTrabalho { get; set; }
 
         [ForeignKey("IdTrabalho")]
-        public virtual Prospeccao Projeto { get; set; }
+        public virtual Prospeccao Prospeccao { get; set; }
 
         [ForeignKey("IdUsuario")]
-        public Usuario Usuario { get; set; }
+        public virtual Usuario Usuario { get; set; }
         public string IdUsuario { get; set; }
     }
 }
