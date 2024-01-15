@@ -278,6 +278,54 @@ namespace BaseDeProjetos.Controllers
             return View(prospeccao);
         }
 
+        /// <summary>
+        /// Método auxiliar para editar dados de uma prospecção
+        /// </summary>
+        /// <param name="id">Inutilizado</param>
+        /// <param name="prospeccao">Prospecção a ter seus dados editados</param>
+        /// <returns></returns>
+        private async Task<Prospeccao> EditarDadosDaProspecção(string id, Prospeccao prospeccao)
+        {
+            var usuarios = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
+            Usuario lider = usuarios.First(p => p.Id == prospeccao.Usuario.Id);
+            prospeccao.Usuario = lider;
+
+            Prospeccao prospAntiga = await _context.Prospeccao.AsNoTracking().FirstAsync(p => p.Id == prospeccao.Id);
+
+            // tudo abaixo compara a versão antiga com a nova que irá para o Update()
+
+            if (prospAntiga.Ancora == true && prospeccao.Ancora == false)
+            { // verifica se a âncora foi cancelada
+                FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
+            }
+            else if (prospeccao.Ancora == true && string.IsNullOrEmpty(prospeccao.Agregadas))
+            { // verifica se o campo agg está vazio
+                throw new InvalidOperationException("Não é possível adicionar uma Âncora sem nenhuma agregada.");
+            }
+            else if (prospAntiga.Agregadas != prospeccao.Agregadas)
+            { // verifica se alguma agregada foi alterada
+                FunilHelpers.AddAgregadas(_context, prospAntiga, prospeccao);
+                FunilHelpers.DelAgregadas(_context, prospAntiga, prospeccao);
+            }
+
+            _context.Update(prospeccao);
+            return prospeccao;
+        }
+
+        /// <summary>
+        /// Obtem os membros em CSV do projeto dado o id
+        /// </summary>
+        /// <returns>A equipe de um projeto separadas por ponto e virgula</returns>
+        [HttpGet("FunilDeVendas/RetornarMembrosCSV/{idProspeccao}")]
+        public IActionResult RetornarMembrosCSV(string idProspeccao)
+        {
+            string membros = string.Join(";", _context.Prospeccao.FirstOrDefault(p => p.Id == idProspeccao)?.EquipeProspeccao.Select(relacao => relacao.Usuario.Email));
+
+            Dictionary<string, string> dados = new Dictionary<string, string> { { "data", membros } };
+
+            return Ok(JsonConvert.SerializeObject(dados));
+        }
+
         public async Task<IActionResult> EditarFollowUp(int? id) // Retornar view
         {
             ViewbagizarUsuario(_context, _cache);
