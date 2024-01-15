@@ -151,7 +151,7 @@ namespace BaseDeProjetos.Helpers
             {
                 if (prospeccao.Status.Any(f => f.Status == StatusProspeccao.ComProposta || f.Status == StatusProspeccao.Convertida))
                 {
-                    var membrosEquipe = ParticipacaoHelper.TratarMembrosEquipeString(prospeccao, _context);
+                    List<Usuario> membrosEquipe = prospeccao.EquipeProspeccao.Select(e => e.Usuario).ToList();
 
                     if (prospeccao.Usuario.Id == usuario.Id)
                     {
@@ -163,7 +163,7 @@ namespace BaseDeProjetos.Helpers
 
                         quantidadeProspeccoesComProposta += percLider;
                     }
-                    else if (prospeccao.MembrosEquipe.Contains(usuario.Email))
+                    else if (membrosEquipe.Any(u => u.Id == usuario.Id))
                     {
                         quantidadeProspeccoesComProposta += CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
                     }
@@ -179,7 +179,7 @@ namespace BaseDeProjetos.Helpers
         /// <param name="usuario"></param>
         /// <param name="prospeccoesUsuario"></param>
         /// <returns></returns>
-        public static decimal CalcularQuantidadeDeProspeccoesConvertidas(Usuario usuario, ProspeccoesUsuarioParticipacao prospeccoesUsuario, ApplicationDbContext _context)
+        public static decimal CalcularQuantidadeDeProspeccoesConvertidas(Usuario usuario, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
         {
             decimal quantidadeProspeccoesConvertidas = 0;
 
@@ -187,21 +187,24 @@ namespace BaseDeProjetos.Helpers
             {
                 if (prospeccao.Status.Any(f => f.Status == StatusProspeccao.Convertida))
                 {
-                    var membrosEquipe = ParticipacaoHelper.TratarMembrosEquipeString(prospeccao, _context);
-
-                    if (prospeccao.Usuario.Id == usuario.Id)
+                    if (prospeccao.EquipeProspeccao != null)
                     {
-                        var percBolsista = CalculoPercentualBolsista(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoBolsista).Count());
-                        var percEstagiario = CalculoPercentualEstagiario(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoEstagiário).Count());
-                        var percPesquisador = CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
+                        List<Usuario> membrosEquipe = prospeccao.EquipeProspeccao.Select(e => e.Usuario).ToList();
 
-                        var percLider = 1 - (percBolsista + percEstagiario + percPesquisador);
+                        if (prospeccao.Usuario.Id == usuario.Id)
+                        {
+                            var percBolsista = CalculoPercentualBolsista(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoBolsista).Count());
+                            var percEstagiario = CalculoPercentualEstagiario(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoEstagiário).Count());
+                            var percPesquisador = CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
 
-                        quantidadeProspeccoesConvertidas += percLider;
-                    }
-                    else
-                    {
-                        quantidadeProspeccoesConvertidas += CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
+                            var percLider = 1 - (percBolsista + percEstagiario + percPesquisador);
+
+                            quantidadeProspeccoesConvertidas += percLider;
+                        }
+                        else
+                        {
+                            quantidadeProspeccoesConvertidas += CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
+                        }
                     }
                 }
             }
