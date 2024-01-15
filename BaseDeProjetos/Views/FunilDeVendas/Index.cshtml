@@ -262,11 +262,11 @@
             @if (Model.Prospeccoes.Count() != 0)
             {
                 @* abasFunil.Add(new AbaFunil("", string.IsNullOrEmpty(aba))); *@
-                abasFunil.Add(new AbaFunil("Ativas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "ativas" : false));
-                abasFunil.Add(new AbaFunil("Com Proposta", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "comproposta" : false));
-                abasFunil.Add(new AbaFunil("Concluidas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "concluidas" : false));
-                abasFunil.Add(new AbaFunil("Planejadas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "planejadas" : false));
-                abasFunil.Add(new AbaFunil("Erradas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "erradas" : false));
+                abasFunil.Add(new AbaFunil("Ativas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "ativas" : false, Model.ProspeccoesAtivas.Count()));
+                abasFunil.Add(new AbaFunil("Com Proposta", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "comproposta" : false, Model.ProspeccoesComProposta.Count()));
+                abasFunil.Add(new AbaFunil("Concluidas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "concluidas" : false, Model.ProspeccoesConcluidas.Count()));
+                abasFunil.Add(new AbaFunil("Planejadas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "planejadas" : false, Model.ProspeccoesPlanejadas.Count()));
+                abasFunil.Add(new AbaFunil("Erradas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "erradas" : false, 0));
 
                 <nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
                     @if (string.IsNullOrEmpty(aba))
@@ -280,7 +280,7 @@
                                asp-route-casa="@casa"
                                asp-route-aba="@abaFunil.RouteAba"
                                aria-selected="false">
-                            @abaFunil.Nome</a>
+                            @abaFunil.Nome (@abaFunil.Quantidade)</a>
                         }
                     }
                     else
@@ -299,8 +299,7 @@
                                asp-route-casa="@casa"
                                asp-route-aba="@abaFunil.RouteAba"
                                aria-selected="@((aba.ToLowerInvariant() == @abaFunil.Nome.ToLowerInvariant()).ToString().ToLowerInvariant())">
-                                @abaFunil.Nome
-                            </a>
+                                @abaFunil.Nome (@abaFunil.Quantidade)</a>
                         }
                     }
                 </nav>

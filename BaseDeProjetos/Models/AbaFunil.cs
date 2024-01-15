@@ -2,13 +2,14 @@
 {
     public class AbaFunil
     {
-        public AbaFunil(string nome, bool abaAtiva)
+        public AbaFunil(string nome, bool abaAtiva, int quantidade)
         {
             Nome = nome;
             Action = "Index";
             Controller = "FunilDeVendas";
             RouteAba = LimparNomeAba(nome);
             AbaAtiva = abaAtiva;
+            Quantidade = quantidade;
         }
 
         private string LimparNomeAba(string nome)
@@ -21,5 +22,6 @@
         public string Controller { get; set; }
         public string RouteAba { get; set; }
         public bool AbaAtiva { get; set; }
+        public int Quantidade { get; set; }
     }
 }
