@@ -796,11 +796,6 @@ namespace BaseDeProjetos.Controllers
         /// <param name="prospeccoesUsuario"></param>
         private void AtribuirQuantidadesDeProspeccao(Usuario usuario, ParticipacaoTotalViewModel participacao, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
         {
-            var prospeccoesUsuarioComProposta = prospeccoesUsuario.ProspeccoesTotaisComProposta;
-            var prospeccoesUsuarioConvertidas = prospeccoesUsuario.ProspeccoesTotaisConvertidas;
-            var prospeccoesUsuarioConvertidasLider = prospeccoesUsuario.ProspeccoesLiderConvertidas;
-
-            decimal quantidadeProspeccoesTotaisPeso = CalcularQuantidadeDeProspeccoes(usuario, prospeccoesUsuario);
             decimal quantidadeProspeccoesComPropostaPeso = CalcularQuantidadeDeProspeccoesComProposta(usuario, prospeccoesUsuario);
             decimal quantidadeProspeccoesConvertidasPeso = CalcularQuantidadeDeProspeccoesConvertidas(usuario, prospeccoesUsuario);
 
