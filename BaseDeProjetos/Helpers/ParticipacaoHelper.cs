@@ -10,42 +10,6 @@ namespace BaseDeProjetos.Helpers
 {
     public class ParticipacaoHelper
     {
-        public static List<Usuario> TratarMembrosEquipeString(Prospeccao prospeccao, ApplicationDbContext _context)
-        {
-            List<string> membrosNaoTratados = prospeccao.MembrosEquipe?.Split(";").ToList();
-            List<UsuarioParticipacaoDTO> usuarios = _context.Users
-                .Select(u => new UsuarioParticipacaoDTO
-                {
-                    Cargo = new CargoDTO { Nome = u.Cargo.Nome, Id = u.Cargo.Id },
-                    Casa = u.Casa,
-                    Email = u.Email,
-                    EmailConfirmed = u.EmailConfirmed,
-                    Nivel = u.Nivel,
-                    Id = u.Id,
-                    UserName = u.UserName
-                })
-                .ToList();
-
-            List<Usuario> membrosEquipe = new List<Usuario>();
-
-            if (membrosNaoTratados != null)
-            {
-                foreach (var membro in membrosNaoTratados)
-                {
-                    if (!string.IsNullOrEmpty(membro))
-                    {
-                        Usuario usuarioEquivalente = usuarios.Find(u => u.Email == membro).ToUsuario();
-                        if (usuarioEquivalente != null)
-                        {
-                            membrosEquipe.Add(usuarioEquivalente);
-                        }
-                    }
-                }
-            }
-
-            return membrosEquipe;
-        }
-
         /// <summary>
         /// Filtra as prospecções passadas por parâmetro com status do mês e ano inicial até o mês e ano final
         /// </summary>
