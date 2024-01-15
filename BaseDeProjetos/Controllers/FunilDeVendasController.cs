@@ -1120,69 +1120,73 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private async Task<Prospeccao> EditarDadosDaProspecção(string id, Prospeccao prospeccao)
         {
-            var usuarios = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
-            Usuario lider = usuarios.First(p => p.Id == prospeccao.Usuario.Id);
-            prospeccao.Usuario = lider;
-
-            Prospeccao prospAntiga = await _context.Prospeccao.AsNoTracking().FirstAsync(p => p.Id == prospeccao.Id);
-
-            // tudo abaixo compara a versão antiga com a nova que irá para o Update()
-
-            if (prospAntiga.Ancora == true && prospeccao.Ancora == false)
-            { // verifica se a âncora foi cancelada
-                FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
-            }
-            else if (prospeccao.Ancora == true && string.IsNullOrEmpty(prospeccao.Agregadas))
-            { // verifica se o campo agg está vazio
-                throw new InvalidOperationException("Não é possível adicionar uma Âncora sem nenhuma agregada.");
-            }
-            else if (prospAntiga.Agregadas != prospeccao.Agregadas)
-            { // verifica se alguma agregada foi alterada
-                FunilHelpers.AddAgregadas(_context, prospAntiga, prospeccao);
-                FunilHelpers.DelAgregadas(_context, prospAntiga, prospeccao);
-            }
-
-            _context.Update(prospeccao);
-            return prospeccao;
-        }
-
-        private async Task InserirDadosEmpresasUsuariosViewData()
-        {
-            var empresas = await _cache.GetCachedAsync("Empresas:Funil", () => _context.Empresa.Select(e => new EmpresasFunilDTO
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Id = e.Id,
-                Nome = e.Nome
-            }).ToListAsync());
-
-            var usuarios = await _cache.GetCachedAsync("Usuarios:Funil", () => _context.Users.Select(u => new UsuariosFunilDTO
+                await CriarSelectListsDaView();
+                if (tipo != null || tipo != "")
+                {
+                    return ViewComponent($"Modal{tipo}Prosp", new { id = idProsp, id2 = idFollowup });
+                }
+                else
+                {
+                    return ViewComponent("Error");
+                }
+            }
+            else
             {
-                Id = u.Id,
-                UserName = u.UserName,
-                Email = u.Email
-            }).ToListAsync());
-
-            ViewData["Usuarios"] = usuarios;
-            ViewData["Empresas"] = new SelectList(empresas, "Id", "Nome");
-            ViewData["Equipe"] = new SelectList(usuarios, "Id", "UserName");
+                return View("Forbidden");
+            }
         }
 
         /// <summary>
-        /// Retorna uma lista de prospecções filtradas de acordo com os parâmetros
+        /// Retorna os dados de todas as prospeções cadastradas no sistema em formato JSON.
+        /// OBS: Método permite acesso não autenticado vide tag: [AllowAnonymous]
         /// </summary>
-        /// <param name="casa">Casa das prospecções</param>
-        /// <param name="aba">Aba da View/Status as quais as prospecções devem obedecer</param>
-        /// <param name="sortOrder">Forma de ordenação das prospecções</param>
-        /// <param name="searchString">Parâmetro de busca para filtro das prospecções</param>
-        /// <param name="ano">Ano das prospecções</param>
-        /// <param name="usuario">Usuário das prospecções</param>
         /// <returns></returns>
-        private async Task<List<Prospeccao>> ObterProspeccoesFunilFiltradas(string casa, string aba, string sortOrder, string searchString, string ano, Usuario usuario)
+        [AllowAnonymous]
+        public async Task<IActionResult> PuxarDadosProspeccoes()
         {
-            List<Prospeccao> prospeccoes = await FunilHelpers.DefinirCasaParaVisualizar(casa, usuario, _context, HttpContext, _cache, ViewData);
+            List<Prospeccao> lista_prosp = await _context.Prospeccao.ToListAsync();
 
-            if (!string.IsNullOrEmpty(ano))
+            List<Dictionary<string, object>> listaFull = new List<Dictionary<string, object>>();
+
+            foreach (var p in lista_prosp)
             {
-                FunilHelpers.PeriodizarProspecções(ano, prospeccoes);
+                Dictionary<string, object> dict = new Dictionary<string, object>
+                {
+                    ["idProsp"] = p.Id,
+                    ["Líder"] = p.Usuario.UserName,
+                    ["Membros"] = p.EquipeProspeccao,
+                    ["Status"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Status.GetDisplayName(),
+                    ["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data.ToString("MM/yyyy"),
+                    ["Empresa"] = p.Empresa.Nome,
+                    ["CNPJ"] = p.Empresa.CNPJ,
+                    ["Segmento"] = p.Empresa.Segmento.GetDisplayName(),
+                    ["Estado"] = p.Empresa.Estado.GetDisplayName(),
+                    ["Casa"] = p.Casa.GetDisplayName(),
+                    ["Origem"] = p.Origem.GetDisplayName(),
+                    ["TipoContratacao"] = p.TipoContratacao.GetDisplayName(),
+                    ["LinhaPesquisa"] = p.LinhaPequisa.GetDisplayName(),
+                    ["ValorEstimado"] = p.ValorEstimado,
+                    ["ValorProposta"] = p.ValorProposta,
+                    ["ValorFinal"] = p.ValorProposta,
+                };
+
+                if (string.IsNullOrEmpty(p.NomeProspeccao))
+                {
+                    dict["Titulo"] = "Sem título";
+                }
+                else
+                {
+                    dict["Titulo"] = p.NomeProspeccao;
+                }
+
+                if (p.ValorProposta == 0)
+                {
+                    dict["ValorFinal"] = p.ValorEstimado;
+                }
+
+                listaFull.Add(dict);
             }
 
             prospeccoes = FunilHelpers.OrdenarProspecções(sortOrder, prospeccoes); // SORT ORDEM ALFABETICA
