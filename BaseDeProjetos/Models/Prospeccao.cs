@@ -37,6 +37,9 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Equipe")]
         public virtual string MembrosEquipe { get; set; }
 
+        [Display(Name = "Equipe")]
+        public virtual List<EquipeProspeccao> EquipeProspeccao { get; set; }
+
         [Display(Name = "Tipo de Contratação")]
         public virtual TipoContratacao TipoContratacao { get; set; }
 

@@ -29,5 +29,6 @@ namespace BaseDeProjetos.Data
         public DbSet<CodigoAmostraProjeto> CodigoAmostraProjeto { get; set; }
         public DbSet<ConjuntoRubrica> ConjuntoRubrica { get; set; }
         public DbSet<Rubrica> Rubrica { get; set; }
+        public DbSet<EquipeProspeccao> EquipeProspeccao { get; set; }
     }
 }
