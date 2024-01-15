@@ -128,6 +128,8 @@ namespace BaseDeProjetos
             });
 
             context.Database.Migrate();
+            // REMOVER -- Migrar dados de membros de prospeccao -- REMOVER
+            //context.MigrateProspeccao();
         }
     }
 }

@@ -504,6 +504,8 @@ namespace BaseDeProjetos.Controllers
         [Route("FunilDeVendas/Index/{casa?}/{aba?}/{ano?}")]
         public async Task<IActionResult> Index(string casa, string aba, string sortOrder = "", string searchString = "", string ano = "", int numeroPagina = 1, int tamanhoPagina = 20)
         {
+            //return View("Construcao");
+
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 ViewbagizarUsuario(_context, _cache);
