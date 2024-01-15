@@ -130,7 +130,7 @@ namespace BaseDeProjetos.Controllers
                 }
 
                 string chaveCache = $"Participacoes:{dataInicio.Value.Month}:{dataInicio.Value.Year}:{dataFim.Value.Month}:{dataFim.Value.Year}";
-                List<ParticipacaoTotalViewModel> participacoes = await _cache.GetCachedAsync(chaveCache, () => GetParticipacoesTotaisUsuarios((DateTime)dataInicio, (DateTime)dataFim));
+                List<ParticipacaoTotalViewModel> participacoes = await _cache.GetCachedAsync(chaveCache, () => GetParticipacoesTotaisUsuarios((DateTime)dataInicio, (DateTime)dataFim, _context));
                 List<IndicadorResultadoViewModel> resultados = new List<IndicadorResultadoViewModel>();
 
                 RankearParticipacoes(participacoes, false);
@@ -218,6 +218,8 @@ namespace BaseDeProjetos.Controllers
         [HttpGet("Participacao/RetornarDadosPesquisador/{idUsuario}")]
         public async Task<IActionResult> RetornarDadosGraficoTemporal(string idUsuario, DateTime? dataInicio, DateTime? dataFim)
         {
+            ViewbagizarUsuario(_context, _cache);
+
             var indicadores = await _context.IndicadoresFinanceiros
                 .Select(i => new { i.Data, i.Despesa, i.QtdPesquisadores })
                 .ToListAsync();
@@ -242,7 +244,7 @@ namespace BaseDeProjetos.Controllers
             {
                 _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Usuario).Include(p => p.Empresa).ToListAsync());
 
-                var participacoes = await GetParticipacoesTotaisUsuarios((DateTime)dataInicio, (DateTime)dataFim);
+                var participacoes = await GetParticipacoesTotaisUsuarios((DateTime)dataInicio, (DateTime)dataFim, _context);
 
                 var participacao = participacoes.Where(p => p.Lider.Id == idUsuario).First();
 
@@ -315,64 +317,6 @@ namespace BaseDeProjetos.Controllers
         }
 
         /// <summary>
-        /// Efetua o cálculo das despesas do ISI com base no período selecionado
-        /// </summary>
-        /// <param name="mesInicial"></param>
-        /// <param name="anoInicial"></param>
-        /// <param name="mesFinal"></param>
-        /// <param name="anoFinal"></param>
-        /// <returns></returns>
-        internal static decimal CalculoDespesa(DateTime dataInicio, DateTime dataFim)
-        {
-            if (dataInicio > dataFim)
-            {
-                throw new ArgumentException($"{nameof(dataInicio)} não pode ser maior que {nameof(dataFim)}");
-            }
-
-            decimal valorCustoFinal = 0;
-
-            if (dataFim.Year == dataInicio.Year)
-            {
-                if (dataInicio.Month > dataFim.Month)
-                {
-                    throw new ArgumentException($"O mês da data inicial não pode ser maior que o mês da data final");
-                }
-
-                int quantidadeDeMesesAno = dataFim.Month - dataInicio.Month + 1;
-                valorCustoFinal = despesas[dataInicio.Year] / 12 * quantidadeDeMesesAno;
-                return valorCustoFinal;
-            }
-            else
-            {
-                int quantidadeDeMesesAnoInicial = 12 - dataInicio.Month + 1;
-                // Evitar misses do dicionário
-                int anoFinalTruncado = Math.Min(dataFim.Year, despesas.Keys.Last());
-
-                valorCustoFinal += despesas[dataInicio.Year] / 12 * quantidadeDeMesesAnoInicial;
-
-                int quantidadeDeMesesAnoFinal = dataFim.Month;
-
-                valorCustoFinal += despesas[anoFinalTruncado] / 12 * quantidadeDeMesesAnoFinal;
-
-                int subtracaoAno = anoFinalTruncado - dataInicio.Year - 1;
-
-                if (subtracaoAno <= 0)
-                {
-                    return valorCustoFinal;
-                }
-                else
-                {
-                    for (int i = 1; i <= subtracaoAno; i++)
-                    {
-                        valorCustoFinal += despesas[dataInicio.Year + i];
-                    }
-                }
-
-                return valorCustoFinal;
-            }
-        }
-
-        /// <summary>
         /// Retorna uma lista de projetos com o seu valor ajustado para o custo de acordo com o filtro
         /// </summary>
         /// <param name="mesInicio">Mês de inicio do filtro</param>
@@ -413,39 +357,7 @@ namespace BaseDeProjetos.Controllers
             return projetos;
         }
 
-        /// <summary>
-        /// Retorna o número médio de pesquisadores presentes em um determinado período
-        /// </summary>
-        /// <param name="anoInicial"></param>
-        /// <param name="anoFinal"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
-        internal double CalculoNumeroPesquisadores(int anoInicial, int anoFinal)
-        {
-            double qtdPesquisadores = 0;
-            if (anoInicial > anoFinal)
-            {
-                throw new ArgumentException($"{nameof(anoInicial)} não pode ser maior que {nameof(anoFinal)}");
-            }
 
-            if (anoInicial == anoFinal)
-            {
-                return pesquisadores[anoFinal];
-            }
-            else
-            {
-                int index = 0;
-
-                for (int i = anoInicial; i <= anoFinal; i++)
-                {
-                    qtdPesquisadores += pesquisadores[i];
-                    index++;
-                }
-
-                qtdPesquisadores /= index;
-                return qtdPesquisadores;
-            }
-        }
 
         /// <summary>
         /// Reatribui os valores de um projeto de acordo com uma data final de filtro
@@ -487,42 +399,9 @@ namespace BaseDeProjetos.Controllers
             projeto.ValorTotalProjeto = valorProjetoPorMes * qtdMeses;
         }
 
-        /// <summary>
-        /// Realiza o cálculo da média dos fatores
-        /// </summary>
-        /// <param name="participacoes"></param>
-        /// <param name="participacao"></param>
-        private static void CalcularMediaFatores(List<ParticipacaoTotalViewModel> participacoes, ParticipacaoTotalViewModel participacao)
-        {
-            decimal calculoMediaFatores = 0;
 
-            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoes, participacoes.Max(p => p.ValorTotalProspeccoes));
-            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.ValorMedioProspeccoes, participacoes.Max(p => p.ValorMedioProspeccoes));
-            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoes, participacoes.Max(p => p.QuantidadeProspeccoes));
-            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesLider, participacoes.Max(p => p.QuantidadeProspeccoesLider));
-            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesConvertidas, participacoes.Max(p => p.QuantidadeProspeccoesConvertidas));
-            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesComProposta, participacoes.Max(p => p.QuantidadeProspeccoesComProposta));
-            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.ValorMedioProspeccoesComProposta, participacoes.Max(p => p.ValorMedioProspeccoesComProposta));
-            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.TaxaConversaoProjeto, participacoes.Max(p => p.TaxaConversaoProjeto));
-            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.TaxaConversaoProposta, participacoes.Max(p => p.TaxaConversaoProposta));
-            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesMembro, participacoes.Max(p => p.QuantidadeProspeccoesMembro));
-            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.AssertividadePrecificacao, participacoes.Max(p => p.AssertividadePrecificacao));
-            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.ValorMedioProspeccoesConvertidas, participacoes.Max(p => p.ValorMedioProspeccoesConvertidas));
-            calculoMediaFatores += IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoesConvertidas, participacoes.Max(p => p.ValorTotalProspeccoesConvertidas));
 
-            participacao.MediaFatores = calculoMediaFatores /= 13;
-        }
 
-        /// <summary>
-        /// Filtra as prospecções passadas por parâmetro com status do mês e ano inicial até o mês e ano final
-        /// </summary>
-        /// <returns></returns>
-        private static List<Prospeccao> FiltrarProspeccoesPorPeriodo(DateTime dataInicio, DateTime dataFim, List<Prospeccao> prospeccoes)
-        {
-            return prospeccoes
-                .Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Data >= dataInicio && p.Status.OrderBy(f => f.Data).LastOrDefault().Data <= dataFim)
-                .ToList();
-        }
 
         /// <summary>
         /// Atribui os rankings as participações passadas por parâmetro, para que sejam exibidas na View. Valores de 0 a 1
@@ -547,7 +426,7 @@ namespace BaseDeProjetos.Controllers
 
             foreach (var participacao in participacoes)
             {
-                CalcularMediaFatores(participacoes, participacao);
+                CalculosParticipacao.CalcularMediaFatores(participacoes, participacao);
 
                 RankParticipacao rp = new RankParticipacao
                 {
@@ -595,7 +474,7 @@ namespace BaseDeProjetos.Controllers
             participacao.TaxaConversaoProposta = IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesComProposta, participacao.QuantidadeProspeccoes);
             participacao.TaxaConversaoProjeto = IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesConvertidas, participacao.QuantidadeProspeccoesComProposta);
 
-            decimal despesaIsiMeses = CalculoDespesa(dataInicio, dataFim);
+            decimal despesaIsiMeses = CalculosParticipacao.CalculoDespesa(dataInicio, dataFim, despesas);
             decimal valorTotalProjetosParaFCF = await ExtrairValorProjetos(usuario, dataInicio, dataFim);
 
             // projetos convertidos / despesa
@@ -665,7 +544,7 @@ namespace BaseDeProjetos.Controllers
                     qtdMembros = qtdBolsistas + qtdEstagiarios + qtdPesquisadores;
                 }
 
-                Dictionary<string, decimal> calculoParticipantes = CalculoParticipacao(qtdPesquisadores, qtdBolsistas, qtdEstagiarios);
+                Dictionary<string, decimal> calculoParticipantes = CalculosParticipacao.CalculoParticipacao(qtdPesquisadores, qtdBolsistas, qtdEstagiarios);
 
                 var valorLider = calculoParticipantes["percentualLider"] * prospeccao.ValorProposta;
                 var valorPesquisadores = calculoParticipantes["percentualPesquisadores"] * prospeccao.ValorProposta;
@@ -748,10 +627,10 @@ namespace BaseDeProjetos.Controllers
         /// <param name="usuario"></param>
         /// <param name="participacao"></param>
         /// <param name="prospeccoesUsuario"></param>
-        private void AtribuirQuantidadesDeProspeccao(Usuario usuario, ParticipacaoTotalViewModel participacao, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
+        private void AtribuirQuantidadesDeProspeccao(Usuario usuario, ParticipacaoTotalViewModel participacao, ProspeccoesUsuarioParticipacao prospeccoesUsuario, ApplicationDbContext _context)
         {
-            decimal quantidadeProspeccoesComPropostaPeso = CalcularQuantidadeDeProspeccoesComProposta(usuario, prospeccoesUsuario);
-            decimal quantidadeProspeccoesConvertidasPeso = CalcularQuantidadeDeProspeccoesConvertidas(usuario, prospeccoesUsuario);
+            decimal quantidadeProspeccoesComPropostaPeso = CalculosParticipacao.CalcularQuantidadeDeProspeccoesComProposta(usuario, prospeccoesUsuario, _context);
+            decimal quantidadeProspeccoesConvertidasPeso = CalculosParticipacao.CalcularQuantidadeDeProspeccoesConvertidas(usuario, prospeccoesUsuario, _context);
 
             participacao.QuantidadeProspeccoes = prospeccoesUsuario.ProspeccoesTotais.Count();
             participacao.QuantidadeProspeccoesComProposta = quantidadeProspeccoesComPropostaPeso;
@@ -767,230 +646,25 @@ namespace BaseDeProjetos.Controllers
         /// <param name="dataInicio"></param>
         /// <param name="dataFim"></param>
         /// <param name="participacao"></param>
-        private void AtribuirValoresFinanceirosDeProspeccao(Usuario usuario, ParticipacaoTotalViewModel participacao, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
+        private void AtribuirValoresFinanceirosDeProspeccao(Usuario usuario, ParticipacaoTotalViewModel participacao, ProspeccoesUsuarioParticipacao prospeccoesUsuario, ApplicationDbContext _context)
         {
-            participacao.ValorTotalProspeccoes = ExtrairValorProspeccoes(prospeccoesUsuario.ProspeccoesTotais, usuario);
-            participacao.ValorTotalProspeccoesComProposta = ExtrairValorProspeccoes(prospeccoesUsuario.ProspeccoesTotaisComProposta, usuario);
-            participacao.ValorTotalProspeccoesConvertidas = ExtrairValorProspeccoes(prospeccoesUsuario.ProspeccoesTotaisConvertidas, usuario);
+            participacao.ValorTotalProspeccoes = ExtrairValorProspeccoes(prospeccoesUsuario.ProspeccoesTotais, usuario, _context);
+            participacao.ValorTotalProspeccoesComProposta = ExtrairValorProspeccoes(prospeccoesUsuario.ProspeccoesTotaisComProposta, usuario, _context);
+            participacao.ValorTotalProspeccoesConvertidas = ExtrairValorProspeccoes(prospeccoesUsuario.ProspeccoesTotaisConvertidas, usuario, _context);
             participacao.ValorMedioProspeccoes = IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoes, participacao.QuantidadeProspeccoes);
             participacao.ValorMedioProspeccoesComProposta = IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoesComProposta, participacao.QuantidadeProspeccoesComProposta);
             participacao.ValorMedioProspeccoesConvertidas = IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoesConvertidas, Math.Ceiling(participacao.QuantidadeProspeccoesConvertidas));
         }
 
-        /// <summary>
-        /// Calcula a quantidade de prospeccoes do usuario de acordo com suas prospeccoes
-        /// </summary>
-        /// <param name="usuario"></param>
-        /// <param name="prospeccoesUsuario"></param>
-        /// <returns></returns>
-        private decimal CalcularQuantidadeDeProspeccoes(Usuario usuario, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
-        {
-            decimal quantidadeProspeccoesComPeso = 0;
 
-            foreach (var prospeccao in prospeccoesUsuario.ProspeccoesTotais)
-            {
-                var membrosEquipe = TratarMembrosEquipeString(prospeccao);
 
-                if (prospeccao.Usuario.Id == usuario.Id)
-                {
-                    var percBolsista = CalculoPercentualBolsista(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoBolsista).Count());
-                    var percEstagiario = CalculoPercentualEstagiario(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoEstagiário).Count());
-                    var percPesquisador = CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
 
-                    var percLider = 1 - (percBolsista + percEstagiario + percPesquisador);
 
-                    quantidadeProspeccoesComPeso += percLider;
-                }
-                else if (prospeccao.MembrosEquipe.Contains(usuario.Email))
-                {
-                    quantidadeProspeccoesComPeso += CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
-                }
-            }
 
-            return quantidadeProspeccoesComPeso;
-        }
 
-        /// <summary>
-        /// Calcula a quantidade de prospeccoes com proposta de acordo com um usuario e suas prospeccoes
-        /// </summary>
-        /// <param name="usuario"></param>
-        /// <param name="prospeccoesUsuario"></param>
-        /// <returns></returns>
-        private decimal CalcularQuantidadeDeProspeccoesComProposta(Usuario usuario, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
-        {
-            decimal quantidadeProspeccoesComProposta = 0;
 
-            foreach (var prospeccao in prospeccoesUsuario.ProspeccoesTotais)
-            {
-                if (prospeccao.Status.Any(f => f.Status == StatusProspeccao.ComProposta || f.Status == StatusProspeccao.Convertida))
-                {
-                    var membrosEquipe = TratarMembrosEquipeString(prospeccao);
 
-                    if (prospeccao.Usuario.Id == usuario.Id)
-                    {
-                        var percBolsista = CalculoPercentualBolsista(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoBolsista).Count());
-                        var percEstagiario = CalculoPercentualEstagiario(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoEstagiário).Count());
-                        var percPesquisador = CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
 
-                        var percLider = 1 - (percBolsista + percEstagiario + percPesquisador);
-
-                        quantidadeProspeccoesComProposta += percLider;
-                    }
-                    else if (prospeccao.MembrosEquipe.Contains(usuario.Email))
-                    {
-                        quantidadeProspeccoesComProposta += CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
-                    }
-                }
-            }
-
-            return Math.Round(quantidadeProspeccoesComProposta);
-        }
-
-        /// <summary>
-        /// Calcula a quantidade de prospeccoes convertidas de acordo com um usuario e suas prospeccoes
-        /// </summary>
-        /// <param name="usuario"></param>
-        /// <param name="prospeccoesUsuario"></param>
-        /// <returns></returns>
-        private decimal CalcularQuantidadeDeProspeccoesConvertidas(Usuario usuario, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
-        {
-            decimal quantidadeProspeccoesConvertidas = 0;
-
-            foreach (var prospeccao in prospeccoesUsuario.ProspeccoesTotais)
-            {
-                if (prospeccao.Status.Any(f => f.Status == StatusProspeccao.Convertida))
-                {
-                    var membrosEquipe = TratarMembrosEquipeString(prospeccao);
-
-                    if (prospeccao.Usuario.Id == usuario.Id)
-                    {
-                        var percBolsista = CalculoPercentualBolsista(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoBolsista).Count());
-                        var percEstagiario = CalculoPercentualEstagiario(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoEstagiário).Count());
-                        var percPesquisador = CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
-
-                        var percLider = 1 - (percBolsista + percEstagiario + percPesquisador);
-
-                        quantidadeProspeccoesConvertidas += percLider;
-                    }
-                    else
-                    {
-                        quantidadeProspeccoesConvertidas += CalculoPercentualPesquisador(membrosEquipe.Count() + 1, membrosEquipe.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count());
-                    }
-                }
-            }
-
-            return quantidadeProspeccoesConvertidas;
-        }
-
-        /// <summary>
-        /// Ajusta o valor do FCF de acordo com a média de todas as participacões para cada participação
-        /// </summary>
-        /// <param name="participacoes"></param>
-        private void CalcularValorSobreMediaDoFCF(List<ParticipacaoTotalViewModel> participacoes)
-        {
-            decimal mediaFatorContribuicaoFinanceira = participacoes.Average(p => p.FatorContribuicaoFinanceira);
-
-            foreach (var participacao in participacoes)
-            {
-                if (mediaFatorContribuicaoFinanceira != 0)
-                {
-                    participacao.FatorContribuicaoFinanceira /= mediaFatorContribuicaoFinanceira;
-                }
-                else
-                {
-                    participacao.FatorContribuicaoFinanceira = 0;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Efetua o cálculo relativo à participação de cada tipo de membro de acordo com a quantidade de membros de uma equipe
-        /// </summary>
-        /// <param name="qtdPesquisadores">Número de Pesquisadores no Projeto</param>
-        /// <param name="qtdBolsistas">Número de Bolsistas no Projeto</param>
-        /// <param name="qtdEstagiarios">Número de Estagiários no Projeto</param>
-        /// <returns></returns>
-        private Dictionary<string, decimal> CalculoParticipacao(int qtdPesquisadores, int qtdBolsistas, int qtdEstagiarios)
-        {
-            int numeroMembros = 1 + qtdPesquisadores + qtdBolsistas + qtdEstagiarios;
-
-            decimal percentualPorPesquisador = CalculoPercentualPesquisador(numeroMembros, qtdPesquisadores);
-            decimal percentualPorBolsista = CalculoPercentualBolsista(numeroMembros, qtdBolsistas);
-            decimal percentualPorEstagiario = CalculoPercentualEstagiario(numeroMembros, qtdEstagiarios);
-
-            decimal percentualTodosPesquisadores = percentualPorPesquisador * qtdPesquisadores;
-            decimal percentualTodosBolsistas = percentualPorBolsista * qtdBolsistas;
-            decimal percentualTodosEstagiarios = percentualPorEstagiario * qtdEstagiarios;
-            decimal percentualLider = 1 - (percentualTodosBolsistas + percentualTodosEstagiarios + percentualTodosPesquisadores);
-
-            return new Dictionary<string, decimal>
-            {
-                { "percentualPesquisadores", percentualTodosPesquisadores },
-                { "percentualBolsistas", percentualTodosBolsistas },
-                { "percentualEstagiarios", percentualTodosEstagiarios },
-                { "percentualLider", percentualLider },
-                { "percentualPorPesquisador", percentualPorPesquisador },
-                { "percentualPorBolsista", percentualPorBolsista },
-                { "percentualPorEstagiario", percentualPorEstagiario },
-            };
-        }
-
-        /// <summary>
-        /// Método para cálculo da porcentagem relativa ao bolsista
-        /// </summary>
-        /// <param name="numeroMembros">Número de membros no projeto</param>
-        /// <param name="bolsistas">Número de bolsistas no projeto</param>
-        /// <returns></returns>
-        private decimal CalculoPercentualBolsista(decimal numeroMembros, decimal bolsistas)
-        {
-            if (bolsistas == 0)
-            {
-                return 0;
-            }
-            else
-            {
-                decimal resultado = (1 - (1 / numeroMembros)) * 3 / 10 * (1 / (bolsistas + 1));
-                return resultado;
-            }
-        }
-
-        /// <summary>
-        /// Método para cálculo da porcentagem relativa ao estagiário
-        /// </summary>
-        /// <param name="numeroMembros">Número de membros no projeto</param>
-        /// <param name="estagiarios">Número de estagiários no projeto</param>
-        /// <returns></returns>
-        private decimal CalculoPercentualEstagiario(decimal numeroMembros, decimal estagiarios)
-        {
-            if (estagiarios == 0)
-            {
-                return 0;
-            }
-            else
-            {
-                decimal percentual = (1 - 1 / numeroMembros) * 1 / 10 * (1 / (estagiarios + 1));
-                return percentual;
-            }
-        }
-
-        /// <summary>
-        /// Método para calculo da porcentagem relativa ao pesquisador
-        /// </summary>
-        /// <param name="numeroMembros">Número de membros no projeto (inclui o lider)</param>
-        /// <param name="qtdPesquisadores">Número de pesquisadores no projeto</param>
-        /// <returns></returns>
-        private decimal CalculoPercentualPesquisador(decimal numeroMembros, decimal qtdPesquisadores)
-        {
-            if (qtdPesquisadores == 0)
-            {
-                return 0;
-            }
-            else
-            {
-                decimal percentual = (1 - (1 / numeroMembros)) * 3 / 5 * (1 / (qtdPesquisadores + 1));
-                return percentual;
-            }
-        }
 
         /// <summary>
         /// Obtém os rankings médios para serem utilizados no gráfico de aranha
@@ -1057,14 +731,14 @@ namespace BaseDeProjetos.Controllers
 
                 _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).Include(p => p.Empresa).Include(p => p.Status).ToListAsync());
 
-                var participacoes = await GetParticipacoesTotaisUsuarios(new DateTime(2021, 01, 01), new DateTime(DateTime.Now.Year, 12, 31));
+                var participacoes = await GetParticipacoesTotaisUsuarios(new DateTime(2021, 01, 01), new DateTime(DateTime.Now.Year, 12, 31), _context);
                 Dictionary<string, object> dadosGrafico = new Dictionary<string, object>();
                 List<decimal> rankingsMedios = new List<decimal>();
 
                 if (participacoes.Count > 0)
                 {
                     RankearParticipacoes(participacoes, true);
-                    CalcularValorSobreMediaDoFCF(participacoes);
+                    CalculosParticipacao.CalcularValorSobreMediaDoFCF(participacoes);
                     ObterRankingsMediosGrafico(participacoes);
                 }
 
@@ -1178,7 +852,7 @@ namespace BaseDeProjetos.Controllers
         /// <param name="prospeccoes"></param>
         /// <param name="valorTotalProspeccoes"></param>
         /// <returns></returns>
-        private decimal ExtrairValorProspeccoes(List<Prospeccao> prospeccoes, Usuario usuario)
+        private decimal ExtrairValorProspeccoes(List<Prospeccao> prospeccoes, Usuario usuario, ApplicationDbContext _context)
         {
             decimal valorProspeccoes = 0;
 
@@ -1187,15 +861,15 @@ namespace BaseDeProjetos.Controllers
                 // Verificar se a prospecção tem como líder o usuário passado ou se a prospecção tem como membro o usuário passado
                 if (prospeccao.Usuario.Id == usuario.Id || (prospeccao.MembrosEquipe?.Contains(usuario.Email) ?? false))
                 {
-                    List<Usuario> membrosProspeccao = TratarMembrosEquipeString(prospeccao);
+                    List<Usuario> membrosProspeccao = ParticipacaoHelper.TratarMembrosEquipeString(prospeccao, _context);
                     // TODO: Remover hardcoding no futuro!!
                     int qtdBolsistas = membrosProspeccao.Where(m => m.Cargo?.Nome == nomeCargoBolsista).Count();
                     int qtdPesquisadores = membrosProspeccao.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count();
                     int qtdEstagiarios = membrosProspeccao.Where(m => m.Cargo?.Nome == nomeCargoEstagiário).Count();
 
-                    decimal percentualPesquisador = CalculoPercentualPesquisador(1 + membrosProspeccao.Count, qtdPesquisadores);
-                    decimal percentualBolsista = CalculoPercentualBolsista(1 + membrosProspeccao.Count, qtdBolsistas);
-                    decimal percentualEstagiario = CalculoPercentualEstagiario(1 + membrosProspeccao.Count, qtdEstagiarios);
+                    decimal percentualPesquisador = CalculosParticipacao.CalculoPercentualPesquisador(1 + membrosProspeccao.Count, qtdPesquisadores);
+                    decimal percentualBolsista = CalculosParticipacao.CalculoPercentualBolsista(1 + membrosProspeccao.Count, qtdBolsistas);
+                    decimal percentualEstagiario = CalculosParticipacao.CalculoPercentualEstagiario(1 + membrosProspeccao.Count, qtdEstagiarios);
                     decimal percentualLider = 1 - (percentualBolsista + percentualPesquisador + percentualEstagiario);
 
                     decimal percentualTotalPesquisador = percentualPesquisador * qtdPesquisadores;
@@ -1254,24 +928,7 @@ namespace BaseDeProjetos.Controllers
             return valorProspeccoes;
         }
 
-        /// <summary>
-        /// Filtrar os projetos passados por parâmetro até a data de encerramento
-        /// </summary>
-        /// <param name="mesFim"></param>
-        /// <param name="anoFim"></param>
-        /// <param name="projetosUsuario"></param>
-        /// <returns></returns>
-        private List<Projeto> FiltrarProjetosPorPeriodo(string mesFim, string anoFim, List<Projeto> projetos)
-        {
-            int yearFim = int.Parse(anoFim);
-            int monthFim = int.Parse(mesFim);
 
-            DateTime dataFiltro = new DateTime(yearFim, monthFim, DateTime.DaysInMonth(yearFim, monthFim));
-
-            return projetos
-                .Where(p => dataFiltro <= p.DataEncerramento)
-                .ToList();
-        }
 
         /// <summary>
         /// Filtra as prospecções do usuario de acordo com a data de inicio e data de fim do filtro
@@ -1281,11 +938,11 @@ namespace BaseDeProjetos.Controllers
         /// <param name="dataFim"></param>
         private void PeriodizarProspeccoesUsuario(ProspeccoesUsuarioParticipacao prospeccoes, DateTime dataInicio, DateTime dataFim)
         {
-            prospeccoes.ProspeccoesMembro = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesMembro);
-            prospeccoes.ProspeccoesLider = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesLider);
-            prospeccoes.ProspeccoesTotais = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesTotais);
-            prospeccoes.ProspeccoesTotaisComProposta = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesTotaisComProposta);
-            prospeccoes.ProspeccoesTotaisConvertidas = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesTotaisConvertidas);
+            prospeccoes.ProspeccoesMembro = ParticipacaoHelper.FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesMembro);
+            prospeccoes.ProspeccoesLider = ParticipacaoHelper.FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesLider);
+            prospeccoes.ProspeccoesTotais = ParticipacaoHelper.FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesTotais);
+            prospeccoes.ProspeccoesTotaisComProposta = ParticipacaoHelper.FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesTotaisComProposta);
+            prospeccoes.ProspeccoesTotaisConvertidas = ParticipacaoHelper.FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesTotaisConvertidas);
         }
 
         /// <summary>
@@ -1293,7 +950,7 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="usuario">Usuário do sistema a ter participações retornadas</param>
         /// <returns></returns>
-        private async Task<ParticipacaoTotalViewModel> GetParticipacaoTotalUsuario(Usuario usuario, DateTime dataInicio, DateTime dataFim)
+        private async Task<ParticipacaoTotalViewModel> GetParticipacaoTotalUsuario(Usuario usuario, DateTime dataInicio, DateTime dataFim, ApplicationDbContext _context)
         {
             ParticipacaoTotalViewModel participacao = new ParticipacaoTotalViewModel
             {
@@ -1314,8 +971,8 @@ namespace BaseDeProjetos.Controllers
             // TODO: Computar range do gráfico? (Obs: eu acho que faz mais sentido a lógica referente ao grafico estar abstraída em outro lugar...)
             await AtribuirParticipacoesIndividuais(participacao, prospeccoesUsuario.ProspeccoesTotais);
 
-            AtribuirQuantidadesDeProspeccao(usuario, participacao, prospeccoesUsuario);
-            AtribuirValoresFinanceirosDeProspeccao(usuario, participacao, prospeccoesUsuario);
+            AtribuirQuantidadesDeProspeccao(usuario, participacao, prospeccoesUsuario, _context);
+            AtribuirValoresFinanceirosDeProspeccao(usuario, participacao, prospeccoesUsuario, _context);
 
             await AtribuirAssertividadePrecificacao(usuario, dataInicio, dataFim, participacao, prospeccoesUsuario);
 
@@ -1333,10 +990,10 @@ namespace BaseDeProjetos.Controllers
         private ProspeccoesUsuarioParticipacao ObterProspeccoesUsuario(Usuario usuario)
         {
             var prospeccoesTotais = GetProspeccoesUsuarioMembroEquipe(usuario);
-            var prospeccoesTotaisConvertidas = FiltrarProspeccoesConvertidas(prospeccoesTotais);
-            var prospeccoesTotaisComProposta = FiltrarProspeccoesComProposta(prospeccoesTotais);
+            var prospeccoesTotaisConvertidas = ParticipacaoHelper.FiltrarProspeccoesConvertidas(prospeccoesTotais);
+            var prospeccoesTotaisComProposta = ParticipacaoHelper.FiltrarProspeccoesComProposta(prospeccoesTotais);
             var prospeccoesLider = GetProspeccoesUsuarioLider(usuario);
-            var prospeccoesLiderConvertidas = FiltrarProspeccoesConvertidas(prospeccoesLider);
+            var prospeccoesLiderConvertidas = ParticipacaoHelper.FiltrarProspeccoesConvertidas(prospeccoesLider);
             var prospeccoesMembro = GetProspeccoesUsuarioMembro(usuario);
 
 
@@ -1352,26 +1009,13 @@ namespace BaseDeProjetos.Controllers
             return prospeccoesUsuario;
         }
 
-        /// <summary>
-        /// Filtra as prospecções que possuam status "Com Proposta"
-        /// Convertidas também se incluem de acordo com a logica
-        /// </summary>
-        /// <param name="prospeccoes"></param>
-        /// <returns></returns>
-        private List<Prospeccao> FiltrarProspeccoesComProposta(List<Prospeccao> prospeccoes)
-        {
-            return prospeccoes.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida || p.Status.Any(f => f.Status == StatusProspeccao.ComProposta))).ToList();
-        }
 
         /// <summary>
         /// Obtém uma lista de participações de todos os usuários, com base na casa do usuário que está acessando.
         /// </summary>
         /// <returns></returns>
-        private async Task<List<ParticipacaoTotalViewModel>> GetParticipacoesTotaisUsuarios(DateTime dataInicio, DateTime dataFim)
+        private async Task<List<ParticipacaoTotalViewModel>> GetParticipacoesTotaisUsuarios(DateTime dataInicio, DateTime dataFim, ApplicationDbContext _context)
         {
-            // TODO: Isso precisava mesmo estar aqui?
-            ViewbagizarUsuario(_context, _cache);
-
             List<UsuarioParticipacaoDTO> usuariosDTO;
 
             // Obs: Incluir pesquisadores da Q4.0 que façam prospecções abaixo. Eles possuem nível 3/2 logo podem acabar não apareçendo na listagem de participação
@@ -1394,7 +1038,7 @@ namespace BaseDeProjetos.Controllers
 
             foreach (var usuarioDTO in usuariosDTO)
             {
-                var participacao = await GetParticipacaoTotalUsuario(usuarioDTO.ToUsuario(), dataInicio, dataFim);
+                var participacao = await GetParticipacaoTotalUsuario(usuarioDTO.ToUsuario(), dataInicio, dataFim, _context);
 
                 if (participacao != null)
                 {
@@ -1436,15 +1080,7 @@ namespace BaseDeProjetos.Controllers
             return _prospeccoes.Where(p => p.Usuario.Id == usuario.Id && p.Status.OrderBy(f => f.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
         }
 
-        /// <summary>
-        /// Filtra a lista de prospecções para obter as convertidas
-        /// </summary>
-        /// <param name="prospeccoes"></param>
-        /// <returns></returns>
-        private List<Prospeccao> FiltrarProspeccoesConvertidas(List<Prospeccao> prospeccoes)
-        {
-            return prospeccoes.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida)).ToList();
-        }
+
 
         /// <summary>
         /// Obter todas as prospecções em que o usuário é um membro (apenas)
@@ -1488,40 +1124,6 @@ namespace BaseDeProjetos.Controllers
             return participacoes;
         }
 
-        private List<Usuario> TratarMembrosEquipeString(Prospeccao prospeccao)
-        {
-            List<string> membrosNaoTratados = prospeccao.MembrosEquipe?.Split(";").ToList();
-            List<UsuarioParticipacaoDTO> usuarios = _context.Users
-                .Select(u => new UsuarioParticipacaoDTO
-                {
-                    Cargo = new CargoDTO { Nome = u.Cargo.Nome, Id = u.Cargo.Id },
-                    Casa = u.Casa,
-                    Email = u.Email,
-                    EmailConfirmed = u.EmailConfirmed,
-                    Nivel = u.Nivel,
-                    Id = u.Id,
-                    UserName = u.UserName
-                })
-                .ToList();
 
-            List<Usuario> membrosEquipe = new List<Usuario>();
-
-            if (membrosNaoTratados != null)
-            {
-                foreach (var membro in membrosNaoTratados)
-                {
-                    if (!string.IsNullOrEmpty(membro))
-                    {
-                        Usuario usuarioEquivalente = usuarios.Find(u => u.Email == membro).ToUsuario();
-                        if (usuarioEquivalente != null)
-                        {
-                            membrosEquipe.Add(usuarioEquivalente);
-                        }
-                    }
-                }
-            }
-
-            return membrosEquipe;
-        }
     }
 }
