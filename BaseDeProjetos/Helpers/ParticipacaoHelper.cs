@@ -1,11 +1,12 @@
 ﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.DTOs;
 using BaseDeProjetos.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BaseDeProjetos.Models.Helpers
+namespace BaseDeProjetos.Helpers
 {
     public class ParticipacaoHelper
     {

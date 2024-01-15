@@ -1,15 +1,16 @@
 ﻿using BaseDeProjetos.Controllers;
 using BaseDeProjetos.Data;
-using BaseDeProjetos.Helpers;
+using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.Enums;
+using BaseDeProjetos.Models.Helpers;
 using BaseDeProjetos.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BaseDeProjetos.Models.Helpers
+namespace BaseDeProjetos.Helpers
 {
-    public class CalculosParticipacao : SGIController
+    public class CalculosParticipacao
     {
         private const string nomeCargoBolsista = "Pesquisador Bolsista";
         private const string nomeCargoEstagiário = "Estagiário";
@@ -275,7 +276,7 @@ namespace BaseDeProjetos.Models.Helpers
             }
             else
             {
-                decimal resultado = (1 - (1 / numeroMembros)) * 3 / 10 * (1 / (bolsistas + 1));
+                decimal resultado = (1 - 1 / numeroMembros) * 3 / 10 * (1 / (bolsistas + 1));
                 return resultado;
             }
         }
@@ -313,10 +314,10 @@ namespace BaseDeProjetos.Models.Helpers
             }
             else
             {
-                decimal percentual = (1 - (1 / numeroMembros)) * 3 / 5 * (1 / (qtdPesquisadores + 1));
+                decimal percentual = (1 - 1 / numeroMembros) * 3 / 5 * (1 / (qtdPesquisadores + 1));
                 return percentual;
             }
         }
     }
-    
+
 }
