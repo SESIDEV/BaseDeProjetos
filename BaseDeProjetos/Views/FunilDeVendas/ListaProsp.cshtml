@@ -111,18 +111,11 @@
                                     {
                                         <span class="badge bg-danger">Sem Líder</span>
                                     }
-                                    @if (prospeccao.MembrosEquipe != null)
+                                    @if (prospeccao.EquipeProspeccao != null)
                                     {
-                                        foreach (var item in prospeccao.MembrosEquipe.Split(";"))
+                                        @foreach (var membro in prospeccao.EquipeProspeccao)
                                         {
-                                            if (item != "")
-                                            {
-                                                var user = usuarios.Where(u => u.Email == item).FirstOrDefault();
-                                                if (user != null)
-                                                {
-                                                    <span class="badge bg-info">@user.UserName</span>
-                                                }
-                                            }
+                                            <span class="badge bg-info">@membro.Usuario.UserName</span>
                                         }
                                     }
                                 </td>
