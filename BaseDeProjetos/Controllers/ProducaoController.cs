@@ -20,9 +20,10 @@ namespace BaseDeProjetos.Controllers
 
         private readonly DbCache _cache;
 
-        public ProducaoController(ApplicationDbContext context)
+        public ProducaoController(ApplicationDbContext context, DbCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         // GET: Producao
