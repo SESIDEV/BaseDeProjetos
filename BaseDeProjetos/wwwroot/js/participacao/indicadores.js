@@ -1,4 +1,28 @@
-﻿async function puxarDados(nomeIndicador) {
+﻿// TipoDado: F = Financeiro, f = float, flutuante, i = inteiro (case-sensitive)
+
+const indicadoresFinanceiros = [
+    { id: "ValorTotalProspeccoes", nome: "Valor Total das Prospecções", tipoDado: 'F' },
+    { id: "ValorMedioProspeccoes", nome: "Valor Médio das Prospecções", tipoDado: 'F' },
+    { id: "ValorTotalProspeccoesComProposta", nome: "Valor Total das Prospecções em Proposta", tipoDado: 'F' },
+    { id: "ValorMedioProspeccoesComProposta", nome: "Valor Médio das Prospecções em Proposta", tipoDado: 'F' },
+    { id: "ValorTotalProspeccoesConvertidas", nome: "Valor Total das Prospecções Convertidas", tipoDado: 'F' },
+    { id: "ValorMedioProspeccoesConvertidas", nome: "Valor Médio das Prospecções Convertidas", tipoDado: 'F' },
+];
+
+const indicadoresContribuicao = [
+    { id: "QuantidadeProspeccoes", nome: "Quantidade de Prospecções", tipoDado: 'i' },
+    { id: "QuantidadeProspeccoesLider", nome: "Quantidade de Prospecções (Líder)", tipoDado: 'i' },
+    { id: "QuantidadeProspeccoesMembro", nome: "Quantidade de Prospecções (Membro)", tipoDado: 'i' },
+    { id: "TaxaConversaoProposta", nome: "Taxa de Conversão em Proposta", tipoDado: 'p' },
+    { id: "TaxaConversaoProjeto", nome: "Taxa de Conversão em Projetos", tipoDado: 'p' },
+    { id: "QuantidadeProjetos", nome: "Quantidade de Projetos", tipoDado: 'i' },
+    { id: "QuantidadeProspeccoesComProposta", nome: "Quantidade de Prospecções em Proposta", tipoDado: 'i' },
+    { id: "QuantidadeProspeccoesConvertidas", nome: "Quantidade de Prospecções Convertidas", tipoDado: 'i' },
+    { id: "AssertividadePrecificacao", nome: "Assertividade na Precificação", tipoDado: 'f' },
+    { id: "FatorContribuicaoFinanceira", nome: "Fator de Contribuição Financeira", tipoDado: 'f' },
+    { id: "MediaFatores", nome: "Média dos Fatores", tipoDado: 'f' },
+];
+async function puxarDados(nomeIndicador) {
     let url = `/Participacao/RetornarDadosIndicador/?nomeIndicador=${nomeIndicador}`;
 
     if (dataInicio) {
@@ -27,27 +51,13 @@ function criarTableDataComClasseCell(conteudo) {
     return tableData
 }
 
-function resetTabelaPesquisadores() {
-    let corpoTabela = document.querySelector("#corpoTabelaPesquisadores");
-    let tabelaContentsReset = "<tr>" +
-        "<td><div class='mt-2 mb-2 spinner-border text-primary'></div></td>" +
-        "<td><div class='mt-2 mb-2 spinner-border text-primary'></div></td>" +
-        "<td><div class='mt-2 mb-2 spinner-border text-primary'></div></td>" +
-        "</tr>";
-    corpoTabela.innerHTML = tabelaContentsReset;
 
-    let tituloPesquisador = document.querySelector("#tituloPesquisador");
-    tituloPesquisador.innerText = "Indicadores do Pesquisador: ";
-
-    let collapsePesquisador = document.querySelector("#collapsePesquisador");
-    collapsePesquisador.classList.remove("show");
-}
 
 function criarLinhaPesquisadorIndicador(indicador, tipoDado) {
     let pesquisador = indicador["Pesquisador"]["UserName"];
     let valor = formatarValor(tipoDado, indicador);
     let rank = indicador["Rank"].toFixed(2);
-    let conteudosDetalhe = `<a href='#' data-bs-toggle='collapse' data-bs-target='#collapsePesquisador' onmouseover=resetTabelaPesquisadores() onclick=puxarPesquisador("${indicador['Pesquisador']['Id']}")>Ver mais</a>`
+    let conteudosDetalhe = `<a href='#' onclick=puxarPesquisador("${indicador['Pesquisador']['Id']}")>Ver mais</a>`
 
     let tableRow = document.createElement("tr");
     let tableDataPesquisador = criarTableDataComClasseCell(pesquisador);
@@ -138,21 +148,46 @@ async function puxarIndicador(identificadorIndicador, nomeIndicador, tipoDado) {
     }
 }
 
+
+function criarTabelaLoading(quantidadeColunas) {
+    let tableRowReset = document.createElement("tr");
+    let classesDiv = ["mt-2", "mb-2", "spinner-border", "text-primary"];
+
+    for (let i = 1; i <= quantidadeColunas; i++) {
+        let tableDataReset = document.createElement("td");
+        let divDataReset = document.createElement("div");
+
+        divDataReset.classList.add(...classesDiv);
+        tableDataReset.appendChild(divDataReset);
+
+        tableRowReset.appendChild(tableDataReset);
+    }
+
+    return tableRowReset;
+}
+
 function resetTabela() {
     let tituloIndicador = document.querySelector("#tituloIndicador");
     let corpoTabela = document.querySelector("#corpoTabela");
     let collapseIndicador = document.querySelector("#collapseIndicador");
     tituloIndicador.innerText = "Carregando indicador...";
 
-    let tabelaContentsReset = "<tr>" +
-        "<td><div class='mt-2 mb-2 spinner-border text-primary'></div></td>" +
-        "<td><div class='mt-2 mb-2 spinner-border text-primary'></div></td>" +
-        "<td><div class='mt-2 mb-2 spinner-border text-primary'></div></td>" +
-        "<td><div class='mt-2 mb-2 spinner-border text-primary'></div></td>" +
-        "</tr>";
+    let tableRowReset = criarTabelaLoading(4);
 
-    corpoTabela.innerHTML = tabelaContentsReset;
+    corpoTabela.appendChild(tableRowReset);
     collapseIndicador.classList.remove("show");
+}
+
+function resetTabelaPesquisadores() {
+    let corpoTabela = document.querySelector("#corpoTabelaPesquisadores");
+    let tabelaContentsReset = criarTabelaLoading(3);
+    corpoTabela.innerHTML = "";
+    corpoTabela.appendChild(tabelaContentsReset);
+
+    let tituloPesquisador = document.querySelector("#tituloPesquisador");
+    tituloPesquisador.innerText = "Indicadores do Pesquisador: ";
+
+    let collapsePesquisador = document.querySelector("#collapsePesquisador");
 }
 
 function popularDropdown(idDropdown, indicadores) {
@@ -172,9 +207,20 @@ function popularDropdown(idDropdown, indicadores) {
 }
 
 async function puxarPesquisador(idPesquisador) {
+    let collapsePesquisador = document.querySelector("#collapsePesquisador");
+    if (!collapsePesquisador.classList.contains("show")) {
+        collapsePesquisador.classList.add("show");
+    }
+    else {
+        resetTabelaPesquisadores();
+    }
+
+
+
     try {
         let dadosPesquisador = await puxarDadosPesquisador(idPesquisador);
         inicializarTabelaPesquisadores(dadosPesquisador);
+        collapsePesquisador.classList.add("show");
     } catch (error) {
         console.error(error);
     }
@@ -199,31 +245,6 @@ async function puxarDadosPesquisador(id) {
 }
 
 function inicializarTabelaPesquisadores(dadosPesquisador) {
-    // TipoDado: F = Financeiro, f = float, flutuante, i = inteiro (case-sensitive)
-    const indicadoresFinanceiros = [
-        { id: "ValorTotalProspeccoes", nome: "Valor Total das Prospecções", tipoDado: 'F' },
-        { id: "ValorMedioProspeccoes", nome: "Valor Médio das Prospecções", tipoDado: 'F' },
-        { id: "ValorTotalProspeccoesComProposta", nome: "Valor Total das Prospecções em Proposta", tipoDado: 'F' },
-        { id: "ValorMedioProspeccoesComProposta", nome: "Valor Médio das Prospecções em Proposta", tipoDado: 'F' },
-        { id: "ValorTotalProspeccoesConvertidas", nome: "Valor Total das Prospecções Convertidas", tipoDado: 'F' },
-        { id: "ValorMedioProspeccoesConvertidas", nome: "Valor Médio das Prospecções Convertidas", tipoDado: 'F' },
-    ];
-
-    // TipoDado: F = Financeiro, f = float, flutuante, i = inteiro (case-sensitive)
-    const indicadoresContribuicao = [
-        { id: "QuantidadeProspeccoes", nome: "Quantidade de Prospecções", tipoDado: 'i' },
-        { id: "QuantidadeProspeccoesLider", nome: "Quantidade de Prospecções (Líder)", tipoDado: 'i' },
-        { id: "QuantidadeProspeccoesMembro", nome: "Quantidade de Prospecções (Membro)", tipoDado: 'i' },
-        { id: "TaxaConversaoProposta", nome: "Taxa de Conversão em Proposta", tipoDado: 'p' },
-        { id: "TaxaConversaoProjeto", nome: "Taxa de Conversão em Projetos", tipoDado: 'p' },
-        { id: "QuantidadeProjetos", nome: "Quantidade de Projetos", tipoDado: 'i' },
-        { id: "QuantidadeProspeccoesComProposta", nome: "Quantidade de Prospecções em Proposta", tipoDado: 'i' },
-        { id: "QuantidadeProspeccoesConvertidas", nome: "Quantidade de Prospecções Convertidas", tipoDado: 'i' },
-        { id: "AssertividadePrecificacao", nome: "Assertividade na Precificação", tipoDado: 'f' },
-        { id: "FatorContribuicaoFinanceira", nome: "Fator de Contribuição Financeira", tipoDado: 'f' },
-        { id: "MediaFatores", nome: "Média dos Fatores", tipoDado: 'f' },
-    ];
-
     let indicadores = indicadoresContribuicao.concat(indicadoresFinanceiros);
     popularTabelaPesquisadores(indicadores, dadosPesquisador);
 }
@@ -263,31 +284,6 @@ function popularTabelaPesquisadores(indicadores, dadosPesquisador) {
 }
 
 function inicializarPaginaIndicadores() {
-    // TipoDado: F = Financeiro, f = float, flutuante, i = inteiro (case-sensitive)
-    const indicadoresFinanceiros = [
-        { id: "ValorTotalProspeccoes", nome: "Valor Total das Prospecções", tipoDado: 'F' },
-        { id: "ValorMedioProspeccoes", nome: "Valor Médio das Prospecções", tipoDado: 'F' },
-        { id: "ValorTotalProspeccoesComProposta", nome: "Valor Total das Prospecções em Proposta", tipoDado: 'F' },
-        { id: "ValorMedioProspeccoesComProposta", nome: "Valor Médio das Prospecções em Proposta", tipoDado: 'F' },
-        { id: "ValorTotalProspeccoesConvertidas", nome: "Valor Total das Prospecções Convertidas", tipoDado: 'F' },
-        { id: "ValorMedioProspeccoesConvertidas", nome: "Valor Médio das Prospecções Convertidas", tipoDado: 'F' },
-    ];
-
-    // TipoDado: F = Financeiro, f = float, flutuante, i = inteiro (case-sensitive)
-    const indicadoresContribuicao = [
-        { id: "QuantidadeProspeccoes", nome: "Quantidade de Prospecções", tipoDado: 'i' },
-        { id: "QuantidadeProspeccoesLider", nome: "Quantidade de Prospecções (Líder)", tipoDado: 'i' },
-        { id: "QuantidadeProspeccoesMembro", nome: "Quantidade de Prospecções (Membro)", tipoDado: 'i' },
-        { id: "TaxaConversaoProposta", nome: "Taxa de Conversão em Proposta", tipoDado: 'p' },
-        { id: "TaxaConversaoProjeto", nome: "Taxa de Conversão em Projetos", tipoDado: 'p' },
-        { id: "QuantidadeProjetos", nome: "Quantidade de Projetos", tipoDado: 'i' },
-        { id: "QuantidadeProspeccoesComProposta", nome: "Quantidade de Prospecções em Proposta", tipoDado: 'i' },
-        { id: "QuantidadeProspeccoesConvertidas", nome: "Quantidade de Prospecções Convertidas", tipoDado: 'i' },
-        { id: "AssertividadePrecificacao", nome: "Assertividade na Precificação", tipoDado: 'f' },
-        { id: "FatorContribuicaoFinanceira", nome: "Fator de Contribuição Financeira", tipoDado: 'f' },
-        { id: "MediaFatores", nome: "Média dos Fatores", tipoDado: 'f' },
-    ];
-
     popularDropdown('ulFinanceira', indicadoresFinanceiros);
     popularDropdown('ulContribuicao', indicadoresContribuicao);
 }
