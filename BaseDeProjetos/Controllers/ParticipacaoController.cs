@@ -339,7 +339,6 @@ namespace BaseDeProjetos.Controllers
 
                 if (propriedadeBase.PropertyType == typeof(int))
                 {
-                    // Handle int type
                     int valorInt = (int)propriedadeBase.GetValue(participacao);
                     double valorMedioDouble = participacoes.Average(p => (int)propriedadeBase.GetValue(p));
                     valor = valorInt;
@@ -347,7 +346,6 @@ namespace BaseDeProjetos.Controllers
                 }
                 else
                 {
-                    // Handle decimal type
                     valor = (decimal)propriedadeBase.GetValue(participacao);
                     valorMedio = (decimal)participacoes.Average(p => Convert.ToDouble(propriedadeBase.GetValue(p)));
                 }
