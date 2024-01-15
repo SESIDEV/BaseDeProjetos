@@ -509,9 +509,8 @@ namespace BaseDeProjetos.Helpers
                 ChecarSubstring(searchString, p.Empresa.Nome) ||
                 ChecarSubstring(searchString, p.Id) ||
                 ChecarSubstring(searchString, p.Usuario.UserName) ||
-                ChecarSubstring(searchString, p.NomeProspeccao) ||
-                ChecarSubstring(searchString, p.MembrosEquipe)
-
+                ChecarSubstring(searchString, p.NomeProspeccao)
+                // TODO: Restaurar verificação para membros da equipe!!
                 ).ToList();
             }
 
