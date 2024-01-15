@@ -876,15 +876,44 @@ namespace BaseDeProjetos.Controllers
             {
                 return "403 Forbidden";
             }
+            else if (prospAntiga.Agregadas != prospeccao.Agregadas)
+            { // verifica se alguma agregada foi alterada
+                FunilHelpers.AddAgregadas(_context, prospAntiga, prospeccao);
+                FunilHelpers.DelAgregadas(_context, prospAntiga, prospeccao);
+            }
+
+            _context.Update(prospeccao);
+            return prospeccao;
         }
 
         /// <summary>
-        /// Wrapper para função helper de retorno de tags de prospecções
+        /// Obtem os membros em CSV do projeto dado o id
         /// </summary>
-        /// <returns></returns>
-        public string PuxarTagsProspecoes()
+        /// <returns>A equipe de um projeto separadas por ponto e virgula</returns>
+        [HttpGet("FunilDeVendas/RetornarMembrosCSV/{idProspeccao}")]
+        public IActionResult RetornarMembrosCSV(string idProspeccao)
         {
-            if (HttpContext.User.Identity.IsAuthenticated)
+            string membros = string.Join(";", _context.Prospeccao.FirstOrDefault(p => p.Id == idProspeccao)?.EquipeProspeccao.Select(relacao => relacao.Usuario.Email));
+
+            Dictionary<string, string> dados = new Dictionary<string, string> { { "data", membros } };
+
+            return Ok(JsonConvert.SerializeObject(dados));
+        }
+
+        public async Task<IActionResult> EditarFollowUp(int? id) // Retornar view
+        {
+            ViewbagizarUsuario(_context, _cache);
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            FollowUp followup = await _context.FollowUp.FindAsync(id);
+            ViewData["origem"] = followup.OrigemID;
+            ViewData["prosp"] = followup.Origem;
+
+            if (followup == null)
             {
                 return Helpers.Helpers.PuxarTagsProspecoes(_context);
             }

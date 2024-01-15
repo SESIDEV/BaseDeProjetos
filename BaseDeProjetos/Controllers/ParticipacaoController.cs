@@ -1110,7 +1110,5 @@ namespace BaseDeProjetos.Controllers
 
             return participacoes;
         }
-
-
     }
 }

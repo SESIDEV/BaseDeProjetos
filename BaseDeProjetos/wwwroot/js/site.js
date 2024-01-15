@@ -150,6 +150,18 @@ function preencherInputEditProjeto(idProjeto) {
         });
 }
 
+function preencherInputEditProspeccao(idProspeccao) {
+    let elementoInput = document.querySelector(`#inputTextPessoas-${idProspeccao}`);
+    fetch(`/FunilDeVendas/RetornarMembrosCSV/${idProspeccao}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            elementoInput.value = data['data'];
+        }).catch(err => {
+            console.error(err);
+        });
+}
+
 function gerarOpcoesSelect(rota, elementoPai, modelId = "", fillValues = false) { // os últimos 2 parâmetros para tratar no Edit
     elementoPai = `${elementoPai}${modelId}`
 
