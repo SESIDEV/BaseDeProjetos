@@ -399,10 +399,6 @@ namespace BaseDeProjetos.Controllers
             projeto.ValorTotalProjeto = valorProjetoPorMes * qtdMeses;
         }
 
-
-
-
-
         /// <summary>
         /// Atribui os rankings as participações passadas por parâmetro, para que sejam exibidas na View. Valores de 0 a 1
         /// </summary>
@@ -655,15 +651,6 @@ namespace BaseDeProjetos.Controllers
             participacao.ValorMedioProspeccoesComProposta = IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoesComProposta, participacao.QuantidadeProspeccoesComProposta);
             participacao.ValorMedioProspeccoesConvertidas = IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoesConvertidas, Math.Ceiling(participacao.QuantidadeProspeccoesConvertidas));
         }
-
-
-
-
-
-
-
-
-
 
 
         /// <summary>
