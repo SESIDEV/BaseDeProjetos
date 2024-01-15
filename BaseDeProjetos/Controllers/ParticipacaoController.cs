@@ -626,7 +626,7 @@ namespace BaseDeProjetos.Controllers
         private void AtribuirQuantidadesDeProspeccao(Usuario usuario, ParticipacaoTotalViewModel participacao, ProspeccoesUsuarioParticipacao prospeccoesUsuario, ApplicationDbContext _context)
         {
             decimal quantidadeProspeccoesComPropostaPeso = CalculosParticipacao.CalcularQuantidadeDeProspeccoesComProposta(usuario, prospeccoesUsuario, _context);
-            decimal quantidadeProspeccoesConvertidasPeso = CalculosParticipacao.CalcularQuantidadeDeProspeccoesConvertidas(usuario, prospeccoesUsuario, _context);
+            decimal quantidadeProspeccoesConvertidasPeso = CalculosParticipacao.CalcularQuantidadeDeProspeccoesConvertidas(usuario, prospeccoesUsuario);
 
             participacao.QuantidadeProspeccoes = prospeccoesUsuario.ProspeccoesTotais.Count();
             participacao.QuantidadeProspeccoesComProposta = quantidadeProspeccoesComPropostaPeso;
@@ -846,9 +846,9 @@ namespace BaseDeProjetos.Controllers
             foreach (var prospeccao in prospeccoes)
             {
                 // Verificar se a prospecção tem como líder o usuário passado ou se a prospecção tem como membro o usuário passado
-                if (prospeccao.Usuario.Id == usuario.Id || (prospeccao.MembrosEquipe?.Contains(usuario.Email) ?? false))
+                if (prospeccao.Usuario.Id == usuario.Id || (prospeccao.EquipeProspeccao?.Any(u => u.IdUsuario == usuario.Id) ?? false))
                 {
-                    List<Usuario> membrosProspeccao = ParticipacaoHelper.TratarMembrosEquipeString(prospeccao, _context);
+                    List<Usuario> membrosProspeccao = prospeccao.EquipeProspeccao.Select(e => e.Usuario).ToList();
                     // TODO: Remover hardcoding no futuro!!
                     int qtdBolsistas = membrosProspeccao.Where(m => m.Cargo?.Nome == nomeCargoBolsista).Count();
                     int qtdPesquisadores = membrosProspeccao.Where(m => m.Cargo?.Nome == nomeCargoPesquisador).Count();
