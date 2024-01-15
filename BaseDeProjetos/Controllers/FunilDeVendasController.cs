@@ -887,9 +887,9 @@ namespace BaseDeProjetos.Controllers
         }
 
         /// <summary>
-        /// Obtem os membros em CSV do projeto dado o id
+        /// Obtem os membros em CSV da prospecção dado o id
         /// </summary>
-        /// <returns>A equipe de um projeto separadas por ponto e virgula</returns>
+        /// <returns>A equipe de uma prospecção separadas por ponto e virgula</returns>
         [HttpGet("FunilDeVendas/RetornarMembrosCSV/{idProspeccao}")]
         public IActionResult RetornarMembrosCSV(string idProspeccao)
         {
