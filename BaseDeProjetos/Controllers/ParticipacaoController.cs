@@ -73,12 +73,17 @@ namespace BaseDeProjetos.Controllers
         /// <exception cref="Exception"></exception>
         public async Task<IActionResult> RetornarDadosIndicador(string nomeIndicador, DateTime? dataInicio, DateTime? dataFim)
         {
+            if (string.IsNullOrEmpty(nomeIndicador))
+            {
+                throw new ArgumentNullException("O nome do indicador jamais pode estar vazio");
+            }
+
+            dataInicio ??= new DateTime(2021, 01, 01);
+            dataFim ??= new DateTime(DateTime.Now.Year, 12, 31);
+
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 ViewbagizarUsuario(_context, _cache);
-
-                dataInicio ??= new DateTime(2021, 01, 01);
-                dataFim ??= new DateTime(DateTime.Now.Year, 12, 31);
 
                 List<IndicadoresFinanceirosDTO> indicadores = await ObterIndicadoresFinanceirosParaParticipacao();
 
@@ -91,11 +96,6 @@ namespace BaseDeProjetos.Controllers
                 if (_prospeccoes.Count == 0)
                 {
                     _prospeccoes = await ObterProspeccoesParaParticipacao();
-                }
-
-                if (string.IsNullOrEmpty(nomeIndicador))
-                {
-                    throw new Exception("O nome do indicador jamais pode estar vazio");
                 }
 
                 string chaveCache = $"Participacoes:{dataInicio.Value.Month}:{dataInicio.Value.Year}:{dataFim.Value.Month}:{dataFim.Value.Year}";
@@ -835,7 +835,6 @@ namespace BaseDeProjetos.Controllers
         }
 
 
-
         /// <summary>
         /// Filtra as prospecções do usuario de acordo com a data de inicio e data de fim do filtro
         /// </summary>
@@ -985,7 +984,6 @@ namespace BaseDeProjetos.Controllers
         {
             return _prospeccoes.Where(p => p.Usuario.Id == usuario.Id && p.Status.OrderBy(f => f.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
         }
-
 
 
         /// <summary>
