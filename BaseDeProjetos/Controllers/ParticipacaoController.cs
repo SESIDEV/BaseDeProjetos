@@ -619,40 +619,21 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private List<decimal> ObterRankingsMediosGrafico(List<ParticipacaoTotalViewModel> participacoes)
         {
-            List<decimal> rankings = new List<decimal>();
-
-            decimal rankMedio = participacoes.Average(p => p.MediaFatores);
-            decimal rankMedioValorTotalProspeccao = participacoes.Average(p => p.RankPorIndicador.RankValorTotalProspeccoes);
-            decimal rankMedioValorTotalProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador.RankValorTotalProspeccoesComProposta);
-            decimal rankMedioValorMedioProspeccoes = participacoes.Average(p => p.RankPorIndicador.RankValorMedioProspeccoes);
-            decimal rankMedioValorMedioProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador.RankValorMedioProspeccoesComProposta);
-            decimal rankMedioValorTotalProspeccoesConvertidas = participacoes.Average(p => p.RankPorIndicador.RankValorTotalProspeccoesConvertidas);
-            decimal rankMedioValorMedioProspeccoesConvertidas = participacoes.Average(p => p.RankPorIndicador.RankValorMedioProspeccoesConvertidas);
-            decimal rankMedioQuantidadeProspeccoes = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoes);
-            decimal rankMedioQuantidadeProspeccoesLider = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesLider);
-            decimal rankMedioQuantidadeProspeccoesComProposta = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesComProposta);
-            decimal rankMedioQuantidadeProspeccoesConvertidas = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesConvertidas);
-            decimal rankMedioQuantidadeProspeccoesMembro = participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesMembro);
-            decimal rankMedioAssertividadePrecificacao = participacoes.Average(p => p.RankPorIndicador.RankAssertividadePrecificacao);
-            decimal rankMedioFatorContribuicaoFinanceira = participacoes.Average(p => p.RankPorIndicador.RankFatorContribuicaoFinanceira);
-
-            rankings.AddRange(new List<decimal> {
-                rankMedio,
-                rankMedioValorTotalProspeccao,
-                rankMedioValorTotalProspeccoesComProposta,
-                rankMedioValorMedioProspeccoes,
-                rankMedioValorMedioProspeccoesComProposta,
-                rankMedioValorTotalProspeccoesConvertidas,
-                rankMedioQuantidadeProspeccoes,
-                rankMedioQuantidadeProspeccoesLider,
-                rankMedioQuantidadeProspeccoesComProposta,
-                rankMedioQuantidadeProspeccoesConvertidas,
-                rankMedioQuantidadeProspeccoesMembro,
-                rankMedioAssertividadePrecificacao,
-                rankMedioFatorContribuicaoFinanceira,
-            });
-
-            return rankings;
+            return new List<decimal> {
+                participacoes.Average(p => p.MediaFatores),
+                participacoes.Average(p => p.RankPorIndicador.RankValorTotalProspeccoes),
+                participacoes.Average(p => p.RankPorIndicador.RankValorTotalProspeccoesComProposta),
+                participacoes.Average(p => p.RankPorIndicador.RankValorMedioProspeccoes),
+                participacoes.Average(p => p.RankPorIndicador.RankValorMedioProspeccoesComProposta),
+                participacoes.Average(p => p.RankPorIndicador.RankValorTotalProspeccoesConvertidas),
+                participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoes),
+                participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesLider),
+                participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesComProposta),
+                participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesConvertidas),
+                participacoes.Average(p => p.RankPorIndicador.RankQuantidadeProspeccoesMembro),
+                participacoes.Average(p => p.RankPorIndicador.RankAssertividadePrecificacao),
+                participacoes.Average(p => p.RankPorIndicador.RankFatorContribuicaoFinanceira),
+            };
         }
 
         /// <summary>
@@ -685,7 +666,7 @@ namespace BaseDeProjetos.Controllers
                 {
                     RankearParticipacoes(participacoes, true);
                     CalculosParticipacao.CalcularValorSobreMediaDoFCF(participacoes);
-                    ObterRankingsMediosGrafico(participacoes);
+                    rankingsMedios = ObterRankingsMediosGrafico(participacoes);
                 }
 
                 var participacaoUsuario = participacoes.FirstOrDefault(p => p.Lider.Id == UsuarioAtivo.Id);
