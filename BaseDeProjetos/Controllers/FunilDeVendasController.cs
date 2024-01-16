@@ -832,6 +832,7 @@ namespace BaseDeProjetos.Controllers
                 // Atualiza a prospecção no banco com os valores de prospeccao
                 _context.Entry(prospeccaoExistente).CurrentValues.SetValues(prospeccao);
                 _context.Update(prospeccaoExistente);
+
                 // Salvar alterações no banco
                 await _context.SaveChangesAsync();
                 await CacheHelper.CleanupProspeccoesCache(_cache);
