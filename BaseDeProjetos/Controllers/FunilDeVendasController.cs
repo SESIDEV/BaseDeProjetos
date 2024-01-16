@@ -510,7 +510,10 @@ namespace BaseDeProjetos.Controllers
             {
                 ViewbagizarUsuario(_context, _cache);
 
-                var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).ToListAsync());
+                var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Funil", () =>
+                    _context.Prospeccao
+                        .Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).Include(p => p.EquipeProspeccao).ThenInclude(e => e.Usuario)
+                        .ToListAsync());
 
                 ViewBag.searchString = searchString;
                 ViewBag.TamanhoPagina = tamanhoPagina;
@@ -556,7 +559,7 @@ namespace BaseDeProjetos.Controllers
 
                 if (!string.IsNullOrEmpty(aba))
                 {
-                    var prospeccoesParaFiltragemAgregadas = await _cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).ToListAsync());
+                    var prospeccoesParaFiltragemAgregadas = await _cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).Include(p => p.EquipeProspeccao).ThenInclude(e => e.Usuario).ToListAsync());
                     model.ProspeccoesAgregadas = prospeccoesParaFiltragemAgregadas.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
                     return View(model);
                 }
@@ -788,7 +791,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, EmpresaId, Contato, Casa, Usuario, MembrosEquipe, ValorProposta, ValorEstimado, Status, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao, string membrosSelect)
+        public async Task<IActionResult> Edit(string id, [Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, EmpresaId, Contato, Casa, Usuario, ValorProposta, ValorEstimado, Status, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao, string membrosSelect)
         {
             ViewbagizarUsuario(_context, _cache);
 
@@ -799,93 +802,45 @@ namespace BaseDeProjetos.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                var prospeccaoExistente = _context.Prospeccao.Find(prospeccao.Id);
+
+                // Verifica se a âncora foi cancelada
+                if (prospeccaoExistente.Ancora == true && prospeccao.Ancora == false)
                 {
-                    prospeccao = await EditarDadosDaProspecção(id, prospeccao);
-
-                    List<EquipeProspeccao> equipe = new List<EquipeProspeccao>();
-                    var prospeccaoExistente = await _context.Prospeccao.AsNoTracking().Include(p => p.Usuario).Include(p => p.EquipeProspeccao).FirstOrDefaultAsync(p => p.Id == prospeccao.Id);
-
-                    if (prospeccaoExistente == null)
-                    {
-                        return View("Error");
-                    }
-
-                    foreach (var relacao in prospeccaoExistente.EquipeProspeccao)
-                    {
-                        _context.EquipeProspeccao.Remove(relacao);
-                    }
-
-                    await _context.SaveChangesAsync();
-                    await CacheHelper.CleanupProspeccoesCache(_cache);
-                    await CacheHelper.CleanupParticipacoesCache(_cache);
-
-                    _context.Entry(prospeccaoExistente).CurrentValues.SetValues(prospeccao);
-
-                    List<string> membrosEmails = new List<string>();
-
-                    // TODO: Repensar a forma como o frontend implementa essa funcionalidade
-                    if (!string.IsNullOrEmpty(membrosSelect))
-                    {
-                        membrosEmails.AddRange(membrosSelect.Split(';').ToList());
-                    }
-
-                    List<Usuario> usuarios = await _context.Users.Where(u => membrosEmails.Contains(u.Email)).ToListAsync();
-
-                    foreach (var usuario in usuarios)
-                    {
-                        var EquipeProspeccao = new EquipeProspeccao { IdUsuario = usuario.Id, IdTrabalho = prospeccao.Id };
-                        equipe.Add(EquipeProspeccao);
-                    }
-
-                    prospeccaoExistente.EquipeProspeccao = equipe;
-
-                    /*
-                     * Salvamos as alterações de equipe no banco pois enviamos apenas o ID do Projeto e do Usuário
-                     * Se não efetuarmos o salvamento, o método seguinte AtribuirCustoHH apenas enxergará os IDs
-                     * e não os objetos para Projeto e Usuário pois o relacionamento estará ""fraco""
-                     * Sem sombra de dúvidas que existe uma forma "mais correta" de implementar essa funcionalidade.
-                     * Mas acho desnecessário ir no banco em código para puxar o Projeto e o Usuário novamente pelos IDs
-                    */
-                    await _context.SaveChangesAsync();
-                    await CacheHelper.CleanupProjetosCache(_cache);
-
+                    FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
                 }
-                catch (DbUpdateConcurrencyException)
+                else if (prospeccao.Ancora == true && string.IsNullOrEmpty(prospeccao.Agregadas))
                 {
-                    if (!FunilHelpers.ProspeccaoExists(prospeccao.Id, _context))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw; // Outro erro de banco, lançar para depuração
-                    }
+                    throw new InvalidOperationException("Não é possível adicionar uma Âncora sem nenhuma agregada.");
                 }
+                // Verifica se alguma agregada foi alterada
+                else if (prospeccaoExistente.Agregadas != prospeccao.Agregadas)
+                {
+                    FunilHelpers.AddAgregadas(_context, prospeccaoExistente, prospeccao);
+                    FunilHelpers.DelAgregadas(_context, prospeccaoExistente, prospeccao);
+                }
+
+                // Remover relacionamento de equipe
+                _context.EquipeProspeccao.RemoveRange(prospeccaoExistente.EquipeProspeccao);
+
+                List<string> membrosEmails = !string.IsNullOrEmpty(membrosSelect) ? membrosSelect.Split(';').ToList() : new List<string>();
+                List<Usuario> usuariosMembros = await _context.Users.Where(u => membrosEmails.Contains(u.Email)).ToListAsync();
+                List<EquipeProspeccao> equipe = usuariosMembros.Select(usuario => new EquipeProspeccao { IdUsuario = usuario.Id, IdTrabalho = prospeccao.Id }).ToList();
+
+                prospeccaoExistente.EquipeProspeccao = equipe;
+
+                // Atualiza a prospecção no banco com os valores de prospeccao
+                _context.Entry(prospeccaoExistente).CurrentValues.SetValues(prospeccao);
+                _context.Update(prospeccaoExistente);
+                // Salvar alterações no banco
+                await _context.SaveChangesAsync();
+                await CacheHelper.CleanupProspeccoesCache(_cache);
+                await CacheHelper.CleanupParticipacoesCache(_cache);
+
                 return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
             }
 
             return Json(listaFull);
-        }
-
-        public string PuxarDadosUsuarios()
-        {
-            if (HttpContext.User.Identity.IsAuthenticated)
-            {
-                return Helpers.Helpers.PuxarDadosUsuarios(_context);
-            }
-            else
-            {
-                return "403 Forbidden";
-            }
-            else if (prospAntiga.Agregadas != prospeccao.Agregadas)
-            { // verifica se alguma agregada foi alterada
-                FunilHelpers.AddAgregadas(_context, prospAntiga, prospeccao);
-                FunilHelpers.DelAgregadas(_context, prospAntiga, prospeccao);
-            }
-
-            _context.Update(prospeccao);
-            return prospeccao;
         }
 
         /// <summary>
