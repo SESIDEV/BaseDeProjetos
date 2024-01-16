@@ -130,7 +130,7 @@ namespace BaseDeProjetos.Controllers
                 }
 
                 string chaveCache = $"Participacoes:{dataInicio.Value.Month}:{dataInicio.Value.Year}:{dataFim.Value.Month}:{dataFim.Value.Year}";
-                List<ParticipacaoTotalViewModel> participacoes = await _cache.GetCachedAsync(chaveCache, () => GetParticipacoesTotaisUsuarios((DateTime)dataInicio, (DateTime)dataFim, _context));
+                List<ParticipacaoTotalViewModel> participacoes = await _cache.GetCachedAsync(chaveCache, () => GetParticipacoesTotaisUsuarios((DateTime)dataInicio, (DateTime)dataFim));
                 List<IndicadorResultadoViewModel> resultados = new List<IndicadorResultadoViewModel>();
 
                 RankearParticipacoes(participacoes, false);
@@ -244,7 +244,7 @@ namespace BaseDeProjetos.Controllers
             {
                 _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Usuario).Include(p => p.Empresa).ToListAsync());
 
-                var participacoes = await GetParticipacoesTotaisUsuarios((DateTime)dataInicio, (DateTime)dataFim, _context);
+                var participacoes = await GetParticipacoesTotaisUsuarios((DateTime)dataInicio, (DateTime)dataFim);
 
                 var participacao = participacoes.Where(p => p.Lider.Id == idUsuario).First();
 
@@ -605,9 +605,9 @@ namespace BaseDeProjetos.Controllers
         /// <param name="usuario"></param>
         /// <param name="participacao"></param>
         /// <param name="prospeccoesUsuario"></param>
-        private void AtribuirQuantidadesDeProspeccao(Usuario usuario, ParticipacaoTotalViewModel participacao, ProspeccoesUsuarioParticipacao prospeccoesUsuario, ApplicationDbContext _context)
+        private void AtribuirQuantidadesDeProspeccao(Usuario usuario, ParticipacaoTotalViewModel participacao, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
         {
-            decimal quantidadeProspeccoesComPropostaPeso = CalculosParticipacao.CalcularQuantidadeDeProspeccoesComProposta(usuario, prospeccoesUsuario, _context);
+            decimal quantidadeProspeccoesComPropostaPeso = CalculosParticipacao.CalcularQuantidadeDeProspeccoesComProposta(usuario, prospeccoesUsuario);
             decimal quantidadeProspeccoesConvertidasPeso = CalculosParticipacao.CalcularQuantidadeDeProspeccoesConvertidas(usuario, prospeccoesUsuario);
 
             participacao.QuantidadeProspeccoes = prospeccoesUsuario.ProspeccoesTotais.Count();
@@ -700,7 +700,7 @@ namespace BaseDeProjetos.Controllers
 
                 _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).Include(p => p.Empresa).Include(p => p.Status).ToListAsync());
 
-                var participacoes = await GetParticipacoesTotaisUsuarios(new DateTime(2021, 01, 01), new DateTime(DateTime.Now.Year, 12, 31), _context);
+                var participacoes = await GetParticipacoesTotaisUsuarios(new DateTime(2021, 01, 01), new DateTime(DateTime.Now.Year, 12, 31));
                 Dictionary<string, object> dadosGrafico = new Dictionary<string, object>();
                 List<decimal> rankingsMedios = new List<decimal>();
 
@@ -919,7 +919,7 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="usuario">Usuário do sistema a ter participações retornadas</param>
         /// <returns></returns>
-        private async Task<ParticipacaoTotalViewModel> GetParticipacaoTotalUsuario(Usuario usuario, DateTime dataInicio, DateTime dataFim, ApplicationDbContext _context)
+        private async Task<ParticipacaoTotalViewModel> GetParticipacaoTotalUsuario(Usuario usuario, DateTime dataInicio, DateTime dataFim)
         {
             ParticipacaoTotalViewModel participacao = new ParticipacaoTotalViewModel
             {
@@ -940,7 +940,7 @@ namespace BaseDeProjetos.Controllers
             // TODO: Computar range do gráfico? (Obs: eu acho que faz mais sentido a lógica referente ao grafico estar abstraída em outro lugar...)
             await AtribuirParticipacoesIndividuais(participacao, prospeccoesUsuario.ProspeccoesTotais);
 
-            AtribuirQuantidadesDeProspeccao(usuario, participacao, prospeccoesUsuario, _context);
+            AtribuirQuantidadesDeProspeccao(usuario, participacao, prospeccoesUsuario);
             AtribuirValoresFinanceirosDeProspeccao(usuario, participacao, prospeccoesUsuario);
 
             await AtribuirAssertividadePrecificacao(usuario, dataInicio, dataFim, participacao, prospeccoesUsuario);
@@ -983,7 +983,7 @@ namespace BaseDeProjetos.Controllers
         /// Obtém uma lista de participações de todos os usuários, com base na casa do usuário que está acessando.
         /// </summary>
         /// <returns></returns>
-        private async Task<List<ParticipacaoTotalViewModel>> GetParticipacoesTotaisUsuarios(DateTime dataInicio, DateTime dataFim, ApplicationDbContext _context)
+        private async Task<List<ParticipacaoTotalViewModel>> GetParticipacoesTotaisUsuarios(DateTime dataInicio, DateTime dataFim)
         {
             List<UsuarioParticipacaoDTO> usuariosDTO;
 
@@ -1007,7 +1007,7 @@ namespace BaseDeProjetos.Controllers
 
             foreach (var usuarioDTO in usuariosDTO)
             {
-                var participacao = await GetParticipacaoTotalUsuario(usuarioDTO.ToUsuario(), dataInicio, dataFim, _context);
+                var participacao = await GetParticipacaoTotalUsuario(usuarioDTO.ToUsuario(), dataInicio, dataFim);
 
                 if (participacao != null)
                 {

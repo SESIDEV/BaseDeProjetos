@@ -143,7 +143,7 @@ namespace BaseDeProjetos.Helpers
         /// <param name="usuario"></param>
         /// <param name="prospeccoesUsuario"></param>
         /// <returns></returns>
-        public static decimal CalcularQuantidadeDeProspeccoesComProposta(Usuario usuario, ProspeccoesUsuarioParticipacao prospeccoesUsuario, ApplicationDbContext _context)
+        public static decimal CalcularQuantidadeDeProspeccoesComProposta(Usuario usuario, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
         {
             decimal quantidadeProspeccoesComProposta = 0;
 
