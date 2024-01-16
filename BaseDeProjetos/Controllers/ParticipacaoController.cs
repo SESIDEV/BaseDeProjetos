@@ -490,8 +490,6 @@ namespace BaseDeProjetos.Controllers
 
             foreach (var prospeccao in prospeccoesUsuario)
             {
-                List<Usuario> membrosEquipe = new List<Usuario>();
-
                 bool prospConvertida = false;
                 bool prospPlanejada = false;
                 bool prospSuspensa = false;
@@ -515,27 +513,11 @@ namespace BaseDeProjetos.Controllers
                     nomeProjeto = nomeProjeto.Replace("Projeto", "");
                 }
 
-                List<string> membrosNaoTratados = new List<string>();
-
-                if (!string.IsNullOrEmpty(prospeccao.MembrosEquipe))
+                if (prospeccao.EquipeProspeccao != null)
                 {
-                    membrosNaoTratados = prospeccao.MembrosEquipe.Split(";").ToList();
-
-                    foreach (var membro in membrosNaoTratados)
-                    {
-                        if (!string.IsNullOrEmpty(membro))
-                        {
-                            Usuario usuarioEquivalente = usuarios.Find(u => u.Email == membro).ToUsuario();
-                            if (usuarioEquivalente != null)
-                            {
-                                membrosEquipe.Add(usuarioEquivalente);
-                            }
-                        }
-                    }
-
-                    qtdBolsistas = membrosEquipe.Count(u => u.Cargo?.Nome == nomeCargoBolsista); // TODO: Temporário, precisa estar definido de forma mais clara?
-                    qtdEstagiarios = membrosEquipe.Count(u => u.Cargo?.Nome == nomeCargoEstagiário); // TODO: Temporário, precisa estar definido de forma mais clara?
-                    qtdPesquisadores = membrosEquipe.Count(u => u.Cargo?.Nome == nomeCargoPesquisador); // TODO: Temporário, precisa estar definido de forma mais clara?
+                    qtdBolsistas = prospeccao.EquipeProspeccao.Count(e => e.Usuario.Cargo?.Nome == nomeCargoBolsista); // TODO: Temporário, precisa estar definido de forma mais clara?
+                    qtdEstagiarios = prospeccao.EquipeProspeccao.Count(e => e.Usuario.Cargo?.Nome == nomeCargoEstagiário); // TODO: Temporário, precisa estar definido de forma mais clara?
+                    qtdPesquisadores = prospeccao.EquipeProspeccao.Count(e => e.Usuario.Cargo?.Nome == nomeCargoPesquisador); // TODO: Temporário, precisa estar definido de forma mais clara?
 
                     qtdMembros = qtdBolsistas + qtdEstagiarios + qtdPesquisadores;
                 }
@@ -601,7 +583,7 @@ namespace BaseDeProjetos.Controllers
                     Planejada = prospPlanejada,
                     Suspensa = prospSuspensa,
                     ValorNominal = prospeccao.ValorProposta,
-                    MembrosEquipe = prospeccao.MembrosEquipe,
+                    MembrosEquipe = prospeccao.EquipeProspeccao.Select(p => p.Usuario).ToList().ToString(),
                     ValorLider = valorLider,
                     ValorPesquisadores = valorPesquisadores,
                     ValorBolsistas = valorBolsistas,
@@ -642,11 +624,11 @@ namespace BaseDeProjetos.Controllers
         /// <param name="dataInicio"></param>
         /// <param name="dataFim"></param>
         /// <param name="participacao"></param>
-        private void AtribuirValoresFinanceirosDeProspeccao(Usuario usuario, ParticipacaoTotalViewModel participacao, ProspeccoesUsuarioParticipacao prospeccoesUsuario, ApplicationDbContext _context)
+        private void AtribuirValoresFinanceirosDeProspeccao(Usuario usuario, ParticipacaoTotalViewModel participacao, ProspeccoesUsuarioParticipacao prospeccoesUsuario)
         {
-            participacao.ValorTotalProspeccoes = ExtrairValorProspeccoes(prospeccoesUsuario.ProspeccoesTotais, usuario, _context);
-            participacao.ValorTotalProspeccoesComProposta = ExtrairValorProspeccoes(prospeccoesUsuario.ProspeccoesTotaisComProposta, usuario, _context);
-            participacao.ValorTotalProspeccoesConvertidas = ExtrairValorProspeccoes(prospeccoesUsuario.ProspeccoesTotaisConvertidas, usuario, _context);
+            participacao.ValorTotalProspeccoes = ExtrairValorProspeccoes(prospeccoesUsuario.ProspeccoesTotais, usuario);
+            participacao.ValorTotalProspeccoesComProposta = ExtrairValorProspeccoes(prospeccoesUsuario.ProspeccoesTotaisComProposta, usuario);
+            participacao.ValorTotalProspeccoesConvertidas = ExtrairValorProspeccoes(prospeccoesUsuario.ProspeccoesTotaisConvertidas, usuario);
             participacao.ValorMedioProspeccoes = IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoes, participacao.QuantidadeProspeccoes);
             participacao.ValorMedioProspeccoesComProposta = IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoesComProposta, participacao.QuantidadeProspeccoesComProposta);
             participacao.ValorMedioProspeccoesConvertidas = IndicadorHelper.DivisaoSegura(participacao.ValorTotalProspeccoesConvertidas, Math.Ceiling(participacao.QuantidadeProspeccoesConvertidas));
@@ -839,7 +821,7 @@ namespace BaseDeProjetos.Controllers
         /// <param name="prospeccoes"></param>
         /// <param name="valorTotalProspeccoes"></param>
         /// <returns></returns>
-        private decimal ExtrairValorProspeccoes(List<Prospeccao> prospeccoes, Usuario usuario, ApplicationDbContext _context)
+        private decimal ExtrairValorProspeccoes(List<Prospeccao> prospeccoes, Usuario usuario)
         {
             decimal valorProspeccoes = 0;
 
@@ -959,7 +941,7 @@ namespace BaseDeProjetos.Controllers
             await AtribuirParticipacoesIndividuais(participacao, prospeccoesUsuario.ProspeccoesTotais);
 
             AtribuirQuantidadesDeProspeccao(usuario, participacao, prospeccoesUsuario, _context);
-            AtribuirValoresFinanceirosDeProspeccao(usuario, participacao, prospeccoesUsuario, _context);
+            AtribuirValoresFinanceirosDeProspeccao(usuario, participacao, prospeccoesUsuario);
 
             await AtribuirAssertividadePrecificacao(usuario, dataInicio, dataFim, participacao, prospeccoesUsuario);
 
@@ -1078,8 +1060,8 @@ namespace BaseDeProjetos.Controllers
         {
             // Somente membro
             return _prospeccoes.Where(p =>
-                p.MembrosEquipe != null &&
-                p.MembrosEquipe.Contains(usuario.Email) &&
+                p.EquipeProspeccao != null &&
+                p.EquipeProspeccao.Any(e => e.Usuario.Id == usuario.Id) &&
                 (p.Status == null || p.Status.OrderBy(f => f.Data).LastOrDefault()?.Status != StatusProspeccao.Planejada)
             ).ToList();
         }
@@ -1093,7 +1075,7 @@ namespace BaseDeProjetos.Controllers
         {
             return _prospeccoes
                 .Where(p =>
-                (p.Usuario.Id == usuario.Id || (p.MembrosEquipe != null && p.MembrosEquipe.Contains(usuario.Email))) &&
+                (p.Usuario.Id == usuario.Id || (p.EquipeProspeccao != null && p.EquipeProspeccao.Any(e => e.Usuario.Id == usuario.Id))) &&
                 (p.Status == null || p.Status.OrderBy(f => f.Data).LastOrDefault()?.Status != StatusProspeccao.Planejada)
             ).ToList();
         }
