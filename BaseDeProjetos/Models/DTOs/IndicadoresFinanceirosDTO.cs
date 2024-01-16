@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BaseDeProjetos.Controllers
+namespace BaseDeProjetos.Models.DTOs
 {
     internal class IndicadoresFinanceirosDTO
     {

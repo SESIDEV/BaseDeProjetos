@@ -2,6 +2,7 @@
 @using BaseDeProjetos.Models;
 @using BaseDeProjetos.Models.Enums;
 @using Microsoft.AspNetCore.Http
+@using System.Globalization
 @{
     ViewData["Title"] = "Adicionar Prospecção";
     if (!(Context.Session.GetString("_Casa") is null))
@@ -212,6 +213,11 @@
                             <option value="@StatusProspeccao.ContatoInicial"> Contato Inicial</option>
                         </select>
                         <span asp-validation-for="Status[0].Status" class="text-danger"></span>
+                    </div>
+                    <div class="col-form-label" style="font-weight: 600">
+                        <label asp-for="ValorEstimado" class="col-form-label" style="font-weight: 600"></label>
+                        <input asp-for="ValorEstimado" type="number" step="0.01" class="form-control" value='@Model.ValorEstimado.ToString("F2",CultureInfo.CreateSpecificCulture("en-US"))' />
+                        <span asp-validation-for="ValorEstimado" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="modal-footer">
