@@ -52,7 +52,7 @@ namespace BaseDeProjetos.Controllers
             ViewData["dataInicio"] = dataInicio.Value.ToString("yyyy-MM-dd");
             ViewData["dataFim"] = dataFim.Value.ToString("yyyy-MM-dd");
 
-            var indicadores = await _context.IndicadoresFinanceiros.ToListAsync();
+            List<IndicadoresFinanceirosDTO> indicadores = await ObterIndicadoresFinanceirosParaParticipacao();
 
             foreach (var indicador in indicadores)
             {
@@ -77,7 +77,10 @@ namespace BaseDeProjetos.Controllers
             {
                 ViewbagizarUsuario(_context, _cache);
 
-                var indicadores = await _cache.GetCachedAsync("IndicadoresFinanceiros:Participacao", () => _context.IndicadoresFinanceiros.Select(i => new { i.Despesa, i.QtdPesquisadores, i.Data }).ToListAsync());
+                dataInicio ??= new DateTime(2021, 01, 01);
+                dataFim ??= new DateTime(DateTime.Now.Year, 12, 31);
+
+                List<IndicadoresFinanceirosDTO> indicadores = await ObterIndicadoresFinanceirosParaParticipacao();
 
                 foreach (var indicador in indicadores)
                 {
@@ -93,16 +96,6 @@ namespace BaseDeProjetos.Controllers
                 if (string.IsNullOrEmpty(nomeIndicador))
                 {
                     throw new Exception("O nome do indicador jamais pode estar vazio");
-                }
-
-                if (dataInicio == null)
-                {
-                    dataInicio = new DateTime(2021, 01, 01);
-                }
-
-                if (dataFim == null)
-                {
-                    dataFim = new DateTime(DateTime.Now.Year, 12, 31);
                 }
 
                 string chaveCache = $"Participacoes:{dataInicio.Value.Month}:{dataInicio.Value.Year}:{dataFim.Value.Month}:{dataFim.Value.Year}";
@@ -156,6 +149,11 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        private async Task<List<IndicadoresFinanceirosDTO>> ObterIndicadoresFinanceirosParaParticipacao()
+        {
+            return await _cache.GetCachedAsync("IndicadoresFinanceiros:Participacao", () => _context.IndicadoresFinanceiros.Select(i => new IndicadoresFinanceirosDTO { Despesa = i.Despesa, QtdPesquisadores = i.QtdPesquisadores, Data = i.Data }).ToListAsync());
+        }
+
         /// <summary>
         /// Obtém o rank de uma participacao de acordo com o nome do indicador
         /// </summary>
@@ -196,9 +194,7 @@ namespace BaseDeProjetos.Controllers
         {
             ViewbagizarUsuario(_context, _cache);
 
-            var indicadores = await _context.IndicadoresFinanceiros
-                .Select(i => new { i.Data, i.Despesa, i.QtdPesquisadores })
-                .ToListAsync();
+            List<IndicadoresFinanceirosDTO> indicadores = await ObterIndicadoresFinanceirosParaParticipacao();
 
             foreach (var indicador in indicadores)
             {
@@ -671,7 +667,7 @@ namespace BaseDeProjetos.Controllers
             {
                 ViewbagizarUsuario(_context, _cache);
 
-                var indicadores = await _context.IndicadoresFinanceiros.ToListAsync();
+                List<IndicadoresFinanceirosDTO> indicadores = await ObterIndicadoresFinanceirosParaParticipacao();
 
                 foreach (var indicador in indicadores)
                 {
