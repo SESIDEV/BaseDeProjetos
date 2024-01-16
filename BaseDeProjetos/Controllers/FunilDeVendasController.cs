@@ -2,6 +2,7 @@
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.Enums;
+using BaseDeProjetos.Models.Helpers;
 using BaseDeProjetos.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +10,10 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using NUnit.Framework.Constraints;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +38,208 @@ namespace BaseDeProjetos.Controllers
             _mailer = mailer;
             _cache = cache;
         }
+
+        public int GerarQuantidadeProsp(List<Prospeccao> prospeccoes, Func<Prospeccao, bool> filtro)
+        {
+            return prospeccoes.Count(filtro);
+        }
+
+        public int GerarQuantidadeTipoContratacao(List<Prospeccao> prospeccoes, StatusProspeccao status, TipoContratacao tipo)
+        {
+            return GerarQuantidadeProsp(prospeccoes, p => p.Status.Any(p => p.Status == status) && p.TipoContratacao == tipo );
+        }
+
+        [Route("FunilDeVendas/GerarGraficoBarraTipoContratacao/{casa}")]
+        public async Task<IActionResult> GerarGraficoBarraTipoContratacao(string casa)
+        {
+
+            Instituto enumCasa;
+
+            if (!Enum.TryParse<Instituto>(casa, out enumCasa))
+            {
+                throw new ArgumentException("A casa selecionada é inválida");
+            }
+
+            Dictionary<string, int> statusprospeccao = new Dictionary<string, int>();
+            List<Prospeccao> prospeccoes = _context.Prospeccao.Where(p => p.Casa == enumCasa).ToList();
+
+            foreach (int tipo in Enum.GetValues(typeof(TipoContratacao)))
+            {
+                int prospContatoInicial = GerarQuantidadeTipoContratacao(prospeccoes, StatusProspeccao.ContatoInicial, (TipoContratacao)tipo);
+
+                int prospEmDiscussao = GerarQuantidadeTipoContratacao(prospeccoes, StatusProspeccao.Discussao_EsbocoProjeto, (TipoContratacao)tipo);
+
+                int prospComProposta = GerarQuantidadeTipoContratacao(prospeccoes, StatusProspeccao.ComProposta, (TipoContratacao)tipo);
+
+                statusprospeccao[$"ContatoInicial_{tipo}"] = prospContatoInicial;
+
+                statusprospeccao[$"EmDiscussao_{tipo}"] = prospEmDiscussao;
+
+                statusprospeccao[$"ComProposta_{tipo}"] = prospComProposta;
+            }
+            DadosBarra dadosBarra_contatoInicial = new DadosBarra
+            {
+                ContratacaoDireta = statusprospeccao["ContatoInicial_0"],
+                EditaisInovacao = statusprospeccao["ContatoInicial_1"],
+                AgenciaFomento = statusprospeccao["ContatoInicial_2"],
+                Embrapii = statusprospeccao["ContatoInicial_3"],
+                Definir = statusprospeccao["ContatoInicial_4"],
+                ParceiroEdital = statusprospeccao["ContatoInicial_5"],
+                ANP_ANEEL = statusprospeccao["ContatoInicial_6"]
+            };
+            DadosBarra dadosBarra_EmDiscussao = new DadosBarra
+            {
+                ContratacaoDireta = statusprospeccao["EmDiscussao_0"],
+                EditaisInovacao = statusprospeccao["EmDiscussao_1"],
+                AgenciaFomento = statusprospeccao["EmDiscussao_2"],
+                Embrapii = statusprospeccao["EmDiscussao_3"],
+                Definir = statusprospeccao["EmDiscussao_4"],
+                ParceiroEdital = statusprospeccao["EmDiscussao_5"],
+                ANP_ANEEL = statusprospeccao["EmDiscussao_6"]
+            };
+            DadosBarra dadosBarra_ComProposta = new DadosBarra
+            {
+                ContratacaoDireta = statusprospeccao["ComProposta_0"],
+                EditaisInovacao = statusprospeccao["ComProposta_1"],
+                AgenciaFomento = statusprospeccao["ComProposta_2"],
+                Embrapii = statusprospeccao["ComProposta_3"],
+                Definir = statusprospeccao["ComProposta_4"],
+                ParceiroEdital = statusprospeccao["ComProposta_5"],
+                ANP_ANEEL = statusprospeccao["ComProposta_6"]
+            };
+            GraficoBarraTipoContratacao graficoBarraTipoContratacao = new GraficoBarraTipoContratacao 
+            { 
+                ContatoInicial = dadosBarra_contatoInicial,
+                EmDiscussao = dadosBarra_EmDiscussao,
+                ComProposta = dadosBarra_ComProposta 
+            };
+            return Ok(JsonConvert.SerializeObject(graficoBarraTipoContratacao));
+        }
+
+
+        [Route("FunilDeVendas/GerarIndicadoresProsp/{casa}")]
+        public async Task<IActionResult> GerarIndicadoresProsp(string casa)
+        {
+
+            Instituto enumCasa;
+
+            if (!Enum.TryParse<Instituto>(casa, out enumCasa))
+            {
+                throw new ArgumentException("A casa selecionada é inválida");
+            }
+
+
+            var x = _context.Prospeccao
+                .Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida
+                || p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa)
+                .Where(p => p.Casa == Instituto.ISIQV)
+                .Count();
+
+            double z = _context.Prospeccao.Where(p => p.Casa == Instituto.ISIQV).Count();
+
+            var resultado = x / z;
+
+            //todas prospepccoes que possui status em proposta e status inicial, duracao de dias 
+            List<TimeSpan> intervaloDatas = new List<TimeSpan>();
+
+            var prospeccoesComPropostaEContatoInicial = _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta) && p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial) && p.Casa == enumCasa).ToList();
+            int empresasProspectadas = _context.Prospeccao.Select(p => new { p.Empresa, p.Casa }).Where(p => p.Casa == enumCasa).Distinct().Count();
+
+            for (int i = 0; i < prospeccoesComPropostaEContatoInicial.Count; i++)
+            {
+                var dataContatoInicial = prospeccoesComPropostaEContatoInicial[i].Status.Where(p => p.Status == StatusProspeccao.ContatoInicial).First().Data;
+                var dataComProposta = prospeccoesComPropostaEContatoInicial[i].Status.Where(p => p.Status == StatusProspeccao.ComProposta).First().Data;
+                intervaloDatas.Add(dataComProposta - dataContatoInicial);
+            }
+            var mediaintervalos = new TimeSpan(Convert.ToInt64(intervaloDatas.Average(t => t.Ticks)));
+            double tempoMedioContato = mediaintervalos.TotalDays;
+            int prospContatoInicial = _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial) && p.Casa == enumCasa).Count();
+            int prospeccoesInfrutiferas = _context.Prospeccao
+                .Select(p => new { p.Status, p.Casa })
+                .Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida 
+                || p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa)
+                .Where(p => p.Casa == enumCasa).Count();
+            double percentInfrutiferas = (double)prospeccoesInfrutiferas / ObterProspeccoesTotais(enumCasa) * 100;
+
+            IndicadoresProspeccao indicadoresProspeccao = new IndicadoresProspeccao { EmpresasProspectadas = empresasProspectadas, TempoMedioContato = tempoMedioContato, PercentualInfrutiferas = percentInfrutiferas, ProspContatoInicial = prospContatoInicial };
+            return Ok(JsonConvert.SerializeObject(indicadoresProspeccao));
+        }
+
+        [Route("FunilDeVendas/GerarStatusGeralProspPizza/{casa}")]
+        public async Task<IActionResult> GerarStatusGeralProspPizza(string casa)
+        {
+            Instituto enumCasa;
+
+            if (!Enum.TryParse<Instituto>(casa, out enumCasa))
+            {
+                throw new ArgumentException("A casa selecionada é inválida");
+            }
+
+            int prospSuspensas = _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa && p.Casa == enumCasa).Count();
+            double percentCanceladas = (double)prospSuspensas / ObterProspeccoesTotais(enumCasa) * 100;
+
+            int prospConvertidas = _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida) && p.Casa == enumCasa).Count();
+            double percentConvertidas = (double)prospConvertidas / ObterProspeccoesTotais(enumCasa) * 100;
+
+            int prospNaoConvertidas = _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida && p.Casa == enumCasa).Count();
+            double percentNaoConvertidas = (double)prospNaoConvertidas / ObterProspeccoesTotais(enumCasa) * 100;
+
+            int prospEmAndamento = ObterProspeccoesTotais(enumCasa) - prospConvertidas - prospNaoConvertidas - prospSuspensas;
+            double percentEmAndamento = (double)prospEmAndamento / ObterProspeccoesTotais(enumCasa) * 100;
+
+            StatusGeralProspeccaoPizza statusGeralProspeccaoPizza = new StatusGeralProspeccaoPizza { PercentualCanceladas = percentCanceladas, PercentualConvertidas = percentConvertidas, PercentualEmAndamento = percentEmAndamento, PercentualNaoConvertidas = percentNaoConvertidas };
+            return Ok(JsonConvert.SerializeObject(statusGeralProspeccaoPizza));
+        }
+
+        [Route("FunilDeVendas/GerarStatusProspPropostaPizza/{casa}")]
+        public async Task<IActionResult> GerarStatusProspPropostaPizza(string casa)
+        {
+            Instituto enumCasa;
+
+            if (!Enum.TryParse<Instituto>(casa, out enumCasa))
+            {
+                throw new ArgumentException("A casa selecionada é inválida");
+            }
+
+            List<Prospeccao> prospeccoes = _context.Prospeccao.Where(p => p.Casa == enumCasa).ToList();
+            int prospConvertidas = GerarQuantidadeProsp(prospeccoes, p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida));
+            int prospEmAndamento = GerarQuantidadeProsp(prospeccoes, p => p.Status.Any(p => p.Status != StatusProspeccao.Convertida) && p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida) && p.Status.Any(p => p.Status == StatusProspeccao.Suspensa));
+            int prospNaoConvertidas = GerarQuantidadeProsp(prospeccoes, p => p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida));
+
+            StatusProspeccoesPropostaPizza statusProspeccoesPropostaPizza = new StatusProspeccoesPropostaPizza { QuantidadeEmAndamento = prospEmAndamento, QuantidadeConvertidas = prospConvertidas, QuantidadeNaoConvertidas = prospNaoConvertidas };
+            return Ok(JsonConvert.SerializeObject(statusProspeccoesPropostaPizza));
+        }
+
+        private int ObterProspeccoesTotais(Instituto casa)
+        {
+            return _context.Prospeccao.Select(p => new { p.Status, p.Casa })
+                .Where(p => p.Status.OrderBy(f => f.Data)
+                .Last().Status != StatusProspeccao.Planejada && p.Casa == casa)
+                .Count();
+        }
+        [Route("FunilDeVendas/GerarStatusProspComProposta/{casa}")]
+        public async Task<IActionResult> GerarStatusProspComProposta(string casa)
+        {
+
+            Instituto enumCasa;
+
+            if (!Enum.TryParse<Instituto>(casa, out enumCasa))
+            {
+                throw new ArgumentException("A casa selecionada é inválida");
+            }
+
+            int prospConvertidas = _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida) && p.Casa == enumCasa).Count();
+            double taxaConversaoProsp = (double)prospConvertidas / _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta) && p.Casa == enumCasa).Count() * 100 ;
+
+            decimal ticketMedioProsp = _context.Prospeccao.Select(p => new { p.ValorProposta, p.Status, p.Casa }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.ComProposta && p.Casa == enumCasa).Average(p => p.ValorProposta);
+            int propostasComerciais = _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta)).Count();
+
+            int projetosContratados = _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Convertida && p.Casa == enumCasa).Count();
+
+            StatusProspPropostaIndicadores statusProspPropostaIndicadores = new StatusProspPropostaIndicadores { TaxaConversao = taxaConversaoProsp, TicketMedioProsp = ticketMedioProsp, PropostasEnviadas = propostasComerciais, ProjetosContratados = projetosContratados };
+            return Ok(JsonConvert.SerializeObject(statusProspPropostaIndicadores));
+        }
+
 
         // GET: FunilDeVendas
         [Route("FunilDeVendas/Index/{casa?}/{aba?}/{ano?}")]
@@ -82,10 +289,10 @@ namespace BaseDeProjetos.Controllers
                 model.ProspeccoesAtivas = prospeccoes.Where(
                         p => p.Status.OrderBy(k => k.Data).All(
                             pa => pa.Status == StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto || pa.Status == StatusProspeccao.ComProposta)).ToList();
-                model.ProspeccoesComProposta = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(f => f.Status == StatusProspeccao.ComProposta)).ToList();
-                model.ProspeccoesConcluidas = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(f => f.Status == StatusProspeccao.Convertida)).ToList();
-                model.ProspeccoesPlanejadas = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(f => f.Status == StatusProspeccao.Planejada)).ToList();
-                model.ProspeccoesNaoPlanejadas = prospeccoes.Where(p => p.Status.OrderBy(k => k.Data).Any(f => f.Status != StatusProspeccao.Planejada)).ToList();
+                model.ProspeccoesComProposta = prospeccoes.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.ComProposta).ToList().Count();
+                model.ProspeccoesConcluidas = prospeccoes.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Convertida).ToList().Count();
+                model.ProspeccoesPlanejadas = prospeccoes.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Planejada).ToList().Count();
+                model.ProspeccoesNaoPlanejadas= prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).Last().Status != StatusProspeccao.Planejada).ToList();
 
                 if (!string.IsNullOrEmpty(aba))
                 {

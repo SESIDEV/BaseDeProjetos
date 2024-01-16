@@ -1,8 +1,9 @@
 ﻿@model ProspeccoesViewModel
 @using System
 @using BaseDeProjetos.Helpers
-@using BaseDeProjetos.Models.Enums;
-@using BaseDeProjetos.Models.ViewModels;
+@using BaseDeProjetos.Models.Enums
+@using BaseDeProjetos.Models.ViewModels
+<script type="text/javascript" src="~/js/FunildeVendas/graficosDashboardFunil.js"></script>
 <style>
     .center {
         display: flex;
@@ -108,23 +109,23 @@
                 </div>
                 <div class="app-card-body row text-center p-3 p-lg-4">
                     <div class="col-12">
-                        <!--[Iury] IDs da checkbox \/ -->
-                    <h1 id="CheckboxProspAtivas1" class="display-3">@numEmpresas</h1>
+                        <!--[Iury] sIDs da checkbox \/ -->
+                        <h1 id="EmpresasProspectadas" class="display-3"></h1>
                         <small id="CheckboxProspAtivas2">Número de empresas prospectadas</small>
                         <hr />
                     </div>
                     <div class="col-4">
-                        <h4 id="CheckboxProspAtivas7">@Math.Abs(DiferencaTodas.Days) dias</h4>
+                        <h4 id="TempoMedioContato"></h4>
                         <small id="CheckboxProspAtivas10">Tempo médio entre o primeiro contato e a emissão da
                             proposta</small>
                     </div>
                     <div class="col-4">
                         <!--[Iury] IDs da checkbox \/ -->
-                    <h4 id="CheckboxProspAtivas4">@Model.ProspeccoesNaoPlanejadas.Count()</h4>
+                        <h4 id="ProspContatoInicial"></h4>
                         <small id="CheckboxProspAtivas3">Contatos iniciais de prospecção</small>
                     </div>
                     <div class="col-4">
-                        <h4> @taxaInfrutiferas.ToString("P2")</h4>
+                        <h4 id="PercentualInfrutiferas"></h4>
                         <small>
                             Percentual de prospecções infrutíferas
                         </small>
@@ -162,34 +163,26 @@
             </div>
             <div class="app-card-body row text-center p-3 p-lg-4">
                 <div class="col-12">
-                    <h1 class="display-3">@taxaConversao.ToString("P2")</h1>
+                    <h1 class="display-3" id="TaxaConversao"></h1>
                     <small>
                         Taxa de conversão de prospecções
                     </small>
                     <hr />
                 </div>
                 <div class="col-4">
-                    <!-- Quando transformar em calculado, remover o R$-->
-                    @if (valorTotalPropostas > 0)
-                    {
-                        <h4 id="CheckboxProspAtivas5">@valorTotalPropostas.ToString("C2")</h4>
-                    }
-                    else
-                    {
-                        <h4 id="CheckboxProspAtivas5">R$ ---</h4>
-                    }
+                    <h4 id="TicketMedioProsp"></h4>
                     <small id="CheckboxProspAtivas8">
                         Ticket médio das prospecções
                     </small>
                 </div>
                 <div class="col-4">
-                    <h4 id="CheckboxProspAtivas6">@numPropostas</h4>
+                    <h4 id="PropostasEnviadas"></h4>
                     <small id="CheckboxProspAtivas9">
                         Propostas comerciais enviadas
                     </small>
                 </div>
                 <div class="col-4">
-                    <h4>@numConvertidas</h4>
+                    <h4 id="ProjetosContratados"></h4>
                     <small>
                         Projetos contratados
                     </small>
@@ -200,203 +193,6 @@
 
     </div>
 
-
-    <!-- Gráfico de Fomentos por status-->
-    <script type="text/javascript">
-
-        const seriespadrao = [
-            { name: 'Contratação Direta', data: [@contagem["ContratacaoDireta_ContatoInicial"], @contagem["ContratacaoDireta_Discussao_EsbocoProjeto"], @contagem["ContratacaoDireta_ComProposta"]] },
-            { name: 'Editais de Inovação SESI/SENAI', data: [@contagem["EditalInovacao_ContatoInicial"], @contagem["EditalInovacao_Discussao_EsbocoProjeto"], @contagem["EditalInovacao_ComProposta"]] },
-            { name: 'Agências de Fomento', data: [@contagem["AgenciaFomento_ContatoInicial"], @contagem["AgenciaFomento_Discussao_EsbocoProjeto"], @contagem["AgenciaFomento_ComProposta"] ] },
-            { name: 'Embrapii', data: [@contagem["Embrapii_ContatoInicial"], @contagem["Embrapii_Discussao_EsbocoProjeto"], @contagem["Embrapii_ComProposta"] ] },
-            { name: 'A definir', data: [@contagem["Indefinida_ContatoInicial"], @contagem["Indefinida_Discussao_EsbocoProjeto"], @contagem["Indefinida_ComProposta"] ] },
-            { name: 'Parceiros de Edital', data: [@contagem["Parceiro_ContatoInicial"], @contagem["Parceiro_Discussao_EsbocoProjeto"], @contagem["Parceiro_ComProposta"] ] },
-            { name: 'ANP/ANEEL', data: [@contagem["ANP_ContatoInicial"], @contagem["ANP_Discussao_EsbocoProjeto"], @contagem["ANP_ComProposta"] ] }
-        ];
-
-        var seriesativas = [
-            { name: 'Contratação Direta', data: [@contagem["ContratacaoDireta_ContatoInicial_Ativas"], @contagem["ContratacaoDireta_Discussao_EsbocoProjeto_Ativas"], @contagem["ContratacaoDireta_ComProposta_Ativas"]] },
-            { name: 'Editais de Inovação SESI/SENAI', data: [@contagem["EditalInovacao_ContatoInicial_Ativas"], @contagem["EditalInovacao_Discussao_EsbocoProjeto_Ativas"], @contagem["EditalInovacao_ComProposta_Ativas"]] },
-            { name: 'Agências de Fomento', data: [@contagem["AgenciaFomento_ContatoInicial_Ativas"], @contagem["AgenciaFomento_Discussao_EsbocoProjeto_Ativas"], @contagem["AgenciaFomento_ComProposta_Ativas"] ] },
-            { name: 'Embrapii', data: [@contagem["Embrapii_ContatoInicial_Ativas"], @contagem["Embrapii_Discussao_EsbocoProjeto_Ativas"], @contagem["Embrapii_ComProposta_Ativas"] ] },
-            { name: 'A definir', data: [@contagem["Indefinida_ContatoInicial_Ativas"], @contagem["Indefinida_Discussao_EsbocoProjeto_Ativas"], @contagem["Indefinida_ComProposta_Ativas"] ] },
-            { name: 'Parceiros de Edital', data: [@contagem["Parceiro_ContatoInicial_Ativas"], @contagem["Parceiro_Discussao_EsbocoProjeto_Ativas"], @contagem["Parceiro_ComProposta_Ativas"] ] },
-            { name: 'ANP/ANEEL', data: [@contagem["ANP_ContatoInicial_Ativas"], @contagem["ANP_Discussao_EsbocoProjeto_Ativas"], @contagem["ANP_ComProposta_Ativas"] ] }
-        ];
-
-        var chart1 = Highcharts.chart('funil', {
-            chart: { type: 'column', allowMutatingData: false },
-            title: { text: null },
-            xAxis: { categories: ["Contato inicial", "Em discussão", "Com Proposta", "Convertida",], },
-            yAxis: { min: 0, title: { text: 'Ocorrências' } },
-            tooltip: {
-                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><b>{point.y:.1f} prospecções</b></td></tr>',
-                footerFormat: '</table>',
-                shared: true,
-                useHTML: true
-            },
-            plotOptions: { column: { pointPadding: 0.2, borderWidth: 0 } },
-            series: seriespadrao
-        })
-
-        <!-- Pizzas -->
-
-        var pizzaDesistencia = Highcharts.chart('pizza_desistencia', {
-            chart: {
-                plotBackgroundColor: null,
-                plotBorderWidth: null,
-                plotShadow: false,
-                type: 'pie'
-            },
-            title: {
-                text: null
-            },
-            tooltip: {
-                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-            },
-            accessibility: {
-                point: {
-                    valueSuffix: '%'
-                }
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: true,
-                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-                    }
-                }
-            },
-            series: [{
-                size: '60%',
-                name: 'Propostas',
-                colorByPoint: true,
-                data: [{
-                    name: 'Em andamento',
-                    y: @numProspeccoesEmAndamento,
-                    drilldown: 'andamento'
-                }, {
-                    name: 'Convertidas',
-                    y: @numConvertidas,
-                    drilldown: null
-                },
-                {
-                    name: 'Não Convertidas',
-                    y: @numNaoConvertidas,
-                    drilldown: null
-                },
-                {
-                    name: 'Canceladas',
-                    y: @numCanceladas,
-                    drilldown: null
-                },
-                ],
-            }],
-
-            drilldown: {
-                series: [
-                    {
-                        id: 'andamento',
-                        data: [
-                            ["Ativas",
-        @(numProspeccoesEmAndamento)],
-                            ["Com proposta",
-        @(numPropostas)]
-                        ]
-                    }]
-            }
-        });
-
-        var pizzaConversao = Highcharts.chart('pizza_conversao', {
-            chart: {
-                plotBackgroundColor: null,
-                plotBorderWidth: null,
-                plotShadow: false,
-                type: 'pie'
-            },
-            title: {
-                text: 'Status de Prospecções com propostas'
-            },
-            tooltip: {
-                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-            },
-            accessibility: {
-                point: {
-                    valueSuffix: '%'
-                }
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: true,
-                        format: '<b>{point.name}</b>: {point.y} prospecções'
-                    }
-                }
-            },
-            series: [{
-                size: '60%',
-                name: 'Propostas',
-                colorByPoint: true,
-                data: [{
-                    name: 'Em andamento',
-                    y: @(numProspeccoesEmAndamentoComProposta),
-                }, {
-                    name: 'Convertidas',
-                    y: @numConvertidas
-                }, {
-                    name: 'Não convertidas',
-                    y: @numNaoConvertidas
-                }]
-            }]
-        });
-
-    </script>
-
-    <script type="text/javascript">
-        function alterarTextos(statusfiltro) {
-            if (!statusfiltro) {
-                document.getElementById("CheckboxProspAtivas2").textContent = "Número de empresas prospectadas";
-                document.getElementById("CheckboxProspAtivas3").textContent = "Contatos iniciais de prospecção";
-                document.getElementById("CheckboxProspAtivas8").textContent = "Ticket médio das prospecções";
-                document.getElementById("CheckboxProspAtivas9").textContent = "Propostas comerciais enviadas";
-                document.getElementById("CheckboxProspAtivas10").textContent = "Tempo médio entre o primeiro contato e a emissão da proposta";
-            }
-            else {
-                document.getElementById("CheckboxProspAtivas2").textContent += " (Ativas)";
-                document.getElementById("CheckboxProspAtivas3").textContent += " (Ativas)";
-                document.getElementById("CheckboxProspAtivas8").textContent += " (Ativas)";
-                document.getElementById("CheckboxProspAtivas9").textContent += " (Ativas)";
-                document.getElementById("CheckboxProspAtivas10").textContent += " (Ativas)";
-            }
-        }
-
-
-        function marcada() {
-            if (document.getElementById("caixaSelecaoAtivas").checked) {
-                document.getElementById("CheckboxProspAtivas1").innerHTML = @numEmpresasAtivas;
-                document.getElementById("CheckboxProspAtivas4").textContent = @Model.ProspeccoesAtivas.Count();
-                document.getElementById("CheckboxProspAtivas5").textContent = "@valorAtivasString";
-                document.getElementById("CheckboxProspAtivas6").textContent = @numPropostasAtivas;
-                document.getElementById("CheckboxProspAtivas7").textContent = "@Math.Abs(DiferencaAtivas.Days) dias";
-                alterarTextos(true)
-                chart1.update({ series: seriesativas });
-            } else {
-                document.getElementById("CheckboxProspAtivas1").innerHTML = @numEmpresas;
-                document.getElementById("CheckboxProspAtivas4").textContent = @Model.ProspeccoesNaoPlanejadas.Count();
-                document.getElementById("CheckboxProspAtivas5").textContent = "@valorString";
-                document.getElementById("CheckboxProspAtivas6").textContent = @numPropostas;
-                document.getElementById("CheckboxProspAtivas7").textContent = "@Math.Abs(DiferencaTodas.Days) dias";
-                alterarTextos(false)
-                chart1.update({ series: seriespadrao });
-            }
-        }
-    </script>
 }
 else
 {
