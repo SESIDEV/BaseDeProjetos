@@ -185,12 +185,12 @@ namespace BaseDeProjetos.Controllers
                 .ToListAsync());
 
             var receitas = projetos
-                .Select(p => CalcularReceita(p.DataInicio, p.DataEncerramento, p.DuracaoProjetoEmMeses, p.ValorAporteRecursos, p.Status, p.Casa));
+                .Select(p => CalcularReceita(p.DataInicio, p.DataEncerramento, p.DuracaoProjetoEmMeses, p.ValorAporteRecursos));
 
             return receitas.Sum();
         }
 
-        private static decimal CalcularReceita(DateTime DataInicio, DateTime DataEncerramento, int DuracaoProjetoEmMeses, double ValorAporteRecursos, StatusProjeto Status, Instituto Casa)
+        private static decimal CalcularReceita(DateTime DataInicio, DateTime DataEncerramento, int DuracaoProjetoEmMeses, double ValorAporteRecursos)
         {
             decimal valor_aportado = 0M;
             if (DataEncerramento < DateTime.Today)
