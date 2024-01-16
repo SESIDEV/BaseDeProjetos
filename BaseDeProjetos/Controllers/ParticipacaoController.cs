@@ -816,36 +816,15 @@ namespace BaseDeProjetos.Controllers
                         switch (usuario.Cargo?.Nome)
                         {
                             case nomeCargoEstagiário:
-                                if (prospeccao.ValorProposta != 0)
-                                {
-                                    valorProspeccoes += percentualEstagiario * prospeccao.ValorProposta;
-                                }
-                                else
-                                {
-                                    valorProspeccoes += percentualEstagiario * prospeccao.ValorEstimado;
-                                }
+                                valorProspeccoes += percentualEstagiario * (prospeccao.ValorProposta != 0 ? prospeccao.ValorProposta : prospeccao.ValorEstimado);
                                 break;
 
                             case nomeCargoPesquisador:
-                                if (prospeccao.ValorProposta != 0)
-                                {
-                                    valorProspeccoes += percentualPesquisador * prospeccao.ValorProposta;
-                                }
-                                else
-                                {
-                                    valorProspeccoes += percentualPesquisador * prospeccao.ValorEstimado;
-                                }
+                                valorProspeccoes += percentualPesquisador * (prospeccao.ValorProposta != 0 ? prospeccao.ValorProposta : prospeccao.ValorEstimado);
                                 break;
 
                             case nomeCargoBolsista:
-                                if (prospeccao.ValorProposta != 0)
-                                {
-                                    valorProspeccoes += percentualBolsista * prospeccao.ValorProposta;
-                                }
-                                else
-                                {
-                                    valorProspeccoes += percentualBolsista * prospeccao.ValorEstimado;
-                                }
+                                valorProspeccoes += percentualBolsista * (prospeccao.ValorProposta != 0 ? prospeccao.ValorProposta : prospeccao.ValorEstimado);
                                 break;
                         }
                     }
