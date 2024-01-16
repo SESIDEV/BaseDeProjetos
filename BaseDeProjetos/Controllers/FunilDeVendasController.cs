@@ -816,8 +816,8 @@ namespace BaseDeProjetos.Controllers
                 // Verifica se alguma agregada foi alterada
                 else if (prospeccaoExistente.Agregadas != prospeccao.Agregadas)
                 {
-                    FunilHelpers.AddAgregadas(_context, prospeccaoExistente, prospeccao);
-                    FunilHelpers.DelAgregadas(_context, prospeccaoExistente, prospeccao);
+                    FunilHelpers.AdicionarAgregadas(_context, prospeccaoExistente, prospeccao);
+                    FunilHelpers.RemoverAgregadas(_context, prospeccaoExistente, prospeccao);
                 }
 
                 // Remover relacionamento de equipe
