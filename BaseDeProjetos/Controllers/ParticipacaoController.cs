@@ -87,7 +87,7 @@ namespace BaseDeProjetos.Controllers
 
                 if (_prospeccoes.Count == 0)
                 {
-                    _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Usuario).Include(p => p.Empresa).ToListAsync());
+                    _prospeccoes = await ObterProspeccoesParaParticipacao();
                 }
 
                 if (string.IsNullOrEmpty(nomeIndicador))
@@ -218,7 +218,7 @@ namespace BaseDeProjetos.Controllers
 
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Usuario).Include(p => p.Empresa).ToListAsync());
+                _prospeccoes = await ObterProspeccoesParaParticipacao();
 
                 var participacoes = await GetParticipacoesTotaisUsuarios((DateTime)dataInicio, (DateTime)dataFim);
 
@@ -239,6 +239,11 @@ namespace BaseDeProjetos.Controllers
             {
                 return View("Forbidden");
             }
+        }
+
+        private async Task<List<Prospeccao>> ObterProspeccoesParaParticipacao()
+        {
+            return await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Usuario).Include(p => p.Empresa).ToListAsync());
         }
 
         /// <summary>
@@ -674,7 +679,7 @@ namespace BaseDeProjetos.Controllers
                     pesquisadores[indicador.Data.Year] = indicador.QtdPesquisadores;
                 }
 
-                _prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Participacao", () => _context.Prospeccao.Include(p => p.Usuario).Include(p => p.Empresa).Include(p => p.Status).ToListAsync());
+                _prospeccoes = await ObterProspeccoesParaParticipacao();
 
                 var participacoes = await GetParticipacoesTotaisUsuarios(new DateTime(2021, 01, 01), new DateTime(DateTime.Now.Year, 12, 31));
                 Dictionary<string, object> dadosGrafico = new Dictionary<string, object>();
