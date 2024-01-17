@@ -52,16 +52,14 @@ namespace BaseDeProjetos.Controllers
         [Route("FunilDeVendas/GerarGraficoBarraTipoContratacao/{casa}")]
         public async Task<IActionResult> GerarGraficoBarraTipoContratacao(string casa)
         {
-
-            Instituto enumCasa;
-
-            if (!Enum.TryParse<Instituto>(casa, out enumCasa))
+            if (!Enum.TryParse(casa, out Instituto enumCasa))
             {
                 throw new ArgumentException("A casa selecionada é inválida");
             }
 
             Dictionary<string, int> statusprospeccao = new Dictionary<string, int>();
-            List<Prospeccao> prospeccoes = _context.Prospeccao.Where(p => p.Casa == enumCasa).ToList();
+
+            List<Prospeccao> prospeccoes = await _cache.GetCachedAsync($"Prospeccoes:{enumCasa}", () => _context.Prospeccao.Where(p => p.Casa == enumCasa).ToListAsync());
 
             foreach (int tipo in Enum.GetValues(typeof(TipoContratacao)))
             {
@@ -107,11 +105,11 @@ namespace BaseDeProjetos.Controllers
                 ParceiroEdital = statusprospeccao["ComProposta_5"],
                 ANP_ANEEL = statusprospeccao["ComProposta_6"]
             };
-            GraficoBarraTipoContratacao graficoBarraTipoContratacao = new GraficoBarraTipoContratacao 
-            { 
+            GraficoBarraTipoContratacao graficoBarraTipoContratacao = new GraficoBarraTipoContratacao
+            {
                 ContatoInicial = dadosBarra_contatoInicial,
                 EmDiscussao = dadosBarra_EmDiscussao,
-                ComProposta = dadosBarra_ComProposta 
+                ComProposta = dadosBarra_ComProposta
             };
             return Ok(JsonConvert.SerializeObject(graficoBarraTipoContratacao));
         }
