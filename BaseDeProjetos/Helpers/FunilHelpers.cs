@@ -191,14 +191,14 @@ namespace BaseDeProjetos.Helpers
 
             if (usuario.Nivel == Nivel.Dev)
             {
-                prospeccoes = await cache.GetCachedAsync("Prospeccoes:Funil:Dev", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).ToListAsync());
+                prospeccoes = await cache.GetCachedAsync("Prospeccoes:Funil:Dev", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).Include(p => p.EquipeProspeccao).ThenInclude(e => e.Usuario).ToListAsync());
             }
             else
             {
                 if (Enum.IsDefined(typeof(Instituto), casa))
                 {
                     HttpContext.Session.SetString("_Casa", casa);
-                    prospeccoes = await cache.GetCachedAsync($"Prospeccoes:Funil:Filtradas:{enum_casa}", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).Where(prospeccao => prospeccao.Casa.Equals(enum_casa)).ToListAsync());
+                    prospeccoes = await cache.GetCachedAsync($"Prospeccoes:Funil:Filtradas:{enum_casa}", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).Include(p => p.EquipeProspeccao).ThenInclude(e => e.Usuario).Where(prospeccao => prospeccao.Casa.Equals(enum_casa)).ToListAsync());
                     ViewData["Area"] = casa;
                 }
             }
