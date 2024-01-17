@@ -35,22 +35,22 @@
                         <span asp-validation-for="Id" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
-                        <label asp-for="Casa" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="Casa" class="control-label"></label>
                         <select asp-for="Casa" class="form-control" asp-items="Html.GetEnumSelectList<Instituto>().OrderBy(p=>p.Text)"></select>
                         <span asp-validation-for="Casa" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
-                        <label asp-for="NomeProspeccao" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="NomeProspeccao" class="control-label"></label>
                         <input asp-for="NomeProspeccao" class="form-control" />
                         <span asp-validation-for="NomeProspeccao" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
-                        <label asp-for="Origem" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="Origem" class="control-label"></label>
                         <select asp-for="Origem" class="form-control" asp-items="Html.GetEnumSelectList<Origem>()"></select>
                         <span asp-validation-for="Origem" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
-                        <label name="MembrosSelect" class="col-form-label" style="font-weight: 600">Membros</label>
+                        <label name="MembrosSelect" class="control-label">Membros</label>
                         <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectPessoas-@Model.Id">
                             <span class="visually-hidden">Loading...</span>
                         </div>
@@ -62,21 +62,22 @@
                             Alterar
                         </button>
                         <div class="input-group flex-nowrap" id="caixaPesquisaPessoas-@Model.Id" style="display:none;">
+                            @* Não remova o multiple, ele é usado pelo Select2 *@
                             <select id="campoSelectPessoas-@Model.Id" class="form-select" multiple="true"></select>
                         </div>
                     </div>
                     <div class="mb-2">
-                        <label asp-for="TipoContratacao" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="TipoContratacao" class="control-label"></label>
                         <select asp-for="TipoContratacao" class="form-control" asp-items="Html.GetEnumSelectList<TipoContratacao>().OrderBy(p=>p.Text)"></select>
                         <span asp-validation-for="TipoContratacao" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
-                        <label asp-for="LinhaPequisa" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="LinhaPequisa" class="control-label"></label>
                         <select asp-for="LinhaPequisa" class="form-control" asp-items="Html.GetEnumSelectList<LinhaPesquisa>().OrderBy(p=>p.Text)"></select>
                         <span asp-validation-for="LinhaPequisa" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
-                        <label asp-for="PotenciaisParceiros" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="PotenciaisParceiros" class="control-label"></label>
                         <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectEmpresas-@Model.Id">
                             <span class="visually-hidden">Loading...</span>
                         </div>
@@ -88,7 +89,7 @@
                         </div>
                     </div>
                     <div class="mb-2">
-                        <label asp-for="CaminhoPasta" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="CaminhoPasta" class="control-label"></label>
                         <input asp-for="CaminhoPasta" class="form-control" placeholder="Caminho da pasta no drive" />
                         <span asp-validation-for="CaminhoPasta" class="text-danger"></span>
                     </div>
@@ -99,7 +100,7 @@
                         </select>
                     </div>
                     <div class="mb-2 d-none" id="campoAgg-@Model.Id">
-                        <label asp-for="Agregadas" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="Agregadas" class="control-label"></label>
                         <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectProspeccoes-@Model.Id">
                             <span class="visually-hidden">Loading...</span>
                         </div>
@@ -132,7 +133,7 @@
                 <div class="modal-body">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="mb-2" id="group">
-                        <label asp-for="Empresa" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="Empresa" class="control-label"></label>
                         <select asp-for="EmpresaId" class="form-control" asp-items='@(ViewData["Empresas"] as SelectList).OrderBy(p=>p.Text)'>
                             <option value="-1">Selecione a empresa</option>
                         </select>
@@ -142,23 +143,23 @@
                     <h1 class="modal-title fs-5">Dados do Contato</h1>
                     <hr />
                     <div class="mb-2">
-                        <label asp-for="Contato.Nome" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="Contato.Nome" class="control-label"></label>
                         <input asp-for="Contato.Nome" class="form-control" />
                         <span asp-validation-for="Contato.Nome" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
-                        <label asp-for="Contato.Cargo" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="Contato.Cargo" class="control-label"></label>
                         <input asp-for="Contato.Cargo" class="form-control" />
                         <span asp-validation-for="Contato.Cargo" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
-                        <label asp-for="Contato.Telefone" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="Contato.Telefone" class="control-label"></label>
                         <input asp-for="Contato.Telefone" class="form-control"
                                onkeypress="$(this).mask('(00) 0000-00009')" />
                         <span asp-validation-for="Contato.Telefone" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
-                        <label asp-for="Contato.Email" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="Contato.Email" class="control-label"></label>
                         <input type="email" asp-for="Contato.Email" class="form-control" />
                         <span asp-validation-for="Contato.Email" class="text-danger"></span>
                     </div>
@@ -187,7 +188,7 @@
                     @if (Model.Status.Any(p => p.Status == StatusProspeccao.ComProposta || p.Status == StatusProspeccao.Convertida))
                     {
                         <div class="form-group">
-                            <label asp-for="ValorProposta" class="col-form-label" style="font-weight: 600"></label>
+                            <label asp-for="ValorProposta" class="control-label"></label>
                             <input asp-for="ValorProposta" type="number" step="0.01" class="form-control" value='@Model.ValorProposta' />
                             <span asp-validation-for="ValorProposta" class="text-danger"></span>
                         </div>
@@ -196,7 +197,7 @@
                     else
                     {
                         <div class="mb-2">
-                            <label asp-for="ValorEstimado" class="col-form-label" style="font-weight: 600"></label>
+                            <label asp-for="ValorEstimado" class="control-label"></label>
                             <input asp-for="ValorEstimado" type="number" step="0.01" class="form-control" value='@Model.ValorEstimado' />
                             <span asp-validation-for="ValorEstimado" class="text-danger"></span>
                         </div>
