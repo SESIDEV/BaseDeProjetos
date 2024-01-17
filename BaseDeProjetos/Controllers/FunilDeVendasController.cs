@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.Enums;
@@ -210,13 +210,43 @@ namespace BaseDeProjetos.Controllers
             return Ok(JsonConvert.SerializeObject(statusProspeccoesPropostaPizza));
         }
 
-        private int ObterProspeccoesTotais(Instituto casa)
+        /// <summary>
+        /// Obtém todas as prospecções (exceto planejadas)
+        /// </summary>
+        /// <returns></returns>
+        private async Task<List<Prospeccao>> ObterProspeccoesTotais(Instituto casa)
+        {
+            return await _cache.GetCachedAsync($"Prospeccoes:{casa}", () => _context.Prospeccao
+                .Where(p => p.Status.OrderBy(f => f.Data).Last().Status != StatusProspeccao.Planejada && p.Casa == casa)
+                .ToListAsync());
+        }
+
+        /// <summary>
+        /// Obtém a quantidade de todas as prospecções (exceto planejadas)
+        /// </summary>
+        /// <returns></returns>
+        private int ObterQuantidadeProspeccoesTotais()
+        {
+            return _context.Prospeccao.Select(p => new { p.Status })
+                .Where(p => p.Status.OrderBy(f => f.Data)
+                .Last().Status != StatusProspeccao.Planejada)
+                .Count();
+        }
+
+        /// <summary>
+        /// Obtém a quantidade de todas as prospecções dado um Instituto/Casa (exceto planejadas)
+        /// </summary>
+        /// <param name="casa">Instituo a ser usado como filtro</param>
+        /// <returns></returns>
+        private int ObterQuantidadeProspeccoesTotais(Instituto casa)
         {
             return _context.Prospeccao.Select(p => new { p.Status, p.Casa })
                 .Where(p => p.Status.OrderBy(f => f.Data)
                 .Last().Status != StatusProspeccao.Planejada && p.Casa == casa)
                 .Count();
         }
+
+
         [Route("FunilDeVendas/GerarStatusProspComProposta/{casa}")]
         public async Task<IActionResult> GerarStatusProspComProposta(string casa)
         {
