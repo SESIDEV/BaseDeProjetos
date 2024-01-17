@@ -250,23 +250,29 @@ namespace BaseDeProjetos.Controllers
         [Route("FunilDeVendas/GerarStatusProspComProposta/{casa}")]
         public async Task<IActionResult> GerarStatusProspComProposta(string casa)
         {
-
-            Instituto enumCasa;
-
-            if (!Enum.TryParse<Instituto>(casa, out enumCasa))
+            if (!Enum.TryParse(casa, out Instituto enumCasa))
             {
                 throw new ArgumentException("A casa selecionada é inválida");
             }
 
-            int prospConvertidas = _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida) && p.Casa == enumCasa).Count();
-            double taxaConversaoProsp = (double)prospConvertidas / _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta) && p.Casa == enumCasa).Count() * 100 ;
+            var prospeccoesDaCasa = await ObterProspeccoesTotais(enumCasa);
 
-            decimal ticketMedioProsp = _context.Prospeccao.Select(p => new { p.ValorProposta, p.Status, p.Casa }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.ComProposta && p.Casa == enumCasa).Average(p => p.ValorProposta);
-            int propostasComerciais = _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta)).Count();
+            int prospConvertidas = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida)).Count();
+            double taxaConversaoProsp = (double)prospConvertidas / prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta)).Count() * 100;
 
-            int projetosContratados = _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Convertida && p.Casa == enumCasa).Count();
+            decimal ticketMedioProsp = prospeccoesDaCasa.Select(p => new { p.ValorProposta, p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.ComProposta).Average(p => p.ValorProposta);
+            int propostasComerciais = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta)).Count();
 
-            StatusProspPropostaIndicadores statusProspPropostaIndicadores = new StatusProspPropostaIndicadores { TaxaConversao = taxaConversaoProsp, TicketMedioProsp = ticketMedioProsp, PropostasEnviadas = propostasComerciais, ProjetosContratados = projetosContratados };
+            int projetosContratados = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Convertida).Count();
+
+            StatusProspPropostaIndicadores statusProspPropostaIndicadores = new StatusProspPropostaIndicadores
+            {
+                TaxaConversao = taxaConversaoProsp,
+                TicketMedioProsp = ticketMedioProsp,
+                PropostasEnviadas = propostasComerciais,
+                ProjetosContratados = projetosContratados
+            };
+
             return Ok(JsonConvert.SerializeObject(statusProspPropostaIndicadores));
         }
 
