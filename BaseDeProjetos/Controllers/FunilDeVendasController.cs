@@ -173,16 +173,16 @@ namespace BaseDeProjetos.Controllers
             }
 
             int prospSuspensas = _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa && p.Casa == enumCasa).Count();
-            double percentCanceladas = (double)prospSuspensas / ObterProspeccoesTotais(enumCasa) * 100;
+            double percentCanceladas = (double)prospSuspensas / ObterQuantidadeProspeccoesTotais(enumCasa) * 100;
 
             int prospConvertidas = _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida) && p.Casa == enumCasa).Count();
-            double percentConvertidas = (double)prospConvertidas / ObterProspeccoesTotais(enumCasa) * 100;
+            double percentConvertidas = (double)prospConvertidas / ObterQuantidadeProspeccoesTotais(enumCasa) * 100;
 
             int prospNaoConvertidas = _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida && p.Casa == enumCasa).Count();
-            double percentNaoConvertidas = (double)prospNaoConvertidas / ObterProspeccoesTotais(enumCasa) * 100;
+            double percentNaoConvertidas = (double)prospNaoConvertidas / ObterQuantidadeProspeccoesTotais(enumCasa) * 100;
 
-            int prospEmAndamento = ObterProspeccoesTotais(enumCasa) - prospConvertidas - prospNaoConvertidas - prospSuspensas;
-            double percentEmAndamento = (double)prospEmAndamento / ObterProspeccoesTotais(enumCasa) * 100;
+            int prospEmAndamento = ObterQuantidadeProspeccoesTotais(enumCasa) - prospConvertidas - prospNaoConvertidas - prospSuspensas;
+            double percentEmAndamento = (double)prospEmAndamento / ObterQuantidadeProspeccoesTotais(enumCasa) * 100;
 
             StatusGeralProspeccaoPizza statusGeralProspeccaoPizza = new StatusGeralProspeccaoPizza { PercentualCanceladas = percentCanceladas, PercentualConvertidas = percentConvertidas, PercentualEmAndamento = percentEmAndamento, PercentualNaoConvertidas = percentNaoConvertidas };
             return Ok(JsonConvert.SerializeObject(statusGeralProspeccaoPizza));
