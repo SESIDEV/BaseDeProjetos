@@ -120,30 +120,19 @@ namespace BaseDeProjetos.Controllers
         [Route("FunilDeVendas/GerarIndicadoresProsp/{casa}")]
         public async Task<IActionResult> GerarIndicadoresProsp(string casa)
         {
-
-            Instituto enumCasa;
-
-            if (!Enum.TryParse<Instituto>(casa, out enumCasa))
+            if (!Enum.TryParse(casa, out Instituto enumCasa))
             {
                 throw new ArgumentException("A casa selecionada é inválida");
             }
 
-
-            var x = _context.Prospeccao
-                .Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida
-                || p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa)
-                .Where(p => p.Casa == Instituto.ISIQV)
-                .Count();
-
-            double z = _context.Prospeccao.Where(p => p.Casa == Instituto.ISIQV).Count();
-
-            var resultado = x / z;
+            // TODO: Pensar em otimizações
+            List<Prospeccao> prospeccoesDaCasa = await ObterProspeccoesTotais(enumCasa);
 
             //todas prospepccoes que possui status em proposta e status inicial, duracao de dias 
             List<TimeSpan> intervaloDatas = new List<TimeSpan>();
 
-            var prospeccoesComPropostaEContatoInicial = _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta) && p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial) && p.Casa == enumCasa).ToList();
-            int empresasProspectadas = _context.Prospeccao.Select(p => new { p.Empresa, p.Casa }).Where(p => p.Casa == enumCasa).Distinct().Count();
+            var prospeccoesComPropostaEContatoInicial = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta) && p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial)).ToList();
+            int empresasProspectadas = prospeccoesDaCasa.Select(p => new { p.Empresa }).Distinct().Count();
 
             for (int i = 0; i < prospeccoesComPropostaEContatoInicial.Count; i++)
             {
@@ -151,17 +140,27 @@ namespace BaseDeProjetos.Controllers
                 var dataComProposta = prospeccoesComPropostaEContatoInicial[i].Status.Where(p => p.Status == StatusProspeccao.ComProposta).First().Data;
                 intervaloDatas.Add(dataComProposta - dataContatoInicial);
             }
+
             var mediaintervalos = new TimeSpan(Convert.ToInt64(intervaloDatas.Average(t => t.Ticks)));
             double tempoMedioContato = mediaintervalos.TotalDays;
-            int prospContatoInicial = _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial) && p.Casa == enumCasa).Count();
-            int prospeccoesInfrutiferas = _context.Prospeccao
-                .Select(p => new { p.Status, p.Casa })
-                .Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida 
-                || p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa)
-                .Where(p => p.Casa == enumCasa).Count();
-            double percentInfrutiferas = (double)prospeccoesInfrutiferas / ObterProspeccoesTotais(enumCasa) * 100;
 
-            IndicadoresProspeccao indicadoresProspeccao = new IndicadoresProspeccao { EmpresasProspectadas = empresasProspectadas, TempoMedioContato = tempoMedioContato, PercentualInfrutiferas = percentInfrutiferas, ProspContatoInicial = prospContatoInicial };
+            int prospContatoInicial = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial)).Count();
+
+            int prospeccoesInfrutiferas = prospeccoesDaCasa
+                .Select(p => new { p.Status })
+                .Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida
+                || p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa).Count();
+
+            double percentInfrutiferas = (double)prospeccoesInfrutiferas / prospeccoesDaCasa.Count() * 100;
+
+            IndicadoresProspeccao indicadoresProspeccao = new IndicadoresProspeccao
+            {
+                EmpresasProspectadas = empresasProspectadas,
+                TempoMedioContato = tempoMedioContato,
+                PercentualInfrutiferas = percentInfrutiferas,
+                ProspContatoInicial = prospContatoInicial
+            };
+
             return Ok(JsonConvert.SerializeObject(indicadoresProspeccao));
         }
 
