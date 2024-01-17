@@ -8,10 +8,9 @@
     {
         ViewData["Area"] = Context.Session.GetString("_Casa");
     }
-    List<ProspeccaoModalPreCreateProspDTO> listaProsp = ViewData["prospPlan"] as List<ProspeccaoModalPreCreateProspDTO>;
-    var listaPlanejados = listaProsp.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).Where(prosp => prosp.Usuario.UserName.ToString() == Context.User.Identity.Name).ToList();
-    List<SelectListItem> listaSelect = listaPlanejados.Select(p => new SelectListItem {Text = p.Empresa.Nome, Value = p.Id.ToString()}).ToList();
-    SelectList plan = new SelectList(listaSelect, "Value", "Text");
+
+    var plan = ViewData["selectPlanejadas"] as SelectList;
+
     
 }
 
