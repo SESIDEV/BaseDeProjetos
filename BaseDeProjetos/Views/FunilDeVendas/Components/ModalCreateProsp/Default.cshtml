@@ -22,7 +22,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-2 d-none">
-                        <label asp-for="Id" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="Id" class="control-label"></label>
                         @{
                             var unique_id = $"prosp_{DateTime.Now.Ticks}";
                         }
@@ -30,7 +30,7 @@
                         <span asp-validation-for="Id" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
-                        <label asp-for="Casa" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="Casa" class="control-label"></label>
                         @if (!(Context.Session.GetString("_Casa") is null))
                         {
                             <select asp-for="Casa" class="form-control">
@@ -48,13 +48,13 @@
                         <span asp-validation-for="Casa" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
-                        <label asp-for="NomeProspeccao" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="NomeProspeccao" class="control-label"></label>
                         <input asp-for="NomeProspeccao" class="form-control" autocomplete="off"
                                placeholder="Um nome amigável para a prospecção. Ex.: Proposta dos biossurfactantes" />
                         <span asp-validation-for="NomeProspeccao" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
-                        <label asp-for="Origem" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="Origem" class="control-label"></label>
                         <select asp-for="Origem" class="form-control" asp-items="Html.GetEnumSelectList<Origem>()"></select>
                         <span asp-validation-for="Origem" class="text-danger"></span>
                     </div>
@@ -70,19 +70,19 @@
                         </div>
                     </div>
                     <div class="mb-2">
-                        <label asp-for="TipoContratacao" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="TipoContratacao" class="control-label"></label>
                         <select asp-for="TipoContratacao" class="form-control"
                                 asp-items="Html.GetEnumSelectList<TipoContratacao>().OrderBy(p=>p.Text)"></select>
                         <span asp-validation-for="TipoContratacao" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
-                        <label asp-for="LinhaPequisa" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="LinhaPequisa" class="control-label"></label>
                         <select asp-for="LinhaPequisa" class="form-control"
                                 asp-items="Html.GetEnumSelectList<LinhaPesquisa>().OrderBy(p=>p.Text)"></select>
                         <span asp-validation-for="LinhaPequisa" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
-                        <label for="inputTextEmpresas" class="col-form-label" style="font-weight: 600">Potenciais Parceiros</label>
+                        <label for="inputTextEmpresas" class="control-label">Potenciais Parceiros</label>
                         <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectEmpresas">
                             <span class="visually-hidden">Loading...</span>
                         </div>
@@ -93,7 +93,7 @@
                         </div>
                     </div>
                     <div class="mb-2">
-                        <label asp-for="CaminhoPasta" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="CaminhoPasta" class="control-label"></label>
                         <input asp-for="CaminhoPasta" class="form-control" placeholder="Caminho da pasta no drive" />
                         <span asp-validation-for="CaminhoPasta" class="text-danger"></span>
                     </div>
@@ -120,7 +120,7 @@
                 </div>
                 <div class="modal-body border-bottom">
                     <div class="mb-2" id="group">
-                        <label asp-for="EmpresaId" class="col-form-label" style="font-weight: 600">Empresa</label>
+                        <label asp-for="EmpresaId" class="control-label">Empresa</label>
                         <select asp-for="EmpresaId" class="form-control"
                                 asp-items='@(ViewData["Empresas"] as SelectList).OrderBy(p=>p.Text)'>
                             <option value="-1">Selecione a empresa</option>
@@ -133,23 +133,23 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-2">
-                        <label asp-for="Contato.Nome" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="Contato.Nome" class="control-label"></label>
                         <input asp-for="Contato.Nome" class="form-control" />
                         <span asp-validation-for="Contato.Nome" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
-                        <label asp-for="Contato.Cargo" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="Contato.Cargo" class="control-label"></label>
                         <input asp-for="Contato.Cargo" class="form-control" />
                         <span asp-validation-for="Contato.Cargo" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
-                        <label asp-for="Contato.Telefone" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="Contato.Telefone" class="control-label"></label>
                         <input asp-for="Contato.Telefone" class="form-control"
                                onkeypress="$(this).mask('(00) 0000-00009')" />
                         <span asp-validation-for="Contato.Telefone" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
-                        <label asp-for="Contato.Email" class="col-form-label" style="font-weight: 600"></label>
+                        <label asp-for="Contato.Email" class="control-label"></label>
                         <input type="email" asp-for="Contato.Email" class="form-control" />
                         <span asp-validation-for="Contato.Email" class="text-danger"></span>
                     </div>
@@ -176,18 +176,18 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="col-form-label" style="font-weight: 600">
+                    <div class="control-label">
                         <label asp-for="Status[0].Data" class="control-label"></label>
                         <input type="date" class="form-control" asp-for="Status[0].Data" value="@DateTime.Now"
                                required />
                         <span asp-validation-for="Status[0].Data" class="text-danger"></span>
                     </div>
-                    <div class="col-form-label" style="font-weight: 600">
+                    <div class="control-label">
                         <label asp-for="Status[0].OrigemID" class="control-label">Identificador da Prospecção</label>
                         <input class="form-control" asp-for="Status[0].OrigemID" value="@unique_id" disabled />
                         <span asp-validation-for="Status[0].OrigemID" class="text-danger"></span>
                     </div>
-                    <div class="col-form-label" style="font-weight: 600">
+                    <div class="control-label">
                         <label for="tagsText" class="control-label">Tags</label>
                         <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectTags">
                             <span class="visually-hidden">Loading...</span>
@@ -202,20 +202,20 @@
                         </div>
                         <span asp-validation-for="Tags" class="text-danger"></span>
                     </div>
-                    <div class="col-form-label" style="font-weight: 600">
+                    <div class="control-label">
                         <label asp-for="Status[0].Anotacoes" class="control-label"></label>
                         <textarea class="form-control" asp-for=" Status[0].Anotacoes" rows="3"></textarea>
                         <span asp-validation-for="Status[0].Anotacoes" class="text-danger"></span>
                     </div>
-                    <div class="col-form-label" style="font-weight: 600">
+                    <div class="control-label">
                         <label asp-for="Status[0].Status" class="control-label"></label>
                         <select asp-for="Status[0].Status" class="form-control" disabled>
                             <option value="@StatusProspeccao.ContatoInicial"> Contato Inicial</option>
                         </select>
                         <span asp-validation-for="Status[0].Status" class="text-danger"></span>
                     </div>
-                    <div class="col-form-label" style="font-weight: 600">
-                        <label asp-for="ValorEstimado" class="col-form-label" style="font-weight: 600"></label>
+                    <div class="control-label">
+                        <label asp-for="ValorEstimado" class="control-label"></label>
                         <input asp-for="ValorEstimado" type="number" step="0.01" class="form-control" value='@Model.ValorEstimado.ToString("F2",CultureInfo.CreateSpecificCulture("en-US"))' />
                         <span asp-validation-for="ValorEstimado" class="text-danger"></span>
                     </div>

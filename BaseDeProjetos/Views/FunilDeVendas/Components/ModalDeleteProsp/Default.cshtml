@@ -15,23 +15,23 @@
             </div>
             <div class="modal-body">
                 <div class="mb-2">
-                    <label asp-for="Id" class="col-form-label" style="font-weight: 600"></label>
+                    <label asp-for="Id" class="control-label"></label>
                     <div class="form-control" readonly>@Model.Id</div>
                 </div>
                 <div class="mb-2">
-                    <label asp-for="Casa" class="col-form-label" style="font-weight: 600"></label>
+                    <label asp-for="Casa" class="control-label"></label>
                     <div class="form-control" readonly>@Model.Casa</div>
                 </div>
                 <div class="mb-2">
-                    <label asp-for="NomeProspeccao" class="col-form-label" style="font-weight: 600"></label>
+                    <label asp-for="NomeProspeccao" class="control-label"></label>
                     <div class="form-control" readonly>@Model.NomeProspeccao</div>
                 </div>
                 <div class="mb-2">
-                    <label class="col-form-label" style="font-weight: 600">Líder da Prospecção</label>
+                    <label class="control-label">Líder da Prospecção</label>
                     <div class="form-control" readonly>@Model.Usuario.UserName</div>
                 </div>
                 <div class="mb-2">
-                    <label class="col-form-label" style="font-weight: 600">Último Status:</label>
+                    <label class="control-label">Último Status:</label>
                     <div style="font-size: inherit" readonly>
                         @Model.Status.OrderBy(p=>p.Data).Last().Status.GetDisplayName()</div>
                     <div class="form-control" readonly>@Model.Status.OrderBy(p=>p.Data).Last().Anotacoes</div>
