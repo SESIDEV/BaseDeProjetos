@@ -13,76 +13,8 @@
         border: 3px solid;
     }
 </style>
-@{
-    Dictionary<string, int> contagem = new Dictionary<string, int>();
 
-    foreach (TipoContratacao contratacao in Enum.GetValues(typeof(TipoContratacao)))
-    {
-        foreach (StatusProspeccao status in Enum.GetValues(typeof(StatusProspeccao)))
-        {
-            var key = contratacao.ToString() + "_" + status.ToString();
-            contagem[key] = Model.ProspeccoesGrafico.Where(p => FunilHelpers.VerificarContratacao(p, contratacao) &&
-            FunilHelpers.VerificarStatus(p, status)).ToList().Count();
-        }
-    }
-
-
-    foreach (TipoContratacao contratacao in Enum.GetValues(typeof(TipoContratacao)))
-    {
-        foreach (StatusProspeccao status in Enum.GetValues(typeof(StatusProspeccao)))
-        {
-            var key = contratacao.ToString() + "_" + status.ToString() + "_Ativas";
-            contagem[key] = Model.ProspeccoesAtivas.Where(p => FunilHelpers.VerificarContratacao(p, contratacao) &&
-            FunilHelpers.VerificarStatus(p, status)).ToList().Count();
-        }
-    }
-
-    float numProspeccoesTotais = Model.ProspeccoesGrafico.Count();
-    float numPropostas = Model.ProspeccoesGrafico.Count(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.ComProposta));
-    float numPropostasAtivas = Model.ProspeccoesGrafico.Count(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.ComProposta) && p.Status.All(s => s.Status < StatusProspeccao.Convertida));
-    float numConvertidas = Model.ProspeccoesGrafico.Count(p => p.Status.Any(s => s.Status == StatusProspeccao.Convertida));
-    float numNaoConvertidas = Model.ProspeccoesGrafico.Count(p => p.Status.Any(s => s.Status == StatusProspeccao.NaoConvertida));
-    float numCanceladas = Model.ProspeccoesGrafico.Count(p => p.Status.Any(s => s.Status == StatusProspeccao.Suspensa));
-    float numProspeccoesEmAndamento = numProspeccoesTotais - numConvertidas - numNaoConvertidas - numCanceladas;
-    float numProspeccoesEmAndamentoComProposta = numPropostas - numConvertidas - numNaoConvertidas;
-    float numEmpresas = Model.ProspeccoesNaoPlanejadas.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();
-    float numEmpresasAtivas = Model.ProspeccoesAtivas.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();
-    float numPlanejadas = Model.ProspeccoesGrafico.Count(p => p.Status.Any(s => s.Status == StatusProspeccao.Planejada));
-    float numAvancadas = Model.ProspeccoesAvancadas.Count();
-    float numConvertidasENaoConvertidas = numConvertidas + numNaoConvertidas;
-    float numInfrutiferas = numCanceladas + numNaoConvertidas;
-    float valorTotalPropostasAtivas = 0;
-    float valorTotalPropostas = 0;
-
-    double taxaConversao = (numConvertidas / numConvertidasENaoConvertidas);    
-    double taxaInfrutiferas = numInfrutiferas / (numProspeccoesTotais - (numAvancadas - numConvertidas - numNaoConvertidas));
-
-    foreach (Prospeccao prosp in Model.ProspeccoesAtivas)
-    { 
-        valorTotalPropostasAtivas += (float)prosp.ValorProposta; 
-    }
-
-    if (numPropostasAtivas > 0) { valorTotalPropostasAtivas = valorTotalPropostasAtivas / numPropostasAtivas; }
-
-    foreach (Prospeccao prosp in Model.ProspeccoesGrafico)
-    {
-        valorTotalPropostas += (float)prosp.ValorProposta;
-    }
-
-    if (numPropostas > 0)
-    {
-        valorTotalPropostas = valorTotalPropostas / numPropostas;
-    }
-
-    string valorAtivasString = valorTotalPropostasAtivas.ToString("C2");
-    string valorString = valorTotalPropostas.ToString("C2");
-
-    TimeSpan DiferencaTodas = FunilHelpers.RetornarValorDiferencaTempo(Model.ProspeccoesAvancadas.ToList());
-    TimeSpan DiferencaAtivas = FunilHelpers.RetornarValorDiferencaTempo(Model.ProspeccoesAtivas.Where(p => p.Status.Any(f => f.Status == StatusProspeccao.ComProposta)).ToList());
-
-}
-
-@if (numProspeccoesTotais > 1)
+@if (Model.ProspeccoesGrafico.Count() > 1)
 {
     <div class="pb-4">
         <div class="app-card app-card-chart shadow-sm h-100">
