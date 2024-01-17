@@ -256,30 +256,26 @@ function popularTabelaPesquisadores(indicadores, dadosPesquisador) {
     let tituloPesquisador = document.querySelector("#tituloPesquisador");
     tituloPesquisador.innerText = `Indicadores do Pesquisador: ${dadosPesquisador["Lider"]["UserName"]}`;
 
-    let blockListIndicadores = ["TaxaConversaoProposta", "TaxaConversaoProjeto", "MediaFatores"];
-
     indicadores.forEach(indicador => {
-        if (!blockListIndicadores.includes(indicador.id)) {
-            let tableRow = document.createElement("tr");
-            let tableDataPesquisador = criarTableDataComClasseCell(indicador.nome);
-            let valorFormatado = formatarValorPesquisador(indicador.tipoDado, dadosPesquisador[indicador["id"]]);
-            let tableDataValor = criarTableDataComClasseCell(valorFormatado);
-            let nomeIndicador = `Rank${indicador.id}`;
-            let valorRank = dadosPesquisador["RankSobreMedia"][nomeIndicador];
-            let tableDataRank;
+        let tableRow = document.createElement("tr");
+        let tableDataPesquisador = criarTableDataComClasseCell(indicador.nome);
+        let valorFormatado = formatarValorPesquisador(indicador.tipoDado, dadosPesquisador[indicador["id"]]);
+        let tableDataValor = criarTableDataComClasseCell(valorFormatado);
+        let nomeIndicador = `Rank${indicador.id}`;
+        let valorRank = dadosPesquisador["RankSobreMedia"][nomeIndicador];
+        let tableDataRank;
 
-            if (valorRank) {
-                tableDataRank = criarTableDataComClasseCell(valorRank.toFixed(2));
-            }
-            else {
-                tableDataRank = criarTableDataComClasseCell("Sem valor");
-            }
-
-            tableRow.appendChild(tableDataPesquisador);
-            tableRow.appendChild(tableDataValor);
-            tableRow.appendChild(tableDataRank);
-            tabelaPesquisadores.appendChild(tableRow);
+        if (valorRank) {
+            tableDataRank = criarTableDataComClasseCell(valorRank.toFixed(2));
         }
+        else {
+            tableDataRank = criarTableDataComClasseCell("Sem valor");
+        }
+
+        tableRow.appendChild(tableDataPesquisador);
+        tableRow.appendChild(tableDataValor);
+        tableRow.appendChild(tableDataRank);
+        tabelaPesquisadores.appendChild(tableRow);
     });
 }
 
