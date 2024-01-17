@@ -54,7 +54,8 @@
                         <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectPessoas-@Model.Id">
                             <span class="visually-hidden">Loading...</span>
                         </div>
-                        <input name="MembrosSelect" class="form-control d-none" id="inputTextPessoas-@Model.Id" type="text" />
+                        @* O string.join é para não perdermos os valores de equipe *@
+                        <input name="MembrosSelect" class="form-control d-none" id="inputTextPessoas-@Model.Id" type="text" value="@string.Join(";", Model.EquipeProspeccao.Select(e => e.Usuario.Email).ToList())" />
                         <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestPessoas-@Model.Id"
                                 onmouseover="preencherInputEditProspeccao('@(Model.Id)')"
                                 onclick="gerarOpcoesSelect('Pessoas','editarProspModal','-@Model.Id',true)">
@@ -82,6 +83,7 @@
                         <input asp-for="PotenciaisParceiros" class="form-control d-none" id="inputTextEmpresas-@Model.Id" type="text" />
                         <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestEmpresas-@Model.Id" onclick="gerarOpcoesSelect('Empresas','editarProspModal','-@Model.Id',true)">Alterar</button>
                         <div class="input-group flex-nowrap" id="caixaPesquisaEmpresas-@Model.Id" style="display:none;">
+                            @* Não remova o multiple, ele é usado pelo Select2 *@
                             <select id="campoSelectEmpresas-@Model.Id" class="form-select" multiple="true"></select>
                         </div>
                     </div>
