@@ -1,8 +1,10 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
+using BaseDeProjetos.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BaseDeProjetos.ViewComponents.FunilDeVendasViewComponents
@@ -18,7 +20,7 @@ namespace BaseDeProjetos.ViewComponents.FunilDeVendasViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            List<Prospeccao> prosp = await _context.Prospeccao.ToListAsync();
+            List<ProspeccaoModalPreCreateProspDTO> prosp = await _context.Prospeccao.Select(p => new ProspeccaoModalPreCreateProspDTO { Empresa = p.Empresa, Status = p.Status, Usuario = p.Usuario, Id = p.Id }).ToListAsync();
 
             ViewData["prospPlan"] = prosp;
 
