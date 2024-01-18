@@ -367,7 +367,7 @@ namespace BaseDeProjetos.Controllers
                                                                                                                                           .Where(p => p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida))
                                                                                                                                           .ToList());
 
-            int prospSuspensas = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa).Count();
+            int prospSuspensas = _cache.GetCached($"Prospeccoes:{enumCasa}:Suspensas:Count", () => prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa).Count());
             double percentCanceladas = (double)prospSuspensas / prospeccoesDaCasa.Count() * 100;
 
             int prospConvertidas = prospeccoesDaCasaConvertida.Count();
@@ -399,11 +399,11 @@ namespace BaseDeProjetos.Controllers
             }
 
             var prospeccoesDaCasa = await ObterProspeccoesTotais(enumCasa);
-            var prospeccoesDaCasaComProposta = _cache.GetCached($"Prospeccoes:{enumCasa}:ComProposta:Count", () => prospeccoesDaCasa.Select(p => new { p.Status })
+            var prospeccoesDaCasaComProposta = _cache.GetCached($"Prospeccoes:{enumCasa}:ComProposta", () => prospeccoesDaCasa.Select(p => new { p.Status })
                                                                                                                                     .Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta))
                                                                                                                                     .ToList());
 
-            var prospeccoesDaCasaConvertida = _cache.GetCached($"Prospeccoes:{enumCasa}:Convertidas:Count", () => prospeccoesDaCasa.Select(p => new { p.Status })
+            var prospeccoesDaCasaConvertida = _cache.GetCached($"Prospeccoes:{enumCasa}:Convertidas", () => prospeccoesDaCasa.Select(p => new { p.Status })
                                                                .Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida))
                                                                .ToList());
 
