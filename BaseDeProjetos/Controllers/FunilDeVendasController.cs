@@ -305,12 +305,12 @@ namespace BaseDeProjetos.Controllers
 
             // TODO: Pensar em otimizações
             List<Prospeccao> prospeccoesDaCasa = await ObterProspeccoesTotais(enumCasa);
+            var prospeccoesComPropostaEContatoInicial = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta) && p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial)).ToList();
+            int prospContatoInicial = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial)).Count();
+            int empresasProspectadas = prospeccoesDaCasa.Select(p => new { p.Empresa }).Distinct().Count();
 
             //todas prospepccoes que possui status em proposta e status inicial, duracao de dias 
             List<TimeSpan> intervaloDatas = new List<TimeSpan>();
-
-            var prospeccoesComPropostaEContatoInicial = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta) && p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial)).ToList();
-            int empresasProspectadas = prospeccoesDaCasa.Select(p => new { p.Empresa }).Distinct().Count();
 
             foreach (var prospeccao in prospeccoesComPropostaEContatoInicial)
             {
@@ -321,8 +321,6 @@ namespace BaseDeProjetos.Controllers
 
             var mediaintervalos = new TimeSpan(Convert.ToInt64(intervaloDatas.Average(t => t.Ticks)));
             double tempoMedioContato = mediaintervalos.TotalDays;
-
-            int prospContatoInicial = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial)).Count();
 
             int prospeccoesInfrutiferas = prospeccoesDaCasa
                 .Select(p => new { p.Status })
