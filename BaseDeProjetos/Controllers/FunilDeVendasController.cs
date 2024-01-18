@@ -421,11 +421,11 @@ namespace BaseDeProjetos.Controllers
                 throw new ArgumentException("A casa selecionada é inválida");
             }
 
-            List<Prospeccao> prospeccoes = await ObterProspeccoesTotais(enumCasa);
+            var prospeccoesDaCasa = await ObterProspeccoesTotais(enumCasa);
 
-            int prospConvertidas = GerarQuantidadeProsp(prospeccoes, p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida));
-            int prospEmAndamento = GerarQuantidadeProsp(prospeccoes, p => p.Status.Any(p => p.Status != StatusProspeccao.Convertida) && p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida) && p.Status.Any(p => p.Status == StatusProspeccao.Suspensa));
-            int prospNaoConvertidas = GerarQuantidadeProsp(prospeccoes, p => p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida));
+            int prospConvertidas = GerarQuantidadeProsp(prospeccoesDaCasa, p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida));
+            int prospEmAndamento = GerarQuantidadeProsp(prospeccoesDaCasa, p => p.Status.Any(p => p.Status != StatusProspeccao.Convertida) && p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida) && p.Status.Any(p => p.Status == StatusProspeccao.Suspensa));
+            int prospNaoConvertidas = GerarQuantidadeProsp(prospeccoesDaCasa, p => p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida));
 
             StatusProspeccoesPropostaPizza statusProspeccoesPropostaPizza = new StatusProspeccoesPropostaPizza
             {
