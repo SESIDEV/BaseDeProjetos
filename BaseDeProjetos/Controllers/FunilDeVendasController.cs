@@ -362,7 +362,10 @@ namespace BaseDeProjetos.Controllers
 
                 Dictionary<string, int> statusprospeccao = new Dictionary<string, int>();
 
-                List<Prospeccao> prospeccoes = await _cache.GetCachedAsync($"Prospeccoes:{enumCasa}", () => _context.Prospeccao.Where(p => p.Casa == enumCasa).ToListAsync());
+                List<Prospeccao> prospeccoes = await _cache.GetCachedAsync($"Prospeccoes:{enumCasa}", () => _context.Prospeccao.Where(p => p.Casa == enumCasa)
+                                                                                                                               .Include(p => p.Status)
+                                                                                                                               .Include(p => p.Empresa)
+                                                                                                                               .ToListAsync());
 
                 foreach (int tipo in Enum.GetValues(typeof(TipoContratacao)))
                 {
@@ -436,17 +439,24 @@ namespace BaseDeProjetos.Controllers
 
                 // TODO: Pensar em otimizações
                 List<Prospeccao> prospeccoesDaCasa = await ObterProspeccoesTotais(enumCasa);
-                var prospeccoesComPropostaEContatoInicial = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta) && p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial)).ToList();
-                int prospContatoInicial = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial)).Count();
-                int empresasProspectadas = prospeccoesDaCasa.Select(p => new { p.Empresa }).Distinct().Count();
+                var prospeccoesComPropostaEContatoInicial = prospeccoesDaCasa.Select(p => new { p.Status })
+                                                                             .Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta) && p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial))
+                                                                             .ToList();
+
+                int prospContatoInicial = prospeccoesDaCasa.Select(p => new { p.Status })
+                                                           .Count(p => p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial));
+
+                int empresasProspectadas = prospeccoesDaCasa.Select(p => new { p.Empresa })
+                                                            .Distinct()
+                                                            .Count();
 
                 //todas prospepccoes que possui status em proposta e status inicial, duracao de dias 
                 List<TimeSpan> intervaloDatas = new List<TimeSpan>();
 
                 foreach (var prospeccao in prospeccoesComPropostaEContatoInicial)
                 {
-                    var dataContatoInicial = prospeccao.Status.Where(p => p.Status == StatusProspeccao.ContatoInicial).First().Data;
-                    var dataComProposta = prospeccao.Status.Where(p => p.Status == StatusProspeccao.ComProposta).First().Data;
+                    var dataContatoInicial = prospeccao.Status.First(p => p.Status == StatusProspeccao.ContatoInicial).Data;
+                    var dataComProposta = prospeccao.Status.First(p => p.Status == StatusProspeccao.ComProposta).Data;
                     intervaloDatas.Add(dataComProposta - dataContatoInicial);
                 }
 
@@ -455,8 +465,8 @@ namespace BaseDeProjetos.Controllers
 
                 int prospeccoesInfrutiferas = prospeccoesDaCasa
                     .Select(p => new { p.Status })
-                    .Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida
-                    || p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa).Count();
+                    .Count(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida
+                    || p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa);
 
                 double percentInfrutiferas = (double)prospeccoesInfrutiferas / prospeccoesDaCasa.Count() * 100;
 
@@ -631,7 +641,12 @@ namespace BaseDeProjetos.Controllers
 
                 var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Funil", () =>
                     _context.Prospeccao
-                        .Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).Include(p => p.EquipeProspeccao).ThenInclude(e => e.Usuario)
+                        .Include(p => p.Status)
+                        .Include(p => p.Empresa)
+                        .Include(p => p.Usuario)
+                        .Include(p => p.EquipeProspeccao)
+                        .ThenInclude(e => e.Usuario)
+                        .AsNoTracking()
                         .ToListAsync());
 
                 ViewBag.searchString = searchString;
@@ -678,8 +693,16 @@ namespace BaseDeProjetos.Controllers
 
                 if (!string.IsNullOrEmpty(aba))
                 {
-                    var prospeccoesParaFiltragemAgregadas = await _cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).Include(p => p.EquipeProspeccao).ThenInclude(e => e.Usuario).ToListAsync());
-                    model.ProspeccoesAgregadas = prospeccoesParaFiltragemAgregadas.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
+                    var prospeccoesParaFiltragemAgregadas = await _cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.AsNoTracking()
+                                                                                                                                      .Include(p => p.Status)
+                                                                                                                                      .Include(p => p.Empresa)
+                                                                                                                                      .Include(p => p.Usuario)
+                                                                                                                                      .Include(p => p.EquipeProspeccao)
+                                                                                                                                      .ThenInclude(e => e.Usuario)
+                                                                                                                                      .ToListAsync());
+
+                    model.ProspeccoesAgregadas = prospeccoesParaFiltragemAgregadas.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada)
+                                                                                  .ToList();
                     return View(model);
                 }
                 else
@@ -956,7 +979,7 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         private async Task CriarSelectListsDaView()
         {
-            var empresas = await _cache.GetCachedAsync("Empresas:FunilUnique", () => _context.Empresa.Select(e => new EmpresasReadComUniqueDTO
+            var empresas = await _cache.GetCachedAsync("Empresas:FunilUnique", () => _context.Empresa.AsNoTracking().Select(e => new EmpresasReadComUniqueDTO
             {
                 EmpresaUnique = e.EmpresaUnique,
                 Id = e.Id,
@@ -973,7 +996,8 @@ namespace BaseDeProjetos.Controllers
             Usuario lider = usuarios.First(p => p.Id == prospeccao.Usuario.Id);
             prospeccao.Usuario = lider;
 
-            Prospeccao prospAntiga = await _context.Prospeccao.AsNoTracking().FirstAsync(p => p.Id == prospeccao.Id);
+            Prospeccao prospAntiga = await _context.Prospeccao.AsNoTracking()
+                                                              .FirstAsync(p => p.Id == prospeccao.Id);
 
             // tudo abaixo compara a versão antiga com a nova que irá para o Update()
 
@@ -1088,8 +1112,10 @@ namespace BaseDeProjetos.Controllers
         private async Task<List<Prospeccao>> ObterProspeccoesTotais(Instituto casa)
         {
             return await _cache.GetCachedAsync($"Prospeccoes:{casa}", () => _context.Prospeccao
-                .Where(p => p.Status.OrderBy(f => f.Data).Last().Status != StatusProspeccao.Planejada && p.Casa == casa)
+                .AsNoTracking()
                 .Include(p => p.Empresa)
+                .Include(p => p.Status)
+                .Where(p => p.Status.OrderBy(f => f.Data).Last().Status != StatusProspeccao.Planejada && p.Casa == casa)
                 .ToListAsync());
         }
 
