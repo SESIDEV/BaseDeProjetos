@@ -10,10 +10,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using NUnit.Framework.Constraints;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -165,26 +162,33 @@ namespace BaseDeProjetos.Controllers
         [Route("FunilDeVendas/GerarStatusGeralProspPizza/{casa}")]
         public async Task<IActionResult> GerarStatusGeralProspPizza(string casa)
         {
-            Instituto enumCasa;
-
-            if (!Enum.TryParse<Instituto>(casa, out enumCasa))
+            if (!Enum.TryParse(casa, out Instituto enumCasa))
             {
                 throw new ArgumentException("A casa selecionada é inválida");
             }
 
-            int prospSuspensas = _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa && p.Casa == enumCasa).Count();
+            var prospeccoesDaCasa = await ObterProspeccoesTotais(enumCasa);
+
+            int prospSuspensas = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa).Count();
             double percentCanceladas = (double)prospSuspensas / ObterQuantidadeProspeccoesTotais(enumCasa) * 100;
 
-            int prospConvertidas = _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida) && p.Casa == enumCasa).Count();
+            int prospConvertidas = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida)).Count();
             double percentConvertidas = (double)prospConvertidas / ObterQuantidadeProspeccoesTotais(enumCasa) * 100;
 
-            int prospNaoConvertidas = _context.Prospeccao.Select(p => new { p.Status, p.Casa }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida && p.Casa == enumCasa).Count();
+            int prospNaoConvertidas = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida).Count();
             double percentNaoConvertidas = (double)prospNaoConvertidas / ObterQuantidadeProspeccoesTotais(enumCasa) * 100;
 
-            int prospEmAndamento = ObterQuantidadeProspeccoesTotais(enumCasa) - prospConvertidas - prospNaoConvertidas - prospSuspensas;
+            int prospEmAndamento = prospeccoesDaCasa.Count() - prospConvertidas - prospNaoConvertidas - prospSuspensas;
             double percentEmAndamento = (double)prospEmAndamento / ObterQuantidadeProspeccoesTotais(enumCasa) * 100;
 
-            StatusGeralProspeccaoPizza statusGeralProspeccaoPizza = new StatusGeralProspeccaoPizza { PercentualCanceladas = percentCanceladas, PercentualConvertidas = percentConvertidas, PercentualEmAndamento = percentEmAndamento, PercentualNaoConvertidas = percentNaoConvertidas };
+            StatusGeralProspeccaoPizza statusGeralProspeccaoPizza = new StatusGeralProspeccaoPizza
+            {
+                PercentualCanceladas = percentCanceladas,
+                PercentualConvertidas = percentConvertidas,
+                PercentualEmAndamento = percentEmAndamento,
+                PercentualNaoConvertidas = percentNaoConvertidas
+            };
+
             return Ok(JsonConvert.SerializeObject(statusGeralProspeccaoPizza));
         }
 
