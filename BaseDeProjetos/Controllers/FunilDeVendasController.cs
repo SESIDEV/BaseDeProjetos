@@ -50,6 +50,7 @@ namespace BaseDeProjetos.Controllers
                 bool enviou = MailHelper.NotificarProspecção(followup, _mailer);
                 await _context.SaveChangesAsync();
                 await CacheHelper.CleanupProspeccoesCache(_cache);
+                await CacheHelper.CleanupParticipacoesCache(_cache);
             }
 
             return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
@@ -104,6 +105,60 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        // POST: FunilDeVendas/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas, ValorEstimado")] Prospeccao prospeccao, string membrosSelect)
+        {
+            ViewbagizarUsuario(_context, _cache);
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    prospeccao = await ValidarEmpresa(prospeccao);
+                }
+                catch (Exception e)
+                {
+                    return CapturarErro(e);
+                }
+
+                if (prospeccao.EmpresaId != -1 && !string.IsNullOrEmpty(prospeccao.Contato.Nome))
+                {
+                    var empresa = await _cache.GetCachedAsync($"Empresa:{prospeccao.EmpresaId}", () => _context.Empresa.FindAsync(prospeccao.EmpresaId).AsTask());
+                    if (empresa != null)
+                    {
+                        prospeccao.Contato.empresa = empresa;
+                    }
+                }
+
+                List<Usuario> usuarios = await ObterListaDeMembrosSelecionados(membrosSelect);
+
+                AtribuirEquipeProspeccao(prospeccao, usuarios);
+
+                await VincularUsuario(prospeccao, HttpContext, _context);
+
+                prospeccao.Status[0].Origem = prospeccao;
+
+                // Por necessidade da implementação do cache tive de omitir essa função, que no momento não está sendo utilizada pois o serviço de email não está habilitado.
+                // Ao ligar o serviço de email no futuro essa função estará quebrada (atrelamento de empresas)
+                // TODO: Consertar a funcionalidade de Notificar Prospecções pelo Email Helper
+                //bool enviou = MailHelper.NotificarProspecção(prospeccao.Status[0], _mailer);
+
+                await _context.AddAsync(prospeccao);
+                await _context.SaveChangesAsync();
+                await CacheHelper.CleanupProspeccoesCache(_cache);
+                await CacheHelper.CleanupParticipacoesCache(_cache);
+                return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
+            }
+            else
+            {
+                return View("Error");
+            }
+        }
+
         // GET: FunilDeVendas/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
@@ -150,6 +205,7 @@ namespace BaseDeProjetos.Controllers
             _context.Remove(prospeccao);
             await _context.SaveChangesAsync();
             await CacheHelper.CleanupProspeccoesCache(_cache);
+            await CacheHelper.CleanupParticipacoesCache(_cache);
             return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
         }
 
@@ -189,6 +245,66 @@ namespace BaseDeProjetos.Controllers
                 return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
             }
             return View(prospeccao);
+        }
+
+        // POST: FunilDeVendas/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, [Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, EmpresaId, Contato, Casa, Usuario, ValorProposta, ValorEstimado, Status, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao, string membrosSelect)
+        {
+            ViewbagizarUsuario(_context, _cache);
+
+            if (id != prospeccao.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                var prospeccaoExistente = _context.Prospeccao.Find(prospeccao.Id);
+
+                // Verifica se a âncora foi cancelada
+                if (prospeccaoExistente.Ancora == true && prospeccao.Ancora == false)
+                {
+                    FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
+                }
+                else if (prospeccao.Ancora == true && string.IsNullOrEmpty(prospeccao.Agregadas))
+                {
+                    throw new InvalidOperationException("Não é possível adicionar uma Âncora sem nenhuma agregada.");
+                }
+                // Verifica se alguma agregada foi alterada
+                else if (prospeccaoExistente.Agregadas != prospeccao.Agregadas)
+                {
+                    FunilHelpers.AdicionarAgregadas(_context, prospeccaoExistente, prospeccao);
+                    FunilHelpers.RemoverAgregadas(_context, prospeccaoExistente, prospeccao);
+                }
+
+                // Remover relacionamento de equipe
+                _context.EquipeProspeccao.RemoveRange(prospeccaoExistente.EquipeProspeccao);
+
+                List<string> membrosEmails = !string.IsNullOrEmpty(membrosSelect) ? membrosSelect.Split(';').ToList() : new List<string>();
+                List<Usuario> usuariosMembros = await _context.Users.Where(u => membrosEmails.Contains(u.Email)).ToListAsync();
+                List<EquipeProspeccao> equipe = usuariosMembros.Select(usuario => new EquipeProspeccao { IdUsuario = usuario.Id, IdTrabalho = prospeccao.Id }).ToList();
+
+                prospeccaoExistente.EquipeProspeccao = equipe;
+
+                // Atualiza a prospecção no banco com os valores de prospeccao
+                _context.Entry(prospeccaoExistente).CurrentValues.SetValues(prospeccao);
+                _context.Update(prospeccaoExistente);
+
+                // Salvar alterações no banco
+                await _context.SaveChangesAsync();
+                await CacheHelper.CleanupProspeccoesCache(_cache);
+                await CacheHelper.CleanupParticipacoesCache(_cache);
+
+                return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
+            }
+            else
+            {
+                return View("Error");
+            }
         }
 
         public async Task<IActionResult> EditarFollowUp(int? id) // Retornar view
@@ -627,473 +743,6 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Atualizar([Bind("OrigemID, Data, Status, Anotacoes, MotivoNaoConversao")] FollowUp followup)
-        {
-            ViewbagizarUsuario(_context, _cache);
-
-            if (ModelState.IsValid)
-            {
-                Prospeccao prospeccao_origem = await _context.Prospeccao.FirstOrDefaultAsync(p => p.Id == followup.OrigemID);
-                followup.Origem = prospeccao_origem;
-
-                await CriarFollowUp(followup);
-
-                bool enviou = MailHelper.NotificarProspecção(followup, _mailer);
-                await _context.SaveChangesAsync();
-                await CacheHelper.CleanupProspeccoesCache(_cache);
-                await CacheHelper.CleanupParticipacoesCache(_cache);
-            }
-
-            return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
-        }
-
-        /// <summary>
-        /// Retorna os dados de todas as prospeções cadastradas no sistema em formato JSON.
-        /// OBS: Método permite acesso não autenticado vide tag: [AllowAnonymous]
-        /// </summary>
-        /// <returns></returns>
-        [AllowAnonymous]
-        public async Task<IActionResult> PuxarDadosProspeccoes()
-        {
-            await _context.AddAsync(followup);
-            await _context.SaveChangesAsync();
-        }
-
-        private static void AtribuirEquipeProspeccao(Prospeccao prospeccao, List<Usuario> usuarios)
-        {
-            List<EquipeProspeccao> equipe = new List<EquipeProspeccao>();
-
-            foreach (var usuario in usuarios)
-            {
-                equipe.Add(new EquipeProspeccao { IdUsuario = usuario.Id, IdTrabalho = prospeccao.Id });
-            }
-
-            prospeccao.EquipeProspeccao = equipe;
-        }
-
-        private async Task<List<Usuario>> ObterListaDeMembrosSelecionados(string membrosSelect)
-        {
-            List<string> membrosEmails = new List<string>();
-
-            // TODO: Repensar a forma como o frontend implementa essa funcionalidade
-            if (!string.IsNullOrEmpty(membrosSelect))
-            {
-                membrosEmails.AddRange(membrosSelect.Split(';').ToList());
-            }
-
-            List<Usuario> usuarios = await _context.Users.Where(u => membrosEmails.Contains(u.Email)).ToListAsync();
-            return usuarios;
-        }
-
-        // POST: FunilDeVendas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas, ValorEstimado")] Prospeccao prospeccao, string membrosSelect)
-        {
-            ViewbagizarUsuario(_context, _cache);
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    prospeccao = await ValidarEmpresa(prospeccao);
-                }
-                catch (Exception e)
-                {
-                    return CapturarErro(e);
-                }
-
-                if (prospeccao.EmpresaId != -1 && !string.IsNullOrEmpty(prospeccao.Contato.Nome))
-                {
-                    var empresa = await _cache.GetCachedAsync($"Empresa:{prospeccao.EmpresaId}", () => _context.Empresa.FindAsync(prospeccao.EmpresaId).AsTask());
-                    if (empresa != null)
-                    {
-                        prospeccao.Contato.empresa = empresa;
-                    }
-                }
-
-                List<Usuario> usuarios = await ObterListaDeMembrosSelecionados(membrosSelect);
-
-                AtribuirEquipeProspeccao(prospeccao, usuarios);
-
-                await VincularUsuario(prospeccao, HttpContext, _context);
-
-                prospeccao.Status[0].Origem = prospeccao;
-
-                // Por necessidade da implementação do cache tive de omitir essa função, que no momento não está sendo utilizada pois o serviço de email não está habilitado.
-                // Ao ligar o serviço de email no futuro essa função estará quebrada (atrelamento de empresas)
-                // TODO: Consertar a funcionalidade de Notificar Prospecções pelo Email Helper
-                //bool enviou = MailHelper.NotificarProspecção(prospeccao.Status[0], _mailer);
-
-                await _context.AddAsync(prospeccao);
-                await _context.SaveChangesAsync();
-                await CacheHelper.CleanupProspeccoesCache(_cache);
-                await CacheHelper.CleanupParticipacoesCache(_cache);
-                return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
-            }
-            else
-            {
-                return View("Error");
-            }
-        }
-
-        /// <summary>
-        /// Vincula o usuário logado a uma prospecção
-        /// </summary>
-        /// <param name="prospeccao">Prospecção que se deseja vincular ao usuário logado</param>
-        /// <returns></returns>
-        internal static async Task VincularUsuario(Prospeccao prospeccao, HttpContext httpContext, ApplicationDbContext context)
-        {
-            string userId = httpContext.User.Identity.Name;
-            Usuario user = await context.Users.FirstAsync(u => u.UserName == userId);
-            prospeccao.Usuario = user;
-        }
-
-        /// <summary>
-        /// Valida e cadastra uma empresa a uma prospecção
-        /// </summary>
-        /// <param name="prospeccao">Prospecção a ter uma empresa cadastrada</param>
-        /// <returns></returns>
-        /// <exception cref="Exception">Erro a ser lançado caso não seja possível cadastrar a empresa/seja uma empresa inválida</exception>
-        public async Task<Prospeccao> ValidarEmpresa(Prospeccao prospeccao)
-        {
-            var empresas = await _cache.GetCachedAsync("AllEmpresas", () => _context.Empresa.ToListAsync());
-            var empresa = empresas.FirstOrDefault(e => e.Id == prospeccao.EmpresaId);
-
-            if (empresa == null)
-            {
-                throw new ArgumentNullException("Ocorreu um erro no registro da empresa. \n A empresa selecionada não foi encontrada. \n Contacte um administrador do sistema");
-            }
-
-            if (string.IsNullOrEmpty(empresa.Nome) || string.IsNullOrEmpty(empresa.CNPJ) || empresa.Id == -1)
-            {
-                throw new ArgumentException("Ocorreu um erro no registro da empresa. \n As informações da empresa estão inválidas \n Contacte um administrador do sistema");
-            }
-
-            return prospeccao;
-        }
-
-        /// <summary>
-        /// Cria uma selectlist para a View(?)
-        /// </summary>
-        private async Task CriarSelectListsDaView()
-        {
-            var empresas = await _cache.GetCachedAsync("Empresas:FunilUnique", () => _context.Empresa.Select(e => new EmpresasReadComUniqueDTO { EmpresaUnique = e.EmpresaUnique, Id = e.Id, Nome = e.Nome }).ToListAsync());
-            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-            ViewData["Equipe"] = new SelectList(await _context.Users.ToListAsync(), "Id", "UserName");
-        }
-
-        // POST: FunilDeVendas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, EmpresaId, Contato, Casa, Usuario, ValorProposta, ValorEstimado, Status, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao, string membrosSelect)
-        {
-            ViewbagizarUsuario(_context, _cache);
-
-            if (id != prospeccao.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                var prospeccaoExistente = _context.Prospeccao.Find(prospeccao.Id);
-
-                // Verifica se a âncora foi cancelada
-                if (prospeccaoExistente.Ancora == true && prospeccao.Ancora == false)
-                {
-                    FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
-                }
-                else if (prospeccao.Ancora == true && string.IsNullOrEmpty(prospeccao.Agregadas))
-                {
-                    throw new InvalidOperationException("Não é possível adicionar uma Âncora sem nenhuma agregada.");
-                }
-                // Verifica se alguma agregada foi alterada
-                else if (prospeccaoExistente.Agregadas != prospeccao.Agregadas)
-                {
-                    FunilHelpers.AdicionarAgregadas(_context, prospeccaoExistente, prospeccao);
-                    FunilHelpers.RemoverAgregadas(_context, prospeccaoExistente, prospeccao);
-                }
-
-                // Remover relacionamento de equipe
-                _context.EquipeProspeccao.RemoveRange(prospeccaoExistente.EquipeProspeccao);
-
-                List<string> membrosEmails = !string.IsNullOrEmpty(membrosSelect) ? membrosSelect.Split(';').ToList() : new List<string>();
-                List<Usuario> usuariosMembros = await _context.Users.Where(u => membrosEmails.Contains(u.Email)).ToListAsync();
-                List<EquipeProspeccao> equipe = usuariosMembros.Select(usuario => new EquipeProspeccao { IdUsuario = usuario.Id, IdTrabalho = prospeccao.Id }).ToList();
-
-                prospeccaoExistente.EquipeProspeccao = equipe;
-
-                // Atualiza a prospecção no banco com os valores de prospeccao
-                _context.Entry(prospeccaoExistente).CurrentValues.SetValues(prospeccao);
-                _context.Update(prospeccaoExistente);
-
-                // Salvar alterações no banco
-                await _context.SaveChangesAsync();
-                await CacheHelper.CleanupProspeccoesCache(_cache);
-                await CacheHelper.CleanupParticipacoesCache(_cache);
-
-                return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
-            }
-
-            return Json(listaFull);
-        }
-
-        /// <summary>
-        /// Obtem os membros em CSV da prospecção dado o id
-        /// </summary>
-        /// <returns>A equipe de uma prospecção separadas por ponto e virgula</returns>
-        [HttpGet("FunilDeVendas/RetornarMembrosCSV/{idProspeccao}")]
-        public IActionResult RetornarMembrosCSV(string idProspeccao)
-        {
-            string membros = string.Join(";", _context.Prospeccao.FirstOrDefault(p => p.Id == idProspeccao)?.EquipeProspeccao.Select(relacao => relacao.Usuario.Email));
-
-            Dictionary<string, string> dados = new Dictionary<string, string> { { "data", membros } };
-
-            return Ok(JsonConvert.SerializeObject(dados));
-        }
-
-        public async Task<IActionResult> EditarFollowUp(int? id) // Retornar view
-        {
-            ViewbagizarUsuario(_context, _cache);
-
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            FollowUp followup = await _context.FollowUp.FindAsync(id);
-            ViewData["origem"] = followup.OrigemID;
-            ViewData["prosp"] = followup.Origem;
-
-            if (followup == null)
-            {
-                return Helpers.Helpers.PuxarTagsProspecoes(_context);
-            }
-            if (ModelState.IsValid)
-            {
-                _context.Update(followup);
-                await _context.SaveChangesAsync();
-                await CacheHelper.CleanupProspeccoesCache(_cache);
-                await CacheHelper.CleanupParticipacoesCache(_cache);
-            }
-
-            return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
-        }
-
-        // GET: FunilDeVendas/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (HttpContext.User.Identity.IsAuthenticated)
-            {
-                if (id is null)
-                {
-                    return NotFound();
-                }
-
-                FollowUp followup = await _context.FollowUp
-                    .FirstOrDefaultAsync(m => m.Id == id);
-
-                if (followup == null)
-                {
-                    return NotFound();
-                }
-
-                return await RemoverFollowupAutenticado(followup);
-            }
-            else
-            {
-                return View("Forbidden");
-            }
-        }
-
-        /// <summary>
-        /// Retorna um modal de acordo com os parâmetros
-        /// </summary>
-        /// <param name="idProsp">ID da prospecção</param>
-        /// <param name="tipo">Tipo de Modal a ser retornado</param>
-        /// <returns></returns>
-        public async Task<IActionResult> RetornarModal(string idProsp, string tipo)
-        {
-            if (HttpContext.User.Identity.IsAuthenticated)
-            {
-                await CriarSelectListsDaView();
-                if (tipo != null || tipo != "")
-                {
-                    return ViewComponent($"Modal{tipo}Prosp", new { id = idProsp });
-                }
-                else
-                {
-                    return View("Error");
-                }
-            }
-            else
-            {
-                return View("Forbidden");
-            }
-        }
-
-        /// <summary>
-        /// Retorna o modal de editar followup
-        /// </summary>
-        /// <param name="idProsp">ID da Prospecção a ter um followup editado</param>
-        /// <param name="idFollowup">ID do Followup a ser editado</param>
-        /// <param name="tipo">Tipo de Modal</param>
-        /// <returns></returns>
-        public async Task<IActionResult> RetornarModalEditFollowup(string idProsp, string idFollowup, string tipo)
-        {
-            if (HttpContext.User.Identity.IsAuthenticated)
-            {
-                await CriarSelectListsDaView();
-                if (tipo != null || tipo != "")
-                {
-                    _context.FollowUp.Remove(followup);
-                    await _context.SaveChangesAsync();
-                    await CacheHelper.CleanupProspeccoesCache(_cache);
-                    await CacheHelper.CleanupParticipacoesCache(_cache);
-                    return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
-                }
-                else
-                {
-                    return ViewComponent("Error");
-                }
-            }
-            else
-            {
-                return View("Forbidden");
-            }
-        }
-
-        /// <summary>
-        /// Valida e cadastra uma empresa a uma prospecção
-        /// </summary>
-        /// <param name="prospeccao">Prospecção a ter uma empresa cadastrada</param>
-        /// <returns></returns>
-        /// <exception cref="Exception">Erro a ser lançado caso não seja possível cadastrar a empresa/seja uma empresa inválida</exception>
-        public async Task<Prospeccao> ValidarEmpresa(Prospeccao prospeccao)
-        {
-            var empresas = await _cache.GetCachedAsync("AllEmpresas", () => _context.Empresa.ToListAsync());
-            var empresa = empresas.FirstOrDefault(e => e.Id == prospeccao.EmpresaId);
-
-            if (empresa == null)
-            {
-                throw new ArgumentNullException("Ocorreu um erro no registro da empresa. \n A empresa selecionada não foi encontrada. \n Contacte um administrador do sistema");
-            }
-
-            if (string.IsNullOrEmpty(empresa.Nome) || string.IsNullOrEmpty(empresa.CNPJ) || empresa.Id == -1)
-            {
-                throw new ArgumentException("Ocorreu um erro no registro da empresa. \n As informações da empresa estão inválidas \n Contacte um administrador do sistema");
-            }
-
-            return prospeccao;
-        }
-
-        /// <summary>
-        /// Valida as condições de remoção de uma prospecção
-        /// </summary>
-        /// <param name="prospeccao">Prospecção a se validada</param>
-        /// <param name="dono">Usuario líder da prospecção</param>
-        /// <param name="ativo">Usuário ativo (HttpContext)</param>
-        /// <returns></returns>
-        internal static bool VerificarCondicoesRemocao(Prospeccao prospeccao, Usuario ativoNaSessao, Usuario donoProsp)
-        {
-            return prospeccao.Status.Count() > 1 && ativoNaSessao == donoProsp;
-        }
-
-        // POST: FunilDeVendas/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            ViewbagizarUsuario(_context, _cache);
-
-            var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:WithStatus", () => _context.Prospeccao.Include(f => f.Status).ToListAsync());
-
-            var prospeccao = prospeccoes.Where(prosp => prosp.Id == id).First(); // o First converte de IQuerable para objeto Prospeccao
-
-            if (prospeccao.Ancora)
-            {
-                FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
-            }
-
-            _context.Remove(prospeccao);
-            await _context.SaveChangesAsync();
-            await CacheHelper.CleanupProspeccoesCache(_cache);
-            await CacheHelper.CleanupParticipacoesCache(_cache);
-            return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
-        }
-
-        /// <summary>
-        /// Função auxiliar de captura e retorno de erro para View de Erro
-        /// </summary>
-        /// <param name="e">Exceção</param>
-        /// <returns></returns>
-        private IActionResult CapturarErro(Exception e)
-        {
-            ErrorViewModel erro = new ErrorViewModel
-            {
-                Mensagem = e.Message
-            };
-            return View("Error", erro);
-        }
-
-        /// <summary>
-        /// Cria um followup no Banco de Dados
-        /// </summary>
-        /// <param name="followup">Followup específico a ser criado no Banco de Dados</param>
-        private async Task CriarFollowUp(FollowUp followup)
-        {
-            await _context.AddAsync(followup);
-            await _context.SaveChangesAsync();
-        }
-
-        /// <summary>
-        /// Cria uma selectlist para a View(?)
-        /// </summary>
-        private async Task CriarSelectListsDaView()
-        {
-            var empresas = await _cache.GetCachedAsync("Empresas:FunilUnique", () => _context.Empresa.Select(e => new EmpresasReadComUniqueDTO
-            {
-                EmpresaUnique = e.EmpresaUnique,
-                Id = e.Id,
-                Nome = e.Nome
-            }).ToListAsync());
-
-            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
-            ViewData["Equipe"] = new SelectList(await _context.Users.ToListAsync(), "Id", "UserName");
-        }
-
-        /// <summary>
-        /// Método auxiliar para editar dados de uma prospecção
-        /// </summary>
-        /// <param name="id">Inutilizado</param>
-        /// <param name="prospeccao">Prospecção a ter seus dados editados</param>
-        /// <returns></returns>
-        private async Task<Prospeccao> EditarDadosDaProspecção(string id, Prospeccao prospeccao)
-        {
-            if (HttpContext.User.Identity.IsAuthenticated)
-            {
-                await CriarSelectListsDaView();
-                if (tipo != null || tipo != "")
-                {
-                    return ViewComponent($"Modal{tipo}Prosp", new { id = idProsp, id2 = idFollowup });
-                }
-                else
-                {
-                    return ViewComponent("Error");
-                }
-            }
-            else
-            {
-                return View("Forbidden");
-            }
-        }
-
         /// <summary>
         /// Retorna os dados de todas as prospeções cadastradas no sistema em formato JSON.
         /// OBS: Método permite acesso não autenticado vide tag: [AllowAnonymous]
@@ -1145,6 +794,257 @@ namespace BaseDeProjetos.Controllers
                 listaFull.Add(dict);
             }
 
+            return Json(listaFull);
+        }
+
+        /// <summary>
+        /// Obtem os membros em CSV da prospecção dado o id
+        /// </summary>
+        /// <returns>A equipe de uma prospecção separadas por ponto e virgula</returns>
+        [HttpGet("FunilDeVendas/RetornarMembrosCSV/{idProspeccao}")]
+        public IActionResult RetornarMembrosCSV(string idProspeccao)
+        {
+            string membros = string.Join(";", _context.Prospeccao.FirstOrDefault(p => p.Id == idProspeccao)?.EquipeProspeccao.Select(relacao => relacao.Usuario.Email));
+
+            Dictionary<string, string> dados = new Dictionary<string, string> { { "data", membros } };
+
+            return Ok(JsonConvert.SerializeObject(dados));
+        }
+
+        /// <summary>
+        /// Retorna um modal de acordo com os parâmetros
+        /// </summary>
+        /// <param name="idProsp">ID da prospecção</param>
+        /// <param name="tipo">Tipo de Modal a ser retornado</param>
+        /// <returns></returns>
+        public async Task<IActionResult> RetornarModal(string idProsp, string tipo)
+        {
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                await CriarSelectListsDaView();
+                if (tipo != null || tipo != "")
+                {
+                    return ViewComponent($"Modal{tipo}Prosp", new { id = idProsp });
+                }
+                else
+                {
+                    return View("Error");
+                }
+            }
+            else
+            {
+                return View("Forbidden");
+            }
+        }
+
+        /// <summary>
+        /// Retorna o modal de editar followup
+        /// </summary>
+        /// <param name="idProsp">ID da Prospecção a ter um followup editado</param>
+        /// <param name="idFollowup">ID do Followup a ser editado</param>
+        /// <param name="tipo">Tipo de Modal</param>
+        /// <returns></returns>
+        public async Task<IActionResult> RetornarModalEditFollowup(string idProsp, string idFollowup, string tipo)
+        {
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                await CriarSelectListsDaView();
+                if (tipo != null || tipo != "")
+                {
+                    return ViewComponent($"Modal{tipo}Prosp", new { id = idProsp, id2 = idFollowup });
+                }
+                else
+                {
+                    return ViewComponent("Error");
+                }
+            }
+            else
+            {
+                return View("Forbidden");
+            }
+        }
+
+        /// <summary>
+        /// Valida e cadastra uma empresa a uma prospecção
+        /// </summary>
+        /// <param name="prospeccao">Prospecção a ter uma empresa cadastrada</param>
+        /// <returns></returns>
+        /// <exception cref="Exception">Erro a ser lançado caso não seja possível cadastrar a empresa/seja uma empresa inválida</exception>
+        public async Task<Prospeccao> ValidarEmpresa(Prospeccao prospeccao)
+        {
+            var empresas = await _cache.GetCachedAsync("AllEmpresas", () => _context.Empresa.ToListAsync());
+            var empresa = empresas.FirstOrDefault(e => e.Id == prospeccao.EmpresaId);
+
+            if (empresa == null)
+            {
+                throw new ArgumentNullException("Ocorreu um erro no registro da empresa. \n A empresa selecionada não foi encontrada. \n Contacte um administrador do sistema");
+            }
+
+            if (string.IsNullOrEmpty(empresa.Nome) || string.IsNullOrEmpty(empresa.CNPJ) || empresa.Id == -1)
+            {
+                throw new ArgumentException("Ocorreu um erro no registro da empresa. \n As informações da empresa estão inválidas \n Contacte um administrador do sistema");
+            }
+
+            return prospeccao;
+        }
+
+        /// <summary>
+        /// Valida as condições de remoção de uma prospecção
+        /// </summary>
+        /// <param name="prospeccao">Prospecção a se validada</param>
+        /// <param name="dono">Usuario líder da prospecção</param>
+        /// <param name="ativo">Usuário ativo (HttpContext)</param>
+        /// <returns></returns>
+        internal static bool VerificarCondicoesRemocao(Prospeccao prospeccao, Usuario ativoNaSessao, Usuario donoProsp)
+        {
+            return prospeccao.Status.Count() > 1 && ativoNaSessao == donoProsp;
+        }
+
+        /// <summary>
+        /// Vincula o usuário logado a uma prospecção
+        /// </summary>
+        /// <param name="prospeccao">Prospecção que se deseja vincular ao usuário logado</param>
+        /// <returns></returns>
+        internal static async Task VincularUsuario(Prospeccao prospeccao, HttpContext httpContext, ApplicationDbContext context)
+        {
+            string userId = httpContext.User.Identity.Name;
+            Usuario user = await context.Users.FirstAsync(u => u.UserName == userId);
+            prospeccao.Usuario = user;
+        }
+
+        private static void AtribuirEquipeProspeccao(Prospeccao prospeccao, List<Usuario> usuarios)
+        {
+            List<EquipeProspeccao> equipe = new List<EquipeProspeccao>();
+
+            foreach (var usuario in usuarios)
+            {
+                equipe.Add(new EquipeProspeccao { IdUsuario = usuario.Id, IdTrabalho = prospeccao.Id });
+            }
+
+            prospeccao.EquipeProspeccao = equipe;
+        }
+
+        /// <summary>
+        /// Função auxiliar de captura e retorno de erro para View de Erro
+        /// </summary>
+        /// <param name="e">Exceção</param>
+        /// <returns></returns>
+        private IActionResult CapturarErro(Exception e)
+        {
+            ErrorViewModel erro = new ErrorViewModel
+            {
+                Mensagem = e.Message
+            };
+            return View("Error", erro);
+        }
+
+        /// <summary>
+        /// Cria um followup no Banco de Dados
+        /// </summary>
+        /// <param name="followup">Followup específico a ser criado no Banco de Dados</param>
+        private async Task CriarFollowUp(FollowUp followup)
+        {
+            await _context.AddAsync(followup);
+            await _context.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Cria uma selectlist para a View(?)
+        /// </summary>
+        private async Task CriarSelectListsDaView()
+        {
+            var empresas = await _cache.GetCachedAsync("Empresas:FunilUnique", () => _context.Empresa.Select(e => new EmpresasReadComUniqueDTO
+            {
+                EmpresaUnique = e.EmpresaUnique,
+                Id = e.Id,
+                Nome = e.Nome
+            }).ToListAsync());
+
+            ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
+            ViewData["Equipe"] = new SelectList(await _context.Users.ToListAsync(), "Id", "UserName");
+        }
+
+        private async Task<Prospeccao> EditarDadosDaProspecção(string id, Prospeccao prospeccao)
+        {
+            var usuarios = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
+            Usuario lider = usuarios.First(p => p.Id == prospeccao.Usuario.Id);
+            prospeccao.Usuario = lider;
+
+            Prospeccao prospAntiga = await _context.Prospeccao.AsNoTracking().FirstAsync(p => p.Id == prospeccao.Id);
+
+            // tudo abaixo compara a versão antiga com a nova que irá para o Update()
+
+            if (prospAntiga.Ancora == true && prospeccao.Ancora == false)
+            { // verifica se a âncora foi cancelada
+                FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
+            }
+            else if (prospeccao.Ancora == true && string.IsNullOrEmpty(prospeccao.Agregadas))
+            { // verifica se o campo agg está vazio
+                throw new InvalidOperationException("Não é possível adicionar uma Âncora sem nenhuma agregada.");
+            }
+            else if (prospAntiga.Agregadas != prospeccao.Agregadas)
+            { // verifica se alguma agregada foi alterada
+                FunilHelpers.AdicionarAgregadas(_context, prospAntiga, prospeccao);
+                FunilHelpers.RemoverAgregadas(_context, prospAntiga, prospeccao);
+            }
+
+            _context.Update(prospeccao);
+            return prospeccao;
+        }
+
+        private async Task InserirDadosEmpresasUsuariosViewData()
+        {
+            var empresas = await _cache.GetCachedAsync("Empresas:Funil", () => _context.Empresa.Select(e => new EmpresasFunilDTO
+            {
+                Id = e.Id,
+                Nome = e.Nome
+            }).ToListAsync());
+
+            var usuarios = await _cache.GetCachedAsync("Usuarios:Funil", () => _context.Users.Select(u => new UsuariosFunilDTO
+            {
+                Id = u.Id,
+                UserName = u.UserName,
+                Email = u.Email
+            }).ToListAsync());
+
+            ViewData["Usuarios"] = usuarios;
+            ViewData["Empresas"] = new SelectList(empresas, "Id", "Nome");
+            ViewData["Equipe"] = new SelectList(usuarios, "Id", "UserName");
+        }
+
+        private async Task<List<Usuario>> ObterListaDeMembrosSelecionados(string membrosSelect)
+        {
+            List<string> membrosEmails = new List<string>();
+
+            // TODO: Repensar a forma como o frontend implementa essa funcionalidade
+            if (!string.IsNullOrEmpty(membrosSelect))
+            {
+                membrosEmails.AddRange(membrosSelect.Split(';').ToList());
+            }
+
+            List<Usuario> usuarios = await _context.Users.Where(u => membrosEmails.Contains(u.Email)).ToListAsync();
+            return usuarios;
+        }
+
+        /// <summary>
+        /// Retorna uma lista de prospecções filtradas de acordo com os parâmetros
+        /// </summary>
+        /// <param name="casa">Casa das prospecções</param>
+        /// <param name="aba">Aba da View/Status as quais as prospecções devem obedecer</param>
+        /// <param name="sortOrder">Forma de ordenação das prospecções</param>
+        /// <param name="searchString">Parâmetro de busca para filtro das prospecções</param>
+        /// <param name="ano">Ano das prospecções</param>
+        /// <param name="usuario">Usuário das prospecções</param>
+        /// <returns></returns>
+        private async Task<List<Prospeccao>> ObterProspeccoesFunilFiltradas(string casa, string aba, string sortOrder, string searchString, string ano, Usuario usuario)
+        {
+            List<Prospeccao> prospeccoes = await FunilHelpers.DefinirCasaParaVisualizar(casa, usuario, _context, HttpContext, _cache, ViewData);
+
+            if (!string.IsNullOrEmpty(ano))
+            {
+                FunilHelpers.PeriodizarProspecções(ano, prospeccoes);
+            }
+
             prospeccoes = FunilHelpers.OrdenarProspecções(sortOrder, prospeccoes); // SORT ORDEM ALFABETICA
             prospeccoes = FunilHelpers.FiltrarProspecções(searchString, prospeccoes); // APENAS NA BUSCA
 
@@ -1166,7 +1066,6 @@ namespace BaseDeProjetos.Controllers
 
             return prospeccoes;
         }
-
         /// <summary>
         /// Obtém as prospecções específicas de uma página
         /// </summary>
