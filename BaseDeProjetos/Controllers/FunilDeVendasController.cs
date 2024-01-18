@@ -364,7 +364,7 @@ namespace BaseDeProjetos.Controllers
                                                                                                                                    .ToList());
 
             var prospeccoesDaCasaNaoConvertidas = _cache.GetCached($"Prospeccoes:{enumCasa}:NaoConvertidas:Count", () => prospeccoesDaCasa.Select(p => new { p.Status })
-                                                                                                                                          .Where(p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida))
+                                                                                                                                          .Where(p => p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida))
                                                                                                                                           .ToList());
 
             int prospSuspensas = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa).Count();
