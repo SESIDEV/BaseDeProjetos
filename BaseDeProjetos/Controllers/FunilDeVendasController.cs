@@ -362,16 +362,16 @@ namespace BaseDeProjetos.Controllers
             var prospeccoesDaCasa = await ObterProspeccoesTotais(enumCasa);
 
             int prospSuspensas = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa).Count();
-            double percentCanceladas = (double)prospSuspensas / ObterQuantidadeProspeccoesTotais(enumCasa) * 100;
+            double percentCanceladas = (double)prospSuspensas / prospeccoesDaCasa.Count() * 100;
 
             int prospConvertidas = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida)).Count();
-            double percentConvertidas = (double)prospConvertidas / ObterQuantidadeProspeccoesTotais(enumCasa) * 100;
+            double percentConvertidas = (double)prospConvertidas / prospeccoesDaCasa.Count() * 100;
 
             int prospNaoConvertidas = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida).Count();
-            double percentNaoConvertidas = (double)prospNaoConvertidas / ObterQuantidadeProspeccoesTotais(enumCasa) * 100;
+            double percentNaoConvertidas = (double)prospNaoConvertidas / prospeccoesDaCasa.Count() * 100;
 
             int prospEmAndamento = prospeccoesDaCasa.Count() - prospConvertidas - prospNaoConvertidas - prospSuspensas;
-            double percentEmAndamento = (double)prospEmAndamento / ObterQuantidadeProspeccoesTotais(enumCasa) * 100;
+            double percentEmAndamento = (double)prospEmAndamento / prospeccoesDaCasa.Count() * 100;
 
             StatusGeralProspeccaoPizza statusGeralProspeccaoPizza = new StatusGeralProspeccaoPizza
             {
