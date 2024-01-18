@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.Enums;
@@ -312,10 +312,10 @@ namespace BaseDeProjetos.Controllers
             var prospeccoesComPropostaEContatoInicial = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta) && p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial)).ToList();
             int empresasProspectadas = prospeccoesDaCasa.Select(p => new { p.Empresa }).Distinct().Count();
 
-            for (int i = 0; i < prospeccoesComPropostaEContatoInicial.Count; i++)
+            foreach (var prospeccao in prospeccoesComPropostaEContatoInicial)
             {
-                var dataContatoInicial = prospeccoesComPropostaEContatoInicial[i].Status.Where(p => p.Status == StatusProspeccao.ContatoInicial).First().Data;
-                var dataComProposta = prospeccoesComPropostaEContatoInicial[i].Status.Where(p => p.Status == StatusProspeccao.ComProposta).First().Data;
+                var dataContatoInicial = prospeccao.Status.Where(p => p.Status == StatusProspeccao.ContatoInicial).First().Data;
+                var dataComProposta = prospeccao.Status.Where(p => p.Status == StatusProspeccao.ComProposta).First().Data;
                 intervaloDatas.Add(dataComProposta - dataContatoInicial);
             }
 
