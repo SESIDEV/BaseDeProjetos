@@ -423,9 +423,9 @@ namespace BaseDeProjetos.Controllers
 
             var prospeccoesDaCasa = await ObterProspeccoesTotais(enumCasa);
 
-            int prospConvertidas = GerarQuantidadeProsp(prospeccoesDaCasa, p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida));
-            int prospEmAndamento = GerarQuantidadeProsp(prospeccoesDaCasa, p => p.Status.Any(p => p.Status != StatusProspeccao.Convertida) && p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida) && p.Status.Any(p => p.Status == StatusProspeccao.Suspensa));
-            int prospNaoConvertidas = GerarQuantidadeProsp(prospeccoesDaCasa, p => p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida));
+            int prospConvertidas = _cache.GetCached($"Prospeccoes:{enumCasa}:Convertidas:Count", () => GerarQuantidadeProsp(prospeccoesDaCasa, p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida)));
+            int prospEmAndamento = _cache.GetCached($"Prospeccoes:{enumCasa}:EmAndamento:Count", () => GerarQuantidadeProsp(prospeccoesDaCasa, p => p.Status.Any(p => p.Status != StatusProspeccao.Convertida) && p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida) && p.Status.Any(p => p.Status == StatusProspeccao.Suspensa)));
+            int prospNaoConvertidas = _cache.GetCached($"Prospeccoes:{enumCasa}:NaoConvertidas:Count", () => GerarQuantidadeProsp(prospeccoesDaCasa, p => p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida)));
 
             StatusProspeccoesPropostaPizza statusProspeccoesPropostaPizza = new StatusProspeccoesPropostaPizza
             {
@@ -947,6 +947,7 @@ namespace BaseDeProjetos.Controllers
         {
             return await _cache.GetCachedAsync($"Prospeccoes:{casa}", () => _context.Prospeccao
                 .Where(p => p.Status.OrderBy(f => f.Data).Last().Status != StatusProspeccao.Planejada && p.Casa == casa)
+                .Include(p => p.Empresa)
                 .ToListAsync());
         }
 
