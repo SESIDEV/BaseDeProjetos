@@ -821,7 +821,13 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         private async Task CriarSelectListsDaView()
         {
-            var empresas = await _cache.GetCachedAsync("Empresas:FunilUnique", () => _context.Empresa.Select(e => new EmpresasReadComUniqueDTO { EmpresaUnique = e.EmpresaUnique, Id = e.Id, Nome = e.Nome }).ToListAsync());
+            var empresas = await _cache.GetCachedAsync("Empresas:FunilUnique", () => _context.Empresa.Select(e => new EmpresasReadComUniqueDTO
+            {
+                EmpresaUnique = e.EmpresaUnique,
+                Id = e.Id,
+                Nome = e.Nome
+            }).ToListAsync());
+
             ViewData["Empresas"] = new SelectList(empresas, "Id", "EmpresaUnique");
             ViewData["Equipe"] = new SelectList(await _context.Users.ToListAsync(), "Id", "UserName");
         }
@@ -862,8 +868,18 @@ namespace BaseDeProjetos.Controllers
 
         private async Task InserirDadosEmpresasUsuariosViewData()
         {
-            var empresas = await _cache.GetCachedAsync("Empresas:Funil", () => _context.Empresa.Select(e => new EmpresasFunilDTO { Id = e.Id, Nome = e.Nome }).ToListAsync());
-            var usuarios = await _cache.GetCachedAsync("Usuarios:Funil", () => _context.Users.Select(u => new UsuariosFunilDTO { Id = u.Id, UserName = u.UserName, Email = u.Email }).ToListAsync());
+            var empresas = await _cache.GetCachedAsync("Empresas:Funil", () => _context.Empresa.Select(e => new EmpresasFunilDTO
+            {
+                Id = e.Id,
+                Nome = e.Nome
+            }).ToListAsync());
+
+            var usuarios = await _cache.GetCachedAsync("Usuarios:Funil", () => _context.Users.Select(u => new UsuariosFunilDTO
+            {
+                Id = u.Id,
+                UserName = u.UserName,
+                Email = u.Email
+            }).ToListAsync());
 
             ViewData["Usuarios"] = usuarios;
             ViewData["Empresas"] = new SelectList(empresas, "Id", "Nome");
