@@ -61,7 +61,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
+        public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
         {
             ViewbagizarUsuario(_context, _cache);
 
@@ -97,6 +97,7 @@ namespace BaseDeProjetos.Controllers
                 await _context.AddAsync(prospeccao);
                 await _context.SaveChangesAsync();
                 await CacheHelper.CleanupProspeccoesCache(_cache);
+                await CacheHelper.CleanupParticipacoesCache(_cache);
                 return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
             }
             else
@@ -230,6 +231,7 @@ namespace BaseDeProjetos.Controllers
                     prospeccao = await EditarDadosDaProspecção(id, prospeccao);
                     await _context.SaveChangesAsync();
                     await CacheHelper.CleanupProspeccoesCache(_cache);
+                    await CacheHelper.CleanupParticipacoesCache(_cache);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -342,6 +344,7 @@ namespace BaseDeProjetos.Controllers
                 _context.Update(followup);
                 await _context.SaveChangesAsync();
                 await CacheHelper.CleanupProspeccoesCache(_cache);
+                await CacheHelper.CleanupParticipacoesCache(_cache);
             }
 
             return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
