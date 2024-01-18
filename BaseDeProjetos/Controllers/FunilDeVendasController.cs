@@ -195,19 +195,24 @@ namespace BaseDeProjetos.Controllers
         [Route("FunilDeVendas/GerarStatusProspPropostaPizza/{casa}")]
         public async Task<IActionResult> GerarStatusProspPropostaPizza(string casa)
         {
-            Instituto enumCasa;
-
-            if (!Enum.TryParse<Instituto>(casa, out enumCasa))
+            if (!Enum.TryParse(casa, out Instituto enumCasa))
             {
                 throw new ArgumentException("A casa selecionada é inválida");
             }
 
-            List<Prospeccao> prospeccoes = _context.Prospeccao.Where(p => p.Casa == enumCasa).ToList();
+            List<Prospeccao> prospeccoes = await ObterProspeccoesTotais(enumCasa);
+
             int prospConvertidas = GerarQuantidadeProsp(prospeccoes, p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida));
             int prospEmAndamento = GerarQuantidadeProsp(prospeccoes, p => p.Status.Any(p => p.Status != StatusProspeccao.Convertida) && p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida) && p.Status.Any(p => p.Status == StatusProspeccao.Suspensa));
             int prospNaoConvertidas = GerarQuantidadeProsp(prospeccoes, p => p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida));
 
-            StatusProspeccoesPropostaPizza statusProspeccoesPropostaPizza = new StatusProspeccoesPropostaPizza { QuantidadeEmAndamento = prospEmAndamento, QuantidadeConvertidas = prospConvertidas, QuantidadeNaoConvertidas = prospNaoConvertidas };
+            StatusProspeccoesPropostaPizza statusProspeccoesPropostaPizza = new StatusProspeccoesPropostaPizza
+            {
+                QuantidadeEmAndamento = prospEmAndamento,
+                QuantidadeConvertidas = prospConvertidas,
+                QuantidadeNaoConvertidas = prospNaoConvertidas
+            };
+
             return Ok(JsonConvert.SerializeObject(statusProspeccoesPropostaPizza));
         }
 
