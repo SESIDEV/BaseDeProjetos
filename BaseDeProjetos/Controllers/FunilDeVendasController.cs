@@ -401,14 +401,21 @@ namespace BaseDeProjetos.Controllers
             }
 
             var prospeccoesDaCasa = await ObterProspeccoesTotais(enumCasa);
+            var prospeccoesDaCasaComProposta = _cache.GetCached($"Prospeccoes:{enumCasa}:ComProposta:Count", () => prospeccoesDaCasa.Select(p => new { p.Status })
+                                                                                                                                    .Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta))
+                                                                                                                                    .ToList());
 
-            int prospConvertidas = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida)).Count();
-            double taxaConversaoProsp = (double)prospConvertidas / prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta)).Count() * 100;
+            var prospeccoesDaCasaConvertida = _cache.GetCached($"Prospeccoes:{enumCasa}:Convertidas:Count", () => prospeccoesDaCasa.Select(p => new { p.Status })
+                                                               .Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida))
+                                                               .ToList());
 
-            decimal ticketMedioProsp = prospeccoesDaCasa.Select(p => new { p.ValorProposta, p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.ComProposta).Average(p => p.ValorProposta);
-            int propostasComerciais = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta)).Count();
+            int prospConvertidas = prospeccoesDaCasaConvertida.Count();
+            double taxaConversaoProsp = (double)prospConvertidas / prospeccoesDaCasaComProposta.Count() * 100;
 
-            int projetosContratados = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Convertida).Count();
+            decimal ticketMedioProsp = prospeccoesDaCasa.Average(p => p.ValorProposta);
+            int propostasComerciais = prospeccoesDaCasaComProposta.Count();
+
+            int projetosContratados = prospeccoesDaCasaConvertida.Count();
 
             StatusProspPropostaIndicadores statusProspPropostaIndicadores = new StatusProspPropostaIndicadores
             {
