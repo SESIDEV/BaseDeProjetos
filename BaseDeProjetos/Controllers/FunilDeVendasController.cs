@@ -435,10 +435,22 @@ namespace BaseDeProjetos.Controllers
             }
 
             var prospeccoesDaCasa = await ObterProspeccoesTotais(enumCasa);
+            var prospeccoesDaCasaConvertida = _cache.GetCached($"Prospeccoes:{enumCasa}:Convertidas", () => prospeccoesDaCasa.Select(p => new { p.Status })
+                                                               .Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida))
+                                                               .ToList());
 
-            int prospConvertidas = _cache.GetCached($"Prospeccoes:{enumCasa}:Convertidas:Count", () => GerarQuantidadeProsp(prospeccoesDaCasa, p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida)));
-            int prospEmAndamento = _cache.GetCached($"Prospeccoes:{enumCasa}:EmAndamento:Count", () => GerarQuantidadeProsp(prospeccoesDaCasa, p => p.Status.Any(p => p.Status != StatusProspeccao.Convertida) && p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida) && p.Status.Any(p => p.Status == StatusProspeccao.Suspensa)));
-            int prospNaoConvertidas = _cache.GetCached($"Prospeccoes:{enumCasa}:NaoConvertidas:Count", () => GerarQuantidadeProsp(prospeccoesDaCasa, p => p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida)));
+            var prospeccoesEmAndamento = _cache.GetCached($"Prospeccoes:{enumCasa}:EmAndamento", () => prospeccoesDaCasa.Select(p => new { p.Status })
+                                                                                                                      .Where(p => p.Status.Any(p => p.Status != StatusProspeccao.Convertida)
+                                                                                                                                  && p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida)
+                                                                                                                                  && p.Status.Any(p => p.Status == StatusProspeccao.Suspensa)));
+
+            var prospeccoesDaCasaNaoConvertidas = _cache.GetCached($"Prospeccoes:{enumCasa}:NaoConvertidas", () => prospeccoesDaCasa.Select(p => new { p.Status })
+                                                               .Where(p => p.Status.Any(f => f.Status == StatusProspeccao.NaoConvertida))
+                                                               .ToList());
+
+            int prospConvertidas = prospeccoesDaCasaConvertida.Count();
+            int prospEmAndamento = prospeccoesEmAndamento.Count();
+            int prospNaoConvertidas = prospeccoesDaCasaNaoConvertidas.Count();
 
             StatusProspeccoesPropostaPizza statusProspeccoesPropostaPizza = new StatusProspeccoesPropostaPizza
             {
