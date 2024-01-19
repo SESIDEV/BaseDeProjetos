@@ -4,10 +4,26 @@
 }
 
 function popularTabelaPesquisadores(indicadores, dadosPesquisador) {
-    let tabelaPesquisadores = document.querySelector("#corpoTabelaPesquisadores");
-    tabelaPesquisadores.innerHTML = "";
+    if (!indicadores) {
+        throw new Error("Não foi possível encontrar os indicadores para exibição");
+    }
 
+    if (!dadosPesquisador) {
+        throw new Error("Não foi possível encontrar os dados do pesquisador");
+    }
+
+    let tabelaPesquisadores = document.querySelector("#corpoTabelaPesquisadores");
     let tituloPesquisador = document.querySelector("#tituloPesquisador");
+
+    if (!tabelaPesquisadores) {
+        throw new Error("Não foi possível encontrar o corpo da tabela de pesquisadores");
+    }
+
+    if (!tituloPesquisador) {
+        throw new Error("Não foi possível encontrar o campo para o título do pesquisador");
+    }
+
+    tabelaPesquisadores.innerHTML = "";
     tituloPesquisador.innerText = `Indicadores do Pesquisador: ${dadosPesquisador["Lider"]["UserName"]}`;
 
     indicadores.forEach(indicador => {
@@ -35,15 +51,26 @@ function popularTabelaPesquisadores(indicadores, dadosPesquisador) {
 
 function resetTabelaPesquisadores() {
     let corpoTabela = document.querySelector("#corpoTabelaPesquisadores");
+    if (!corpoTabela) {
+        throw new Error("Elemento #corpoTabelaPesquisadores não encontrado.");
+    }
+
     let tabelaContentsReset = criarTabelaLoading(3);
+    if (!tabelaContentsReset) {
+        throw new Error("Falha ao criar conteúdo da tabela de carregamento.");
+    }
+
     corpoTabela.innerHTML = "";
     corpoTabela.appendChild(tabelaContentsReset);
 
     let tituloPesquisador = document.querySelector("#tituloPesquisador");
-    tituloPesquisador.innerText = "Indicadores do Pesquisador: ";
+    if (!tituloPesquisador) {
+        throw new Error("Elemento #tituloPesquisador não encontrado.");
+    }
 
-    let collapsePesquisador = document.querySelector("#collapsePesquisador");
+    tituloPesquisador.innerText = "Indicadores do Pesquisador: ";
 }
+
 
 function popularTabelaIndicadores(dadosIndicador, nomeIndicador, tipoDado) {
     let corpoTabela = document.querySelector("#corpoTabela");
