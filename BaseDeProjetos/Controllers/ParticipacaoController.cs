@@ -443,7 +443,7 @@ namespace BaseDeProjetos.Controllers
             decimal valorMedioProspeccoesConvertidasLider = IndicadorHelper.DivisaoSegura(valorTotalProspeccoesConvertidasLider, quantidadeProspeccoesConvertidasLider);
 
             // Erro relativo
-            participacao.AssertividadePrecificacao = IndicadorHelper.DivisaoSegura(Math.Abs(valorMedioProspeccoesConvertidasLider - valorMedioProspeccoesComPropostaLider), Math.Abs(valorMedioProspeccoesConvertidasLider));
+            participacao.AssertividadePrecificacao = 1 - IndicadorHelper.DivisaoSegura(Math.Abs(valorMedioProspeccoesConvertidasLider - valorMedioProspeccoesComPropostaLider), Math.Abs(valorMedioProspeccoesConvertidasLider));
             participacao.TaxaConversaoProposta = IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesComProposta, participacao.QuantidadeProspeccoes);
             participacao.TaxaConversaoProjeto = IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesConvertidas, participacao.QuantidadeProspeccoesComProposta);
 
@@ -615,7 +615,6 @@ namespace BaseDeProjetos.Controllers
         /// <summary>
         /// Obtém os rankings médios para serem utilizados no gráfico de aranha
         /// </summary>
-        /// <param name="participacoes"></param>
         /// <returns></returns>
         private List<decimal> ObterRankingsMediosGrafico(List<ParticipacaoTotalViewModel> participacoes)
         {
