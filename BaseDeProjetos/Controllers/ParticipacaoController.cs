@@ -221,6 +221,7 @@ namespace BaseDeProjetos.Controllers
                 var participacao = participacoes.Where(p => p.Lider.Id == idUsuario).First();
 
                 ObterRankingMedioPesquisador(participacao, participacoes);
+                ComputarRangeGraficoParticipacao(participacao, _prospeccoes.Where(p => p.Usuario.Id == idUsuario || p.EquipeProspeccao.Any(e => e.Usuario.Id == idUsuario)).ToList());
 
                 if (participacao != null)
                 {
