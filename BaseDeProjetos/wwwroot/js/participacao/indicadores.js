@@ -198,30 +198,40 @@ async function puxarPesquisador(idPesquisador, prospeccao) {
     }
 }
 
-function inicializarModalProspeccoes(dadosProspeccoes, id) {
-    let corpoModal = document.querySelector("#corpoProspeccoes");
-    let loadingProspeccoes = document.querySelector("#loadingProspeccoes");
-    corpoModal.innerHTML = '';
-
+function criarButtonGrafico(id) {
     let buttonGrafico = document.createElement("button");
     buttonGrafico.setAttribute("type", "button");
     buttonGrafico.id = `button-${id}`
     buttonGrafico.classList.add("btn");
     buttonGrafico.classList.add("app-btn-primary");
     buttonGrafico.addEventListener("click", () => exibirDados(id))
+
     let internalDiv = document.createElement("div");
     internalDiv.id = `internalDiv-${id}`;
     internalDiv.innerText = "Exibir Gráfico";
     buttonGrafico.appendChild(internalDiv);
 
-    corpoModal.parentElement.appendChild(buttonGrafico);
+    return buttonGrafico;
+}
 
+function criarFigure() {
     let figure = document.createElement("figure");
     figure.classList.add("highcharts-figure");
     let participacao = document.createElement("div");
     participacao.id = "participacao"
     figure.appendChild(participacao);
+    return figure;
+}
 
+function inicializarModalProspeccoes(dadosProspeccoes, id) {
+    let corpoModal = document.querySelector("#corpoProspeccoes");
+    let loadingProspeccoes = document.querySelector("#loadingProspeccoes");
+    corpoModal.innerHTML = '';
+
+    let buttonGrafico = criarButtonGrafico(id);
+    corpoModal.parentElement.appendChild(buttonGrafico);
+
+    let figure = criarFigure();
     corpoModal.parentElement.appendChild(figure);
 
     dadosProspeccoes.forEach(dado => {
