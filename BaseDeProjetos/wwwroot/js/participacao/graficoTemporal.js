@@ -66,7 +66,7 @@ function exibirLoading(idUsuario) {
         internalDiv.classList.add(...classesLoading);
         internalDiv.innerHTML = '';
     } else {
-        console.error(`Element with id 'internalDiv-${idUsuario}' not found.`);
+        console.error(`Elemento com id 'internalDiv-${idUsuario}' não foi encontrado.`);
     }
 }
 
