@@ -1,6 +1,10 @@
 ﻿using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using NUnit.Framework;
+using SendGrid.Helpers.Mail;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BaseDeProjetos.Data
 {
@@ -29,5 +33,27 @@ namespace BaseDeProjetos.Data
         public DbSet<CodigoAmostraProjeto> CodigoAmostraProjeto { get; set; }
         public DbSet<ConjuntoRubrica> ConjuntoRubrica { get; set; }
         public DbSet<Rubrica> Rubrica { get; set; }
+        public DbSet<EquipeProspeccao> EquipeProspeccao { get; set; }
+
+        public void MigrateProspeccao()
+        {
+            var dbContext = this;
+
+            var prospeccoesComMembros = dbContext.Prospeccao.Where(p => !string.IsNullOrEmpty(p.MembrosEquipe)).ToList();
+
+            foreach (var prospeccao in prospeccoesComMembros)
+            {
+                prospeccao.EquipeProspeccao = new List<EquipeProspeccao>();
+                List<string> usuariosEmString = prospeccao.MembrosEquipe.Split(";").ToList();
+                List<Usuario> usuarios = dbContext.Users.Where(u => usuariosEmString.Contains(u.Email)).ToList();
+
+                foreach (var usuario in usuarios)
+                {
+                    prospeccao.EquipeProspeccao.Add(new EquipeProspeccao { IdTrabalho = prospeccao.Id, IdUsuario = usuario.Id });
+                }
+            }
+
+            dbContext.SaveChanges();
+        }
     }
 }

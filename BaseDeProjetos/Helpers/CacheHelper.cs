@@ -64,5 +64,13 @@ namespace BaseDeProjetos.Helpers
                 await cache.InvalidateCacheKeysAsync("ProjetosExecucaoHome:");
             }
         }
+
+        public static async Task CleanupParticipacoesCache(DbCache cache)
+        {
+            if (cache != null)
+            {
+                await cache.InvalidateCacheKeysAsync("Participacoes:");
+            }
+        }
     }
 }

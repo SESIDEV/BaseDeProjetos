@@ -84,7 +84,8 @@ namespace BaseDeProjetos.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                Usuario user = new Usuario { UserName = Input.Email, Email = Input.Email, Casa = Input.Casa };
+                // Padrão pesquisador
+                Usuario user = new Usuario { UserName = Input.Email, Email = Input.Email, Casa = Input.Casa, CargoId = 1 };
                 IdentityResult result = new IdentityResult();
 
                 //Só aceitar e-mails da firjan

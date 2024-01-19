@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
@@ -49,9 +50,46 @@ namespace BaseDeProjetos.Controllers
                 bool enviou = MailHelper.NotificarProspecção(followup, _mailer);
                 await _context.SaveChangesAsync();
                 await CacheHelper.CleanupProspeccoesCache(_cache);
+                await CacheHelper.CleanupParticipacoesCache(_cache);
             }
 
             return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
+        }
+
+        /// <summary>
+        /// Cria um followup no Banco de Dados
+        /// </summary>
+        /// <param name="followup">Followup específico a ser criado no Banco de Dados</param>
+        private async Task CriarFollowUp(FollowUp followup)
+        {
+            await _context.AddAsync(followup);
+            await _context.SaveChangesAsync();
+        }
+
+        private static void AtribuirEquipeProspeccao(Prospeccao prospeccao, List<Usuario> usuarios)
+        {
+            List<EquipeProspeccao> equipe = new List<EquipeProspeccao>();
+
+            foreach (var usuario in usuarios)
+            {
+                equipe.Add(new EquipeProspeccao { IdUsuario = usuario.Id, IdTrabalho = prospeccao.Id });
+            }
+
+            prospeccao.EquipeProspeccao = equipe;
+        }
+
+        private async Task<List<Usuario>> ObterListaDeMembrosSelecionados(string membrosSelect)
+        {
+            List<string> membrosEmails = new List<string>();
+
+            // TODO: Repensar a forma como o frontend implementa essa funcionalidade
+            if (!string.IsNullOrEmpty(membrosSelect))
+            {
+                membrosEmails.AddRange(membrosSelect.Split(';').ToList());
+            }
+
+            List<Usuario> usuarios = await _context.Users.Where(u => membrosEmails.Contains(u.Email)).ToListAsync();
+            return usuarios;
         }
 
         // POST: FunilDeVendas/Create
@@ -59,7 +97,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
+        public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao, string membrosSelect)
         {
             ViewbagizarUsuario(_context, _cache);
 
@@ -83,6 +121,10 @@ namespace BaseDeProjetos.Controllers
                     }
                 }
 
+                List<Usuario> usuarios = await ObterListaDeMembrosSelecionados(membrosSelect);
+
+                AtribuirEquipeProspeccao(prospeccao, usuarios);
+
                 await VincularUsuario(prospeccao, HttpContext, _context);
 
                 prospeccao.Status[0].Origem = prospeccao;
@@ -95,6 +137,7 @@ namespace BaseDeProjetos.Controllers
                 await _context.AddAsync(prospeccao);
                 await _context.SaveChangesAsync();
                 await CacheHelper.CleanupProspeccoesCache(_cache);
+                await CacheHelper.CleanupParticipacoesCache(_cache);
                 return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
             }
             else
@@ -149,6 +192,8 @@ namespace BaseDeProjetos.Controllers
             _context.Remove(prospeccao);
             await _context.SaveChangesAsync();
             await CacheHelper.CleanupProspeccoesCache(_cache);
+            await CacheHelper.CleanupParticipacoesCache(_cache);
+
             return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
         }
 
@@ -157,7 +202,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, EmpresaId, Contato, Casa, Usuario, MembrosEquipe, ValorProposta, ValorEstimado, Status, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
+        public async Task<IActionResult> Edit(string id, [Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, EmpresaId, Contato, Casa, Usuario, MembrosEquipe, ValorProposta, ValorEstimado, Status, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao, string membrosSelect)
         {
             ViewbagizarUsuario(_context, _cache);
 
@@ -171,8 +216,54 @@ namespace BaseDeProjetos.Controllers
                 try
                 {
                     prospeccao = await EditarDadosDaProspecção(id, prospeccao);
+
+                    List<EquipeProspeccao> equipe = new List<EquipeProspeccao>();
+                    var prospeccaoExistente = await _context.Prospeccao.AsNoTracking().Include(p => p.Usuario).Include(p => p.EquipeProspeccao).FirstOrDefaultAsync(p => p.Id == prospeccao.Id);
+
+                    if (prospeccaoExistente == null)
+                    {
+                        return View("Error");
+                    }
+
+                    foreach (var relacao in prospeccaoExistente.EquipeProspeccao)
+                    {
+                        _context.EquipeProspeccao.Remove(relacao);
+                    }
+
                     await _context.SaveChangesAsync();
                     await CacheHelper.CleanupProspeccoesCache(_cache);
+                    await CacheHelper.CleanupParticipacoesCache(_cache);
+
+                    _context.Entry(prospeccaoExistente).CurrentValues.SetValues(prospeccao);
+
+                    List<string> membrosEmails = new List<string>();
+
+                    // TODO: Repensar a forma como o frontend implementa essa funcionalidade
+                    if (!string.IsNullOrEmpty(membrosSelect))
+                    {
+                        membrosEmails.AddRange(membrosSelect.Split(';').ToList());
+                    }
+
+                    List<Usuario> usuarios = await _context.Users.Where(u => membrosEmails.Contains(u.Email)).ToListAsync();
+
+                    foreach (var usuario in usuarios)
+                    {
+                        var EquipeProspeccao = new EquipeProspeccao { IdUsuario = usuario.Id, IdTrabalho = prospeccao.Id };
+                        equipe.Add(EquipeProspeccao);
+                    }
+
+                    prospeccaoExistente.EquipeProspeccao = equipe;
+
+                    /*
+                     * Salvamos as alterações de equipe no banco pois enviamos apenas o ID do Projeto e do Usuário
+                     * Se não efetuarmos o salvamento, o método seguinte AtribuirCustoHH apenas enxergará os IDs
+                     * e não os objetos para Projeto e Usuário pois o relacionamento estará ""fraco""
+                     * Sem sombra de dúvidas que existe uma forma "mais correta" de implementar essa funcionalidade.
+                     * Mas acho desnecessário ir no banco em código para puxar o Projeto e o Usuário novamente pelos IDs
+                    */
+                    await _context.SaveChangesAsync();
+                    await CacheHelper.CleanupProjetosCache(_cache);
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -188,6 +279,54 @@ namespace BaseDeProjetos.Controllers
                 return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
             }
             return View(prospeccao);
+        }
+
+        /// <summary>
+        /// Método auxiliar para editar dados de uma prospecção
+        /// </summary>
+        /// <param name="id">Inutilizado</param>
+        /// <param name="prospeccao">Prospecção a ter seus dados editados</param>
+        /// <returns></returns>
+        private async Task<Prospeccao> EditarDadosDaProspecção(string id, Prospeccao prospeccao)
+        {
+            var usuarios = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
+            Usuario lider = usuarios.First(p => p.Id == prospeccao.Usuario.Id);
+            prospeccao.Usuario = lider;
+
+            Prospeccao prospAntiga = await _context.Prospeccao.AsNoTracking().FirstAsync(p => p.Id == prospeccao.Id);
+
+            // tudo abaixo compara a versão antiga com a nova que irá para o Update()
+
+            if (prospAntiga.Ancora == true && prospeccao.Ancora == false)
+            { // verifica se a âncora foi cancelada
+                FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
+            }
+            else if (prospeccao.Ancora == true && string.IsNullOrEmpty(prospeccao.Agregadas))
+            { // verifica se o campo agg está vazio
+                throw new InvalidOperationException("Não é possível adicionar uma Âncora sem nenhuma agregada.");
+            }
+            else if (prospAntiga.Agregadas != prospeccao.Agregadas)
+            { // verifica se alguma agregada foi alterada
+                FunilHelpers.AddAgregadas(_context, prospAntiga, prospeccao);
+                FunilHelpers.DelAgregadas(_context, prospAntiga, prospeccao);
+            }
+
+            _context.Update(prospeccao);
+            return prospeccao;
+        }
+
+        /// <summary>
+        /// Obtem os membros em CSV da prospecção dado o id
+        /// </summary>
+        /// <returns>A equipe de uma prospecção separadas por ponto e virgula</returns>
+        [HttpGet("FunilDeVendas/RetornarMembrosCSV/{idProspeccao}")]
+        public IActionResult RetornarMembrosCSV(string idProspeccao)
+        {
+            string membros = string.Join(";", _context.Prospeccao.FirstOrDefault(p => p.Id == idProspeccao)?.EquipeProspeccao.Select(relacao => relacao.Usuario.Email));
+
+            Dictionary<string, string> dados = new Dictionary<string, string> { { "data", membros } };
+
+            return Ok(JsonConvert.SerializeObject(dados));
         }
 
         public async Task<IActionResult> EditarFollowUp(int? id) // Retornar view
@@ -225,6 +364,7 @@ namespace BaseDeProjetos.Controllers
                 _context.Update(followup);
                 await _context.SaveChangesAsync();
                 await CacheHelper.CleanupProspeccoesCache(_cache);
+                await CacheHelper.CleanupParticipacoesCache(_cache);
             }
 
             return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
@@ -612,6 +752,8 @@ namespace BaseDeProjetos.Controllers
                 await _context.AddAsync(prosp);
                 await _context.SaveChangesAsync();
                 await CacheHelper.CleanupProspeccoesCache(_cache);
+                await CacheHelper.CleanupParticipacoesCache(_cache);
+
                 return RedirectToAction("Index", "Empresas");
             }
             else
@@ -869,16 +1011,6 @@ namespace BaseDeProjetos.Controllers
         }
 
         /// <summary>
-        /// Cria um followup no Banco de Dados
-        /// </summary>
-        /// <param name="followup">Followup específico a ser criado no Banco de Dados</param>
-        private async Task CriarFollowUp(FollowUp followup)
-        {
-            await _context.AddAsync(followup);
-            await _context.SaveChangesAsync();
-        }
-
-        /// <summary>
         /// Cria uma selectlist para a View(?)
         /// </summary>
         private async Task CriarSelectListsDaView()
@@ -894,39 +1026,7 @@ namespace BaseDeProjetos.Controllers
             ViewData["Equipe"] = new SelectList(await _context.Users.ToListAsync(), "Id", "UserName");
         }
 
-        /// <summary>
-        /// Método auxiliar para editar dados de uma prospecção
-        /// </summary>
-        /// <param name="id">Inutilizado</param>
-        /// <param name="prospeccao">Prospecção a ter seus dados editados</param>
-        /// <returns></returns>
-        private async Task<Prospeccao> EditarDadosDaProspecção(string id, Prospeccao prospeccao)
-        {
-            var usuarios = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
-            Usuario lider = usuarios.First(p => p.Id == prospeccao.Usuario.Id);
-            prospeccao.Usuario = lider;
-
-            Prospeccao prospAntiga = await _context.Prospeccao.AsNoTracking().FirstAsync(p => p.Id == prospeccao.Id);
-
-            // tudo abaixo compara a versão antiga com a nova que irá para o Update()
-
-            if (prospAntiga.Ancora == true && prospeccao.Ancora == false)
-            { // verifica se a âncora foi cancelada
-                FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
-            }
-            else if (prospeccao.Ancora == true && string.IsNullOrEmpty(prospeccao.Agregadas))
-            { // verifica se o campo agg está vazio
-                throw new InvalidOperationException("Não é possível adicionar uma Âncora sem nenhuma agregada.");
-            }
-            else if (prospAntiga.Agregadas != prospeccao.Agregadas)
-            { // verifica se alguma agregada foi alterada
-                FunilHelpers.AddAgregadas(_context, prospAntiga, prospeccao);
-                FunilHelpers.DelAgregadas(_context, prospAntiga, prospeccao);
-            }
-
-            _context.Update(prospeccao);
-            return prospeccao;
-        }
+      
 
         private async Task InserirDadosEmpresasUsuariosViewData()
         {
@@ -1051,6 +1151,8 @@ namespace BaseDeProjetos.Controllers
                     _context.FollowUp.Remove(followup);
                     await _context.SaveChangesAsync();
                     await CacheHelper.CleanupProspeccoesCache(_cache);
+                    await CacheHelper.CleanupParticipacoesCache(_cache);
+
                     return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
                 }
                 else
