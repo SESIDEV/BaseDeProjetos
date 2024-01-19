@@ -145,7 +145,7 @@ function resetTabela() {
     let collapseIndicador = document.querySelector("#collapseIndicador");
     tituloIndicador.innerText = "Carregando indicador...";
 
-    let tableRowReset = criarTabelaLoading(4);
+    let tableRowReset = criarTabelaLoading(5);
 
     corpoTabela.appendChild(tableRowReset);
     collapseIndicador.classList.remove("show");
@@ -173,8 +173,6 @@ async function puxarPesquisador(idPesquisador, prospeccao) {
     let loadingProspeccoes = document.querySelector("#loadingProspeccoes");
     loadingProspeccoes.style.display = "block";
 
-    console.log("prospeccao is: ", prospeccao);
-
     if (prospeccao === false) {
         if (!collapsePesquisador.classList.contains("show")) {
             collapsePesquisador.classList.add("show");
@@ -185,6 +183,8 @@ async function puxarPesquisador(idPesquisador, prospeccao) {
     }
 
     try {
+        let corpoModal = document.querySelector("#corpoProspeccoes");
+        corpoModal.innerHTML = '';
         let dadosPesquisador = await puxarDadosPesquisador(idPesquisador);
         if (prospeccao === false) {
             inicializarTabelaPesquisadores(dadosPesquisador);
@@ -204,7 +204,7 @@ function criarButtonGrafico(id) {
     buttonGrafico.id = `button-${id}`
     buttonGrafico.classList.add("btn");
     buttonGrafico.classList.add("app-btn-primary");
-    buttonGrafico.addEventListener("click", () => exibirDados(id))
+    buttonGrafico.addEventListener("click", () => exibirDados(id));
 
     let internalDiv = document.createElement("div");
     internalDiv.id = `internalDiv-${id}`;
@@ -226,9 +226,10 @@ function criarFigure() {
 function inicializarModalProspeccoes(dadosProspeccoes, id) {
     let corpoModal = document.querySelector("#corpoProspeccoes");
     let loadingProspeccoes = document.querySelector("#loadingProspeccoes");
-    corpoModal.innerHTML = '';
 
     let buttonGrafico = criarButtonGrafico(id);
+    let hr = document.createElement("hr");
+    corpoModal.parentElement.appendChild(hr);
     corpoModal.parentElement.appendChild(buttonGrafico);
 
     let figure = criarFigure();
