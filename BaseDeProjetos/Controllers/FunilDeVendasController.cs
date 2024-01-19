@@ -50,6 +50,7 @@ namespace BaseDeProjetos.Controllers
                 bool enviou = MailHelper.NotificarProspecção(followup, _mailer);
                 await _context.SaveChangesAsync();
                 await CacheHelper.CleanupProspeccoesCache(_cache);
+                await CacheHelper.CleanupParticipacoesCache(_cache);
             }
 
             return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
@@ -191,6 +192,8 @@ namespace BaseDeProjetos.Controllers
             _context.Remove(prospeccao);
             await _context.SaveChangesAsync();
             await CacheHelper.CleanupProspeccoesCache(_cache);
+            await CacheHelper.CleanupParticipacoesCache(_cache);
+
             return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
         }
 
@@ -361,6 +364,7 @@ namespace BaseDeProjetos.Controllers
                 _context.Update(followup);
                 await _context.SaveChangesAsync();
                 await CacheHelper.CleanupProspeccoesCache(_cache);
+                await CacheHelper.CleanupParticipacoesCache(_cache);
             }
 
             return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
@@ -748,6 +752,8 @@ namespace BaseDeProjetos.Controllers
                 await _context.AddAsync(prosp);
                 await _context.SaveChangesAsync();
                 await CacheHelper.CleanupProspeccoesCache(_cache);
+                await CacheHelper.CleanupParticipacoesCache(_cache);
+
                 return RedirectToAction("Index", "Empresas");
             }
             else
@@ -1145,6 +1151,8 @@ namespace BaseDeProjetos.Controllers
                     _context.FollowUp.Remove(followup);
                     await _context.SaveChangesAsync();
                     await CacheHelper.CleanupProspeccoesCache(_cache);
+                    await CacheHelper.CleanupParticipacoesCache(_cache);
+
                     return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
                 }
                 else
