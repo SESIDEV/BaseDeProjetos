@@ -84,7 +84,6 @@ async function puxarDadosGraficoTemporal(idUsuario) {
 }
 
 function exibirDados(idUsuario) {
-    console.log("ay");
     exibirLoading(idUsuario);
     puxarDadosGraficoTemporal(idUsuario).then(data => {
         esconderBotao(idUsuario);
