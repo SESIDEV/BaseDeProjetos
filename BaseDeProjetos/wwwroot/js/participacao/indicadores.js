@@ -1,5 +1,7 @@
 ﻿// TipoDado: F = Financeiro, f = float, flutuante, i = inteiro (case-sensitive)
 
+const cultura = new Intl.NumberFormat('pt-BR');
+
 const indicadoresFinanceiros = [
     { id: "ValorTotalProspeccoes", nome: "Valor Total das Prospecções", tipoDado: 'F' },
     { id: "ValorMedioProspeccoes", nome: "Valor Médio das Prospecções", tipoDado: 'F' },
@@ -51,23 +53,25 @@ function criarTableDataComClasseCell(conteudo) {
     return tableData
 }
 
-
-
 function criarLinhaPesquisadorIndicador(indicador, tipoDado) {
     let pesquisador = indicador["Pesquisador"]["UserName"];
     let valor = formatarValor(tipoDado, indicador);
     let rank = indicador["Rank"].toFixed(2);
-    let conteudosDetalhe = `<a href='#' onclick=puxarPesquisador("${indicador['Pesquisador']['Id']}")>Ver mais</a>`
+    let conteudosDetalhe = `<a href='#' onclick='puxarPesquisador("${indicador['Pesquisador']['Id']}", false)'>Ver mais</a>`
+    let conteudosProspeccoes = `<a href='#' data-bs-target="#modalProspeccoes" data-bs-toggle="modal" onclick='puxarPesquisador("${indicador['Pesquisador']['Id']}", true)'>Ver prospecções</a>`
 
     let tableRow = document.createElement("tr");
     let tableDataPesquisador = criarTableDataComClasseCell(pesquisador);
     let tableDataValor = criarTableDataComClasseCell(valor);
     let tableDataRank = criarTableDataComClasseCell(rank);
     let tableDataDetalhes = criarTableDataComClasseCell(conteudosDetalhe);
+    let tableDataProspeccoes = criarTableDataComClasseCell(conteudosProspeccoes);
+
     tableRow.appendChild(tableDataPesquisador)
     tableRow.appendChild(tableDataValor);
     tableRow.appendChild(tableDataRank);
     tableRow.appendChild(tableDataDetalhes);
+    tableRow.appendChild(tableDataProspeccoes);
     return tableRow;
 }
 
@@ -109,36 +113,6 @@ function formatarValorPesquisador(tipoDado, valor) {
     }
 }
 
-function popularTabelaIndicadores(dadosIndicador, nomeIndicador, tipoDado) {
-    let corpoTabela = document.querySelector("#corpoTabela");
-    let tituloIndicador = document.querySelector("#tituloIndicador");
-
-    if (!corpoTabela) {
-        throw new Error("A tabela de indicadores não existe");
-    }
-
-    if (!dadosIndicador) {
-        throw new Error("Não temos dados para exibir na tabela de indicadores");
-    }
-
-    if (!nomeIndicador) {
-        throw new Error("O indicador não está nomeado");
-    }
-
-    corpoTabela.innerHTML = "";
-    tituloIndicador.innerText = "Carregando indicador...";
-
-    dadosIndicador.sort((a, b) => b.Valor - a.Valor);
-
-    dadosIndicador.forEach(indicador => {
-        if (indicador) {
-            corpoTabela.appendChild(criarLinhaPesquisadorIndicador(indicador, tipoDado));
-        }
-    });
-
-    tituloIndicador.innerText = `Indicador: ${nomeIndicador}`;
-}
-
 async function puxarIndicador(identificadorIndicador, nomeIndicador, tipoDado) {
     try {
         let dadosIndicador = await puxarDados(identificadorIndicador);
@@ -147,7 +121,6 @@ async function puxarIndicador(identificadorIndicador, nomeIndicador, tipoDado) {
         console.error(error);
     }
 }
-
 
 function criarTabelaLoading(quantidadeColunas) {
     let tableRowReset = document.createElement("tr");
@@ -178,17 +151,6 @@ function resetTabela() {
     collapseIndicador.classList.remove("show");
 }
 
-function resetTabelaPesquisadores() {
-    let corpoTabela = document.querySelector("#corpoTabelaPesquisadores");
-    let tabelaContentsReset = criarTabelaLoading(3);
-    corpoTabela.innerHTML = "";
-    corpoTabela.appendChild(tabelaContentsReset);
-
-    let tituloPesquisador = document.querySelector("#tituloPesquisador");
-    tituloPesquisador.innerText = "Indicadores do Pesquisador: ";
-
-    let collapsePesquisador = document.querySelector("#collapsePesquisador");
-}
 
 function popularDropdown(idDropdown, indicadores) {
     const menuDropdown = document.querySelector(`#${idDropdown}`);
@@ -206,24 +168,147 @@ function popularDropdown(idDropdown, indicadores) {
     });
 }
 
-async function puxarPesquisador(idPesquisador) {
+async function puxarPesquisador(idPesquisador, prospeccao) {
     let collapsePesquisador = document.querySelector("#collapsePesquisador");
-    if (!collapsePesquisador.classList.contains("show")) {
-        collapsePesquisador.classList.add("show");
-    }
-    else {
-        resetTabelaPesquisadores();
-    }
+    let loadingProspeccoes = document.querySelector("#loadingProspeccoes");
+    loadingProspeccoes.style.display = "block";
 
+    console.log("prospeccao is: ", prospeccao);
 
+    if (prospeccao === false) {
+        if (!collapsePesquisador.classList.contains("show")) {
+            collapsePesquisador.classList.add("show");
+        }
+        else {
+            resetTabelaPesquisadores();
+        }
+    }
 
     try {
         let dadosPesquisador = await puxarDadosPesquisador(idPesquisador);
-        inicializarTabelaPesquisadores(dadosPesquisador);
-        collapsePesquisador.classList.add("show");
+        if (prospeccao === false) {
+            inicializarTabelaPesquisadores(dadosPesquisador);
+            collapsePesquisador.classList.add("show");
+        }
+        else {
+            inicializarModalProspeccoes(dadosPesquisador["Participacoes"], idPesquisador);
+        }
     } catch (error) {
         console.error(error);
     }
+}
+
+function inicializarModalProspeccoes(dadosProspeccoes, id) {
+    let corpoModal = document.querySelector("#corpoProspeccoes");
+    let loadingProspeccoes = document.querySelector("#loadingProspeccoes");
+    corpoModal.innerHTML = '';
+
+    let buttonGrafico = document.createElement("button");
+    buttonGrafico.setAttribute("type", "button");
+    buttonGrafico.id = `button-${id}`
+    buttonGrafico.classList.add("btn");
+    buttonGrafico.classList.add("app-btn-primary");
+    buttonGrafico.addEventListener("click", () => exibirDados(id))
+    let internalDiv = document.createElement("div");
+    internalDiv.id = `internalDiv-${id}`;
+    internalDiv.innerText = "Exibir Gráfico";
+    buttonGrafico.appendChild(internalDiv);
+
+    corpoModal.parentElement.appendChild(buttonGrafico);
+
+    let figure = document.createElement("figure");
+    figure.classList.add("highcharts-figure");
+    let participacao = document.createElement("div");
+    participacao.id = "participacao"
+    figure.appendChild(participacao);
+
+    corpoModal.parentElement.appendChild(figure);
+
+    dadosProspeccoes.forEach(dado => {
+        let cardConteudo = {
+            Convertida: dado.Convertida,
+            Planejada: dado.Planejada,
+            Suspensa: dado.Suspensa,
+            NaoConvertida: dado.NaoConvertida,
+            EmDiscussao: dado.EmDiscussao,
+            ComProposta: dado.ComProposta,
+            Ribbon: function () {
+                if (this.Convertida) {
+                    return '<div class="ribbon ribbon-top-right ribbon-green-yellow"><span>Convertida</span></div>';
+                } else if (this.Planejada) {
+                    return '<div class="ribbon ribbon-top-right ribbon-blue"><span>Planejada</span></div>';
+                } else if (this.Suspensa) {
+                    return '<div class="ribbon ribbon-top-right ribbon-yellow"><span>Suspensa</span></div>';
+                } else if (this.NaoConvertida) {
+                    return '<div class="ribbon ribbon-top-right ribbon-red"><span>Não Convertida</span></div>';
+                } else if (this.EmDiscussao) {
+                    return '<div class="ribbon ribbon-top-right ribbon-orange"><span>Em Discussão</span></div>';
+                } else if (this.ComProposta) {
+                    return '<div class="ribbon ribbon-top-right ribbon-green"><span>Com Proposta</span></div>';
+                } else {
+                    return '<div class="ribbon ribbon-top-right ribbon-red"><span>Desconhecido</span></div>';
+                }
+            },
+            Render: function () {
+                return `
+                <div class="app-card app-card-doc h-100 shadow-sm">
+                    ${this.Ribbon()}
+                    <div class="app-card-body p-3">
+                        <h4 class="app-doc-title truncate mb-0">
+                            ${dado.NomeProjeto}
+                        </h4>
+                        <div class="app-doc-meta">
+                            <ul class="list-unstyled mb-0">
+                                <li>
+                                    <span style="display:block; font-weight:bold">
+                                        Empresa:
+                                    </span>${dado.EmpresaProjeto}
+                                </li>
+                                <li>
+                                    <span style="display:block; font-weight:bold">
+                                        Valor:
+                                    </span>${(dado.ValorNominal != 0 ? "R$" + cultura.format(dado.ValorNominal) : "Sem valor especificado")}
+                                </li>
+                                ${dado.ValorNominal > 0 ? `
+                                    <li>
+                                        <span style="display:block; font-weight:bold">
+                                            Valor do Líder:
+                                        </span>${dado.ValorLider != 0 ? "R$" + cultura.format(dado.ValorLider) : "Sem valor pro líder"}
+                                    </li>
+                                    <li>
+                                        <span style="display:block; font-weight:bold">
+                                            Valor dos Pesquisadores (${dado.QuantidadePesquisadores}):
+                                        </span>${dado.ValorPesquisadores != 0 ? "R$" + cultura.format(dado.ValorPesquisadores) : "Sem valor para os pesquisadores"} /
+                                        ${dado.ValorPorPesquisador != 0 ? "R$" + cultura.format(dado.ValorPorPesquisador) : "Sem valor por pesquisador"}
+                                    </li>
+                                    <li>
+                                        <span style="display:block; font-weight:bold">
+                                            Valor dos Bolsistas (${dado.QuantidadeBolsistas}):
+                                        </span>${dado.ValorBolsistas != 0 ? "R$" + cultura.format(dado.ValorBolsistas) : "Sem valor para os bolsistas"} /
+                                        ${dado.ValorPorBolsista != 0 ? "R$" + cultura.format(dado.ValorPorBolsista) : "Sem valor por bolsista"}
+                                    </li>
+                                    <li>
+                                        <span style="display:block; font-weight:bold">
+                                            Valor dos Estagiários (${dado.QuantidadeEstagiarios}):
+                                        </span>${dado.ValorEstagiarios != 0 ? "R$" + cultura.format(dado.ValorEstagiarios) : "Sem valor para os estagiários"} /
+                                        ${dado.ValorPorEstagiario != 0 ? "R$" + cultura.format(dado.ValorPorEstagiario) : "Sem valor por estagiário"}
+                                    </li>` : ''}
+                            </ul>
+                        </div>
+                    </div>
+                </div>`;
+            }
+        }
+
+        let containerConteudoModal = document.createElement("div");
+        containerConteudoModal.innerHTML = cardConteudo.Render();
+
+        while (containerConteudoModal.firstChild) {
+            corpoModal.appendChild(containerConteudoModal.firstChild);
+        }
+
+        loadingProspeccoes.style.display = "none";
+    });
 }
 
 async function puxarDadosPesquisador(id) {
@@ -244,40 +329,6 @@ async function puxarDadosPesquisador(id) {
     }
 }
 
-function inicializarTabelaPesquisadores(dadosPesquisador) {
-    let indicadores = indicadoresContribuicao.concat(indicadoresFinanceiros);
-    popularTabelaPesquisadores(indicadores, dadosPesquisador);
-}
-
-function popularTabelaPesquisadores(indicadores, dadosPesquisador) {
-    let tabelaPesquisadores = document.querySelector("#corpoTabelaPesquisadores");
-    tabelaPesquisadores.innerHTML = "";
-
-    let tituloPesquisador = document.querySelector("#tituloPesquisador");
-    tituloPesquisador.innerText = `Indicadores do Pesquisador: ${dadosPesquisador["Lider"]["UserName"]}`;
-
-    indicadores.forEach(indicador => {
-        let tableRow = document.createElement("tr");
-        let tableDataPesquisador = criarTableDataComClasseCell(indicador.nome);
-        let valorFormatado = formatarValorPesquisador(indicador.tipoDado, dadosPesquisador[indicador["id"]]);
-        let tableDataValor = criarTableDataComClasseCell(valorFormatado);
-        let nomeIndicador = `Rank${indicador.id}`;
-        let valorRank = dadosPesquisador["RankSobreMedia"][nomeIndicador];
-        let tableDataRank;
-
-        if (valorRank) {
-            tableDataRank = criarTableDataComClasseCell(valorRank.toFixed(2));
-        }
-        else {
-            tableDataRank = criarTableDataComClasseCell("-");
-        }
-
-        tableRow.appendChild(tableDataPesquisador);
-        tableRow.appendChild(tableDataValor);
-        tableRow.appendChild(tableDataRank);
-        tabelaPesquisadores.appendChild(tableRow);
-    });
-}
 
 function inicializarPaginaIndicadores() {
     popularDropdown('ulFinanceira', indicadoresFinanceiros);
