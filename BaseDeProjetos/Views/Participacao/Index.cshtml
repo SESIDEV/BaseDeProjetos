@@ -57,6 +57,10 @@
 
 <partial name="Header" view-data="@ViewData" />
 <script defer src="~/js/participacao/indicadores.js"></script>
+<script defer src="~/js/participacao/graficoTemporal.js"></script>
+<script defer src="~/js/participacao/tabelaPesquisadores.js"></script>
+
+<partial name="ListaParticipacoesUnitarias" />
 <div class="app-wrapper">
     <div class="app-content pt-3 p-md-3 p-lg-4">
         <div class="">
@@ -71,7 +75,7 @@
                             <label for="dataInicio">Data Inicial:</label>
                             <input id="dataInicio" name="dataInicio" class="form-control" type="date" placeholder="@(string.IsNullOrEmpty(dataInicio) ? "Sem filtro" : dataInicio)" value="@(string.IsNullOrEmpty(dataInicio) ? null : dataInicio)" max="12" oninput="zerarInputMes(event)" />
                         </div>
-                        
+
                         até
                         <div class="form-group">
                             <label for="dataFim">Data Final:</label>
