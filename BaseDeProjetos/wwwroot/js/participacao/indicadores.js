@@ -227,13 +227,26 @@ function inicializarModalProspeccoes(dadosProspeccoes, id) {
     let corpoModal = document.querySelector("#corpoProspeccoes");
     let loadingProspeccoes = document.querySelector("#loadingProspeccoes");
 
+    let divGrafico = document.createElement("div");
+    divGrafico.id = "conteudosGrafico";
+
     let buttonGrafico = criarButtonGrafico(id);
     let hr = document.createElement("hr");
-    corpoModal.parentElement.appendChild(hr);
-    corpoModal.parentElement.appendChild(buttonGrafico);
+    divGrafico.appendChild(hr);
+    divGrafico.appendChild(buttonGrafico);
 
     let figure = criarFigure();
-    corpoModal.parentElement.appendChild(figure);
+    divGrafico.appendChild(figure);
+
+    let conteudosGrafico = corpoModal.parentElement.querySelector("#conteudosGrafico");
+
+    if (conteudosGrafico !== null) {
+        console.log("Substituindo child");
+        corpoModal.parentElement.replaceChild(divGrafico, conteudosGrafico);
+    }
+    else {
+        corpoModal.parentElement.appendChild(divGrafico);
+    }
 
     dadosProspeccoes.forEach(dado => {
         let cardConteudo = {
