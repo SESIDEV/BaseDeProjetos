@@ -194,9 +194,16 @@ namespace BaseDeProjetos.Controllers
         {
             ViewbagizarUsuario(_context, _cache);
 
-            var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:WithStatus", () => _context.Prospeccao.Include(f => f.Status).ToListAsync());
+            var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:WithStatus", () => _context.Prospeccao.Include(f => f.Status)
+                                                                                                              .Include(p => p.EquipeProspeccao)
+                                                                                                             .ToListAsync());
 
             var prospeccao = prospeccoes.Where(prosp => prosp.Id == id).First(); // o First converte de IQuerable para objeto Prospeccao
+
+            foreach (var relacao in prospeccao.EquipeProspeccao)
+            {
+                _context.EquipeProspeccao.Remove(relacao);
+            }
 
             if (prospeccao.Ancora)
             {
