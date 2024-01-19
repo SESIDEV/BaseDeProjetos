@@ -269,7 +269,7 @@ function popularTabelaPesquisadores(indicadores, dadosPesquisador) {
             tableDataRank = criarTableDataComClasseCell(valorRank.toFixed(2));
         }
         else {
-            tableDataRank = criarTableDataComClasseCell("Sem valor");
+            tableDataRank = criarTableDataComClasseCell("-");
         }
 
         tableRow.appendChild(tableDataPesquisador);
