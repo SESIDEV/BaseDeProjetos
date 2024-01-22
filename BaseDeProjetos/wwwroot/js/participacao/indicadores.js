@@ -275,7 +275,7 @@ function inicializarModalProspeccoes(dadosProspeccoes, id) {
             },
             Render: function () {
                 return `
-                <div class="app-card app-card-doc h-100 shadow-sm">
+                <div class="app-card app-card-doc h-100 shadow-sm" style="width: 15em">
                     ${this.Ribbon()}
                     <div class="app-card-body p-3">
                         <h4 class="app-doc-title truncate mb-0">
