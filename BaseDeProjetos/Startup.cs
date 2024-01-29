@@ -1,5 +1,6 @@
 using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
+using BaseDeProjetos.Services;
 using MailSenderApp.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -78,13 +80,23 @@ namespace BaseDeProjetos
                         options.SupportedUICultures = supportedCultures;
                     });
 
+            services.AddLogging(builder =>
+            {
+                builder.AddDebug();
+                builder.AddConsole();
+            });
+
             services.AddTransient<IEmailSender, EmailSender>();
+            services.AddSingleton<DbCache>();
+            services.AddScoped<IConstrutorParticipacao, ConstrutorParticipacao>();
+            services.AddScoped<IAdministradorDadosParticipacao, AdministradorDadosParticipacao>();
 
             services.AddSession();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
             services.AddDistributedMemoryCache();
-            services.AddSingleton<DbCache>();
+
+            
 
             services.Configure<CookiePolicyOptions>(options =>
             {

@@ -134,7 +134,7 @@ namespace BaseDeProjetos.Controllers
                     return NotFound();
                 }
 
-                var producao = await _context.Producao.FindAsync(id);
+                var producao = await _context.Producao.Where(p => p.Id  == id).FirstAsync();
                 if (producao == null)
                 {
                     return NotFound();
