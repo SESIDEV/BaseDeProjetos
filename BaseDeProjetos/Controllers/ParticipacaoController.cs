@@ -186,14 +186,9 @@ namespace BaseDeProjetos.Controllers
         [HttpGet("Participacao/RetornarDadosPesquisador/{idUsuario}")]
         public async Task<IActionResult> RetornarDadosGraficoTemporal(string idUsuario, DateTime? dataInicio, DateTime? dataFim)
         {
-            ViewbagizarUsuario(_context, _cache);
-
-            List<IndicadoresFinanceirosDTO> indicadores = await ObterIndicadoresFinanceirosParaParticipacao();
-
-            foreach (var indicador in indicadores)
+            if (!string.IsNullOrEmpty(idUsuario))
             {
-                despesas[indicador.Data.Year] = indicador.Despesa;
-                pesquisadores[indicador.Data.Year] = indicador.QtdPesquisadores;
+                throw new ArgumentNullException(nameof(idUsuario));
             }
 
             if (!dataInicio.HasValue)
@@ -208,7 +203,19 @@ namespace BaseDeProjetos.Controllers
 
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                _prospeccoes = await _adminDadosParticipacao.ObterProspeccoesParaParticipacao();
+                ViewbagizarUsuario(_context, _cache);
+
+                List<IndicadoresFinanceirosDTO> indicadores = await ObterIndicadoresFinanceirosParaParticipacao();
+
+                foreach (var indicador in indicadores)
+                {
+                    despesas[indicador.Data.Year] = indicador.Despesa;
+                }
+
+                if (_prospeccoes.Count == 0)
+                {
+                    _prospeccoes = await _adminDadosParticipacao.ObterProspeccoesParaParticipacao();
+                }
 
                 var participacoes = await _adminDadosParticipacao.GetParticipacoesTotaisUsuarios(UsuarioAtivo, (DateTime)dataInicio, (DateTime)dataFim);
 
