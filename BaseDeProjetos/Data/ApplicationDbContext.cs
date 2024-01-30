@@ -1,6 +1,7 @@
 ﻿using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using BaseDeProjetos.Models.Formulario;
 
 namespace BaseDeProjetos.Data
 {
@@ -29,5 +30,6 @@ namespace BaseDeProjetos.Data
         public DbSet<CodigoAmostraProjeto> CodigoAmostraProjeto { get; set; }
         public DbSet<ConjuntoRubrica> ConjuntoRubrica { get; set; }
         public DbSet<Rubrica> Rubrica { get; set; }
+        public DbSet<BaseDeProjetos.Models.Formulario.Formulario> Formulario { get; set; }
     }
 }
