@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.DTOs;
 using BaseDeProjetos.Models.Enums;
@@ -70,11 +70,11 @@ namespace BaseDeProjetos.Helpers
         /// <param name="dataFim"></param>
         public static void PeriodizarProspeccoesUsuario(ProspeccoesUsuarioParticipacao prospeccoes, DateTime dataInicio, DateTime dataFim)
         {
-            prospeccoes.ProspeccoesMembro = ParticipacaoHelper.FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesMembro);
-            prospeccoes.ProspeccoesLider = ParticipacaoHelper.FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesLider);
-            prospeccoes.ProspeccoesTotais = ParticipacaoHelper.FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesTotais);
-            prospeccoes.ProspeccoesTotaisComProposta = ParticipacaoHelper.FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesTotaisComProposta);
-            prospeccoes.ProspeccoesTotaisConvertidas = ParticipacaoHelper.FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesTotaisConvertidas);
+            prospeccoes.ProspeccoesMembro = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesMembro);
+            prospeccoes.ProspeccoesLider = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesLider);
+            prospeccoes.ProspeccoesTotais = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesTotais);
+            prospeccoes.ProspeccoesTotaisComProposta = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesTotaisComProposta);
+            prospeccoes.ProspeccoesTotaisConvertidas = FiltrarProspeccoesPorPeriodo(dataInicio, dataFim, prospeccoes.ProspeccoesTotaisConvertidas);
         }
     }
 }
