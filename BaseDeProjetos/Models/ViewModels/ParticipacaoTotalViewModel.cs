@@ -16,7 +16,6 @@ namespace BaseDeProjetos.Models.ViewModels
         public int QuantidadeProspeccoesLider { get; set; } = 0;
         public decimal TaxaConversaoProposta { get; set; } = 0;
         public List<ParticipacaoViewModel> Participacoes { get; set; }
-        public int QuantidadeProjetos { get; set; } = 0;
         public decimal ValorTotalProspeccoesComProposta { get; set; } = 0;
         public decimal ValorMedioProspeccoesComProposta { get; set; } = 0;
         public decimal ValorTotalProspeccoesConvertidas { get; set; } = 0;
@@ -42,64 +41,8 @@ namespace BaseDeProjetos.Models.ViewModels
             }
             set
             {
+
             }
-        }
-
-        //public HtmlString AsHtml(string nomeVariavel, bool financeiro, Dictionary<string, decimal> valoresMinimos, Dictionary<string, decimal> valoresMaximos)
-        //{
-        //    var rankIndicador = RankPorIndicador[$"Rank{nomeVariavel}"];
-        //    decimal valor = ExtrairValorDaVariavel(nomeVariavel);
-
-        //    CultureInfo cultura = new CultureInfo("pt-BR");
-
-        //    StringBuilder sb = new StringBuilder();
-
-        //    string valorRank = rankIndicador.ToString("N", cultura);
-        //    string comecoDiv = $"<div data-text=\"{valorRank}\" class=\"d-flex flex-row align-items-center gap-2 tooltip-indicadores\">";
-        //    int intervalo = BaseDeProjetos.Helpers.Helpers.VerificarIntervalo(valor, valoresMinimos[nomeVariavel], valoresMaximos[nomeVariavel]);
-        //    HtmlString iconeParticipacao = BaseDeProjetos.Helpers.Helpers.ObterIconeParticipacao(intervalo);
-
-        //    sb.Append(comecoDiv);
-        //    sb.Append(iconeParticipacao.ToString());
-
-        //    if (financeiro)
-        //    {
-        //        sb.Append($"{valor:C2}");
-        //    }
-        //    else
-        //    {
-        //        if (valor == Math.Floor(valor))
-        //        {
-        //            sb.Append(valor);
-        //        }
-        //        else
-        //        {
-        //            sb.Append($"{valor:F}");
-        //        }
-        //    }
-
-        //    return new HtmlString(sb.ToString());
-        //}
-
-        private decimal ExtrairValorDaVariavel(string nomeVariavel)
-        {
-            PropertyInfo propertyInfo = this.GetType().GetProperty(nomeVariavel);
-
-            decimal valor = 0;
-
-            if (propertyInfo != null)
-            {
-                try
-                {
-                    valor = (decimal)propertyInfo.GetValue(this);
-                }
-                catch (InvalidCastException)
-                {
-                    valor = (int)propertyInfo.GetValue(this);
-                }
-            }
-
-            return valor;
         }
     }
 }
