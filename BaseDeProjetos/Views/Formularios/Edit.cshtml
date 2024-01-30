@@ -1,0 +1,49 @@
+﻿@model BaseDeProjetos.Models.Formulario.Formulario
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Formulario</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="TituloFormulario" class="control-label"></label>
+                <input asp-for="TituloFormulario" class="form-control" />
+                <span asp-validation-for="TituloFormulario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DescricaoFormulario" class="control-label"></label>
+                <input asp-for="DescricaoFormulario" class="form-control" />
+                <span asp-validation-for="DescricaoFormulario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataCriacao" class="control-label"></label>
+                <input asp-for="DataCriacao" class="form-control" />
+                <span asp-validation-for="DataCriacao" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Identificador" class="control-label"></label>
+                <input asp-for="Identificador" class="form-control" />
+                <span asp-validation-for="Identificador" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
