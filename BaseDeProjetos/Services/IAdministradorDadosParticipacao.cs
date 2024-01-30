@@ -10,6 +10,7 @@ namespace BaseDeProjetos.Services
     public interface IAdministradorDadosParticipacao
     {
         Task<List<ParticipacaoTotalViewModel>> GetParticipacoesTotaisUsuarios(Usuario usuarioAtivo, DateTime dataInicio, DateTime dataFim);
+        Task<List<Prospeccao>> ObterProspeccoesParaParticipacao();
         ProspeccoesUsuarioParticipacao ObterProspeccoesUsuario(Usuario usuario);
     }
 }
