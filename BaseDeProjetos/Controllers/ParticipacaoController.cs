@@ -22,7 +22,6 @@ namespace BaseDeProjetos.Controllers
 {
     public class ParticipacaoController : SGIController
     {
-        private static readonly Dictionary<int, int> pesquisadores = new Dictionary<int, int>();
         private static readonly Dictionary<int, decimal> despesas = new Dictionary<int, decimal>();
 
         private readonly DbCache _cache;
@@ -54,7 +53,6 @@ namespace BaseDeProjetos.Controllers
             foreach (var indicador in indicadores)
             {
                 despesas[indicador.Data.Year] = indicador.Despesa;
-                pesquisadores[indicador.Data.Year] = indicador.QtdPesquisadores;
             }
 
             return View();
@@ -87,7 +85,6 @@ namespace BaseDeProjetos.Controllers
                 foreach (var indicador in indicadores)
                 {
                     despesas[indicador.Data.Year] = indicador.Despesa;
-                    pesquisadores[indicador.Data.Year] = indicador.QtdPesquisadores;
                 }
 
                 if (_prospeccoes.Count == 0)
@@ -324,7 +321,6 @@ namespace BaseDeProjetos.Controllers
                 foreach (var indicador in indicadores)
                 {
                     despesas[indicador.Data.Year] = indicador.Despesa;
-                    pesquisadores[indicador.Data.Year] = indicador.QtdPesquisadores;
                 }
 
                 _prospeccoes = await _adminDadosParticipacao.ObterProspeccoesParaParticipacao();
