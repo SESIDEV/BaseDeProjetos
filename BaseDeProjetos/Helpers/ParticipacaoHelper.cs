@@ -1,4 +1,4 @@
-using BaseDeProjetos.Data;
+﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.DTOs;
 using BaseDeProjetos.Models.Enums;
@@ -19,25 +19,6 @@ namespace BaseDeProjetos.Helpers
         {
             return prospeccoes
                 .Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Data >= dataInicio && p.Status.OrderBy(f => f.Data).LastOrDefault().Data <= dataFim)
-                .ToList();
-        }
-
-        /// <summary>
-        /// Filtrar os projetos passados por parâmetro até a data de encerramento
-        /// </summary>
-        /// <param name="mesFim"></param>
-        /// <param name="anoFim"></param>
-        /// <param name="projetosUsuario"></param>
-        /// <returns></returns>
-        private List<Projeto> FiltrarProjetosPorPeriodo(string mesFim, string anoFim, List<Projeto> projetos)
-        {
-            int yearFim = int.Parse(anoFim);
-            int monthFim = int.Parse(mesFim);
-
-            DateTime dataFiltro = new DateTime(yearFim, monthFim, DateTime.DaysInMonth(yearFim, monthFim));
-
-            return projetos
-                .Where(p => dataFiltro <= p.DataEncerramento)
                 .ToList();
         }
 
