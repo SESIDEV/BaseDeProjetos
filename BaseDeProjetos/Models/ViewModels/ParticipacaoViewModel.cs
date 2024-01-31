@@ -5,8 +5,6 @@ namespace BaseDeProjetos.Models.ViewModels
     public class ParticipacaoViewModel
     {
         public Guid Id { get; set; }
-        public decimal TotalLider { get; set; }
-        public decimal TotalEquipe { get; set; }
         public int QuantidadePesquisadores { get; set; } = 0;
         public int QuantidadeBolsistas { get; set; } = 0;
         public int QuantidadeEstagiarios { get; set; } = 0;
