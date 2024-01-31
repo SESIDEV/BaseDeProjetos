@@ -39,6 +39,21 @@ public class DbCache
         }
     }
 
+    public void AddKeyToList(string cacheKey)
+    {
+        _cacheKeyListSemaphore.Wait();
+        try
+        {
+            var keys = GetCacheKeyList();
+            keys.Add(cacheKey);
+            _cache.Set(CacheKeyListKey, keys);
+        }
+        finally
+        {
+            _cacheKeyListSemaphore.Release();
+        }
+    }
+
     private HashSet<string> GetCacheKeyList()
     {
         // Try to get the existing HashSet from the cache
@@ -98,7 +113,7 @@ public class DbCache
                     AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromHours(1)
                 });
             }
-            AddKeyToListAsync(cacheKey).Wait();
+            AddKeyToList(cacheKey);
         }
 
         return data;
@@ -119,7 +134,7 @@ public class DbCache
             AbsoluteExpirationRelativeToNow = duration ?? TimeSpan.FromHours(1)
         });
 
-        AddKeyToListAsync(cacheKey).Wait();
+        AddKeyToList(cacheKey);
     }
 
     /// <summary>
