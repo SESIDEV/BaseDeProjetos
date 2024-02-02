@@ -154,23 +154,22 @@ namespace BaseDeProjetos.Helpers
                 case "planejadas":
                     if (parametros.Usuario.Nivel == Nivel.Dev)
                     {
-                        List<Prospeccao> prosps = new List<Prospeccao>();
+                        List<Prospeccao> prospeccoesDoUsuario = new List<Prospeccao>();
                         foreach (var prospeccao in prospeccoes)
                         {
                             try
                             {
                                 if (prospeccao.Usuario.UserName == parametros.HttpContext.User.Identity.Name)
                                 {
-                                    prosps.Add(prospeccao);
+                                    prospeccoesDoUsuario.Add(prospeccao);
                                 }
                             }
-                            catch (NullReferenceException ex)
+                            catch (NullReferenceException)
                             {
-                                throw ex;
+                                continue;
                             }
                         }
-                        return prosps;
-                        // return prospeccoes.Where(p => p.Usuario.UserName == HttpContext.User.Identity.Name).ToList();
+                        return prospeccoesDoUsuario;
                     }
                     else
                     {
