@@ -582,22 +582,22 @@ namespace BaseDeProjetos.Controllers
         /// <param name="id">ID da Empresa</param>
         /// <param name="userId">ID do Usuário</param>
         /// <returns></returns>
-        public async Task<IActionResult> Planejar(int id, string userId)
+        public async Task<IActionResult> Planejar(int id)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 ViewbagizarUsuario(_context, _cache);
 
-                var empresas = await _cache.GetCachedAsync("AllEmpresas", () => _context.Empresa.ToListAsync());
                 Prospeccao prosp = new Prospeccao
                 {
                     Id = $"prosp_{DateTime.Now.Ticks}",
-                    Empresa = empresas.FirstOrDefault(e => e.Id == id),
-                    Usuario = await _context.Users.FirstOrDefaultAsync(u => u.UserName == userId),
+                    EmpresaId = id,
+                    Usuario = await _context.Users.FirstOrDefaultAsync(u => u.UserName == UsuarioAtivo.UserName),
                     Casa = UsuarioAtivo.Casa,
                     LinhaPequisa = LinhaPesquisa.Indefinida,
-                    CaminhoPasta = ""
+                    CaminhoPasta = "",
                 };
+
                 prosp.Status = new List<FollowUp>
                 {
                     new FollowUp
