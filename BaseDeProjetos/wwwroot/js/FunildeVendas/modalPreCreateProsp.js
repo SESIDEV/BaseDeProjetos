@@ -47,8 +47,6 @@ async function trocarModalNovaProsp() {
 
             let data = new Intl.DateTimeFormat('pt-BR', formatoData).format(new Date());
 
-            console.log(data);
-
             statusData.value = data;
             statusData.placeholder = data;
             statusAnotacoes.value = "Incluído no plano de prospecções como prospecção planejada";
