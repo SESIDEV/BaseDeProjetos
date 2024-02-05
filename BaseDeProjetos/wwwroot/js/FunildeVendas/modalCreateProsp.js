@@ -1,6 +1,4 @@
-﻿function validarAnotacoesContatoInicial(contatoInicialAnotacoes) {
-    return contatoInicialAnotacoes.value && contatoInicialAnotacoes.value.length > 3;
-}
+﻿
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log("Adding event listeners");
