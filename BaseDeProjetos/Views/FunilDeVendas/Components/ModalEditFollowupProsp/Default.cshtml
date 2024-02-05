@@ -11,18 +11,22 @@
 
     var prosp = ViewData["prospeccao"] as Prospeccao;
 
-    IEnumerable<SelectListItem>FiltrarExcecao(IEnumerable<SelectListItem> lista, Prospeccao prosp){
+    IEnumerable<SelectListItem> FiltrarExcecao(IEnumerable<SelectListItem> lista, Prospeccao prosp)
+    {
         StatusProspeccao statusAtual = prosp.Status.OrderBy(s => s.Data).Last().Status;
-        if(statusAtual == StatusProspeccao.Planejada){
+        if (statusAtual == StatusProspeccao.Planejada)
+        {
             return lista.Where(status => (Int32.Parse(status.Value)) == (int)StatusProspeccao.ContatoInicial);
         }
-        else if(statusAtual == StatusProspeccao.ContatoInicial){
+        else if (statusAtual == StatusProspeccao.ContatoInicial)
+        {
             return lista.Where(status => (Int32.Parse(status.Value)) > (int)statusAtual && (Int32.Parse(status.Value)) != (int)StatusProspeccao.Planejada);
         }
-        else {
+        else
+        {
             return lista.Where(status => (Int32.Parse(status.Value)) >= (int)statusAtual && (Int32.Parse(status.Value)) != (int)StatusProspeccao.Planejada);
         }
-        
+
     }
 
 }
@@ -44,11 +48,11 @@
                     <div class="accordion" id="accordionFlushExample">
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="flush-headingOne">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                                Dados da Prospecção
-                            </button>
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                    Dados da Prospecção
+                                </button>
                             </h2>
-                            <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample"> 
+                            <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                                 <div class="accordion-body">
                                     <div class="form-group">
                                         <label asp-for="Id" class="control-label"></label>
@@ -70,21 +74,21 @@
                                     <div class="form-group">
                                         <label> Status </label>
                                         <input type="text" class="form-control" value="" placeholder="@prosp.Status.Last().Status.GetDisplayName()"
-                                            readonly />
+                                               readonly />
                                     </div>
                                     <div class="form-group">
-                                    <label> Contato da prospecção</label>
-                                                @{
-                                                    if (prosp.Contato == null)
-                                                    {
-                                                    <input type="text" class="form-control" value="Sem Contato" readonly />
-                                                    }
-                                                
-                                                    else
-                                                    {
-                                                    <input type="text" class="form-control" value="@prosp.Contato.Nome" readonly />
-                                                    }                    
-                                                }
+                                        <label> Contato da prospecção</label>
+                                        @{
+                                            if (prosp.Contato == null)
+                                            {
+                                                <input type="text" class="form-control" value="Sem Contato" readonly />
+                                            }
+
+                                            else
+                                            {
+                                                <input type="text" class="form-control" value="@prosp.Contato.Nome" readonly />
+                                            }
+                                        }
                                     </div>
                                     <div class="form-group">
                                         <label>Informações da prospecção (Primeiro Contato)</label>
@@ -104,7 +108,7 @@
                         <label asp-for="Data" class="control-label"></label>
                         <input asp-for="Data" type="date" class="form-control" />
                         <span asp-validation-for="Data" class="text-danger"
-                            value='@Model.Data.ToString("F2",CultureInfo.CreateSpecificCulture("en-US"))'></span>
+                              value='@Model.Data.ToString("F2",CultureInfo.CreateSpecificCulture("en-US"))'></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Status" class="control-label"></label>
@@ -122,11 +126,11 @@
                             <label class="control-label"> Motivo de não conversão:</label>
                             <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<MotivosNaoConversao>()"></select>
                         </div>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="submit" value="Editar" class="btn-submit btn app-btn-primary">
+                        </div>
                     </div>
-                    <div class="modal-footer">
-                        <input type="submit" value="Editar" class="btn-submit btn app-btn-primary">
-                    </div>
-                </div>
             </form>
         </div>
     </div>
