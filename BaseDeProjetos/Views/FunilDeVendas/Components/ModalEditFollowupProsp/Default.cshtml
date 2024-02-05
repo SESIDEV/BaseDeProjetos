@@ -118,7 +118,7 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="Anotacoes" class="control-label"></label>
-                        <textarea class="form-control" asp-for="Anotacoes" rows="3"> @Model.Anotacoes</textarea>
+                        <textarea class="form-control" asp-for="Anotacoes" rows="3" required> @Model.Anotacoes</textarea>
                         <span asp-validation-for="Anotacoes" class="text-danger"></span>
                     </div>
                     <div id="naoconversao" style="display:none">
