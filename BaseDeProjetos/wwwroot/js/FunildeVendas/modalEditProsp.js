@@ -3,21 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let listNomeProspeccao = document.querySelectorAll("#NomeProspeccao");
     let listSelectEmpresa = document.querySelectorAll("#EmpresaId");
 
-    listSelectEmpresa.forEach((selectEmpresa) => {
-        if (selectEmpresa) {
-            selectEmpresa.addEventListener("change", () => verificarCampoEmpresa(selectEmpresa));
-        }
-        else {
-            console.error(`No select empresa: ${selectEmpresa}`);
-        }
-    });
+    adicionarListenerVerificacaoEmLista(listSelectEmpresa, verificarCampoEmpresa);
 
-    listNomeProspeccao.forEach((nomeProspeccao) => {
-        if (nomeProspeccao) {
-            nomeProspeccao.addEventListener("change", () => verificarCampoNomeProspeccao(nomeProspeccao));
-        }
-        else {
-            console.error(`No nomeProspeccao: ${nomeProspeccao}`);
-        }
-    });
+    adicionarListenerVerificacaoEmLista(listNomeProspeccao, verificarCampoNomeProspeccao);
 });

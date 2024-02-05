@@ -4,8 +4,6 @@
     let salario = document.querySelector("#Salario");
 
     adicionarListenerVerificacao(nomeCargo, verificarNomeCargo)
-
     adicionarListenerVerificacao(horas, verificarHoras);
-
     adicionarListenerVerificacao(salario, verificarSalario)
 });
