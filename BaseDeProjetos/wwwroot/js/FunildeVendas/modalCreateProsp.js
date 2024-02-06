@@ -8,8 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let dataContatoInicial = document.getElementById("Status_0__Data");
     let contatoInicialAnotacoes = document.getElementById("Status_0__Anotacoes");
 
-    adicionarListenerVerificacao(selectEmpresa, verificarCampoEmpresa)
-    adicionarListenerVerificacao(nomeProspeccao, verificarCampoNomeProspeccao);
-    adicionarListenerVerificacao(dataContatoInicial, verificarCampoContatoInicial);
-    adicionarListenerVerificacao(contatoInicialAnotacoes, verificarAnotacoesProspeccao);
+    adicionarListenerVerificacao(selectEmpresa, validarSelectEmpresa)
+    adicionarListenerVerificacao(nomeProspeccao, validarNomeProspeccao);
+    adicionarListenerVerificacao(dataContatoInicial, validarDataContatoInicial);
+    adicionarListenerVerificacao(contatoInicialAnotacoes, validarAnotacoesContatoInicial);
 });

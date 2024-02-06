@@ -3,7 +3,7 @@
     let horas = document.querySelector("#HorasSemanais");
     let salario = document.querySelector("#Salario");
 
-    adicionarListenerVerificacao(nomeCargo, verificarNomeCargo)
-    adicionarListenerVerificacao(horas, verificarHoras);
-    adicionarListenerVerificacao(salario, verificarSalario)
+    adicionarListenerVerificacao(nomeCargo, validarNomeCargo)
+    adicionarListenerVerificacao(horas, validarHoras);
+    adicionarListenerVerificacao(salario, validarSalario)
 });

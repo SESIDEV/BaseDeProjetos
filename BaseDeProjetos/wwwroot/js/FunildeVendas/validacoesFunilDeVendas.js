@@ -16,30 +16,6 @@ function validarDataContatoInicial(dataContatoInicial) {
     }
 }
 
-function verificarCampoEmpresa(selectEmpresa) {
-    let validacaoEmpresa = validarSelectEmpresa(selectEmpresa);
-
-    verificarInput(validacaoEmpresa, selectEmpresa);
-}
-
-function verificarAnotacoesProspeccao(contatoInicialAnotacoes) {
-    let validacaoContatoInicialAnotacoes = validarAnotacoesContatoInicial(contatoInicialAnotacoes);
-
-    verificarInput(validacaoContatoInicialAnotacoes, contatoInicialAnotacoes);
-}
-
-function verificarCampoNomeProspeccao(nomeProspeccao) {
-    let validacaoNomeProspeccao = validarNomeProspeccao(nomeProspeccao);
-
-    verificarInput(validacaoNomeProspeccao, nomeProspeccao);
-}
-
-function verificarCampoContatoInicial(dataContatoInicial) {
-    let validacaoContatoInicial = validarDataContatoInicial(dataContatoInicial);
-
-    verificarInput(validacaoContatoInicial, dataContatoInicial)
-}
-
 function validarAnotacoesContatoInicial(contatoInicialAnotacoes) {
     return contatoInicialAnotacoes.value && contatoInicialAnotacoes.value.length > 3;
 }
