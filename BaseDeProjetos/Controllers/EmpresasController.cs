@@ -433,7 +433,7 @@ namespace BaseDeProjetos.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             Empresa empresa = await _context.Empresa.FindAsync(id);
-            IQueryable<Pessoa> pessoasRemove = _context.Pessoa.Where(p => p.empresa.Id == empresa.Id);
+            IQueryable<Pessoa> pessoasRemove = _context.Pessoa.Where(p => p.EmpresaId == empresa.Id);
             _context.Pessoa.RemoveRange(pessoasRemove);
             _context.Empresa.Remove(empresa);
             await _context.SaveChangesAsync();

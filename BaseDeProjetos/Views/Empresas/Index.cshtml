@@ -260,7 +260,7 @@
                                     @if (contatos.Count() != 0)
                                     {
                                         int count = 1;
-                                        @foreach (Pessoa contato in contatos.Where(c => c.empresa != null).Where(c2 => c2.empresa.Id == empresa.Id))
+                                        @foreach (Pessoa contato in contatos.Where(c => c.EmpresaId != null).Where(c2 => c2.EmpresaId == empresa.Id))
                                         {
                                             if (contato.Nome != null && contato.Email != null && contato.Telefone != null && contato.Cargo != null)
                                             {

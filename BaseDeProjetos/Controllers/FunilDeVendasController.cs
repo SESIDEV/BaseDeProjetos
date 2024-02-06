@@ -79,7 +79,7 @@ namespace BaseDeProjetos.Controllers
                     var empresa = await _cache.GetCachedAsync($"Empresa:{prospeccao.EmpresaId}", () => _context.Empresa.FindAsync(prospeccao.EmpresaId).AsTask());
                     if (empresa != null)
                     {
-                        prospeccao.Contato.empresa = empresa;
+                        prospeccao.Contato.EmpresaId = empresa.Id;
                     }
                 }
 
