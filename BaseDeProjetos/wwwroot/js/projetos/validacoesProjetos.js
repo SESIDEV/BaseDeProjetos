@@ -6,9 +6,16 @@ function validarProponente(proponente) {
     return proponente.value && proponente.value != "";
 }
 
-// TODO: Parse date?
-function validarDataFim(dataInicio, dataFim) {
-    return dataFim.value > dataInicio.value;
+function validarLider(lider) {
+    return lider.value && lider.value != "";
+}
+
+function validarDataEncerramento(dataInicio, dataEncerramento) {
+    return new Date(dataEncerramento.value) > new Date(dataInicio.value);
+}
+
+function validarDataInicio(dataInicio, dataEncerramento) {
+    return new Date(dataInicio.value) < new Date(dataEncerramento.value);
 }
 
 function validarDuracaoMeses(duracaoMeses) {

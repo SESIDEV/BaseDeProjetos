@@ -5,7 +5,9 @@
     List<Projeto> encerrados = ViewBag.Encerrados as List<Projeto>;
 }
 
-<script src="~/js/projetos/cff.js"></script>
+<script asp-append-version="true" src="~/js/projetos/cff.js"></script>
+<script asp-append-version="true" src="~/js/projetos/modalCreateProjeto.js"></script>
+<script asp-append-version="true" src="~/js/projetos/validacoesProjetos.js"></script>
 
 <partial name="Header" view-data="@ViewData" />
 <script>
@@ -124,7 +126,7 @@
                                         <tr>
                                             <th class="cell">Empresa</th>
                                             <th class="cell">Projeto</th>
-                                            <th class="cell">Proponente</th>
+                                            <th class="cell">Prospector</th>
                                             <th class="cell">Equipe</th>
                                             <th class="cell">Status</th>
                                             <th class="cell">Valor</th>
@@ -149,7 +151,7 @@
                                         <tr>
                                             <th class="cell">Empresa</th>
                                             <th class="cell">Projeto</th>
-                                            <th class="cell">Proponente</th>
+                                            <th class="cell">Prospector</th>
                                             <th class="cell">Equipe</th>
                                             <th class="cell">Status</th>
                                             <th class="cell">Valor</th>
