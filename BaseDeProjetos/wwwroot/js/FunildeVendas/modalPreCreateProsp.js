@@ -17,7 +17,6 @@ const formatoData = {
     hour12: false
 };
 
-
 async function trocarModalNovaProsp() {
     const toggleButton = document.getElementById("botaoToggleProspFollowUp");
     toggleButton.disabled = true;
@@ -44,6 +43,7 @@ async function trocarModalNovaProsp() {
             const nomeProspeccao = document.getElementById("NomeProspeccao");
             const statusData = document.getElementById("Status_0__Data");
             const statusAnotacoes = document.getElementById("Status_0__Anotacoes");
+            const valorStatus = document.getElementById("Status_0__Status");
 
             let data = new Intl.DateTimeFormat('pt-BR', formatoData).format(new Date());
 
@@ -51,6 +51,7 @@ async function trocarModalNovaProsp() {
             statusData.placeholder = data;
             statusAnotacoes.value = "Incluído no plano de prospecções como prospecção planejada";
 
+            valorStatus.value = "Planejada";
             nomeProspeccao.value = "Prospecção Planejada";
             nomeProspeccao.placeholder = "Prospecção Planejada";
         }

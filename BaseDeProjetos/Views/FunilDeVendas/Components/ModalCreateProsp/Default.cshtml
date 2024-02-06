@@ -209,7 +209,8 @@
                     <div class="col-form-label" style="font-weight: 600">
                         <label asp-for="Status[0].Status" class="control-label"></label>
                         <select asp-for="Status[0].Status" class="form-control" disabled>
-                            <option value="@StatusProspeccao.ContatoInicial"> Contato Inicial</option>
+                            <option value="@StatusProspeccao.ContatoInicial">Contato Inicial</option>
+                            <option value="@StatusProspeccao.Planejada">Planejada</option>
                         </select>
                         <span asp-validation-for="Status[0].Status" class="text-danger"></span>
                     </div>
