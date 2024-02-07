@@ -1,6 +1,7 @@
 @using BaseDeProjetos.Models.DTOs;
 @model EmpresasViewModel
 @using System.Globalization
+@using BaseDeProjetos.Models.Enums
 @{
     ViewData["Title"] = "Empresas";
     List<Pessoa> contatos = ViewBag.Contatos as List<Pessoa>;
@@ -195,7 +196,7 @@
                                         }
                                     </li>
                                     <li class="list-inline-item">|</li>
-                                    <li class="list-inline-item">Setor: @empresa.Segmento</li>
+                                    <li class="list-inline-item">Setor: @empresa.Segmento.GetDisplayName()</li>
                                     <li class="list-inline-item">|</li>
                                     <li class="list-inline-item">Id: @empresa.Id</li>
                                 </ul>

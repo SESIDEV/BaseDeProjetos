@@ -79,6 +79,9 @@ namespace BaseDeProjetos.Models.Enums
         Alagoas,
 
         [Display(Name = "Fora do país")]
-        Estrangeiro
+        Estrangeiro,
+
+        [Display(Name = "Sem estado cadastrado")]
+        SemCadastro
     }
 }

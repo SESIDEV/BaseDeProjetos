@@ -50,7 +50,7 @@
                     </div>
                     <hr />
                     <div class="form-group">
-                        <label asp-for="Segmento" class="control-label"></label>
+                        <label asp-for="Segmento" class="control-label text-danger"></label>
                         <select asp-for="Segmento" class="form-control" asp-items="Html.GetEnumSelectList<SegmentoEmpresa>().OrderBy(p=>p.Text)" value="@Model.Segmento"></select>
                     </div>
                     <div class="form-group">

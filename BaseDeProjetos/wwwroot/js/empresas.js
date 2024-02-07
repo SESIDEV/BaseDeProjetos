@@ -15,15 +15,20 @@ function aplicarDadosAPI(idElemento) {
 
     fetch(url).then(res => {
         res.json().then(dados => {
+            const estadoEmpresaCadastroINT = document.getElementById(`EstadoEmpresaCadastroINT${idElemento}`);
+            const estadoEmpresaCadastro = document.getElementById(`EstadoEmpresaCadastro${idElemento}`);
+
             listaCNAE = [];
             listaCNAE.push(dados.atividade_principal[0].code);
             dados.atividades_secundarias.forEach(ativ => {
                 listaCNAE.push(ativ.code);
             });
+
             document.getElementById(`RazaoSocialEmpresaCadastro${idElemento}`).value = dados.nome;
             document.getElementById(`NomeEmpresa${idElemento}`).value = dados.fantasia;
             document.getElementById(`TipoEmpresaStatus${idElemento}`).innerHTML = "Tipo: " + dados.tipo;
             document.getElementById(`SituacaoEmpresaStatus${idElemento}`).innerHTML = "Situação: " + dados.situacao;
+
             checarCNAE(listaCNAE, idElemento);
 
             // Tudo daqui pra baixo foi feito exclusivamente para converter a sigla de cada estado para o nome completo
@@ -57,7 +62,14 @@ function aplicarDadosAPI(idElemento) {
             siglas.add('AL', 'Alagoas')
 
             // Essa linha busca o índice a partir da sigla devolvida pela api --------\/
-            document.getElementById(`EstadoEmpresaCadastro${idElemento}`).value = siglas.find(dados.uf);
+            let siglaEstado = siglas.find(dados.uf);
+
+            if (siglaEstado) {
+                estadoEmpresaCadastro.value = siglaEstado;
+            }
+            else {
+                estadoEmpresaCadastro.value = "SemCadastro";
+            }
 
             // Converter a sigla de cada estado para o índice do enum
             var indices = new Dicionario();
@@ -90,29 +102,28 @@ function aplicarDadosAPI(idElemento) {
             indices.add('AL', 25)
 
             // Essa linha busca o nome a partir da sigla devolvida pela api --------\/
-            document.getElementById(`EstadoEmpresaCadastroINT${idElemento}`).value = indices.find(dados.uf);
+            let nomeEstado = indices.find(dados.uf);
+
+            if (nomeEstado) {
+                estadoEmpresaCadastroINT.value = nomeEstado;
+            } else {
+                estadoEmpresaCadastroINT.value = "SemCadastro";
+            }
         })
     })
 }
 
 function checarCNAE(listaCNAE, idElemento = "") {
-    for (let i = 0; i < listaCNAE.length; i++) {
-        var codcnae = listaCNAE[i];
+    const cnaeIndustrial = listaCNAE.some(codCNAE => typeof dictCNAE[codCNAE.slice(0, 2)] !== "undefined");
+    const boolCnaeIndustrial = cnaeIndustrial ? "True" : "False";
+    const checkCNAEelement = document.getElementById(`checkCNAE${idElemento}`);
 
-        if (typeof (dictCNAE[codcnae.slice(0, 2)]) != "undefined") {
-            document.getElementById(`BoolCnaeIndustrial${idElemento}`).value = "True";
-            document.getElementById(`checkCNAE${idElemento}`).style.color = "green";
-            document.getElementById(`checkCNAE${idElemento}`).classList.value = "fa fa-check";
-            document.getElementById(`checkCNAE${idElemento}`).style.display = "block";
-            break;
-        } else {
-            document.getElementById(`BoolCnaeIndustrial${idElemento}`).value = "False";
-            document.getElementById(`checkCNAE${idElemento}`).style.color = "red";
-            document.getElementById(`checkCNAE${idElemento}`).classList.value = "fa fa-close";
-            document.getElementById(`checkCNAE${idElemento}`).style.display = "block";
-        }
-    };
+    document.getElementById(`BoolCnaeIndustrial${idElemento}`).value = boolCnaeIndustrial;
+    checkCNAEelement.style.color = cnaeIndustrial ? "green" : "red";
+    checkCNAEelement.classList.value = cnaeIndustrial ? "fa fa-check" : "fa fa-close";
+    checkCNAEelement.style.display = "block";
 }
+
 
 function FiltroEmpresaEstrangeira() {
     let checkBox = document.getElementById("empresa_estrangeira_check");

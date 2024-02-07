@@ -20,6 +20,7 @@ function converterParaBase64(file, id) {
     var reader = new FileReader();
     reader.onloadend = function () {
         var base64String = reader.result;
+        base64String = base64String.replace("")
         var logoBase64Input = document.getElementById(id);
         logoBase64Input.value = base64String;
     };

@@ -50,61 +50,9 @@ namespace BaseDeProjetos.Controllers
 
                 foreach (var empresa in empresas)
                 {
-                    if (!string.IsNullOrEmpty(empresa.Logo))
+                    if (!string.IsNullOrEmpty(empresa.Logo) && !empresa.Logo.StartsWith("http"))
                     {
-                        if (!empresa.Logo.StartsWith("http"))
-                        {
-                            var logoSemHeader = ReplaceBase64Data(empresa.Logo); // Substituir caso haja esses coisos de header
-
-                            byte[] bytesImagem = Convert.FromBase64String(logoSemHeader);
-
-                            MemoryStream streamLogo;
-                            Image imagemSource;
-                            streamLogo = new MemoryStream(bytesImagem);
-                            try
-                            {
-                                imagemSource = Image.FromStream(streamLogo);
-                            }
-                            catch (ArgumentException)
-                            {
-                                // Handle the case where the image data is not valid
-                                // Log the base64 string for analysis or take other appropriate actions
-                                empresa.Logo = "";
-                                continue;
-                            }
-
-                            const int Tamanho = 96;
-                            Bitmap imagemFinal = new Bitmap(Tamanho, Tamanho);
-                            Graphics graphics = Graphics.FromImage(imagemFinal);
-
-                            graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Bilinear;
-                            graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-
-                            graphics.Clear(Color.White);
-
-                            if (imagemSource.Width > imagemSource.Height)
-                            {
-                                int x = 0;
-                                int y = (Tamanho - (imagemSource.Height * Tamanho / imagemSource.Width)) / 2;
-                                graphics.DrawImage(imagemSource, new Rectangle(x, y, Tamanho, imagemSource.Height * Tamanho / imagemSource.Width));
-                            }
-                            else
-                            {
-                                int x = (Tamanho - (imagemSource.Width * Tamanho / imagemSource.Height)) / 2;
-                                int y = 0;
-                                graphics.DrawImage(imagemSource, new Rectangle(x, y, imagemSource.Width * Tamanho / imagemSource.Height, Tamanho));
-                            }
-
-                            streamLogo.Position = 0;
-                            imagemFinal.Save(streamLogo, ImageFormat.Png);
-                            streamLogo.Position = 0;
-
-                            string resultadoDimensionamentoB64 = Convert.ToBase64String(streamLogo.ToArray());
-                            empresa.Logo = resultadoDimensionamentoB64;
-
-                            _context.Update(empresa);
-                            await _context.SaveChangesAsync();
-                        }
+                        await ReprocessarImagemEmpresa(empresa);
                     }
                 }
                 return View("Processamento");
@@ -114,6 +62,52 @@ namespace BaseDeProjetos.Controllers
                 return View("Forbidden");
             }
         }
+
+        private async Task ReprocessarImagemEmpresa(Empresa empresa)
+        {
+            string logoSemHeader = ReplaceBase64Data(empresa.Logo);
+
+            try
+            {
+                byte[] bytesImagem = Convert.FromBase64String(logoSemHeader);
+                MemoryStream streamLogo = new MemoryStream(bytesImagem);
+                Image imagemSource = Image.FromStream(streamLogo);
+
+                const int Tamanho = 96;
+                Bitmap imagemFinal = new Bitmap(Tamanho, Tamanho);
+                Graphics graphics = Graphics.FromImage(imagemFinal);
+
+                graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Bilinear;
+                graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+
+                graphics.Clear(Color.White);
+
+                if (imagemSource.Width > imagemSource.Height)
+                {
+                    int x = 0;
+                    int y = (Tamanho - (imagemSource.Height * Tamanho / imagemSource.Width)) / 2;
+                    graphics.DrawImage(imagemSource, new Rectangle(x, y, Tamanho, imagemSource.Height * Tamanho / imagemSource.Width));
+                }
+                else
+                {
+                    int x = (Tamanho - (imagemSource.Width * Tamanho / imagemSource.Height)) / 2;
+                    int y = 0;
+                    graphics.DrawImage(imagemSource, new Rectangle(x, y, imagemSource.Width * Tamanho / imagemSource.Height, Tamanho));
+                }
+
+                streamLogo.Position = 0;
+                imagemFinal.Save(streamLogo, ImageFormat.Png);
+                streamLogo.Position = 0;
+
+                string resultadoDimensionamentoB64 = Convert.ToBase64String(streamLogo.ToArray());
+                empresa.Logo = resultadoDimensionamentoB64;
+            }
+            catch (ArgumentException)
+            {
+                empresa.Logo = "";
+            }
+        }
+
 
         // GET: Empresas
         public async Task<IActionResult> Index(string searchString = "", int numeroPagina = 1, int tamanhoPagina = 30)
@@ -326,13 +320,23 @@ namespace BaseDeProjetos.Controllers
         {
             if (ModelState.IsValid)
             {
+                await ReprocessarImagemEmpresa(empresa);
                 _context.Add(empresa);
                 await _context.SaveChangesAsync();
                 CacheHelper.CleanupEmpresasCache(_cache);
 
-                return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa") });
+                return RedirectToAction(nameof(Index), new { casa = HttpContext.Session.GetString("_Casa"), SearchString = empresa.Nome });
             }
-            return View(empresa);
+            else
+            {
+                throw new InvalidDataException("Dados de empresa inválidos");
+            }
+        }
+
+        private static void LimparStringLogo(Empresa empresa)
+        {
+            empresa.Logo = empresa.Logo.Replace("data:image/png;base64,data:image/png;base64", "");
+            empresa.Logo = empresa.Logo.Replace("data:image/png;base64", "");
         }
 
         // GET: Empresas/Edit/5
