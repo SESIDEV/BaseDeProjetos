@@ -50,8 +50,11 @@
     <!-- Tippy.js -->
     <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
 
+    <script src="~/js/utils/utils.js" asp-append-version="true"></script>
+
+
     <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 
 
 </head>
@@ -62,22 +65,22 @@
     }
 
     @* Não remover, impede que rotas que não definam um controller ou um action como o Logout, etc exibam o
-        Sidebar/Header, etc que vivem exigindo dados do usuário Logado.
-        @if ((routeData.Values["controller"] != null || routeData.Values["action"] != null) &&
-        (routeData.Values["action"].ToString() != "Index" && routeData.Values["controller"].ToString() != "Home"))
+    Sidebar/Header, etc que vivem exigindo dados do usuário Logado.
+    @if ((routeData.Values["controller"] != null || routeData.Values["action"] != null) &&
+    (routeData.Values["action"].ToString() != "Index" && routeData.Values["controller"].ToString() != "Home"))
 
-        {
-        <partial name="Header" />
-        }*@
+    {
+    <partial name="Header" />
+    }*@
 
     @RenderBody()
 
     @RenderSection("Scripts", required: false)
-    
+
     <!-- Initialize tooltips -->
     <script>
-        tippy('#tip_ind', {allowHTML: true, placement: 'left'});
-        tippy('#tip_agg', {allowHTML: true, placement: 'right'});
+        tippy('#tip_ind', { allowHTML: true, placement: 'left' });
+        tippy('#tip_agg', { allowHTML: true, placement: 'right' });
     </script>
 </body>
 </html>
