@@ -45,3 +45,7 @@ function validarValorRubrica(valor) {
 function validarDataCFF(data) {
     return data.value && new Date(data.value) > new Date("2019-01-01");
 }
+
+function validarPercentualCurva(percentual) {
+    return percentual.value && parseFloat(percentual.value) >= 0;
+}
