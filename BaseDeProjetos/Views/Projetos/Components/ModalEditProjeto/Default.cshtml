@@ -45,7 +45,7 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="NomeProjeto" class="control-label"></label>
-                        <input asp-for="NomeProjeto" id="nomeProjeto" class="form-control" onclick="adicionarListenerVerificacao(this, validarNomeProjeto)" required />
+                        <input asp-for="NomeProjeto" class="form-control" required />
                         <span asp-validation-for="NomeProjeto" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -120,7 +120,7 @@
 
                     <div class="form-group">
                         <label asp-for="DuracaoProjetoEmMeses" class="control-label"></label>
-                        <input asp-for="DuracaoProjetoEmMeses" min="0" class="form-control" onclick="adicionarListenerVerificacao(this, validarDuracaoMeses)" />
+                        <input asp-for="DuracaoProjetoEmMeses" min="0" class="form-control" onclick="adicionarListenerVerificacao(this, validarDuracaoMeses)" required />
                         <span asp-validation-for="DuracaoProjetoEmMeses" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -174,7 +174,7 @@
                     <div class="form-group">
                         <label asp-for="ValorTotalProjeto" class="control-label"></label>
                         <input asp-for="ValorTotalProjeto" class="form-control"
-                               placeholder="@Model.ValorTotalProjeto" onclick="adicionarListenerVerificacao(this, validarValorProjeto)" />
+                               placeholder="@Model.ValorTotalProjeto" onclick="adicionarListenerVerificacao(this, validarValorProjeto)" required />
                         <span asp-validation-for="ValorTotalProjeto" class="text-danger"></span>
                     </div>
                     <div class="form-group">

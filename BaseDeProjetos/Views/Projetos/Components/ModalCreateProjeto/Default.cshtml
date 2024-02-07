@@ -36,7 +36,7 @@
                     <div class="form-group">
                         <label asp-for="ProponenteId" class="control-label">Proponente</label>
                         <select asp-for="ProponenteId" class="form-control">
-                            <option value="">Selecione o Proponente:</option>
+                            <option value="">Selecione o Prospector:</option>
                             @foreach (var proponente in ViewData["Usuarios"] as List<UsuarioProjetoDTO>)
                             {
                                 <option value="@proponente.Id">@proponente.UserName</option>
@@ -66,7 +66,7 @@
 
                     <div class="form-group">
                         <label asp-for="NomeProjeto" class="control-label"></label>
-                        <input asp-for="NomeProjeto" class="form-control" />
+                        <input asp-for="NomeProjeto" class="form-control" required />
                         <span asp-validation-for="NomeProjeto" class="text-danger"></span>
                     </div>
 
@@ -97,17 +97,17 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="DataInicio" class="control-label"></label>
-                        <input type="date" asp-for="DataInicio" class="form-control" />
+                        <input type="date" asp-for="DataInicio" class="form-control" required />
                         <span asp-validation-for="DataInicio" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="DataEncerramento" class="control-label"></label>
-                        <input type="date" asp-for="DataEncerramento" class="form-control" />
+                        <input type="date" asp-for="DataEncerramento" class="form-control" required />
                         <span asp-validation-for="DataEncerramento" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="DuracaoProjetoEmMeses" class="control-label"></label>
-                        <input asp-for="DuracaoProjetoEmMeses" min="0" class="form-control" />
+                        <input asp-for="DuracaoProjetoEmMeses" min="0" class="form-control" required />
                         <span asp-validation-for="DuracaoProjetoEmMeses" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -160,12 +160,12 @@
                     <!-- Remover assim que passarmos a calcular o custo de forma automática -->
                     <div class="form-group">
                         <label asp-for="CustoHM" class="control-label"></label> (R$)
-                        <input asp-for="CustoHM" class="form-control" placeholder="3,00" />
+                        <input asp-for="CustoHM" class="form-control" placeholder="3,00" required />
                         <span asp-validation-for="CustoHM" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="ValorTotalProjeto" class="control-label"></label> (R$)
-                        <input asp-for="ValorTotalProjeto" class="form-control" placeholder="3,00" />
+                        <input asp-for="ValorTotalProjeto" class="form-control" placeholder="3,00" required />
                         <span asp-validation-for="ValorTotalProjeto" class="text-danger"></span>
                     </div>
                     <div class="form-group">
