@@ -33,9 +33,15 @@ function validarValorProjeto(valorProjeto) {
 function validarSelectEmpresaProjetos(selectEmpresa) {
     return selectEmpresa.value && selectEmpresa.value != "-1" && selectEmpresa.value != "";
 }
+
 function validarNomeRubrica(nome) {
     return nome.value && nome.value.length > 3;
 }
+
 function validarValorRubrica(valor) {
     return valor.value && parseFloat(valor.value) > 0;
+}
+
+function validarDataCFF(data) {
+    return data.value && new Date(data.value) > new Date("2019-01-01");
 }
