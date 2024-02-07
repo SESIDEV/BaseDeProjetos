@@ -3,25 +3,39 @@
 @using Microsoft.AspNetCore.Http
 @using System
 @{
-    ViewData["Title"] = "Atualizar Prospecção";
     if (!(Context.Session.GetString("_Casa") is null))
     {
         ViewData["Area"] = Context.Session.GetString("_Casa");
     }
     string valor_contato;
 
-    IEnumerable<SelectListItem>FiltrarExcecao(IEnumerable<SelectListItem> lista, Prospeccao prosp){
-        StatusProspeccao statusAtual = prosp.Status.OrderBy(s => s.Data).Last().Status;
-        if(statusAtual == StatusProspeccao.Planejada){
-            return lista.Where(status => (Int32.Parse(status.Value)) == (int)StatusProspeccao.ContatoInicial);
+    IEnumerable<SelectListItem> FiltrarExcecao(IEnumerable<SelectListItem> selectList, Prospeccao prospeccao)
+    {
+        /* 
+         * Ordenamos primeiro por data, depois ordenamos pelo valor do enum.
+         * Motivo: Se tivermos 2 status, digamos: "Contato Inicial" e "Com Proposta" na mesma data,
+         * o código irá escolher "at random" e permitirá com que a pessoa adicione um status não válido.
+         * Em outras palavras, mesmo que o "último" status seja "Com Proposta", 
+         * caso eles estejam na mesma data o usuário ainda sim poderia adicionar "Contato Inicial".
+        */
+
+        StatusProspeccao statusAtual = prospeccao.Status.OrderByDescending(s => s.Data).ThenByDescending(s => s.Status).First().Status;
+
+        if (statusAtual == StatusProspeccao.Planejada)
+        {
+            return selectList.Where(status => int.Parse(status.Value) == (int)StatusProspeccao.ContatoInicial);
         }
-        @* else if(statusAtual == StatusProspeccao.ContatoInicial){return lista.Where(status => (Int32.Parse(status.Value)) > (int)statusAtual && (Int32.Parse(status.Value)) != (int)StatusProspeccao.Planejada);} *@
-        else {
-            return lista.Where(status => (Int32.Parse(status.Value)) >= (int)statusAtual && (Int32.Parse(status.Value)) != (int)StatusProspeccao.Planejada);
+        else
+        {
+            int statusAtualValue = (int)statusAtual;
+
+            return selectList.Where(status => int.Parse(status.Value) >= statusAtualValue && int.Parse(status.Value) != (int)StatusProspeccao.Planejada);
         }
     }
 
-    string LimitarData(Prospeccao prosp){
+
+    string LimitarData(Prospeccao prosp)
+    {
         return prosp.Status.OrderBy(s => s.Data).Last().Data.ToString("yyyy-MM-dd");
     }
 }
@@ -32,7 +46,7 @@
 
 
 <div class="modal fade" id="CreateFollowupProspModal-@prosp.Id" aria-hidden="true"
-    aria-labelledby="#CreateFollowupProspModal-@prosp.Id-Label" tabindex="-1">
+     aria-labelledby="#CreateFollowupProspModal-@prosp.Id-Label" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -46,9 +60,9 @@
                     <div class="accordion" id="accordionFlushExample">
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="flush-headingOne">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                                Dados da Prospecção
-                            </button>
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                    Dados da Prospecção
+                                </button>
                             </h2>
                             <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                                 <div class="accordion-body">
@@ -72,7 +86,7 @@
                                     <div class="form-group">
                                         <label> Status </label>
                                         <input type="text" class="form-control"
-                                            value="@prosp.Status.OrderBy(p=> p.Data).Last().Status.GetDisplayName()" readonly />
+                                               value="@prosp.Status.OrderBy(p=> p.Data).Last().Status.GetDisplayName()" readonly />
                                     </div>
                                     <div class="form-group">
                                         <label> Contato da prospecção</label>
@@ -100,13 +114,13 @@
 
                     <div class="form-group">
                         <label asp-for="Data" class="control-label"></label>
-                        <input asp-for="Data" type="date" class="form-control" min="@LimitarData(@prosp)"/>
+                        <input asp-for="Data" type="date" class="form-control" min="@LimitarData(@prosp)" required />
                         <span asp-validation-for="Data" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="@Model.Status" class="control-label"></label>
                         <select asp-for="@Model.Status" class="form-control"
-                            asp-items="FiltrarExcecao(Html.GetEnumSelectList<StatusProspeccao>(), @prosp)"></select>
+                                asp-items="FiltrarExcecao(Html.GetEnumSelectList<StatusProspeccao>(), @prosp)"></select>
                         <span asp-validation-for="Status" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -118,7 +132,7 @@
                         <div class="form-group">
                             <label class="control-label"> Motivo de não conversão:</label>
                             <select asp-for="Status" class="form-control"
-                                asp-items="Html.GetEnumSelectList<MotivosNaoConversao>()"></select>
+                                    asp-items="Html.GetEnumSelectList<MotivosNaoConversao>()"></select>
                         </div>
                     </div>
                 </div>
