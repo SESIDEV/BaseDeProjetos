@@ -186,7 +186,7 @@ namespace BaseDeProjetos.Controllers
         [HttpGet("Participacao/RetornarDadosPesquisador/{idUsuario}")]
         public async Task<IActionResult> RetornarDadosGraficoTemporal(string idUsuario, DateTime? dataInicio, DateTime? dataFim)
         {
-            if (!string.IsNullOrEmpty(idUsuario))
+            if (string.IsNullOrEmpty(idUsuario))
             {
                 throw new ArgumentNullException(nameof(idUsuario));
             }
