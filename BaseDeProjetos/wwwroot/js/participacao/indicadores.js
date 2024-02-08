@@ -17,7 +17,6 @@ const indicadoresContribuicao = [
     { id: "QuantidadeProspeccoesMembro", nome: "Quantidade de Prospecções (Membro)", tipoDado: 'i' },
     { id: "TaxaConversaoProposta", nome: "Taxa de Conversão em Proposta", tipoDado: 'p' },
     { id: "TaxaConversaoProjeto", nome: "Taxa de Conversão em Projetos", tipoDado: 'p' },
-    { id: "QuantidadeProjetos", nome: "Quantidade de Projetos", tipoDado: 'i' },
     { id: "QuantidadeProspeccoesComProposta", nome: "Quantidade de Prospecções em Proposta", tipoDado: 'i' },
     { id: "QuantidadeProspeccoesConvertidas", nome: "Quantidade de Prospecções Convertidas", tipoDado: 'i' },
     { id: "AssertividadePrecificacao", nome: "Assertividade na Precificação", tipoDado: 'f' },
