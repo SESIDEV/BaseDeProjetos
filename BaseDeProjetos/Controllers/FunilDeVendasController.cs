@@ -56,62 +56,62 @@ namespace BaseDeProjetos.Controllers
             return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
         }
 
-        // POST: FunilDeVendas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas, ValorEstimado")] Prospeccao prospeccao, string membrosSelect)
-        {
-            ViewbagizarUsuario(_context, _cache);
+		// POST: FunilDeVendas/Create
+		// To protect from overposting attacks, enable the specific properties you want to bind to, for
+		// more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas, ValorEstimado")] Prospeccao prospeccao, string membrosSelect)
+		{
+			ViewbagizarUsuario(_context, _cache);
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    prospeccao = await ValidarEmpresa(prospeccao);
-                }
-                catch (Exception e)
-                {
-                    return CapturarErro(e);
-                }
+			if (ModelState.IsValid)
+			{
+				try
+				{
+					prospeccao = await ValidarEmpresa(prospeccao);
+				}
+				catch (Exception e)
+				{
+					return CapturarErro(e);
+				}
 
-                if (prospeccao.EmpresaId != -1 && !string.IsNullOrEmpty(prospeccao.Contato.Nome))
-                {
-                    var empresa = await _cache.GetCachedAsync($"Empresa:{prospeccao.EmpresaId}", () => _context.Empresa.FindAsync(prospeccao.EmpresaId).AsTask());
-                    if (empresa != null)
-                    {
-                        prospeccao.Contato.empresa = empresa;
-                    }
-                }
+				if (prospeccao.EmpresaId != -1 && !string.IsNullOrEmpty(prospeccao.Contato.Nome))
+				{
+					var empresa = await _cache.GetCachedAsync($"Empresa:{prospeccao.EmpresaId}", () => _context.Empresa.FindAsync(prospeccao.EmpresaId).AsTask());
+					if (empresa != null)
+					{
+						prospeccao.Contato.empresa = empresa;
+					}
+				}
 
-                List<Usuario> usuarios = await ObterListaDeMembrosSelecionados(membrosSelect);
+				List<Usuario> usuarios = await ObterListaDeMembrosSelecionados(membrosSelect);
 
-                AtribuirEquipeProspeccao(prospeccao, usuarios);
+				AtribuirEquipeProspeccao(prospeccao, usuarios);
 
-                await VincularUsuario(prospeccao, HttpContext, _context);
+				await VincularUsuario(prospeccao, HttpContext, _context);
 
-                prospeccao.Status[0].Origem = prospeccao;
+				prospeccao.Status[0].Origem = prospeccao;
 
-                // Por necessidade da implementação do cache tive de omitir essa função, que no momento não está sendo utilizada pois o serviço de email não está habilitado.
-                // Ao ligar o serviço de email no futuro essa função estará quebrada (atrelamento de empresas)
-                // TODO: Consertar a funcionalidade de Notificar Prospecções pelo Email Helper
-                //bool enviou = MailHelper.NotificarProspecção(prospeccao.Status[0], _mailer);
+				// Por necessidade da implementação do cache tive de omitir essa função, que no momento não está sendo utilizada pois o serviço de email não está habilitado.
+				// Ao ligar o serviço de email no futuro essa função estará quebrada (atrelamento de empresas)
+				// TODO: Consertar a funcionalidade de Notificar Prospecções pelo Email Helper
+				//bool enviou = MailHelper.NotificarProspecção(prospeccao.Status[0], _mailer);
 
-                await _context.AddAsync(prospeccao);
-                await _context.SaveChangesAsync();
-                await CacheHelper.CleanupProspeccoesCache(_cache);
-                await CacheHelper.CleanupParticipacoesCache(_cache);
-                return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
-            }
-            else
-            {
-                return View("Error");
-            }
-        }
+				await _context.AddAsync(prospeccao);
+				await _context.SaveChangesAsync();
+				await CacheHelper.CleanupProspeccoesCache(_cache);
+				await CacheHelper.CleanupParticipacoesCache(_cache);
+				return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
+			}
+			else
+			{
+				return View("Error");
+			}
+		}
 
-        // GET: FunilDeVendas/Delete/5
-        public async Task<IActionResult> Delete(string id)
+		// GET: FunilDeVendas/Delete/5
+		public async Task<IActionResult> Delete(string id)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
@@ -167,106 +167,67 @@ namespace BaseDeProjetos.Controllers
             return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
         }
 
-        // POST: FunilDeVendas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, EmpresaId, Contato, Casa, Usuario, MembrosEquipe, ValorProposta, ValorEstimado, Status, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
-        {
-            ViewbagizarUsuario(_context, _cache);
+		// POST: FunilDeVendas/Edit/5
+		// To protect from overposting attacks, enable the specific properties you want to bind to, for
+		// more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Edit(string id, [Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, EmpresaId, Contato, Casa, Usuario, ValorProposta, ValorEstimado, Status, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao, string membrosSelect)
+		{
+			ViewbagizarUsuario(_context, _cache);
 
-            if (id != prospeccao.Id)
-            {
-                return NotFound();
-            }
+			if (id != prospeccao.Id)
+			{
+				return NotFound();
+			}
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    prospeccao = await EditarDadosDaProspecção(id, prospeccao);
-                    await _context.SaveChangesAsync();
-                    await CacheHelper.CleanupProspeccoesCache(_cache);
-                    await CacheHelper.CleanupParticipacoesCache(_cache);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!FunilHelpers.ProspeccaoExists(prospeccao.Id, _context))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw; // Outro erro de banco, lançar para depuração
-                    }
-                }
-                return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
-            }
-            return View(prospeccao);
-        }
+			if (ModelState.IsValid)
+			{
+				var prospeccaoExistente = _context.Prospeccao.Find(prospeccao.Id);
 
-        // POST: FunilDeVendas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, EmpresaId, Contato, Casa, Usuario, ValorProposta, ValorEstimado, Status, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao, string membrosSelect)
-        {
-            ViewbagizarUsuario(_context, _cache);
+				// Verifica se a âncora foi cancelada
+				if (prospeccaoExistente.Ancora == true && prospeccao.Ancora == false)
+				{
+					FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
+				}
+				else if (prospeccao.Ancora == true && string.IsNullOrEmpty(prospeccao.Agregadas))
+				{
+					throw new InvalidOperationException("Não é possível adicionar uma Âncora sem nenhuma agregada.");
+				}
+				// Verifica se alguma agregada foi alterada
+				else if (prospeccaoExistente.Agregadas != prospeccao.Agregadas)
+				{
+					FunilHelpers.AdicionarAgregadas(_context, prospeccaoExistente, prospeccao);
+					FunilHelpers.RemoverAgregadas(_context, prospeccaoExistente, prospeccao);
+				}
 
-            if (id != prospeccao.Id)
-            {
-                return NotFound();
-            }
+				// Remover relacionamento de equipe
+				_context.EquipeProspeccao.RemoveRange(prospeccaoExistente.EquipeProspeccao);
 
-            if (ModelState.IsValid)
-            {
-                var prospeccaoExistente = _context.Prospeccao.Find(prospeccao.Id);
+				List<string> membrosEmails = !string.IsNullOrEmpty(membrosSelect) ? membrosSelect.Split(';').ToList() : new List<string>();
+				List<Usuario> usuariosMembros = await _context.Users.Where(u => membrosEmails.Contains(u.Email)).ToListAsync();
+				List<EquipeProspeccao> equipe = usuariosMembros.Select(usuario => new EquipeProspeccao { IdUsuario = usuario.Id, IdTrabalho = prospeccao.Id }).ToList();
 
-                // Verifica se a âncora foi cancelada
-                if (prospeccaoExistente.Ancora == true && prospeccao.Ancora == false)
-                {
-                    FunilHelpers.RepassarStatusAoCancelarAncora(_context, prospeccao);
-                }
-                else if (prospeccao.Ancora == true && string.IsNullOrEmpty(prospeccao.Agregadas))
-                {
-                    throw new InvalidOperationException("Não é possível adicionar uma Âncora sem nenhuma agregada.");
-                }
-                // Verifica se alguma agregada foi alterada
-                else if (prospeccaoExistente.Agregadas != prospeccao.Agregadas)
-                {
-                    FunilHelpers.AdicionarAgregadas(_context, prospeccaoExistente, prospeccao);
-                    FunilHelpers.RemoverAgregadas(_context, prospeccaoExistente, prospeccao);
-                }
+				prospeccaoExistente.EquipeProspeccao = equipe;
 
-                // Remover relacionamento de equipe
-                _context.EquipeProspeccao.RemoveRange(prospeccaoExistente.EquipeProspeccao);
+				// Atualiza a prospecção no banco com os valores de prospeccao
+				_context.Entry(prospeccaoExistente).CurrentValues.SetValues(prospeccao);
+				_context.Update(prospeccaoExistente);
 
-                List<string> membrosEmails = !string.IsNullOrEmpty(membrosSelect) ? membrosSelect.Split(';').ToList() : new List<string>();
-                List<Usuario> usuariosMembros = await _context.Users.Where(u => membrosEmails.Contains(u.Email)).ToListAsync();
-                List<EquipeProspeccao> equipe = usuariosMembros.Select(usuario => new EquipeProspeccao { IdUsuario = usuario.Id, IdTrabalho = prospeccao.Id }).ToList();
+				// Salvar alterações no banco
+				await _context.SaveChangesAsync();
+				await CacheHelper.CleanupProspeccoesCache(_cache);
+				await CacheHelper.CleanupParticipacoesCache(_cache);
 
-                prospeccaoExistente.EquipeProspeccao = equipe;
+				return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
+			}
+			else
+			{
+				return View("Error");
+			}
+		}
 
-                // Atualiza a prospecção no banco com os valores de prospeccao
-                _context.Entry(prospeccaoExistente).CurrentValues.SetValues(prospeccao);
-                _context.Update(prospeccaoExistente);
-
-                // Salvar alterações no banco
-                await _context.SaveChangesAsync();
-                await CacheHelper.CleanupProspeccoesCache(_cache);
-                await CacheHelper.CleanupParticipacoesCache(_cache);
-
-                return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa });
-            }
-            else
-            {
-                return View("Error");
-            }
-        }
-
-        public async Task<IActionResult> EditarFollowUp(int? id) // Retornar view
+		public async Task<IActionResult> EditarFollowUp(int? id) // Retornar view
         {
             ViewbagizarUsuario(_context, _cache);
 
