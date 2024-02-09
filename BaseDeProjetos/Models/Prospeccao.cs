@@ -1,9 +1,12 @@
-﻿using BaseDeProjetos.Models.Enums;
+﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Models.DTOs;
+using BaseDeProjetos.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace BaseDeProjetos.Models
 {
@@ -73,7 +76,44 @@ namespace BaseDeProjetos.Models
 
         public virtual bool Ancora { get; set; }
         public virtual String Agregadas { get; set; }
-    }
+
+
+		public List<Usuario> TratarMembrosEquipeString(ApplicationDbContext _context)
+		{
+			List<string> membrosNaoTratados = MembrosEquipe?.Split(";").ToList();
+			List<UsuarioParticipacaoDTO> usuarios = _context.Users
+				.Select(u => new UsuarioParticipacaoDTO
+				{
+					Cargo = new CargoDTO { Nome = u.Cargo.Nome, Id = u.Cargo.Id },
+					Casa = u.Casa,
+					Email = u.Email,
+					EmailConfirmed = u.EmailConfirmed,
+					Nivel = u.Nivel,
+					Id = u.Id,
+					UserName = u.UserName
+				})
+				.ToList();
+
+			List<Usuario> membrosEquipe = new List<Usuario>();
+
+			if (membrosNaoTratados != null)
+			{
+				foreach (var membro in membrosNaoTratados)
+				{
+					if (!string.IsNullOrEmpty(membro))
+					{
+						Usuario usuarioEquivalente = usuarios.Find(u => u.Email == membro).ToUsuario();
+						if (usuarioEquivalente != null)
+						{
+							membrosEquipe.Add(usuarioEquivalente);
+						}
+					}
+				}
+			}
+
+			return membrosEquipe;
+		}
+	}
 
     public class FollowUp
     {
