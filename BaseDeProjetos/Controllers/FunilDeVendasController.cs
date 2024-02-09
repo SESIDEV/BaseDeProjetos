@@ -61,56 +61,6 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
-        {
-            ViewbagizarUsuario(_context, _cache);
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    prospeccao = await ValidarEmpresa(prospeccao);
-                }
-                catch (Exception e)
-                {
-                    return CapturarErro(e);
-                }
-
-                if (prospeccao.EmpresaId != -1 && !string.IsNullOrEmpty(prospeccao.Contato.Nome))
-                {
-                    var empresa = await _cache.GetCachedAsync($"Empresa:{prospeccao.EmpresaId}", () => _context.Empresa.FindAsync(prospeccao.EmpresaId).AsTask());
-                    if (empresa != null)
-                    {
-                        prospeccao.Contato.empresa = empresa;
-                    }
-                }
-
-                await VincularUsuario(prospeccao, HttpContext, _context);
-
-                prospeccao.Status[0].Origem = prospeccao;
-
-                // Por necessidade da implementação do cache tive de omitir essa função, que no momento não está sendo utilizada pois o serviço de email não está habilitado.
-                // Ao ligar o serviço de email no futuro essa função estará quebrada (atrelamento de empresas)
-                // TODO: Consertar a funcionalidade de Notificar Prospecções pelo Email Helper
-                //bool enviou = MailHelper.NotificarProspecção(prospeccao.Status[0], _mailer);
-
-                await _context.AddAsync(prospeccao);
-                await _context.SaveChangesAsync();
-                await CacheHelper.CleanupProspeccoesCache(_cache);
-                await CacheHelper.CleanupParticipacoesCache(_cache);
-                return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
-            }
-            else
-            {
-                return View("Error");
-            }
-        }
-
-        // POST: FunilDeVendas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas, ValorEstimado")] Prospeccao prospeccao, string membrosSelect)
         {
             ViewbagizarUsuario(_context, _cache);
