@@ -23,6 +23,12 @@
                 <span asp-validation-for="DescricaoFormulario" class="text-danger"></span>
             </div>
             <div class="form-group">
+            </div>
+            <div id="Perguntas">
+
+            </div>
+                <button type="button" class="btn app-btn-primary" onclick="CriarDivNovaPergunta()">Adicionar nova Questão</button>
+            <div class="form-group">
                 <label asp-for="Identificador" class="control-label"></label>
                 <input asp-for="Identificador" class="form-control" />
                 <span asp-validation-for="Identificador" class="text-danger"></span>
@@ -39,5 +45,64 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
+
+<script>
+
+    
+    let divPerguntas = document.getElementById('Perguntas')
+    let indiceDivNovaPergunta = 0
+
+    function CriarDivNovaPergunta() {
+
+        let idNovaDiv = `Perguntas${indiceDivNovaPergunta}`
+        let novaDiv = document.createElement('div')
+
+        novaDiv.id = idNovaDiv
+
+        let input = CriarInputPergunta()
+        novaDiv.appendChild(input)
+
+        let btnDelete = CriarBtnDelete(novaDiv)
+        novaDiv.appendChild(btnDelete)
+
+        let checkObrigatorio =  criarInputCheckBox(novaDiv)
+        novaDiv.appendChild(checkObrigatorio)
+
+        divPerguntas.appendChild(novaDiv);
+        indiceDivNovaPergunta++;
+    }
+
+    function CriarInputPergunta() { 
+        
+        let pergunta = document.createElement('input')
+        pergunta.type = 'text';
+        pergunta.placeholder = 'Digite a pergunta';
+
+        return pergunta
+    }
+
+    function CriarBtnDelete(novaDiv) {
+        let btnDelete = document.createElement('button');
+        btnDelete.textContent = 'Deletar Pergunta';
+        btnDelete.onclick = function () {
+            divPerguntas.removeChild(novaDiv);
+        };
+        return btnDelete
+    }
+
+    function criarInputCheckBox(novaDiv){
+        let checkBox = document.createElement('input')
+        checkBox.classList.add('form-check-input')
+        checkBox.type = 'checkbox'
+
+        let labelCheckObrigatorio = document.createElement('label')
+        labelCheckObrigatorio.innerText = 'Obrigatório'
+
+        return checkBox
+    }
+
+</script>

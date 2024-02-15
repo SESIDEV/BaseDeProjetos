@@ -1,4 +1,5 @@
 ﻿using BaseDeProjetos.Models.Enums;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BaseDeProjetos.Models.Formulario
