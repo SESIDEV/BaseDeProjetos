@@ -748,6 +748,22 @@ namespace BaseDeProjetos.Controllers
         }
 
         /// <summary>
+        /// Retorna os dados de usuários para lista de membros (para edit de prospecções)
+        /// </summary>
+        /// <returns></returns>
+        public string PuxarDadosUsuarios()
+        {
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                return Helpers.Helpers.PuxarDadosUsuarios(_context);
+            }
+            else
+            {
+                return "403 Forbidden";
+            }
+        }
+
+        /// <summary>
         /// Retorna um modal de acordo com os parâmetros
         /// </summary>
         /// <param name="idProsp">ID da prospecção</param>
