@@ -1,6 +1,7 @@
 using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
+using BaseDeProjetos.Models.DTOs;
 using BaseDeProjetos.Models.Enums;
 using BaseDeProjetos.Models.Helpers;
 using BaseDeProjetos.Models.ViewModels;
@@ -425,21 +426,20 @@ namespace BaseDeProjetos.Controllers
                 }
 
                 var prospeccoesDaCasa = await ObterProspeccoesTotais(enumCasa);
-                var prospeccoesDaCasaConvertida = _cache.GetCached($"Prospeccoes:{enumCasa}:Convertidas:Count", () => prospeccoesDaCasa.Select(p => new { p.Status })
-                                                                                                                                       .Where(p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida))
-                                                                                                                                       .ToList());
 
-                var prospeccoesDaCasaNaoConvertidas = _cache.GetCached($"Prospeccoes:{enumCasa}:NaoConvertidas:Count", () => prospeccoesDaCasa.Select(p => new { p.Status })
-                                                                                                                                              .Where(p => p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida))
-                                                                                                                                              .ToList());
+                int prospeccoesDaCasaConvertidas = _cache.GetCached($"Prospeccoes:{enumCasa}:Convertidas:Count", () => prospeccoesDaCasa.Select(p => new { p.Status })
+                                                                                                                                        .Count(p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida)));
 
-                int prospSuspensas = _cache.GetCached($"Prospeccoes:{enumCasa}:Suspensas:Count", () => prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa).Count());
+                int prospeccoesDaCasaNaoConvertidas = _cache.GetCached($"Prospeccoes:{enumCasa}:NaoConvertidas:Count", () => prospeccoesDaCasa.Select(p => new { p.Status })
+                                                                                                                                              .Count(p => p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida)));
+
+                int prospSuspensas = _cache.GetCached($"Prospeccoes:{enumCasa}:Suspensas:Count", () => prospeccoesDaCasa.Select(p => new { p.Status }).Count(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa));
                 double percentCanceladas = (double)prospSuspensas / prospeccoesDaCasa.Count() * 100;
 
-                int prospConvertidas = prospeccoesDaCasaConvertida.Count();
+                int prospConvertidas = prospeccoesDaCasaConvertidas;
                 double percentConvertidas = (double)prospConvertidas / prospeccoesDaCasa.Count() * 100;
 
-                int prospNaoConvertidas = prospeccoesDaCasaNaoConvertidas.Count();
+                int prospNaoConvertidas = prospeccoesDaCasaNaoConvertidas;
                 double percentNaoConvertidas = (double)prospNaoConvertidas / prospeccoesDaCasa.Count() * 100;
 
                 int prospEmAndamento = prospeccoesDaCasa.Count() - prospConvertidas - prospNaoConvertidas - prospSuspensas;
@@ -592,24 +592,11 @@ namespace BaseDeProjetos.Controllers
                 {
                     Prospeccoes = prospeccoesPagina,
                     Pager = pager,
-                    ProspeccoesAtivas = prospeccoes.Where(
-                        p => p.Status.OrderBy(k => k.Data).All(
-                            pa => pa.Status == StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto || pa.Status == StatusProspeccao.ComProposta)).ToList(),
-                    ProspeccoesComProposta = prospeccoes.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.ComProposta).ToList().Count(),
-                    ProspeccoesConcluidas = prospeccoes.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Convertida).ToList().Count(),
-                    ProspeccoesPlanejadas = prospeccoes.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Planejada).ToList().Count(),
-                    ProspeccoesNaoPlanejadas = prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).Last().Status != StatusProspeccao.Planejada).ToList()
                 };
 
                 if (!string.IsNullOrEmpty(aba))
                 {
-                    var prospeccoesParaFiltragemAgregadas = await _cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.AsNoTracking()
-                                                                                                                                      .Include(p => p.Status)
-                                                                                                                                      .Include(p => p.Empresa)
-                                                                                                                                      .Include(p => p.Usuario)
-                                                                                                                                      .Include(p => p.EquipeProspeccao)
-                                                                                                                                      .ThenInclude(e => e.Usuario)
-                                                                                                                                      .ToListAsync());
+                    var prospeccoesParaFiltragemAgregadas = await _cache.GetCachedAsync("Prospeccoes:FiltragemAgregadas", () => _context.Prospeccao.Include(p => p.Empresa).Select(p => new ProspeccaoAgregadaDTO { Id = p.Id, NomeProspeccao = p.NomeProspeccao, Status = p.Status, EmpresaNome = p.Empresa.Nome }).ToListAsync());
 
                     model.ProspeccoesAgregadas = prospeccoesParaFiltragemAgregadas.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada)
                                                                                   .ToList();
@@ -618,12 +605,6 @@ namespace BaseDeProjetos.Controllers
                 else
                 {
                     model.ProspeccoesGrafico = prospeccoes;
-
-                    model.ProspeccoesAvancadas = prospeccoes.Where(
-                        p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)).Where(
-                            p => p.Status.Any(k => k.Status > StatusProspeccao.ComProposta)).Where(
-                                p => (p.Status.First().Data - p.Status.FirstOrDefault(
-                                    s => s.Status == StatusProspeccao.ComProposta).Data) > TimeSpan.Zero).ToList(); // filtrar lista para obter datas positivas (maior que zero)
 
                     return View(model);
                 }

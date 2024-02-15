@@ -1,5 +1,6 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
+using BaseDeProjetos.Models.DTOs;
 using BaseDeProjetos.Models.Enums;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
@@ -323,7 +324,7 @@ namespace BaseDeProjetos.Helpers
             }
         }
 
-        public static string MostrarAgregadas(List<Prospeccao> prospeccoesAgregadas, string agregadas)
+        public static string MostrarAgregadas(List<ProspeccaoAgregadaDTO> prospeccoesAgregadas, string agregadas)
         {
             if (prospeccoesAgregadas != null)
             {
@@ -334,7 +335,7 @@ namespace BaseDeProjetos.Helpers
                 {
                     if (agregadasComoString.Contains(prospeccao.Id))
                     {
-                        empresas += prospeccao.Empresa.Nome + ";";
+                        empresas += prospeccao.EmpresaNome + ";";
                     }
                 }
 
