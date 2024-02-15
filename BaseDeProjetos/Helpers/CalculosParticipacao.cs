@@ -117,7 +117,7 @@ namespace BaseDeProjetos.Helpers
                 }
             }
 
-            return quantidadeProspeccoesConvertidas;
+            return Math.Ceiling(quantidadeProspeccoesConvertidas);
         }
 
         /// <summary>
