@@ -396,6 +396,8 @@ namespace BaseDeProjetos.Helpers
 
         public static Usuario ObterUsuarioAtivo(ApplicationDbContext _context, HttpContext HttpContext, DbCache cache)
         {
+            Usuario usuarioAtivo;
+
             if (HttpContext == null)
             {
                 throw new ArgumentNullException(nameof(HttpContext));
@@ -407,7 +409,15 @@ namespace BaseDeProjetos.Helpers
             }
 
             string cacheKey = $"Usuarios:UsuarioAtivo:FunilHelper:{HttpContext.User.Identity.Name}";
-            var usuarioAtivo = cache.GetCached(cacheKey, () => _context.Users.Select(u => new Usuario { Id = u.Id, UserName = u.UserName, Casa = u.Casa, Nivel = u.Nivel }).FirstOrDefault(usuario => usuario.UserName == HttpContext.User.Identity.Name));
+
+            if (cache != null)
+            {
+                usuarioAtivo = cache.GetCached(cacheKey, () => _context.Users.Select(u => new Usuario { Id = u.Id, UserName = u.UserName, Casa = u.Casa, Nivel = u.Nivel }).FirstOrDefault(usuario => usuario.UserName == HttpContext.User.Identity.Name));
+            }
+            else
+            {
+                usuarioAtivo = _context.Users.Select(u => new Usuario { Id = u.Id, UserName = u.UserName, Casa = u.Casa, Nivel = u.Nivel }).FirstOrDefault(usuario => usuario.UserName == HttpContext.User.Identity.Name);
+            }
 
             return usuarioAtivo;
         }
