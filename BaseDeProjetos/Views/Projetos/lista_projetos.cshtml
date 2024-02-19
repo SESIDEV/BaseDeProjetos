@@ -17,7 +17,6 @@
     function setupTippy(id) {
         try {
             if (!tippyDone.includes(id)) {
-                console.log("Setting up tippy for: " + id);
                 tippy(`#${id}`, { allowHTML: true, placement: 'left' });
                 tippyDone.push(id);
             }

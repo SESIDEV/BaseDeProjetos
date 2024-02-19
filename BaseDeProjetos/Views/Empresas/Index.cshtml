@@ -36,7 +36,6 @@
     function carregarModalDetalhesProspeccao(idProspeccao) {
         // Verifica se o modal da prospeccao ja foi carregada para que não se carregue-o duas vezes sem necessidade
         let buttonName = "#button-" + idProspeccao
-        console.log(buttonName)
         let buttonDetalhes = document.querySelector(buttonName)
 
         if (!prospeccoesDetalhes.includes(idProspeccao)) {
