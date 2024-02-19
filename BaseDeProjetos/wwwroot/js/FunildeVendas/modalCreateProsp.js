@@ -1,8 +1,6 @@
 ﻿
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("Adding event listeners");
-
     let nomeProspeccao = document.getElementById("NomeProspeccao");
     let selectEmpresa = document.getElementById("EmpresaId");
     let dataContatoInicial = document.getElementById("Status_0__Data");

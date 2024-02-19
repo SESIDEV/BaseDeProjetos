@@ -18,7 +18,7 @@ async function carregarModalCargo(idCargo, tipo) {
                     console.error(`Ocorreu um erro ao puxar o modal: ${err}`);
                 });
         } else {
-            console.log("Tipo de Modal Inválido");
+            console.error("Tipo de Modal Inválido");
         }
     }
     else {
