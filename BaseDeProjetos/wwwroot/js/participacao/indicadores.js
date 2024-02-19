@@ -21,7 +21,7 @@ const indicadoresContribuicao = [
     { id: "QuantidadeProspeccoesConvertidas", nome: "Quantidade de Prospecções Convertidas", tipoDado: 'i' },
     { id: "AssertividadePrecificacao", nome: "Assertividade na Precificação", tipoDado: 'f' },
     { id: "FatorContribuicaoFinanceira", nome: "Fator de Contribuição Financeira", tipoDado: 'f' },
-    { id: "MediaFatores", nome: "Média dos Fatores", tipoDado: 'f' },
+    //{ id: "MediaFatores", nome: "Média dos Fatores", tipoDado: 'f' },
 ];
 async function puxarDados(nomeIndicador) {
     let url = `/Participacao/RetornarDadosIndicador/?nomeIndicador=${nomeIndicador}`;
