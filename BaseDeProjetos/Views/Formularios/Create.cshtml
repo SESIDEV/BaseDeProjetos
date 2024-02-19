@@ -69,8 +69,15 @@
         let btnDelete = CriarBtnDelete(novaDiv)
         novaDiv.appendChild(btnDelete)
 
-        let checkObrigatorio =  criarInputCheckBox(novaDiv)
-        novaDiv.appendChild(checkObrigatorio)
+        let divCheckBox = document.createElement('div')
+
+        let inputCheckObrigatorio =  criarInputCheckBox(novaDiv)
+        divCheckBox.appendChild(inputCheckObrigatorio)
+
+        let labelCheckObrigatorio = criarLabelCheckBox(novaDiv)
+        divCheckBox.appendChild(labelCheckObrigatorio)
+
+        novaDiv.appendChild(divCheckBox)
 
         divPerguntas.appendChild(novaDiv);
         indiceDivNovaPergunta++;
@@ -99,10 +106,13 @@
         checkBox.classList.add('form-check-input')
         checkBox.type = 'checkbox'
 
+        return checkBox
+    }
+    function criarLabelCheckBox(novaDiv) {
         let labelCheckObrigatorio = document.createElement('label')
         labelCheckObrigatorio.innerText = 'Obrigatório'
 
-        return checkBox
+        return labelCheckObrigatorio
     }
 
 </script>
