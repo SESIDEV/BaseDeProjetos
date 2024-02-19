@@ -2,12 +2,18 @@
 @model ConfirmEmailModel
 @{
     ViewData["Title"] = "Confirme seu e-mail";
-    ViewData["Mensagem"] = "Verifique sua caixa de entrada para ver se recebeu o e-mail de confirmação de conta.";
+    ViewData["Mensagem"] = "Verifique a sua caixa de entrada (ou spam) para ver se recebeu o e-mail de confirmação de conta.";
 }
 
-<div class="jumbotron">
-    <h1>@ViewData["Title"]</h1>
-    <p>
-        @ViewData["Mensagem"]
-    </p>
+<div class="container">
+    <div class="text-center">
+        <h2><i class="bi bi-envelope-check-fill"></i> @ViewData["Title"]</h2>
+        <p>
+            @ViewData["Mensagem"]
+        </p>
+        <div class="mt-3 mb-3">
+            <a href="/" class="btn app-btn-secondary">Página Principal</a>
+            <a asp-area="Identity" asp-page="/Account/Login" class="btn app-btn-primary">Login</a>
+        </div>
+    </div>
 </div>

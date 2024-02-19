@@ -91,12 +91,14 @@
             </div>
             <div class="app-card-body p-4">
                 <figure class="highcharts-figure">
-                    <div id="funil"></div>
+                    <div id="funil" class="d-flex justify-content-center align-items-center">
+                        <partial name="_Loading"  />
+                    </div>
                 </figure>
             </div>
             <div class="p-4">
-                <input class="form-check-input" type="checkbox" id="caixaSelecaoAtivas" onclick="marcada()">
-                <label class="form-check-label" for="botao_ativas">Mostrar apenas as ativas</label>
+                @* <input class="form-check-input" type="checkbox" id="caixaSelecaoAtivas" onclick="marcada()"> *@
+                @* <label class="form-check-label" for="botao_ativas">Mostrar apenas as ativas</label> *@
             </div>
         </div>
     </div>
@@ -110,22 +112,22 @@
                 <div class="app-card-body row text-center p-3 p-lg-4">
                     <div class="col-12">
                         <!--[Iury] sIDs da checkbox \/ -->
-                        <h1 id="EmpresasProspectadas" class="display-3"></h1>
+                        <h1 id="EmpresasProspectadas" class="display-3"><partial name="_Loading" /></h1>
                         <small id="CheckboxProspAtivas2">Número de empresas prospectadas</small>
                         <hr />
                     </div>
                     <div class="col-4">
-                        <h4 id="TempoMedioContato"></h4>
+                        <h4 id="TempoMedioContato"><partial name="_Loading" /></h4>
                         <small id="CheckboxProspAtivas10">Tempo médio entre o primeiro contato e a emissão da
                             proposta</small>
                     </div>
                     <div class="col-4">
                         <!--[Iury] IDs da checkbox \/ -->
-                        <h4 id="ProspContatoInicial"></h4>
+                        <h4 id="ProspContatoInicial"><partial name="_Loading" /></h4>
                         <small id="CheckboxProspAtivas3">Contatos iniciais de prospecção</small>
                     </div>
                     <div class="col-4">
-                        <h4 id="PercentualInfrutiferas"></h4>
+                        <h4 id="PercentualInfrutiferas"><partial name="_Loading" /></h4>
                         <small>
                             Percentual de prospecções infrutíferas
                         </small>
@@ -139,7 +141,7 @@
                 </div>
                 <div class="app-card-body text-center p-3 p-lg-4">
                     <figure class="highcharts-figure">
-                        <div id="pizza_desistencia"></div>
+                        <div id="pizza_desistencia"><partial name="_Loading" /></div>
                     </figure>
                 </div>
             </div>
@@ -152,7 +154,7 @@
             </div>
             <div class="app-card-body text-center p-3 p-lg-4">
                 <figure class="highcharts-figure">
-                    <div id="pizza_conversao"></div>
+                    <div id="pizza_conversao"><partial name="_Loading" /></div>
                 </figure>
             </div>
         </div>
@@ -163,26 +165,26 @@
             </div>
             <div class="app-card-body row text-center p-3 p-lg-4">
                 <div class="col-12">
-                    <h1 class="display-3" id="TaxaConversao"></h1>
+                    <h1 class="display-3" id="TaxaConversao"><partial name="_Loading" /></h1>
                     <small>
                         Taxa de conversão de prospecções
                     </small>
                     <hr />
                 </div>
                 <div class="col-4">
-                    <h4 id="TicketMedioProsp"></h4>
+                    <h4 id="TicketMedioProsp"><partial name="_Loading" /></h4>
                     <small id="CheckboxProspAtivas8">
                         Ticket médio das prospecções
                     </small>
                 </div>
                 <div class="col-4">
-                    <h4 id="PropostasEnviadas"></h4>
+                    <h4 id="PropostasEnviadas"><partial name="_Loading" /></h4>
                     <small id="CheckboxProspAtivas9">
                         Propostas comerciais enviadas
                     </small>
                 </div>
                 <div class="col-4">
-                    <h4 id="ProjetosContratados"></h4>
+                    <h4 id="ProjetosContratados"><partial name="_Loading" /></h4>
                     <small>
                         Projetos contratados
                     </small>

@@ -374,13 +374,13 @@ namespace BaseDeProjetos.Controllers
         /// <param name="_context"></param>
         private async Task GerarIndicadores(ApplicationDbContext _context)
         {
-            ViewBag.n_projs = _context.Projeto.Where(p => p.Status == StatusProjeto.EmExecucao).Count();
-            ViewBag.n_empresas = _context.Projeto.Count();
-            ViewBag.n_revenue = _context.Projeto.
-                Where(p => p.Status == StatusProjeto.EmExecucao).
-                Select(p => p.ValorAporteRecursos).
-                Sum();
-            ViewBag.n_pesquisadores = _context.Users.Count();
+            ViewBag.n_projs = _context.Projeto.Select(p => new { p.Status }).Where(p => p.Status == StatusProjeto.EmExecucao).Count();
+            ViewBag.n_empresas = _context.Projeto.Select(p => new { p.Id }).Count();
+            ViewBag.n_revenue = _context.Projeto.Where(p => p.Status == StatusProjeto.EmExecucao)
+                                                .Select(p => p.ValorAporteRecursos)
+                                                .Sum();
+            ViewBag.n_pesquisadores = _context.Users.Select(u => new { u.Id })
+                                                    .Count();
             ViewBag.Embrapii_projs = await _context.Projeto.ToListAsync();
             ViewBag.Embrapii_prosps = await _context.Prospeccao.ToListAsync();
         }
@@ -425,7 +425,8 @@ namespace BaseDeProjetos.Controllers
             }
             else
             {
-                projetos = await _cache.GetCachedAsync($"Projetos:{enum_casa}", () => _context.Projeto.Where(p => p.Casa.Equals(enum_casa)).ToListAsync());
+                projetos = await _cache.GetCachedAsync($"Projetos:{enum_casa}", () => _context.Projeto.Where(p => p.Casa.Equals(enum_casa))
+                                                                                                      .ToListAsync());
             }
 
             return projetos;
