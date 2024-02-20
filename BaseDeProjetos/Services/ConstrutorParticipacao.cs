@@ -46,25 +46,36 @@ namespace BaseDeProjetos.Services
                 despesas[indicador.Data.Year] = indicador.Despesa;
             }
 
-            var prospeccoesUsuarioLiderComProposta = prospeccoesUsuario.ProspeccoesLider.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.ComProposta || p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida);
-            decimal quantidadeProspeccoesComPropostaLider = prospeccoesUsuarioLiderComProposta.Count();
-            decimal valorTotalProspeccoesComPropostaLider = prospeccoesUsuarioLiderComProposta.Sum(p => p.ValorProposta);
-            var prospeccoesUsuarioLiderConvertida = prospeccoesUsuario.ProspeccoesLider.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida);
-            decimal quantidadeProspeccoesConvertidasLider = prospeccoesUsuarioLiderConvertida.Count();
-            decimal valorTotalProspeccoesConvertidasLider = prospeccoesUsuarioLiderConvertida.Sum(p => p.ValorProposta);
-            decimal valorMedioProspeccoesComPropostaLider = IndicadorHelper.DivisaoSegura(valorTotalProspeccoesComPropostaLider, quantidadeProspeccoesComPropostaLider);
-            decimal valorMedioProspeccoesConvertidasLider = IndicadorHelper.DivisaoSegura(valorTotalProspeccoesConvertidasLider, quantidadeProspeccoesConvertidasLider);
+            // As prospecções são apenas do Líder para Assertividade
+            var prospeccoesComProposta = prospeccoesUsuario.ProspeccoesLider.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.ComProposta || p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida);
+            var prospeccoesConvertidas = prospeccoesUsuario.ProspeccoesLider.Where(p => p.Status.OrderBy(f => f.Data).LastOrDefault().Status == StatusProspeccao.Convertida);
 
-            // Erro relativo
-            participacao.AssertividadePrecificacao = 1 - IndicadorHelper.DivisaoSegura(Math.Abs(valorMedioProspeccoesConvertidasLider - valorMedioProspeccoesComPropostaLider), Math.Abs(valorMedioProspeccoesConvertidasLider));
+            decimal quantidadeProspeccoesComProposta = prospeccoesComProposta.Count();
+            decimal quantidadeProspeccoesConvertidas = prospeccoesConvertidas.Count();
+
+            decimal totalValorPropostaComProposta = prospeccoesComProposta.Sum(p => p.ValorProposta);
+            decimal totalValorEstimadoComProposta = prospeccoesComProposta.Sum(p => p.ValorEstimado);
+            decimal totalValorPropostaConvertidas = prospeccoesConvertidas.Sum(p => p.ValorProposta);
+            decimal totalValorEstimadoConvertidas = prospeccoesConvertidas.Sum(p => p.ValorEstimado);
+
+            decimal valorMedioPropostaComProposta = IndicadorHelper.DivisaoSegura(totalValorPropostaComProposta, quantidadeProspeccoesComProposta);
+            decimal valorMedioPropostaConvertidas = IndicadorHelper.DivisaoSegura(totalValorPropostaConvertidas, quantidadeProspeccoesConvertidas);
+            decimal valorMedioEstimadoComProposta = IndicadorHelper.DivisaoSegura(totalValorEstimadoComProposta, quantidadeProspeccoesComProposta);
+            decimal valorMedioEstimadoConvertidas = IndicadorHelper.DivisaoSegura(totalValorEstimadoConvertidas, quantidadeProspeccoesConvertidas);
+
+            decimal mediaValoresEstimados = (valorMedioEstimadoComProposta + valorMedioEstimadoConvertidas) / 2;
+            decimal mediaValoresReais = (valorMedioPropostaComProposta + valorMedioPropostaConvertidas) / 2;
+
+            participacao.AssertividadePrecificacao = 1 - Math.Abs(IndicadorHelper.DivisaoSegura((mediaValoresEstimados - mediaValoresReais), mediaValoresReais));
+
             participacao.TaxaConversaoProposta = IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesComProposta, participacao.QuantidadeProspeccoes);
             participacao.TaxaConversaoProjeto = IndicadorHelper.DivisaoSegura(participacao.QuantidadeProspeccoesConvertidas, participacao.QuantidadeProspeccoesComProposta);
 
             decimal despesaIsiMeses = CalculosParticipacao.CalculoDespesa(dataInicio, dataFim, despesas);
             decimal valorTotalProjetosParaFCF = await CalculosParticipacao.ExtrairValorProjetos(usuario, dataInicio, dataFim, _context);
 
-            // projetos convertidos / despesa
-            participacao.FatorContribuicaoFinanceira = IndicadorHelper.DivisaoSegura(valorTotalProspeccoesConvertidasLider, despesaIsiMeses);
+            // Prospecções convertidas / despesa
+            participacao.FatorContribuicaoFinanceira = IndicadorHelper.DivisaoSegura(totalValorPropostaConvertidas, despesaIsiMeses);
         }
 
         /// <summary>
