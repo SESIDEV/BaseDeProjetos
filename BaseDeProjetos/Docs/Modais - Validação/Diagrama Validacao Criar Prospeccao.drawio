@@ -1,0 +1,186 @@
+<mxfile host="app.diagrams.net" modified="2024-02-02T18:25:48.234Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0" etag="L93Uxn-caR6jMj-Hhokw" version="23.0.2" type="device">
+  <diagram name="Página-1" id="69ld6kQDkrkB7i7p9fLL">
+    <mxGraphModel dx="2336" dy="1954" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Q0UdsqXWPpa9kZ5S-anC-1" target="Q0UdsqXWPpa9kZ5S-anC-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-1" value="Usuário clicou no botão Nova Prospecção" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="50" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Q0UdsqXWPpa9kZ5S-anC-2" target="Q0UdsqXWPpa9kZ5S-anC-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Q0UdsqXWPpa9kZ5S-anC-2" target="Q0UdsqXWPpa9kZ5S-anC-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-2" value="Optou por uma prospecção planejada?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="190" y="190" width="180" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-3" value="Não" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="290" y="270" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-4" value="Sim" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="384" y="180" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="Q0UdsqXWPpa9kZ5S-anC-6" target="Q0UdsqXWPpa9kZ5S-anC-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-6" value="Usuário preenche o nome da prospecção e outros dados do primeiro modal" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="350" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Q0UdsqXWPpa9kZ5S-anC-7" target="Q0UdsqXWPpa9kZ5S-anC-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Q0UdsqXWPpa9kZ5S-anC-7" target="Q0UdsqXWPpa9kZ5S-anC-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-7" value="Nome da prospecção está válido?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="202.5" y="600" width="155" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-9" value="Não" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="142.5" y="610" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Q0UdsqXWPpa9kZ5S-anC-10" target="Q0UdsqXWPpa9kZ5S-anC-6">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="110" y="400" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-10" value="Usuário é instruído a consertar o nome" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="430" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Q0UdsqXWPpa9kZ5S-anC-14" target="Q0UdsqXWPpa9kZ5S-anC-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-14" value="Usuário tenta passar para o segundo modal" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="500" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Q0UdsqXWPpa9kZ5S-anC-17" target="Q0UdsqXWPpa9kZ5S-anC-19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-17" value="Usuário escolhe uma Empresa no Modal" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="730" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Q0UdsqXWPpa9kZ5S-anC-19" target="Q0UdsqXWPpa9kZ5S-anC-21">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-19" value="Usuário tenta passar para o terceiro modal" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="840" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Q0UdsqXWPpa9kZ5S-anC-21" target="Q0UdsqXWPpa9kZ5S-anC-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Q0UdsqXWPpa9kZ5S-anC-21" target="Q0UdsqXWPpa9kZ5S-anC-40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-21" value="Usuário escolheu uma empresa?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="215" y="940" width="130" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Q0UdsqXWPpa9kZ5S-anC-22" target="Q0UdsqXWPpa9kZ5S-anC-17">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="110" y="760" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-22" value="Usuário é instruído a escolher uma empresa" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="840" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-26" value="Não" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="143.5" y="950" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-27" value="Sim" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="280" y="680" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="Q0UdsqXWPpa9kZ5S-anC-30" target="Q0UdsqXWPpa9kZ5S-anC-14">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-34" value="" style="swimlane;startSize=0;" vertex="1" parent="1">
+          <mxGeometry x="-60" y="-20" width="1360" height="1080" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-5" value="Detalhes básicos são preenchidos automáticamente" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="Q0UdsqXWPpa9kZ5S-anC-34">
+          <mxGeometry x="500" y="220" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-30" value="Usuário optou por mudar o nome da prospecção?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="Q0UdsqXWPpa9kZ5S-anC-34">
+          <mxGeometry x="480" y="380" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="Q0UdsqXWPpa9kZ5S-anC-34" source="Q0UdsqXWPpa9kZ5S-anC-5" target="Q0UdsqXWPpa9kZ5S-anC-30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-43" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="Q0UdsqXWPpa9kZ5S-anC-34" source="Q0UdsqXWPpa9kZ5S-anC-40" target="Q0UdsqXWPpa9kZ5S-anC-42">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-40" value="Usuário preenche anotações e data do contato inicial" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="Q0UdsqXWPpa9kZ5S-anC-34">
+          <mxGeometry x="500" y="970" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-53" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="Q0UdsqXWPpa9kZ5S-anC-34" source="Q0UdsqXWPpa9kZ5S-anC-42" target="Q0UdsqXWPpa9kZ5S-anC-52">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-57" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="Q0UdsqXWPpa9kZ5S-anC-34" source="Q0UdsqXWPpa9kZ5S-anC-42" target="Q0UdsqXWPpa9kZ5S-anC-44">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="781" y="880" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-42" value="Anotações foram preenchidas?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="Q0UdsqXWPpa9kZ5S-anC-34">
+          <mxGeometry x="707" y="960" width="147" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-46" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="Q0UdsqXWPpa9kZ5S-anC-34" source="Q0UdsqXWPpa9kZ5S-anC-44" target="Q0UdsqXWPpa9kZ5S-anC-40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-44" value="Usuário é instruído a preencher os dados inválidos" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="Q0UdsqXWPpa9kZ5S-anC-34">
+          <mxGeometry x="500" y="850" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-48" value="Não" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="Q0UdsqXWPpa9kZ5S-anC-34">
+          <mxGeometry x="720" y="930" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-49" value="Sim" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="Q0UdsqXWPpa9kZ5S-anC-34">
+          <mxGeometry x="800" y="1020" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-50" value="Sim" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="Q0UdsqXWPpa9kZ5S-anC-34">
+          <mxGeometry x="390" y="960" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-59" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="Q0UdsqXWPpa9kZ5S-anC-34" source="Q0UdsqXWPpa9kZ5S-anC-52" target="Q0UdsqXWPpa9kZ5S-anC-44">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1013" y="880" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-62" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="Q0UdsqXWPpa9kZ5S-anC-34" source="Q0UdsqXWPpa9kZ5S-anC-52" target="Q0UdsqXWPpa9kZ5S-anC-61">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-52" value="Data do Contato Inicial foi preenchida?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="Q0UdsqXWPpa9kZ5S-anC-34">
+          <mxGeometry x="940" y="960" width="147" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-60" value="Não" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="Q0UdsqXWPpa9kZ5S-anC-34">
+          <mxGeometry x="950" y="931" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-61" value="Usuário envia a nova prospecção" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="Q0UdsqXWPpa9kZ5S-anC-34">
+          <mxGeometry x="1170" y="970" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-35" value="" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="1345" y="965" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Q0UdsqXWPpa9kZ5S-anC-37" target="Q0UdsqXWPpa9kZ5S-anC-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-37" value="" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="265" y="-90" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q0UdsqXWPpa9kZ5S-anC-64" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="Q0UdsqXWPpa9kZ5S-anC-61" target="Q0UdsqXWPpa9kZ5S-anC-35">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
