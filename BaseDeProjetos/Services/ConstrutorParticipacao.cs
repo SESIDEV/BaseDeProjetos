@@ -172,7 +172,7 @@ namespace BaseDeProjetos.Services
                     Convertida = prospConvertida,
                     Planejada = prospPlanejada,
                     Suspensa = prospSuspensa,
-                    ValorNominal = prospeccao.ValorProposta,
+                    ValorNominal = prospeccao.ValorEstimado != 0 ? prospeccao.ValorEstimado : prospeccao.ValorProposta,
                     MembrosEquipe = prospeccao.EquipeProspeccao.Select(p => p.Usuario).ToList().ToString(),
                     ValorLider = valorLider,
                     ValorPesquisadores = valorPesquisadores,
