@@ -159,7 +159,9 @@ namespace BaseDeProjetos.Helpers
             decimal percentualTodosPesquisadores = percentualPorPesquisador * qtdPesquisadores;
             decimal percentualTodosBolsistas = percentualPorBolsista * qtdBolsistas;
             decimal percentualTodosEstagiarios = percentualPorEstagiario * qtdEstagiarios;
-            decimal percentualLider = 1 - (percentualTodosBolsistas + percentualTodosEstagiarios + percentualTodosPesquisadores);
+            
+            // Fazemos por cada (ou deveriamos fazer por todos? ex: percBolsista * 10 bolsistas? explodiria além de 100?)
+            decimal percentualLider = 1 - (percentualPorBolsista + percentualPorEstagiario + percentualPorPesquisador);
 
             return new Dictionary<string, decimal>
             {
