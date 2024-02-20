@@ -144,8 +144,6 @@ async function fetchDadosGraficoBarraTipoContratacao() {
     return fetchedData;
 }
 function preencherDadosGraficoBarraTipoContratacao(dadosProsp) {
-    console.log(dadosProsp)
-
     let comProposta = "ComProposta"
     let contatoInicial = "ContatoInicial"
     let emDiscussao = "EmDiscussao"

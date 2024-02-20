@@ -79,8 +79,6 @@ function passarComp(element) {
     for (let item of elemComp) {
         listaComp.push(item.innerHTML)
     }
-    console.log(listaComp)
-    console.log(elemComp)
     if (localStorage.getItem("Pessoas")) {
         montarNetwork(JSON.parse(localStorage.getItem("Pessoas")), listaComp)
     } else {
@@ -144,7 +142,6 @@ function preencherInputEditProjeto(idProjeto) {
     fetch(`/Projetos/RetornarMembrosCSV/${idProjeto}`)
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             elementoInput.value = data['data'];
         }).catch(err => {
             console.error(err);
@@ -156,7 +153,6 @@ function preencherInputEditProspeccao(idProspeccao) {
     fetch(`/FunilDeVendas/RetornarMembrosCSV/${idProspeccao}`)
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             elementoInput.value = data['data'];
         }).catch(err => {
             console.error(err);
@@ -464,7 +460,6 @@ function montarNetwork(pessoas, competenciasFiltradas = null) {
                 if (listaCompPessoaParalela.includes(compet)) {
                     let setUsuario = new Set([user['id'], pessoaParalela['Email']]);
                     let ligacoes = ligacoes.map(p => new Set(Object.values(p)))
-                    console.log(ligacoes)
                     if (ligacoes.filter(p2 => eqSet(p2, setUsuario)).length == 0) {
                         ligacoes.push({ from: user['id'], to: pessoaParalela['Email'] })
                         iterar = false;

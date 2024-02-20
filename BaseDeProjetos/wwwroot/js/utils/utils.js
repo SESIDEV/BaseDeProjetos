@@ -19,7 +19,6 @@ function verificarInput(resultadoValidacao, element) {
 
 
 function adicionarListenerVerificacao(elemento, fnValidacao) {
-    console.log(`Adicionando listener para ${elemento.id} tendo em conta função de validação ${fnValidacao}`);
     if (elemento) {
         const verificacao = () => verificarCampo(elemento, fnValidacao);
         elemento.removeEventListener("change", verificacao);

@@ -21,7 +21,6 @@ function carregarModalCFF(event, idCFF) {
                     sourceElement.innerHTML = previousInner;
                     modalCFFcontainer.innerHTML = result;
                     sourceElement.disabled = false;
-                    console.log(modalCFFcontainer);
                 })
                 .finally(() => {
                     modalCarregando = false; // Reset the flag to false after function has executed
@@ -55,7 +54,6 @@ function carregarModalRubrica(event, idRubrica) {
                 sourceElement.innerHTML = previousInner;
                 modalRubricasContainer.innerHTML = result;
                 sourceElement.disabled = false;
-                console.log(modalRubricasContainer);
             })
             .finally(() => {
                 modalCarregando = false; // Reset the flag to false after function has executed
