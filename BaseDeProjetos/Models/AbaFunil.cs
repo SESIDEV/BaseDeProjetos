@@ -13,6 +13,11 @@
 
         private string LimparNomeAba(string nome)
         {
+            if (nome.ToLower() == "dashboard")
+            {
+                return "";
+            }
+
             return nome.Replace(" ", "").ToLower();
         }
 
