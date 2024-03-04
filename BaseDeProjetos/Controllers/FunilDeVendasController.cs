@@ -54,8 +54,8 @@ namespace BaseDeProjetos.Controllers
             return RedirectToAction(nameof(Index), new { 
                 casa = UsuarioAtivo.Casa,
                 searchString = HttpContext.Session.GetString("searchString"),
-                numeroPagina = HttpContext.Session.GetString("numeroPagina"),
-                tamanhoPagina = HttpContext.Session.GetString("tamanhoPagina"),
+                numeroPagina = HttpContext.Session.GetInt32("numeroPagina"),
+                tamanhoPagina = HttpContext.Session.GetInt32("tamanhoPagina"),
                 sortOrder = HttpContext.Session.GetString("sortOrder")
             });
         }
@@ -106,8 +106,8 @@ namespace BaseDeProjetos.Controllers
                         casa = UsuarioAtivo.Casa, 
                         aba = HttpContext.Session.GetString("aba"), 
                         searchString = HttpContext.Session.GetString("searchString"),
-                        numeroPagina = HttpContext.Session.GetString("numeroPagina"),
-                        tamanhoPagina = HttpContext.Session.GetString("tamanhoPagina"),
+                        numeroPagina = HttpContext.Session.GetInt32("numeroPagina"),
+                        tamanhoPagina = HttpContext.Session.GetInt32("tamanhoPagina"),
                         sortOrder = HttpContext.Session.GetString("sortOrder"),
                     });
             }
@@ -168,8 +168,8 @@ namespace BaseDeProjetos.Controllers
                     casa = UsuarioAtivo.Casa,
                     aba = HttpContext.Session.GetString("aba"),
                     searchString = HttpContext.Session.GetString("searchString"),
-                    tamanhoPagina = HttpContext.Session.GetString("tamanhoPagina"),
-                    numeroPagina = HttpContext.Session.GetString("numeroPagina"),
+                    tamanhoPagina = HttpContext.Session.GetInt32("tamanhoPagina"),
+                    numeroPagina = HttpContext.Session.GetInt32("numeroPagina"),
                     sortOrder = HttpContext.Session.GetString("sortOrder")
                 });
         }
@@ -211,8 +211,8 @@ namespace BaseDeProjetos.Controllers
                     casa = UsuarioAtivo.Casa, 
                     aba = HttpContext.Session.GetString("aba"),
                     searchString = HttpContext.Session.GetString("searchString"),
-                    numeroPagina = HttpContext.Session.GetString("numeroPagina"),
-                    tamanhoPagina = HttpContext.Session.GetString("tamanhoPagina"),
+                    numeroPagina = HttpContext.Session.GetInt32("numeroPagina"),
+                    tamanhoPagina = HttpContext.Session.GetInt32("tamanhoPagina"),
                     sortOrder = HttpContext.Session.GetString("sortOrder")
                 });
             }
@@ -262,9 +262,9 @@ namespace BaseDeProjetos.Controllers
                     casa = UsuarioAtivo.Casa,
                     aba = HttpContext.Session.GetString("aba"),
                     searchString = HttpContext.Session.GetString("searchString"),
-                    numeroPagina = HttpContext.Session.GetString("numeroPagina"),
-                    tamanhoPagina = HttpContext.Session.GetString("tamanhoPagina"),
-                    sortOrder = HttpContext.Session.GetString("sortOrder")
+                    numeroPagina = HttpContext.Session.GetInt32("numeroPagina"),
+                    tamanhoPagina = HttpContext.Session.GetInt32("tamanhoPagina"),
+                    sortOrder = HttpContext.Session.GetInt32("sortOrder")
                 });
         }
 
