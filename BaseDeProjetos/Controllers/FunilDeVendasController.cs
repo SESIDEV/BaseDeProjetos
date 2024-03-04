@@ -51,7 +51,13 @@ namespace BaseDeProjetos.Controllers
                 await CacheHelper.CleanupProspeccoesCache(_cache);
             }
 
-            return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
+            return RedirectToAction(nameof(Index), new { 
+                casa = UsuarioAtivo.Casa,
+                searchString = HttpContext.Session.GetString("searchString"),
+                numeroPagina = HttpContext.Session.GetString("numeroPagina"),
+                tamanhoPagina = HttpContext.Session.GetString("tamanhoPagina"),
+                sortOrder = HttpContext.Session.GetString("sortOrder")
+            });
         }
 
         // POST: FunilDeVendas/Create
@@ -95,7 +101,15 @@ namespace BaseDeProjetos.Controllers
                 await _context.AddAsync(prospeccao);
                 await _context.SaveChangesAsync();
                 await CacheHelper.CleanupProspeccoesCache(_cache);
-                return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa, aba = HttpContext.Session.GetString("aba") });
+                return RedirectToAction(nameof(Index), 
+                    new { 
+                        casa = UsuarioAtivo.Casa, 
+                        aba = HttpContext.Session.GetString("aba"), 
+                        searchString = HttpContext.Session.GetString("searchString"),
+                        numeroPagina = HttpContext.Session.GetString("numeroPagina"),
+                        tamanhoPagina = HttpContext.Session.GetString("tamanhoPagina"),
+                        sortOrder = HttpContext.Session.GetString("sortOrder"),
+                    });
             }
             else
             {
@@ -149,7 +163,15 @@ namespace BaseDeProjetos.Controllers
             _context.Remove(prospeccao);
             await _context.SaveChangesAsync();
             await CacheHelper.CleanupProspeccoesCache(_cache);
-            return RedirectToAction(nameof(Index), new { casa = UsuarioAtivo.Casa });
+            return RedirectToAction(nameof(Index), 
+                new { 
+                    casa = UsuarioAtivo.Casa,
+                    aba = HttpContext.Session.GetString("aba"),
+                    searchString = HttpContext.Session.GetString("searchString"),
+                    tamanhoPagina = HttpContext.Session.GetString("tamanhoPagina"),
+                    numeroPagina = HttpContext.Session.GetString("numeroPagina"),
+                    sortOrder = HttpContext.Session.GetString("sortOrder")
+                });
         }
 
         // POST: FunilDeVendas/Edit/5
@@ -185,7 +207,14 @@ namespace BaseDeProjetos.Controllers
                         throw; // Outro erro de banco, lançar para depuração
                     }
                 }
-                return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa, aba = HttpContext.Session.GetString("aba") });
+                return RedirectToAction("Index", "FunilDeVendas", new { 
+                    casa = UsuarioAtivo.Casa, 
+                    aba = HttpContext.Session.GetString("aba"),
+                    searchString = HttpContext.Session.GetString("searchString"),
+                    numeroPagina = HttpContext.Session.GetString("numeroPagina"),
+                    tamanhoPagina = HttpContext.Session.GetString("tamanhoPagina"),
+                    sortOrder = HttpContext.Session.GetString("sortOrder")
+                });
             }
             return View(prospeccao);
         }
@@ -228,7 +257,15 @@ namespace BaseDeProjetos.Controllers
                 await CacheHelper.CleanupProspeccoesCache(_cache);
             }
 
-            return RedirectToAction("Index", "FunilDeVendas", new { casa = UsuarioAtivo.Casa, aba = HttpContext.Session.GetString("aba") });
+            return RedirectToAction("Index", "FunilDeVendas", 
+                new { 
+                    casa = UsuarioAtivo.Casa,
+                    aba = HttpContext.Session.GetString("aba"),
+                    searchString = HttpContext.Session.GetString("searchString"),
+                    numeroPagina = HttpContext.Session.GetString("numeroPagina"),
+                    tamanhoPagina = HttpContext.Session.GetString("tamanhoPagina"),
+                    sortOrder = HttpContext.Session.GetString("sortOrder")
+                });
         }
 
         [Route("FunilDeVendas/GerarGraficoBarraTipoContratacao/{casa}")]
