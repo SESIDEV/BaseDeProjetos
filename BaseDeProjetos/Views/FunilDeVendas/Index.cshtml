@@ -160,13 +160,15 @@
                         {
                             classes += " active";
                         }
-                        
+
+                        bool condicaoAria = aba.ToLowerInvariant() == @abaFunil.Nome.ToLowerInvariant().ToString().ToLowerInvariant();
+
                         <a class="@classes"
                            asp-action="@abaFunil.Action"
                            asp-controller="@abaFunil.Controller"
                            asp-route-casa="@casa"
                            asp-route-aba="@abaFunil.RouteAba"
-                           aria-selected="@((aba.ToLowerInvariant() == @abaFunil.Nome.ToLowerInvariant()).ToString().ToLowerInvariant())">
+                           aria-selected="@(condicaoAria)">
                             @abaFunil.Nome
                         </a>
                     }
