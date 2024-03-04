@@ -18,6 +18,11 @@
         casa = ViewBag.UsuarioCasa as string;
     }
 
+    if (aba == null)
+    {
+        aba = "";
+    }
+
     List<Instituto> institutos = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto))).Where(i => i != Instituto.Super).ToList();
 }
 
@@ -140,7 +145,7 @@
 
             @if (Model.Prospeccoes.Count() != 0)
             {
-                @* abasFunil.Add(new AbaFunil("", string.IsNullOrEmpty(aba))); *@
+                abasFunil.Add(new AbaFunil("Dashboard", string.IsNullOrEmpty(aba)));
                 abasFunil.Add(new AbaFunil("Ativas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "ativas" : false));
                 abasFunil.Add(new AbaFunil("Com Proposta", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "comproposta" : false));
                 abasFunil.Add(new AbaFunil("Concluidas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "concluidas" : false));
@@ -148,40 +153,24 @@
                 abasFunil.Add(new AbaFunil("Erradas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "erradas" : false));
 
                 <nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
-                    @if (string.IsNullOrEmpty(aba))
+                    @foreach (var abaFunil in abasFunil)
                     {
-                        <a class="flex-sm-fill text-sm-center nav-link active" id="prospeccao-dashboard-tab" data-bs-toggle="tab" href="#prospeccao-dashboard" role="tab" aria-controls="prospeccao-dashboard" aria-selected="true">Dashboard</a>
-                        @foreach (var abaFunil in abasFunil)
+                        string classes = "flex-sm-fill text-sm-center nav-link";
+                        if (abaFunil.AbaAtiva == true)
                         {
-                            <a class="flex-sm-fill text-sm-center nav-link"
-                               asp-action="@abaFunil.Action"
-                               asp-controller="@abaFunil.Controller"
-                               asp-route-casa="@casa"
-                               asp-route-aba="@abaFunil.RouteAba"
-                               aria-selected="false">
-                                @abaFunil.Nome
-                            </a>
+                            classes += " active";
                         }
-                    }
-                    else
-                    {
-                        <a class="flex-sm-fill text-sm-center nav-link" id="prospeccao-dashboard-tab" data-bs-toggle="tab" href="#prospeccao-dashboard" role="tab" aria-controls="prospeccao-dashboard" aria-selected="false">Dashboard</a>
-                        @foreach (var abaFunil in abasFunil)
-                        {
-                            string classes = "flex-sm-fill text-sm-center nav-link";
-                            if (abaFunil.AbaAtiva == true)
-                            {
-                                classes += " active";
-                            }
-                            <a class="@classes"
-                               asp-action="@abaFunil.Action"
-                               asp-controller="@abaFunil.Controller"
-                               asp-route-casa="@casa"
-                               asp-route-aba="@abaFunil.RouteAba"
-                               aria-selected="@((aba.ToLowerInvariant() == @abaFunil.Nome.ToLowerInvariant()).ToString().ToLowerInvariant())">
-                                @abaFunil.Nome
-                            </a>
-                        }
+
+                        bool condicaoAria = aba.ToLowerInvariant() == @abaFunil.Nome.ToLowerInvariant().ToString().ToLowerInvariant();
+
+                        <a class="@classes"
+                           asp-action="@abaFunil.Action"
+                           asp-controller="@abaFunil.Controller"
+                           asp-route-casa="@casa"
+                           asp-route-aba="@abaFunil.RouteAba"
+                           aria-selected="@(condicaoAria)">
+                            @abaFunil.Nome
+                        </a>
                     }
                 </nav>
                 <div class="tab-content" id="orders-table-tab-content">
