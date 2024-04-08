@@ -108,12 +108,16 @@ namespace BaseDeProjetos.Controllers
                         resultadoDimensionamentoB64 = Convert.ToBase64String(streamLogo.ToArray());
                         empresa.Logo = resultadoDimensionamentoB64;
                     }
-                    catch (System.FormatException e)
+                    catch (FormatException)
                     {
                         empresa.Logo = "";
                     }
                 }
                 catch (ArgumentException)
+                {
+                    empresa.Logo = "";
+                }
+                catch (FormatException)
                 {
                     empresa.Logo = "";
                 }
