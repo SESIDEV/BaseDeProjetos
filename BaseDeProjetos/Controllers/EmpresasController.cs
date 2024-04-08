@@ -54,6 +54,8 @@ namespace BaseDeProjetos.Controllers
                     {
                         await ReprocessarImagemEmpresa(empresa);
                     }
+                    await _context.SaveChangesAsync();
+                    CacheHelper.CleanupEmpresasCache(_cache);
                 }
                 return View("Processamento");
             }
