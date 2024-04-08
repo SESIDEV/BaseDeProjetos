@@ -101,8 +101,17 @@ namespace BaseDeProjetos.Controllers
                     imagemFinal.Save(streamLogo, ImageFormat.Png);
                     streamLogo.Position = 0;
 
-                    string resultadoDimensionamentoB64 = Convert.ToBase64String(streamLogo.ToArray());
-                    empresa.Logo = resultadoDimensionamentoB64;
+                    string resultadoDimensionamentoB64 = "";
+
+                    try
+                    {
+                        resultadoDimensionamentoB64 = Convert.ToBase64String(streamLogo.ToArray());
+                        empresa.Logo = resultadoDimensionamentoB64;
+                    }
+                    catch (System.FormatException e)
+                    {
+                        empresa.Logo = "";
+                    }
                 }
                 catch (ArgumentException)
                 {
