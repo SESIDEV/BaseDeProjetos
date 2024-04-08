@@ -403,7 +403,10 @@ namespace BaseDeProjetos.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(empresa);
+            else
+            {
+                throw new ArgumentException($"Modelo está invalido: {ModelState.IsValid}");
+            }
         }
 
         // GET: Empresas/Delete/5
