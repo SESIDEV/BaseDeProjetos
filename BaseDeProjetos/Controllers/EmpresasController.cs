@@ -394,6 +394,7 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {   // O CONTROLLER PRECISA RECEBER O CAMPO 'ESTADO' E VERIFICAR A QUAL [Name] ELE PERTENCE NA BASE ENUM #########################################
+                    await ReprocessarImagemEmpresa(empresa);
                     empresa.CNPJ = Regex.Replace(empresa.CNPJ, "[^0-9]", "");
                     _context.Update(empresa);
                     await _context.SaveChangesAsync();
