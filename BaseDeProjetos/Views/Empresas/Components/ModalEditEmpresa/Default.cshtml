@@ -56,7 +56,6 @@
                     <div class="form-group">
                         <label asp-for="Logo" class="control-label"></label>
                         <input class="form-control" type="file" id="logoInput-@Model.Id" accept="image/*" onchange="previewBase64('logoInput-@Model.Id', 'img-preview-@Model.Id', 'logoBase64-@Model.Id')" />
-                        <input type="hidden" asp-for="Logo" id="logoBase64-@Model.Id"/>
                     </div>
                     <img id="img-preview-@Model.Id" width="300" style="margin-top:5px;">
                 </div>
@@ -67,6 +66,7 @@
             </div>
         </div>
     </div>
+                        <input type="hidden" asp-for="Logo" id="logoBase64-@Model.Id"/>
 
 </form>
 
