@@ -378,7 +378,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (id != empresa.Id)
             {
-                return NotFound();
+                throw new ArgumentException($"Id da empresa não está presente: {id} x {empresa.Id}");
             }
 
             if (ModelState.IsValid)
@@ -390,15 +390,15 @@ namespace BaseDeProjetos.Controllers
                     await _context.SaveChangesAsync();
                     CacheHelper.CleanupEmpresasCache(_cache);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException e)
                 {
                     if (!await EmpresaExists(empresa.Id))
                     {
-                        return NotFound();
+                        throw new ArgumentException($"Empresa já existe: {e}");
                     }
                     else
                     {
-                        throw;
+                        throw e;
                     }
                 }
                 return RedirectToAction(nameof(Index));
