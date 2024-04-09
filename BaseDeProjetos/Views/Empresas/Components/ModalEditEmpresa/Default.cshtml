@@ -5,6 +5,19 @@
     ViewData["Title"] = "Editar";
 }
 
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        let inputImagem = document.querySelector("#logoBase64-@(Model.Id)");
+        if (inputImagem) {
+            inputImagem.setAttribute("value", "@(Model.Logo)");
+        }
+        else {
+            console.log("Não deu bom");
+        }
+    });
+
+</script>
+
 <form asp-action="Edit" asp-route-id="@Model.Id">
     <input type="hidden" asp-for="Id" />
     <div class="modal fade" id="EditEmpresaModal-@Model.Id" aria-hidden="true"
@@ -67,7 +80,7 @@
         </div>
     </div>
     <!-- Isso pode quebrar caso a string b64 seja enorme, isso faz com que todo conteúdo HTML após essa tag não seja enviado ao DOM-->
-    <input type="hidden" name="Logo" id="logoBase64-@Model.Id" value="@Model.Logo"/>
+    <input type="hidden" name="Logo" id="logoBase64-@Model.Id" />
 </form>
 
 @section Scripts {
