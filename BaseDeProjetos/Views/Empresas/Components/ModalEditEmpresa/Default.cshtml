@@ -67,7 +67,7 @@
         </div>
     </div>
     <!-- Isso pode quebrar caso a string b64 seja enorme, isso faz com que todo conteúdo HTML após essa tag não seja enviado ao DOM-->
-    <input type="hidden" asp-for="Logo" id="logoBase64-@Model.Id" />
+    <input type="hidden" name="Logo" id="logoBase64-@Model.Id" value="@Model.Logo"/>
 </form>
 
 @section Scripts {
