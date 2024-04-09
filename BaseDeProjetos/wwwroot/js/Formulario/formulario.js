@@ -13,9 +13,12 @@ function CriarPergunta(tipo, pergunta, obrigatorio) {
 }
 
 function AdicionarPergunta(pergunta) {
+
     listaPerguntas.push(pergunta)
 }
 
 function SerializarPerguntas(perguntas) {
     Json.stringify(perguntas)
 }
+
+
