@@ -69,21 +69,23 @@
     </div>
     <!-- Isso pode quebrar caso a string b64 seja enorme, isso faz com que todo conteúdo HTML após essa tag não seja enviado ao DOM-->
     @{
-        string imagem;
-        if (!Model.Logo.StartsWith("http"))
+        string imagem = "";
+        if (!string.IsNullOrEmpty(Model.Logo))
         {
-            byte[] data = Convert.FromBase64String(Model.Logo);
-            imagem = Convert.ToBase64String(data);
-        }
-        else
-        {
-            try
+            if (!Model.Logo.StartsWith("http"))
             {
-                imagem = Model.Logo;
+                byte[] data = Convert.FromBase64String(Model.Logo);
+                imagem = Convert.ToBase64String(data);
             }
-            catch (Exception)
+            else
             {
-                imagem = "";
+                try
+                {
+                    imagem = Model.Logo;
+                }
+                catch (Exception)
+                {
+                }
             }
         }
     }
