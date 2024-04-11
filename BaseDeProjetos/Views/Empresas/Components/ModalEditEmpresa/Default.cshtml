@@ -1,19 +1,10 @@
 ﻿@using BaseDeProjetos.Models.Enums;
+@using System.Text
 @model BaseDeProjetos.Models.Empresa
 
 @{
     ViewData["Title"] = "Editar";
 }
-
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        let inputImagem = document.querySelector("#logoBase64-@(Model.Id)");
-        if (inputImagem) {
-            inputImagem.setAttribute("value", "@(Model.Logo)");
-        }
-    });
-
-</script>
 
 <form asp-action="Edit" asp-route-id="@Model.Id">
     <input type="hidden" asp-for="Id" />
@@ -77,7 +68,26 @@
         </div>
     </div>
     <!-- Isso pode quebrar caso a string b64 seja enorme, isso faz com que todo conteúdo HTML após essa tag não seja enviado ao DOM-->
-    <input type="hidden" name="Logo" id="logoBase64-@Model.Id" />
+    @{
+        string imagem;
+        if (!Model.Logo.StartsWith("http"))
+        {
+            byte[] data = Convert.FromBase64String(Model.Logo);
+            imagem = Convert.ToBase64String(data);
+        }
+        else
+        {
+            try
+            {
+                imagem = Model.Logo;
+            }
+            catch (Exception)
+            {
+                imagem = "";
+            }
+        }
+    }
+    <input type="hidden" name="Logo" value="@imagem" id="logoBase64-@Model.Id" />
 </form>
 
 @section Scripts {
