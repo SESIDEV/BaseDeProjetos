@@ -3,9 +3,12 @@ using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.DTOs;
 using BaseDeProjetos.Models.Enums;
+using BaseDeProjetos.Models.Helpers;
+using BaseDeProjetos.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -128,10 +131,20 @@ namespace BaseDeProjetos.Controllers
 
 
         // GET: Empresas
-        public async Task<IActionResult> Index(string searchString = "", int numeroPagina = 1, int tamanhoPagina = 30)
+        [Route("Empresas/Index/{aba?}")]
+        public async Task<IActionResult> Index(string searchString = "", string aba = "", int numeroPagina = 1, int tamanhoPagina = 30)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
+                ParametrosFunil parametrosFunil = new ParametrosFunil
+                {
+                    Aba = aba,
+                    SearchString = searchString,
+                    NumeroPagina = numeroPagina,
+                    TamanhoPagina = tamanhoPagina
+                };
+
+                SetarParametrosFunilSession(parametrosFunil);
                 ViewbagizarUsuario(_context, _cache);
 
                 ViewBag.searchString = searchString;
@@ -157,8 +170,8 @@ namespace BaseDeProjetos.Controllers
 
                 ViewBag.ProspeccoesAtivas = prospeccoes.Where(P => P.Status.All(S => S.Status != StatusProspeccao.NaoConvertida &&
                                                                                         S.Status != StatusProspeccao.Convertida &&
-                                                                                        S.Status != StatusProspeccao.Suspensa)
-                                                                        && P.Status.OrderBy(k => k.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
+                                                                                        S.Status != StatusProspeccao.Suspensa) &&
+                                                                                        P.Status.OrderBy(k => k.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
 
                 ViewBag.ProspeccoesPlanejadas = prospeccoes.Where(P => P.Status.All(S => S.Status == StatusProspeccao.Planejada)).ToList();
 
@@ -180,11 +193,56 @@ namespace BaseDeProjetos.Controllers
                     HttpContext.Session.SetString("_CurrentFilter", searchString);
                 }
 
+                if (numeroPagina > qtdPaginasTodo)
+                {
+                    var paginaVazia = new EmpresasViewModel
+                    {
+                        Empresas = new List<Empresa>(),
+                        Pager = pager
+                    };
+                    return View(paginaVazia);
+                }
+
                 return View(model);
             }
             else
             {
                 return View("Forbidden");
+            }
+        }
+
+        private void SetarParametrosFunilSession(ParametrosFunil parametrosFunil)
+        {
+            SetarAbaNaSession(parametrosFunil.Aba);
+            SetarSearchStringNaSession(parametrosFunil.SearchString);
+            SetarNumeroPaginaSession(parametrosFunil.NumeroPagina);
+            SetarTamanhoPaginaSession(parametrosFunil.TamanhoPagina);
+        }
+
+
+        private void SetarTamanhoPaginaSession(int tamanhoPagina)
+        {
+            HttpContext.Session.SetInt32("tamanhoPagina", tamanhoPagina);
+        }
+
+        private void SetarNumeroPaginaSession(int numeroPagina)
+        {
+            HttpContext.Session.SetInt32("numeroPagina", numeroPagina);
+        }
+
+        private void SetarSearchStringNaSession(string searchString)
+        {
+            if (searchString != null)
+            {
+                HttpContext.Session.SetString("searchString", searchString);
+            }
+        }
+
+        private void SetarAbaNaSession(string aba)
+        {
+            if (aba != null)
+            {
+                HttpContext.Session.SetString("aba", aba);
             }
         }
 
@@ -417,7 +475,14 @@ namespace BaseDeProjetos.Controllers
                         throw e;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Empresas",
+                    new
+                    {
+                        aba = HttpContext.Session.GetString("aba"),
+                        searchString = HttpContext.Session.GetString("searchString"),
+                        numeroPagina = HttpContext.Session.GetInt32("numeroPagina"),
+                        tamanhoPagina = HttpContext.Session.GetInt32("tamanhoPagina")
+                    });
             }
             else
             {
@@ -464,7 +529,15 @@ namespace BaseDeProjetos.Controllers
             _context.Empresa.Remove(empresa);
             await _context.SaveChangesAsync();
             CacheHelper.CleanupEmpresasCache(_cache);
-            return RedirectToAction(nameof(Index));
+            
+            return RedirectToAction("Index", "Empresas",
+                    new
+                    {
+                        aba = HttpContext.Session.GetString("aba"),
+                        searchString = HttpContext.Session.GetString("searchString"),
+                        numeroPagina = HttpContext.Session.GetInt32("numeroPagina"),
+                        tamanhoPagina = HttpContext.Session.GetInt32("tamanhoPagina")
+                    });
         }
 
         /// <summary>
