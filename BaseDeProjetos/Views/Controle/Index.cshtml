@@ -1,0 +1,94 @@
+﻿@model IEnumerable<BaseDeProjetos.Models.Controle>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<partial name="Header" view-data="@ViewData" />
+<div class="app-wrapper">
+    <div class="app-content pt-3 p-md-3 p-lg-4">
+        <div>
+            <div class="d-flex flex-row justify-content-between align-items-center">
+                <h2 class="app-page-title">Controle</h2>
+                <button class="btn app-btn-primary m-4" data-bs-toggle="modal" data-bs-target="#exampleModal">Scanear</button>
+                <a asp-action="Create" class="btn app-btn-secondary m-4">Incluir Novo Item</a>
+            </div>
+            <div class="tab-content">
+                <div class="app-card app-card-orders-table shadow-sm mb-5">
+                    <div class="app-card-body">
+                        <div class="table-responsive">
+                            <table class="table mb-0 text-center">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Codigo)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Item)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Projeto)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Anotações)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Data)
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            @foreach (var item in Model) {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Codigo)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Item)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Projeto)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Anotações)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Data)
+                                        </td>
+                                        <td>
+                                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                        </td>
+                                    </tr>
+                            }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form asp-action="Detalhes">
+            <input id="campoCodigo" name="codigo" autocomplete="off">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    document.getElementById("exampleModal").addEventListener("shown.bs.modal", function() {
+        document.getElementById("campoCodigo").focus();
+    });
+</script>

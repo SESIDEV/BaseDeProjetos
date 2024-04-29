@@ -1,0 +1,63 @@
+﻿@model BaseDeProjetos.Models.Controle
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Controle</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form id="formulario" asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Codigo" class="control-label"></label>
+                <input asp-for="Codigo" class="form-control" />
+                <span asp-validation-for="Codigo" class="text-danger" tabindex="1"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Item" class="control-label"></label>
+                <input asp-for="Item" class="form-control" />
+                <span asp-validation-for="Item" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Responsável</label>
+                <select asp-for="Usuario.Id" class="form-control" asp-items='@ViewData["Usuarios"] as SelectList'></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Projeto" class="control-label"></label>
+                <input asp-for="Projeto" class="form-control" />
+                <span asp-validation-for="Projeto" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Anotações" class="control-label"></label>
+                <input asp-for="Anotações" class="form-control" />
+                <span asp-validation-for="Anotações" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var form = document.getElementById("formulario");
+    form.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault(); // Evita o envio do formulário
+        }
+    });
+});
+</script>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
