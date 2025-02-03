@@ -20,7 +20,7 @@ namespace BaseDeProjetos.ViewComponents.ProjetoViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync(string id)
         {
-            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext, _cache);
+            Usuario usuario = FunilHelpers.ObterUsuarioAtivo(HttpContext);
             ViewData["NivelUsuario"] = usuario.Nivel;
             var model = await _context.Projeto.FindAsync(id);
             return View(model);
