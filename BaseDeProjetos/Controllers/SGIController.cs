@@ -12,7 +12,7 @@ namespace BaseDeProjetos.Controllers
 
         public void ViewbagizarUsuario(ApplicationDbContext _context, DbCache cache)
         {
-            UsuarioAtivo = FunilHelpers.ObterUsuarioAtivo(HttpContext);
+            UsuarioAtivo = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext);
 
             if (UsuarioAtivo != null)
             {

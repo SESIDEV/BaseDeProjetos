@@ -399,45 +399,19 @@ namespace BaseDeProjetos.Helpers
             prospeccao.Agregadas = "";
         }
 
-        public static Usuario ObterUsuarioAtivo(HttpContext httpContext)
+        public static Usuario ObterUsuarioAtivo(ApplicationDbContext _context, HttpContext httpContext)
         {
             if (httpContext == null)
             {
                 throw new ArgumentNullException(nameof(httpContext));
             }
             
-            List<Usuario> usuarios;
-            
-            if (!File.Exists(FilePath))
-            {
-                usuarios = new List<Usuario>();
-                AtualizarListaUsuarios(usuarios);
-            }
-            else
-            {
-                string fileContent = File.ReadAllText(FilePath);
-                var dataUsuarios = JsonConvert.DeserializeObject<DataUsuarios>(fileContent) ?? new DataUsuarios { Data = DateTime.UtcNow, Usuarios = new List<Usuario>() };
-                
-                if (DateTime.UtcNow - dataUsuarios.Data > AtualizacaoSemanal)
-                {
-                    AtualizarListaUsuarios(dataUsuarios.Usuarios);
-                }
-                
-                usuarios = dataUsuarios.Usuarios;
-            }
-            
-            string userName = httpContext.User.Identity.Name;
-            Usuario usuarioAtivo = usuarios.FirstOrDefault(u => u.UserName == userName);
+            Usuario usuarioAtivo = _context.Users.Select(u => new Usuario { Id = u.Id, UserName = u.UserName, Casa = u.Casa, Nivel = u.Nivel }).
+                                                    FirstOrDefault(usuario => usuario.UserName == httpContext.User.Identity.Name);
 
             return usuarioAtivo;
         }
 
-        private static void AtualizarListaUsuarios(List<Usuario> usuarios)
-        {
-            var dataUsuarios = new DataUsuarios { Data = DateTime.UtcNow, Usuarios = usuarios };
-            string json = JsonConvert.SerializeObject(dataUsuarios, Formatting.Indented);
-            File.WriteAllText(FilePath, json);
-        }
         /// <summary>
         /// Periodiza as prospecções de acordo com o ano no parâmetro
         /// </summary>
