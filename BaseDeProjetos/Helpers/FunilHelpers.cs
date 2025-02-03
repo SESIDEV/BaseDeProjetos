@@ -17,7 +17,7 @@ namespace BaseDeProjetos.Helpers
     public static class FunilHelpers
     {
         private static readonly TimeSpan AtualizacaoSemanal = TimeSpan.FromDays(7);
-        private static readonly string FilePath = "./helpers/file/usuarios.json";
+        private static readonly string FilePath = ".usuarios.json";
     
         public static HtmlString VerificarTemperatura(int qtdDias)
         {
