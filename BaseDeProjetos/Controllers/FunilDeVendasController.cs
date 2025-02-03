@@ -4,6 +4,7 @@ using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.Enums;
 using BaseDeProjetos.Models.Helpers;
 using BaseDeProjetos.Models.ViewModels;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -175,7 +176,7 @@ namespace BaseDeProjetos.Controllers
             await CacheHelper.CleanupProspeccoesCache(_cache);
             return RedirectToAction(nameof(Index), 
                 new { 
-                    casa = UsuarioAtivo.Casa,
+                    casa = prospeccao.Casa,
                     aba = HttpContext.Session.GetString("aba"),
                     searchString = HttpContext.Session.GetString("searchString"),
                     tamanhoPagina = HttpContext.Session.GetInt32("tamanhoPagina"),
@@ -269,7 +270,7 @@ namespace BaseDeProjetos.Controllers
 
             return RedirectToAction("Index", "FunilDeVendas", 
                 new { 
-                    casa = UsuarioAtivo.Casa,
+                    casa = followup.Origem.Casa,
                     aba = HttpContext.Session.GetString("aba"),
                     searchString = HttpContext.Session.GetString("searchString"),
                     numeroPagina = HttpContext.Session.GetInt32("numeroPagina"),
@@ -551,6 +552,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
+
                 ParametrosFunil parametrosFunil = new ParametrosFunil
                 {
                     Aba = aba,
@@ -563,20 +565,13 @@ namespace BaseDeProjetos.Controllers
                 SetarParametrosFunilSession(parametrosFunil);
 
                 ViewbagizarUsuario(_context, _cache);
-
-                var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).ToListAsync());
+                if (string.IsNullOrEmpty(casa))
+                    casa = UsuarioAtivo.Casa.ToString();
 
                 ViewBag.searchString = searchString;
                 ViewBag.TamanhoPagina = tamanhoPagina;
-
-                if (string.IsNullOrEmpty(casa))
-                {
-                    casa = UsuarioAtivo.Casa.ToString();
-                }
-
-                prospeccoes = await ObterProspeccoesFunilFiltradas(casa, ano, UsuarioAtivo);
-
-                await InserirDadosEmpresasUsuariosViewData();
+                
+                List<Prospeccao> prospeccoes = await ObterProspeccoesFunilFiltradas(casa, ano, UsuarioAtivo);
 
                 int qtdProspeccoes = prospeccoes.Count();
                 int qtdPaginasTodo = (int)Math.Ceiling((double)qtdProspeccoes / tamanhoPagina);
@@ -593,40 +588,22 @@ namespace BaseDeProjetos.Controllers
                     return View(paginaVazia);
                 }
 
+                await InserirDadosEmpresasUsuariosViewData();
                 List<Prospeccao> prospeccoesPagina = ObterProspeccoesPorPagina(prospeccoes, numeroPagina, tamanhoPagina);
 
                 if (string.IsNullOrEmpty(aba))
-                {
                     aba = "ativas";
-                    /* JAN/25 - Hotfix para otimizar tempo de resposta. Refatorar depois
-                    model.ProspeccoesGrafico = prospeccoes;
-
-                    model.ProspeccoesAvancadas = prospeccoes.Where(
-                        p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)).Where(
-                            p => p.Status.Any(k => k.Status > StatusProspeccao.ComProposta)).Where(
-                                p => (p.Status.First().Data - p.Status.FirstOrDefault(
-                                    s => s.Status == StatusProspeccao.ComProposta).Data) > TimeSpan.Zero).ToList(); // filtrar lista para obter datas positivas (maior que zero)
-
-                    return View(model);
-                    */
-                }
-
 
                 var model = new ProspeccoesViewModel
                 {
                     Prospeccoes = prospeccoesPagina,
                     Pager = pager,
-                    ProspeccoesAtivas = prospeccoes.Where(
-                        p => p.Status.OrderBy(k => k.Data).All(
-                            pa => pa.Status == StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto || pa.Status == StatusProspeccao.ComProposta)).ToList(),
-                    ProspeccoesComProposta = prospeccoes.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.ComProposta).ToList().Count(),
-                    ProspeccoesConcluidas = prospeccoes.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Convertida).ToList().Count(),
-                    ProspeccoesPlanejadas = prospeccoes.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Planejada).ToList().Count(),
-                    ProspeccoesNaoPlanejadas = prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).Last().Status != StatusProspeccao.Planejada).ToList()
                 };
 
+                /*
                 var prospeccoesParaFiltragemAgregadas = await _cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).ToListAsync());
                 model.ProspeccoesAgregadas = prospeccoesParaFiltragemAgregadas.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
+                */
                 return View(model);
             }
             else
@@ -1165,7 +1142,7 @@ namespace BaseDeProjetos.Controllers
                                             "FunilDeVendas",
                                             new
                                             {
-                                                casa = UsuarioAtivo.Casa,
+                                                casa = prospeccao.Casa,
                                                 aba = parametrosFunil.Aba,
                                                 tamanhoPagina = parametrosFunil.TamanhoPagina,
                                                 sortOrder = parametrosFunil.SortOrder,
