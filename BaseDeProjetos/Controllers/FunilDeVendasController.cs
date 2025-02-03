@@ -552,6 +552,8 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
+                if (string.IsNullOrEmpty(aba))
+                    aba = "ativas";
 
                 ParametrosFunil parametrosFunil = new ParametrosFunil
                 {
@@ -591,8 +593,6 @@ namespace BaseDeProjetos.Controllers
                 await InserirDadosEmpresasUsuariosViewData();
                 List<Prospeccao> prospeccoesPagina = ObterProspeccoesPorPagina(prospeccoes, numeroPagina, tamanhoPagina);
 
-                if (string.IsNullOrEmpty(aba))
-                    aba = "ativas";
 
                 var model = new ProspeccoesViewModel
                 {
