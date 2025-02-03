@@ -49,6 +49,15 @@ namespace BaseDeProjetos.Controllers
                 bool enviou = MailHelper.NotificarProspecção(followup, _mailer);
                 await _context.SaveChangesAsync();
                 await CacheHelper.CleanupProspeccoesCache(_cache);
+
+                return RedirectToAction(nameof(Index), new { 
+                    casa = prospeccao_origem.Casa,
+                    searchString = HttpContext.Session.GetString("searchString"),
+                    numeroPagina = HttpContext.Session.GetInt32("numeroPagina"),
+                    tamanhoPagina = HttpContext.Session.GetInt32("tamanhoPagina"),
+                    sortOrder = HttpContext.Session.GetString("sortOrder")
+                });
+
             }
 
             return RedirectToAction(nameof(Index), new { 
@@ -101,9 +110,10 @@ namespace BaseDeProjetos.Controllers
                 await _context.AddAsync(prospeccao);
                 await _context.SaveChangesAsync();
                 await CacheHelper.CleanupProspeccoesCache(_cache);
+
                 return RedirectToAction(nameof(Index), 
                     new { 
-                        casa = UsuarioAtivo.Casa, 
+                        casa = prospeccao.Casa, 
                         aba = HttpContext.Session.GetString("aba"), 
                         searchString = HttpContext.Session.GetString("searchString"),
                         numeroPagina = HttpContext.Session.GetInt32("numeroPagina"),
@@ -208,7 +218,7 @@ namespace BaseDeProjetos.Controllers
                     }
                 }
                 return RedirectToAction("Index", "FunilDeVendas", new { 
-                    casa = UsuarioAtivo.Casa, 
+                    casa = prospeccao.Casa, 
                     aba = HttpContext.Session.GetString("aba"),
                     searchString = HttpContext.Session.GetString("searchString"),
                     numeroPagina = HttpContext.Session.GetInt32("numeroPagina"),
@@ -585,6 +595,23 @@ namespace BaseDeProjetos.Controllers
 
                 List<Prospeccao> prospeccoesPagina = ObterProspeccoesPorPagina(prospeccoes, numeroPagina, tamanhoPagina);
 
+                if (string.IsNullOrEmpty(aba))
+                {
+                    aba = "ativas";
+                    /* JAN/25 - Hotfix para otimizar tempo de resposta. Refatorar depois
+                    model.ProspeccoesGrafico = prospeccoes;
+
+                    model.ProspeccoesAvancadas = prospeccoes.Where(
+                        p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)).Where(
+                            p => p.Status.Any(k => k.Status > StatusProspeccao.ComProposta)).Where(
+                                p => (p.Status.First().Data - p.Status.FirstOrDefault(
+                                    s => s.Status == StatusProspeccao.ComProposta).Data) > TimeSpan.Zero).ToList(); // filtrar lista para obter datas positivas (maior que zero)
+
+                    return View(model);
+                    */
+                }
+
+
                 var model = new ProspeccoesViewModel
                 {
                     Prospeccoes = prospeccoesPagina,
@@ -598,24 +625,9 @@ namespace BaseDeProjetos.Controllers
                     ProspeccoesNaoPlanejadas = prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).Last().Status != StatusProspeccao.Planejada).ToList()
                 };
 
-                if (!string.IsNullOrEmpty(aba))
-                {
-                    var prospeccoesParaFiltragemAgregadas = await _cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).ToListAsync());
-                    model.ProspeccoesAgregadas = prospeccoesParaFiltragemAgregadas.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
-                    return View(model);
-                }
-                else
-                {
-                    model.ProspeccoesGrafico = prospeccoes;
-
-                    model.ProspeccoesAvancadas = prospeccoes.Where(
-                        p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)).Where(
-                            p => p.Status.Any(k => k.Status > StatusProspeccao.ComProposta)).Where(
-                                p => (p.Status.First().Data - p.Status.FirstOrDefault(
-                                    s => s.Status == StatusProspeccao.ComProposta).Data) > TimeSpan.Zero).ToList(); // filtrar lista para obter datas positivas (maior que zero)
-
-                    return View(model);
-                }
+                var prospeccoesParaFiltragemAgregadas = await _cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).ToListAsync());
+                model.ProspeccoesAgregadas = prospeccoesParaFiltragemAgregadas.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
+                return View(model);
             }
             else
             {

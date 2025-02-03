@@ -55,6 +55,7 @@ namespace BaseDeProjetos.Controllers
             ViewbagizarUsuario(_context, _cache);
 
             Dictionary<string, object> dadosHome = new Dictionary<string, object>();
+            /*
             Dictionary<string, decimal> dadosFinanceiros = new Dictionary<string, decimal>();
             Dictionary<string, int> dadosOperacionais = new Dictionary<string, int>();
             Dictionary<string, DateTime> data = new Dictionary<string, DateTime>();
@@ -154,6 +155,7 @@ namespace BaseDeProjetos.Controllers
             dadosHome["dadosGrafico"] = dadosGrafico;
             dadosHome["dadosProspeccoes"] = dadosProspeccoes;
             dadosHome["data"] = data;
+            */
 
             return Ok(JsonConvert.SerializeObject(dadosHome));
         }

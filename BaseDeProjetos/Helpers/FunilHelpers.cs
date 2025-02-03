@@ -6,14 +6,19 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace BaseDeProjetos.Helpers
 {
     public static class FunilHelpers
     {
+        private static readonly TimeSpan AtualizacaoSemanal = TimeSpan.FromDays(7);
+        private static readonly string FilePath = "./helpers/file/usuarios.json";
+    
         public static HtmlString VerificarTemperatura(int qtdDias)
         {
             if (qtdDias < 7)
@@ -394,34 +399,45 @@ namespace BaseDeProjetos.Helpers
             prospeccao.Agregadas = "";
         }
 
-        public static Usuario ObterUsuarioAtivo(ApplicationDbContext _context, HttpContext HttpContext, DbCache cache)
+        public static Usuario ObterUsuarioAtivo(HttpContext httpContext)
         {
-            Usuario usuarioAtivo;
-
-            if (HttpContext == null)
+            if (httpContext == null)
             {
-                throw new ArgumentNullException(nameof(HttpContext));
+                throw new ArgumentNullException(nameof(httpContext));
             }
-
-            if (_context == null)
+            
+            List<Usuario> usuarios;
+            
+            if (!File.Exists(FilePath))
             {
-                throw new ArgumentNullException(nameof(_context));
-            }
-
-            string cacheKey = $"Usuarios:UsuarioAtivo:FunilHelper:{HttpContext.User.Identity.Name}";
-
-            if (cache != null)
-            {
-                usuarioAtivo = cache.GetCached(cacheKey, () => _context.Users.Select(u => new Usuario { Id = u.Id, UserName = u.UserName, Casa = u.Casa, Nivel = u.Nivel }).FirstOrDefault(usuario => usuario.UserName == HttpContext.User.Identity.Name));
+                usuarios = new List<Usuario>();
+                AtualizarListaUsuarios(usuarios);
             }
             else
             {
-                usuarioAtivo = _context.Users.Select(u => new Usuario { Id = u.Id, UserName = u.UserName, Casa = u.Casa, Nivel = u.Nivel }).FirstOrDefault(usuario => usuario.UserName == HttpContext.User.Identity.Name);
+                string fileContent = File.ReadAllText(FilePath);
+                var dataUsuarios = JsonConvert.DeserializeObject<DataUsuarios>(fileContent) ?? new DataUsuarios { Data = DateTime.UtcNow, Usuarios = new List<Usuario>() };
+                
+                if (DateTime.UtcNow - dataUsuarios.Data > AtualizacaoSemanal)
+                {
+                    AtualizarListaUsuarios(dataUsuarios.Usuarios);
+                }
+                
+                usuarios = dataUsuarios.Usuarios;
             }
+            
+            string userName = httpContext.User.Identity.Name;
+            Usuario usuarioAtivo = usuarios.FirstOrDefault(u => u.UserName == userName);
 
             return usuarioAtivo;
         }
 
+        private static void AtualizarListaUsuarios(List<Usuario> usuarios)
+        {
+            var dataUsuarios = new DataUsuarios { Data = DateTime.UtcNow, Usuarios = usuarios };
+            string json = JsonConvert.SerializeObject(dataUsuarios, Formatting.Indented);
+            File.WriteAllText(FilePath, json);
+        }
         /// <summary>
         /// Periodiza as prospecções de acordo com o ano no parâmetro
         /// </summary>
@@ -645,5 +661,11 @@ namespace BaseDeProjetos.Helpers
                     return false;
             }
         }
+    }
+    
+    public class DataUsuarios
+    {
+        public DateTime Data { get; set; }
+        public List<Usuario> Usuarios { get; set; }
     }
 }

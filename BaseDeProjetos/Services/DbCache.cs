@@ -80,7 +80,7 @@ public class DbCache
     }
 
     /// <summary>
-    /// Obtem/Registra os dados no cache. Os dados são invalidados após 1h de forma automática caso não especificado
+    /// Obtem/Registra os dados no cache. Os dados são invalidados após 9h de forma automática caso não especificado
     /// </summary>
     /// <param name="cacheKey">Chave dos dados a serem obtidos ou registrados para cache</param>
     /// <param name="retrieveDataFunc">Método de obtenção dos dados</param>
@@ -96,7 +96,7 @@ public class DbCache
             {
                 _cache.Set(cacheKey, data, new MemoryCacheEntryOptions
                 {
-                    AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromHours(1)
+                    AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromHours(9)
                 });
                 await AddKeyToListAsync(cacheKey);
             }
