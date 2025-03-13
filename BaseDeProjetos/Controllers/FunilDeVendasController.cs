@@ -1058,7 +1058,8 @@ namespace BaseDeProjetos.Controllers
             prospeccoes = FunilHelpers.OrdenarProspecções(sortOrder, prospeccoes); // SORT ORDEM ALFABETICA
             prospeccoes = FunilHelpers.FiltrarProspecções(searchString, prospeccoes); // APENAS NA BUSCA
 
-            FunilHelpers.SetarFiltrosNaView(HttpContext, ViewData, sortOrder, searchString);
+            if (!String.IsNullOrEmpty(searchString))
+                FunilHelpers.SetarFiltrosNaView(HttpContext, ViewData, sortOrder, searchString);
 
             if (!string.IsNullOrEmpty(aba))
             {
