@@ -550,45 +550,22 @@ namespace BaseDeProjetos.Controllers
                     SortOrder = sortOrder
                 };
 
-                SetarParametrosFunilSession(parametrosFunil);
+                if (string.IsNullOrEmpty(casa))
+                    {
+                        casa = UsuarioAtivo.Casa.ToString();
+                    }
 
                 ViewbagizarUsuario(_context, _cache);
-
-                var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).ToListAsync());
-
+                SetarParametrosFunilSession(parametrosFunil);
+                await InserirDadosEmpresasUsuariosViewData();
                 ViewBag.searchString = searchString;
                 ViewBag.TamanhoPagina = tamanhoPagina;
 
-                if (string.IsNullOrEmpty(casa))
-                {
-                    casa = UsuarioAtivo.Casa.ToString();
-                }
-
-                prospeccoes = await ObterProspeccoesFunilFiltradas(casa, ano, UsuarioAtivo);
-
-                await InserirDadosEmpresasUsuariosViewData();
-
-                int qtdProspeccoes = prospeccoes.Count();
-                int qtdPaginasTodo = (int)Math.Ceiling((double)qtdProspeccoes / tamanhoPagina);
-
-                var pager = new Pager(qtdProspeccoes, numeroPagina, tamanhoPagina, 50); // 50 paginas max
-
-                if (numeroPagina > qtdPaginasTodo)
-                {
-                    var paginaVazia = new ProspeccoesViewModel
-                    {
-                        Prospeccoes = new List<Prospeccao>(),
-                        Pager = pager
-                    };
-                    return View(paginaVazia);
-                }
-
-                List<Prospeccao> prospeccoesPagina = ObterProspeccoesPorPagina(prospeccoes, numeroPagina, tamanhoPagina);
+                var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).ToListAsync());
 
                 var model = new ProspeccoesViewModel
                 {
-                    Prospeccoes = prospeccoesPagina,
-                    Pager = pager,
+                    Prospeccoes = prospeccoes,
                     ProspeccoesAtivas = prospeccoes.Where(
                         p => p.Status.OrderBy(k => k.Data).All(
                             pa => pa.Status == StatusProspeccao.ContatoInicial || pa.Status == StatusProspeccao.Discussao_EsbocoProjeto || pa.Status == StatusProspeccao.ComProposta)).ToList(),
@@ -598,22 +575,45 @@ namespace BaseDeProjetos.Controllers
                     ProspeccoesNaoPlanejadas = prospeccoes.Where(p => p.Status.OrderBy(f => f.Data).Last().Status != StatusProspeccao.Planejada).ToList()
                 };
 
-                if (!string.IsNullOrEmpty(aba))
-                {
-                    var prospeccoesParaFiltragemAgregadas = await _cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).ToListAsync());
-                    model.ProspeccoesAgregadas = prospeccoesParaFiltragemAgregadas.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
-                    return View(model);
-                }
-                else
+                if (string.IsNullOrEmpty(aba))
                 {
                     model.ProspeccoesGrafico = prospeccoes;
-
                     model.ProspeccoesAvancadas = prospeccoes.Where(
                         p => p.Status.Any(k => k.Status == StatusProspeccao.ComProposta)).Where(
                             p => p.Status.Any(k => k.Status > StatusProspeccao.ComProposta)).Where(
                                 p => (p.Status.First().Data - p.Status.FirstOrDefault(
                                     s => s.Status == StatusProspeccao.ComProposta).Data) > TimeSpan.Zero).ToList(); // filtrar lista para obter datas positivas (maior que zero)
 
+                    return View(model);
+                }
+                else
+                {
+                    
+                    prospeccoes = await ObterProspeccoesFunilFiltradas(casa, ano, UsuarioAtivo);
+
+                    int qtdProspeccoes = prospeccoes.Count();
+                    int qtdPaginasTodo = (int)Math.Ceiling((double)qtdProspeccoes / tamanhoPagina);
+
+                    var pager = new Pager(qtdProspeccoes, numeroPagina, tamanhoPagina, 50); // 50 paginas max
+
+
+                    if (numeroPagina > qtdPaginasTodo)
+                    {
+                        var paginaVazia = new ProspeccoesViewModel
+                        {
+                            Prospeccoes = new List<Prospeccao>(),
+                            Pager = pager
+                        };
+                        return View(paginaVazia);
+                    }
+
+                    List<Prospeccao> prospeccoesPagina = ObterProspeccoesPorPagina(prospeccoes, numeroPagina, tamanhoPagina);
+                    model.Prospeccoes = prospeccoesPagina;
+                    model.Pager = pager;
+
+
+                    var prospeccoesParaFiltragemAgregadas = await _cache.GetCachedAsync("Prospeccoes:Funil", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).ToListAsync());
+                    model.ProspeccoesAgregadas = prospeccoesParaFiltragemAgregadas.Where(p => p.Status.OrderBy(k => k.Data).Last().Status == StatusProspeccao.Agregada).ToList();
                     return View(model);
                 }
             }
@@ -728,7 +728,9 @@ namespace BaseDeProjetos.Controllers
                     // Converter e depois pegar o UserName
                     ["Membros"] = string.Join(" ", p.TratarMembrosEquipeString(_context).Select(u => u.UserName).ToList()),
                     ["Status"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Status.GetDisplayName(),
-                    ["Data"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data.ToString("MM/yyyy"),
+                    ["Data_inicio"] = p.Status.OrderBy(k => k.Data).FirstOrDefault().Data.ToString("dd/MM/yyyy"),
+                    ["Data_fim"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data.ToString("dd/MM/yyyy"),
+                    ["qtde_followups"] = p.Status.Count(),
                     ["Empresa"] = p.Empresa.Nome,
                     ["CNPJ"] = p.Empresa.CNPJ,
                     ["Segmento"] = p.Empresa.Segmento.GetDisplayName(),
