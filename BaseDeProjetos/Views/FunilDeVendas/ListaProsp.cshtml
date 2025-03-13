@@ -10,7 +10,7 @@
     var dadosDaRota = ViewContext.RouteData;
     string aba = dadosDaRota.Values["aba"] as string;
     string casa = dadosDaRota.Values["casa"] as string;
-    aba = aba.ToLowerInvariant();
+    aba = String.IsNullOrEmpty(aba) ? "ativas": aba;
     var usuarios = ViewData["Usuarios"] as List<UsuariosFunilDTO>;
 }
 <style>
@@ -57,20 +57,9 @@
                             <tr id="table-row-@prospeccao.Id">
                                 <td class="cell">
                                     <div class="d-flex gap-2 flex-column align-items-center">
-                                        <div>
-                                            @*ICONES*@
-                                            @if (prospeccao.Empresa.Industrial == false)
-                                            {
-                                                <span id="tip_ind" class="translate-top-left badge rounded-circle bg-danger" data-tippy-content="<center>Esta empresa não possui<br>CNAE Industrial</center>">!</span>
-                                            }
-                                            @if (prospeccao.Ancora == true)
-                                            {
-                                                <span id="tip_agg" class="translate-top-right badge rounded-pill bg-warning" data-tippy-content='@FunilHelpers.MostrarAgregadas(Model.ProspeccoesAgregadas, prospeccao.Agregadas)'>+@prospeccao.Agregadas.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Length</span>
-                                            }
-                                        </div>
-                                        <div>
+                                       <!--div
                                             @*LOGO*@
-                                            @if (prospeccao.Empresa.Logo != null)
+                                            @if (false)//(prospeccao.Empresa.Logo != null)
                                             {
                                                 @if (!prospeccao.Empresa.Logo.Contains("data:image"))
                                                 {
@@ -92,11 +81,23 @@
                                             {
                                                 <nobr id="logo_alt">Sem Logo</nobr>
                                             }
-                                        </div>
-                                        <div style="text-align:center;width:90px">
+                                        -->
+                                        <div style="text-align:center;width:90px;text-transform:capitalize">
                                             @*NOME EMPRESA*@
-                                            @prospeccao.Empresa.Nome @*FAVOR NAO EDITAR*@
+                                           <strong> @prospeccao.Empresa.Nome.ToLower() @*FAVOR NAO EDITAR*@ </strong>
                                         </div>
+                                         <div>
+                                            @*ICONES*@
+                                            @if (prospeccao.Empresa.Industrial == false)
+                                            {
+                                                <span id="tip_ind" class="translate-top-left badge rounded-circle bg-danger" data-tippy-content="<center>Esta empresa não possui<br>CNAE Industrial</center>">!</span>
+                                            }
+                                            @if (prospeccao.Ancora == true)
+                                            {
+                                                <span id="tip_agg" class="translate-top-right badge rounded-pill bg-warning" data-tippy-content='@FunilHelpers.MostrarAgregadas(Model.ProspeccoesAgregadas, prospeccao.Agregadas)'>+@prospeccao.Agregadas.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Length</span>
+                                            }
+                                        </div>
+
                                     </div>
                                 </td>
                                 <td class="cell">

@@ -6,6 +6,18 @@ using System.Threading.Tasks;
 
 public class DbCache
 {
+    // Observações em relaçao a esse cache:
+    /*
+    1. Esse cache não é tão robusto e se utiliza de um HashSet para armazenar as chaves dos dados armazenados.
+    2. A invalidação dessas chaves é crucial para evitar estado "stale" na aplicação, caso isso não seja realizado os dados visíveis estarão desatualizados para o usuário.
+    
+    3. Esse cache interfere com o lazyloading do EntityFramework nesta versão do .NET Core MVC, ou seja, ao puxar certos dados a aplicação necessitará de um Include.
+    No caso, da configuração específica desse projeto, ao remover esse cache o lazyloading funcionou corretamente sem a necessidade de .Include().IncludeFor() etc etc.
+
+    4. O cache é feito de forma assíncrona e síncrona, sendo que a forma assíncrona é mais recomendada para evitar bloqueios de threads.
+    Porém em alguns casos pode ser necessário utilizar a forma síncrona.    
+    */
+
     private readonly IMemoryCache _cache;
     private const string CacheKeyListKey = "CacheKeyList";
 
@@ -68,7 +80,7 @@ public class DbCache
     }
 
     /// <summary>
-    /// Obtem/Registra os dados no cache. Os dados são invalidados após 1h de forma automática caso não especificado
+    /// Obtem/Registra os dados no cache. Os dados são invalidados após 9h de forma automática caso não especificado
     /// </summary>
     /// <param name="cacheKey">Chave dos dados a serem obtidos ou registrados para cache</param>
     /// <param name="retrieveDataFunc">Método de obtenção dos dados</param>
@@ -84,7 +96,7 @@ public class DbCache
             {
                 _cache.Set(cacheKey, data, new MemoryCacheEntryOptions
                 {
-                    AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromHours(1)
+                    AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromHours(9)
                 });
                 await AddKeyToListAsync(cacheKey);
             }

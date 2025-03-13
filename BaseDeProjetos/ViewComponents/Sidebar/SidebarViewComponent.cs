@@ -21,7 +21,7 @@ namespace BaseDeProjetos.ViewComponents.Sidebar
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context, HttpContext, _cache);
+                Usuario usuario = FunilHelpers.ObterUsuarioAtivo(_context,HttpContext);
 
                 ViewBag.usuarioCasa = usuario.Casa;
                 ViewBag.usuarioNivel = usuario.Nivel;

@@ -33,3 +33,5 @@ O ambiente de produção está automaticamente configurado graças ao GitHub Act
 
 - Crie branches sempre que estiver implementando grandes mudanças
 - Não envie commits direto pro `master` exceto em caso de situação emergencial ou diante permissão
+- A pasta Docs dentro de BaseDeProjetos possui alguma documentação do projeto mas ela está limitada a poucos módulos.
+- A pasta Docs fora de BaseDeProjetos possui um arquivo .TEX criado pelo hhenriques1999 que contém a resolução de alguns problemas encontrados no desenvolvimento do projeto. Esse arquivo também está como formato PDF para fácil consulta.

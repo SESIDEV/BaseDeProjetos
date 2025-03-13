@@ -20,7 +20,7 @@
 
     if (aba == null)
     {
-        aba = "";
+        aba = "ativas";
     }
 
     List<Instituto> institutos = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto))).Where(i => i != Instituto.Super).ToList();
@@ -145,7 +145,7 @@
 
             @if (Model.Prospeccoes.Count() != 0)
             {
-                abasFunil.Add(new AbaFunil("Dashboard", string.IsNullOrEmpty(aba)));
+                // abasFunil.Add(new AbaFunil("Dashboard", string.IsNullOrEmpty(aba)));
                 abasFunil.Add(new AbaFunil("Ativas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "ativas" : false));
                 abasFunil.Add(new AbaFunil("Com Proposta", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "comproposta" : false));
                 abasFunil.Add(new AbaFunil("Concluidas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "concluidas" : false));
