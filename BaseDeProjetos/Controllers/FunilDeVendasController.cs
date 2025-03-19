@@ -576,7 +576,7 @@ namespace BaseDeProjetos.Controllers
                 ViewBag.searchString = searchString;
                 ViewBag.TamanhoPagina = tamanhoPagina;
                 
-                List<Prospeccao> prospeccoes = await ObterProspeccoesFunilFiltradas(casa, ano, UsuarioAtivo);
+                List<Prospeccao> prospeccoes = await ObterProspeccoesFunilFiltradas(casa, ano, UsuarioAtivo, aba, sortOrder, searchString);
 
                 int qtdProspeccoes = prospeccoes.Count();
                 int qtdPaginasTodo = (int)Math.Ceiling((double)qtdProspeccoes / tamanhoPagina);
@@ -1041,11 +1041,8 @@ namespace BaseDeProjetos.Controllers
         /// <param name="ano">Ano das prospecções</param>
         /// <param name="usuario">Usuário das prospecções</param>
         /// <returns></returns>
-        private async Task<List<Prospeccao>> ObterProspeccoesFunilFiltradas(string casa, string ano, Usuario usuario)
+        private async Task<List<Prospeccao>> ObterProspeccoesFunilFiltradas(string casa, string ano, Usuario usuario, string aba, string sortOrder, string searchString)
         {
-            string searchString = HttpContext.Session.GetString("searchString");
-            string aba = HttpContext.Session.GetString("aba");
-            string sortOrder = HttpContext.Session.GetString("sortOrder");
             int? tamanhoPagina = HttpContext.Session.GetInt32("tamanhoPagina");
 
             List<Prospeccao> prospeccoes = await FunilHelpers.DefinirCasaParaVisualizar(casa, usuario, _context, HttpContext, _cache, ViewData);
