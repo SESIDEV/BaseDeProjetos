@@ -84,7 +84,9 @@
                                         -->
                                         <div style="text-align:center;width:90px;text-transform:capitalize">
                                             @*NOME EMPRESA*@
-                                           <strong> @prospeccao.Empresa.Nome.ToLower() @*FAVOR NAO EDITAR*@ </strong>
+                                        <strong>
+                                                @(prospeccao?.Empresa?.Nome?.ToLower() ?? "sem empresa")
+                                        </strong>
                                         </div>
                                          <div>
                                             @*ICONES*@

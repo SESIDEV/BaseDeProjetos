@@ -91,7 +91,7 @@
                                 <div class="mb-2">
                                     <label asp-for="EmpresaId" class="col-form-label" style="font-weight: 600">Empresa</label>
                                     <select asp-for="EmpresaId" class="form-control"
-                                            asp-items='@(ViewData["Empresas"] as SelectList).OrderBy(p => p.Text)'>
+                                            asp-items='@(ViewData["Empresas"] != null ? (ViewData["Empresas"] as SelectList).OrderBy(p => p.Text) : Enumerable.Empty<SelectListItem>())'>
                                         <option value="-1">Selecione a empresa</option>
                                     </select>
                                     <span asp-validation-for="EmpresaId" class="text-danger"></span>

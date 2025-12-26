@@ -210,6 +210,138 @@ namespace BaseDeProjetos.Helpers
             return prospeccoes.ToList();
         }
 
+        public static IQueryable<Prospeccao> DefinirCasaParaVisualizarQuery(
+            string casa,
+            Usuario usuario,
+            ApplicationDbContext context,
+            HttpContext httpContext,
+            ViewDataDictionary viewData)
+        {
+            Enum.TryParse(casa, out Instituto enumCasa);
+
+            IQueryable<Prospeccao> query = context.Prospeccao
+                .AsNoTracking()
+                .Include(p => p.Status)
+                .Include(p => p.Empresa)
+                .Include(p => p.Usuario);
+
+            if (usuario.Nivel != Nivel.Dev)
+            {
+                if (Enum.IsDefined(typeof(Instituto), casa))
+                {
+                    httpContext.Session.SetString("_Casa", casa);
+                    viewData["Area"] = casa;
+
+                    query = query.Where(p => p.Casa == enumCasa);
+                }
+                else
+                {
+                    // garante query vazia
+                    query = query.Where(p => false);
+                }
+            }
+
+            return query;
+        }
+
+        public static IQueryable<Prospeccao> PeriodizarProspecçõesQuery(
+            IQueryable<Prospeccao> query,
+            string ano)
+        {
+            if (string.IsNullOrEmpty(ano))
+                return query;
+
+            int anoInt = Convert.ToInt32(ano);
+
+            return query.Where(p =>
+                p.Status.Any(f => f.Data.Year == anoInt)
+            );
+        }
+        public static IQueryable<Prospeccao> OrdenarProspecçõesQuery(
+            IQueryable<Prospeccao> query,
+            string sortOrder)
+        {
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    return query.OrderByDescending(p => p.Empresa.Nome);
+
+                case "TipoContratacao":
+                    return query.OrderBy(p => p.TipoContratacao);
+
+                case "tipo_desc":
+                    return query.OrderByDescending(p => p.TipoContratacao);
+
+                default:
+                    return query.OrderByDescending(p =>
+                        p.Status
+                            .OrderByDescending(s => s.Data)
+                            .Select(s => s.Data)
+                            .FirstOrDefault()
+                    );
+            }
+        }
+        public static IQueryable<Prospeccao> FiltrarProspecçõesQuery(
+            IQueryable<Prospeccao> query,
+            string searchString)
+        {
+            if (string.IsNullOrEmpty(searchString))
+                return query;
+
+            searchString = searchString.ToLower();
+
+            return query.Where(p =>
+                (p.Empresa != null &&
+                    (
+                        p.Empresa.Nome.ToLower().Contains(searchString) ||
+                        p.Empresa.RazaoSocial.ToLower().Contains(searchString)
+                    )
+                ) ||
+                p.Id.ToLower().Contains(searchString) ||
+                p.Usuario.UserName.ToLower().Contains(searchString) ||
+                p.NomeProspeccao.ToLower().Contains(searchString) ||
+                p.MembrosEquipe.ToLower().Contains(searchString)
+            );
+        }
+        public static IQueryable<Prospeccao> FiltrarPorStatusQuery(
+            IQueryable<Prospeccao> query,
+            ParametrosFiltroFunil parametros,
+            bool pesquisa)
+        {
+            switch (parametros.Aba.ToLowerInvariant())
+            {
+                case "ativas":
+                    return query.Where(p =>
+                        p.Status
+                            .OrderBy(s => s.Data)
+                            .LastOrDefault().Status < StatusProspeccao.ComProposta
+                    );
+
+                case "comproposta":
+                    return query.Where(p =>
+                        p.Status
+                            .OrderBy(s => s.Data)
+                            .LastOrDefault().Status == StatusProspeccao.ComProposta
+                    );
+
+                case "concluidas":
+                    return query.Where(p =>
+                        p.Status.Any(s =>
+                            s.Status == StatusProspeccao.Convertida ||
+                            s.Status == StatusProspeccao.Suspensa ||
+                            s.Status == StatusProspeccao.NaoConvertida
+                        )
+                    );
+
+                case "planejadas":
+                    string user = parametros.HttpContext.User.Identity.Name;
+                    return query.Where(p => p.Usuario.UserName == user);
+
+                default:
+                    return query;
+            }
+        }
+
         public static async Task<List<Producao>> DefinirCasaParaVisualizarEmProducao(string casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, ViewDataDictionary ViewData)
         {
             Instituto enum_casa;

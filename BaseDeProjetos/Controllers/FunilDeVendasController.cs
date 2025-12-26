@@ -25,9 +25,9 @@ namespace BaseDeProjetos.Controllers
     [Authorize]
     public class FunilDeVendasController : SGIController
     {
-        private readonly DbCache _cache;
-        private readonly ApplicationDbContext _context;
-        private readonly IEmailSender _mailer;
+        private readonly DbCache _cache; 
+        private readonly ApplicationDbContext _context;  
+        private readonly IEmailSender _mailer; 
         public FunilDeVendasController(ApplicationDbContext context, IEmailSender mailer, DbCache cache)
         {
             _context = context;
@@ -164,7 +164,12 @@ namespace BaseDeProjetos.Controllers
 
             var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:WithStatus", () => _context.Prospeccao.Include(f => f.Status).ToListAsync());
 
-            var prospeccao = prospeccoes.Where(prosp => prosp.Id == id).First(); // o First converte de IQuerable para objeto Prospeccao
+            var prospeccao = prospeccoes.FirstOrDefault(prosp => prosp.Id == id); // o First converte de IQuerable para objeto Prospeccao
+
+            if (prospeccao == null)
+            {
+                return NotFound();
+            }
 
             if (prospeccao.Ancora)
             {
@@ -377,15 +382,19 @@ namespace BaseDeProjetos.Controllers
                     intervaloDatas.Add(dataComProposta - dataContatoInicial);
                 }
 
-                var mediaintervalos = new TimeSpan(Convert.ToInt64(intervaloDatas.Average(t => t.Ticks)));
-                double tempoMedioContato = mediaintervalos.TotalDays;
+                double tempoMedioContato = intervaloDatas.Any()
+                    ? new TimeSpan(Convert.ToInt64(intervaloDatas.Average(t => t.Ticks))).TotalDays
+                    : 0;
 
                 int prospeccoesInfrutiferas = prospeccoesDaCasa
                     .Select(p => new { p.Status })
-                    .Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida
-                    || p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa).Count();
+                    .Where(p => p.Status.Any() &&
+                        (p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida
+                        || p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa)).Count();
 
-                double percentInfrutiferas = (double)prospeccoesInfrutiferas / prospeccoesDaCasa.Count() * 100;
+                double percentInfrutiferas = prospeccoesDaCasa.Any()
+                    ? (double)prospeccoesInfrutiferas / prospeccoesDaCasa.Count() * 100
+                    : 0;
 
                 IndicadoresProspeccao indicadoresProspeccao = new IndicadoresProspeccao
                 {
@@ -480,9 +489,17 @@ namespace BaseDeProjetos.Controllers
                                                                    .ToList());
 
                 int prospConvertidas = prospeccoesDaCasaConvertida.Count();
-                double taxaConversaoProsp = (double)prospConvertidas / prospeccoesDaCasaComProposta.Count() * 100;
+                int totalComProposta = prospeccoesDaCasaComProposta.Count();
 
-                decimal ticketMedioProsp = prospeccoesDaCasa.Average(p => p.ValorProposta);
+                double taxaConversaoProsp = totalComProposta == 0
+                    ? 0
+                    : (double)prospConvertidas / totalComProposta * 100;
+
+
+                decimal ticketMedioProsp = prospeccoesDaCasa.Any()
+                    ? prospeccoesDaCasa.Average(p => p.ValorProposta)
+                    : 0;
+
                 int propostasComerciais = prospeccoesDaCasaComProposta.Count();
 
                 int projetosContratados = prospeccoesDaCasaConvertida.Count();
@@ -519,9 +536,9 @@ namespace BaseDeProjetos.Controllers
                                                                    .ToList());
 
                 var prospeccoesEmAndamento = _cache.GetCached($"Prospeccoes:{enumCasa}:EmAndamento", () => prospeccoesDaCasa.Select(p => new { p.Status })
-                                                                                                                          .Where(p => p.Status.Any(p => p.Status != StatusProspeccao.Convertida)
-                                                                                                                                      && p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida)
-                                                                                                                                      && p.Status.Any(p => p.Status == StatusProspeccao.Suspensa)));
+                                                                                                                          .Where(p => !p.Status.Any(s => s.Status == StatusProspeccao.Convertida)
+                                                                                                                                      && !p.Status.Any(s => s.Status == StatusProspeccao.NaoConvertida)
+                                                                                                                                      && !p.Status.Any(s => s.Status == StatusProspeccao.Suspensa)));
 
                 var prospeccoesDaCasaNaoConvertidas = _cache.GetCached($"Prospeccoes:{enumCasa}:NaoConvertidas", () => prospeccoesDaCasa.Select(p => new { p.Status })
                                                                    .Where(p => p.Status.Any(f => f.Status == StatusProspeccao.NaoConvertida))
@@ -554,6 +571,7 @@ namespace BaseDeProjetos.Controllers
             {
                 if (string.IsNullOrEmpty(aba))
                     aba = "ativas";
+                    SetarAbaNaSession(aba);
 
                 ParametrosFunil parametrosFunil = new ParametrosFunil
                 {
@@ -724,9 +742,9 @@ namespace BaseDeProjetos.Controllers
                     ["Data_inicio"] = p.Status.OrderBy(k => k.Data).FirstOrDefault().Data.ToString("dd/MM/yyyy"),
                     ["Data_fim"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Data.ToString("dd/MM/yyyy"),
                     ["qtde_followups"] = p.Status.Count(),
-                    ["Empresa"] = p.Empresa.Nome,
-                    ["CNPJ"] = p.Empresa.CNPJ,
-                    ["Segmento"] = p.Empresa.Segmento.GetDisplayName(),
+                    ["Empresa"] = p.Empresa?.Nome ?? "",
+                    ["CNPJ"] = p.Empresa?.CNPJ ?? "",
+                    ["Segmento"] = p.Empresa != null ? p.Empresa.Segmento.GetDisplayName() : "",
                     ["Estado"] = p.Empresa.Estado.GetDisplayName(),
                     ["Casa"] = p.Casa.GetDisplayName(),
                     ["Origem"] = p.Origem.GetDisplayName(),
@@ -846,8 +864,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                await CriarSelectListsDaView();
-                if (tipo != null || tipo != "")
+                if (!string.IsNullOrEmpty(tipo))
                 {
                     return ViewComponent($"Modal{tipo}Prosp", new { id = idProsp });
                 }
@@ -874,9 +891,9 @@ namespace BaseDeProjetos.Controllers
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 await CriarSelectListsDaView();
-                if (tipo != null || tipo != "")
+                if (!string.IsNullOrEmpty(tipo))
                 {
-                    return ViewComponent($"Modal{tipo}Prosp", new { id = idProsp, id2 = idFollowup });
+                    return ViewComponent($"Modal{tipo}Prosp", new { id = idProsp });
                 }
                 else
                 {
@@ -958,7 +975,6 @@ namespace BaseDeProjetos.Controllers
         private async Task CriarFollowUp(FollowUp followup)
         {
             await _context.AddAsync(followup);
-            await _context.SaveChangesAsync();
         }
 
         /// <summary>
@@ -1045,34 +1061,42 @@ namespace BaseDeProjetos.Controllers
         {
             int? tamanhoPagina = HttpContext.Session.GetInt32("tamanhoPagina");
 
-            List<Prospeccao> prospeccoes = await FunilHelpers.DefinirCasaParaVisualizar(casa, usuario, _context, HttpContext, _cache, ViewData);
+            IQueryable<Prospeccao> query =
+                FunilHelpers.DefinirCasaParaVisualizarQuery(
+                    casa,
+                    usuario,
+                    _context,
+                    HttpContext,
+                    ViewData
+                );
+
+            query = query.Where(p => p.Empresa != null);
 
             if (!string.IsNullOrEmpty(ano))
             {
-                FunilHelpers.PeriodizarProspecções(ano, prospeccoes);
+                query = FunilHelpers.PeriodizarProspecçõesQuery(query, ano);
             }
 
-            prospeccoes = FunilHelpers.OrdenarProspecções(sortOrder, prospeccoes); // SORT ORDEM ALFABETICA
-            prospeccoes = FunilHelpers.FiltrarProspecções(searchString, prospeccoes); // APENAS NA BUSCA
+            query = FunilHelpers.FiltrarProspecçõesQuery(query, searchString);
+            query = FunilHelpers.OrdenarProspecçõesQuery(query, sortOrder);
 
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
+            {
                 FunilHelpers.SetarFiltrosNaView(HttpContext, ViewData, sortOrder, searchString);
+            }
 
             if (!string.IsNullOrEmpty(aba))
             {
-                ParametrosFiltroFunil parametros = new ParametrosFiltroFunil(casa, usuario, _cache, aba, HttpContext);
-
-                if (!string.IsNullOrEmpty(searchString))
-                {
-                    prospeccoes = FunilHelpers.RetornarProspeccoesPorStatus(prospeccoes, parametros, true);
-                }
-                else
-                {
-                    prospeccoes = FunilHelpers.RetornarProspeccoesPorStatus(prospeccoes, parametros, false);
-                }
+                var parametros = new ParametrosFiltroFunil(casa, usuario, _cache, aba, HttpContext);
+                query = FunilHelpers.FiltrarPorStatusQuery(
+                    query,
+                    parametros,
+                    !string.IsNullOrEmpty(searchString)
+                );
             }
 
-            return prospeccoes;
+            return await query.ToListAsync();
+
         }
 
         /// <summary>
@@ -1094,8 +1118,11 @@ namespace BaseDeProjetos.Controllers
         private async Task<List<Prospeccao>> ObterProspeccoesTotais(Instituto casa)
         {
             return await _cache.GetCachedAsync($"Prospeccoes:{casa}", () => _context.Prospeccao
-                .Where(p => p.Status.OrderBy(f => f.Data).Last().Status != StatusProspeccao.Planejada && p.Casa == casa)
+                .Include(p => p.Status)
                 .Include(p => p.Empresa)
+                .Where(p => p.Status.Any() &&
+                    p.Status.OrderBy(f => f.Data).Last().Status != StatusProspeccao.Planejada
+                    && p.Casa == casa)
                 .ToListAsync());
         }
 
