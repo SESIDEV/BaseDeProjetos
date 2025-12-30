@@ -165,7 +165,21 @@ namespace BaseDeProjetos.Controllers
                     Pager = pager,
                 };
 
-                var prospeccoes = await _cache.GetCachedAsync("Prospeccoes:Empresas", () => _context.Prospeccao.Select(p => new ProspeccaoEmpresasDTO { Empresa = p.Empresa, Id = p.Id, NomeProspeccao = p.NomeProspeccao, Status = p.Status, Usuario = p.Usuario }).ToListAsync());
+                await _cache.InvalidateCacheKeysAsync("Prospeccoes:Empresas");
+
+                var prospeccoes = await _cache.GetCachedAsync(
+                    "Prospeccoes:Empresas",
+                    () => _context.Prospeccao
+                        .Select(p => new ProspeccaoEmpresasDTO
+                        {
+                            Empresa = p.Empresa,
+                            Id = p.Id,
+                            NomeProspeccao = p.NomeProspeccao,
+                            Status = p.Status,
+                            Usuario = p.Usuario
+                        }).ToListAsync()
+                );
+
                 ViewBag.Prospeccoes = prospeccoes;
 
                 ViewBag.ProspeccoesAtivas = prospeccoes.Where(P => P.Status.All(S => S.Status != StatusProspeccao.NaoConvertida &&

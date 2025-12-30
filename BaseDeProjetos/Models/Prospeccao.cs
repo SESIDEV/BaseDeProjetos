@@ -10,6 +10,7 @@ using System.Linq;
 
 namespace BaseDeProjetos.Models
 {
+    [Table("prospeccao")]
     public class Prospeccao : IEquatable<Prospeccao>
     {
         public Prospeccao(FollowUp followUp)
@@ -26,6 +27,8 @@ namespace BaseDeProjetos.Models
 
         [Display(Name = "Nome da prospecção ou potencial projeto")]
         public virtual string NomeProspeccao { get; set; }
+
+        public string Tipologia { get; set; }
 
         [Display(Name = "Potenciais Parceiros da Prospeccção")]
         public virtual string PotenciaisParceiros { get; set; }

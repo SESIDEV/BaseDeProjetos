@@ -62,14 +62,24 @@
                                 <button type="submit" class="d-none btn app-btn-primary">Lista Completa</button>
                             }
 
-                            <div class="col-auto">
+                            <div class="col-auto d-flex gap-2">
                                 <a class="btn app-btn-primary" data-bs-toggle="modal" href="#preCriarProspModalToggle" role="button">
                                     <i class="bi bi-plus-circle-fill"></i> Nova Prospecção
                                 </a>
+
+                                <a asp-action="ExportarExcel"
+                                   asp-controller="FunilDeVendas"
+                                   asp-route-casa="@casa"
+                                   asp-route-aba="@aba"
+                                   class="btn btn-outline-success">
+                                    <i class="bi bi-file-earmark-excel"></i> Exportar Excel
+                                </a>
+
                                 @await Component.InvokeAsync("ModalPreCreateProsp")
                                 @await Component.InvokeAsync("ModalCreateProsp")
-                                <div id="modalCreateFollowUpProspContainer"></div> <!-- CONTAINER PARA ARMAZENAR O MODAL CREATE FOLLOWUP TEMPORARIAMENTE -->
+                                <div id="modalCreateFollowUpProspContainer"></div>
                             </div>
+
                             @*<div class="col-auto" id="container-ajuda">
                             <a type="button" class="btn button-flash text-white" data-bs-toggle="modal" href="#modalTutorialFdv" role="button">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-octagon-fill" viewBox="0 0 16 16">

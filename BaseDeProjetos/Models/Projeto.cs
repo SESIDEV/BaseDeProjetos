@@ -29,6 +29,9 @@ namespace BaseDeProjetos.Models
         [Display(AutoGenerateFilter = true, Name = "Linha de Pesquisa")]
         public virtual LinhaPesquisa AreaPesquisa { get; set; }
 
+        //[Display(AutoGenerateFilter = true, Name = "Tipologia")]
+        //public virtual string Tipologia { get; set; }
+
         [Display(AutoGenerateFilter = true, Name = "Data de Início")]
         public virtual DateTime DataInicio { get; set; } = DateTime.Now;
 

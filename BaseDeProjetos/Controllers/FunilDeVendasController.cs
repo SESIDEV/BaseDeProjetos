@@ -14,9 +14,12 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using ClosedXML.Excel;
+
 
 [assembly: InternalsVisibleTo("TestesBaseDeProjetos1")]
 
@@ -75,7 +78,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
+        public async Task<IActionResult> Create([Bind("Id, Tipologia, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
         {
             ViewbagizarUsuario(_context, _cache);
 
@@ -195,7 +198,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, EmpresaId, Contato, Casa, Usuario, MembrosEquipe, ValorProposta, ValorEstimado, Status, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
+        public async Task<IActionResult> Edit(string id, [Bind("Id, Tipologia, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, EmpresaId, Contato, Casa, Usuario, MembrosEquipe, ValorProposta, ValorEstimado, Status, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
         {
             ViewbagizarUsuario(_context, _cache);
 
@@ -1136,6 +1139,113 @@ namespace BaseDeProjetos.Controllers
                 .Where(p => p.Status.OrderBy(f => f.Data)
                 .Last().Status != StatusProspeccao.Planejada)
                 .Count();
+        }
+
+        [HttpGet]
+        [HttpGet]
+        [HttpGet]
+        public async Task<IActionResult> ExportarExcel(string casa)
+        {
+            if (!Enum.TryParse(casa, out Instituto enumCasa))
+                return BadRequest("Casa inválida");
+
+            var prospeccoes = await _context.Prospeccao
+                .Include(p => p.Empresa)
+                .Include(p => p.Usuario)
+                .Include(p => p.Status)
+                .Where(p => p.Casa == enumCasa)
+                .ToListAsync();
+
+            var dados = prospeccoes.Select(p => new
+            {
+                Empresa = p.Empresa?.Nome ?? "",
+
+                TipoContratacao = p.TipoContratacao.ToString(),
+
+                Iniciativa = "",
+
+                Segmento = p.Empresa != null
+                    ? p.Empresa.Segmento.GetDisplayName()
+                    : "",
+
+                Estado = p.Empresa != null
+                    ? p.Empresa.Estado.GetDisplayName()
+                    : "",
+
+                Responsavel = p.Contato != null
+                    ? $"{p.Contato.Nome} | {p.Contato.Cargo} | {p.Contato.Email}"
+                    : "Não informado",
+
+                AlocadoPara = p.Usuario?.UserName ?? "",
+
+                Apoio = string.Join(", ",
+                    p.TratarMembrosEquipeString(_context)
+                        .Select(u => u.UserName)),
+
+                Tipologia = p.Tipologia ?? "",
+
+                IdProspecaoSGI = p.Id,
+
+                Tema = p.NomeProspeccao ?? "",
+
+                LinhaPesquisa = p.LinhaPequisa.GetDisplayName(),
+
+                ParceiroInterno = "",
+
+                ParceiroExterno = "",
+
+                ContatoRealizado = p.Status?
+                 .Where(s => s.Status == StatusProspeccao.ContatoInicial)
+                 .OrderBy(s => s.Data)
+                 .Select(s => (DateTime?)s.Data)
+                 .FirstOrDefault(),
+
+                PropostaEnviada = p.Status?
+                 .Where(s => s.Status == StatusProspeccao.ComProposta)
+                 .OrderBy(s => s.Data)
+                 .Select(s => (DateTime?)s.Data)
+                 .FirstOrDefault(),
+
+                ProjetoConvertido = p.Status?
+                 .Where(s => s.Status == StatusProspeccao.Convertida)
+                 .OrderBy(s => s.Data)
+                 .Select(s => (DateTime?)s.Data)
+                 .FirstOrDefault(),
+
+                ValorProposta = p.ValorProposta,
+
+                HistoricoContatos = p.Status != null
+                    ? string.Join(" | ",
+                        p.Status
+                            .OrderBy(s => s.Data)
+                            .Select(s =>
+                                $"{s.Data:dd/MM/yyyy} - {s.Status}"))
+                    : "",
+
+                Situacao = p.Status != null && p.Status.Any()
+                    ? p.Status
+                        .OrderBy(s => s.Data)
+                        .Last()
+                        .Status
+                        .ToString()
+                    : ""
+            })
+            .ToList();
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Funil de Vendas");
+
+            worksheet.Cell(1, 1).InsertTable(dados);
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"funil_vendas_{casa}_{DateTime.Now:yyyyMMdd}.xlsx"
+            );
         }
 
         /// <summary>
