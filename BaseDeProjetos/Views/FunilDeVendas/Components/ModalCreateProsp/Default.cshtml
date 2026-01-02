@@ -1,222 +1,212 @@
 ﻿@model BaseDeProjetos.Models.Prospeccao
-@using BaseDeProjetos.Models;
-@using BaseDeProjetos.Models.Enums;
+@using BaseDeProjetos.Models.Enums
 @using Microsoft.AspNetCore.Http
+
 @{
     ViewData["Title"] = "Adicionar Prospecção";
-    if (!(Context.Session.GetString("_Casa") is null))
+
+    if (Context.Session.GetString("_Casa") != null)
     {
         ViewData["Area"] = Context.Session.GetString("_Casa");
     }
+
+    var unique_id = $"prosp_{DateTime.Now.Ticks}";
 }
+
 <script src="~/js/FunildeVendas/modalCreateProsp.js"></script>
 
 <form asp-action="Create" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="modal fade" id="criarProspModalToggle" aria-hidden="true" aria-labelledby="criarProspModalToggleLabel"
-         tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+
+    <div class="modal fade" id="criarProspModalToggle" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
+
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="criarProspModalToggleLabel">Dados da Prospecção</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title fw-semibold">Nova Prospecção</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body">
-                    <fieldset>
-                        <legend>Informações Básicas</legend>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-2 d-none">
-                                    <label asp-for="Id" class="col-form-label" style="font-weight: 600"></label>
-                                    @{
-                                        var unique_id = $"prosp_{DateTime.Now.Ticks}";
-                                    }
-                                    <input asp-for="Id" class="form-control" value="@unique_id" readonly>
-                                    <span asp-validation-for="Id" class="text-danger"></span>
+
+                    <input asp-for="Id" type="hidden" value="@unique_id" />
+
+                    <div class="card mb-3">
+                        <div class="card-header fw-semibold">Informações Básicas</div>
+                        <div class="card-body">
+                            <div class="row g-3">
+
+                                <div class="col-md-8">
+                                    <label asp-for="NomeProspeccao" class="form-label fw-semibold"></label>
+                                    <input asp-for="NomeProspeccao" class="form-control"
+                                           placeholder="Ex.: Proposta de biossurfactantes" />
                                 </div>
-                                <div class="mb-2">
-                                    <label asp-for="Casa" class="col-form-label" style="font-weight: 600"></label>
-                                    @if (!(Context.Session.GetString("_Casa") is null))
+
+                                <div class="col-md-4">
+                                    <label asp-for="Tipologia" class="form-label fw-semibold"></label>
+                                    <select asp-for="Tipologia" class="form-select">
+                                        <option value="">Selecione</option>
+                                        <option>A</option>
+                                        <option>B</option>
+                                        <option>C</option>
+                                        <option>D</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label asp-for="Casa" class="form-label fw-semibold"></label>
+                                    @if (Context.Session.GetString("_Casa") != null)
                                     {
-                                        <select asp-for="Casa" class="form-control">
-                                            @{
-                                                var enum_v = (int)Enum.Parse(typeof(Instituto), Context.Session.GetString("_Casa"), true);
-                                            }
-                                            <option value="@enum_v" selected="selected">@Context.Session.GetString("_Casa")</option>
+                                        var enumCasa = (int)Enum.Parse(typeof(Instituto),
+                                        Context.Session.GetString("_Casa"), true);
+
+                                        <select asp-for="Casa" class="form-select">
+                                            <option value="@enumCasa">@Context.Session.GetString("_Casa")</option>
                                         </select>
                                     }
                                     else
                                     {
-                                        <select asp-for="Casa" class="form-control"
-                                                asp-items="Html.GetEnumSelectList<Instituto>().OrderBy(p => p.Text)"></select>
+                                        <select asp-for="Casa" class="form-select"
+                                                asp-items="Html.GetEnumSelectList<Instituto>()"></select>
                                     }
-                                    <span asp-validation-for="Casa" class="text-danger"></span>
                                 </div>
-                                <div class="mb-2">
-                                    <label asp-for="NomeProspeccao" class="col-form-label" style="font-weight: 600"></label>
-                                    <input asp-for="NomeProspeccao" class="form-control" autocomplete="off"
-                                           placeholder="Um nome amigável para a prospecção. Ex.: Proposta dos biossurfactantes" required />
-                                    <span asp-validation-for="NomeProspeccao" class="text-danger"></span>
-                                </div>
-                                <div class="mb-2">
-                                    <label asp-for="Origem" class="col-form-label" style="font-weight: 600"></label>
-                                    <select asp-for="Origem" class="form-control" asp-items="Html.GetEnumSelectList<Origem>()"></select>
-                                    <span asp-validation-for="Origem" class="text-danger"></span>
-                                </div>
-                                <div class="mb-2">
-                                    <label class="col-form-label" style="font-weight: 600" for="inputTextPessoas">Membros</label>
-                                    <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectPessoas">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                    <input asp-for="MembrosEquipe" class="form-control d-none" id="inputTextPessoas" type="text" />
-                                    <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestPessoas" onclick="gerarOpcoesSelect('Pessoas', 'criarProspModalToggle')">Buscar</button>
-                                    <div class="input-group flex-nowrap" id="caixaPesquisaPessoas" style="display:none;">
-                                        <select id="campoSelectPessoas" class="form-select" multiple="true"></select>
-                                    </div>
-                                </div>
-                                <div class="mb-2">
-                                    <label asp-for="TipoContratacao" class="col-form-label" style="font-weight: 600"></label>
-                                    <select asp-for="TipoContratacao" class="form-control"
-                                            asp-items="Html.GetEnumSelectList<TipoContratacao>().OrderBy(p => p.Text)"></select>
-                                    <span asp-validation-for="TipoContratacao" class="text-danger"></span>
-                                </div>
-                                <div class="mb-2">
-                                    <label asp-for="Tipologia" class="col-form-label" style="font-weight: 600">Tipologia</label>
 
-                                    <select asp-for="Tipologia" class="form-control">
-                                        <option value="">Selecione</option>
-                                        <option value="A">A</option>
-                                        <option value="B">B</option>
-                                        <option value="C">C</option>
-                                        <option value="D">D</option>
-                                    </select>
+                                <div class="col-md-4">
+                                    <label asp-for="Origem" class="form-label fw-semibold"></label>
+                                    <select asp-for="Origem" class="form-select"
+                                            asp-items="Html.GetEnumSelectList<Origem>()"></select>
+                                </div>
 
-                                    <span asp-validation-for="Tipologia" class="text-danger"></span>
+                                <div class="col-md-4">
+                                    <label asp-for="TipoContratacao" class="form-label fw-semibold"></label>
+                                    <select asp-for="TipoContratacao" class="form-select"
+                                            asp-items="Html.GetEnumSelectList<TipoContratacao>()"></select>
                                 </div>
-                                <div class="mb-2">
-                                    <label asp-for="LinhaPequisa" class="col-form-label" style="font-weight: 600"></label>
-                                    <select asp-for="LinhaPequisa" class="form-control"
-                                            asp-items="Html.GetEnumSelectList<LinhaPesquisa>().OrderBy(p => p.Text)"></select>
-                                    <span asp-validation-for="LinhaPequisa" class="text-danger"></span>
+
+                                <div class="col-md-6">
+                                    <label asp-for="LinhaPequisa" class="form-label fw-semibold"></label>
+                                    <select asp-for="LinhaPequisa" class="form-select"
+                                            asp-items="Html.GetEnumSelectList<LinhaPesquisa>()"></select>
                                 </div>
+
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-2">
-                                    <label asp-for="EmpresaId" class="col-form-label" style="font-weight: 600">Empresa</label>
-                                    <select asp-for="EmpresaId" class="form-control"
-                                            asp-items='@(ViewData["Empresas"] != null ? (ViewData["Empresas"] as SelectList).OrderBy(p => p.Text) : Enumerable.Empty<SelectListItem>())'>
-                                        <option value="-1">Selecione a empresa</option>
+                        </div>
+                    </div>
+
+                    <div class="card mb-3">
+                        <div class="card-header fw-semibold">Empresa</div>
+                        <div class="card-body">
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+                                    <label asp-for="Empresa" class="form-label fw-semibold"></label>
+                                    <select asp-for="Empresa" class="form-select"
+                                            asp-items="@(ViewData["Empresas"] as SelectList)">
+                                        <option value="">Selecione</option>
                                     </select>
-                                    <span asp-validation-for="EmpresaId" class="text-danger"></span>
                                 </div>
-                                <div class="mb-2">
-                                    <label asp-for="Contato.Nome" class="col-form-label" style="font-weight: 600"></label>
+
+                                <div class="col-md-6">
+                                    <label asp-for="Contato.Nome" class="form-label fw-semibold"></label>
                                     <input asp-for="Contato.Nome" class="form-control" />
-                                    <span asp-validation-for="Contato.Nome" class="text-danger"></span>
                                 </div>
-                                <div class="mb-2">
-                                    <label asp-for="Contato.Cargo" class="col-form-label" style="font-weight: 600"></label>
+
+                                <div class="col-md-4">
+                                    <label asp-for="Contato.Cargo" class="form-label fw-semibold"></label>
                                     <input asp-for="Contato.Cargo" class="form-control" />
-                                    <span asp-validation-for="Contato.Cargo" class="text-danger"></span>
                                 </div>
-                                <div class="mb-2">
-                                    <label asp-for="Contato.Telefone" class="col-form-label" style="font-weight: 600"></label>
+
+                                <div class="col-md-4">
+                                    <label asp-for="Contato.Telefone" class="form-label fw-semibold"></label>
                                     <input asp-for="Contato.Telefone" class="form-control"
                                            onkeypress="$(this).mask('(00) 0000-00009')" />
-                                    <span asp-validation-for="Contato.Telefone" class="text-danger"></span>
                                 </div>
-                                <div class="mb-2">
-                                    <label asp-for="Contato.Email" class="col-form-label" style="font-weight: 600"></label>
-                                    <input type="email" asp-for="Contato.Email" class="form-control" />
-                                    <span asp-validation-for="Contato.Email" class="text-danger"></span>
+
+                                <div class="col-md-4">
+                                    <label asp-for="Contato.Email" class="form-label fw-semibold"></label>
+                                    <input asp-for="Contato.Email" class="form-control" type="email" />
                                 </div>
+
                             </div>
                         </div>
-                    </fieldset>
-                    <fieldset>
-                        <legend>Detalhes da Prospecção</legend>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-2">
-                                    <label for="inputTextEmpresas" class="col-form-label" style="font-weight: 600">Potenciais Parceiros</label>
-                                    <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectEmpresas">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                    <input asp-for="PotenciaisParceiros" class="form-control d-none" id="inputTextEmpresas" type="text" />
-                                    <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestEmpresas" onclick="gerarOpcoesSelect('Empresas', '#criarProspModalToggle')">Buscar</button>
-                                    <div class="input-group flex-nowrap" id="caixaPesquisaEmpresas" style="display:none;">
-                                        <select id="campoSelectEmpresas" class="form-select" multiple="true"></select>
-                                    </div>
+                    </div>
+
+                    <div class="card mb-3">
+                        <div class="card-header fw-semibold">Equipe</div>
+                        <div class="card-body">
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Membros da Equipe</label>
+                                <div class="input-group">
+                                    <input asp-for="MembrosEquipe" class="form-control" readonly />
+                                    <button class="btn app-btn-primary" type="button"
+                                            onclick="gerarOpcoesSelect('Pessoas', 'criarProspModalToggle')">
+                                        Buscar
+                                    </button>
                                 </div>
-                                <div class="mb-2">
-                                    <label asp-for="CaminhoPasta" class="col-form-label" style="font-weight: 600"></label>
-                                    <input asp-for="CaminhoPasta" class="form-control" placeholder="Caminho da pasta no drive" />
-                                    <span asp-validation-for="CaminhoPasta" class="text-danger"></span>
+
+                                <div class="collapse mt-2" id="caixaPesquisaPessoas">
+                                    <select id="campoSelectPessoas" class="form-select" multiple></select>
                                 </div>
                             </div>
-                            <div class="col-md-6">
 
-
-
-                                <div class="mb-2">
-                                    <label asp-for="Status[0].OrigemID" class="control-label" style="font-weight: 600">Identificador da Prospecção</label>
-                                    <input class="form-control" asp-for="Status[0].OrigemID" value="@unique_id" disabled />
-                                    <span asp-validation-for="Status[0].OrigemID" class="text-danger"></span>
-                                </div>
-                                <div class="mb-2">
-                                    <label for="tagsText" class="control-label" style="font-weight: 600">Tags</label>
-                                    <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectTags">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                    <input type="text" asp-for="Tags" class="form-control" id="tagsText" />
-                                    <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestTags" onclick="gerarOpcoesSelect('Tags', '#criarProspModalToggle')">Adicionar</button>
-                                    <div class="input-group flex-nowrap" id="caixaPesquisaTags">
-                                        <select id="campoSelectTags" class="form-select" multiple="true"></select>
-                                        <span class="input-group-text" id="addon-wrapping" onclick="addTag('tagsText','campoSelectTags')" onmouseover="novaTag()">
-                                            <i class="bi bi-plus-square-fill"></i>
-                                        </span>
-                                    </div>
-                                    <span asp-validation-for="Tags" class="text-danger"></span>
+                            <div class="mb-3">
+                                <label asp-for="Tags" class="form-label fw-semibold"></label>
+                                <div class="input-group">
+                                    <input asp-for="Tags" class="form-control" id="tagsText" />
+                                    <button class="btn app-btn-primary" type="button"
+                                            onclick="gerarOpcoesSelect('Tags', 'criarProspModalToggle')">
+                                        Adicionar
+                                    </button>
                                 </div>
                             </div>
+
                         </div>
-                    </fieldset>
-                    <fieldset>
-                        <legend>Anotações e Status</legend>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-2">
-                                    <label asp-for="Status[0].Anotacoes" class="control-label" style="font-weight: 600"></label>
-                                    <textarea class="form-control" asp-for="Status[0].Anotacoes" rows="3" required></textarea>
-                                    <span asp-validation-for="Status[0].Anotacoes" class="text-danger"></span>
+                    </div>
+
+                    <div class="card mb-3">
+                        <div class="card-header fw-semibold">Status Inicial</div>
+                        <div class="card-body">
+                            <div class="row g-3">
+
+                                <div class="col-md-8">
+                                    <label asp-for="Status[0].Anotacoes" class="form-label fw-semibold"></label>
+                                    <textarea asp-for="Status[0].Anotacoes"
+                                              class="form-control"
+                                              rows="3"></textarea>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-2">
-                                    <label asp-for="Status[0].Status" class="control-label" style="font-weight: 600"></label>
-                                    <select asp-for="Status[0].Status" class="form-control" disabled>
-                                        <option value="@StatusProspeccao.ContatoInicial">Contato Inicial</option>
-                                        <option value="@StatusProspeccao.Planejada">Planejada</option>
+
+                                <div class="col-md-4">
+                                    <label asp-for="Status[0].Status" class="form-label fw-semibold"></label>
+                                    <select asp-for="Status[0].Status" class="form-select" disabled>
+                                        <option value="@StatusProspeccao.ContatoInicial">
+                                            Contato Inicial
+                                        </option>
                                     </select>
-                                    <span asp-validation-for="Status[0].Status" class="text-danger"></span>
                                 </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Identificador</label>
+                                    <input class="form-control" value="@unique_id" disabled />
+                                </div>
+
                             </div>
                         </div>
-                    </fieldset>
+                    </div>
+
                 </div>
-                <input style="display:none" type="checkbox" disabled class="changeCheck" value="Pessoas" id="checkPessoas-@Model.Id">
-                <input style="display:none" type="checkbox" disabled class="changeCheck" value="Empresas" id="checkEmpresas-@Model.Id">
-                <input style="display:none" type="checkbox" disabled class="changeCheck" value="Prospeccoes" id="checkProspeccoes-@Model.Id">
+
+                <!-- FOOTER -->
                 <div class="modal-footer">
-                    <button type="button" class="btn app-btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <input type="submit" value="Concluir" id="concluirCreateProsp" class="btn-submit btn app-btn-primary">
+                    <button type="button" class="btn app-btn-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn app-btn-primary">
+                        Concluir
+                    </button>
                 </div>
+
             </div>
         </div>
     </div>
 </form>
-
-<script>
-    var dateControl = document.querySelector('input[type="date"]');
-    dateControl.max = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
-</script>
