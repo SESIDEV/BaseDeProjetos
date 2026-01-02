@@ -220,58 +220,107 @@
                 </div>
             }
 
-            @if (!string.IsNullOrEmpty(aba))
+            @if (!string.IsNullOrEmpty(aba) && Model.Pager.TotalPaginas > 1)
             {
+                int paginaAtual = Model.Pager.PaginaAtual;
+                int totalPaginas = Model.Pager.TotalPaginas;
+                int range = 2;
+
+                int inicio = Math.Max(1, paginaAtual - range);
+                int fim = Math.Min(totalPaginas, paginaAtual + range);
+
                 <nav class="app-pagination">
-                    <ul class="pagination justify-content-center">
-                        @if (Model.Pager.TotalPaginas > 1)
+                    <ul class="pagination justify-content-center flex-wrap">
+
+                        <!-- Anterior -->
+                        <li class="page-item @(Model.Pager.TemPaginaAnterior ? "" : "disabled")">
+                            <a class="page-link"
+                               asp-controller="FunilDeVendas"
+                               asp-action="Index"
+                               asp-route-casa="@casa"
+                               asp-route-aba="@aba"
+                               asp-route-tamanhoPagina="@ViewBag.TamanhoPagina"
+                               asp-route-SearchString="@searchString"
+                               asp-route-numeroPagina="@(paginaAtual - 1)">
+                                Anterior
+                            </a>
+                        </li>
+
+                        <!-- Primeira -->
+                        @if (inicio > 1)
                         {
-                            @if (Model.Pager.TemPaginaAnterior)
-                            {
-                                <li class="page-item">
-                                    <a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-aba="@aba" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" asp-route-SearchString="@searchString" asp-route-numeroPagina="@(Model.Pager.PaginaAtual - 1)">Anterior</a>
-                                </li>
-                            }
-                            else
-                            {
-                                <li class="page-item disabled">
-                                    <a class="page-link" asp-action="">Anterior</a>
-                                </li>
-                            }
-
-                            @foreach (var numeroPagina in Model.Pager.Pages)
-                            {
-                                if (numeroPagina == Model.Pager.PaginaAtual)
-                                {
-                                    <li class="page-item active">
-                                        <a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" asp-route-casa="@casa" asp-route-aba="@aba" asp-route-SearchString="@searchString" asp-route-numeroPagina="@(numeroPagina-1)">@numeroPagina</a>
-                                    </li>
-                                }
-                                else
-                                {
-                                    <li class="page-item">
-                                        <a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" asp-route-aba="@aba" asp-route-SearchString="@searchString" asp-route-numeroPagina="@numeroPagina">@numeroPagina</a>
-                                    </li>
-                                }
-                            }
-
-                            @if (Model.Pager.TemProximaPagina)
-                            {
-                                <li class="page-item">
-                                    <a class="page-link" asp-controller="FunilDeVendas" asp-action="Index" asp-route-casa="@casa" asp-route-SearchString="@searchString" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" asp-route-aba="@aba" asp-route-numeroPagina="@(Model.Pager.PaginaAtual + 1)">Proximo</a>
-                                </li>
-                            }
-                            else
-                            {
-                                <li class="page-item disabled">
-                                    <a class="page-link">Proximo</a>
-                                </li>
-                            }
+                            <li class="page-item">
+                                <a class="page-link"
+                                   asp-controller="FunilDeVendas"
+                                   asp-action="Index"
+                                   asp-route-casa="@casa"
+                                   asp-route-aba="@aba"
+                                   asp-route-tamanhoPagina="@ViewBag.TamanhoPagina"
+                                   asp-route-SearchString="@searchString"
+                                   asp-route-numeroPagina="1">
+                                    1
+                                </a>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link">…</span>
+                            </li>
                         }
+
+                        <!-- Páginas centrais -->
+                        @for (int i = inicio; i <= fim; i++)
+                        {
+                            <li class="page-item @(i == paginaAtual ? "active" : "")">
+                                <a class="page-link"
+                                   asp-controller="FunilDeVendas"
+                                   asp-action="Index"
+                                   asp-route-casa="@casa"
+                                   asp-route-aba="@aba"
+                                   asp-route-tamanhoPagina="@ViewBag.TamanhoPagina"
+                                   asp-route-SearchString="@searchString"
+                                   asp-route-numeroPagina="@i">
+                                    @i
+                                </a>
+                            </li>
+                        }
+
+                        <!-- Última -->
+                        @if (fim < totalPaginas)
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link">…</span>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link"
+                                   asp-controller="FunilDeVendas"
+                                   asp-action="Index"
+                                   asp-route-casa="@casa"
+                                   asp-route-aba="@aba"
+                                   asp-route-tamanhoPagina="@ViewBag.TamanhoPagina"
+                                   asp-route-SearchString="@searchString"
+                                   asp-route-numeroPagina="@totalPaginas">
+                                    @totalPaginas
+                                </a>
+                            </li>
+                        }
+
+                        <!-- Próxima -->
+                        <li class="page-item @(Model.Pager.TemProximaPagina ? "" : "disabled")">
+                            <a class="page-link"
+                               asp-controller="FunilDeVendas"
+                               asp-action="Index"
+                               asp-route-casa="@casa"
+                               asp-route-aba="@aba"
+                               asp-route-tamanhoPagina="@ViewBag.TamanhoPagina"
+                               asp-route-SearchString="@searchString"
+                               asp-route-numeroPagina="@(paginaAtual + 1)">
+                                Próximo
+                            </a>
+                        </li>
 
                     </ul>
                 </nav>
             }
+
         </div>
     </div>
     <partial name="Footer" />
