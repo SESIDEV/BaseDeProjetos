@@ -24,5 +24,8 @@ namespace BaseDeProjetos.Models.DTOs
 
         [Display(Name = "CNPJ da Empresa")]
         public virtual string CNPJ { get; set; }
+
+        [Display(Name = "Porte")]
+        public virtual string Porte { get; set; }
     }
 }

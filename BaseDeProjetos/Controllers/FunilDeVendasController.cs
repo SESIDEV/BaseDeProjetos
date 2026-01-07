@@ -1181,6 +1181,8 @@ namespace BaseDeProjetos.Controllers
                 Apoio = string.Join(", ",
                     p.TratarMembrosEquipeString(_context)
                         .Select(u => u.UserName)),
+                
+                Porte = p.Empresa.Porte,
 
                 Tipologia = p.Tipologia ?? "",
 

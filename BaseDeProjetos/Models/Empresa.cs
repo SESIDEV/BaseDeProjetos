@@ -19,6 +19,9 @@ namespace BaseDeProjetos.Models
         [Display(Name = "CNPJ da Empresa")]
         public virtual string CNPJ { get; set; }
 
+        [Display(Name = "Porte da Empresa")]
+        public virtual string Porte { get; set; }
+
         [Display(Name = "Segmento da Empresa")]
         public virtual SegmentoEmpresa Segmento { get; set; }
 
