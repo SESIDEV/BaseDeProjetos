@@ -7,6 +7,9 @@ namespace BaseDeProjetos.Models.Enums
         [Display(Name = "Contato inicial")]
         ContatoInicial = 0,
 
+        [Display(Name = "NDA assinado")]
+        NDAAssinado = 3,
+
         [Display(Name = "Em discussão")]
         Discussao_EsbocoProjeto = 4,
 

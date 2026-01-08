@@ -1,30 +1,39 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace BaseDeProjetos.Models.Enums
 {
     public enum TipoContratacao
     {
-        [Display(Name = "Contratação Direta")]
-        ContratacaoDireta,
+        [Display(Name = "Contratação direta")]
+        ContratacaoDireta = 0,
 
-        Embrapii,
+        [Display(Name = "Embrapii")]
+        Embrapii = 1,
 
-        [Display(Name = "Edital de Inovação SESI/SENAI")]
-        EditalInovacao,
+        [Display(Name = "Edital SESI-SENAI")]
+        EditalInovacao = 2,
 
-        //OutrosEditais,
-        [Display(Name = "Agência de Fomento")]
-        AgenciaFomento,
+        [Display(Name = "ANEEL")]
+        AgenciaFomento = 3,
 
-        [Display(Name = "ANP/ANEEL")]
-        ANP,
+        [Display(Name = "ANP")]
+        ANP = 4,
 
-        Parceiro,
+        [Display(Name = "Finep")]
+        Parceiro = 5,
 
-        [Display(Name = "Projeto Push")]
-        Push,
+        [Display(Name = "Embrapii + ANP")]
+        Push = 6,
+
+        [Display(Name = "Embrapii + ANEEL")]
+        EmbrapiiANEEL = 7,
+
+        [Display(Name = "Edital - outros")]
+        EditalOutros = 8,
 
         [Display(Name = "A definir")]
-        Indefinida
+        Indefinida = 9,
+
     }
 }

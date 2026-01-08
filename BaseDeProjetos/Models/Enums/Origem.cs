@@ -4,10 +4,19 @@ namespace BaseDeProjetos.Models.Enums
 {
     public enum Origem
     {
-        [Display(Name = "Recebida")]
-        Recebida,
+        [Display(Name = "Unidade")]
+        Unidade,
 
-        [Display(Name = "Iniciada")]
-        Iniciada
+        [Display(Name = "ICT parceira")]
+        ICTParceira,
+
+        [Display(Name = "Empresa / Cliente")]
+        EmpresaCliente,
+
+        [Display(Name = "Catalisa SEBRAE")]
+        CatalisaSebrae,
+
+        [Display(Name = "Programa Prospectores")]
+        ProgramaProspectores
     }
 }
