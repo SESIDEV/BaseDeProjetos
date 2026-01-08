@@ -173,7 +173,7 @@
 						}
 					}
 				</li>
-				<li class="nav-item has-submenu">
+				@*<li class="nav-item has-submenu">
 					@{
 						if (ViewContext.RouteData.Values["controller"] as string == "Projetos")
 						{
@@ -224,8 +224,8 @@
 
 						}
 					}
-				</li>
-				<li class="nav-item">
+				</li>*@
+				@*<li class="nav-item">
 					@{
 						if (ViewContext.RouteData.Values["controller"] as string == "Pessoas")
 						{
@@ -245,9 +245,9 @@
 							</a>
 						}
 					}
-				</li>
+				</li>*@
 
-				<li class="nav-item">
+				@*<li class="nav-item">
 					@{
 						if (ViewContext.RouteData.Values["controller"] as string == "CodigoAmostraProjeto")
 						{
@@ -267,10 +267,10 @@
 							</a>
 						}
 					}
-				</li>
+				</li>*@
 
 
-				@if (usuarioNivel.ToString() == "PMO" || usuarioNivel.ToString() == "Dev" || usuarioNivel.ToString() == "Supervisor")
+				@*@if (usuarioNivel.ToString() == "PMO" || usuarioNivel.ToString() == "Dev" || usuarioNivel.ToString() == "Supervisor")
 				{
 					<li class="nav-item">					
 						@{
@@ -293,9 +293,9 @@
 							}
 						}
 					</li>
-				}
+				}*@
                 
-                @if (usuarioNivel.ToString() == "Dev")
+                @* @if (usuarioNivel.ToString() == "Dev")
                 {
                     <li class="nav-item">
                         @{
@@ -319,9 +319,9 @@
                             }
                         }
                     </li>
-                }
-
-                <li class="nav-item">
+                }*@
+				
+               @*<li class="nav-item">
                         @{
                             if (ViewContext.RouteData.Values["controller"] as string == "Participacao")
                             {
@@ -342,8 +342,8 @@
                                 </a>
                             }
                         }
-                    </li>
-
+                    </li>*@
+				
                 @if (usuarioNivel.ToString() == "PMO" || usuarioNivel.ToString() == "Dev" || usuarioNivel.ToString() == "Supervisor")
                 {
                     <li class="nav-item has-submenu">
