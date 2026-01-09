@@ -30,12 +30,22 @@ namespace BaseDeProjetos.Models
 
         public string Tipologia { get; set; }
 
-        [Display(Name = "Potenciais Parceiros da Prospeccção")]
+        [Display(Name = "Tipo de interação")]
+        public TipoDeInteracao? TipoDeInteracao { get; set; }
+
+        [Display(Name = "Parceiro interno")]
+        public ParceiroInterno? ParceiroInterno { get; set; }
+
+        [Display(Name = "Parceiro externo")]
         public virtual string PotenciaisParceiros { get; set; }
+
+        [Display(Name = "Tipo de projeto")]
+        public TipoDeProjeto? TipoDeProjeto { get; set; }
 
         [ForeignKey("EmpresaId")]
         public virtual Empresa Empresa { get; set; }
 
+        [Display(Name = "Empresa")]
         public int EmpresaId { get; set; }
         public virtual Pessoa Contato { get; set; }
         public virtual Usuario Usuario { get; set; }
@@ -43,11 +53,11 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Equipe")]
         public virtual string MembrosEquipe { get; set; }
 
-        [Display(Name = "Tipo de Contratação")]
-        public virtual TipoContratacao TipoContratacao { get; set; }
+        [Display(Name = "Tipo de contratação")]
+        public virtual TipoContratacao? TipoContratacao { get; set; }
 
-        [Display(Name = "Linha de Pesquisa")]
-        public virtual LinhaPesquisa LinhaPequisa { get; set; }
+        [Display(Name = "Linha de pesquisa")]
+        public virtual LinhaPesquisa? LinhaPequisa { get; set; }
 
         public virtual List<FollowUp> Status { get; set; } = new List<FollowUp>();
         public virtual Instituto Casa { get; set; }
@@ -74,8 +84,8 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Tags")]
         public virtual string Tags { get; set; }
 
-        [Display(Name = "Origem")]
-        public virtual Origem Origem { get; set; }
+        [Display(Name = "Iniciativa da prospecção")]
+        public virtual Origem? Origem { get; set; }
 
         public virtual bool Ancora { get; set; }
         public virtual String Agregadas { get; set; }

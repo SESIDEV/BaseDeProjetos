@@ -4,21 +4,24 @@ using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.Enums;
 using BaseDeProjetos.Models.Helpers;
 using BaseDeProjetos.Models.ViewModels;
+using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Differencing;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
-using ClosedXML.Excel;
 
 
 [assembly: InternalsVisibleTo("TestesBaseDeProjetos1")]
@@ -78,7 +81,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id, Tipologia, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
+        public async Task<IActionResult> Create([Bind("Id, Tipologia, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas, TipoDeInteracao, TipoDeProjeto, TipoContratacao, ParceiroInterno, Usuario")] Prospeccao prospeccao)
         {
             ViewbagizarUsuario(_context, _cache);
 
@@ -198,7 +201,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id, Tipologia, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, EmpresaId, Contato, Casa, Usuario, MembrosEquipe, ValorProposta, ValorEstimado, Status, CaminhoPasta, Tags, Origem, Ancora, Agregadas")] Prospeccao prospeccao)
+        public async Task<IActionResult> Edit(string id, [Bind("Id, Tipologia, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas, ParceiroInterno, Usuario, TipoDeInteracao, TipoDeProjeto")] Prospeccao prospeccao)
         {
             ViewbagizarUsuario(_context, _cache);
 
@@ -261,7 +264,7 @@ namespace BaseDeProjetos.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditarFollowUp(int id, [Bind("Id", "OrigemID", "Status", "Anotacoes", "Data", "Vencimento")] FollowUp followup)
+        public async Task<IActionResult> EditarFollowUp(int id, [Bind("Id", "OrigemID", "Status", "Anotacoes", "Data", "Vencimento, ParceiroInterno")] FollowUp followup)
         {
             ViewbagizarUsuario(_context, _cache);
 
@@ -1185,6 +1188,17 @@ namespace BaseDeProjetos.Controllers
                     _ => p.Origem.ToString() 
                  },
 
+                TipoDeInteracao = p.TipoDeInteracao switch
+                {
+                    TipoDeInteracao.VisitaEmpresa => "Visita à empresa",
+                    TipoDeInteracao.AtendimentoUnidade => "Atendimento na unidade",
+                    TipoDeInteracao.TelefoneOuTeleconferencia => "Telefone ou teleconferência",
+                    TipoDeInteracao.ReuniaoEventoProspeccao => "Reunião em evento de prospecção",
+                    TipoDeInteracao.Outro => "Outros",
+                    0 => "Não informado",
+                    _ => p.TipoDeInteracao.ToString() ?? "Não informado"
+                },
+
                 Segmento = p.Empresa != null
                     ? p.Empresa.Segmento.GetDisplayName()
                     : "",
@@ -1194,7 +1208,7 @@ namespace BaseDeProjetos.Controllers
                     : "",
 
                 Responsavel = p.Contato != null
-                    ? $"{p.Contato.Nome} | {p.Contato.Cargo} | {p.Contato.Email}"
+                    ? $"{p.Contato.Nome} | {p.Contato.Cargo} | {p.Contato.Telefone} | {p.Contato.Email}"
                     : "Não informado",
 
                 AlocadoPara = p.Usuario?.UserName ?? "",
@@ -1213,9 +1227,20 @@ namespace BaseDeProjetos.Controllers
 
                 LinhaPesquisa = p.LinhaPequisa.GetDisplayName(),
 
-                ParceiroInterno = "",
+                ParceiroInterno = p.ParceiroInterno switch 
+                {
+                    ParceiroInterno.ISI_II => "ISI-II",
+                    ParceiroInterno.ISI_BF => "ISI-BF",
+                    ParceiroInterno.ISI_SVP => "ISI-SVP",
+                    ParceiroInterno.CIS_SO => "CIS-SO",
+                    ParceiroInterno.IST_EDI => "IST-EDI",
+                    ParceiroInterno.IST_QMA => "IST-QMA",
+                    ParceiroInterno.ISI_QV => "ISI-QV",
+                    0 => "Não informado",
+                    _ => p.ParceiroInterno.ToString() ?? "Não informado"
+                },       
 
-                ParceiroExterno = "",
+                ParceiroExterno = p.PotenciaisParceiros,
 
                 ContatoRealizado = p.Status?
                  .Where(s => s.Status == StatusProspeccao.ContatoInicial)

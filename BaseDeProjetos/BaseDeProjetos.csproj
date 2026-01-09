@@ -12,6 +12,8 @@
     <Compile Remove="Migrations\20251229192722_AdicionarTipologiaEmProspeccao.Designer.cs" />
     <Compile Remove="Migrations\20251229193116_AdicionarTipologiaEmProspeccao.cs" />
     <Compile Remove="Migrations\20251229193116_AdicionarTipologiaEmProspeccao.Designer.cs" />
+    <Compile Remove="Migrations\20260108182430_AddParceiroInterno.cs" />
+    <Compile Remove="Migrations\20260108182430_AddParceiroInterno.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

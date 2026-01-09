@@ -83,11 +83,24 @@
 
                         <span asp-validation-for="Tipologia" class="text-danger"></span>
                     </div>
-
+                    <div class="col-md-4">
+                        <label asp-for="TipoDeInteracao" class="form-label fw-semibold"></label>
+                        <select asp-for="TipoDeInteracao" class="form-select"
+                                asp-items="Html.GetEnumSelectList<TipoDeInteracao>()">
+                            <option value="">Selecione</option>
+                        </select>
+                    </div>
                     <div class="mb-2">
                         <label asp-for="LinhaPequisa" class="col-form-label" style="font-weight: 600"></label>
                         <select asp-for="LinhaPequisa" class="form-control" asp-items="Html.GetEnumSelectList<LinhaPesquisa>().OrderBy(p=>p.Text)"></select>
                         <span asp-validation-for="LinhaPequisa" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="TipoDeProjeto" class="form-label fw-semibold"></label>
+                        <select asp-for="TipoDeProjeto" class="form-select"
+                                asp-items="Html.GetEnumSelectList<TipoDeProjeto>()">
+                            <option value="">Selecione</option>
+                        </select>
                     </div>
                     <div class="mb-2">
                         <label asp-for="PotenciaisParceiros" class="col-form-label" style="font-weight: 600"></label>
@@ -99,6 +112,13 @@
                         <div class="input-group flex-nowrap" id="caixaPesquisaEmpresas-@Model.Id" style="display:none;">
                             <select id="campoSelectEmpresas-@Model.Id" class="form-select" multiple="true"></select>
                         </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="ParceiroInterno" class="form-label fw-semibold"></label>
+                        <select asp-for="ParceiroInterno" class="form-select"
+                                asp-items="Html.GetEnumSelectList<ParceiroInterno>()">
+                            <option value="">Selecione</option>
+                        </select>
                     </div>
                     <div class="mb-2">
                         <label asp-for="CaminhoPasta" class="col-form-label" style="font-weight: 600"></label>

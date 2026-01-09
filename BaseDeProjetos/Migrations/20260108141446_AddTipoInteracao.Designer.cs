@@ -3,14 +3,16 @@ using System;
 using BaseDeProjetos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BaseDeProjetos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260108141446_AddTipoInteracao")]
+    partial class AddTipoInteracao
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -549,7 +551,7 @@ namespace BaseDeProjetos.Migrations
                     b.Property<int>("EmpresaId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("LinhaPequisa")
+                    b.Property<int>("LinhaPequisa")
                         .HasColumnType("int");
 
                     b.Property<string>("MembrosEquipe")
@@ -558,10 +560,7 @@ namespace BaseDeProjetos.Migrations
                     b.Property<string>("NomeProspeccao")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int?>("Origem")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ParceiroInterno")
+                    b.Property<int>("Origem")
                         .HasColumnType("int");
 
                     b.Property<string>("PotenciaisParceiros")
@@ -570,13 +569,10 @@ namespace BaseDeProjetos.Migrations
                     b.Property<string>("Tags")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int?>("TipoContratacao")
+                    b.Property<int>("TipoContratacao")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TipoDeInteracao")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TipoDeProjeto")
+                    b.Property<int>("TipoDeInteracao")
                         .HasColumnType("int");
 
                     b.Property<string>("Tipologia")
