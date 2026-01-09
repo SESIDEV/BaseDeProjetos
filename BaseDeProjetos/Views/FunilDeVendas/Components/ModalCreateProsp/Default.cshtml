@@ -155,50 +155,72 @@
                     <div class="card mb-3">
                         <div class="card-header fw-semibold">EQUIPE</div>
                         <div class="card-body">
+                            <div class="row g-3">
 
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Membros da Equipe</label>
-                                <div class="input-group">
-                                    <input asp-for="MembrosEquipe" class="form-control" readonly />
-                                    <button class="btn app-btn-primary" type="button"
+                                <div class="col-12">
+                                    <label class="col-form-label fw-semibold">Membros</label>
+
+                                    <div class="spinner-border ms-2 d-none"
+                                         role="status"
+                                         id="loadingOpcoesSelectPessoas">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+
+                                    <button class="btn app-btn-primary w-100 mb-2"
+                                            type="button"
+                                            id="botaoToggleCaixaRequestPessoas"
                                             onclick="gerarOpcoesSelect('Pessoas', 'criarProspModalToggle')">
                                         Buscar
                                     </button>
+
+                                    <div id="caixaPesquisaPessoas" style="display:none;">
+                                        <select asp-for="MembrosEquipe"
+                                                id="campoSelectPessoas"
+                                                class="form-select"
+                                                multiple
+                                                asp-items="@(ViewData["Pessoas"] as SelectList)">
+                                        </select>
+                                    </div>
                                 </div>
 
-                                <div class="collapse mt-2" id="caixaPesquisaPessoas">
-                                    <select id="campoSelectPessoas" class="form-select" multiple></select>
+                                <div class="col-md-6">
+                                    <label asp-for="PotenciaisParceiros" class="form-label fw-semibold"></label>
+                                    <select asp-for="PotenciaisParceiros"
+                                            class="form-select"
+                                            asp-items="@(ViewData["Empresas"] as SelectList)">
+                                        <option value="">Selecione</option>
+                                    </select>
                                 </div>
-                            </div>
 
-                            <div class="col-md-6">
-                                <label asp-for="PotenciaisParceiros" class="form-label fw-semibold"></label>
-                                <select asp-for="PotenciaisParceiros" class="form-select"
-                                        asp-items="@(ViewData["Empresas"] as SelectList)">
-                                    <option value="">Selecione</option>
-                                </select>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label asp-for="ParceiroInterno" class="form-label fw-semibold"></label>
-                                <select asp-for="ParceiroInterno" class="form-select"
-                                        asp-items="Html.GetEnumSelectList<ParceiroInterno>()">
-                                    <option value="">Selecione</option>
-                                 </select>
-                            </div>
-                            <div class="mb-3">
-                                <label asp-for="Tags" class="form-label fw-semibold"></label>
-                                <div class="input-group">
-                                    <input asp-for="Tags" class="form-control" id="tagsText" />
-                                    <button class="btn app-btn-primary" type="button"
-                                            onclick="gerarOpcoesSelect('Tags', 'criarProspModalToggle')">
-                                        Adicionar
-                                    </button>
+                                <div class="col-md-6">
+                                    <label asp-for="ParceiroInterno" class="form-label fw-semibold"></label>
+                                    <select asp-for="ParceiroInterno"
+                                            class="form-select"
+                                            asp-items="Html.GetEnumSelectList<ParceiroInterno>()">
+                                        <option value="">Selecione</option>
+                                    </select>
                                 </div>
-                            </div>
 
+                                @*<div class="mb-2">
+                                    <label for="tagsText" class="control-label" style="font-weight: 600">Tags</label>
+                                    <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectTags">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <input type="text" asp-for="Tags" class="form-control" id="tagsText" />
+                                    <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestTags" onclick="gerarOpcoesSelect('Tags', '#criarProspModalToggle')">Adicionar</button>
+                                    <div class="input-group flex-nowrap" id="caixaPesquisaTags">
+                                        <select id="campoSelectTags" class="form-select" multiple="true"></select>
+                                        <span class="input-group-text" id="addon-wrapping" onclick="addTag('tagsText','campoSelectTags')" onmouseover="novaTag()">
+                                            <i class="bi bi-plus-square-fill"></i>
+                                        </span>
+                                    </div>
+                                    <span asp-validation-for="Tags" class="text-danger"></span>
+                                </div>*@
+
+                            </div>
                         </div>
                     </div>
+
 
                     <div class="card mb-3">
                         <div class="card-header fw-semibold">STATUS INICIAL</div>
