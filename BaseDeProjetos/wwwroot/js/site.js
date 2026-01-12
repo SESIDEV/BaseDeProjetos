@@ -589,3 +589,59 @@ function repopularnomeprojeto() {
     let inputRepopulado = document.querySelector("#repopularNomeProjeto");
     inputRepopulado.value = campoInput.value;
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Seleciona todos os selects múltiplos de pessoas
+    const selects = document.querySelectorAll("[id^='campoSelectPessoas-']");
+
+    selects.forEach(select => {
+        // Inicializa Select2 (se estiver usando)
+        $(select).select2({ dropdownParent: $(select).closest('.modal') });
+
+        // Atualiza o input hidden sempre que mudar
+        $(select).on('change', function () {
+            let id = select.id.split('-').pop();
+            atualizarMembros(id);
+        });
+    });
+});
+
+// Atualiza o input hidden com os valores selecionados
+function atualizarMembros(id) {
+    const select = document.getElementById("campoSelectPessoas-" + id);
+    const inputHidden = document.getElementById("inputTextPessoas-" + id);
+
+    if (select && inputHidden) {
+        const valoresSelecionados = $(select).val(); // pega os values selecionados do Select2
+        inputHidden.value = valoresSelecionados.join(';'); // salva no formato CSV
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Inicializa Select2 para o Create
+    const selectCreate = document.getElementById("campoSelectPessoas-create");
+    if (selectCreate) {
+        $(selectCreate).select2({ dropdownParent: $(selectCreate).closest('.modal') });
+
+        // Atualiza o input hidden sempre que mudar
+        $(selectCreate).on('change', function () {
+            const inputHidden = document.getElementById("inputTextPessoas-create");
+            const valoresSelecionados = $(selectCreate).val();
+            inputHidden.value = valoresSelecionados.join(';'); // salva no formato CSV
+        });
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const selectId = "campoSelectPessoas";
+    const inputId = "inputTextPessoas";
+
+    // Inicializa o select com as opções
+    gerarOpcoesSelect('Pessoas', 'criarProspModalToggle', '', true);
+
+    // Atualiza input hidden sempre que selecionar/deselecionar
+    $(document).on('change', `#${selectId}`, function () {
+        const valores = $(this).val() || [];
+        document.getElementById(inputId).value = valores.join(';');
+    });
+});

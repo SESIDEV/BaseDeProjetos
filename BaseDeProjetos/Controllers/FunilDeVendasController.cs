@@ -264,7 +264,7 @@ namespace BaseDeProjetos.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditarFollowUp(int id, [Bind("Id", "OrigemID", "Status", "Anotacoes", "Data", "Vencimento, ParceiroInterno, ValorProposta, ValorEstimado")] FollowUp followup)
+        public async Task<IActionResult> EditarFollowUp(int id, [Bind("Id", "OrigemID", "Status", "Anotacoes", "Data", "Vencimento, ParceiroInterno, ValorProposta, ValorEstimado, MembrosEquipe")] FollowUp followup)
         {
             ViewbagizarUsuario(_context, _cache);
 

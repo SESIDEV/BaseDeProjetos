@@ -156,27 +156,21 @@
                         <div class="card-header fw-semibold">EQUIPE</div>
                         <div class="card-body">
 
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Membros da Equipe</label>
-                                <div class="input-group">
-                                    <input asp-for="MembrosEquipe" class="form-control" readonly />
-                                    <button class="btn app-btn-primary" type="button"
-                                            onclick="gerarOpcoesSelect('Pessoas', 'criarProspModalToggle')">
-                                        Buscar
-                                    </button>
+                            <div class="mb-2">
+                                <label class="col-form-label" style="font-weight: 600" for="inputTextPessoas">Membros</label>
+                                <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectPessoas">
+                                    <span class="visually-hidden">Loading...</span>
                                 </div>
-
-                                <div class="collapse mt-2" id="caixaPesquisaPessoas">
-                                    <select id="campoSelectPessoas" class="form-select" multiple></select>
+                                <input asp-for="MembrosEquipe" class="form-control d-none" id="inputTextPessoas" type="text" />
+                                <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestPessoas" onclick="gerarOpcoesSelect('Pessoas', 'criarProspModalToggle')">Buscar</button>
+                                <div class="input-group flex-nowrap" id="caixaPesquisaPessoas" style="display:none;">
+                                    <select id="campoSelectPessoas" class="form-select" multiple="true"></select>
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <label asp-for="PotenciaisParceiros" class="form-label fw-semibold"></label>
-                                <select asp-for="PotenciaisParceiros" class="form-select"
-                                        asp-items="@(ViewData["Empresas"] as SelectList)">
-                                    <option value="">Selecione</option>
-                                </select>
+                                <input asp-for="PotenciaisParceiros" class="form-control" />
                             </div>
 
                             <div class="col-md-6">
@@ -186,7 +180,7 @@
                                     <option value="">Selecione</option>
                                  </select>
                             </div>
-                            <div class="mb-3">
+                            @*<div class="mb-3">
                                 <label asp-for="Tags" class="form-label fw-semibold"></label>
                                 <div class="input-group">
                                     <input asp-for="Tags" class="form-control" id="tagsText" />
@@ -195,7 +189,7 @@
                                         Adicionar
                                     </button>
                                 </div>
-                            </div>
+                            </div>*@
 
                         </div>
                     </div>
