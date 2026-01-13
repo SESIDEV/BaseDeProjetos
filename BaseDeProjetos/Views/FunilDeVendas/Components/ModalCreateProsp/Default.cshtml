@@ -108,23 +108,23 @@
 
                                 <div class="col-md-6">
                                     <label asp-for="Contato.Nome" class="form-label fw-semibold"></label>
-                                    <input asp-for="Contato.Nome" class="form-control" />
+                                    <input asp-for="Contato.Nome" class="form-control" required/>
                                 </div>
 
                                 <div class="col-md-4">
                                     <label asp-for="Contato.Cargo" class="form-label fw-semibold"></label>
-                                    <input asp-for="Contato.Cargo" class="form-control" />
+                                    <input asp-for="Contato.Cargo" class="form-control" required/>
                                 </div>
 
                                 <div class="col-md-4">
                                     <label asp-for="Contato.Telefone" class="form-label fw-semibold"></label>
                                     <input asp-for="Contato.Telefone" class="form-control"
-                                           onkeypress="$(this).mask('(00) 0000-00009')" />
+                                           onkeypress="$(this).mask('(00) 0000-00009')" required/>
                                 </div>
 
                                 <div class="col-md-4">
                                     <label asp-for="Contato.Email" class="form-label fw-semibold"></label>
-                                    <input asp-for="Contato.Email" class="form-control" type="email" />
+                                    <input asp-for="Contato.Email" class="form-control" type="email" required/>
                                 </div>
 
                             </div>
