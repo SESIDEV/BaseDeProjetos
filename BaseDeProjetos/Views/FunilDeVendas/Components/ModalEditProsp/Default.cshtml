@@ -175,25 +175,46 @@
                             <div class="row g-3">
 
                                 <div class="mb-2">
-                                    <label name="MembrosSelect" class="col-form-label" style="font-weight: 600">Membros</label>
-                                    <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectPessoas-@Model.Id">
+                                    <label asp-for="MembrosEquipe"
+                                           class="col-form-label"
+                                           style="font-weight: 600">
+                                        Membros
+                                    </label>
+
+                                    <div style="margin-left:3%;display:none"
+                                         class="spinner-border"
+                                         role="status"
+                                         id="loadingOpcoesSelectPessoas-@Model.Id">
                                         <span class="visually-hidden">Loading...</span>
                                     </div>
-                                    <input asp-for="MembrosEquipe" class="form-control d-none" id="inputTextPessoas-@Model.Id"
+
+                                    <!-- INPUT CORRETO PARA MODEL BINDER -->
+                                    <input asp-for="MembrosEquipe"
+                                           class="form-control d-none"
+                                           id="inputTextPessoas-@Model.Id"
                                            type="text" />
-                                    <button class="btn app-btn-primary" type="button" style="width: 100%;"
+
+                                    <button class="btn app-btn-primary"
+                                            type="button"
+                                            style="width: 100%;"
                                             id="botaoToggleCaixaRequestPessoas-@Model.Id"
+                                            onmouseover="preencherInputEditProjeto('@Model.Id')"
                                             onclick="gerarOpcoesSelect('Pessoas','editarProspModal','-@Model.Id',true)">
                                         Alterar
                                     </button>
-                                    <div class="input-group w-100" id="caixaPesquisaPessoas-@Model.Id" style="display:none;">
+
+                                    <div class="input-group flex-nowrap"
+                                         id="caixaPesquisaPessoas-@Model.Id"
+                                         style="display:none;">
                                         <select id="campoSelectPessoas-@Model.Id"
-                                                class="form-select w-100"
-                                                multiple
-                                                size="15">
+                                                class="form-select"
+                                                multiple="true">
                                         </select>
                                     </div>
+
+                                    <span asp-validation-for="MembrosEquipe" class="text-danger"></span>
                                 </div>
+
 
                                 <div class="col-md-8">
                                     <label asp-for="PotenciaisParceiros" class="form-label fw-semibold"></label>
