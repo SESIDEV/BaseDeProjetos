@@ -1160,9 +1160,30 @@ namespace BaseDeProjetos.Controllers
             {
                 Empresa = p.Empresa?.Nome ?? "",
 
-                TipoContratacao = p.TipoContratacao.ToString(),
+                //AJUSTAR QUANDO TIVER MAIS TEMPO
+                TipoContratacao = p.TipoContratacao switch
+                {
+                    TipoContratacao.ContratacaoDireta => "Contratação Direta",
+                    TipoContratacao.Embrapii => "Embrapii",
+                    TipoContratacao.EditalInovacao => "Edital SESI-SENAI",
+                    TipoContratacao.AgenciaFomento => "ANEEL",
+                    TipoContratacao.ANP => "ANP",
+                    TipoContratacao.Parceiro => "Finep",
+                    TipoContratacao.Push => "Embrapii + ANP",
+                    TipoContratacao.EmbrapiiANEEL => "Embrapii + ANEEL",
+                    TipoContratacao.EditalOutros => "Edital - outros",
+                    TipoContratacao.Indefinida => "A definir",
+                    _ => p.TipoContratacao.ToString() 
+                },
 
-                Iniciativa = p.Origem,
+                Iniciativa = p.Origem switch
+                {   Origem.Unidade => "Unidade",
+                    Origem.ICTParceira => "ICT parceira",
+                    Origem.EmpresaCliente => "Empresa / Cliente",
+                    Origem.CatalisaSebrae => "Catalisa SEBRAE",
+                    Origem.ProgramaProspectores => "Programa Prospectores",
+                    _ => p.Origem.ToString() 
+                 },
 
                 Segmento = p.Empresa != null
                     ? p.Empresa.Segmento.GetDisplayName()
@@ -1198,6 +1219,12 @@ namespace BaseDeProjetos.Controllers
 
                 ContatoRealizado = p.Status?
                  .Where(s => s.Status == StatusProspeccao.ContatoInicial)
+                 .OrderBy(s => s.Data)
+                 .Select(s => (DateTime?)s.Data)
+                 .FirstOrDefault(),
+
+                NDAAssinado = p.Status?
+                 .Where(s => s.Status == StatusProspeccao.NDAAssinado)
                  .OrderBy(s => s.Data)
                  .Select(s => (DateTime?)s.Data)
                  .FirstOrDefault(),
