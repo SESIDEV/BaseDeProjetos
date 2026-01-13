@@ -60,5 +60,11 @@ namespace BaseDeProjetos.Models.Enums
 
         [Display(Name = "CIS - Suporte Científico para Processos e Produtos em Saude", GroupName = "Centro de Inovação Sesi - Saúde Ocupacional")]
         SuporteProcessosSaude,
+
+        [Display(Name = "CIS - Desenvolvimento e Otimização de Marcadores Biológicos e Moleculares", GroupName = "Centro de Inovação Sesi - Saúde Ocupacional")]
+        MarcadoresBiologicos,
+
+        [Display(Name = "CIS - Tecnologias Digitais para Saúde e Segurança Ocupacional", GroupName = "Centro de Inovação Sesi - Saúde Ocupacional")]
+        TecnologiasDigitais,
     }
 }
