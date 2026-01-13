@@ -23,7 +23,7 @@
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h5 class="modal-title fw-semibold">Nova Prospecção</h5>
+                    <h5 class="modal-title fw-semibold">NOVA PROSPECÇÃO</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
@@ -32,7 +32,7 @@
                     <input asp-for="Id" type="hidden" value="@unique_id" />
 
                     <div class="card mb-3">
-                        <div class="card-header fw-semibold">Informações Básicas</div>
+                        <div class="card-header fw-semibold">PROJETO</div>
                         <div class="card-body">
                             <div class="row g-3">
 
@@ -72,29 +72,50 @@
                                 </div>
 
                                 <div class="col-md-4">
+                                    <label asp-for="TipoDeInteracao" class="form-label fw-semibold"></label>
+                                    <select asp-for="TipoDeInteracao" class="form-select"
+                                            asp-items="Html.GetEnumSelectList<TipoDeInteracao>()">
+                                        <option value="">Selecione</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label asp-for="TipoDeProjeto" class="form-label fw-semibold"></label>
+                                    <select asp-for="TipoDeProjeto" class="form-select"
+                                            asp-items="Html.GetEnumSelectList<TipoDeProjeto>()">
+                                        <option value="">Selecione</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
                                     <label asp-for="Origem" class="form-label fw-semibold"></label>
                                     <select asp-for="Origem" class="form-select"
-                                            asp-items="Html.GetEnumSelectList<Origem>()"></select>
+                                            asp-items="Html.GetEnumSelectList<Origem>()">
+                                        <option value="">Selecione</option>
+                                    </select>
                                 </div>
 
                                 <div class="col-md-4">
                                     <label asp-for="TipoContratacao" class="form-label fw-semibold"></label>
                                     <select asp-for="TipoContratacao" class="form-select"
-                                            asp-items="Html.GetEnumSelectList<TipoContratacao>()"></select>
+                                            asp-items="Html.GetEnumSelectList<TipoContratacao>()">
+                                        <option value="">Selecione</option>
+                                    </select>
                                 </div>
 
                                 <div class="col-md-6">
                                     <label asp-for="LinhaPequisa" class="form-label fw-semibold"></label>
                                     <select asp-for="LinhaPequisa" class="form-select"
-                                            asp-items="Html.GetEnumSelectList<LinhaPesquisa>()"></select>
+                                            asp-items="Html.GetEnumSelectList<LinhaPesquisa>()">
+                                        <option value="">Selecione</option>
+                                    </select>
                                 </div>
-
                             </div>
                         </div>
                     </div>
 
                     <div class="card mb-3">
-                        <div class="card-header fw-semibold">Empresa</div>
+                        <div class="card-header fw-semibold">EMPRESA</div>
                         <div class="card-body">
                             <div class="row g-3">
 
@@ -132,7 +153,7 @@
                     </div>
 
                     <div class="card mb-3">
-                        <div class="card-header fw-semibold">Equipe</div>
+                        <div class="card-header fw-semibold">EQUIPE</div>
                         <div class="card-body">
 
                             <div class="mb-3">
@@ -150,6 +171,21 @@
                                 </div>
                             </div>
 
+                            <div class="col-md-6">
+                                <label asp-for="PotenciaisParceiros" class="form-label fw-semibold"></label>
+                                <select asp-for="PotenciaisParceiros" class="form-select"
+                                        asp-items="@(ViewData["Empresas"] as SelectList)">
+                                    <option value="">Selecione</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="ParceiroInterno" class="form-label fw-semibold"></label>
+                                <select asp-for="ParceiroInterno" class="form-select"
+                                        asp-items="Html.GetEnumSelectList<ParceiroInterno>()">
+                                    <option value="">Selecione</option>
+                                 </select>
+                            </div>
                             <div class="mb-3">
                                 <label asp-for="Tags" class="form-label fw-semibold"></label>
                                 <div class="input-group">
@@ -165,7 +201,7 @@
                     </div>
 
                     <div class="card mb-3">
-                        <div class="card-header fw-semibold">Status Inicial</div>
+                        <div class="card-header fw-semibold">STATUS INICIAL</div>
                         <div class="card-body">
                             <div class="row g-3">
 
