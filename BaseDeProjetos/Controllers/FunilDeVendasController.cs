@@ -201,7 +201,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id, Tipologia, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas, ParceiroInterno, Usuario, TipoDeInteracao, TipoDeProjeto")] Prospeccao prospeccao)
+        public async Task<IActionResult> Edit(string id, [Bind("Id, Tipologia, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas, ParceiroInterno, Usuario, TipoDeInteracao, TipoDeProjeto, ValorEstimado, ValorProposta")] Prospeccao prospeccao)
         {
             ViewbagizarUsuario(_context, _cache);
 
