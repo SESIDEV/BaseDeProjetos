@@ -71,6 +71,20 @@
                         <span asp-validation-for="TipoContratacao" class="text-danger"></span>
                     </div>
                     <div class="mb-2">
+                        <label asp-for="Tipologia" class="col-form-label" style="font-weight: 600">Tipologia</label>
+
+                        <select asp-for="Tipologia" class="form-control">
+                            <option value="">Selecione</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+
+                        <span asp-validation-for="Tipologia" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-2">
                         <label asp-for="LinhaPequisa" class="col-form-label" style="font-weight: 600"></label>
                         <select asp-for="LinhaPequisa" class="form-control" asp-items="Html.GetEnumSelectList<LinhaPesquisa>().OrderBy(p=>p.Text)"></select>
                         <span asp-validation-for="LinhaPequisa" class="text-danger"></span>

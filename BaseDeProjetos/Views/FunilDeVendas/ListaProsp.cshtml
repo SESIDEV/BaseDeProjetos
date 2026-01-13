@@ -208,6 +208,15 @@
                                         <span>@prospeccao.Origem.GetDisplayName()</span>
                                         <h1 class="app-card-title">Linha de Pesquisa:</h1>
                                         <span>@prospeccao.LinhaPequisa.GetDisplayName()</span>
+                                        <h1 class="app-card-title">Tipologia:</h1>
+                                        @if (!string.IsNullOrWhiteSpace(prospeccao.Tipologia))
+                                        {
+                                            <span>@prospeccao.Tipologia</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Valor não informado</span>
+                                        }
                                         <h1 class="app-card-title">Valor Estimado:</h1>
                                         <nobr>
                                             @if (prospeccao.ValorEstimado != 0)

@@ -31,6 +31,15 @@
                 <span>@Model.Origem.GetDisplayName()</span>
                 <h1 class="app-card-title">Linha de Pesquisa:</h1>
                 <span>@Model.LinhaPequisa.GetDisplayName()</span>
+                <h1 class="app-card-title">Tipologia:</h1>
+                @if (!string.IsNullOrEmpty(Model.Tipologia))
+                {
+                    <span>@Model.Tipologia</span>
+                }
+                else
+                {
+                    <span>Não informada</span>
+                }
                 <h1 class="app-card-title">Status:</h1>
                 <span>@Model.Status.OrderBy(followup => followup.Data).Last().Status.GetDisplayName()</span>
                 <h1 class="app-card-title">Valor Estimado:</h1>
