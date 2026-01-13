@@ -3,14 +3,16 @@ using System;
 using BaseDeProjetos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BaseDeProjetos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260107132555_AddCapitalSocialAString2")]
+    partial class AddCapitalSocialAString2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -179,6 +181,9 @@ namespace BaseDeProjetos.Migrations
                     b.Property<string>("CNPJ")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<string>("CapitalSocial")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
                     b.Property<string>("EmpresaUnique")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -192,9 +197,6 @@ namespace BaseDeProjetos.Migrations
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Nome")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("Porte")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("RazaoSocial")
