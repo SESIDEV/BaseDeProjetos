@@ -1266,6 +1266,8 @@ namespace BaseDeProjetos.Controllers
                  .Select(s => (DateTime?)s.Data)
                  .FirstOrDefault(),
 
+                ValorEstimado = p.ValorEstimado,
+
                 ValorProposta = p.ValorProposta,
 
                 HistoricoContatos = p.Status != null
