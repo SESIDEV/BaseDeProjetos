@@ -1162,7 +1162,7 @@ namespace BaseDeProjetos.Controllers
 
                 TipoContratacao = p.TipoContratacao.ToString(),
 
-                Iniciativa = "",
+                Iniciativa = p.Origem,
 
                 Segmento = p.Empresa != null
                     ? p.Empresa.Segmento.GetDisplayName()
