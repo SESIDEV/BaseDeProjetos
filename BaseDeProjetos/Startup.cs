@@ -127,7 +127,7 @@ namespace BaseDeProjetos
                 endpoints.MapRazorPages();
             });
 
-            //context.Database.Migrate();
+            context.Database.Migrate();
         }
     }
 }
