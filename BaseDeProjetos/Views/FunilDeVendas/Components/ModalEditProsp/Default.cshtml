@@ -76,60 +76,94 @@
                                 </div>
 
                                 <div class="col-md-8">
-                                    <label asp-for="NomeProspeccao" class="form-label fw-semibold"></label>
-                                    <input asp-for="NomeProspeccao" class="form-control" />
+                                    <label asp-for="NomeProspeccao" class="form-label fw-semibold">
+                                        @Html.DisplayNameFor(m => m.NomeProspeccao) <span class="text-danger">*</span>
+                                    </label>
+
+                                    <input asp-for="NomeProspeccao" class="form-control" required />
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label asp-for="Tipologia" class="form-label fw-semibold"></label>
-                                    <select asp-for="Tipologia" class="form-select">
+                                    <label asp-for="Tipologia" class="form-label fw-semibold">
+                                        @Html.DisplayNameFor(m => m.Tipologia) <span class="text-danger">*</span>
+                                    </label>
+
+                                    <select asp-for="Tipologia" class="form-select" required>
                                         <option value="">Selecione</option>
                                         <option>A</option>
                                         <option>B</option>
                                         <option>C</option>
                                         <option>D</option>
+                                        <option>A definir</option>
                                     </select>
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label asp-for="TipoDeInteracao" class="form-label fw-semibold"></label>
-                                    <select asp-for="TipoDeInteracao" class="form-select"
-                                            asp-items="Html.GetEnumSelectList<TipoDeInteracao>()">
+                                    <label asp-for="TipoDeInteracao" class="form-label fw-semibold">
+                                        @Html.DisplayNameFor(m => m.TipoDeInteracao) <span class="text-danger">*</span>
+                                    </label>
+
+                                    <select asp-for="TipoDeInteracao"
+                                            class="form-select"
+                                            asp-items="Html.GetEnumSelectList<TipoDeInteracao>()"
+                                            required>
                                         <option value="">Selecione</option>
                                     </select>
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label asp-for="TipoDeProjeto" class="form-label fw-semibold"></label>
-                                    <select asp-for="TipoDeProjeto" class="form-select"
-                                            asp-items="Html.GetEnumSelectList<TipoDeProjeto>()">
+                                    <label asp-for="TipoDeProjeto" class="form-label fw-semibold">
+                                        @Html.DisplayNameFor(m => m.TipoDeProjeto) <span class="text-danger">*</span>
+                                    </label>
+
+                                    <select asp-for="TipoDeProjeto"
+                                            class="form-select"
+                                            asp-items="Html.GetEnumSelectList<TipoDeProjeto>()"
+                                            required>
                                         <option value="">Selecione</option>
                                     </select>
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label asp-for="Origem" class="form-label fw-semibold"></label>
-                                    <select asp-for="Origem" class="form-select"
-                                            asp-items="Html.GetEnumSelectList<Origem>()">
+                                    <label asp-for="Origem" class="form-label fw-semibold">
+                                        @Html.DisplayNameFor(m => m.Origem) <span class="text-danger">*</span>
+                                    </label>
+
+                                    <select asp-for="Origem"
+                                            class="form-select"
+                                            asp-items="Html.GetEnumSelectList<Origem>()"
+                                            required>
                                         <option value="">Selecione</option>
                                     </select>
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label asp-for="TipoContratacao" class="form-label fw-semibold"></label>
-                                    <select asp-for="TipoContratacao" class="form-select"
-                                            asp-items="Html.GetEnumSelectList<TipoContratacao>()">
+                                    <label asp-for="TipoContratacao" class="form-label fw-semibold">
+                                        @Html.DisplayNameFor(m => m.TipoContratacao) <span class="text-danger">*</span>
+                                    </label>
+
+                                    <select asp-for="TipoContratacao"
+                                            class="form-select"
+                                            asp-items="Html.GetEnumSelectList<TipoContratacao>()"
+                                            required>
                                         <option value="">Selecione</option>
                                     </select>
                                 </div>
+
 
                                 <div class="col-md-6">
-                                    <label asp-for="LinhaPequisa" class="form-label fw-semibold"></label>
-                                    <select asp-for="LinhaPequisa" class="form-select"
-                                            asp-items="Html.GetEnumSelectList<LinhaPesquisa>()">
+                                    <label asp-for="LinhaPequisa" class="form-label fw-semibold">
+                                        @Html.DisplayNameFor(m => m.LinhaPequisa) <span class="text-danger">*</span>
+                                    </label>
+
+                                    <select asp-for="LinhaPequisa"
+                                            class="form-select"
+                                            asp-items="Html.GetEnumSelectList<LinhaPesquisa>()"
+                                            required>
                                         <option value="">Selecione</option>
                                     </select>
                                 </div>
+
 
                             </div>
                         </div>
@@ -139,7 +173,10 @@
                             <div class="row g-3">
 
                                 <div class="col-md-6">
-                                    <label asp-for="EmpresaId" class="form-label fw-semibold"></label>
+                                    <label asp-for="EmpresaId" class="form-label fw-semibold">
+                                        @Html.DisplayNameFor(m => m.EmpresaId) <span class="text-danger">*</span>
+                                    </label>
+
                                     <select asp-for="EmpresaId"
                                             class="form-select"
                                             asp-items="@(ViewData["Empresas"] as SelectList)">
@@ -147,23 +184,35 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label asp-for="Contato.Nome" class="form-label fw-semibold"></label>
-                                    <input asp-for="Contato.Nome" class="form-control" />
+                                    <label asp-for="Contato.Nome" class="form-label fw-semibold">
+                                        @Html.DisplayNameFor(m => m.Contato.Nome) <span class="text-danger">*</span>
+                                    </label>
+
+                                    <input asp-for="Contato.Nome" class="form-control" required />
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label asp-for="Contato.Cargo" class="form-label fw-semibold"></label>
+                                    <label asp-for="Contato.Cargo" class="form-label fw-semibold">
+                                        @Html.DisplayNameFor(m => m.Contato.Cargo) <span class="text-danger">*</span>
+                                    </label>
+
                                     <input asp-for="Contato.Cargo" class="form-control" required />
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label asp-for="Contato.Telefone" class="form-label fw-semibold"></label>
+                                    <label asp-for="Contato.Telefone" class="form-label fw-semibold">
+                                        @Html.DisplayNameFor(m => m.Contato.Telefone) <span class="text-danger">*</span>
+                                    </label>
+
                                     <input asp-for="Contato.Telefone" class="form-control"
                                            onkeypress="$(this).mask('(00) 0000-00009')" required />
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label asp-for="Contato.Email" class="form-label fw-semibold"></label>
+                                    <label asp-for="Contato.Email" class="form-label fw-semibold">
+                                        @Html.DisplayNameFor(m => m.Contato.Email) <span class="text-danger">*</span>
+                                    </label>
+
                                     <input asp-for="Contato.Email" class="form-control" type="email" required />
                                 </div>
 
@@ -222,13 +271,17 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label asp-for="ParceiroInterno" class="form-label fw-semibold"></label>
+                                    <label asp-for="ParceiroInterno" class="form-label fw-semibold">
+                                        @Html.DisplayNameFor(m => m.ParceiroInterno) <span class="text-danger">*</span>
+                                    </label>
+
                                     <select asp-for="ParceiroInterno"
                                             class="form-select"
-                                            asp-items="Html.GetEnumSelectList<ParceiroInterno>()">
+                                            asp-items="Html.GetEnumSelectList<ParceiroInterno>()" required>
                                         <option value="">Selecione</option>
                                     </select>
                                 </div>
+
 
                             </div>
                         </div>
@@ -246,12 +299,6 @@
                                            value="@Model.ValorProposta.ToString("0.00")" />
                                     <span asp-validation-for="ValorProposta" class="text-danger"></span>
                                 </div>
-                                <input name="ValorEstimado"
-                                       id="ValorEstimado"
-                                       step="0.01"
-                                       class="form-control"
-                                       lang="en"
-                                       value="@Model.ValorEstimado.ToString("0.00")" />
                             }
                             else
                             {

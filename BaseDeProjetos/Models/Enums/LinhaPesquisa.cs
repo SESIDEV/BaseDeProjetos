@@ -40,9 +40,6 @@ namespace BaseDeProjetos.Models.Enums
         [Display(Name = "QV - Biotecnologia e Biologia Molecular", GroupName = "Quimica Verde")]
         Biotec,
 
-        [Display(Name = "A definir")]
-        Indefinida,
-
         [Display(Name = "SVP - Sistemas interativos inteligentes em realidade estendida", GroupName = "Sistemas Virtuais de Produção")]
         SistemasInterativosRealidadeEstendida,
 
@@ -66,5 +63,8 @@ namespace BaseDeProjetos.Models.Enums
 
         [Display(Name = "CIS - Tecnologias Digitais para Saúde e Segurança Ocupacional", GroupName = "Centro de Inovação Sesi - Saúde Ocupacional")]
         TecnologiasDigitais,
+
+        [Display(Name = "A definir")]
+        Indefinida,
     }
 }
