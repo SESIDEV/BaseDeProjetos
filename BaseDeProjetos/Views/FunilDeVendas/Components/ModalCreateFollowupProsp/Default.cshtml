@@ -118,14 +118,20 @@
                         <span asp-validation-for="Data" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="@Model.Status" class="control-label"></label>
-                        <select asp-for="@Model.Status" class="form-control"
-                                asp-items="FiltrarExcecao(Html.GetEnumSelectList<StatusProspeccao>(), @prosp)"></select>
+                        <label asp-for="Status" class="control-label"></label>
+
+                        <select asp-for="Status"
+                                class="form-control"
+                                asp-items="Html.GetEnumSelectList<StatusProspeccao>()
+                                                .Where(x => x.Value != ((int)StatusProspeccao.Agregada).ToString())">
+                        </select>
+
                         <span asp-validation-for="Status" class="text-danger"></span>
                     </div>
+
                     <div class="form-group">
                         <label asp-for="Anotacoes" class="control-label"></label>
-                        <textarea class="form-control" asp-for=" Anotacoes" rows="3" required></textarea>
+                        <textarea class="form-control" asp-for=" Anotacoes" rows="3"></textarea>
                         <span asp-validation-for="Anotacoes" class="text-danger"></span>
                     </div>
                     <div id="naoconversao" style="display:none">
