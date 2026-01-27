@@ -10,5 +10,8 @@ namespace BaseDeProjetos.Models.Enums
         [Display(Name = "Serviço tecnológico")]
         Servico_tecnologico = 2,
 
+        [Display(Name = "A definir")]
+        Adefinir = 3,
+
     }
 }

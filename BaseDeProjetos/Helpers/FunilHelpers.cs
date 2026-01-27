@@ -369,7 +369,7 @@ namespace BaseDeProjetos.Helpers
 
             return producoes.ToList();
         }
-
+        
         public static void AddAgregadas(ApplicationDbContext _context, Prospeccao prospAntiga, Prospeccao prospeccao)
         {
             if (!string.IsNullOrEmpty(prospeccao.Agregadas))
@@ -480,7 +480,7 @@ namespace BaseDeProjetos.Helpers
                 return "";
             }
         }
-
+        
         public static void RepassarStatusAoCancelarAncora(ApplicationDbContext _context, Prospeccao prospeccao)
         {
             if (!string.IsNullOrEmpty(prospeccao.Agregadas))
@@ -530,7 +530,7 @@ namespace BaseDeProjetos.Helpers
             }
             prospeccao.Agregadas = "";
         }
-
+        
         public static Usuario ObterUsuarioAtivo(ApplicationDbContext _context, HttpContext httpContext)
         {
             if (httpContext == null)

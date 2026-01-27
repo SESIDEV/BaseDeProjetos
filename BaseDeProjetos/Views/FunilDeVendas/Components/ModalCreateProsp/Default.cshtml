@@ -37,24 +37,20 @@
                             <div class="row g-3">
 
                                 <div class="col-md-8">
-                                    <label asp-for="NomeProspeccao" class="form-label fw-semibold"></label>
-                                    <input asp-for="NomeProspeccao" class="form-control"
-                                           placeholder="Ex.: Proposta de biossurfactantes" />
+                                    <label asp-for="NomeProspeccao" class="form-label fw-semibold">
+                                        Nome da prospecção <span class="text-danger">*</span>
+                                    </label>
+
+                                    <input asp-for="NomeProspeccao"
+                                           class="form-control"
+                                           placeholder="Ex.: Proposta de biossurfactantes" required/>
+
+                                    <span asp-validation-for="NomeProspeccao" class="text-danger"></span>
                                 </div>
 
-                                <div class="col-md-4">
-                                    <label asp-for="Tipologia" class="form-label fw-semibold"></label>
-                                    <select asp-for="Tipologia" class="form-select">
-                                        <option value="">Selecione</option>
-                                        <option>A</option>
-                                        <option>B</option>
-                                        <option>C</option>
-                                        <option>D</option>
-                                    </select>
-                                </div>
 
                                 <div class="col-md-4">
-                                    <label asp-for="Casa" class="form-label fw-semibold"></label>
+                                    <label asp-for="Casa" class="form-label fw-semibold">Casa</label>
                                     @if (Context.Session.GetString("_Casa") != null)
                                     {
                                         var enumCasa = (int)Enum.Parse(typeof(Instituto),
@@ -72,44 +68,93 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label asp-for="TipoDeInteracao" class="form-label fw-semibold"></label>
-                                    <select asp-for="TipoDeInteracao" class="form-select"
-                                            asp-items="Html.GetEnumSelectList<TipoDeInteracao>()">
+                                    <label asp-for="Tipologia" class="form-label fw-semibold">
+                                        Tipologia <span class="text-danger">*</span>
+                                    </label>
+                                     
+                                    <select asp-for="Tipologia" class="form-select" required>
                                         <option value="">Selecione</option>
+                                        <option value="A">A</option>
+                                        <option value="B">B</option>
+                                        <option value="C">C</option>
+                                        <option value="D">D</option>
+                                        <option value="A definir">A definir</option>
                                     </select>
+
+                                    <span asp-validation-for="Tipologia" class="text-danger"></span>
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label asp-for="TipoDeProjeto" class="form-label fw-semibold"></label>
-                                    <select asp-for="TipoDeProjeto" class="form-select"
-                                            asp-items="Html.GetEnumSelectList<TipoDeProjeto>()">
+                                    <label asp-for="TipoDeInteracao" class="form-label fw-semibold">
+                                        Tipo de interação <span class="text-danger">*</span>
+                                    </label>
+
+                                    <select asp-for="TipoDeInteracao"
+                                            class="form-select"
+                                            asp-items="Html.GetEnumSelectList<TipoDeInteracao>()" required>
                                         <option value="">Selecione</option>
                                     </select>
+
+                                    <span asp-validation-for="TipoDeInteracao" class="text-danger"></span>
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label asp-for="Origem" class="form-label fw-semibold"></label>
-                                    <select asp-for="Origem" class="form-select"
-                                            asp-items="Html.GetEnumSelectList<Origem>()">
+                                    <label asp-for="TipoDeProjeto" class="form-label fw-semibold">
+                                        Tipo de projeto <span class="text-danger">*</span>
+                                    </label>
+
+                                    <select asp-for="TipoDeProjeto"
+                                            class="form-select"
+                                            asp-items="Html.GetEnumSelectList<TipoDeProjeto>()" required>
                                         <option value="">Selecione</option>
                                     </select>
+
+                                    <span asp-validation-for="TipoDeProjeto" class="text-danger"></span>
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label asp-for="TipoContratacao" class="form-label fw-semibold"></label>
-                                    <select asp-for="TipoContratacao" class="form-select"
-                                            asp-items="Html.GetEnumSelectList<TipoContratacao>()">
+                                    <label asp-for="Origem" class="form-label fw-semibold">
+                                        Iniciativa da prospecção <span class="text-danger">*</span>
+                                    </label>
+
+                                    <select asp-for="Origem"
+                                            class="form-select"
+                                            asp-items="Html.GetEnumSelectList<Origem>()" required>
                                         <option value="">Selecione</option>
                                     </select>
+
+                                    <span asp-validation-for="Origem" class="text-danger"></span>
                                 </div>
 
-                                <div class="col-md-6">
-                                    <label asp-for="LinhaPequisa" class="form-label fw-semibold"></label>
-                                    <select asp-for="LinhaPequisa" class="form-select"
-                                            asp-items="Html.GetEnumSelectList<LinhaPesquisa>()">
+                                <div class="col-md-4">
+                                    <label asp-for="TipoContratacao" class="form-label fw-semibold">
+                                        Tipo de contratação <span class="text-danger">*</span>
+                                    </label>
+
+                                    <select asp-for="TipoContratacao"
+                                            class="form-select"
+                                            asp-items="Html.GetEnumSelectList<TipoContratacao>()" required>
                                         <option value="">Selecione</option>
                                     </select>
+
+                                    <span asp-validation-for="TipoContratacao" class="text-danger"></span>
                                 </div>
+
+
+                                <div class="col-md-4">
+                                    <label asp-for="LinhaPequisa" class="form-label fw-semibold">
+                                        Linha de pesquisa <span class="text-danger">*</span>
+                                    </label>
+
+                                    <select asp-for="LinhaPequisa"
+                                            class="form-select"
+                                            asp-items="Html.GetEnumSelectList<LinhaPesquisa>()" required>
+                                        <option value="">Selecione</option> 
+                                    </select>
+
+                                    <span asp-validation-for="LinhaPequisa" class="text-danger"></span>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -118,35 +163,65 @@
                         <div class="card-header fw-semibold">EMPRESA</div>
                         <div class="card-body">
                             <div class="row g-3">
-
                                 <div class="col-md-6">
-                                    <label asp-for="EmpresaId" class="form-label fw-semibold"></label>
-                                    <select asp-for="EmpresaId" class="form-select"
-                                            asp-items="@(ViewData["Empresas"] as SelectList)">
-                                        <option value="">Selecione</option>
-                                    </select>
+                                    <label class="form-label fw-semibold" for="EmpresaInput">Empresa <span class="text-danger">*</span></label>
+                                    <input id="EmpresaInput" class="form-control" list="empresas" placeholder="Digite o nome da empresa ou selecione" autocomplete="off" />
+                                    <datalist id="empresas">
+                                        @{
+                                            var empresasSelect = ViewData["Empresas"] as SelectList;
+                                            if (empresasSelect != null)
+                                            {
+                                                foreach (Microsoft.AspNetCore.Mvc.Rendering.SelectListItem e in empresasSelect)
+                                                {
+                                                    <option data-id="@e.Value" value="@e.Text"></option>
+                                                }
+                                            }
+                                        }
+                                    </datalist>
+
+                                    <!-- Campo ligado ao modelo: obrigatório para o binder enviar o id -->
+                                    <input asp-for="EmpresaId" type="hidden" id="EmpresaId" />
+
+                                    <span asp-validation-for="EmpresaId" class="text-danger"></span>
                                 </div>
-
+                                    
                                 <div class="col-md-6">
-                                    <label asp-for="Contato.Nome" class="form-label fw-semibold"></label>
+                                    <label asp-for="Contato.Nome" class="form-label fw-semibold">
+                                        Nome do contato <span class="text-danger">*</span>
+                                    </label>
                                     <input asp-for="Contato.Nome" class="form-control" required/>
+                                    <span asp-validation-for="Contato.Nome" class="text-danger"></span>
                                 </div>
 
-                                <div class="col-md-4">
-                                    <label asp-for="Contato.Cargo" class="form-label fw-semibold"></label>
+                                <div class="col-md-6">
+                                    <label asp-for="Contato.Cargo" class="form-label fw-semibold">
+                                        Cargo do contato <span class="text-danger">*</span>
+                                    </label>
                                     <input asp-for="Contato.Cargo" class="form-control" required/>
+                                    <span asp-validation-for="Contato.Cargo" class="text-danger"></span>
                                 </div>
 
-                                <div class="col-md-4">
-                                    <label asp-for="Contato.Telefone" class="form-label fw-semibold"></label>
-                                    <input asp-for="Contato.Telefone" class="form-control"
-                                           onkeypress="$(this).mask('(00) 0000-00009')" required/>
+                                <div class="col-md-6">
+                                    <label asp-for="Contato.Telefone" class="form-label fw-semibold">
+                                        Telefone de contato <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="Contato.Telefone"
+                                           class="form-control"
+                                           onkeypress="$(this).mask('(00) 0000-00009')"
+                                           placeholder="(xx) xxxxx-xxxx" required/>
+                                    <span asp-validation-for="Contato.Telefone" class="text-danger"></span>
                                 </div>
 
-                                <div class="col-md-4">
-                                    <label asp-for="Contato.Email" class="form-label fw-semibold"></label>
-                                    <input asp-for="Contato.Email" class="form-control" type="email" required/>
+                                <div class="col-md-6">
+                                    <label asp-for="Contato.Email" class="form-label fw-semibold">
+                                        E-mail de contato <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="Contato.Email"
+                                           class="form-control"
+                                           type="email" required/>
+                                    <span asp-validation-for="Contato.Email" class="text-danger"></span>
                                 </div>
+
 
                             </div>
                         </div>
@@ -156,7 +231,7 @@
                         <div class="card-header fw-semibold">EQUIPE</div>
                         <div class="card-body">
 
-                            <div class="mb-2">
+                            <div class="mb-6">
                                 <label class="col-form-label" style="font-weight: 600" for="inputTextPessoas">Membros</label>
                                 <div style="margin-left:3%;display:none" class="spinner-border" role="status" id="loadingOpcoesSelectPessoas">
                                     <span class="visually-hidden">Loading...</span>
@@ -168,17 +243,23 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-8">
-                                <label asp-for="PotenciaisParceiros" class="form-label fw-semibold"></label>
+                            <div class="col-md-6">
+                                <label asp-for="PotenciaisParceiros" class="form-label fw-semibold"> Potenciais Parceiros</label>
                                 <input asp-for="PotenciaisParceiros" class="form-control" />
                             </div>
 
                             <div class="col-md-6">
-                                <label asp-for="ParceiroInterno" class="form-label fw-semibold"></label>
-                                <select asp-for="ParceiroInterno" class="form-select"
-                                        asp-items="Html.GetEnumSelectList<ParceiroInterno>()">
+                                <label class="form-label fw-semibold" for="ParceiroInterno">
+                                    Parceiros internos <span class="text-danger">*</span>
+                                </label>
+
+                                <select asp-for="ParceiroInterno"
+                                        class="form-select"
+                                        asp-items="Html.GetEnumSelectList<ParceiroInterno>()" required>
                                     <option value="">Selecione</option>
-                                 </select>
+                                </select>
+
+                                <span asp-validation-for="ParceiroInterno" class="text-danger"></span>
                             </div>
                             @*<div class="mb-3">
                                 <label asp-for="Tags" class="form-label fw-semibold"></label>
@@ -195,19 +276,19 @@
                     </div>
 
                     <div class="card mb-3">
-                        <div class="card-header fw-semibold">STATUS INICIAL</div>
+                        <div class="card-header fw-semibold">STATUS<br> INICIAL</div>
                         <div class="card-body">
                             <div class="row g-3">
 
-                                <div class="col-md-8">
-                                    <label asp-for="Status[0].Anotacoes" class="form-label fw-semibold"></label>
+                                <div class="col-md-6">
+                                    <label asp-for="Status[0].Anotacoes" class="form-label fw-semibold">Observações e anotações</label>
                                     <textarea asp-for="Status[0].Anotacoes"
                                               class="form-control"
                                               rows="3"></textarea>
                                 </div>
 
-                                <div class="col-md-4">
-                                    <label asp-for="Status[0].Status" class="form-label fw-semibold"></label>
+                                <div class="col-md-6">
+                                    <label asp-for="Status[0].Status" class="form-label fw-semibold">Status</label>
                                     <select asp-for="Status[0].Status" class="form-select" disabled>
                                         <option value="@StatusProspeccao.ContatoInicial">
                                             Contato Inicial
@@ -215,7 +296,7 @@
                                     </select>
                                 </div>
 
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <label class="form-label fw-semibold">Identificador</label>
                                     <input class="form-control" value="@unique_id" disabled />
                                 </div>

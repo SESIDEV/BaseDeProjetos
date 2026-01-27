@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using System.ComponentModel.DataAnnotations;
 
 namespace BaseDeProjetos.Models.Enums
 {
@@ -17,6 +18,9 @@ namespace BaseDeProjetos.Models.Enums
         ReuniaoEventoProspeccao = 4,
 
         [Display(Name = "Outro (detalhar nas observações)")]
-        Outro = 5
+        Outro = 5,
+
+        [Display(Name = "A definir")]
+        Adefinir = 6
     }
 }

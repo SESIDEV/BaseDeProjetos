@@ -12,6 +12,13 @@
         height: 200px;
         border: 3px solid;
     }
+
+    .required::after {
+        content: "*";
+        color: #e74c3c; /* Vermelho suave */
+        margin-left: 5px;
+        font-weight: bold;
+    }
 </style>
 @{
     Dictionary<string, int> contagem = new Dictionary<string, int>();

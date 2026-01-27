@@ -214,6 +214,17 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {
+                    // Ler EmpresaId vindo do campo hidden (datalist) caso o model binder não tenha preenchido
+                    var empresaIdStr = Request.Form["EmpresaId"].FirstOrDefault();
+                    if (!string.IsNullOrEmpty(empresaIdStr) && int.TryParse(empresaIdStr, out int empresaIdParsed))
+                    {
+                        prospeccao.EmpresaId = empresaIdParsed;
+                        if (prospeccao.Contato != null)
+                        {
+                            prospeccao.Contato.EmpresaId = empresaIdParsed;
+                        }
+                    }
+
                     prospeccao = await EditarDadosDaProspecção(id, prospeccao);
                     await _context.SaveChangesAsync();
                     await CacheHelper.CleanupProspeccoesCache(_cache);
@@ -226,9 +237,10 @@ namespace BaseDeProjetos.Controllers
                     }
                     else
                     {
-                        throw; // Outro erro de banco, lançar para depuração
+                        throw;
                     }
                 }
+
                 return RedirectToAction("Index", "FunilDeVendas", new { 
                     casa = prospeccao.Casa, 
                     aba = HttpContext.Session.GetString("aba"),
@@ -238,6 +250,7 @@ namespace BaseDeProjetos.Controllers
                     sortOrder = HttpContext.Session.GetString("sortOrder")
                 });
             }
+
             return View(prospeccao);
         }
 
@@ -1007,9 +1020,198 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private async Task<Prospeccao> EditarDadosDaProspecção(string id, Prospeccao prospeccao)
         {
-            var usuarios = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
-            Usuario lider = usuarios.First(p => p.Id == prospeccao.Usuario.Id);
-            prospeccao.Usuario = lider;
+            // Obter usuário líder a partir do DbContext (instância corretamente rastreada)
+            Usuario lider = null;
+            if (prospeccao.Usuario != null && !string.IsNullOrEmpty(prospeccao.Usuario.Id))
+            {
+                lider = await _context.Users.FirstOrDefaultAsync(p => p.Id == prospeccao.Usuario.Id);
+            }
+    
+            // Se não encontrou no contexto, tentar fallback para cache (sem causar tracking conflict)
+            if (lider == null)
+            {
+                var usuariosCache = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
+                lider = usuariosCache.FirstOrDefault(p => p.Id == prospeccao.Usuario?.Id);
+                if (lider != null)
+                {
+                    // garantir que usamos a instância rastreada pelo context (se existir)
+                    var tracked = await _context.Users.FindAsync(lider.Id);
+                    if (tracked != null)
+                    {
+                        lider = tracked;
+                    }
+                    else
+                    {
+                        // se não houver instância rastreada, anexamos sem alterar seu estado (opcional)
+                        _context.Attach(lider);
+                    }
+                }
+            }
+
+            if (lider != null)
+            {
+                prospeccao.Usuario = lider;
+            }
+            else
+            {
+                // Em caso de usuário não encontrado, evitar atribuir um objeto estranho
+                prospeccao.Usuario = null;
+            }
+
+            // Se não encontrou no contexto, tentar fallback para cache (sem causar tracking conflict)
+            if (lider == null)
+            {
+                var usuariosCache = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
+                lider = usuariosCache.FirstOrDefault(p => p.Id == prospeccao.Usuario?.Id);
+                if (lider != null)
+                {
+                    // garantir que usamos a instância rastreada pelo context (se existir)
+                    var tracked = await _context.Users.FindAsync(lider.Id);
+                    if (tracked != null)
+                    {
+                        lider = tracked;
+                    }
+                    else
+                    {
+                        // se não houver instância rastreada, anexamos sem alterar seu estado (opcional)
+                        _context.Attach(lider);
+                    }
+                }
+            }
+
+            if (lider != null)
+            {
+                prospeccao.Usuario = lider;
+            }
+            else
+            {
+                // Em caso de usuário não encontrado, evitar atribuir um objeto estranho
+                prospeccao.Usuario = null;
+            }
+
+            // Se não encontrou no contexto, tentar fallback para cache (sem causar tracking conflict)
+            if (lider == null)
+            {
+                var usuariosCache = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
+                lider = usuariosCache.FirstOrDefault(p => p.Id == prospeccao.Usuario?.Id);
+                if (lider != null)
+                {
+                    // garantir que usamos a instância rastreada pelo context (se existir)
+                    var tracked = await _context.Users.FindAsync(lider.Id);
+                    if (tracked != null)
+                    {
+                        lider = tracked;
+                    }
+                    else
+                    {
+                        // se não houver instância rastreada, anexamos sem alterar seu estado (opcional)
+                        _context.Attach(lider);
+                    }
+                }
+            }
+
+            if (lider != null)
+            {
+                prospeccao.Usuario = lider;
+            }
+            else
+            {
+                // Em caso de usuário não encontrado, evitar atribuir um objeto estranho
+                prospeccao.Usuario = null;
+            }
+
+            // Se não encontrou no contexto, tentar fallback para cache (sem causar tracking conflict)
+            if (lider == null)
+            {
+                var usuariosCache = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
+                lider = usuariosCache.FirstOrDefault(p => p.Id == prospeccao.Usuario?.Id);
+                if (lider != null)
+                {
+                    // garantir que usamos a instância rastreada pelo context (se existir)
+                    var tracked = await _context.Users.FindAsync(lider.Id);
+                    if (tracked != null)
+                    {
+                        lider = tracked;
+                    }
+                    else
+                    {
+                        // se não houver instância rastreada, anexamos sem alterar seu estado (opcional)
+                        _context.Attach(lider);
+                    }
+                }
+            }
+
+            if (lider != null)
+            {
+                prospeccao.Usuario = lider;
+            }
+            else
+            {
+                // Em caso de usuário não encontrado, evitar atribuir um objeto estranho
+                prospeccao.Usuario = null;
+            }
+
+            // Se não encontrou no contexto, tentar fallback para cache (sem causar tracking conflict)
+            if (lider == null)
+            {
+                var usuariosCache = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
+                lider = usuariosCache.FirstOrDefault(p => p.Id == prospeccao.Usuario?.Id);
+                if (lider != null)
+                {
+                    // garantir que usamos a instância rastreada pelo context (se existir)
+                    var tracked = await _context.Users.FindAsync(lider.Id);
+                    if (tracked != null)
+                    {
+                        lider = tracked;
+                    }
+                    else
+                    {
+                        // se não houver instância rastreada, anexamos sem alterar seu estado (opcional)
+                        _context.Attach(lider);
+                    }
+                }
+            }
+
+            if (lider != null)
+            {
+                prospeccao.Usuario = lider;
+            }
+            else
+            {
+                // Em caso de usuário não encontrado, evitar atribuir um objeto estranho
+                prospeccao.Usuario = null;
+            }
+
+            // Se não encontrou no contexto, tentar fallback para cache (sem causar tracking conflict)
+            if (lider == null)
+            {
+                var usuariosCache = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
+                lider = usuariosCache.FirstOrDefault(p => p.Id == prospeccao.Usuario?.Id);
+                if (lider != null)
+                {
+                    // garantir que usamos a instância rastreada pelo context (se existir)
+                    var tracked = await _context.Users.FindAsync(lider.Id);
+                    if (tracked != null)
+                    {
+                        lider = tracked;
+                    }
+                    else
+                    {
+                        // se não houver instância rastreada, anexamos sem alterar seu estado (opcional)
+                        _context.Attach(lider);
+                    }
+                }
+            }
+
+            if (lider != null)
+            {
+                prospeccao.Usuario = lider;
+            }
+            else
+            {
+                // Em caso de usuário não encontrado, evitar atribuir um objeto estranho
+                prospeccao.Usuario = null;
+            }
 
             Prospeccao prospAntiga = await _context.Prospeccao.AsNoTracking().FirstAsync(p => p.Id == prospeccao.Id);
 
@@ -1163,6 +1365,9 @@ namespace BaseDeProjetos.Controllers
             {
                 Empresa = p.Empresa?.Nome ?? "",
 
+                Razao = p.Empresa.RazaoSocial ?? "",
+
+                CNPJ = p.Empresa.CNPJ ?? "",
                 //AJUSTAR QUANDO TIVER MAIS TEMPO
                 TipoContratacao = p.TipoContratacao switch
                 {
@@ -1179,12 +1384,22 @@ namespace BaseDeProjetos.Controllers
                     _ => p.TipoContratacao.ToString() 
                 },
 
+                TipoProjeto = p.TipoDeProjeto switch
+                {
+                    TipoDeProjeto.PDeI => "PD&I",
+                    TipoDeProjeto.Servico_tecnologico => "Serviço tecnológico",
+                    TipoDeProjeto.Adefinir => "A definir",
+                    0 => "Não informado",
+                    _ => p.TipoDeProjeto.ToString() ?? "Não informado"
+                },
+
                 Iniciativa = p.Origem switch
                 {   Origem.Unidade => "Unidade",
                     Origem.ICTParceira => "ICT parceira",
                     Origem.EmpresaCliente => "Empresa / Cliente",
                     Origem.CatalisaSebrae => "Catalisa SEBRAE",
                     Origem.ProgramaProspectores => "Programa Prospectores",
+                    Origem.Adefinir => "A definir",
                     _ => p.Origem.ToString() 
                  },
 
@@ -1195,6 +1410,7 @@ namespace BaseDeProjetos.Controllers
                     TipoDeInteracao.TelefoneOuTeleconferencia => "Telefone ou teleconferência",
                     TipoDeInteracao.ReuniaoEventoProspeccao => "Reunião em evento de prospecção",
                     TipoDeInteracao.Outro => "Outros",
+                    TipoDeInteracao.Adefinir => "A definir",
                     0 => "Não informado",
                     _ => p.TipoDeInteracao.ToString() ?? "Não informado"
                 },
@@ -1236,6 +1452,8 @@ namespace BaseDeProjetos.Controllers
                     ParceiroInterno.IST_EDI => "IST-EDI",
                     ParceiroInterno.IST_QMA => "IST-QMA",
                     ParceiroInterno.ISI_QV => "ISI-QV",
+                    ParceiroInterno.Adefinir => "A definir",
+                    ParceiroInterno.NaoHa => "Não há",
                     0 => "Não informado",
                     _ => p.ParceiroInterno.ToString() ?? "Não informado"
                 },       
@@ -1291,7 +1509,36 @@ namespace BaseDeProjetos.Controllers
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Funil de Vendas");
 
-            worksheet.Cell(1, 1).InsertTable(dados);
+            var table = worksheet.Cell(1, 1).InsertTable(dados);
+
+            table.Field("Empresa").Name = "Empresa";
+            table.Field("Razao").Name = "Razão Social";
+            table.Field("CNPJ").Name = "CNPJ";
+            table.Field("Segmento").Name = "Segmento";
+            table.Field("Estado").Name = "Estado";
+            table.Field("Iniciativa").Name = "Iniciativa";
+            table.Field("Responsavel").Name = "Nome, cargo e contato na empresa";
+            table.Field("TipoDeInteracao").Name = "Tipo de interação";
+            table.Field("AlocadoPara").Name = "Responsável pela prospecção";
+            table.Field("Apoio").Name = "Apoio";
+            table.Field("Porte").Name = "Porte";
+            table.Field("Tipologia").Name = "Tipologia (ABCD)";
+            table.Field("IdProspecaoSGI").Name = "Id da Prospecção no SGI";
+            table.Field("Tema").Name = "Tema";
+            table.Field("LinhaPesquisa").Name = "Linha de Pesquisa";
+            table.Field("TipoContratacao").Name = "Tipo de contratação";
+            table.Field("TipoProjeto").Name = "Tipo de Projeto";
+            table.Field("ParceiroInterno").Name = "Parceiro Interno";
+            table.Field("ParceiroExterno").Name = "Parceiro Externo";
+            table.Field("ContatoRealizado").Name = "Contato Realizado";
+            table.Field("NDAAssinado").Name = "NDA Assinado";
+            table.Field("PropostaEnviada").Name = "Proposta Enviada";
+            table.Field("ProjetoConvertido").Name = "Projeto Convertido";
+            table.Field("ValorEstimado").Name = "Valor da Estimado";
+            table.Field("ValorProposta").Name = "Valor da Proposta";
+            table.Field("HistoricoContatos").Name = "Histórico de contatos";
+            table.Field("Situacao").Name = "Situação";
+
             worksheet.Columns().AdjustToContents();
 
             using var stream = new MemoryStream();

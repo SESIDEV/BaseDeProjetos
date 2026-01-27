@@ -9,7 +9,7 @@ namespace BaseDeProjetos.Models.DTOs
         public decimal ValorEstimado { get; set; }
         public List<FollowUp> Status { get; set; }
         public Empresa Empresa { get; set; }
-        public LinhaPesquisa LinhaPequisa { get; set; }
+        public LinhaPesquisa? LinhaPequisa { get; set; }
     }
 
     public class ProjetosHomeDTO

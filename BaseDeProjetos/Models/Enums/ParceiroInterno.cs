@@ -25,5 +25,11 @@ namespace BaseDeProjetos.Models.Enums
 
         [Display(Name = "ISI-QV")]
         ISI_QV = 7,
+
+        [Display(Name = "A definir")]
+        Adefinir = 8,
+
+        [Display(Name = "Não há")]
+        NaoHa = 9
     }
 }

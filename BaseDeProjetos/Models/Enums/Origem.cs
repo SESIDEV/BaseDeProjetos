@@ -17,6 +17,9 @@ namespace BaseDeProjetos.Models.Enums
         CatalisaSebrae,
 
         [Display(Name = "Programa Prospectores")]
-        ProgramaProspectores
+        ProgramaProspectores,
+
+        [Display(Name = "A definir")]
+        Adefinir
     }
 }
