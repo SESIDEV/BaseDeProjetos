@@ -173,14 +173,34 @@
                             <div class="row g-3">
 
                                 <div class="col-md-6">
-                                    <label asp-for="EmpresaId" class="form-label fw-semibold">
+                                    <label class="form-label fw-semibold" for="EmpresaInput-@Model.Id">
                                         @Html.DisplayNameFor(m => m.EmpresaId) <span class="text-danger">*</span>
                                     </label>
 
-                                    <select asp-for="EmpresaId"
-                                            class="form-select"
-                                            asp-items="@(ViewData["Empresas"] as SelectList)">
-                                    </select>
+                                    <input id="EmpresaInput-@Model.Id"
+                                           class="form-control"
+                                           list="empresas-@Model.Id"
+                                           placeholder="Digite o nome da empresa ou selecione"
+                                           autocomplete="off"
+                                           value="@(Model.Empresa?.Nome ?? "")" />
+
+                                    <datalist id="empresas-@Model.Id">
+                                        @{
+                                            var empresasSelect = ViewData["Empresas"] as SelectList;
+                                            if (empresasSelect != null)
+                                            {
+                                                foreach (Microsoft.AspNetCore.Mvc.Rendering.SelectListItem e in empresasSelect)
+                                                {
+                                                    <option data-id="@e.Value" value="@e.Text"></option>
+                                                }
+                                            }
+                                        }
+                                    </datalist>
+
+                                    <!-- hidden ligado ao modelo; id com sufixo para o mapeador JS -->
+                                    <input asp-for="EmpresaId" type="hidden" id="EmpresaId-@Model.Id" />
+
+                                    <span asp-validation-for="EmpresaId" class="text-danger"></span>
                                 </div>
 
                                 <div class="col-md-6">

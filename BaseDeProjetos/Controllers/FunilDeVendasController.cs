@@ -214,6 +214,17 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {
+                    // Ler EmpresaId vindo do campo hidden (datalist) caso o model binder não tenha preenchido
+                    var empresaIdStr = Request.Form["EmpresaId"].FirstOrDefault();
+                    if (!string.IsNullOrEmpty(empresaIdStr) && int.TryParse(empresaIdStr, out int empresaIdParsed))
+                    {
+                        prospeccao.EmpresaId = empresaIdParsed;
+                        if (prospeccao.Contato != null)
+                        {
+                            prospeccao.Contato.EmpresaId = empresaIdParsed;
+                        }
+                    }
+
                     prospeccao = await EditarDadosDaProspecção(id, prospeccao);
                     await _context.SaveChangesAsync();
                     await CacheHelper.CleanupProspeccoesCache(_cache);
@@ -226,9 +237,10 @@ namespace BaseDeProjetos.Controllers
                     }
                     else
                     {
-                        throw; // Outro erro de banco, lançar para depuração
+                        throw;
                     }
                 }
+
                 return RedirectToAction("Index", "FunilDeVendas", new { 
                     casa = prospeccao.Casa, 
                     aba = HttpContext.Session.GetString("aba"),
@@ -238,6 +250,7 @@ namespace BaseDeProjetos.Controllers
                     sortOrder = HttpContext.Session.GetString("sortOrder")
                 });
             }
+
             return View(prospeccao);
         }
 
@@ -1007,9 +1020,198 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private async Task<Prospeccao> EditarDadosDaProspecção(string id, Prospeccao prospeccao)
         {
-            var usuarios = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
-            Usuario lider = usuarios.First(p => p.Id == prospeccao.Usuario.Id);
-            prospeccao.Usuario = lider;
+            // Obter usuário líder a partir do DbContext (instância corretamente rastreada)
+            Usuario lider = null;
+            if (prospeccao.Usuario != null && !string.IsNullOrEmpty(prospeccao.Usuario.Id))
+            {
+                lider = await _context.Users.FirstOrDefaultAsync(p => p.Id == prospeccao.Usuario.Id);
+            }
+    
+            // Se não encontrou no contexto, tentar fallback para cache (sem causar tracking conflict)
+            if (lider == null)
+            {
+                var usuariosCache = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
+                lider = usuariosCache.FirstOrDefault(p => p.Id == prospeccao.Usuario?.Id);
+                if (lider != null)
+                {
+                    // garantir que usamos a instância rastreada pelo context (se existir)
+                    var tracked = await _context.Users.FindAsync(lider.Id);
+                    if (tracked != null)
+                    {
+                        lider = tracked;
+                    }
+                    else
+                    {
+                        // se não houver instância rastreada, anexamos sem alterar seu estado (opcional)
+                        _context.Attach(lider);
+                    }
+                }
+            }
+
+            if (lider != null)
+            {
+                prospeccao.Usuario = lider;
+            }
+            else
+            {
+                // Em caso de usuário não encontrado, evitar atribuir um objeto estranho
+                prospeccao.Usuario = null;
+            }
+
+            // Se não encontrou no contexto, tentar fallback para cache (sem causar tracking conflict)
+            if (lider == null)
+            {
+                var usuariosCache = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
+                lider = usuariosCache.FirstOrDefault(p => p.Id == prospeccao.Usuario?.Id);
+                if (lider != null)
+                {
+                    // garantir que usamos a instância rastreada pelo context (se existir)
+                    var tracked = await _context.Users.FindAsync(lider.Id);
+                    if (tracked != null)
+                    {
+                        lider = tracked;
+                    }
+                    else
+                    {
+                        // se não houver instância rastreada, anexamos sem alterar seu estado (opcional)
+                        _context.Attach(lider);
+                    }
+                }
+            }
+
+            if (lider != null)
+            {
+                prospeccao.Usuario = lider;
+            }
+            else
+            {
+                // Em caso de usuário não encontrado, evitar atribuir um objeto estranho
+                prospeccao.Usuario = null;
+            }
+
+            // Se não encontrou no contexto, tentar fallback para cache (sem causar tracking conflict)
+            if (lider == null)
+            {
+                var usuariosCache = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
+                lider = usuariosCache.FirstOrDefault(p => p.Id == prospeccao.Usuario?.Id);
+                if (lider != null)
+                {
+                    // garantir que usamos a instância rastreada pelo context (se existir)
+                    var tracked = await _context.Users.FindAsync(lider.Id);
+                    if (tracked != null)
+                    {
+                        lider = tracked;
+                    }
+                    else
+                    {
+                        // se não houver instância rastreada, anexamos sem alterar seu estado (opcional)
+                        _context.Attach(lider);
+                    }
+                }
+            }
+
+            if (lider != null)
+            {
+                prospeccao.Usuario = lider;
+            }
+            else
+            {
+                // Em caso de usuário não encontrado, evitar atribuir um objeto estranho
+                prospeccao.Usuario = null;
+            }
+
+            // Se não encontrou no contexto, tentar fallback para cache (sem causar tracking conflict)
+            if (lider == null)
+            {
+                var usuariosCache = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
+                lider = usuariosCache.FirstOrDefault(p => p.Id == prospeccao.Usuario?.Id);
+                if (lider != null)
+                {
+                    // garantir que usamos a instância rastreada pelo context (se existir)
+                    var tracked = await _context.Users.FindAsync(lider.Id);
+                    if (tracked != null)
+                    {
+                        lider = tracked;
+                    }
+                    else
+                    {
+                        // se não houver instância rastreada, anexamos sem alterar seu estado (opcional)
+                        _context.Attach(lider);
+                    }
+                }
+            }
+
+            if (lider != null)
+            {
+                prospeccao.Usuario = lider;
+            }
+            else
+            {
+                // Em caso de usuário não encontrado, evitar atribuir um objeto estranho
+                prospeccao.Usuario = null;
+            }
+
+            // Se não encontrou no contexto, tentar fallback para cache (sem causar tracking conflict)
+            if (lider == null)
+            {
+                var usuariosCache = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
+                lider = usuariosCache.FirstOrDefault(p => p.Id == prospeccao.Usuario?.Id);
+                if (lider != null)
+                {
+                    // garantir que usamos a instância rastreada pelo context (se existir)
+                    var tracked = await _context.Users.FindAsync(lider.Id);
+                    if (tracked != null)
+                    {
+                        lider = tracked;
+                    }
+                    else
+                    {
+                        // se não houver instância rastreada, anexamos sem alterar seu estado (opcional)
+                        _context.Attach(lider);
+                    }
+                }
+            }
+
+            if (lider != null)
+            {
+                prospeccao.Usuario = lider;
+            }
+            else
+            {
+                // Em caso de usuário não encontrado, evitar atribuir um objeto estranho
+                prospeccao.Usuario = null;
+            }
+
+            // Se não encontrou no contexto, tentar fallback para cache (sem causar tracking conflict)
+            if (lider == null)
+            {
+                var usuariosCache = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
+                lider = usuariosCache.FirstOrDefault(p => p.Id == prospeccao.Usuario?.Id);
+                if (lider != null)
+                {
+                    // garantir que usamos a instância rastreada pelo context (se existir)
+                    var tracked = await _context.Users.FindAsync(lider.Id);
+                    if (tracked != null)
+                    {
+                        lider = tracked;
+                    }
+                    else
+                    {
+                        // se não houver instância rastreada, anexamos sem alterar seu estado (opcional)
+                        _context.Attach(lider);
+                    }
+                }
+            }
+
+            if (lider != null)
+            {
+                prospeccao.Usuario = lider;
+            }
+            else
+            {
+                // Em caso de usuário não encontrado, evitar atribuir um objeto estranho
+                prospeccao.Usuario = null;
+            }
 
             Prospeccao prospAntiga = await _context.Prospeccao.AsNoTracking().FirstAsync(p => p.Id == prospeccao.Id);
 

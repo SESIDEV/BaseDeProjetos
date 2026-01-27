@@ -164,21 +164,27 @@
                         <div class="card-body">
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label fw-semibold" for="EmpresaId">
-                                        Empresa <span class="text-danger">*</span>
-                                    </label>
+                                    <label class="form-label fw-semibold" for="EmpresaInput">Empresa <span class="text-danger">*</span></label>
+                                    <input id="EmpresaInput" class="form-control" list="empresas" placeholder="Digite o nome da empresa ou selecione" autocomplete="off" />
+                                    <datalist id="empresas">
+                                        @{
+                                            var empresasSelect = ViewData["Empresas"] as SelectList;
+                                            if (empresasSelect != null)
+                                            {
+                                                foreach (Microsoft.AspNetCore.Mvc.Rendering.SelectListItem e in empresasSelect)
+                                                {
+                                                    <option data-id="@e.Value" value="@e.Text"></option>
+                                                }
+                                            }
+                                        }
+                                    </datalist>
 
-                                    <select asp-for="EmpresaId"
-                                            class="form-select"
-                                            asp-items="@(ViewData["Empresas"] as SelectList)">
-                                        <option value="">Selecione</option>
-                                    </select>
+                                    <!-- Campo ligado ao modelo: obrigatório para o binder enviar o id -->
+                                    <input asp-for="EmpresaId" type="hidden" id="EmpresaId" />
 
                                     <span asp-validation-for="EmpresaId" class="text-danger"></span>
                                 </div>
-
-
-
+                                    
                                 <div class="col-md-6">
                                     <label asp-for="Contato.Nome" class="form-label fw-semibold">
                                         Nome do contato <span class="text-danger">*</span>
