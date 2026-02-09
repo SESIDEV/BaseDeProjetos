@@ -1,6 +1,7 @@
 ﻿@model BaseDeProjetos.Models.Prospeccao
 @using BaseDeProjetos.Models.Enums
 @using Microsoft.AspNetCore.Http
+@using BaseDeProjetos.Models
 
 @{
     ViewData["Title"] = "Adicionar Prospecção";
@@ -238,8 +239,34 @@
                                 </div>
                                 <input asp-for="MembrosEquipe" class="form-control d-none" id="inputTextPessoas" type="text" />
                                 <button class="btn app-btn-primary" type="button" style="width: 100%;" id="botaoToggleCaixaRequestPessoas" onclick="gerarOpcoesSelect('Pessoas', 'criarProspModalToggle')">Buscar</button>
-                                <div class="input-group flex-nowrap" id="caixaPesquisaPessoas" style="display:none;">
-                                    <select id="campoSelectPessoas" class="form-select" multiple="true"></select>
+                                <div class="input-group flex-nowrap" id="caixaPesquisaPessoas" style="display:block;">
+                                    <select id="campoSelectPessoas" class="form-select" multiple="true">
+                                        @{
+                                            var pessoas = ViewData["PessoasApoio"] as List<PessoaModel>;
+                                            if (pessoas != null && pessoas.Any())
+                                            {
+                                                foreach (var p in pessoas
+                                                .Where(p => p.Cargo == "Pesquisador" || p.Cargo == "Coordenador"))
+                                                {
+                                                    var value = (p.Nome ?? "")
+                                                    .Split(new char[] { ',', ';' })[0]
+                                                    .Trim();
+
+                                                    <option value="@value"
+                                                            data-cargo="@p.Cargo"
+                                                            data-casa="@p.Casa"
+                                                            data-situacao="@p.Situacao">
+                                                        @p.Nome (@p.Cargo) - @p.Casa [@p.Situacao]
+                                                    </option>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <option disabled>Arquivo apoio.csv não encontrado ou vazio</option>
+                                            }
+
+                                        }
+                                    </select>
                                 </div>
                             </div>
 
@@ -321,3 +348,23 @@
         </div>
     </div>
 </form>
+
+@section Scripts {
+    <script>
+        (function () {
+            var select = document.getElementById('campoSelectPessoas');
+            var hidden = document.getElementById('inputTextPessoas');
+            var form = document.querySelector('form[asp-action="Create"]') || document.querySelector('form');
+
+            if (form) {
+                form.addEventListener('submit', function () {
+                    if (select && hidden) {
+                        var values = Array.from(select.selectedOptions).map(function (o) { return o.value; });
+                        // armazena em formato ponto-e-vírgula; ajustável conforme necessidade
+                        hidden.value = values.join(';');
+                    }
+                });
+            }
+        })();
+    </script>
+}
