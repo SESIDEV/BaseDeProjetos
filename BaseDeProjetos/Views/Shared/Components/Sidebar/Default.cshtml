@@ -4,22 +4,14 @@
 @using BaseDeProjetos.Helpers
 
 @{
-    var usuarioNivel = ViewBag.usuarioNivel;
-    List<Instituto> institutos = new List<Instituto>();
-
-    Instituto casaUsuario = ViewBag.usuarioCasa;
-    //Todo: remover se o CIS ganhar novo coordenador
-    if (casaUsuario == Instituto.ISIQV || casaUsuario == Instituto.CISHO || casaUsuario == Instituto.Super)
-    {
-        institutos = new List<Instituto>() { Instituto.ISIQV, Instituto.CISHO };
-    }
-    else
-    {
-        institutos = new List<Instituto>() { casaUsuario };
-    }
-
+	var usuarioNivel = ViewBag.usuarioNivel;
+	// Excluir casas específicas do menu
+	var excluded = new[] { Instituto.ISIII, Instituto.Super, Instituto.ISISVP };
+	List<Instituto> institutos = Enum.GetValues(typeof(Instituto))
+		.Cast<Instituto>()
+		.Where(i => !excluded.Contains(i))
+		.ToList();
 }
-
 
 <div id="app-sidepanel" class="app-sidepanel">
     <div id="sidepanel-drop" class="sidepanel-drop"></div>
