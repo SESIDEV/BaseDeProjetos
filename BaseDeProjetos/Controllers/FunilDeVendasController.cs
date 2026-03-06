@@ -1430,9 +1430,12 @@ namespace BaseDeProjetos.Controllers
                 AlocadoPara = p.Usuario?.UserName ?? "",
 
                 Apoio = string.Join(", ",
-                    p.TratarMembrosEquipeString(_context)
-                        .Select(u => u.UserName)),
-                
+                    (p.MembrosEquipe ?? "")
+                        .Split(";")
+                        .Where(m => !string.IsNullOrWhiteSpace(m))
+                        .Select(m => m.Trim())
+                ),
+
                 Porte = p.Empresa.Porte,
 
                 Tipologia = p.Tipologia ?? "",

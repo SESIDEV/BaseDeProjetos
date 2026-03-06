@@ -121,20 +121,17 @@
                                     {
                                         <span class="badge bg-danger">Sem Líder</span>
                                     }
-                                    @if (prospeccao.MembrosEquipe != null)
+                                    @if (!string.IsNullOrWhiteSpace(prospeccao.MembrosEquipe))
                                     {
-                                        foreach (var item in prospeccao.MembrosEquipe.Split(";"))
+                                        foreach (var membro in prospeccao.MembrosEquipe.Split(";"))
                                         {
-                                            if (item != "")
+                                            if (!string.IsNullOrWhiteSpace(membro))
                                             {
-                                                var user = usuarios.Where(u => u.Email == item).FirstOrDefault();
-                                                if (user != null)
-                                                {
-                                                    <span class="badge bg-info">@user.UserName</span>
-                                                }
+                                                <span class="badge bg-info">@membro.Trim()</span>
                                             }
                                         }
                                     }
+
                                 </td>
                                 @{
                                     var subtracaoUltimoStatus = @DateTime.Now.Subtract(prospeccao.Status.OrderBy(followup => followup.Data).Last().Data).Days;

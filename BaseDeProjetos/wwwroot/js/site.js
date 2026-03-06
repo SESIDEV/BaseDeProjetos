@@ -158,6 +158,7 @@ function preencherInputEditProspeccao(idProspeccao) {
         });
 }
 
+// (arquivo existente mantido; substitua a função gerarOpcoesSelect por esta versão)
 function gerarOpcoesSelect(rota, elementoPai, modelId = "", fillValues = false) { // os últimos 2 parâmetros para tratar no Edit
     elementoPai = `${elementoPai}${modelId}`
 
@@ -176,6 +177,36 @@ function gerarOpcoesSelect(rota, elementoPai, modelId = "", fillValues = false) 
     const liderElem = document.querySelector(`#selectLiderProsp${modelId}`);
     let select2_containers = null;
     const botaoAlterarElem = document.querySelector(`#${botaoAlterar}`);
+
+    // Se a view já populou opções (ex.: a partir do apoio.csv), não buscar usuários do servidor
+    if (rota === "Pessoas" && selectElem && selectElem.options.length > 0) {
+        changeDisplayStyle(loadingIconElem, "none");
+        changeDisplayStyle(caixaElem, "block");
+        changeDisplayStyle(botaoAlterarElem, "none");
+
+        // inicializar select2 no select já preenchido (se jQuery/select2 estiver disponível)
+        if (elementoPai) {
+            try {
+                $(`#${idSelect}`).select2({ dropdownParent: $(`#${elementoPai}`) })
+            } catch (e) {
+                // Select2 não disponível — ignora silenciosamente
+            }
+        }
+
+        select2_containers = document.querySelectorAll(".select2-container");
+        select2_containers.forEach(input => input.style.width = "100%");
+
+        // preencher valores caso fillValues seja true
+        if (fillValues) {
+            let idText = `inputText${rota}${modelId}`;
+            carregarValoresInputParaSelect(idText, idSelect, rota)
+        }
+
+        let checkRota = document.querySelector(`#check${rota}${modelId}`);
+        if (checkRota) checkRota.checked = true;
+
+        return;
+    }
 
     changeDisplayStyle(caixaElem, "none");
     changeDisplayStyle(loadingIconElem, "block");
