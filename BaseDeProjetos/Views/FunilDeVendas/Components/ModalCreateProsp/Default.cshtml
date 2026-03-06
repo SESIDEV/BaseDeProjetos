@@ -245,17 +245,26 @@
                                             var pessoas = ViewData["PessoasApoio"] as List<PessoaModel>;
                                             if (pessoas != null && pessoas.Any())
                                             {
-                                                foreach (var p in pessoas)
+                                                foreach (var p in pessoas
+                                                .Where(p => p.Cargo == "Pesquisador" || p.Cargo == "Coordenador"))
                                                 {
-                                                    // usa explicitamente apenas a primeira coluna (já normalizada pelo helper)
-                                                    var value = (p.Nome ?? "").Split(new char[] { ',', ';' })[0].Trim();
-                                                    <option value="@value" data-cargo="@p.Cargo" data-casa="@p.Casa">@p.Nome (@p.Cargo) - @p.Casa</option>
+                                                    var value = (p.Nome ?? "")
+                                                    .Split(new char[] { ',', ';' })[0]
+                                                    .Trim();
+
+                                                    <option value="@value"
+                                                            data-cargo="@p.Cargo"
+                                                            data-casa="@p.Casa"
+                                                            data-situacao="@p.Situacao">
+                                                        @p.Nome (@p.Cargo) - @p.Casa [@p.Situacao]
+                                                    </option>
                                                 }
                                             }
                                             else
                                             {
                                                 <option disabled>Arquivo apoio.csv não encontrado ou vazio</option>
                                             }
+
                                         }
                                     </select>
                                 </div>

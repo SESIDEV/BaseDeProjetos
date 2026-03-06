@@ -39,14 +39,16 @@ namespace BaseDeProjetos.Helpers
                 var nome = parts.Length > 0 ? Clean(parts[0]) : string.Empty;
                 var cargo = parts.Length > 1 ? Clean(parts[1]) : string.Empty;
                 var casa = parts.Length > 2 ? Clean(parts[2]) : string.Empty;
+                var situacao = parts.Length > 3 ? Clean(parts[3]) : string.Empty;
 
-                // Garantir que Nome contenha apenas a primeira coluna (caso a linha tenha sido malformada)
                 pessoas.Add(new PessoaModel
                 {
                     Nome = nome,
                     Cargo = cargo,
-                    Casa = casa
+                    Casa = casa,
+                    Situacao = situacao
                 });
+
             }
 
             return pessoas;

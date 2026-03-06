@@ -1,74 +1,74 @@
-Nome;Cargo;Casa
-Alessandra Vieira Kneipp Casanova;Pesquisador;ISIQV
-Barbara Maia de Viveiros;Pesquisador;ISIQV
-Beatriz Santos Guimaraes ;Pesquisador;ISIQV
-Bruna Leal Maske ;Pesquisador;ISIQV
-Camila da Silva Freitas Ribeiro;Pesquisador;ISIQV
-Camila Linhares Mendonca Lopes ;Pesquisador;ISIQV
-Carlos Magno dos Santos;Pesquisador;ISIQV
-Elisangela dos Santos Domingos;Aux. Tecnico;ISIQV
-Erika Miranda da Silva;Tecnico;ISIQV
-Giovanni Bressiani Pedroso;Coordenador;ISIQV
-Gustavo do Couto Ramos Pereira;Pesquisador;ISIQV
-Ivone Luci Ventura Martins;Analista de Projetos;ISIQV
-Joao Silveira Moledo Gesto;Pesquisador;ISIQV
-Joao Victor Soares da Silva;Aux administrativo;ISIQV
-Jose Carlos Netto Ferreira;Pesquisador;ISIQV
-Larissa de Fatima de Oliveira Costa;Pesquisador;ISIQV
-Marcos Vinicius Miranda Mesquita ;Pesquisador;ISIQV
-Mateus Freitas Eulalio;Tecnico;ISIQV
-Michele Rodrigues Martins;Pesquisador;ISIQV
-Rachel Dos Santos Costa;Tecnico;ISIQV
-Raquel Cavalcanti Galvao;Pesquisador;ISIQV
-Roger de Souza Correa;Pesquisador;ISIQV
-Sirlene Oliveira Francisco de Azeredo;Pesquisador;ISIQV
-Taiane Fonseca Nogueira;Pesquisador;ISIQV
-Thiago Castro Lopes;Pesquisador;ISIQV
-Valmir Alves Soares;Tecnico;ISIQV
-Wallace Costa de Souza;Pesquisador;ISIQV
-Vitoria Melo Fernandes Cerqueira;Tecnico;ISIQV
-Maria Carolina Goulart da Silva Pires;Tecnico;ISIQV
-Alissandra Rodrigues Gaudencio;Bolsista;ISIQV
-Alzira Yaeko Kakeya;Bolsista;ISIQV
-Ana Laura Macedo Brand;Bolsista;ISIQV
-Anderson Lineu Siqueira dos Santos;;ISIQV
-Bianca Muniz Lacerda Ventura;Bolsista;ISIQV
-Bruna da Silva Gomes Pereira;Bolsista;ISIQV
-Bruno da Silva Fonseca;Bolsista;ISIQV
-Daiene Gaione Costa;Bolsista;ISIQV
-Gabriel Augusto Machado Rocha;Bolsista;ISIQV
-Gabriele Lopes Knop;;ISIQV
-Giselle da Silva Teodoro Ferreira;;ISIQV
-Guilheme Amoglia Priori;Bolsista;ISIQV
-Iara Elizabeth Abi-Zaid Teixeira;Bolsista;ISIQV
-Jefferson Diocesano da Cruz;;ISIQV
-Jessica Correa Antonio;Bolsista;ISIQV
-Jessica Nogueira Rosa;;ISIQV
-Joana de Moura Gama;Bolsista;ISIQV
-Lohayne Ligya Barbosa Silva;Bolsista;ISIQV
-Luiz Felipe da Silva Xavier;;ISIQV
-Maria Clara Fernandes Martins;Bolsista;ISIQV
-Mirian Pereira da Silva;;ISIQV
-Monica larissa da costa silva;;ISIQV
-Raquel Monteiro de Mattos Ferreira;Bolsista;ISIQV
-Ricardo Ignacio Castro Alvarez;;ISIQV
-Rosa Aparecida Reis de Leo;;ISIQV
-Victor Abath da Silva;Bolsista;ISIQV
-Victor Paulo Ferreira da Silva;Bolsista;ISIQV
-Davi Ferreira dos Santos;Estagiario;ISIQV
-Luan Giudicelli de Oliveira;Estagiario;ISIQV
-Luiz Gabriel dos Santos Oliveira;Estagiario;ISIQV
-Mateus Freitas Eulalio;Estagiario;ISIQV
-Anael Viana Pinto Alberto;Pesquisador;CIS SO
-Fernanda Caroline Tavares de Melo;Pesquisador;CIS SO
-Larissa Gabriela Oliveira de Santana;Pesquisador;CIS SO
-Leon de Franca Nascimento;Coordenador;CIS SO
-Manoela Heringer da Silva;Pesquisador;CIS SO
-Victor Hugo Martins De Souza;Pesquisador;CIS SO
-Aderson Barbosa Furtado;Bolsista;CIS SO
-Julia Victoria Carvalhosa de Amorim;Bolsista;CIS SO
-Luiz Marcelo Itapicuru Pereira Costa;Bolsista;CIS SO
-Mariana Muniz da Rocha;Bolsista;CIS SO
-Paulo Ricardo Mesquita Rosa Santos;Bolsista;CIS SO
-Tatyellen Natasha da Costa Oliveira;;CIS SO
-Thauanne de Souza Goncalves;Bolsista;CIS SO
+Nome;Cargo;Casa;Situacao
+Alessandra Vieira Kneipp Casanova;Pesquisador;ISIQV;Ativo
+Barbara Maia de Viveiros;Pesquisador;ISIQV;Ativo
+Beatriz Santos Guimaraes ;Pesquisador;ISIQV;Ativo
+Bruna Leal Maske ;Pesquisador;ISIQV;Ativo
+Camila da Silva Freitas Ribeiro;Pesquisador;ISIQV;Ativo
+Camila Linhares Mendonca Lopes ;Pesquisador;ISIQV;Ativo
+Carlos Magno dos Santos;Pesquisador;ISIQV;Ativo
+Elisangela dos Santos Domingos;Aux. Tecnico;ISIQV;Ativo
+Erika Miranda da Silva;Tecnico;ISIQV;Ativo
+Giovanni Bressiani Pedroso;Coordenador;ISIQV;Ativo
+Gustavo do Couto Ramos Pereira;Pesquisador;ISIQV;Ativo
+Ivone Luci Ventura Martins;Analista de Projetos;ISIQV;Ativo
+Joao Silveira Moledo Gesto;Pesquisador;ISIQV;Ativo
+Joao Victor Soares da Silva;Aux administrativo;ISIQV;Ativo
+Jose Carlos Netto Ferreira;Pesquisador;ISIQV;Ativo
+Larissa de Fatima de Oliveira Costa;Pesquisador;ISIQV;Ativo
+Marcos Vinicius Miranda Mesquita ;Pesquisador;ISIQV;Ativo
+Mateus Freitas Eulalio;Tecnico;ISIQV;Ativo
+Michele Rodrigues Martins;Pesquisador;ISIQV;Ativo
+Rachel Dos Santos Costa;Tecnico;ISIQV;Ativo
+Raquel Cavalcanti Galvao;Pesquisador;ISIQV;Ativo
+Roger de Souza Correa;Pesquisador;ISIQV;Ativo
+Sirlene Oliveira Francisco de Azeredo;Pesquisador;ISIQV;Ativo
+Taiane Fonseca Nogueira;Pesquisador;ISIQV;Ativo
+Thiago Castro Lopes;Pesquisador;ISIQV;Ativo
+Valmir Alves Soares;Tecnico;ISIQV;Ativo
+Wallace Costa de Souza;Pesquisador;ISIQV;Ativo
+Vitoria Melo Fernandes Cerqueira;Tecnico;ISIQV;Ativo
+Maria Carolina Goulart da Silva Pires;Tecnico;ISIQV;Ativo
+Alissandra Rodrigues Gaudencio;Bolsista;ISIQV;Ativo
+Alzira Yaeko Kakeya;Bolsista;ISIQV;Ativo
+Ana Laura Macedo Brand;Bolsista;ISIQV;Ativo
+Anderson Lineu Siqueira dos Santos;;ISIQV;Ativo
+Bianca Muniz Lacerda Ventura;Bolsista;ISIQV;Ativo
+Bruna da Silva Gomes Pereira;Bolsista;ISIQV;Ativo
+Bruno da Silva Fonseca;Bolsista;ISIQV;Ativo
+Daiene Gaione Costa;Bolsista;ISIQV;Ativo
+Gabriel Augusto Machado Rocha;Bolsista;ISIQV;Ativo
+Gabriele Lopes Knop;;ISIQV;Ativo
+Giselle da Silva Teodoro Ferreira;;ISIQV;Ativo
+Guilheme Amoglia Priori;Bolsista;ISIQV;Ativo
+Iara Elizabeth Abi-Zaid Teixeira;Bolsista;ISIQV;Ativo
+Jefferson Diocesano da Cruz;;ISIQV;Ativo
+Jessica Correa Antonio;Bolsista;ISIQV;Ativo
+Jessica Nogueira Rosa;;ISIQV;Ativo
+Joana de Moura Gama;Bolsista;ISIQV;Ativo
+Lohayne Ligya Barbosa Silva;Bolsista;ISIQV;Ativo
+Luiz Felipe da Silva Xavier;;ISIQV;Ativo
+Maria Clara Fernandes Martins;Bolsista;ISIQV;Ativo
+Mirian Pereira da Silva;;ISIQV;Ativo
+Monica larissa da costa silva;;ISIQV;Ativo
+Raquel Monteiro de Mattos Ferreira;Bolsista;ISIQV;Ativo
+Ricardo Ignacio Castro Alvarez;;ISIQV;Ativo
+Rosa Aparecida Reis de Leo;;ISIQV;Ativo
+Victor Abath da Silva;Bolsista;ISIQV;Ativo
+Victor Paulo Ferreira da Silva;Bolsista;ISIQV;Ativo
+Davi Ferreira dos Santos;Estagiario;ISIQV;Ativo
+Luan Giudicelli de Oliveira;Estagiario;ISIQV;Ativo
+Luiz Gabriel dos Santos Oliveira;Estagiario;ISIQV;Ativo
+Mateus Freitas Eulalio;Estagiario;ISIQV;Ativo
+Anael Viana Pinto Alberto;Pesquisador;CIS SO;Ativo
+Fernanda Caroline Tavares de Melo;Pesquisador;CIS SO;Ativo
+Larissa Gabriela Oliveira de Santana;Pesquisador;CIS SO;Ativo
+Leon de Franca Nascimento;Coordenador;CIS SO;Ativo
+Manoela Heringer da Silva;Pesquisador;CIS SO;Ativo
+Victor Hugo Martins De Souza;Pesquisador;CIS SO;Ativo
+Aderson Barbosa Furtado;Bolsista;CIS SO;Ativo
+Julia Victoria Carvalhosa de Amorim;Bolsista;CIS SO;Ativo
+Luiz Marcelo Itapicuru Pereira Costa;Bolsista;CIS SO;Ativo
+Mariana Muniz da Rocha;Bolsista;CIS SO;Ativo
+Paulo Ricardo Mesquita Rosa Santos;Bolsista;CIS SO;Ativo
+Tatyellen Natasha da Costa Oliveira;;CIS SO;Ativo
+Thauanne de Souza Goncalves;Bolsista;CIS SO;Ativo
