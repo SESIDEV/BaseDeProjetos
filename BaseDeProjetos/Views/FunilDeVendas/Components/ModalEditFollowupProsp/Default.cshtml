@@ -13,20 +13,31 @@
 
     IEnumerable<SelectListItem> FiltrarExcecao(IEnumerable<SelectListItem> lista, Prospeccao prosp)
     {
-        StatusProspeccao statusAtual = prosp.Status.OrderBy(s => s.Data).Last().Status;
-        if (statusAtual == StatusProspeccao.Planejada)
-        {
-            return lista.Where(status => (Int32.Parse(status.Value)) == (int)StatusProspeccao.ContatoInicial);
-        }
-        else if (statusAtual == StatusProspeccao.ContatoInicial)
-        {
-            return lista.Where(status => (Int32.Parse(status.Value)) > (int)statusAtual && (Int32.Parse(status.Value)) != (int)StatusProspeccao.Planejada);
-        }
-        else
-        {
-            return lista.Where(status => (Int32.Parse(status.Value)) >= (int)statusAtual && (Int32.Parse(status.Value)) != (int)StatusProspeccao.Planejada);
-        }
+        // Ao editar um followup específico, devemos permitir apenas status coerentes entre o status
+        // anterior e o próximo (considerando desempate por Data e Id). Isso evita que a edição de um
+        // followup antigo force-o para o último status da prospecção.
 
+        var ordenados = prosp.Status.OrderBy(s => s.Data).ThenBy(s => s.Id).ToList();
+
+        // Encontrar o followup atual dentro da prospecção pelo Id do Model (caso exista)
+        var atual = ordenados.FirstOrDefault(s => s.Id == Model.Id) ?? Model;
+
+        // status anterior (se houver)
+        var anterior = ordenados.Where(s => s.Data < atual.Data || (s.Data == atual.Data && s.Id < atual.Id)).LastOrDefault();
+
+        // status seguinte (se houver)
+        var proximo = ordenados.Where(s => s.Data > atual.Data || (s.Data == atual.Data && s.Id > atual.Id)).FirstOrDefault();
+
+        int minVal = anterior != null ? (int)anterior.Status : (int)StatusProspeccao.ContatoInicial;
+        int maxVal = proximo != null ? (int)proximo.Status : int.MaxValue;
+
+        return lista.Where(status =>
+        {
+            int v = Int32.Parse(status.Value);
+            // nunca permitir Planejada como escolha direta
+            if (v == (int)StatusProspeccao.Planejada) return false;
+            return v >= minVal && v <= maxVal;
+        });
     }
 
 }
@@ -107,8 +118,8 @@
                     <div class="form-group">
                         <label asp-for="Data" class="control-label"></label>
                         <input asp-for="Data" type="date" class="form-control" />
-                        <span asp-validation-for="Data" class="text-danger"
-                              value='@Model.Data.ToString("F2",CultureInfo.CreateSpecificCulture("en-US"))'></span>
+                        <small class="form-text text-muted">Data atual: @Model.Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))</small>
+                        <span asp-validation-for="Data" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Status" class="control-label"></label>

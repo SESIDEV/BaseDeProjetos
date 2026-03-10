@@ -139,15 +139,21 @@ namespace BaseDeProjetos.Helpers
             switch (parametros.Aba.ToLowerInvariant())
             {
                 case "ativas":
+                    // Determinar o último status ordenando por Data e por Id para desempatar datas iguais
                     return prospeccoes.Where(prospeccao => prospeccao.Status
-                        .OrderBy(followup => followup.Data)
+                        .OrderBy(followup => followup.Data).ThenBy(followup => followup.Id)
                         .LastOrDefault()
                         .Status < StatusProspeccao.ComProposta)
                         .ToList();
 
                 case "comproposta":
-                    return prospeccoes.Where(prospeccao => prospeccao.Status.OrderBy(followup =>
-                            followup.Data).LastOrDefault().Status == StatusProspeccao.ComProposta).ToList();
+                    // Incluir prospecções que tenham o status ComProposta em qualquer ponto do histórico
+                    // Incluir prospecções que tenham o status ComProposta em qualquer ponto do histórico
+                    // mas excluir aquelas que já possuem um status conclusivo (Convertida, NaoConvertida, Suspensa)
+                    return prospeccoes.Where(prospeccao =>
+                        prospeccao.Status.Any(s => s.Status == StatusProspeccao.ComProposta) &&
+                        !prospeccao.Status.Any(s => s.Status == StatusProspeccao.Convertida || s.Status == StatusProspeccao.NaoConvertida || s.Status == StatusProspeccao.Suspensa)
+                    ).ToList();
 
                 case "concluidas":
                     return prospeccoes.Where(prospeccao => prospeccao.Status.Any(followup =>
@@ -275,7 +281,7 @@ namespace BaseDeProjetos.Helpers
                 default:
                     return query.OrderByDescending(p =>
                         p.Status
-                            .OrderByDescending(s => s.Data)
+                            .OrderByDescending(s => s.Data).ThenByDescending(s => s.Id)
                             .Select(s => s.Data)
                             .FirstOrDefault()
                     );
@@ -311,17 +317,19 @@ namespace BaseDeProjetos.Helpers
             switch (parametros.Aba.ToLowerInvariant())
             {
                 case "ativas":
+                    // Determinar o último status ordenando por Data e por Id para desempatar datas iguais
                     return query.Where(p =>
                         p.Status
-                            .OrderBy(s => s.Data)
+                            .OrderBy(s => s.Data).ThenBy(s => s.Id)
                             .LastOrDefault().Status < StatusProspeccao.ComProposta
                     );
 
                 case "comproposta":
+                    // Incluir prospecções que tenham o status ComProposta em qualquer ponto do histórico
+                    // mas excluir aquelas que já possuem um status conclusivo (Convertida, NaoConvertida, Suspensa)
                     return query.Where(p =>
-                        p.Status
-                            .OrderBy(s => s.Data)
-                            .LastOrDefault().Status == StatusProspeccao.ComProposta
+                        p.Status.Any(s => s.Status == StatusProspeccao.ComProposta) &&
+                        !p.Status.Any(s => s.Status == StatusProspeccao.Convertida || s.Status == StatusProspeccao.NaoConvertida || s.Status == StatusProspeccao.Suspensa)
                     );
 
                 case "concluidas":
@@ -420,14 +428,17 @@ namespace BaseDeProjetos.Helpers
                     foreach (string ids in listaRemovidas)
                     {
                         var antigaAgg = _context.Prospeccao.Where(prosp => prosp.Id == ids).First(); // seleciona a prosp antiga referente ao Id do loop (PODE DAR PROBLEMA SE A PROSP NAO EXISTIR MAIS)
-                        var AggUltimoStatusData = antigaAgg.Status.Last().Data; // salva a data do último followup
-                        var statusMaisRecentes = prospeccao.Status.Where(s => s.Data > AggUltimoStatusData).ToList(); // busca por status da prosp atual que sejam de datas posteriores ao último status da antiga agregada
+                        // Determinar último status da agregada considerando desempate por Id
+                        var AggUltimoStatusData = antigaAgg.Status.OrderBy(s => s.Data).ThenBy(s => s.Id).Last().Data; // salva a data do último followup
+                        // Considerar statuses com data maior ou igual (>=) para incluir casos de mesma data
+                        var statusMaisRecentes = prospeccao.Status.Where(s => s.Data >= AggUltimoStatusData).ToList(); // busca por status da prosp atual que sejam de datas posteriores ao último status da antiga agregada
 
                         if (statusMaisRecentes != null)
                         {// se não houver diferença de status, add um novo status
                             FollowUp statusDeagg = new FollowUp
                             {
-                                Status = antigaAgg.Status.OrderByDescending(d => d.Data).ToList()[1].Status, // retorna ao status anterior ao agregado
+                                // Ordenar por data e id desc para desempatar e obter o segundo elemento (anterior ao agregado)
+                                Status = antigaAgg.Status.OrderByDescending(d => d.Data).ThenByDescending(d => d.Id).ElementAt(1).Status, // retorna ao status anterior ao agregado
                                 Data = DateTime.Today,
                                 Anotacoes = "Esta prospecção foi desagregada de um grupo."
                             };
@@ -493,14 +504,14 @@ namespace BaseDeProjetos.Helpers
                     if (id != "")
                     {
                         var prospeccaoAgregada = _context.Prospeccao.Where(prosp => prosp.Id == id).First();
-                        var ultimoStatusProspeccaoAgregada = prospeccaoAgregada.Status.Last().Data;
-                        var statusMaisRecentes = prospeccao.Status.Where(s => s.Data > ultimoStatusProspeccaoAgregada).ToList();
+                        var ultimoStatusProspeccaoAgregada = prospeccaoAgregada.Status.OrderBy(s => s.Data).ThenBy(s => s.Id).Last().Data;
+                        var statusMaisRecentes = prospeccao.Status.Where(s => s.Data >= ultimoStatusProspeccaoAgregada).ToList();
 
                         if (statusMaisRecentes != null)
                         {// se não houver diferença de status, add um novo status
                             FollowUp statusDeagg = new FollowUp
                             {
-                                Status = prospeccaoAgregada.Status.OrderByDescending(d => d.Data).ToList()[1].Status, // retorna ao status anterior ao agregado
+                                Status = prospeccaoAgregada.Status.OrderByDescending(d => d.Data).ThenByDescending(d => d.Id).ElementAt(1).Status, // retorna ao status anterior ao agregado
                                 Data = DateTime.Today,
                                 Anotacoes = "Esta prospecção foi desagregada de um grupo."
                             };

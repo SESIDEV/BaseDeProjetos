@@ -287,19 +287,44 @@ namespace BaseDeProjetos.Controllers
             }
             if (ModelState.IsValid)
             {
-                _context.Update(followup);
+                // Em vez de atualizar diretamente a entidade vinculada pelo model binder (que pode não conter
+                // navegações carregadas), recuperar a entidade existente e aplicar apenas os campos editáveis.
+                var existente = await _context.FollowUp.Include(f => f.Origem).FirstOrDefaultAsync(f => f.Id == id);
+                if (existente == null)
+                {
+                    return NotFound();
+                }
+
+                // Atualiza campos permitidos
+                existente.Data = followup.Data;
+                existente.Status = followup.Status;
+                existente.Anotacoes = followup.Anotacoes;
+                existente.Vencimento = followup.Vencimento;
+
+                // Campos opcionais se existirem no modelo
+                // nenhum outro campo específico além de Data, Status, Anotacoes e Vencimento existe em FollowUp
+
                 await _context.SaveChangesAsync();
                 await CacheHelper.CleanupProspeccoesCache(_cache);
             }
+            // Redireciona utilizando a casa da prospecção relacionada (se disponível) ou a casa do usuário ativo
+            Instituto casaRedirect = UsuarioAtivo?.Casa ?? Instituto.ISIQV; // default caso inesperado
+            // tentar obter a casa a partir do followup original caso exista no contexto
+            var followupOrig = await _context.FollowUp.Include(f => f.Origem).FirstOrDefaultAsync(f => f.Id == id);
+            if (followupOrig?.Origem != null)
+            {
+                casaRedirect = followupOrig.Origem.Casa;
+            }
 
-            return RedirectToAction("Index", "FunilDeVendas", 
-                new { 
-                    casa = followup.Origem.Casa,
+            return RedirectToAction("Index", "FunilDeVendas",
+                new
+                {
+                    casa = casaRedirect,
                     aba = HttpContext.Session.GetString("aba"),
                     searchString = HttpContext.Session.GetString("searchString"),
                     numeroPagina = HttpContext.Session.GetInt32("numeroPagina"),
                     tamanhoPagina = HttpContext.Session.GetInt32("tamanhoPagina"),
-                    sortOrder = HttpContext.Session.GetInt32("sortOrder")
+                    sortOrder = HttpContext.Session.GetString("sortOrder")
                 });
         }
 
@@ -958,7 +983,19 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         internal static bool VerificarCondicoesRemocao(Prospeccao prospeccao, Usuario ativoNaSessao, Usuario donoProsp)
         {
-            return prospeccao.Status.Count() > 1 && ativoNaSessao == donoProsp;
+            // Valida nulidades
+            if (prospeccao == null || ativoNaSessao == null || donoProsp == null)
+                return false;
+
+            // Deve haver mais de um status para permitir remoção
+            if (prospeccao.Status == null || prospeccao.Status.Count() <= 1)
+                return false;
+
+            // Comparar por Id do usuário (evita comparação de instâncias diferentes)
+            if (string.IsNullOrEmpty(ativoNaSessao.Id) || string.IsNullOrEmpty(donoProsp.Id))
+                return false;
+
+            return ativoNaSessao.Id == donoProsp.Id;
         }
 
         /// <summary>
@@ -1578,8 +1615,11 @@ namespace BaseDeProjetos.Controllers
                 var prospeccoes = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.ToListAsync());
                 Prospeccao prospeccao = prospeccoes.Find(p => p.Id == followup.OrigemID);
 
+                // Obter o usuário dono a partir da prospecção (evita depender de followup.Origem que pode não estar carregado)
+                Usuario donoProsp = prospeccao?.Usuario;
+
                 //Verifica se o usuário está apto para remover o followup
-                if (VerificarCondicoesRemocao(prospeccao, UsuarioAtivo, followup.Origem.Usuario) || UsuarioAtivo.Nivel == Nivel.Dev)
+                if (VerificarCondicoesRemocao(prospeccao, UsuarioAtivo, donoProsp) || UsuarioAtivo?.Nivel == Nivel.Dev)
                 {
                     _context.FollowUp.Remove(followup);
                     await _context.SaveChangesAsync();

@@ -84,6 +84,24 @@
                                 </div>
 
                                 <div class="col-md-4">
+                                    <label asp-for="Casa" class="form-label fw-semibold">Casa</label>
+                                    @if (Context.Session.GetString("_Casa") != null)
+                                    {
+                                        var enumCasa = (int)Enum.Parse(typeof(Instituto),
+                                        Context.Session.GetString("_Casa"), true);
+
+                                        <select asp-for="Casa" class="form-select">
+                                            <option value="@enumCasa">@Context.Session.GetString("_Casa")</option>
+                                        </select>
+                                    }
+                                    else
+                                    {
+                                        <select asp-for="Casa" class="form-select"
+                                                asp-items="Html.GetEnumSelectList<Instituto>()"></select>
+                                    }
+                                </div>
+
+                                <div class="col-md-4">
                                     <label asp-for="Tipologia" class="form-label fw-semibold">
                                         @Html.DisplayNameFor(m => m.Tipologia) <span class="text-danger">*</span>
                                     </label>

@@ -1,4 +1,5 @@
 ﻿@model BaseDeProjetos.Models.Producao
+@using System.Globalization
 
 @{
     ViewData["Title"] = "Detalhes";
@@ -46,7 +47,7 @@
                 @Html.DisplayNameFor(model => model.Data)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.Data.Month)/@Html.DisplayFor(model => model.Data.Year)
+                @Model.Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))
             </dd>
             <dt>
                 @Html.DisplayNameFor(model => model.Local)
