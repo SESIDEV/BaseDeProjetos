@@ -134,12 +134,12 @@
 
                                 </td>
                                 @{
-                                    var subtracaoUltimoStatus = @DateTime.Now.Subtract(prospeccao.Status.OrderBy(followup => followup.Data).Last().Data).Days;
+                                    var subtracaoUltimoStatus = DateTime.Now.Subtract(prospeccao.Status.OrderBy(followup => followup.Data).ThenBy(followup => followup.Id).Last().Data).Days;
                                 }
                                 <td class="cell">
                                     <span>@prospeccao.TipoContratacao.GetDisplayName()</span> @*Tipo Contratação*@
                                 </td>
-                                @if (prospeccao.Status.OrderBy(followup => followup.Data).Last().Status != StatusProspeccao.Planejada)
+                                @if (prospeccao.Status.OrderBy(followup => followup.Data).ThenBy(followup => followup.Id).Last().Status != StatusProspeccao.Planejada)
                                 {
                                     <td class="cell">
                                         @FunilHelpers.VerificarTemperatura(subtracaoUltimoStatus)
@@ -238,11 +238,11 @@
                                         </nobr>
                                         <hr>
                                         <span class="display-6" style="font-size:18px; font-weight:600">
-                                            Status - @prospeccao.Status.OrderBy(p => p.Data).Last().Data.ToString("dd/MM/yyyy",
+                                            Status - @prospeccao.Status.OrderBy(p => p.Data).ThenBy(p => p.Id).Last().Data.ToString("dd/MM/yyyy",
                                         CultureInfo.CreateSpecificCulture("pt-BR"))
                                         </span><br>
-                                        <p style="color:#50555A">@prospeccao.Status.OrderBy(followup => followup.Data).Last().Status.GetDisplayName()</p>
-                                        <span>- @prospeccao.Status.OrderBy(p => p.Data).Last().Anotacoes</span>
+                                        <p style="color:#50555A">@prospeccao.Status.OrderBy(followup => followup.Data).ThenBy(followup => followup.Id).Last().Status.GetDisplayName()</p>
+                                        <span>- @prospeccao.Status.OrderBy(p => p.Data).ThenBy(p => p.Id).Last().Anotacoes</span>
                                         <br />
                                         <hr />
                                         <div class="button-footer d-flex justify-content-end">

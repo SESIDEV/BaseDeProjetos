@@ -43,7 +43,7 @@
                     <span>Não informada</span>
                 }
                 <h1 class="app-card-title">Status:</h1>
-                <span>@Model.Status.OrderBy(followup => followup.Data).Last().Status.GetDisplayName()</span>
+                <span>@Model.Status.OrderBy(followup => followup.Data).ThenBy(followup => followup.Id).Last().Status.GetDisplayName()</span>
                 <h1 class="app-card-title">Valor Estimado:</h1>
                 <nobr>
                 @if (Model.ValorEstimado != 0)
@@ -68,8 +68,8 @@
                 </nobr>
                 <hr>
                 <h1 class="app-card-title">Último Status:</h1>
-                <span>@Model.Status.OrderBy(p => p.Data).Last().Anotacoes</span>
-                <p>Data: @Model.Status.OrderBy(p => p.Data).Last().Data.ToString("dd/MM/yyyy",
+                <span>@Model.Status.OrderBy(p => p.Data).ThenBy(p => p.Id).Last().Anotacoes</span>
+                <p>Data: @Model.Status.OrderBy(p => p.Data).ThenBy(p => p.Id).Last().Data.ToString("dd/MM/yyyy",
                     CultureInfo.CreateSpecificCulture("pt-BR"))</p>
             </div>
             <div class="modal-footer">
