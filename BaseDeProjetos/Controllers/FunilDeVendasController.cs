@@ -873,19 +873,56 @@ namespace BaseDeProjetos.Controllers
         /// <param name="id">ID da Empresa</param>
         /// <param name="userId">ID do Usuário</param>
         /// <returns></returns>
-        public async Task<IActionResult> Planejar(int id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Planejar(int id, string nomeProspeccao, Instituto casa)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 ViewbagizarUsuario(_context, _cache);
 
+                Empresa empresa = await _context.Empresa.FindAsync(id);
+                if (empresa == null)
+                {
+                    return NotFound();
+                }
+
+                bool jaExistePlanejamento = await _context.Prospeccao
+                    .AnyAsync(p => p.EmpresaId == id
+                        && p.Casa == casa
+                        && p.Status.Any(f => f.Status == StatusProspeccao.Planejada)
+                        && !p.Status.Any(f => f.Status != StatusProspeccao.Planejada));
+
+                if (jaExistePlanejamento)
+                {
+                    return RedirectToAction("Index", "Empresas");
+                }
+
+                string nomeEmpresa = !string.IsNullOrWhiteSpace(empresa.Nome)
+                    ? empresa.Nome
+                    : empresa.RazaoSocial;
+
+                string nomePlanejamento = !string.IsNullOrWhiteSpace(nomeProspeccao)
+                    ? nomeProspeccao.Trim()
+                    : $"Planejamento - {nomeEmpresa}";
+
                 Prospeccao prosp = new Prospeccao
                 {
                     Id = $"prosp_{DateTime.Now.Ticks}",
                     EmpresaId = id,
+                    Empresa = empresa,
+                    NomeProspeccao = nomePlanejamento,
                     Usuario = await _context.Users.FirstOrDefaultAsync(u => u.UserName == UsuarioAtivo.UserName),
-                    Casa = UsuarioAtivo.Casa,
+                    Casa = casa,
                     LinhaPequisa = LinhaPesquisa.Indefinida,
+                    TipoContratacao = TipoContratacao.Indefinida,
+                    TipoDeInteracao = TipoDeInteracao.Adefinir,
+                    TipoDeProjeto = TipoDeProjeto.Adefinir,
+                    ParceiroInterno = ParceiroInterno.Adefinir,
+                    Origem = Origem.Adefinir,
+                    Tipologia = "A definir",
+                    MembrosEquipe = "",
+                    PotenciaisParceiros = "",
                     CaminhoPasta = "",
                 };
 
@@ -894,6 +931,7 @@ namespace BaseDeProjetos.Controllers
                     new FollowUp
                     {
                         OrigemID = prosp.Id,
+                        Origem = prosp,
                         Data = DateTime.Today,
                         Anotacoes = $"Incluído no plano de prospecção de {User.Identity.Name}",
                         Status = StatusProspeccao.Planejada

@@ -58,11 +58,6 @@
                         <label asp-for="Segmento" class="control-label text-danger"></label>
                         <select asp-for="Segmento" class="form-control" asp-items="Html.GetEnumSelectList<SegmentoEmpresa>().OrderBy(p=>p.Text)" value="@Model.Segmento"></select>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="Logo" class="control-label"></label>
-                        <input class="form-control" type="file" id="logoInput-@Model.Id" accept="image/*" onchange="previewBase64('logoInput-@Model.Id', 'img-preview-@Model.Id', 'logoBase64-@Model.Id')" />
-                    </div>
-                    <img id="img-preview-@Model.Id" width="300" style="margin-top:5px;">
                 </div>
                 <div class="modal-footer">
                     <button type="button" data-bs-dismiss="modal" class="btn app-btn-secondary">Voltar para Lista</button>
@@ -71,29 +66,6 @@
             </div>
         </div>
     </div>
-    <!-- Isso pode quebrar caso a string b64 seja enorme, isso faz com que todo conteúdo HTML após essa tag não seja enviado ao DOM-->
-    @{
-        string imagem = "";
-        if (!string.IsNullOrEmpty(Model.Logo))
-        {
-            if (!Model.Logo.StartsWith("http"))
-            {
-                byte[] data = Convert.FromBase64String(Model.Logo);
-                imagem = Convert.ToBase64String(data);
-            }
-            else
-            {
-                try
-                {
-                    imagem = Model.Logo;
-                }
-                catch (Exception)
-                {
-                }
-            }
-        }
-    }
-    <input type="hidden" name="Logo" value="@imagem" id="logoBase64-@Model.Id" />
 </form>
 
 @section Scripts {

@@ -31,16 +31,6 @@
                 
                 <div class="app-card-title" style="font-weight: 600">Setor:</div>
                 <span>@Model.Segmento</span>
-                <div class="app-card-title" style="font-weight: 600">Logo:</div>
-                <span>@if (Model.Logo != null)
-                    {
-                            <img loading="lazy" class="logoEmpresa" src="@Model.Logo" alt="Logo da Empresa" />
-                    }
-                    else
-                    {
-                            <div id="logo_alt" style="width: 100px; height: 100px">Sem Logo</div>
-                    }
-                </span>
                 </div>             
             <div class="modal-footer">
                 <form asp-action="Delete" asp-route-id="Id" method="post">

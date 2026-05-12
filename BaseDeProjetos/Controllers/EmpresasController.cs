@@ -185,7 +185,7 @@ namespace BaseDeProjetos.Controllers
                 ViewBag.ProspeccoesAtivas = prospeccoes.Where(P => P.Status.All(S => S.Status != StatusProspeccao.NaoConvertida &&
                                                                                         S.Status != StatusProspeccao.Convertida &&
                                                                                         S.Status != StatusProspeccao.Suspensa) &&
-                                                                                        P.Status.OrderBy(k => k.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList();
+                                                                                        P.Status.OrderBy(k => k.Data).LastOrDefault()?.Status != StatusProspeccao.Planejada).ToList();
 
                 ViewBag.ProspeccoesPlanejadas = prospeccoes.Where(P => P.Status.All(S => S.Status == StatusProspeccao.Planejada)).ToList();
 
@@ -406,11 +406,11 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Logo,RazaoSocial,CNPJ,Segmento,Estado,Industrial,Nome,Porte")] Empresa empresa)
+        public async Task<IActionResult> Create([Bind("Id,RazaoSocial,CNPJ,Segmento,Estado,Industrial,Nome,Porte")] Empresa empresa)
         {
             if (ModelState.IsValid)
             {
-                await ReprocessarImagemEmpresa(empresa);
+                empresa.Logo = "";
                 _context.Add(empresa);
                 await _context.SaveChangesAsync();
                 CacheHelper.CleanupEmpresasCache(_cache);
@@ -461,7 +461,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Logo,RazaoSocial,CNPJ,Segmento,Estado,Industrial,Nome,Porte")] Empresa empresa)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,RazaoSocial,CNPJ,Segmento,Estado,Industrial,Nome,Porte")] Empresa empresa)
         {
             if (id != empresa.Id)
             {
@@ -472,7 +472,7 @@ namespace BaseDeProjetos.Controllers
             {
                 try
                 {   // O CONTROLLER PRECISA RECEBER O CAMPO 'ESTADO' E VERIFICAR A QUAL [Name] ELE PERTENCE NA BASE ENUM #########################################
-                    await ReprocessarImagemEmpresa(empresa);
+                    empresa.Logo = "";
                     empresa.CNPJ = Regex.Replace(empresa.CNPJ, "[^0-9]", "");
                     _context.Update(empresa);
                     await _context.SaveChangesAsync();
