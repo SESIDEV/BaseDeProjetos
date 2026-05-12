@@ -670,6 +670,36 @@ namespace BaseDeProjetos.Controllers
                     .OrderBy(linha => linha.Equipe)
                     .ToList();
 
+                var totaisEquipe = new
+                {
+                    ContatosRealizados = indicadoresEquipe.Sum(linha => linha.ContatosRealizados),
+                    PropostasEnviadas = indicadoresEquipe.Sum(linha => linha.PropostasEnviadas),
+                    PropostasConvertidas = indicadoresEquipe.Sum(linha => linha.PropostasConvertidas),
+                    ValorPropostasEnviadas = indicadoresEquipe.Sum(linha => linha.ValorPropostasEnviadas),
+                    ValorPropostasConvertidas = indicadoresEquipe.Sum(linha => linha.ValorPropostasConvertidas)
+                };
+
+                var taxasEquipe = indicadoresEquipe
+                    .Select(linha => new
+                    {
+                        Equipe = linha.Equipe,
+                        Proposicao = CalcularPercentual(linha.PropostasEnviadas, linha.ContatosRealizados),
+                        Conversao = CalcularPercentual(linha.PropostasConvertidas, linha.PropostasEnviadas),
+                        Sucesso = CalcularPercentual(linha.PropostasConvertidas, linha.ContatosRealizados),
+                        ContribuicaoReceitaGerada = CalcularPercentual(linha.ValorPropostasConvertidas, totaisEquipe.ValorPropostasConvertidas),
+                        AssertividadePropostas = CalcularPercentual(linha.ValorPropostasConvertidas, linha.ValorPropostasEnviadas)
+                    })
+                    .ToList();
+
+                var totaisTaxas = new
+                {
+                    Proposicao = CalcularPercentual(totaisEquipe.PropostasEnviadas, totaisEquipe.ContatosRealizados),
+                    Conversao = CalcularPercentual(totaisEquipe.PropostasConvertidas, totaisEquipe.PropostasEnviadas),
+                    Sucesso = CalcularPercentual(totaisEquipe.PropostasConvertidas, totaisEquipe.ContatosRealizados),
+                    ContribuicaoReceitaGerada = CalcularPercentual(totaisEquipe.ValorPropostasConvertidas, totaisEquipe.ValorPropostasConvertidas),
+                    AssertividadePropostas = CalcularPercentual(totaisEquipe.ValorPropostasConvertidas, totaisEquipe.ValorPropostasEnviadas)
+                };
+
                 var dados = new
                 {
                     Ano = ano,
@@ -708,14 +738,12 @@ namespace BaseDeProjetos.Controllers
                     Equipe = new
                     {
                         Linhas = indicadoresEquipe,
-                        Totais = new
-                        {
-                            ContatosRealizados = indicadoresEquipe.Sum(linha => linha.ContatosRealizados),
-                            PropostasEnviadas = indicadoresEquipe.Sum(linha => linha.PropostasEnviadas),
-                            PropostasConvertidas = indicadoresEquipe.Sum(linha => linha.PropostasConvertidas),
-                            ValorPropostasEnviadas = indicadoresEquipe.Sum(linha => linha.ValorPropostasEnviadas),
-                            ValorPropostasConvertidas = indicadoresEquipe.Sum(linha => linha.ValorPropostasConvertidas)
-                        }
+                        Totais = totaisEquipe
+                    },
+                    Taxas = new
+                    {
+                        Linhas = taxasEquipe,
+                        Totais = totaisTaxas
                     }
                 };
 
@@ -826,6 +854,13 @@ namespace BaseDeProjetos.Controllers
             if (ano < DateTime.Now.Year) return 12;
             if (ano > DateTime.Now.Year) return 0;
             return DateTime.Now.Month;
+        }
+
+        private static decimal CalcularPercentual(decimal parte, decimal total)
+        {
+            if (total == 0) return 0;
+
+            return Math.Round(parte / total * 100, 2);
         }
         private void SetarParametrosFunilSession(ParametrosFunil parametrosFunil)
         {
