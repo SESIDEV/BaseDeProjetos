@@ -1,4 +1,4 @@
-﻿@model ProspeccoesViewModel
+@model ProspeccoesViewModel
 @using BaseDeProjetos.Helpers
 @using BaseDeProjetos.Models.Enums
 @using BaseDeProjetos.Models.ViewModels
@@ -12,6 +12,7 @@
     string aba = dadosDaRota.Values["aba"] as string;
     string casa = dadosDaRota.Values["casa"] as string;
     string searchString = ViewBag.searchString as string;
+    bool abaIndicadores = !string.IsNullOrEmpty(aba) && aba.ToLowerInvariant() == "indicadores";
 
     if (string.IsNullOrEmpty(casa))
     {
@@ -43,6 +44,8 @@
 <div class="app-wrapper">
     <div class="app-content pt-3 p-md-3 p-lg-4">
         <div class="container-xl">
+            @if (!abaIndicadores)
+            {
             <div class="row g-3 mb-2 align-items-center justify-content-between">
                 <div class="col-auto">
                     <h1 class="app-page-title mb-0">Prospecções</h1>
@@ -51,7 +54,7 @@
                     <div class="page-utilities">
                         <div class="d-flex gap-2 justify-content-start justify-content-md-end align-items-center">
                             <!--se a rota não for Index-->
-                            @if (!string.IsNullOrEmpty(aba))
+                            @if (!string.IsNullOrEmpty(aba) && !abaIndicadores)
                             {
                                 <form class="table-search-form row gx-1 align-items-center">
                                     <div class="d-flex gap-2 flex-row align-items-center">
@@ -74,7 +77,6 @@
                                    class="btn btn-outline-success">
                                     <i class="bi bi-file-earmark-excel"></i> Exportar Excel
                                 </a>
-
                                 @await Component.InvokeAsync("ModalPreCreateProsp")
                                 @await Component.InvokeAsync("ModalCreateProsp")
                                 <div id="modalCreateFollowUpProspContainer"></div>
@@ -92,7 +94,10 @@
                 </div>
 
             </div>
+            }
 
+            @if (!abaIndicadores)
+            {
             <div class="d-flex align-items-center justify-content-end mb-2 gap-2">
                 <span>Ano:</span>
                 <select class="form-select w-auto" id="ano" name="ano" onchange="updateLink()">
@@ -108,7 +113,7 @@
                     }
                 </select>
 
-                @if (!string.IsNullOrEmpty(aba))
+                @if (!string.IsNullOrEmpty(aba) && !abaIndicadores)
                 {
                     <div>Quantidade de Prospecções:</div>
                     <form method="get" asp-action="Index" asp-controller="FunildeVendas" asp-route-casa="@casa" asp-route-aba="@aba">
@@ -153,7 +158,9 @@
                 }
             </div>
 
-            @if (Model.Prospeccoes.Count() != 0)
+            }
+
+            @if (Model.Prospeccoes.Count() != 0 || abaIndicadores)
             {
                 // abasFunil.Add(new AbaFunil("Dashboard", string.IsNullOrEmpty(aba)));
                 abasFunil.Add(new AbaFunil("Ativas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "ativas" : false));
@@ -162,6 +169,8 @@
                 //abasFunil.Add(new AbaFunil("Planejadas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "planejadas" : false));
                 //abasFunil.Add(new AbaFunil("Erradas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "erradas" : false));
 
+                @if (!abaIndicadores)
+                {
                 <nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
                     @foreach (var abaFunil in abasFunil)
                     {
@@ -183,8 +192,15 @@
                         </a>
                     }
                 </nav>
+                }
                 <div class="tab-content" id="orders-table-tab-content">
-                    @if (string.IsNullOrEmpty(aba))
+                    @if (abaIndicadores)
+                    {
+                        <div class="tab-pane fade show active" id="prospeccao-indicadores" role="tabpanel" aria-labelledby="prospeccao-indicadores-tab">
+                            <partial name="_IndicadoresMensais" view-data="@ViewData" />
+                        </div>
+                    }
+                    else if (string.IsNullOrEmpty(aba))
                     {
                         <div class="tab-pane fade show active" id="prospeccao-dashboard" role="tabpanel" aria-labelledby="prospeccao-dashboard-tab">
                             <div class="app-card app-card-orders-table mb-5">
@@ -220,7 +236,7 @@
                 </div>
             }
 
-            @if (!string.IsNullOrEmpty(aba) && Model.Pager.TotalPaginas > 1)
+            @if (!string.IsNullOrEmpty(aba) && !abaIndicadores && Model.Pager.TotalPaginas > 1)
             {
                 int paginaAtual = Model.Pager.PaginaAtual;
                 int totalPaginas = Model.Pager.TotalPaginas;

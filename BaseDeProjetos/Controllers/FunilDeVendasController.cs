@@ -133,7 +133,6 @@ namespace BaseDeProjetos.Controllers
                 return View("Error");
             }
         }
-
         // GET: FunilDeVendas/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
@@ -607,6 +606,102 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        [Route("FunilDeVendas/GerarIndicadoresMensais/{casa}/{ano}")]
+        public async Task<IActionResult> GerarIndicadoresMensais(string casa, int ano)
+        {
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                if (!Enum.TryParse(casa, out Instituto enumCasa))
+                {
+                    throw new ArgumentException("A casa selecionada e invalida");
+                }
+
+                var followUps = await _context.FollowUp
+                    .Where(f => f.Origem != null
+                        && f.Origem.Casa == enumCasa
+                        && (f.Data.Year == ano || f.Data.Year == ano - 1)
+                        && (f.Status == StatusProspeccao.ContatoInicial
+                            || f.Status == StatusProspeccao.ComProposta
+                            || f.Status == StatusProspeccao.Convertida))
+                    .Select(f => new
+                    {
+                        f.Status,
+                        f.Data,
+                        Criador = f.Origem.Usuario != null ? f.Origem.Usuario.UserName : null,
+                        f.Origem.ValorProposta
+                    })
+                    .ToListAsync();
+
+                int mesReferencia = ObterMesReferenciaIndicadores(ano);
+
+                var indicadoresEquipe = followUps
+                    .Where(f => f.Data.Year == ano)
+                    .GroupBy(f => string.IsNullOrWhiteSpace(f.Criador) ? "Sem criador" : f.Criador)
+                    .Select(g => new
+                    {
+                        Equipe = g.Key,
+                        ContatosRealizados = g.Count(f => f.Status == StatusProspeccao.ContatoInicial),
+                        PropostasEnviadas = g.Count(f => f.Status == StatusProspeccao.ComProposta),
+                        PropostasConvertidas = g.Count(f => f.Status == StatusProspeccao.Convertida),
+                        ValorPropostasEnviadas = g.Where(f => f.Status == StatusProspeccao.ComProposta).Sum(f => f.ValorProposta),
+                        ValorPropostasConvertidas = g.Where(f => f.Status == StatusProspeccao.Convertida).Sum(f => f.ValorProposta)
+                    })
+                    .OrderBy(linha => linha.Equipe)
+                    .ToList();
+
+                var dados = new
+                {
+                    Ano = ano,
+                    AnoAnterior = ano - 1,
+                    Casa = enumCasa.ToString(),
+                    MesAtual = mesReferencia,
+                    Meses = Enumerable.Range(0, 13).ToArray(),
+                    ContatosRealizados = new
+                    {
+                        Executado = GerarSerieExecutadoMensal(followUps
+                            .Where(f => f.Status == StatusProspeccao.ContatoInicial && f.Data.Year == ano)
+                            .Select(f => f.Data)),
+                        ExecutadoAnoAnterior = GerarSerieExecutadoMensal(followUps
+                            .Where(f => f.Status == StatusProspeccao.ContatoInicial && f.Data.Year == ano - 1)
+                            .Select(f => f.Data))
+                    },
+                    PropostasEnviadas = new
+                    {
+                        Executado = GerarSerieExecutadoMensal(followUps
+                            .Where(f => f.Status == StatusProspeccao.ComProposta && f.Data.Year == ano)
+                            .Select(f => f.Data)),
+                        ExecutadoAnoAnterior = GerarSerieExecutadoMensal(followUps
+                            .Where(f => f.Status == StatusProspeccao.ComProposta && f.Data.Year == ano - 1)
+                            .Select(f => f.Data))
+                    },
+                    PropostasConvertidas = new
+                    {
+                        Executado = GerarSerieExecutadoMensal(followUps
+                            .Where(f => f.Status == StatusProspeccao.Convertida && f.Data.Year == ano)
+                            .Select(f => f.Data)),
+                        ExecutadoAnoAnterior = GerarSerieExecutadoMensal(followUps
+                            .Where(f => f.Status == StatusProspeccao.Convertida && f.Data.Year == ano - 1)
+                            .Select(f => f.Data))
+                    },
+                    Equipe = new
+                    {
+                        Linhas = indicadoresEquipe,
+                        Totais = new
+                        {
+                            ContatosRealizados = indicadoresEquipe.Sum(linha => linha.ContatosRealizados),
+                            PropostasEnviadas = indicadoresEquipe.Sum(linha => linha.PropostasEnviadas),
+                            PropostasConvertidas = indicadoresEquipe.Sum(linha => linha.PropostasConvertidas),
+                            ValorPropostasEnviadas = indicadoresEquipe.Sum(linha => linha.ValorPropostasEnviadas),
+                            ValorPropostasConvertidas = indicadoresEquipe.Sum(linha => linha.ValorPropostasConvertidas)
+                        }
+                    }
+                };
+
+                return Ok(dados);
+            }
+
+            return View("Forbidden");
+        }
         // GET: FunilDeVendas
         [Route("FunilDeVendas/Index/{casa?}/{aba?}/{ano?}")]
         public async Task<IActionResult> Index(string casa, string aba, string sortOrder = "", string searchString = "", string ano = "", int numeroPagina = 1, int tamanhoPagina = 20)
@@ -637,6 +732,8 @@ namespace BaseDeProjetos.Controllers
 
                 ViewBag.searchString = searchString;
                 ViewBag.TamanhoPagina = tamanhoPagina;
+                ViewBag.Casa = casa;
+                ViewBag.Ano = !string.IsNullOrEmpty(ano) && int.TryParse(ano, out int anoIndicadores) ? anoIndicadores : DateTime.Now.Year;
                 
                 List<Prospeccao> prospeccoes = await ObterProspeccoesFunilFiltradas(casa, ano, UsuarioAtivo, aba, sortOrder, searchString);
 
@@ -678,6 +775,36 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        private static int[] GerarSerieExecutadoMensal(IEnumerable<DateTime> datas)
+        {
+            int[] contagemMensal = new int[12];
+
+            foreach (DateTime data in datas)
+            {
+                if (data.Month >= 1 && data.Month <= 12)
+                {
+                    contagemMensal[data.Month - 1]++;
+                }
+            }
+
+            int[] serieAcumulada = new int[13];
+            int acumulado = 0;
+
+            for (int indiceMes = 0; indiceMes < contagemMensal.Length; indiceMes++)
+            {
+                acumulado += contagemMensal[indiceMes];
+                serieAcumulada[indiceMes + 1] = acumulado;
+            }
+
+            return serieAcumulada;
+        }
+
+        private static int ObterMesReferenciaIndicadores(int ano)
+        {
+            if (ano < DateTime.Now.Year) return 12;
+            if (ano > DateTime.Now.Year) return 0;
+            return DateTime.Now.Month;
+        }
         private void SetarParametrosFunilSession(ParametrosFunil parametrosFunil)
         {
             SetarAbaNaSession(parametrosFunil.Aba);
@@ -1251,6 +1378,7 @@ namespace BaseDeProjetos.Controllers
             }
 
             Prospeccao prospAntiga = await _context.Prospeccao.AsNoTracking().FirstAsync(p => p.Id == prospeccao.Id);
+            prospeccao.Casa = prospAntiga.Casa;
 
             // tudo abaixo compara a versão antiga com a nova que irá para o Update()
 
