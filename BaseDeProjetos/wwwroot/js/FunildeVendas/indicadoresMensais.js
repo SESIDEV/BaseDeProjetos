@@ -34,9 +34,25 @@ function criarGraficoExecutado(container, titulo, subtituloEixo, dados, grupo, c
     const meses = obterCampo(dados, 'Meses') ?? [];
     const anoAnterior = obterCampo(dados, 'AnoAnterior');
     const dadosGrupo = obterCampo(dados, grupo);
+    const seriePlanejado = obterCampo(dadosGrupo, 'Planejado') ?? [];
     const serieExecutado = obterCampo(dadosGrupo, 'Executado') ?? [];
     const serieExecutadoAnoAnterior = obterCampo(dadosGrupo, 'ExecutadoAnoAnterior') ?? [];
-    const series = [{
+    const temPlanejado = seriePlanejado.some(valor => valor !== null && valor !== undefined);
+    const series = [];
+
+    if (temPlanejado) {
+        series.push({
+            name: 'Planejado',
+            color: '#1f4e79',
+            dashStyle: 'Dash',
+            data: seriePlanejado,
+            marker: {
+                symbol: 'circle'
+            }
+        });
+    }
+
+    series.push({
         name: 'Executado',
         color: cor,
         data: serieExecutado
@@ -47,7 +63,7 @@ function criarGraficoExecutado(container, titulo, subtituloEixo, dados, grupo, c
         marker: {
             symbol: 'circle'
         }
-    }, ...seriesExtras];
+    }, ...seriesExtras);
 
     Highcharts.chart(container, {
         chart: {

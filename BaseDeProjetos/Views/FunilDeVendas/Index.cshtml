@@ -13,6 +13,11 @@
     string casa = dadosDaRota.Values["casa"] as string;
     string searchString = ViewBag.searchString as string;
     bool abaIndicadores = !string.IsNullOrEmpty(aba) && aba.ToLowerInvariant() == "indicadores";
+    bool abaPlanejamentoIndicadores = !string.IsNullOrEmpty(aba) && aba.ToLowerInvariant() == "planejamento";
+    bool abaEspecialIndicadores = abaIndicadores || abaPlanejamentoIndicadores;
+    var usuarioNivelFunil = ViewBag.usuarioNivel;
+    bool usuarioPodeEditarPlanejamentoIndicadores = usuarioNivelFunil != null
+        && (usuarioNivelFunil.ToString() == "Supervisor" || usuarioNivelFunil.ToString() == "Dev");
 
     if (string.IsNullOrEmpty(casa))
     {
@@ -44,7 +49,7 @@
 <div class="app-wrapper">
     <div class="app-content pt-3 p-md-3 p-lg-4">
         <div class="container-xl">
-            @if (!abaIndicadores)
+            @if (!abaEspecialIndicadores)
             {
             <div class="row g-3 mb-2 align-items-center justify-content-between">
                 <div class="col-auto">
@@ -54,7 +59,7 @@
                     <div class="page-utilities">
                         <div class="d-flex gap-2 justify-content-start justify-content-md-end align-items-center">
                             <!--se a rota não for Index-->
-                            @if (!string.IsNullOrEmpty(aba) && !abaIndicadores)
+                            @if (!string.IsNullOrEmpty(aba) && !abaEspecialIndicadores)
                             {
                                 <form class="table-search-form row gx-1 align-items-center">
                                     <div class="d-flex gap-2 flex-row align-items-center">
@@ -96,7 +101,7 @@
             </div>
             }
 
-            @if (!abaIndicadores)
+            @if (!abaEspecialIndicadores)
             {
             <div class="d-flex align-items-center justify-content-end mb-2 gap-2">
                 <span>Ano:</span>
@@ -113,7 +118,7 @@
                     }
                 </select>
 
-                @if (!string.IsNullOrEmpty(aba) && !abaIndicadores)
+                @if (!string.IsNullOrEmpty(aba) && !abaEspecialIndicadores)
                 {
                     <div>Quantidade de Prospecções:</div>
                     <form method="get" asp-action="Index" asp-controller="FunildeVendas" asp-route-casa="@casa" asp-route-aba="@aba">
@@ -160,7 +165,7 @@
 
             }
 
-            @if (Model.Prospeccoes.Count() != 0 || abaIndicadores)
+            @if (Model.Prospeccoes.Count() != 0 || abaEspecialIndicadores)
             {
                 // abasFunil.Add(new AbaFunil("Dashboard", string.IsNullOrEmpty(aba)));
                 abasFunil.Add(new AbaFunil("Ativas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "ativas" : false));
@@ -169,7 +174,7 @@
                 //abasFunil.Add(new AbaFunil("Planejadas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "planejadas" : false));
                 //abasFunil.Add(new AbaFunil("Erradas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "erradas" : false));
 
-                @if (!abaIndicadores)
+                @if (!abaEspecialIndicadores)
                 {
                 <nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
                     @foreach (var abaFunil in abasFunil)
@@ -193,11 +198,41 @@
                     }
                 </nav>
                 }
+                else
+                {
+                    <nav class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
+                        <a class="flex-sm-fill text-sm-center nav-link @(abaIndicadores ? "active" : "")"
+                           asp-action="Index"
+                           asp-controller="FunilDeVendas"
+                           asp-route-casa="@casa"
+                           asp-route-aba="indicadores"
+                           asp-route-ano="@ViewBag.Ano">
+                            Indicadores Mensais
+                        </a>
+                        @if (usuarioPodeEditarPlanejamentoIndicadores)
+                        {
+                            <a class="flex-sm-fill text-sm-center nav-link @(abaPlanejamentoIndicadores ? "active" : "")"
+                               asp-action="Index"
+                               asp-controller="FunilDeVendas"
+                               asp-route-casa="@casa"
+                               asp-route-aba="planejamento"
+                               asp-route-ano="@ViewBag.Ano">
+                                Planejamento
+                            </a>
+                        }
+                    </nav>
+                }
                 <div class="tab-content" id="orders-table-tab-content">
                     @if (abaIndicadores)
                     {
                         <div class="tab-pane fade show active" id="prospeccao-indicadores" role="tabpanel" aria-labelledby="prospeccao-indicadores-tab">
                             <partial name="_IndicadoresMensais" view-data="@ViewData" />
+                        </div>
+                    }
+                    else if (abaPlanejamentoIndicadores)
+                    {
+                        <div class="tab-pane fade show active" id="indicadores-planejamento" role="tabpanel" aria-labelledby="indicadores-planejamento-tab">
+                            <partial name="_PlanejamentoIndicadores" view-data="@ViewData" />
                         </div>
                     }
                     else if (string.IsNullOrEmpty(aba))
@@ -236,7 +271,7 @@
                 </div>
             }
 
-            @if (!string.IsNullOrEmpty(aba) && !abaIndicadores && Model.Pager.TotalPaginas > 1)
+            @if (!string.IsNullOrEmpty(aba) && !abaEspecialIndicadores && Model.Pager.TotalPaginas > 1)
             {
                 int paginaAtual = Model.Pager.PaginaAtual;
                 int totalPaginas = Model.Pager.TotalPaginas;

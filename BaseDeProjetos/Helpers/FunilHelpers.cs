@@ -202,7 +202,7 @@ namespace BaseDeProjetos.Helpers
                 return await cache.GetCachedAsync("Prospeccoes:Funil:TodasPermitidas", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).Where(prospeccao => casasPermitidas.Contains(prospeccao.Casa)).ToListAsync());
             }
 
-            if (!Enum.TryParse(casa, out Instituto enum_casa) || !casasPermitidas.Contains(enum_casa))
+            if (!TentarParseInstituto(casa, out Instituto enum_casa) || !casasPermitidas.Contains(enum_casa))
             {
                 return new List<Prospeccao>();
             }
@@ -234,7 +234,7 @@ namespace BaseDeProjetos.Helpers
                 return query.Where(p => casasPermitidas.Contains(p.Casa));
             }
 
-            if (!Enum.TryParse(casa, out Instituto enumCasa) || !casasPermitidas.Contains(enumCasa))
+            if (!TentarParseInstituto(casa, out Instituto enumCasa) || !casasPermitidas.Contains(enumCasa))
             {
                 return query.Where(p => false);
             }
@@ -355,7 +355,7 @@ namespace BaseDeProjetos.Helpers
                 return await _context.Producao.Where(producao => casasPermitidas.Contains(producao.Casa)).ToListAsync();
             }
 
-            if (!Enum.TryParse(casa, out Instituto enum_casa) || !casasPermitidas.Contains(enum_casa))
+            if (!TentarParseInstituto(casa, out Instituto enum_casa) || !casasPermitidas.Contains(enum_casa))
             {
                 return new List<Producao>();
             }
@@ -575,6 +575,19 @@ namespace BaseDeProjetos.Helpers
             }
 
             return new List<Instituto>();
+        }
+
+        public static bool TentarParseInstituto(string casa, out Instituto instituto)
+        {
+            if (string.Equals(casa, "Servicos_GPD", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(casa, "Servi\u00e7os_GPD", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(casa, "Servi\u00e7os", StringComparison.OrdinalIgnoreCase))
+            {
+                instituto = Instituto.Servicos_GPD;
+                return true;
+            }
+
+            return Enum.TryParse(casa, true, out instituto);
         }
 
         /// <summary>

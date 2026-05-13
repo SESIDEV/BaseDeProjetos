@@ -135,10 +135,9 @@ namespace BaseDeProjetos.Controllers
             Instituto enum_casa;
             List<Instituto> casasPermitidas = FunilHelpers.ObterCasasPermitidas(UsuarioAtivo);
 
-            if (Enum.IsDefined(typeof(Instituto), casa))
+            if (FunilHelpers.TentarParseInstituto(casa, out enum_casa))
             {
-                HttpContext.Session.SetString("_Casa", casa);
-                enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
+                HttpContext.Session.SetString("_Casa", enum_casa.ToString());
             }
             else
             {

@@ -1,0 +1,404 @@
+@using BaseDeProjetos.Models.Enums
+@using BaseDeProjetos.Models.ViewModels
+@using System.Globalization
+@{
+    IndicadoresPlanejamentoViewModel planejamento = ViewBag.PlanejamentoIndicadores as IndicadoresPlanejamentoViewModel;
+    var culturaBrasileira = CultureInfo.GetCultureInfo("pt-BR");
+    var nomesCasasPlanejamento = new Dictionary<Instituto, string>
+    {
+        { Instituto.ISIQV, "ISI Qu\u00edmica Verde" },
+        { Instituto.CISHO, "CIS Sa\u00fade Ocupacional" },
+        { Instituto.ISIBF_CBT, "ISI B&F CBT" },
+        { Instituto.ISIBF_CIN, "ISI B&F CIN" },
+        { Instituto.ISIBF_CPQ, "ISI B&F CPQ" },
+        { Instituto.ISIBF_CEP, "ISI B&F CEP" },
+        { Instituto.ISIBF_CSQ, "ISI B&F CSQ" },
+        { Instituto.Servicos_GPD, "Servi\u00e7os GPD" }
+    };
+
+    var colunas = new Dictionary<int, string>
+    {
+        { -2, "Qtde" },
+        { -1, "%" },
+        { 0, "Arraste" },
+        { 1, "Jan" },
+        { 2, "Fev" },
+        { 3, "Mar" },
+        { 4, "Abr" },
+        { 5, "Mai" },
+        { 6, "Jun" },
+        { 7, "Jul" },
+        { 8, "Ago" },
+        { 9, "Set" },
+        { 10, "Out" },
+        { 11, "Nov" },
+        { 12, "Dez" }
+    };
+
+    var linhasVerdes = new List<string>
+    {
+        "CONTATOS_REGISTRADOS_META",
+        "CONTATOS_REALIZADOS_META",
+        "PROPOSTAS_ENVIADAS_META",
+        "PROJETOS_CONVERTIDOS_META"
+    };
+
+    var linhasCinza = new List<string>
+    {
+        "CURVA_CONTATOS_PLANEJADA",
+        "DIVERGENCIA_MENSAL",
+        "CURVA_PLANEJADA",
+        "CURVA_REAL",
+        "CURVA_PROPOSTAS",
+        "CURVA_PLANEJADA_PROJETOS"
+    };
+
+    var linhasMoeda = new List<string>
+    {
+        "VALOR_PROPOSTA",
+        "VALOR_MEDIO_PROPOSTA",
+        "VALOR_PROPOSTA_ATIVA",
+        "VALOR_MEDIO_PROPOSTA_ATIVA",
+        "VALOR_TOTAL_PROJETOS_CONVERTIDOS",
+        "VALOR_MEDIO_PROJETOS_CONVERTIDOS"
+    };
+
+    var linhasPercentual = new List<string>
+    {
+        "CURVA_CONTATOS_PLANEJADA",
+        "CURVA_PLANEJADA",
+        "CURVA_REAL",
+        "CURVA_PROPOSTAS",
+        "CURVA_PLANEJADA_PROJETOS"
+    };
+}
+
+<style>
+    .planejamento-toolbar {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+    }
+
+    .planejamento-filtros {
+        display: flex;
+        align-items: flex-end;
+        gap: .75rem;
+        flex-wrap: wrap;
+    }
+
+    .planejamento-card {
+        overflow-x: auto;
+    }
+
+    .planejamento-table {
+        width: 100%;
+        min-width: 1820px;
+        border-collapse: collapse;
+        font-size: .78rem;
+        background: #fff;
+    }
+
+    .planejamento-table th {
+        background: #0d526b;
+        color: #fff;
+        text-align: center;
+        font-weight: 700;
+        border: 1px solid #1e1e1e;
+        padding: .28rem .4rem;
+        white-space: nowrap;
+    }
+
+    .planejamento-table td {
+        border: 1px solid #2b2b2b;
+        padding: 0;
+    }
+
+    .planejamento-table .grupo-row td {
+        background: #0d526b;
+        color: #fff;
+        font-weight: 700;
+        padding: .3rem .45rem;
+    }
+
+    .planejamento-table .metric-cell {
+        min-width: 250px;
+        padding: .32rem .45rem;
+        font-weight: 600;
+        background: #f7f9fb;
+    }
+
+    .planejamento-table .valor-input {
+        width: 100%;
+        min-width: 96px;
+        border: 0;
+        padding: .32rem .4rem;
+        text-align: right;
+        font-size: .78rem;
+        background: transparent;
+    }
+
+    .planejamento-table .valor-input[data-moeda="true"] {
+        min-width: 126px;
+    }
+
+    .planejamento-table .valor-input[data-calculado="true"] {
+        font-weight: 700;
+        color: #1f3b4d;
+        background: #d9d9d9;
+        cursor: not-allowed;
+    }
+
+    .planejamento-table .valor-input:focus {
+        outline: 2px solid #7ab7d8;
+        outline-offset: -2px;
+        background: #fff;
+    }
+
+    .planejamento-table .linha-verde td,
+    .planejamento-table .linha-verde .metric-cell {
+        background: #e2f3d9;
+    }
+
+    .planejamento-table .linha-cinza td,
+    .planejamento-table .linha-cinza .metric-cell {
+        background: #d9d9d9;
+    }
+
+    .planejamento-table .linha-branca td,
+    .planejamento-table .linha-branca .metric-cell {
+        background: #fff;
+    }
+
+    .planejamento-table td.celula-calculada {
+        background: #d9d9d9 !important;
+    }
+
+    .planejamento-table td.celula-editavel {
+        background: #fff;
+    }
+
+    .planejamento-table .linha-verde td.celula-editavel {
+        background: #e2f3d9;
+    }
+
+    .planejamento-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: .75rem;
+        margin-top: 1rem;
+    }
+</style>
+
+@if (planejamento == null)
+{
+    <div class="alert alert-warning">N&atilde;o foi poss&iacute;vel carregar o planejamento.</div>
+}
+else
+{
+    <div class="planejamento-toolbar">
+        <div>
+            <h2 class="app-page-title mb-1">Planejamento dos Indicadores</h2>
+            <div class="text-muted">Preenchimento mensal por casa</div>
+        </div>
+
+        <div class="planejamento-filtros">
+            <div>
+                <label class="form-label mb-1" for="casaPlanejamentoIndicadores">Casa</label>
+                <select class="form-select" id="casaPlanejamentoIndicadores">
+                    @foreach (Instituto casaDisponivel in planejamento.CasasDisponiveis)
+                    {
+                        string nomeCasa = nomesCasasPlanejamento.ContainsKey(casaDisponivel) ? nomesCasasPlanejamento[casaDisponivel] : casaDisponivel.ToString();
+                        if (casaDisponivel == planejamento.Casa)
+                        {
+                            <option value="@casaDisponivel" selected>@nomeCasa</option>
+                        }
+                        else
+                        {
+                            <option value="@casaDisponivel">@nomeCasa</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div>
+                <label class="form-label mb-1" for="anoPlanejamentoIndicadores">Ano</label>
+                <select class="form-select" id="anoPlanejamentoIndicadores">
+                    @for (int ano = DateTime.Now.Year + 1; ano >= 2019; ano--)
+                    {
+                        if (ano == planejamento.Ano)
+                        {
+                            <option value="@ano" selected>@ano</option>
+                        }
+                        else
+                        {
+                            <option value="@ano">@ano</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <button type="button" class="btn app-btn-secondary" onclick="navegarPlanejamentoIndicadores()">Aplicar</button>
+        </div>
+    </div>
+
+    <form id="formPlanejamentoIndicadores" asp-action="SalvarPlanejamentoIndicadores" asp-controller="FunilDeVendas" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="casa" value="@planejamento.Casa" />
+        <input type="hidden" name="ano" value="@planejamento.Ano" />
+
+        <div class="app-card shadow-sm planejamento-card">
+            <table class="planejamento-table">
+                <thead>
+                    <tr>
+                        <th>M&eacute;tricas</th>
+                        @foreach (var coluna in colunas)
+                        {
+                            <th>@coluna.Value</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        string grupoAtual = null;
+                    }
+                    @foreach (IndicadoresPlanejamentoLinhaViewModel linha in planejamento.Linhas)
+                    {
+                        if (grupoAtual != linha.Grupo)
+                        {
+                            grupoAtual = linha.Grupo;
+                            <tr class="grupo-row">
+                                <td colspan="@(colunas.Count + 1)">M&eacute;tricas @linha.Grupo</td>
+                            </tr>
+                        }
+
+                        string classeLinha = linhasVerdes.Contains(linha.Chave)
+                            ? "linha-verde"
+                            : linhasCinza.Contains(linha.Chave)
+                                ? "linha-cinza"
+                                : "linha-branca";
+                        <tr class="@classeLinha">
+                            <td class="metric-cell">@linha.Nome</td>
+                            @foreach (var coluna in colunas)
+                            {
+                                decimal? valor = linha.Valores.ContainsKey(coluna.Key) ? linha.Valores[coluna.Key] : null;
+                                bool linhaMoeda = linhasMoeda.Contains(linha.Chave);
+                                bool linhaPercentual = linhasPercentual.Contains(linha.Chave);
+                                bool celulaPercentual = linhaPercentual
+                                    || (linha.Chave == "CONTATOS_REGISTRADOS_REAL" && coluna.Key == -1)
+                                    || ((linha.Chave == "EMPRESAS_FORA_ESTADO_PLANEJAMENTO" || linha.Chave == "EMPRESAS_FORA_ESTADO_EXECUCAO") && coluna.Key == -1)
+                                    || (linha.Chave == "CONTATOS_REALIZADOS" && coluna.Key == -1)
+                                    || (linha.Chave == "NDA_ASSINADOS" && coluna.Key == -1)
+                                    || (linha.Chave == "TAXA_ASSINATURA" && coluna.Key >= 1 && coluna.Key <= 12)
+                                    || (linha.Chave == "PROPOSTAS_ENVIADAS" && coluna.Key == -1)
+                                    || (linha.Chave == "TAXA_PROPOSTA_ENVIADA" && coluna.Key >= 1 && coluna.Key <= 12)
+                                    || (linha.Chave == "PROJETOS_CONVERTIDOS" && coluna.Key == -1)
+                                    || (linha.Chave == "PERCENTUAL_PROJETOS_CONVERTIDOS_META" && (coluna.Key == -1 || (coluna.Key >= 1 && coluna.Key <= 12)));
+                                bool celulaCalculada = (linha.Chave == "TOTAL_EMPRESAS" && coluna.Key == -2)
+                                    || (linha.Chave == "CONTATOS_REGISTRADOS_REAL" && coluna.Key == -2)
+                                    || (linha.Chave == "CONTATOS_REGISTRADOS_REAL" && coluna.Key == -1)
+                                    || (linha.Chave == "EMPRESAS_FORA_ESTADO_PLANEJAMENTO" && coluna.Key == -2)
+                                    || (linha.Chave == "EMPRESAS_FORA_ESTADO_PLANEJAMENTO" && coluna.Key == -1)
+                                    || (linha.Chave == "CONTATOS_REALIZADOS_META" && coluna.Key >= -2 && coluna.Key <= 12)
+                                    || (linha.Chave == "CONTATOS_REALIZADOS" && coluna.Key >= -2 && coluna.Key <= 12)
+                                    || (linha.Chave == "NDA_ASSINADOS" && coluna.Key >= -2 && coluna.Key <= 12)
+                                    || (linha.Chave == "TAXA_ASSINATURA" && coluna.Key >= -2 && coluna.Key <= 12)
+                                    || (linha.Chave == "PROPOSTAS_ENVIADAS" && coluna.Key >= -2 && coluna.Key <= 12)
+                                    || (linha.Chave == "TAXA_PROPOSTA_ENVIADA" && coluna.Key >= -2 && coluna.Key <= 12)
+                                    || (linha.Chave == "VALOR_PROPOSTA" && coluna.Key >= -2 && coluna.Key <= 12)
+                                    || (linha.Chave == "VALOR_MEDIO_PROPOSTA" && coluna.Key == -2)
+                                    || (linha.Chave == "VALOR_MEDIO_PROPOSTA_ATIVA" && coluna.Key == -2)
+                                    || (linha.Chave == "PROJETOS_CONVERTIDOS" && coluna.Key >= -2 && coluna.Key <= 12)
+                                    || (linha.Chave == "VALOR_TOTAL_PROJETOS_CONVERTIDOS" && coluna.Key >= -2 && coluna.Key <= 12)
+                                    || (linha.Chave == "VALOR_MEDIO_PROJETOS_CONVERTIDOS" && coluna.Key == -2)
+                                    || (linha.Chave == "PERCENTUAL_PROJETOS_CONVERTIDOS_META" && (coluna.Key == -1 || (coluna.Key >= 0 && coluna.Key <= 12)))
+                                    || (linha.Chave == "DIVERGENCIA_MENSAL" && coluna.Key >= 1 && coluna.Key <= 12)
+                                    || (linha.Chave == "CURVA_CONTATOS_PLANEJADA" && coluna.Key >= 1 && coluna.Key <= 12)
+                                    || ((linha.Chave == "CURVA_PLANEJADA" || linha.Chave == "CURVA_REAL" || linha.Chave == "CURVA_PROPOSTAS" || linha.Chave == "CURVA_PLANEJADA_PROJETOS") && coluna.Key >= -2 && coluna.Key <= 12);
+                                <td class="@(celulaCalculada ? "celula-calculada" : "celula-editavel")">
+                                    <input class="valor-input"
+                                           type="text"
+                                           inputmode="decimal"
+                                           data-moeda="@(linhaMoeda ? "true" : "false")"
+                                           data-percentual="@(celulaPercentual ? "true" : "false")"
+                                           data-calculado="@(celulaCalculada ? "true" : "false")"
+                                           name="@($"valor_{linha.Chave}_{coluna.Key}")"
+                                           value="@(valor.HasValue ? valor.Value.ToString(linhaMoeda ? "C2" : celulaPercentual ? "0.##\\%" : "0.############################", culturaBrasileira) : "")"
+                                           readonly="@(!planejamento.PodeEditar || celulaCalculada)" />
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="planejamento-actions">
+            <button type="submit" class="btn app-btn-primary" disabled="@(!planejamento.PodeEditar)">Salvar Planejamento</button>
+        </div>
+    </form>
+}
+
+<script>
+    function obterNumeroPlanejamento(valor) {
+        const texto = String(valor || '')
+            .replace('R$', '')
+            .replace('%', '')
+            .replace(/\s/g, '')
+            .trim();
+
+        if (!texto) return null;
+
+        if (texto.includes(',')) {
+            return Number(texto.replace(/\./g, '').replace(',', '.'));
+        }
+
+        return Number(texto);
+    }
+
+    function formatarMoedaPlanejamento(input) {
+        const numero = obterNumeroPlanejamento(input.value);
+
+        if (numero === null || Number.isNaN(numero)) {
+            input.value = '';
+            return;
+        }
+
+        input.value = numero.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+    function prepararMoedasPlanejamentoParaSalvar(formulario) {
+        formulario.querySelectorAll('input[data-moeda="true"]').forEach(input => {
+            const numero = obterNumeroPlanejamento(input.value);
+            input.value = numero === null || Number.isNaN(numero) ? '' : String(numero).replace('.', ',');
+        });
+    }
+
+    function navegarPlanejamentoIndicadores() {
+        const casaSelecionada = document.getElementById('casaPlanejamentoIndicadores').value;
+        const anoSelecionado = document.getElementById('anoPlanejamentoIndicadores').value;
+        window.location.href = `/FunilDeVendas/Index/${encodeURIComponent(casaSelecionada)}/planejamento/${anoSelecionado}`;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('input[data-moeda="true"]').forEach(input => {
+            input.addEventListener('focus', () => {
+                const numero = obterNumeroPlanejamento(input.value);
+                input.value = numero === null || Number.isNaN(numero) ? '' : String(numero).replace('.', ',');
+            });
+
+            input.addEventListener('blur', () => formatarMoedaPlanejamento(input));
+        });
+
+        const formulario = document.getElementById('formPlanejamentoIndicadores');
+        if (formulario) formulario.addEventListener('submit', () => prepararMoedasPlanejamentoParaSalvar(formulario));
+    });
+</script>

@@ -19,6 +19,7 @@ namespace BaseDeProjetos.Data
         public DbSet<Pessoa> Pessoa { get; set; }
         public DbSet<AtividadesProdutivas> AtividadesProdutivas { get; set; }
         public DbSet<IndicadoresFinanceiros> IndicadoresFinanceiros { get; set; }
+        public DbSet<IndicadoresPlanejamentoMensal> IndicadoresPlanejamentoMensal { get; set; }
         public DbSet<Producao> Producao { get; set; }
         public DbSet<Editais> Editais { get; set; }
         public DbSet<Submissao> Submissao { get; set; }
@@ -29,5 +30,14 @@ namespace BaseDeProjetos.Data
         public DbSet<CodigoAmostraProjeto> CodigoAmostraProjeto { get; set; }
         public DbSet<ConjuntoRubrica> ConjuntoRubrica { get; set; }
         public DbSet<Rubrica> Rubrica { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<IndicadoresPlanejamentoMensal>()
+                .HasIndex(i => new { i.Casa, i.Ano, i.Indicador, i.Coluna })
+                .IsUnique();
+        }
     }
 }

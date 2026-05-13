@@ -25,8 +25,8 @@ namespace BaseDeProjetos.Models.Enums
         [Display(Name = "ISIBF - [CSQ] Biossintéticos e Fibras")]
         ISIBF_CSQ,
 
-        [Display(Name = "GPD - Serviços")] // Gerência de Pesquisa e Desenvolvimento
-        Serviços_GPD,
+        [Display(Name = "GPD - Servi\u00e7os")] // Gerencia de Pesquisa e Desenvolvimento
+        Servicos_GPD,
 
         [Display(Name = "Supervisão")]
         Super,
