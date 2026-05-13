@@ -194,26 +194,23 @@ namespace BaseDeProjetos.Helpers
 
         public static async Task<List<Prospeccao>> DefinirCasaParaVisualizar(string casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, DbCache cache, ViewDataDictionary ViewData)
         {
-            // Converte a string casa pra enum
-            Enum.TryParse(casa, out Instituto enum_casa);
+            List<Instituto> casasPermitidas = ObterCasasPermitidas(usuario);
+            bool usuarioPodeVerTodas = UsuarioPodeVisualizarTodasCasas(usuario);
 
-            List<Prospeccao> prospeccoes = new List<Prospeccao>();
-
-            if (usuario.Nivel == Nivel.Dev)
+            if ((string.IsNullOrWhiteSpace(casa) || casa.Equals("Todas", StringComparison.OrdinalIgnoreCase)) && usuarioPodeVerTodas)
             {
-                prospeccoes = await cache.GetCachedAsync("Prospeccoes:Funil:Dev", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).ToListAsync());
-            }
-            else
-            {
-                if (Enum.IsDefined(typeof(Instituto), casa))
-                {
-                    HttpContext.Session.SetString("_Casa", casa);
-                    prospeccoes = await cache.GetCachedAsync($"Prospeccoes:Funil:Filtradas:{enum_casa}", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).Where(prospeccao => prospeccao.Casa.Equals(enum_casa)).ToListAsync());
-                    ViewData["Area"] = casa;
-                }
+                return await cache.GetCachedAsync("Prospeccoes:Funil:TodasPermitidas", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).Where(prospeccao => casasPermitidas.Contains(prospeccao.Casa)).ToListAsync());
             }
 
-            return prospeccoes.ToList();
+            if (!Enum.TryParse(casa, out Instituto enum_casa) || !casasPermitidas.Contains(enum_casa))
+            {
+                return new List<Prospeccao>();
+            }
+
+            HttpContext.Session.SetString("_Casa", enum_casa.ToString());
+            ViewData["Area"] = enum_casa.ToString();
+
+            return await cache.GetCachedAsync($"Prospeccoes:Funil:Filtradas:{enum_casa}", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).Where(prospeccao => prospeccao.Casa.Equals(enum_casa)).ToListAsync());
         }
 
         public static IQueryable<Prospeccao> DefinirCasaParaVisualizarQuery(
@@ -223,31 +220,29 @@ namespace BaseDeProjetos.Helpers
             HttpContext httpContext,
             ViewDataDictionary viewData)
         {
-            Enum.TryParse(casa, out Instituto enumCasa);
-
             IQueryable<Prospeccao> query = context.Prospeccao
                 .AsNoTracking()
                 .Include(p => p.Status)
                 .Include(p => p.Empresa)
                 .Include(p => p.Usuario);
 
-            if (usuario.Nivel != Nivel.Dev)
-            {
-                if (Enum.IsDefined(typeof(Instituto), casa))
-                {
-                    httpContext.Session.SetString("_Casa", casa);
-                    viewData["Area"] = casa;
+            List<Instituto> casasPermitidas = ObterCasasPermitidas(usuario);
+            bool usuarioPodeVerTodas = UsuarioPodeVisualizarTodasCasas(usuario);
 
-                    query = query.Where(p => p.Casa == enumCasa);
-                }
-                else
-                {
-                    // garante query vazia
-                    query = query.Where(p => false);
-                }
+            if ((string.IsNullOrWhiteSpace(casa) || casa.Equals("Todas", StringComparison.OrdinalIgnoreCase)) && usuarioPodeVerTodas)
+            {
+                return query.Where(p => casasPermitidas.Contains(p.Casa));
             }
 
-            return query;
+            if (!Enum.TryParse(casa, out Instituto enumCasa) || !casasPermitidas.Contains(enumCasa))
+            {
+                return query.Where(p => false);
+            }
+
+            httpContext.Session.SetString("_Casa", enumCasa.ToString());
+            viewData["Area"] = enumCasa.ToString();
+
+            return query.Where(p => p.Casa == enumCasa);
         }
 
         public static IQueryable<Prospeccao> PeriodizarProspecçõesQuery(
@@ -352,30 +347,23 @@ namespace BaseDeProjetos.Helpers
 
         public static async Task<List<Producao>> DefinirCasaParaVisualizarEmProducao(string casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, ViewDataDictionary ViewData)
         {
-            Instituto enum_casa;
+            List<Instituto> casasPermitidas = ObterCasasPermitidas(usuario);
+            bool usuarioPodeVerTodas = UsuarioPodeVisualizarTodasCasas(usuario);
 
-            List<Producao> producoes = new List<Producao>();
-
-            if (usuario.Nivel == Nivel.Dev)
+            if ((string.IsNullOrWhiteSpace(casa) || casa.Equals("Todas", StringComparison.OrdinalIgnoreCase)) && usuarioPodeVerTodas)
             {
-                List<Producao> lista = await _context.Producao.ToListAsync();
-                producoes.AddRange(lista);
-            }
-            else
-            {
-                if (Enum.IsDefined(typeof(Instituto), casa))
-                {
-                    HttpContext.Session.SetString("_Casa", casa);
-                    enum_casa = (Instituto)Enum.Parse(typeof(Instituto), HttpContext.Session.GetString("_Casa"));
-                    List<Producao> lista = await _context.Producao.Where(producao => producao.Casa.Equals(enum_casa)).ToListAsync();
-
-                    producoes.AddRange(lista);
-
-                    ViewData["Area"] = casa;
-                }
+                return await _context.Producao.Where(producao => casasPermitidas.Contains(producao.Casa)).ToListAsync();
             }
 
-            return producoes.ToList();
+            if (!Enum.TryParse(casa, out Instituto enum_casa) || !casasPermitidas.Contains(enum_casa))
+            {
+                return new List<Producao>();
+            }
+
+            HttpContext.Session.SetString("_Casa", enum_casa.ToString());
+            ViewData["Area"] = enum_casa.ToString();
+
+            return await _context.Producao.Where(producao => producao.Casa.Equals(enum_casa)).ToListAsync();
         }
         
         public static void AddAgregadas(ApplicationDbContext _context, Prospeccao prospAntiga, Prospeccao prospeccao)
@@ -553,6 +541,40 @@ namespace BaseDeProjetos.Helpers
                                                     FirstOrDefault(usuario => usuario.UserName == httpContext.User.Identity.Name);
 
             return usuarioAtivo;
+        }
+
+        public static bool UsuarioPodeVisualizarTodasCasas(Usuario usuario)
+        {
+            return usuario != null
+                && (usuario.Nivel == Nivel.Dev
+                    || usuario.Nivel == Nivel.PMO
+                    || usuario.Nivel == Nivel.Supervisor);
+        }
+
+        public static bool UsuarioPodeAcessarCasa(Usuario usuario, Instituto casa)
+        {
+            if (usuario == null) return false;
+            return UsuarioPodeVisualizarTodasCasas(usuario) || usuario.Casa == casa;
+        }
+
+        public static List<Instituto> ObterCasasPermitidas(Usuario usuario)
+        {
+            List<Instituto> casasVisiveis = Enum.GetValues(typeof(Instituto))
+                .Cast<Instituto>()
+                .Where(instituto => instituto != Instituto.Super && instituto != Instituto.ISIII && instituto != Instituto.ISISVP)
+                .ToList();
+
+            if (UsuarioPodeVisualizarTodasCasas(usuario))
+            {
+                return casasVisiveis;
+            }
+
+            if (usuario != null && casasVisiveis.Contains(usuario.Casa))
+            {
+                return new List<Instituto> { usuario.Casa };
+            }
+
+            return new List<Instituto>();
         }
 
         /// <summary>

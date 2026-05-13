@@ -2,6 +2,7 @@
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Controllers
 {
+    [Authorize]
     public class CargosController : SGIController
     {
         private readonly ApplicationDbContext _context;
@@ -25,37 +27,24 @@ namespace BaseDeProjetos.Controllers
         {
             string cacheKey = "AllCargos";
 
-            if (HttpContext.User.Identity.IsAuthenticated)
+            if (UsuarioPodeGerenciarCargos())
             {
-                ViewbagizarUsuario(_context, _dbCache);
+                var cargos = await _dbCache.GetCachedAsync(cacheKey, () => _context.Cargo.ToListAsync());
+                return View(cargos);
+            }
 
-                if (UsuarioAtivo.Nivel != Nivel.Usuario && UsuarioAtivo.Nivel != Nivel.Externos)
-                {
-                    var cargos = await _dbCache.GetCachedAsync(cacheKey, () => _context.Cargo.ToListAsync());
-                    return View(cargos);
-                }
-                else
-                {
-                    return View("Forbidden");
-                }
-            }
-            else
-            {
-                return View("Forbidden");
-            }
+            return View("Forbidden");
         }
 
         // GET: Cargos/Create
         public IActionResult Create()
         {
-            if (HttpContext.User.Identity.IsAuthenticated && UsuarioAtivo.Nivel != Nivel.Usuario && UsuarioAtivo.Nivel != Nivel.Externos)
+            if (UsuarioPodeGerenciarCargos())
             {
                 return View();
             }
-            else
-            {
-                return View("Forbidden");
-            }
+
+            return View("Forbidden");
         }
 
         // POST: Cargos/Create
@@ -65,6 +54,11 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nome,Salario,HorasSemanais,Tributos")] Cargo cargo)
         {
+            if (!UsuarioPodeGerenciarCargos())
+            {
+                return View("Forbidden");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(cargo);
@@ -83,6 +77,11 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Salario,HorasSemanais,Tributos")] Cargo cargo)
         {
+            if (!UsuarioPodeGerenciarCargos())
+            {
+                return View("Forbidden");
+            }
+
             if (id != cargo.Id)
             {
                 return NotFound();
@@ -118,6 +117,11 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (!UsuarioPodeGerenciarCargos())
+            {
+                return View("Forbidden");
+            }
+
             var cargo = await _dbCache.GetCachedAsync("Cargos:{id}", () => _context.Cargo.FindAsync(id).AsTask());
             _context.Cargo.Remove(cargo);
             await _context.SaveChangesAsync();
@@ -128,7 +132,7 @@ namespace BaseDeProjetos.Controllers
         [HttpGet]
         public IActionResult RetornarModal(string idCargo, string tipo)
         {
-            if (HttpContext.User.Identity.IsAuthenticated)
+            if (UsuarioPodeGerenciarCargos())
             {
                 if (tipo != null)
                 {
@@ -139,15 +143,18 @@ namespace BaseDeProjetos.Controllers
                     return View("Error");
                 }
             }
-            else
-            {
-                return View("Forbidden");
-            }
+            return View("Forbidden");
         }
 
         private async Task<bool> CargoExists(int id)
         {
             return await _dbCache.GetCachedAsync($"Cargos:{id}:exists", async () => await Task.FromResult(_context.Cargo.Any(e => e.Id == id)));
+        }
+
+        private bool UsuarioPodeGerenciarCargos()
+        {
+            ViewbagizarUsuario(_context, _dbCache);
+            return FunilHelpers.UsuarioPodeVisualizarTodasCasas(UsuarioAtivo);
         }
     }
 }

@@ -33,13 +33,11 @@ namespace BaseDeProjetos.Controllers
             {
                 ViewbagizarUsuario(_context, _cache);
 
-                List<IndicadoresFinanceiros> listaIndicadoresFinanceiros = await _context.IndicadoresFinanceiros.ToListAsync();
                 if (string.IsNullOrEmpty(casa))
                 {
                     casa = UsuarioAtivo.Casa.ToString();
                 }
                 List<IndicadoresFinanceiros> lista = DefinirCasaParaVisualizar(casa);
-                lista = VincularCasaAosIndicadoresFinanceiros(UsuarioAtivo, listaIndicadoresFinanceiros);
                 return View(lista.ToList());
             }
             else
@@ -51,6 +49,12 @@ namespace BaseDeProjetos.Controllers
         [Route("Indicadores/IndicadoresDashBoard/{ano?}")]
         public ActionResult IndicadoresDashBoard(int? ano)
         {
+            ViewbagizarUsuario(_context, _cache);
+            if (!FunilHelpers.UsuarioPodeVisualizarTodasCasas(UsuarioAtivo))
+            {
+                return View("Forbidden");
+            }
+
             IndicadorHelper indicadoresProspeccoesTotal = new IndicadorHelper(_context.Prospeccao.Where(prospeccao =>
         prospeccao.Status.OrderBy(followup =>
                     followup.Data).LastOrDefault().Status != StatusProspeccao.Planejada).ToList());
@@ -129,6 +133,7 @@ namespace BaseDeProjetos.Controllers
         private List<IndicadoresFinanceiros> DefinirCasaParaVisualizar(string casa)
         {
             Instituto enum_casa;
+            List<Instituto> casasPermitidas = FunilHelpers.ObterCasasPermitidas(UsuarioAtivo);
 
             if (Enum.IsDefined(typeof(Instituto), casa))
             {
@@ -137,14 +142,17 @@ namespace BaseDeProjetos.Controllers
             }
             else
             {
-                enum_casa = Instituto.Super;
+                enum_casa = UsuarioAtivo.Casa;
+            }
+
+            if (!casasPermitidas.Contains(enum_casa))
+            {
+                return new List<IndicadoresFinanceiros>();
             }
 
             List<IndicadoresFinanceiros> listaIndicadores = new List<IndicadoresFinanceiros>();
 
-            List<IndicadoresFinanceiros> lista = enum_casa == Instituto.Super ?
-            _context.IndicadoresFinanceiros.ToList() :
-            _context.IndicadoresFinanceiros.Where(p => p.Casa.Equals(enum_casa)).ToList();
+            List<IndicadoresFinanceiros> lista = _context.IndicadoresFinanceiros.Where(p => p.Casa.Equals(enum_casa)).ToList();
 
             listaIndicadores.AddRange(lista);
 

@@ -3,6 +3,7 @@ using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.DTOs;
 using BaseDeProjetos.Models.Enums;
 using BaseDeProjetos.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -49,6 +50,7 @@ namespace BaseDeProjetos.Controllers
         /// <summary>
         /// Obtém os dados da receita de cada instituto, atribuindo-os ao ViewData
         /// </summary>
+        [Authorize]
         [HttpGet("Home/ObterDadosReceita")]
         public async Task<IActionResult> ObterDadosReceita()
         {
