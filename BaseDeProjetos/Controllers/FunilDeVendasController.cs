@@ -681,6 +681,7 @@ namespace BaseDeProjetos.Controllers
                             || f.Status == StatusProspeccao.Convertida))
                     .Select(f => new
                     {
+                        f.OrigemID,
                         f.Status,
                         f.Data,
                         Criador = f.Origem.Usuario != null ? f.Origem.Usuario.UserName : null,
@@ -697,11 +698,17 @@ namespace BaseDeProjetos.Controllers
                     .Select(g => new
                     {
                         Equipe = g.Key,
-                        ContatosRealizados = g.Count(f => f.Status == StatusProspeccao.ContatoInicial),
-                        PropostasEnviadas = g.Count(f => f.Status == StatusProspeccao.ComProposta),
-                        PropostasConvertidas = g.Count(f => f.Status == StatusProspeccao.Convertida),
-                        ValorPropostasEnviadas = g.Where(f => f.Status == StatusProspeccao.ComProposta).Sum(f => f.ValorEstimado),
-                        ValorPropostasConvertidas = g.Where(f => f.Status == StatusProspeccao.Convertida).Sum(f => f.ValorProposta)
+                        ContatosRealizados = g.Where(f => f.Status == StatusProspeccao.ContatoInicial).Select(f => f.OrigemID).Distinct().Count(),
+                        PropostasEnviadas = g.Where(f => f.Status == StatusProspeccao.ComProposta).Select(f => f.OrigemID).Distinct().Count(),
+                        PropostasConvertidas = g.Where(f => f.Status == StatusProspeccao.Convertida).Select(f => f.OrigemID).Distinct().Count(),
+                        ValorPropostasEnviadas = g.Where(f => f.Status == StatusProspeccao.ComProposta)
+                            .GroupBy(f => f.OrigemID)
+                            .Select(grupo => grupo.First().ValorEstimado)
+                            .Sum(),
+                        ValorPropostasConvertidas = g.Where(f => f.Status == StatusProspeccao.Convertida)
+                            .GroupBy(f => f.OrigemID)
+                            .Select(grupo => grupo.First().ValorProposta)
+                            .Sum()
                     })
                     .OrderBy(linha => linha.Equipe)
                     .ToList();

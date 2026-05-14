@@ -161,11 +161,6 @@ function formatarPercentual(valor) {
     })}%`;
 }
 
-function obterCorEquipe(indice) {
-    const cores = ['#f45b93', '#00a7d8', '#55a630', '#ffc000', '#c65bd3', '#2bd9d1', '#ff1f1f', '#f1a6cf', '#d9d9d9', '#92d050'];
-    return cores[indice % cores.length];
-}
-
 function renderizarTabelaEquipe(dados) {
     const container = document.getElementById('tabela-equipe-indicadores');
     if (!container) return;
@@ -198,7 +193,7 @@ function renderizarTabelaEquipe(dados) {
         const equipeNome = obterCampo(linha, 'Equipe');
         return `
             <tr>
-                <td class="equipe-cell" style="background:${obterCorEquipe(indice)}">${escaparHtml(equipeNome)}</td>
+                <td class="equipe-cell">${escaparHtml(equipeNome)}</td>
                 <td>${formatarNumero(obterCampo(linha, 'ContatosRealizados'))}</td>
                 <td>${formatarNumero(obterCampo(linha, 'PropostasEnviadas'))}</td>
                 <td>${formatarNumero(obterCampo(linha, 'PropostasConvertidas'))}</td>
@@ -265,7 +260,7 @@ function renderizarTabelaTaxas(dados) {
         const equipeNome = obterCampo(linha, 'Equipe');
         return `
             <tr>
-                <td class="equipe-cell" style="background:${obterCorEquipe(indice)}">${escaparHtml(equipeNome)}</td>
+                <td class="equipe-cell">${escaparHtml(equipeNome)}</td>
                 <td>${formatarPercentual(obterCampo(linha, 'Proposicao'))}</td>
                 <td>${formatarPercentual(obterCampo(linha, 'Conversao'))}</td>
                 <td>${formatarPercentual(obterCampo(linha, 'Sucesso'))}</td>
