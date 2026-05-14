@@ -22,6 +22,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics.X86;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 
@@ -641,7 +643,11 @@ namespace BaseDeProjetos.Controllers
                 List<Instituto> casasSelecionadas;
                 List<Instituto> casasPermitidas = FunilHelpers.ObterCasasPermitidas(UsuarioAtivo);
 
-                if (string.IsNullOrWhiteSpace(casa) || casa.Equals("Todas", StringComparison.OrdinalIgnoreCase))
+                if (string.IsNullOrWhiteSpace(casa))
+                {
+                    casasSelecionadas = new List<Instituto> { ObterCasaPadraoAbertura() };
+                }
+                else if (casa.Equals("Todas", StringComparison.OrdinalIgnoreCase))
                 {
                     casasSelecionadas = casasPermitidas;
                 }
@@ -684,6 +690,8 @@ namespace BaseDeProjetos.Controllers
                         f.OrigemID,
                         f.Status,
                         f.Data,
+                        LiderId = f.Origem.Usuario != null ? f.Origem.Usuario.Id : null,
+                        LiderNome = f.Origem.Usuario != null ? f.Origem.Usuario.UserName : null,
                         Criador = f.Origem.Usuario != null ? f.Origem.Usuario.UserName : null,
                         f.Origem.ValorEstimado,
                         f.Origem.ValorProposta
@@ -742,6 +750,107 @@ namespace BaseDeProjetos.Controllers
                     ContribuicaoReceitaGerada = CalcularPercentual(totaisEquipe.ValorPropostasConvertidas, totaisEquipe.ValorPropostasConvertidas),
                     AssertividadePropostas = CalcularPercentual(totaisEquipe.ValorPropostasConvertidas, totaisEquipe.ValorPropostasEnviadas)
                 };
+
+                string chaveFiltroCasas = ObterChaveFiltroCasasIndicadores(casasSelecionadas, casasPermitidas);
+                string prefixoArrasteContatos = ObterPrefixoArrasteContatosPesquisador(chaveFiltroCasas);
+                var registrosArrasteContatos = await _context.IndicadoresPlanejamentoMensal
+                    .AsNoTracking()
+                    .Where(indicador => indicador.Casa == Instituto.Super
+                        && indicador.Ano == ano
+                        && indicador.Indicador.StartsWith(prefixoArrasteContatos)
+                        && indicador.Coluna == 0)
+                    .ToListAsync();
+                Dictionary<string, decimal> arrastesPorPesquisador = registrosArrasteContatos
+                    .ToDictionary(
+                        registro => registro.Indicador.Substring(prefixoArrasteContatos.Length),
+                        registro => registro.Valor);
+
+                List<ContatosPesquisadorIndicadorLinha> contatosPesquisadorBase = followUps
+                    .Where(f => f.Data.Year == ano
+                        && f.Status == StatusProspeccao.ContatoInicial
+                        && !string.IsNullOrWhiteSpace(f.LiderId))
+                    .GroupBy(f => new { f.LiderId, f.LiderNome })
+                    .Select(g =>
+                    {
+                        int[] mesesPesquisador = Enumerable.Range(1, 12)
+                            .Select(mes => g.Where(f => f.Data.Month == mes).Select(f => f.OrigemID).Distinct().Count())
+                            .ToArray();
+
+                        decimal arraste = arrastesPorPesquisador.ContainsKey(g.Key.LiderId) ? arrastesPorPesquisador[g.Key.LiderId] : 0;
+
+                        return new ContatosPesquisadorIndicadorLinha
+                        {
+                            PesquisadorId = g.Key.LiderId,
+                            Pesquisador = string.IsNullOrWhiteSpace(g.Key.LiderNome) ? "Sem lider" : g.Key.LiderNome,
+                            Arraste = arraste,
+                            Meses = mesesPesquisador
+                        };
+                    })
+                    .ToList();
+
+                List<string> pesquisadoresComLinha = contatosPesquisadorBase
+                    .Select(linha => linha.PesquisadorId)
+                    .ToList();
+                List<string> pesquisadoresSomenteArraste = arrastesPorPesquisador.Keys
+                    .Where(pesquisadorId => !pesquisadoresComLinha.Contains(pesquisadorId))
+                    .ToList();
+
+                if (pesquisadoresSomenteArraste.Any())
+                {
+                    var usuariosSomenteArraste = await _context.Users
+                        .AsNoTracking()
+                        .Where(usuario => pesquisadoresSomenteArraste.Contains(usuario.Id))
+                        .Select(usuario => new { usuario.Id, usuario.UserName })
+                        .ToListAsync();
+
+                    contatosPesquisadorBase.AddRange(usuariosSomenteArraste.Select(usuario => new ContatosPesquisadorIndicadorLinha
+                    {
+                        PesquisadorId = usuario.Id,
+                        Pesquisador = usuario.UserName,
+                        Arraste = arrastesPorPesquisador[usuario.Id],
+                        Meses = new int[12]
+                    }));
+                }
+
+                decimal totalGeralContatosPesquisador = contatosPesquisadorBase.Sum(linha => linha.Total);
+                var contatosPesquisadorLinhas = contatosPesquisadorBase
+                    .OrderBy(linha => linha.Pesquisador)
+                    .Select(linha => new
+                    {
+                        linha.PesquisadorId,
+                        linha.Pesquisador,
+                        linha.Arraste,
+                        linha.Meses,
+                        linha.Total,
+                        Percentual = CalcularPercentual(linha.Total, totalGeralContatosPesquisador)
+                    })
+                    .ToList();
+                var contatosPesquisadorTotais = new
+                {
+                    Arraste = contatosPesquisadorBase.Sum(linha => linha.Arraste),
+                    Meses = Enumerable.Range(0, 12)
+                        .Select(indiceMes => contatosPesquisadorBase.Sum(linha => linha.Meses[indiceMes]))
+                        .ToArray(),
+                    Total = totalGeralContatosPesquisador,
+                    Percentual = totalGeralContatosPesquisador == 0 ? 0 : 100
+                };
+                List<string> pesquisadoresNaTabela = contatosPesquisadorBase
+                    .Select(linha => linha.PesquisadorId)
+                    .Where(pesquisadorId => !string.IsNullOrWhiteSpace(pesquisadorId))
+                    .Distinct()
+                    .ToList();
+                var pesquisadoresDisponiveisContatos = await _context.Users
+                    .AsNoTracking()
+                    .Where(usuario => casasSelecionadas.Contains(usuario.Casa)
+                        && usuario.Nivel != Nivel.Externos
+                        && !pesquisadoresNaTabela.Contains(usuario.Id))
+                    .OrderBy(usuario => usuario.UserName)
+                    .Select(usuario => new
+                    {
+                        PesquisadorId = usuario.Id,
+                        Pesquisador = usuario.UserName
+                    })
+                    .ToListAsync();
 
                 string[] indicadoresPlanejamentoGraficos = new[]
                 {
@@ -805,6 +914,13 @@ namespace BaseDeProjetos.Controllers
                     {
                         Linhas = taxasEquipe,
                         Totais = totaisTaxas
+                    },
+                    ContatosPesquisador = new
+                    {
+                        PodeEditarArraste = UsuarioPodeEditarArrasteContatosPesquisador(),
+                        Linhas = contatosPesquisadorLinhas,
+                        Totais = contatosPesquisadorTotais,
+                        PesquisadoresDisponiveis = pesquisadoresDisponiveisContatos
                     }
                 };
 
@@ -838,12 +954,9 @@ namespace BaseDeProjetos.Controllers
                 };
 
                 if (string.IsNullOrEmpty(casa))
-                    {
-                        casa = UsuarioAtivo.Casa.ToString();
-                    }
-
-                if (string.IsNullOrEmpty(casa))
-                    casa = UsuarioAtivo.Casa.ToString();
+                {
+                    casa = ObterCasaPadraoAbertura().ToString();
+                }
 
                 bool abaPlanejamentoIndicadores = aba.Equals("planejamento", StringComparison.OrdinalIgnoreCase);
                 int anoSelecionado = !string.IsNullOrEmpty(ano) && int.TryParse(ano, out int anoIndicadores) ? anoIndicadores : DateTime.Now.Year;
@@ -961,6 +1074,191 @@ namespace BaseDeProjetos.Controllers
             if (total == 0) return 0;
 
             return Math.Round(parte / total * 100, 2);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("FunilDeVendas/SalvarArrasteContatosPesquisador")]
+        public async Task<IActionResult> SalvarArrasteContatosPesquisador(string casa, int ano, string pesquisadorId, string valor)
+        {
+            if (!HttpContext.User.Identity.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+
+            ViewbagizarUsuario(_context, _cache);
+
+            if (!UsuarioPodeEditarArrasteContatosPesquisador() || string.IsNullOrWhiteSpace(pesquisadorId))
+            {
+                return Forbid();
+            }
+
+            if (!TentarConverterDecimal(valor, out decimal valorArraste))
+            {
+                return BadRequest("Valor invalido");
+            }
+
+            List<Instituto> casasSelecionadas;
+            try
+            {
+                casasSelecionadas = ResolverCasasIndicadoresSelecionadas(casa);
+            }
+            catch (ArgumentException)
+            {
+                return BadRequest("Casa invalida");
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
+
+            List<Instituto> casasPermitidas = FunilHelpers.ObterCasasPermitidas(UsuarioAtivo);
+            string chaveFiltroCasas = ObterChaveFiltroCasasIndicadores(casasSelecionadas, casasPermitidas);
+            string indicador = ObterIndicadorArrasteContatosPesquisador(chaveFiltroCasas, pesquisadorId);
+
+            IndicadoresPlanejamentoMensal registro = await _context.IndicadoresPlanejamentoMensal
+                .FirstOrDefaultAsync(item => item.Casa == Instituto.Super
+                    && item.Ano == ano
+                    && item.Indicador == indicador
+                    && item.Coluna == 0);
+
+            if (registro == null)
+            {
+                registro = new IndicadoresPlanejamentoMensal
+                {
+                    Casa = Instituto.Super,
+                    Ano = ano,
+                    Indicador = indicador,
+                    Coluna = 0,
+                    Valor = valorArraste
+                };
+                _context.IndicadoresPlanejamentoMensal.Add(registro);
+            }
+            else
+            {
+                registro.Valor = valorArraste;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { sucesso = true });
+        }
+
+        private bool UsuarioPodeEditarArrasteContatosPesquisador()
+        {
+            return UsuarioAtivo != null
+                && (UsuarioAtivo.Nivel == Nivel.Supervisor || UsuarioAtivo.Nivel == Nivel.Dev || UsuarioAtivo.Nivel == Nivel.PMO);
+        }
+
+        private Instituto ObterCasaPadraoAbertura()
+        {
+            List<Instituto> casasPermitidas = FunilHelpers.ObterCasasPermitidas(UsuarioAtivo);
+            List<Instituto> casasVisiveis = FiltrarCasasIndicadoresVisiveis(casasPermitidas);
+
+            if (casasVisiveis.Contains(Instituto.ISIQV))
+            {
+                return Instituto.ISIQV;
+            }
+
+            if (UsuarioAtivo != null && casasVisiveis.Contains(UsuarioAtivo.Casa))
+            {
+                return UsuarioAtivo.Casa;
+            }
+
+            return casasVisiveis.FirstOrDefault();
+        }
+
+        private List<Instituto> ResolverCasasIndicadoresSelecionadas(string casa)
+        {
+            List<Instituto> casasPermitidas = FunilHelpers.ObterCasasPermitidas(UsuarioAtivo);
+            List<Instituto> casasVisiveis = FiltrarCasasIndicadoresVisiveis(casasPermitidas);
+
+            if (string.IsNullOrWhiteSpace(casa))
+            {
+                return new List<Instituto> { ObterCasaPadraoAbertura() };
+            }
+
+            if (casa.Equals("Todas", StringComparison.OrdinalIgnoreCase))
+            {
+                return casasVisiveis;
+            }
+
+            List<Instituto> casasSelecionadas = casa
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(casaSelecionada =>
+                {
+                    if (!FunilHelpers.TentarParseInstituto(casaSelecionada, out Instituto instituto)
+                        || instituto == Instituto.Super
+                        || instituto == Instituto.ISIII
+                        || instituto == Instituto.ISISVP)
+                    {
+                        throw new ArgumentException("A casa selecionada e invalida");
+                    }
+
+                    return instituto;
+                })
+                .Distinct()
+                .ToList();
+
+            if (casasSelecionadas.Any(casaSelecionada => !casasVisiveis.Contains(casaSelecionada)))
+            {
+                throw new UnauthorizedAccessException("Casa nao permitida");
+            }
+
+            return casasSelecionadas;
+        }
+
+        private static List<Instituto> FiltrarCasasIndicadoresVisiveis(List<Instituto> casas)
+        {
+            return casas
+                .Where(instituto => instituto != Instituto.Super && instituto != Instituto.ISIII && instituto != Instituto.ISISVP)
+                .Distinct()
+                .OrderBy(instituto => instituto.ToString())
+                .ToList();
+        }
+
+        private static string ObterChaveFiltroCasasIndicadores(List<Instituto> casasSelecionadas, List<Instituto> casasPermitidas)
+        {
+            List<Instituto> casasSelecionadasOrdenadas = FiltrarCasasIndicadoresVisiveis(casasSelecionadas)
+                .OrderBy(instituto => instituto.ToString())
+                .ToList();
+            List<Instituto> casasPermitidasOrdenadas = FiltrarCasasIndicadoresVisiveis(casasPermitidas);
+
+            if (casasSelecionadasOrdenadas.Count == casasPermitidasOrdenadas.Count
+                && !casasPermitidasOrdenadas.Except(casasSelecionadasOrdenadas).Any())
+            {
+                return "Todas";
+            }
+
+            return string.Join(",", casasSelecionadasOrdenadas.Select(instituto => instituto.ToString()));
+        }
+
+        private static string ObterPrefixoArrasteContatosPesquisador(string chaveFiltroCasas)
+        {
+            return $"ARR_CONT_{ObterHashCurto(chaveFiltroCasas)}_";
+        }
+
+        private static string ObterIndicadorArrasteContatosPesquisador(string chaveFiltroCasas, string pesquisadorId)
+        {
+            return $"{ObterPrefixoArrasteContatosPesquisador(chaveFiltroCasas)}{pesquisadorId}";
+        }
+
+        private static string ObterHashCurto(string valor)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(valor ?? ""));
+                return BitConverter.ToString(hash).Replace("-", "").Substring(0, 16);
+            }
+        }
+
+        private class ContatosPesquisadorIndicadorLinha
+        {
+            public string PesquisadorId { get; set; }
+            public string Pesquisador { get; set; }
+            public decimal Arraste { get; set; }
+            public int[] Meses { get; set; } = new int[12];
+            public decimal Total => Arraste + Meses.Sum();
         }
 
         [HttpPost]
@@ -1358,12 +1656,7 @@ namespace BaseDeProjetos.Controllers
                 return casaSelecionada;
             }
 
-            if (casasPermitidas.Contains(UsuarioAtivo.Casa))
-            {
-                return UsuarioAtivo.Casa;
-            }
-
-            return casasPermitidas.First();
+            return ObterCasaPadraoAbertura();
         }
 
         private bool UsuarioPodeEditarPlanejamentoIndicadores()
