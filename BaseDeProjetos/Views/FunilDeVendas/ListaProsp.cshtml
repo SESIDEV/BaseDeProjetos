@@ -185,7 +185,86 @@
 
                             <tr class="border-bottom text-start">
                                 <td colSpan="9">
-                                    <div class="collapse" id="detalhes-@prospeccao.Id" style="margin-left: 20px; margin-right: 20px; margin-top: 10px; margin-bottom: 10px">
+                                    <div class="collapse prospeccao-details" id="detalhes-@prospeccao.Id">
+                                        @{
+                                            var ultimoStatusDetalhe = prospeccao.Status.OrderBy(p => p.Data).ThenBy(p => p.Id).Last();
+                                            string liderDetalhe = prospeccao.Usuario != null ? prospeccao.Usuario.UserName : "Sem l&iacute;der";
+                                            string tipologiaDetalhe = !string.IsNullOrWhiteSpace(prospeccao.Tipologia) ? prospeccao.Tipologia : "Valor n&atilde;o informado";
+                                            string contatoDetalhe = prospeccao.Contato != null && !string.IsNullOrWhiteSpace(prospeccao.Contato.Nome) ? prospeccao.Contato.Nome : "Sem contato informado";
+                                        }
+                                        <div class="prospeccao-details-shell">
+                                            <section class="prospeccao-details-panel prospeccao-details-panel-main">
+                                                <div class="prospeccao-details-heading">
+                                                    <span>Prospec&ccedil;&atilde;o</span>
+                                                    <h3>@prospeccao.NomeProspeccao</h3>
+                                                    <p>@prospeccao.Empresa.Nome</p>
+                                                </div>
+                                                <div class="prospeccao-details-grid">
+                                                    <div class="prospeccao-detail-block"><span>ID</span><strong>@prospeccao.Id</strong></div>
+                                                    <div class="prospeccao-detail-block"><span>Empresa</span><strong>@prospeccao.Empresa.Nome</strong></div>
+                                                    <div class="prospeccao-detail-block"><span>L&iacute;der</span><strong>@Html.Raw(liderDetalhe)</strong></div>
+                                                    <div class="prospeccao-detail-block"><span>Origem</span><strong>@prospeccao.Origem.GetDisplayName()</strong></div>
+                                                    <div class="prospeccao-detail-block detail-span-2"><span>Linha de pesquisa</span><strong>@prospeccao.LinhaPequisa.GetDisplayName()</strong></div>
+                                                    <div class="prospeccao-detail-block"><span>Tipologia</span><strong>@Html.Raw(tipologiaDetalhe)</strong></div>
+                                                    <div class="prospeccao-detail-block"><span>Tipo de contrata&ccedil;&atilde;o</span><strong>@prospeccao.TipoContratacao.GetDisplayName()</strong></div>
+                                                    <div class="prospeccao-detail-block"><span>Tipo de intera&ccedil;&atilde;o</span><strong>@prospeccao.TipoDeInteracao.GetDisplayName()</strong></div>
+                                                    <div class="prospeccao-detail-block"><span>Tipo de projeto</span><strong>@prospeccao.TipoDeProjeto.GetDisplayName()</strong></div>
+                                                    <div class="prospeccao-detail-block"><span>Parceiro interno</span><strong>@prospeccao.ParceiroInterno.GetDisplayName()</strong></div>
+                                                    <div class="prospeccao-detail-block"><span>Contato</span><strong>@contatoDetalhe</strong></div>
+                                                </div>
+                                            </section>
+                                            <section class="prospeccao-details-panel">
+                                                <div class="prospeccao-details-heading compact">
+                                                    <span>Valores</span>
+                                                    <h3>Financeiro</h3>
+                                                </div>
+                                                <div class="prospeccao-values-grid">
+                                                    <div class="prospeccao-value-block">
+                                                        <span>Valor estimado</span>
+                                                        @if (prospeccao.ValorEstimado != 0)
+                                                        {
+                                                            <strong>R$ @Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorEstimado)</strong>
+                                                        }
+                                                        else
+                                                        {
+                                                            <strong>Valor n&atilde;o informado</strong>
+                                                        }
+                                                    </div>
+                                                    <div class="prospeccao-value-block">
+                                                        <span>Valor proposta</span>
+                                                        @if (prospeccao.ValorProposta != 0)
+                                                        {
+                                                            <strong>R$ @Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorProposta)</strong>
+                                                        }
+                                                        else
+                                                        {
+                                                            <strong>Valor n&atilde;o informado</strong>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </section>
+                                            <aside class="prospeccao-details-panel prospeccao-details-panel-status">
+                                                <div class="prospeccao-status-header">
+                                                    <span>Status atual</span>
+                                                    <strong>@ultimoStatusDetalhe.Status.GetDisplayName()</strong>
+                                                    <small>@ultimoStatusDetalhe.Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))</small>
+                                                </div>
+                                                @if (string.IsNullOrWhiteSpace(ultimoStatusDetalhe.Anotacoes))
+                                                {
+                                                    <p>Sem anota&ccedil;&otilde;es.</p>
+                                                }
+                                                else
+                                                {
+                                                    <p>@ultimoStatusDetalhe.Anotacoes</p>
+                                                }
+                                                <div class="prospeccao-details-actions-panel">
+                                                    <a class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" href="#editarProspModal-@prospeccao.Id" role="button" onclick="loadAncora('flexSwitchCheckDefault-@prospeccao.Id', 'iconAncora-@prospeccao.Id', 'campoAgg-@prospeccao.Id')"><i class="bi bi-pencil-square"></i>Editar</a>
+                                                    <a class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" href="#historyProspModal-@prospeccao.Id" role="button"><i class="bi bi-clock-history"></i>Hist&oacute;rico</a>
+                                                    <a class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" href="#CreateFollowupProspModal-@prospeccao.Id" role="button"><i class="bi bi-plus-circle"></i>Incluir Status</a>
+                                                    <a class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" href="#deletarProspModal-@prospeccao.Id" role="button"><i class="bi bi-trash"></i>Deletar</a>
+                                                </div>
+                                            </aside>
+                                        </div>
                                         <h1 class="app-card-title">ID da Prospecção:</h1>
                                         <span>@prospeccao.Id</span>
                                         <h1 class="app-card-title">Empresa:</h1>
@@ -236,30 +315,41 @@
                                                 <span>Valor não informado</span>
                                             }
                                         </nobr>
-                                        <hr>
-                                        <span class="display-6" style="font-size:18px; font-weight:600">
-                                            Status - @prospeccao.Status.OrderBy(p => p.Data).ThenBy(p => p.Id).Last().Data.ToString("dd/MM/yyyy",
-                                        CultureInfo.CreateSpecificCulture("pt-BR"))
-                                        </span><br>
-                                        <p style="color:#50555A">@prospeccao.Status.OrderBy(followup => followup.Data).ThenBy(followup => followup.Id).Last().Status.GetDisplayName()</p>
-                                        <span>- @prospeccao.Status.OrderBy(p => p.Data).ThenBy(p => p.Id).Last().Anotacoes</span>
-                                        <br />
-                                        <hr />
-                                        <div class="button-footer d-flex justify-content-end">
-                                            <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#editarProspModal-@prospeccao.Id"
+                                        <div class="prospeccao-status-box">
+                                            <div>
+                                                <span class="prospeccao-details-kicker">Status atual</span>
+                                                <strong>@prospeccao.Status.OrderBy(followup => followup.Data).ThenBy(followup => followup.Id).Last().Status.GetDisplayName()</strong>
+                                            </div>
+                                            <span class="prospeccao-status-date">
+                                                @prospeccao.Status.OrderBy(p => p.Data).ThenBy(p => p.Id).Last().Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))
+                                            </span>
+                                            @if (string.IsNullOrWhiteSpace(prospeccao.Status.OrderBy(p => p.Data).ThenBy(p => p.Id).Last().Anotacoes))
+                                            {
+                                                <p>Sem anota&ccedil;&otilde;es.</p>
+                                            }
+                                            else
+                                            {
+                                                <p>@prospeccao.Status.OrderBy(p => p.Data).ThenBy(p => p.Id).Last().Anotacoes</p>
+                                            }
+                                        </div>
+                                        <div class="button-footer prospeccao-details-actions">
+                                            <a class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" href="#editarProspModal-@prospeccao.Id"
                                                role="button" onclick="loadAncora('flexSwitchCheckDefault-@prospeccao.Id', 'iconAncora-@prospeccao.Id', 'campoAgg-@prospeccao.Id')">
+                                                <i class="bi bi-pencil-square"></i>
                                                 Editar
                                             </a>
-                                            <a class="btn btn-outline-primary" data-bs-toggle="modal" href="#historyProspModal-@prospeccao.Id"
+                                            <a class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" href="#historyProspModal-@prospeccao.Id"
                                                role="button">
                                                 Histórico
                                             </a>
-                                            <a class="btn btn-outline-primary" data-bs-toggle="modal"
+                                            <a class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
                                                href="#CreateFollowupProspModal-@prospeccao.Id" role="button">
+                                                <i class="bi bi-plus-circle"></i>
                                                 Incluir Status
                                             </a>
-                                            <a class="btn btn-outline-danger" data-bs-toggle="modal" href="#deletarProspModal-@prospeccao.Id"
+                                            <a class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" href="#deletarProspModal-@prospeccao.Id"
                                                role="button">
+                                                <i class="bi bi-trash"></i>
                                                 Deletar
                                             </a>
                                         </div>
