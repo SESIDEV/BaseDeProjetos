@@ -1,0 +1,387 @@
+@using System.Globalization
+@using BaseDeProjetos.Models.Enums
+@using BaseDeProjetos.Models.ViewModels
+@{
+    IndicadoresReceitaGestorViewModel receitas = ViewBag.ReceitasGestorIndicadores as IndicadoresReceitaGestorViewModel;
+    CultureInfo culturaBrasileira = new CultureInfo("pt-BR");
+    var nomesCasasReceitas = new Dictionary<Instituto, string>
+    {
+        { Instituto.ISIQV, "ISI Qu&iacute;mica Verde" },
+        { Instituto.CISHO, "CIS Sa&uacute;de Ocupacional" },
+        { Instituto.ISIBF_CBT, "ISI B&amp;F CBT" },
+        { Instituto.ISIBF_CIN, "ISI B&amp;F CIN" },
+        { Instituto.ISIBF_CPQ, "ISI B&amp;F CPQ" },
+        { Instituto.ISIBF_CEP, "ISI B&amp;F CEP" },
+        { Instituto.ISIBF_CSQ, "ISI B&amp;F CSQ" },
+        { Instituto.Servicos_GPD, "Servi&ccedil;os GPD" }
+    };
+}
+
+<style>
+    .receitas-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .receitas-filtros {
+        display: flex;
+        align-items: end;
+        gap: .75rem;
+        flex-wrap: wrap;
+    }
+
+    .receitas-card {
+        overflow: auto;
+        border-radius: 8px;
+    }
+
+    .receitas-table {
+        width: 100%;
+        min-width: 1220px;
+        border-collapse: collapse;
+        font-size: .82rem;
+    }
+
+    .receitas-table th {
+        background: #0f5267;
+        color: #fff;
+        font-weight: 800;
+        text-align: center;
+        border: 1px solid #0b2f3c;
+        padding: .45rem .55rem;
+        white-space: nowrap;
+    }
+
+    .receitas-table td {
+        border: 1px solid #1f2937;
+        background: #fff;
+        padding: 0;
+        vertical-align: middle;
+    }
+
+    .receitas-table tfoot td {
+        background: #e8f5e3;
+        font-weight: 800;
+        padding: .45rem .55rem;
+        text-align: right;
+    }
+
+    .receitas-table .receitas-texto {
+        min-width: 210px;
+    }
+
+    .receitas-table .receitas-iniciativa {
+        min-width: 145px;
+    }
+
+    .receitas-table .receitas-moeda {
+        min-width: 112px;
+    }
+
+    .receitas-table .receitas-casa {
+        min-width: 90px;
+        text-align: center;
+    }
+
+    .receitas-table .receitas-acoes {
+        min-width: 74px;
+        text-align: center;
+    }
+
+    .receitas-input {
+        width: 100%;
+        min-height: 34px;
+        border: 0;
+        background: transparent;
+        padding: .35rem .45rem;
+        color: #111827;
+        font: inherit;
+    }
+
+    .receitas-input[data-moeda="true"] {
+        text-align: right;
+    }
+
+    .receitas-input:focus {
+        outline: 2px solid #7dd3fc;
+        outline-offset: -2px;
+        background: #f0f9ff;
+    }
+
+    .receitas-input[readonly] {
+        background: #f8fafc;
+        color: #64748b;
+    }
+
+    .receitas-actions {
+        display: flex;
+        justify-content: space-between;
+        gap: .75rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+    }
+
+    @@media (max-width: 900px) {
+        .receitas-toolbar {
+            align-items: stretch;
+            flex-direction: column;
+        }
+    }
+</style>
+
+@if (receitas == null)
+{
+    <div class="alert alert-warning">N&atilde;o foi poss&iacute;vel carregar a tabela de receitas.</div>
+}
+else
+{
+    string nomeCasaAtual = nomesCasasReceitas.ContainsKey(receitas.Casa) ? nomesCasasReceitas[receitas.Casa] : receitas.Casa.ToString();
+    int anoBase = receitas.AnoBase;
+    decimal totalValor = receitas.Linhas.Sum(linha => linha.ValorTotal ?? 0);
+    decimal totalReceita = receitas.Linhas.Sum(linha => linha.ReceitaTotal ?? 0);
+    decimal totalAnoBase = receitas.Linhas.Sum(linha => linha.ReceitaAnoBase ?? 0);
+    decimal totalAno1 = receitas.Linhas.Sum(linha => linha.ProjecaoAno1 ?? 0);
+    decimal totalAno2 = receitas.Linhas.Sum(linha => linha.ProjecaoAno2 ?? 0);
+    decimal totalAno3 = receitas.Linhas.Sum(linha => linha.ProjecaoAno3 ?? 0);
+    decimal totalAno4 = receitas.Linhas.Sum(linha => linha.ProjecaoAno4 ?? 0);
+    decimal totalAno5 = receitas.Linhas.Sum(linha => linha.ProjecaoAno5 ?? 0);
+
+    <div class="receitas-toolbar">
+        <div>
+            <h2 class="app-page-title mb-1">Receitas Projetadas</h2>
+            <div class="text-muted">Preenchimento manual por gestor e por casa</div>
+        </div>
+
+        <div class="receitas-filtros">
+            <div>
+                <label class="form-label mb-1" for="casaReceitasGestor">Casa</label>
+                <select class="form-select" id="casaReceitasGestor">
+                    @foreach (Instituto casaDisponivel in receitas.CasasDisponiveis)
+                    {
+                        string nomeCasa = nomesCasasReceitas.ContainsKey(casaDisponivel) ? nomesCasasReceitas[casaDisponivel] : casaDisponivel.ToString();
+                        if (casaDisponivel == receitas.Casa)
+                        {
+                            <option value="@casaDisponivel" selected>@Html.Raw(nomeCasa)</option>
+                        }
+                        else
+                        {
+                            <option value="@casaDisponivel">@Html.Raw(nomeCasa)</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div>
+                <label class="form-label mb-1" for="anoReceitasGestor">Ano base</label>
+                <select class="form-select" id="anoReceitasGestor">
+                    @for (int ano = DateTime.Now.Year + 1; ano >= 2019; ano--)
+                    {
+                        if (ano == receitas.AnoBase)
+                        {
+                            <option value="@ano" selected>@ano</option>
+                        }
+                        else
+                        {
+                            <option value="@ano">@ano</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <button type="button" class="btn app-btn-secondary" onclick="navegarReceitasGestor()">Aplicar</button>
+        </div>
+    </div>
+
+    <form id="formReceitasGestor" asp-action="SalvarReceitasGestorIndicadores" asp-controller="FunilDeVendas" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="casa" value="@receitas.Casa" />
+        <input type="hidden" name="ano" value="@receitas.AnoBase" />
+        <input type="hidden" id="linhasReceitasCount" name="linhasCount" value="@receitas.Linhas.Count" />
+
+        <div class="app-card shadow-sm receitas-card">
+            <table class="receitas-table">
+                <thead>
+                    <tr>
+                        <th>Empresa (proj. convertidos)</th>
+                        <th>Iniciativa</th>
+                        <th>Valor total (R$)</th>
+                        <th>Receita total (R$)</th>
+                        <th>Receita em @anoBase</th>
+                        <th>@(anoBase + 1) (proje&ccedil;&atilde;o)</th>
+                        <th>@(anoBase + 2) (proje&ccedil;&atilde;o)</th>
+                        <th>@(anoBase + 3) (proje&ccedil;&atilde;o)</th>
+                        <th>@(anoBase + 4) (proje&ccedil;&atilde;o)</th>
+                        <th>@(anoBase + 5) (proje&ccedil;&atilde;o)</th>
+                        <th>Casa</th>
+                        <th>Parceiro interno</th>
+                        <th>A&ccedil;&otilde;es</th>
+                    </tr>
+                </thead>
+                <tbody id="receitasGestorBody">
+                    @for (int indice = 0; indice < receitas.Linhas.Count; indice++)
+                    {
+                        IndicadoresReceitaGestorLinhaViewModel linha = receitas.Linhas[indice];
+                        <tr>
+                            <td class="receitas-texto">
+                                <input type="hidden" name="linhas[@indice].Id" value="@linha.Id" />
+                                <input type="hidden" name="linhas[@indice].Remover" value="false" />
+                                <input class="receitas-input" name="linhas[@indice].Empresa" value="@linha.Empresa" maxlength="200" readonly="@(!receitas.PodeEditar)" />
+                            </td>
+                            <td class="receitas-iniciativa"><input class="receitas-input" name="linhas[@indice].Iniciativa" value="@linha.Iniciativa" maxlength="160" readonly="@(!receitas.PodeEditar)" /></td>
+                            <td class="receitas-moeda"><input class="receitas-input" data-moeda="true" name="linhas[@indice].ValorTotal" value="@(linha.ValorTotal.HasValue ? linha.ValorTotal.Value.ToString("C2", culturaBrasileira) : "")" readonly="@(!receitas.PodeEditar)" /></td>
+                            <td class="receitas-moeda"><input class="receitas-input" data-moeda="true" name="linhas[@indice].ReceitaTotal" value="@(linha.ReceitaTotal.HasValue ? linha.ReceitaTotal.Value.ToString("C2", culturaBrasileira) : "")" readonly="@(!receitas.PodeEditar)" /></td>
+                            <td class="receitas-moeda"><input class="receitas-input" data-moeda="true" name="linhas[@indice].ReceitaAnoBase" value="@(linha.ReceitaAnoBase.HasValue ? linha.ReceitaAnoBase.Value.ToString("C2", culturaBrasileira) : "")" readonly="@(!receitas.PodeEditar)" /></td>
+                            <td class="receitas-moeda"><input class="receitas-input" data-moeda="true" name="linhas[@indice].ProjecaoAno1" value="@(linha.ProjecaoAno1.HasValue ? linha.ProjecaoAno1.Value.ToString("C2", culturaBrasileira) : "")" readonly="@(!receitas.PodeEditar)" /></td>
+                            <td class="receitas-moeda"><input class="receitas-input" data-moeda="true" name="linhas[@indice].ProjecaoAno2" value="@(linha.ProjecaoAno2.HasValue ? linha.ProjecaoAno2.Value.ToString("C2", culturaBrasileira) : "")" readonly="@(!receitas.PodeEditar)" /></td>
+                            <td class="receitas-moeda"><input class="receitas-input" data-moeda="true" name="linhas[@indice].ProjecaoAno3" value="@(linha.ProjecaoAno3.HasValue ? linha.ProjecaoAno3.Value.ToString("C2", culturaBrasileira) : "")" readonly="@(!receitas.PodeEditar)" /></td>
+                            <td class="receitas-moeda"><input class="receitas-input" data-moeda="true" name="linhas[@indice].ProjecaoAno4" value="@(linha.ProjecaoAno4.HasValue ? linha.ProjecaoAno4.Value.ToString("C2", culturaBrasileira) : "")" readonly="@(!receitas.PodeEditar)" /></td>
+                            <td class="receitas-moeda"><input class="receitas-input" data-moeda="true" name="linhas[@indice].ProjecaoAno5" value="@(linha.ProjecaoAno5.HasValue ? linha.ProjecaoAno5.Value.ToString("C2", culturaBrasileira) : "")" readonly="@(!receitas.PodeEditar)" /></td>
+                            <td class="receitas-casa">@Html.Raw(nomeCasaAtual)</td>
+                            <td class="receitas-iniciativa"><input class="receitas-input" name="linhas[@indice].ParceiroInterno" value="@linha.ParceiroInterno" maxlength="120" readonly="@(!receitas.PodeEditar)" /></td>
+                            <td class="receitas-acoes">
+                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="removerLinhaReceita(this)" disabled="@(!receitas.PodeEditar)"><i class="bi bi-trash"></i></button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2">Total</td>
+                        <td>@totalValor.ToString("C2", culturaBrasileira)</td>
+                        <td>@totalReceita.ToString("C2", culturaBrasileira)</td>
+                        <td>@totalAnoBase.ToString("C2", culturaBrasileira)</td>
+                        <td>@totalAno1.ToString("C2", culturaBrasileira)</td>
+                        <td>@totalAno2.ToString("C2", culturaBrasileira)</td>
+                        <td>@totalAno3.ToString("C2", culturaBrasileira)</td>
+                        <td>@totalAno4.ToString("C2", culturaBrasileira)</td>
+                        <td>@totalAno5.ToString("C2", culturaBrasileira)</td>
+                        <td colspan="3"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="receitas-actions">
+            <button type="button" class="btn app-btn-secondary" onclick="adicionarLinhaReceita()" disabled="@(!receitas.PodeEditar)">
+                <i class="bi bi-plus-circle"></i> Adicionar linha
+            </button>
+            <button type="submit" class="btn app-btn-primary" disabled="@(!receitas.PodeEditar)">Salvar Receitas</button>
+        </div>
+    </form>
+
+    <template id="templateLinhaReceita">
+        <tr>
+            <td class="receitas-texto">
+                <input type="hidden" name="linhas[__index__].Id" value="0" />
+                <input type="hidden" name="linhas[__index__].Remover" value="false" />
+                <input class="receitas-input" name="linhas[__index__].Empresa" maxlength="200" />
+            </td>
+            <td class="receitas-iniciativa"><input class="receitas-input" name="linhas[__index__].Iniciativa" maxlength="160" /></td>
+            <td class="receitas-moeda"><input class="receitas-input" data-moeda="true" name="linhas[__index__].ValorTotal" /></td>
+            <td class="receitas-moeda"><input class="receitas-input" data-moeda="true" name="linhas[__index__].ReceitaTotal" /></td>
+            <td class="receitas-moeda"><input class="receitas-input" data-moeda="true" name="linhas[__index__].ReceitaAnoBase" /></td>
+            <td class="receitas-moeda"><input class="receitas-input" data-moeda="true" name="linhas[__index__].ProjecaoAno1" /></td>
+            <td class="receitas-moeda"><input class="receitas-input" data-moeda="true" name="linhas[__index__].ProjecaoAno2" /></td>
+            <td class="receitas-moeda"><input class="receitas-input" data-moeda="true" name="linhas[__index__].ProjecaoAno3" /></td>
+            <td class="receitas-moeda"><input class="receitas-input" data-moeda="true" name="linhas[__index__].ProjecaoAno4" /></td>
+            <td class="receitas-moeda"><input class="receitas-input" data-moeda="true" name="linhas[__index__].ProjecaoAno5" /></td>
+            <td class="receitas-casa">@Html.Raw(nomeCasaAtual)</td>
+            <td class="receitas-iniciativa"><input class="receitas-input" name="linhas[__index__].ParceiroInterno" maxlength="120" /></td>
+            <td class="receitas-acoes">
+                <button type="button" class="btn btn-outline-danger btn-sm" onclick="removerLinhaReceita(this)"><i class="bi bi-trash"></i></button>
+            </td>
+        </tr>
+    </template>
+}
+
+<script>
+    function navegarReceitasGestor() {
+        const casaSelecionada = document.getElementById('casaReceitasGestor').value;
+        const anoSelecionado = document.getElementById('anoReceitasGestor').value;
+        window.location.href = `/FunilDeVendas/Index/${encodeURIComponent(casaSelecionada)}/receitas/${anoSelecionado}`;
+    }
+
+    function obterNumeroReceita(valor) {
+        const texto = String(valor || '')
+            .replace('R$', '')
+            .replace(/\s/g, '')
+            .trim();
+
+        if (!texto) return null;
+
+        if (texto.includes(',')) {
+            return Number(texto.replace(/\./g, '').replace(',', '.'));
+        }
+
+        return Number(texto);
+    }
+
+    function formatarMoedaReceita(input) {
+        const numero = obterNumeroReceita(input.value);
+
+        if (numero === null || Number.isNaN(numero)) {
+            input.value = '';
+            return;
+        }
+
+        input.value = numero.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+    function prepararMoedasReceitasParaSalvar(formulario) {
+        formulario.querySelectorAll('input[data-moeda="true"]').forEach(input => {
+            const numero = obterNumeroReceita(input.value);
+            input.value = numero === null || Number.isNaN(numero) ? '' : String(numero).replace('.', ',');
+        });
+    }
+
+    function conectarMoedasReceitas(raiz) {
+        raiz.querySelectorAll('input[data-moeda="true"]').forEach(input => {
+            input.addEventListener('focus', () => {
+                const numero = obterNumeroReceita(input.value);
+                input.value = numero === null || Number.isNaN(numero) ? '' : String(numero).replace('.', ',');
+            });
+
+            input.addEventListener('blur', () => formatarMoedaReceita(input));
+        });
+    }
+
+    function adicionarLinhaReceita() {
+        const contador = document.getElementById('linhasReceitasCount');
+        const indice = Number(contador.value || 0);
+        const template = document.getElementById('templateLinhaReceita').innerHTML.replaceAll('__index__', indice);
+        const tbody = document.getElementById('receitasGestorBody');
+        tbody.insertAdjacentHTML('beforeend', template);
+        contador.value = indice + 1;
+        conectarMoedasReceitas(tbody.lastElementChild);
+    }
+
+    function removerLinhaReceita(botao) {
+        const linha = botao.closest('tr');
+        const removerInput = linha.querySelector('input[name$=".Remover"]');
+        const idInput = linha.querySelector('input[name$=".Id"]');
+
+        if (idInput && idInput.value !== '0') {
+            removerInput.value = 'true';
+            linha.style.display = 'none';
+            return;
+        }
+
+        linha.remove();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const formulario = document.getElementById('formReceitasGestor');
+        if (!formulario) return;
+
+        conectarMoedasReceitas(formulario);
+        formulario.addEventListener('submit', () => prepararMoedasReceitasParaSalvar(formulario));
+    });
+</script>

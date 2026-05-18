@@ -14,7 +14,8 @@
     string searchString = ViewBag.searchString as string;
     bool abaIndicadores = !string.IsNullOrEmpty(aba) && aba.ToLowerInvariant() == "indicadores";
     bool abaPlanejamentoIndicadores = !string.IsNullOrEmpty(aba) && aba.ToLowerInvariant() == "planejamento";
-    bool abaEspecialIndicadores = abaIndicadores || abaPlanejamentoIndicadores;
+    bool abaReceitasIndicadores = !string.IsNullOrEmpty(aba) && aba.ToLowerInvariant() == "receitas";
+    bool abaEspecialIndicadores = abaIndicadores || abaPlanejamentoIndicadores || abaReceitasIndicadores;
     var usuarioNivelFunil = ViewBag.usuarioNivel;
     bool usuarioPodeEditarPlanejamentoIndicadores = usuarioNivelFunil != null
         && (usuarioNivelFunil.ToString() == "Supervisor" || usuarioNivelFunil.ToString() == "Dev");
@@ -220,6 +221,14 @@
                                 Planejamento
                             </a>
                         }
+                        <a class="flex-sm-fill text-sm-center nav-link @(abaReceitasIndicadores ? "active" : "")"
+                           asp-action="Index"
+                           asp-controller="FunilDeVendas"
+                           asp-route-casa="@casa"
+                           asp-route-aba="receitas"
+                           asp-route-ano="@ViewBag.Ano">
+                            Receitas
+                        </a>
                     </nav>
                 }
                 <div class="tab-content" id="orders-table-tab-content">
@@ -233,6 +242,12 @@
                     {
                         <div class="tab-pane fade show active" id="indicadores-planejamento" role="tabpanel" aria-labelledby="indicadores-planejamento-tab">
                             <partial name="_PlanejamentoIndicadores" view-data="@ViewData" />
+                        </div>
+                    }
+                    else if (abaReceitasIndicadores)
+                    {
+                        <div class="tab-pane fade show active" id="indicadores-receitas" role="tabpanel" aria-labelledby="indicadores-receitas-tab">
+                            <partial name="_ReceitasGestorIndicadores" view-data="@ViewData" />
                         </div>
                     }
                     else if (string.IsNullOrEmpty(aba))
