@@ -11,6 +11,20 @@
     List<ProspeccaoEmpresasDTO> outrasProspeccoes = ViewBag.OutrasProspeccoes as List<ProspeccaoEmpresasDTO>;
     List<Projeto> projetos = ViewBag.Projetos as List<Projeto>;
     string searchString = ViewBag.searchString as string;
+    var casasPlanejamento = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto)))
+        .Where(i => i != Instituto.Super && i != Instituto.ISIII && i != Instituto.ISISVP)
+        .ToList();
+    var nomesCasasPlanejamento = new Dictionary<Instituto, string>
+    {
+        { Instituto.ISIQV, "ISI Química Verde" },
+        { Instituto.CISHO, "CIS Saúde Ocupacional" },
+        { Instituto.ISIBF_CBT, "ISI B&F CBT" },
+        { Instituto.ISIBF_CIN, "ISI B&F CIN" },
+        { Instituto.ISIBF_CPQ, "ISI B&F CPQ" },
+        { Instituto.ISIBF_CEP, "ISI B&F CEP" },
+        { Instituto.ISIBF_CSQ, "ISI B&F CSQ" },
+        { Instituto.Serviços_GPD, "Serviços GPD" }
+    };
 }
 
 <script src="~/js/utils/Dicionario.js"></script>
@@ -161,27 +175,6 @@
                         <div class="app-card-header px-4 py-3">
                             <div class="row g-3 align-items-center">
                                 <div class="col-12 col-lg-auto text-center text-lg-start">
-                                    @if (empresa.Logo != null)
-                                    {
-                                        if (empresa.Logo.Contains("http"))
-                                        {
-                                            <img loading="lazy" style="background-color:white; object-fit:contain; width: 100px; height: 100px" id="logoEmpresa" src="@empresa.Logo" alt="Logo da Empresa" />
-                                        }
-                                        else if (empresa.Logo.Contains("data:image"))
-                                        {
-                                            <img style="background-color:white; object-fit:contain; width: 100px; height: 100px" id="logoEmpresa" src="@empresa.Logo" alt="Logo da Empresa" />
-                                        }
-                                        else
-                                        {
-                                            <img style="background-color:white; object-fit:contain; width: 100px; height: 100px" id="logoEmpresa" src="data:image/png;base64,@empresa.Logo" alt="Logo da Empresa" />
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <div id="logo_alt" style="width: 100px; height: 100px">Sem Logo</div>
-                                    }
-                                </div>
-                                <div class="col-12 col-lg-auto text-center text-lg-start">
                                     @*<div class="notification-type mb-2"><span class="badge bg-info">Project</span></div>*@
                                     <h4 class="notification-title mb-1">@empresa.Nome</h4>
 
@@ -237,9 +230,49 @@
                                             <button type="button" id="button-@empresa.Id-Edit" class="btn app-btn-primary" data-bs-target="#EditEmpresaModal-@empresa.Id" data-bs-toggle="modal" class="btn app-btn-primary" onmouseover="carregarModaisEmpresa('@empresa.Id')">
                                                 Editar
                                             </button>
-                                            <a type="button" class="btn app-btn-primary" asp-controller="FunilDeVendas" asp-action="Planejar" asp-route-id="@empresa.Id">
+                                            <button type="button" class="btn app-btn-primary" data-bs-target="#planejarEmpresaModal-@empresa.Id" data-bs-toggle="modal">
                                                 Planejar
-                                            </a>
+                                            </button>
+                                            <div class="modal fade" id="planejarEmpresaModal-@empresa.Id" tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <form asp-controller="FunilDeVendas" asp-action="Planejar" asp-route-id="@empresa.Id" method="post">
+                                                            @Html.AntiForgeryToken()
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Planejar prospecção</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-semibold" for="nomeProspeccaoPlanejada-@empresa.Id">Nome da prospecção</label>
+                                                                    <input class="form-control" id="nomeProspeccaoPlanejada-@empresa.Id" name="nomeProspeccao" value="Planejamento - @empresa.Nome" required />
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-semibold" for="casaPlanejamento-@empresa.Id">Casa</label>
+                                                                    <select class="form-select" id="casaPlanejamento-@empresa.Id" name="casa" required>
+                                                                        @foreach (Instituto casaPlanejamento in casasPlanejamento)
+                                                                        {
+                                                                            string nomeCasa = nomesCasasPlanejamento.ContainsKey(casaPlanejamento) ? nomesCasasPlanejamento[casaPlanejamento] : casaPlanejamento.ToString();
+                                                                            if (casaPlanejamento == ViewBag.usuarioCasa)
+                                                                            {
+                                                                                <option value="@casaPlanejamento" selected>@nomeCasa</option>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <option value="@casaPlanejamento">@nomeCasa</option>
+                                                                            }
+                                                                        }
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn app-btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                                <button type="submit" class="btn app-btn-primary">Salvar planejamento</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             @*<a asp-action="Details" asp-route-id="@empresa.Id">
                                     <button class="btn app-btn-primary">
                                     Ver
