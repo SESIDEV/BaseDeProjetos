@@ -611,14 +611,35 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                if (!Enum.TryParse(casa, out Instituto enumCasa))
+                List<Instituto> casasSelecionadas;
+
+                if (string.IsNullOrWhiteSpace(casa) || casa.Equals("Todas", StringComparison.OrdinalIgnoreCase))
                 {
-                    throw new ArgumentException("A casa selecionada e invalida");
+                    casasSelecionadas = Enum.GetValues(typeof(Instituto))
+                        .Cast<Instituto>()
+                        .Where(instituto => instituto != Instituto.Super && instituto != Instituto.ISIII && instituto != Instituto.ISISVP)
+                        .ToList();
+                }
+                else
+                {
+                    casasSelecionadas = casa
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(casaSelecionada =>
+                        {
+                            if (!Enum.TryParse(casaSelecionada, out Instituto instituto) || instituto == Instituto.Super || instituto == Instituto.ISIII || instituto == Instituto.ISISVP)
+                            {
+                                throw new ArgumentException("A casa selecionada e invalida");
+                            }
+
+                            return instituto;
+                        })
+                        .Distinct()
+                        .ToList();
                 }
 
                 var followUps = await _context.FollowUp
                     .Where(f => f.Origem != null
-                        && f.Origem.Casa == enumCasa
+                        && casasSelecionadas.Contains(f.Origem.Casa)
                         && (f.Data.Year == ano || f.Data.Year == ano - 1)
                         && (f.Status == StatusProspeccao.ContatoInicial
                             || f.Status == StatusProspeccao.ComProposta
@@ -653,7 +674,8 @@ namespace BaseDeProjetos.Controllers
                 {
                     Ano = ano,
                     AnoAnterior = ano - 1,
-                    Casa = enumCasa.ToString(),
+                    Casa = string.Join(",", casasSelecionadas.Select(instituto => instituto.ToString())),
+                    TodasAsCasas = casasSelecionadas.Count == Enum.GetValues(typeof(Instituto)).Cast<Instituto>().Count(instituto => instituto != Instituto.Super && instituto != Instituto.ISIII && instituto != Instituto.ISISVP),
                     MesAtual = mesReferencia,
                     Meses = Enumerable.Range(0, 13).ToArray(),
                     ContatosRealizados = new

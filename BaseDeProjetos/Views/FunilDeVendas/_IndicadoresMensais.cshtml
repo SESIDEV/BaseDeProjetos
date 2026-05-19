@@ -8,7 +8,24 @@
         casaIndicadores = ViewBag.UsuarioCasa as string;
     }
 
-    List<Instituto> institutosIndicadores = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto))).Where(i => i != Instituto.Super).ToList();
+    bool todasAsCasasSelecionadas = string.Equals(casaIndicadores, "Todas", StringComparison.OrdinalIgnoreCase);
+    List<string> casasSelecionadasIndicadores = (casaIndicadores ?? "")
+        .Split(',', StringSplitOptions.RemoveEmptyEntries)
+        .Select(c => c.Trim())
+        .ToList();
+
+    List<Instituto> institutosIndicadores = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto))).Where(i => i != Instituto.Super && i != Instituto.ISIII && i != Instituto.ISISVP).ToList();
+    Dictionary<Instituto, string> nomesCasasIndicadores = new Dictionary<Instituto, string>
+    {
+        { Instituto.ISIQV, "ISI Química Verde" },
+        { Instituto.CISHO, "CIS Saúde Ocupacional" },
+        { Instituto.ISIBF_CBT, "ISI B&F CBT" },
+        { Instituto.ISIBF_CIN, "ISI B&F CIN" },
+        { Instituto.ISIBF_CPQ, "ISI B&F CPQ" },
+        { Instituto.ISIBF_CEP, "ISI B&F CEP" },
+        { Instituto.ISIBF_CSQ, "ISI B&F CSQ" },
+        { Instituto.Serviços_GPD, "Serviços GPD" }
+    };
 }
 
 <script>
@@ -30,9 +47,49 @@
 
     .indicadores-filtros {
         display: flex;
-        align-items: center;
+        align-items: flex-end;
         gap: .75rem;
         flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .indicadores-casas-menu {
+        min-width: 860px;
+        border: 1px solid #ced4da;
+        border-radius: .25rem;
+        background: #fff;
+        padding: .6rem .75rem;
+    }
+
+    .indicadores-casas-title {
+        display: block;
+        font-size: .8rem;
+        font-weight: 700;
+        margin-bottom: .45rem;
+    }
+
+    .indicadores-casas-list {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(150px, 1fr));
+        gap: .25rem .9rem;
+    }
+
+    .indicadores-casa-option {
+        display: flex;
+        align-items: center;
+        gap: .35rem;
+        margin-bottom: .18rem;
+        font-size: .85rem;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+
+    .indicadores-casa-option:last-child {
+        margin-bottom: 0;
+    }
+
+    .indicadores-casa-option input {
+        margin: 0;
     }
 
     .indicadores-grid {
@@ -98,6 +155,31 @@
             grid-template-columns: 1fr;
         }
     }
+
+    @@media (max-width: 900px) {
+        .indicadores-toolbar {
+            align-items: flex-start;
+        }
+
+        .indicadores-filtros {
+            justify-content: flex-start;
+            width: 100%;
+        }
+
+        .indicadores-casas-menu {
+            min-width: 100%;
+        }
+
+        .indicadores-casas-list {
+            grid-template-columns: repeat(2, minmax(150px, 1fr));
+        }
+    }
+
+    @@media (max-width: 560px) {
+        .indicadores-casas-list {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 
 <div class="indicadores-toolbar">
@@ -107,20 +189,34 @@
     </div>
 
     <div class="indicadores-filtros">
-        <label class="form-label mb-0" for="casaIndicadores">Casa</label>
-        <select class="form-select w-auto" id="casaIndicadores">
-            @foreach (Instituto instituto in institutosIndicadores)
-            {
-                if (instituto.ToString() == casaIndicadores)
+        <div class="indicadores-casas-menu" id="casaIndicadores">
+            <span class="indicadores-casas-title">Casas</span>
+            <div class="indicadores-casas-list">
+                <label class="indicadores-casa-option" for="casaIndicadoresTodas">
+                    <input type="checkbox" name="casasIndicadores" id="casaIndicadoresTodas" value="Todas" checked="@todasAsCasasSelecionadas" />
+                    Todas
+                </label>
+                @foreach (Instituto instituto in institutosIndicadores)
                 {
-                    <option value="@instituto" selected>@instituto</option>
+                    if (!todasAsCasasSelecionadas && casasSelecionadasIndicadores.Contains(instituto.ToString()))
+                    {
+                        <label class="indicadores-casa-option" for="casaIndicadores-@instituto">
+                            <input type="checkbox" name="casasIndicadores" id="casaIndicadores-@instituto" value="@instituto" checked />
+                            @(nomesCasasIndicadores.ContainsKey(instituto) ? nomesCasasIndicadores[instituto] : instituto.ToString())
+                        </label>
+                    }
+                    else
+                    {
+                        <label class="indicadores-casa-option" for="casaIndicadores-@instituto">
+                            <input type="checkbox" name="casasIndicadores" id="casaIndicadores-@instituto" value="@instituto" />
+                            @(nomesCasasIndicadores.ContainsKey(instituto) ? nomesCasasIndicadores[instituto] : instituto.ToString())
+                        </label>
+                    }
                 }
-                else
-                {
-                    <option value="@instituto">@instituto</option>
-                }
-            }
-        </select>
+            </div>
+        </div>
+
+        <button type="button" class="btn app-btn-secondary btn-sm" id="aplicarCasasIndicadores">Aplicar</button>
 
         <label class="form-label mb-0" for="anoIndicadoresSelect">Ano</label>
         <select class="form-select w-auto" id="anoIndicadoresSelect">

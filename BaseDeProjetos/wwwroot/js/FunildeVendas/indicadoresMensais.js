@@ -5,7 +5,7 @@ function obterCampo(objeto, campo) {
 }
 
 async function fetchIndicadoresMensais(casaSelecionada, anoSelecionado) {
-    const resposta = await fetch(`/FunilDeVendas/GerarIndicadoresMensais/${casaSelecionada}/${anoSelecionado}`);
+    const resposta = await fetch(`/FunilDeVendas/GerarIndicadoresMensais/${encodeURIComponent(casaSelecionada)}/${anoSelecionado}`);
 
     if (!resposta.ok) {
         throw new Error(`Erro ao buscar indicadores mensais: ${resposta.status}`);
@@ -227,16 +227,56 @@ function renderizarIndicadoresMensais(dados) {
 }
 
 function navegarParaFiltrosIndicadores() {
-    const casaSelecionada = document.getElementById('casaIndicadores').value;
+    const casaSelecionada = obterCasasSelecionadasIndicadores();
     const anoSelecionado = document.getElementById('anoIndicadoresSelect').value;
-    window.location.href = `/FunilDeVendas/Index/${casaSelecionada}/indicadores/${anoSelecionado}`;
+    window.location.href = `/FunilDeVendas/Index/${encodeURIComponent(casaSelecionada)}/indicadores/${anoSelecionado}`;
+}
+
+function obterCasasSelecionadasIndicadores() {
+    const casasCheckboxes = Array.from(document.querySelectorAll('input[name="casasIndicadores"]'));
+    if (!casasCheckboxes.length) return casa || 'Todas';
+
+    const selecionadas = casasCheckboxes
+        .filter(checkbox => checkbox.checked)
+        .map(checkbox => checkbox.value);
+
+    if (!selecionadas.length || selecionadas.includes('Todas')) {
+        return 'Todas';
+    }
+
+    return selecionadas.join(',');
+}
+
+function configurarMenuCasasIndicadores() {
+    const todasCheckbox = document.getElementById('casaIndicadoresTodas');
+    const casasCheckboxes = Array.from(document.querySelectorAll('input[name="casasIndicadores"]'))
+        .filter(checkbox => checkbox.value !== 'Todas');
+
+    if (todasCheckbox) {
+        todasCheckbox.addEventListener('change', () => {
+            if (todasCheckbox.checked) {
+                casasCheckboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+            }
+        });
+    }
+
+    casasCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            if (checkbox.checked && todasCheckbox) {
+                todasCheckbox.checked = false;
+            }
+        });
+    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const casaSelect = document.getElementById('casaIndicadores');
     const anoSelect = document.getElementById('anoIndicadoresSelect');
+    const aplicarCasas = document.getElementById('aplicarCasasIndicadores');
 
-    if (casaSelect) casaSelect.addEventListener('change', navegarParaFiltrosIndicadores);
+    configurarMenuCasasIndicadores();
+    if (aplicarCasas) aplicarCasas.addEventListener('click', navegarParaFiltrosIndicadores);
     if (anoSelect) anoSelect.addEventListener('change', navegarParaFiltrosIndicadores);
 
     fetchIndicadoresMensais(casa, anoIndicadores)
