@@ -1,0 +1,157 @@
+@using BaseDeProjetos.Models.Enums
+@{
+    string casaIndicadores = ViewBag.Casa as string;
+    int anoSelecionado = ViewBag.Ano ?? DateTime.Now.Year;
+
+    if (string.IsNullOrEmpty(casaIndicadores))
+    {
+        casaIndicadores = ViewBag.UsuarioCasa as string;
+    }
+
+    List<Instituto> institutosIndicadores = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto))).Where(i => i != Instituto.Super).ToList();
+}
+
+<script>
+    var casa = "@casaIndicadores";
+    var anoIndicadores = @anoSelecionado;
+</script>
+
+<script src="~/js/FunildeVendas/indicadoresMensais.js" asp-append-version="true"></script>
+
+<style>
+    .indicadores-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+    }
+
+    .indicadores-filtros {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        flex-wrap: wrap;
+    }
+
+    .indicadores-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(280px, 1fr));
+        gap: 1rem;
+    }
+
+    .indicadores-card {
+        min-height: 360px;
+    }
+
+    .indicadores-chart {
+        min-height: 320px;
+    }
+
+
+    .indicadores-equipe-card {
+        margin-top: 1rem;
+        overflow-x: auto;
+    }
+
+    .indicadores-equipe-table {
+        width: 100%;
+        min-width: 920px;
+        border-collapse: collapse;
+        font-size: .875rem;
+        text-align: right;
+    }
+
+    .indicadores-equipe-table th {
+        background: #0d526b;
+        color: #fff;
+        font-weight: 700;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .indicadores-equipe-table th,
+    .indicadores-equipe-table td {
+        border: 1px solid #2b2b2b;
+        padding: .35rem .55rem;
+    }
+
+    .indicadores-equipe-table .equipe-cell {
+        color: #111;
+        font-weight: 700;
+        text-align: center;
+        min-width: 130px;
+    }
+
+    .indicadores-equipe-table .total-row td {
+        background: #0d526b;
+        color: #fff;
+        font-weight: 700;
+    }
+
+    .indicadores-equipe-table .empty-row td {
+        text-align: center;
+    }
+    @@media (max-width: 1200px) {
+        .indicadores-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="indicadores-toolbar">
+    <div>
+        <h2 class="app-page-title mb-1">Indicadores</h2>
+        <div class="text-muted">Executado acumulado por mes no Funil de Vendas</div>
+    </div>
+
+    <div class="indicadores-filtros">
+        <label class="form-label mb-0" for="casaIndicadores">Casa</label>
+        <select class="form-select w-auto" id="casaIndicadores">
+            @foreach (Instituto instituto in institutosIndicadores)
+            {
+                if (instituto.ToString() == casaIndicadores)
+                {
+                    <option value="@instituto" selected>@instituto</option>
+                }
+                else
+                {
+                    <option value="@instituto">@instituto</option>
+                }
+            }
+        </select>
+
+        <label class="form-label mb-0" for="anoIndicadoresSelect">Ano</label>
+        <select class="form-select w-auto" id="anoIndicadoresSelect">
+            @for (int ano = DateTime.Now.Year; ano >= 2019; ano--)
+            {
+                if (ano == anoSelecionado)
+                {
+                    <option value="@ano" selected>@ano</option>
+                }
+                else
+                {
+                    <option value="@ano">@ano</option>
+                }
+            }
+        </select>
+    </div>
+</div>
+
+<div class="indicadores-grid">
+    <div class="app-card app-card-chart shadow-sm indicadores-card">
+        <div id="grafico-contatos" class="indicadores-chart"><partial name="_Loading" /></div>
+    </div>
+
+    <div class="app-card app-card-chart shadow-sm indicadores-card">
+        <div id="grafico-propostas" class="indicadores-chart"><partial name="_Loading" /></div>
+    </div>
+
+    <div class="app-card app-card-chart shadow-sm indicadores-card">
+        <div id="grafico-convertidas" class="indicadores-chart"><partial name="_Loading" /></div>
+    </div>
+</div>
+<div class="app-card shadow-sm indicadores-equipe-card">
+    <div id="tabela-equipe-indicadores"><partial name="_Loading" /></div>
+</div>
