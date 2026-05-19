@@ -19,6 +19,9 @@
 	{
 		institutos = institutos.Where(i => i == usuarioCasaMenu).ToList();
 	}
+	string casaPadraoIndicadoresMenu = (usuarioPodeVerTodasCasasMenu && institutos.Contains(Instituto.ISIQV))
+		? Instituto.ISIQV.ToString()
+		: usuarioCasaMenu.ToString();
 	Dictionary<Instituto, string> nomesCasasMenu = new Dictionary<Instituto, string>
 	{
 		{ Instituto.ISIQV, "ISI Química Verde" },
@@ -190,7 +193,7 @@
 						string abaAtualIndicadores = ViewContext.RouteData.Values["aba"] as string;
 						bool indicadoresAtivo = controllerAtualIndicadores == "FunilDeVendas" && abaAtualIndicadores == "indicadores";
 					}
-					<a class="nav-link @(indicadoresAtivo ? "active" : "")" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@ViewBag.usuarioCasa" asp-route-aba="indicadores">
+					<a class="nav-link @(indicadoresAtivo ? "active" : "")" asp-action="Index" asp-controller="FunilDeVendas" asp-route-casa="@casaPadraoIndicadoresMenu" asp-route-aba="indicadores">
 						<span class="nav-icon">
 							<i class="bi bi-columns-gap"></i>
 						</span>

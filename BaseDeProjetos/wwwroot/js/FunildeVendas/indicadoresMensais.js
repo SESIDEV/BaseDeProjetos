@@ -161,9 +161,10 @@ function formatarPercentual(valor) {
     })}%`;
 }
 
-function obterCorEquipe(indice) {
-    const cores = ['#f45b93', '#00a7d8', '#55a630', '#ffc000', '#c65bd3', '#2bd9d1', '#ff1f1f', '#f1a6cf', '#d9d9d9', '#92d050'];
-    return cores[indice % cores.length];
+function formatarNumeroInput(valor) {
+    return Number(valor ?? 0).toLocaleString('pt-BR', {
+        maximumFractionDigits: 2
+    });
 }
 
 function renderizarTabelaEquipe(dados) {
@@ -198,7 +199,7 @@ function renderizarTabelaEquipe(dados) {
         const equipeNome = obterCampo(linha, 'Equipe');
         return `
             <tr>
-                <td class="equipe-cell" style="background:${obterCorEquipe(indice)}">${escaparHtml(equipeNome)}</td>
+                <td class="equipe-cell">${escaparHtml(equipeNome)}</td>
                 <td>${formatarNumero(obterCampo(linha, 'ContatosRealizados'))}</td>
                 <td>${formatarNumero(obterCampo(linha, 'PropostasEnviadas'))}</td>
                 <td>${formatarNumero(obterCampo(linha, 'PropostasConvertidas'))}</td>
@@ -265,7 +266,7 @@ function renderizarTabelaTaxas(dados) {
         const equipeNome = obterCampo(linha, 'Equipe');
         return `
             <tr>
-                <td class="equipe-cell" style="background:${obterCorEquipe(indice)}">${escaparHtml(equipeNome)}</td>
+                <td class="equipe-cell">${escaparHtml(equipeNome)}</td>
                 <td>${formatarPercentual(obterCampo(linha, 'Proposicao'))}</td>
                 <td>${formatarPercentual(obterCampo(linha, 'Conversao'))}</td>
                 <td>${formatarPercentual(obterCampo(linha, 'Sucesso'))}</td>
@@ -300,6 +301,167 @@ function renderizarTabelaTaxas(dados) {
         </table>`;
 }
 
+function renderizarTabelaContatosPesquisador(dados) {
+    const container = document.getElementById('tabela-contatos-pesquisador-indicadores');
+    if (!container) return;
+
+    const contatosPesquisador = obterCampo(dados, 'ContatosPesquisador') ?? {};
+    const linhas = obterCampo(contatosPesquisador, 'Linhas') ?? [];
+    const totais = obterCampo(contatosPesquisador, 'Totais') ?? {};
+    const pesquisadoresDisponiveis = obterCampo(contatosPesquisador, 'PesquisadoresDisponiveis') ?? [];
+    const podeEditarArraste = obterCampo(contatosPesquisador, 'PodeEditarArraste') === true;
+    const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    const controleAdicionar = podeEditarArraste
+        ? `
+            <div class="indicadores-add-pesquisador">
+                <select class="form-select form-select-sm" id="novoPesquisadorContatos" ${pesquisadoresDisponiveis.length ? '' : 'disabled'}>
+                    <option value="">Adicionar pesquisador</option>
+                    ${pesquisadoresDisponiveis.map(pesquisador => `
+                        <option value="${escaparHtml(obterCampo(pesquisador, 'PesquisadorId'))}">
+                            ${escaparHtml(obterCampo(pesquisador, 'Pesquisador'))}
+                        </option>`).join('')}
+                </select>
+                <button type="button" class="btn app-btn-secondary btn-sm" id="adicionarPesquisadorContatos" ${pesquisadoresDisponiveis.length ? '' : 'disabled'}>Adicionar</button>
+            </div>`
+        : '';
+
+    if (!linhas.length) {
+        container.innerHTML = `
+            ${controleAdicionar}
+            <table class="indicadores-equipe-table">
+                <thead>
+                    <tr>
+                        <th>Pesquisador lider</th>
+                        <th>Arraste</th>
+                        ${meses.map(mes => `<th>${mes}</th>`).join('')}
+                        <th>Total</th>
+                        <th>%</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="empty-row"><td colspan="16">Nao ha contatos por pesquisador para o ano selecionado.</td></tr>
+                </tbody>
+            </table>`;
+        configurarAdicionarPesquisadorContatos(container);
+        return;
+    }
+
+    const linhasHtml = linhas.map(linha => {
+        const pesquisadorId = obterCampo(linha, 'PesquisadorId');
+        const pesquisador = obterCampo(linha, 'Pesquisador');
+        const mesesLinha = obterCampo(linha, 'Meses') ?? [];
+        const arraste = obterCampo(linha, 'Arraste') ?? 0;
+        const inputSomenteLeitura = !podeEditarArraste || !pesquisadorId;
+        const arrasteHtml = `
+            <input class="arraste-input"
+                   type="text"
+                   inputmode="decimal"
+                   value="${formatarNumeroInput(arraste)}"
+                   data-pesquisador-id="${escaparHtml(pesquisadorId)}"
+                   ${inputSomenteLeitura ? 'readonly' : ''} />`;
+
+        return `
+            <tr>
+                <td class="equipe-cell">${escaparHtml(pesquisador)}</td>
+                <td>${arrasteHtml}</td>
+                ${mesesLinha.map(valor => `<td>${formatarNumero(valor)}</td>`).join('')}
+                <td>${formatarNumero(obterCampo(linha, 'Total'))}</td>
+                <td>${formatarPercentual(obterCampo(linha, 'Percentual'))}</td>
+            </tr>`;
+    }).join('');
+
+    const mesesTotais = obterCampo(totais, 'Meses') ?? [];
+    container.innerHTML = `
+        ${controleAdicionar}
+        <table class="indicadores-equipe-table">
+            <thead>
+                <tr>
+                    <th>Pesquisador lider</th>
+                    <th>Arraste</th>
+                    ${meses.map(mes => `<th>${mes}</th>`).join('')}
+                    <th>Total</th>
+                    <th>%</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${linhasHtml}
+                <tr class="total-row">
+                    <td>Total</td>
+                    <td>${formatarNumero(obterCampo(totais, 'Arraste'))}</td>
+                    ${mesesTotais.map(valor => `<td>${formatarNumero(valor)}</td>`).join('')}
+                    <td>${formatarNumero(obterCampo(totais, 'Total'))}</td>
+                    <td>${formatarPercentual(obterCampo(totais, 'Percentual'))}</td>
+                </tr>
+            </tbody>
+        </table>`;
+
+    container.querySelectorAll('.arraste-input:not([readonly])').forEach(input => {
+        input.addEventListener('change', () => salvarArrasteContatosPesquisador(input));
+    });
+    configurarAdicionarPesquisadorContatos(container);
+}
+
+function configurarAdicionarPesquisadorContatos(container) {
+    const botao = container.querySelector('#adicionarPesquisadorContatos');
+    const select = container.querySelector('#novoPesquisadorContatos');
+    if (!botao || !select) return;
+
+    botao.addEventListener('click', async () => {
+        if (!select.value) return;
+
+        botao.disabled = true;
+        select.disabled = true;
+
+        try {
+            await salvarArrasteContatosPesquisadorValor(select.value, '0');
+        } catch (erro) {
+            console.error(erro);
+            botao.disabled = false;
+            select.disabled = false;
+        }
+    });
+}
+
+async function salvarArrasteContatosPesquisador(input) {
+    input.classList.remove('is-error');
+    input.classList.add('is-saving');
+
+    try {
+        await salvarArrasteContatosPesquisadorValor(input.dataset.pesquisadorId || '', input.value || '0');
+    } catch (erro) {
+        console.error(erro);
+        input.classList.add('is-error');
+    } finally {
+        input.classList.remove('is-saving');
+    }
+}
+
+async function salvarArrasteContatosPesquisadorValor(pesquisadorId, valor) {
+    const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+    const corpo = new URLSearchParams();
+    corpo.append('__RequestVerificationToken', token || '');
+    corpo.append('casa', obterCasasSelecionadasIndicadores());
+    corpo.append('ano', document.getElementById('anoIndicadoresSelect')?.value || anoIndicadores);
+    corpo.append('pesquisadorId', pesquisadorId || '');
+    corpo.append('valor', valor || '0');
+
+    const resposta = await fetch('/FunilDeVendas/SalvarArrasteContatosPesquisador', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'RequestVerificationToken': token || ''
+        },
+        body: corpo.toString()
+    });
+
+    if (!resposta.ok) {
+        throw new Error(`Erro ao salvar arraste: ${resposta.status}`);
+    }
+
+    const dadosAtualizados = await fetchIndicadoresMensais(obterCasasSelecionadasIndicadores(), document.getElementById('anoIndicadoresSelect')?.value || anoIndicadores);
+    renderizarIndicadoresMensais(dadosAtualizados);
+}
+
 function renderizarIndicadoresMensais(dados) {
     const contatosRealizados = obterCampo(obterCampo(dados, 'ContatosRealizados'), 'Executado') ?? [];
     const serieContatosRealizados = {
@@ -316,6 +478,7 @@ function renderizarIndicadoresMensais(dados) {
     criarGraficoExecutado('grafico-convertidas', 'Propostas Convertidas', 'QUANTIDADE TOTAL', dados, 'PropostasConvertidas', '#ffc000');
     renderizarTabelaEquipe(dados);
     renderizarTabelaTaxas(dados);
+    renderizarTabelaContatosPesquisador(dados);
 }
 
 function navegarParaFiltrosIndicadores() {
@@ -326,14 +489,18 @@ function navegarParaFiltrosIndicadores() {
 
 function obterCasasSelecionadasIndicadores() {
     const casasCheckboxes = Array.from(document.querySelectorAll('input[name="casasIndicadores"]'));
-    if (!casasCheckboxes.length) return casa || 'Todas';
+    if (!casasCheckboxes.length) return casa || 'ISIQV';
 
     const selecionadas = casasCheckboxes
         .filter(checkbox => checkbox.checked)
         .map(checkbox => checkbox.value);
 
-    if (!selecionadas.length || selecionadas.includes('Todas')) {
+    if (selecionadas.includes('Todas')) {
         return 'Todas';
+    }
+
+    if (!selecionadas.length) {
+        return 'ISIQV';
     }
 
     return selecionadas.join(',');
@@ -375,7 +542,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(renderizarIndicadoresMensais)
         .catch(erro => {
             console.error(erro);
-            ['grafico-contatos', 'grafico-propostas', 'grafico-convertidas', 'tabela-equipe-indicadores', 'tabela-taxas-indicadores'].forEach(id => {
+            ['grafico-contatos', 'grafico-propostas', 'grafico-convertidas', 'tabela-equipe-indicadores', 'tabela-taxas-indicadores', 'tabela-contatos-pesquisador-indicadores'].forEach(id => {
                 const elemento = document.getElementById(id);
                 if (elemento) elemento.innerHTML = '<div class="p-4 text-danger">Nao foi possivel carregar os indicadores.</div>';
             });
