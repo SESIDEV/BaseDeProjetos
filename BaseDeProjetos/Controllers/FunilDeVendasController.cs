@@ -959,6 +959,7 @@ namespace BaseDeProjetos.Controllers
                 }
 
                 bool abaPlanejamentoIndicadores = aba.Equals("planejamento", StringComparison.OrdinalIgnoreCase);
+                bool abaReceitasIndicadores = aba.Equals("receitas", StringComparison.OrdinalIgnoreCase);
                 int anoSelecionado = !string.IsNullOrEmpty(ano) && int.TryParse(ano, out int anoIndicadores) ? anoIndicadores : DateTime.Now.Year;
 
                 if (abaPlanejamentoIndicadores)
@@ -971,6 +972,17 @@ namespace BaseDeProjetos.Controllers
                     Instituto casaPlanejamento = ResolverCasaPlanejamentoIndicadores(casa);
                     casa = casaPlanejamento.ToString();
                     ViewBag.PlanejamentoIndicadores = await MontarPlanejamentoIndicadores(casaPlanejamento, anoSelecionado);
+                }
+                else if (abaReceitasIndicadores)
+                {
+                    Instituto casaReceitas = ResolverCasaReceitasGestor(casa);
+                    if (!UsuarioPodeEditarReceitasGestor(casaReceitas))
+                    {
+                        return View("Forbidden");
+                    }
+
+                    casa = casaReceitas.ToString();
+                    ViewBag.ReceitasGestorIndicadores = await MontarReceitasGestorIndicadores(casaReceitas, anoSelecionado);
                 }
 
                 ViewBag.searchString = searchString;
@@ -1259,6 +1271,190 @@ namespace BaseDeProjetos.Controllers
             public decimal Arraste { get; set; }
             public int[] Meses { get; set; } = new int[12];
             public decimal Total => Arraste + Meses.Sum();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("FunilDeVendas/SalvarReceitasGestorIndicadores")]
+        public async Task<IActionResult> SalvarReceitasGestorIndicadores(string casa, int ano)
+        {
+            if (!HttpContext.User.Identity.IsAuthenticated)
+            {
+                return View("Forbidden");
+            }
+
+            ViewbagizarUsuario(_context, _cache);
+
+            Instituto casaReceitas = ResolverCasaReceitasGestor(casa);
+            if (!UsuarioPodeEditarReceitasGestor(casaReceitas))
+            {
+                return View("Forbidden");
+            }
+
+            var existentes = await _context.IndicadoresReceitaGestor
+                .Where(registro => registro.Casa == casaReceitas && registro.AnoBase == ano)
+                .ToListAsync();
+
+            int totalLinhas = int.TryParse(Request.Form["linhasCount"].FirstOrDefault(), out int linhasInformadas)
+                ? linhasInformadas
+                : 0;
+
+            int ordem = 0;
+            for (int indice = 0; indice < totalLinhas; indice++)
+            {
+                int id = int.TryParse(Request.Form[$"linhas[{indice}].Id"].FirstOrDefault(), out int idLinha)
+                    ? idLinha
+                    : 0;
+                bool remover = Request.Form[$"linhas[{indice}].Remover"].FirstOrDefault() == "true";
+
+                IndicadoresReceitaGestor existente = existentes.FirstOrDefault(registro => registro.Id == id);
+                if (remover)
+                {
+                    if (existente != null)
+                    {
+                        _context.IndicadoresReceitaGestor.Remove(existente);
+                    }
+
+                    continue;
+                }
+
+                string empresa = ObterTextoFormularioReceitas(indice, "Empresa", 200);
+                string iniciativa = ObterTextoFormularioReceitas(indice, "Iniciativa", 160);
+                string parceiroInterno = ObterTextoFormularioReceitas(indice, "ParceiroInterno", 120);
+                decimal? valorTotal = ObterDecimalFormularioReceitas(indice, "ValorTotal");
+                decimal? receitaTotal = ObterDecimalFormularioReceitas(indice, "ReceitaTotal");
+                decimal? receitaAnoBase = ObterDecimalFormularioReceitas(indice, "ReceitaAnoBase");
+                decimal? projecaoAno1 = ObterDecimalFormularioReceitas(indice, "ProjecaoAno1");
+                decimal? projecaoAno2 = ObterDecimalFormularioReceitas(indice, "ProjecaoAno2");
+                decimal? projecaoAno3 = ObterDecimalFormularioReceitas(indice, "ProjecaoAno3");
+                decimal? projecaoAno4 = ObterDecimalFormularioReceitas(indice, "ProjecaoAno4");
+                decimal? projecaoAno5 = ObterDecimalFormularioReceitas(indice, "ProjecaoAno5");
+
+                bool linhaVazia = string.IsNullOrWhiteSpace(empresa)
+                    && string.IsNullOrWhiteSpace(iniciativa)
+                    && string.IsNullOrWhiteSpace(parceiroInterno)
+                    && !valorTotal.HasValue
+                    && !receitaTotal.HasValue
+                    && !receitaAnoBase.HasValue
+                    && !projecaoAno1.HasValue
+                    && !projecaoAno2.HasValue
+                    && !projecaoAno3.HasValue
+                    && !projecaoAno4.HasValue
+                    && !projecaoAno5.HasValue;
+
+                if (linhaVazia)
+                {
+                    if (existente != null)
+                    {
+                        _context.IndicadoresReceitaGestor.Remove(existente);
+                    }
+
+                    continue;
+                }
+
+                if (existente == null)
+                {
+                    existente = new IndicadoresReceitaGestor
+                    {
+                        Casa = casaReceitas,
+                        AnoBase = ano
+                    };
+                    await _context.IndicadoresReceitaGestor.AddAsync(existente);
+                }
+
+                existente.Ordem = ordem++;
+                existente.Empresa = empresa;
+                existente.Iniciativa = iniciativa;
+                existente.ValorTotal = valorTotal;
+                existente.ReceitaTotal = receitaTotal;
+                existente.ReceitaAnoBase = receitaAnoBase;
+                existente.ProjecaoAno1 = projecaoAno1;
+                existente.ProjecaoAno2 = projecaoAno2;
+                existente.ProjecaoAno3 = projecaoAno3;
+                existente.ProjecaoAno4 = projecaoAno4;
+                existente.ProjecaoAno5 = projecaoAno5;
+                existente.ParceiroInterno = parceiroInterno;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index), new { casa = casaReceitas.ToString(), aba = "receitas", ano });
+        }
+
+        private async Task<IndicadoresReceitaGestorViewModel> MontarReceitasGestorIndicadores(Instituto casa, int ano)
+        {
+            List<IndicadoresReceitaGestorLinhaViewModel> linhas = await _context.IndicadoresReceitaGestor
+                .AsNoTracking()
+                .Where(registro => registro.Casa == casa && registro.AnoBase == ano)
+                .OrderBy(registro => registro.Ordem)
+                .ThenBy(registro => registro.Id)
+                .Select(registro => new IndicadoresReceitaGestorLinhaViewModel
+                {
+                    Id = registro.Id,
+                    Empresa = registro.Empresa,
+                    Iniciativa = registro.Iniciativa,
+                    ValorTotal = registro.ValorTotal,
+                    ReceitaTotal = registro.ReceitaTotal,
+                    ReceitaAnoBase = registro.ReceitaAnoBase,
+                    ProjecaoAno1 = registro.ProjecaoAno1,
+                    ProjecaoAno2 = registro.ProjecaoAno2,
+                    ProjecaoAno3 = registro.ProjecaoAno3,
+                    ProjecaoAno4 = registro.ProjecaoAno4,
+                    ProjecaoAno5 = registro.ProjecaoAno5,
+                    ParceiroInterno = registro.ParceiroInterno
+                })
+                .ToListAsync();
+
+            return new IndicadoresReceitaGestorViewModel
+            {
+                Casa = casa,
+                AnoBase = ano,
+                PodeEditar = UsuarioPodeEditarReceitasGestor(casa),
+                CasasDisponiveis = FunilHelpers.ObterCasasPermitidas(UsuarioAtivo)
+                    .Where(instituto => instituto != Instituto.Super && instituto != Instituto.ISIII && instituto != Instituto.ISISVP)
+                    .ToList(),
+                Linhas = linhas
+            };
+        }
+
+        private Instituto ResolverCasaReceitasGestor(string casa)
+        {
+            List<Instituto> casasPermitidas = FunilHelpers.ObterCasasPermitidas(UsuarioAtivo);
+            if (FunilHelpers.TentarParseInstituto(casa, out Instituto casaSelecionada) && casasPermitidas.Contains(casaSelecionada))
+            {
+                return casaSelecionada;
+            }
+
+            if (casasPermitidas.Contains(UsuarioAtivo.Casa))
+            {
+                return UsuarioAtivo.Casa;
+            }
+
+            return casasPermitidas.FirstOrDefault();
+        }
+
+        private bool UsuarioPodeEditarReceitasGestor(Instituto casa)
+        {
+            return UsuarioAtivo != null
+                && UsuarioAtivo.Nivel != Nivel.Externos
+                && FunilHelpers.UsuarioPodeAcessarCasa(UsuarioAtivo, casa);
+        }
+
+        private string ObterTextoFormularioReceitas(int indice, string campo, int tamanhoMaximo)
+        {
+            string valor = Request.Form[$"linhas[{indice}].{campo}"].FirstOrDefault()?.Trim();
+            if (string.IsNullOrWhiteSpace(valor))
+            {
+                return null;
+            }
+
+            return valor.Length <= tamanhoMaximo ? valor : valor.Substring(0, tamanhoMaximo);
+        }
+
+        private decimal? ObterDecimalFormularioReceitas(int indice, string campo)
+        {
+            string valorTexto = Request.Form[$"linhas[{indice}].{campo}"].FirstOrDefault();
+            return TentarConverterDecimal(valorTexto, out decimal valor) ? valor : (decimal?)null;
         }
 
         [HttpPost]

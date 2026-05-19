@@ -20,6 +20,7 @@ namespace BaseDeProjetos.Data
         public DbSet<AtividadesProdutivas> AtividadesProdutivas { get; set; }
         public DbSet<IndicadoresFinanceiros> IndicadoresFinanceiros { get; set; }
         public DbSet<IndicadoresPlanejamentoMensal> IndicadoresPlanejamentoMensal { get; set; }
+        public DbSet<IndicadoresReceitaGestor> IndicadoresReceitaGestor { get; set; }
         public DbSet<Producao> Producao { get; set; }
         public DbSet<Editais> Editais { get; set; }
         public DbSet<Submissao> Submissao { get; set; }
@@ -38,6 +39,9 @@ namespace BaseDeProjetos.Data
             builder.Entity<IndicadoresPlanejamentoMensal>()
                 .HasIndex(i => new { i.Casa, i.Ano, i.Indicador, i.Coluna })
                 .IsUnique();
+
+            builder.Entity<IndicadoresReceitaGestor>()
+                .HasIndex(i => new { i.Casa, i.AnoBase, i.Ordem });
         }
     }
 }
