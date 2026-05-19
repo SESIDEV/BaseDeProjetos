@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -356,7 +357,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                if (!Enum.TryParse(casa, out Instituto enumCasa))
+                if (!FunilHelpers.TentarParseInstituto(casa, out Instituto enumCasa))
                 {
                     throw new ArgumentException("A casa selecionada é inválida");
                 }
@@ -428,7 +429,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                if (!Enum.TryParse(casa, out Instituto enumCasa))
+                if (!FunilHelpers.TentarParseInstituto(casa, out Instituto enumCasa))
                 {
                     throw new ArgumentException("A casa selecionada é inválida");
                 }
@@ -494,7 +495,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                if (!Enum.TryParse(casa, out Instituto enumCasa))
+                if (!FunilHelpers.TentarParseInstituto(casa, out Instituto enumCasa))
                 {
                     throw new ArgumentException("A casa selecionada é inválida");
                 }
@@ -541,7 +542,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                if (!Enum.TryParse(casa, out Instituto enumCasa))
+                if (!FunilHelpers.TentarParseInstituto(casa, out Instituto enumCasa))
                 {
                     throw new ArgumentException("A casa selecionada é inválida");
                 }
@@ -592,7 +593,7 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                if (!Enum.TryParse(casa, out Instituto enumCasa))
+                if (!FunilHelpers.TentarParseInstituto(casa, out Instituto enumCasa))
                 {
                     throw new ArgumentException("A casa selecionada é inválida");
                 }
@@ -650,7 +651,7 @@ namespace BaseDeProjetos.Controllers
                         .Split(',', StringSplitOptions.RemoveEmptyEntries)
                         .Select(casaSelecionada =>
                         {
-                            if (!Enum.TryParse(casaSelecionada, out Instituto instituto) || instituto == Instituto.Super || instituto == Instituto.ISIII || instituto == Instituto.ISISVP)
+                            if (!FunilHelpers.TentarParseInstituto(casaSelecionada, out Instituto instituto) || instituto == Instituto.Super || instituto == Instituto.ISIII || instituto == Instituto.ISISVP)
                             {
                                 throw new ArgumentException("A casa selecionada e invalida");
                             }
@@ -683,6 +684,7 @@ namespace BaseDeProjetos.Controllers
                         f.Status,
                         f.Data,
                         Criador = f.Origem.Usuario != null ? f.Origem.Usuario.UserName : null,
+                        f.Origem.ValorEstimado,
                         f.Origem.ValorProposta
                     })
                     .ToListAsync();
@@ -698,7 +700,7 @@ namespace BaseDeProjetos.Controllers
                         ContatosRealizados = g.Count(f => f.Status == StatusProspeccao.ContatoInicial),
                         PropostasEnviadas = g.Count(f => f.Status == StatusProspeccao.ComProposta),
                         PropostasConvertidas = g.Count(f => f.Status == StatusProspeccao.Convertida),
-                        ValorPropostasEnviadas = g.Where(f => f.Status == StatusProspeccao.ComProposta).Sum(f => f.ValorProposta),
+                        ValorPropostasEnviadas = g.Where(f => f.Status == StatusProspeccao.ComProposta).Sum(f => f.ValorEstimado),
                         ValorPropostasConvertidas = g.Where(f => f.Status == StatusProspeccao.Convertida).Sum(f => f.ValorProposta)
                     })
                     .OrderBy(linha => linha.Equipe)
@@ -734,6 +736,21 @@ namespace BaseDeProjetos.Controllers
                     AssertividadePropostas = CalcularPercentual(totaisEquipe.ValorPropostasConvertidas, totaisEquipe.ValorPropostasEnviadas)
                 };
 
+                string[] indicadoresPlanejamentoGraficos = new[]
+                {
+                    "CONTATOS_REGISTRADOS_META",
+                    "PROPOSTAS_ENVIADAS_META",
+                    "PROJETOS_CONVERTIDOS_META"
+                };
+
+                var planejamentoGraficos = await _context.IndicadoresPlanejamentoMensal
+                    .Where(indicador => indicador.Ano == ano
+                        && casasSelecionadas.Contains(indicador.Casa)
+                        && indicadoresPlanejamentoGraficos.Contains(indicador.Indicador)
+                        && indicador.Coluna >= 0
+                        && indicador.Coluna <= 12)
+                    .ToListAsync();
+
                 var dados = new
                 {
                     Ano = ano,
@@ -744,6 +761,7 @@ namespace BaseDeProjetos.Controllers
                     Meses = Enumerable.Range(0, 13).ToArray(),
                     ContatosRealizados = new
                     {
+                        Planejado = GerarSeriePlanejadoMensal(planejamentoGraficos, "CONTATOS_REGISTRADOS_META"),
                         Executado = GerarSerieExecutadoMensal(followUps
                             .Where(f => f.Status == StatusProspeccao.ContatoInicial && f.Data.Year == ano)
                             .Select(f => f.Data)),
@@ -753,6 +771,7 @@ namespace BaseDeProjetos.Controllers
                     },
                     PropostasEnviadas = new
                     {
+                        Planejado = GerarSeriePlanejadoMensal(planejamentoGraficos, "PROPOSTAS_ENVIADAS_META"),
                         Executado = GerarSerieExecutadoMensal(followUps
                             .Where(f => f.Status == StatusProspeccao.ComProposta && f.Data.Year == ano)
                             .Select(f => f.Data)),
@@ -762,6 +781,7 @@ namespace BaseDeProjetos.Controllers
                     },
                     PropostasConvertidas = new
                     {
+                        Planejado = GerarSeriePlanejadoMensal(planejamentoGraficos, "PROJETOS_CONVERTIDOS_META"),
                         Executado = GerarSerieExecutadoMensal(followUps
                             .Where(f => f.Status == StatusProspeccao.Convertida && f.Data.Year == ano)
                             .Select(f => f.Data)),
@@ -792,9 +812,14 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
+                ViewbagizarUsuario(_context, _cache);
+
                 if (string.IsNullOrEmpty(aba))
+                {
                     aba = "ativas";
-                    SetarAbaNaSession(aba);
+                }
+
+                SetarAbaNaSession(aba);
 
                 ParametrosFunil parametrosFunil = new ParametrosFunil
                 {
@@ -810,14 +835,28 @@ namespace BaseDeProjetos.Controllers
                         casa = UsuarioAtivo.Casa.ToString();
                     }
 
-                ViewbagizarUsuario(_context, _cache);
                 if (string.IsNullOrEmpty(casa))
                     casa = UsuarioAtivo.Casa.ToString();
+
+                bool abaPlanejamentoIndicadores = aba.Equals("planejamento", StringComparison.OrdinalIgnoreCase);
+                int anoSelecionado = !string.IsNullOrEmpty(ano) && int.TryParse(ano, out int anoIndicadores) ? anoIndicadores : DateTime.Now.Year;
+
+                if (abaPlanejamentoIndicadores)
+                {
+                    if (!UsuarioPodeEditarPlanejamentoIndicadores())
+                    {
+                        return View("Forbidden");
+                    }
+
+                    Instituto casaPlanejamento = ResolverCasaPlanejamentoIndicadores(casa);
+                    casa = casaPlanejamento.ToString();
+                    ViewBag.PlanejamentoIndicadores = await MontarPlanejamentoIndicadores(casaPlanejamento, anoSelecionado);
+                }
 
                 ViewBag.searchString = searchString;
                 ViewBag.TamanhoPagina = tamanhoPagina;
                 ViewBag.Casa = casa;
-                ViewBag.Ano = !string.IsNullOrEmpty(ano) && int.TryParse(ano, out int anoIndicadores) ? anoIndicadores : DateTime.Now.Year;
+                ViewBag.Ano = anoSelecionado;
                 
                 List<Prospeccao> prospeccoes = await ObterProspeccoesFunilFiltradas(casa, ano, UsuarioAtivo, aba, sortOrder, searchString);
 
@@ -883,6 +922,26 @@ namespace BaseDeProjetos.Controllers
             return serieAcumulada;
         }
 
+        private static decimal?[] GerarSeriePlanejadoMensal(List<IndicadoresPlanejamentoMensal> registros, string indicador)
+        {
+            var valoresPorColuna = registros
+                .Where(registro => registro.Indicador == indicador)
+                .GroupBy(registro => registro.Coluna)
+                .ToDictionary(grupo => grupo.Key, grupo => grupo.Sum(registro => registro.Valor));
+
+            decimal?[] serie = new decimal?[13];
+
+            for (int coluna = 0; coluna <= 12; coluna++)
+            {
+                if (valoresPorColuna.TryGetValue(coluna, out decimal valor))
+                {
+                    serie[coluna] = Math.Round(valor, 2);
+                }
+            }
+
+            return serie;
+        }
+
         private static int ObterMesReferenciaIndicadores(int ano)
         {
             if (ano < DateTime.Now.Year) return 12;
@@ -895,6 +954,771 @@ namespace BaseDeProjetos.Controllers
             if (total == 0) return 0;
 
             return Math.Round(parte / total * 100, 2);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("FunilDeVendas/SalvarPlanejamentoIndicadores")]
+        public async Task<IActionResult> SalvarPlanejamentoIndicadores(string casa, int ano)
+        {
+            if (!HttpContext.User.Identity.IsAuthenticated)
+            {
+                return View("Forbidden");
+            }
+
+            ViewbagizarUsuario(_context, _cache);
+
+            if (!UsuarioPodeEditarPlanejamentoIndicadores())
+            {
+                return View("Forbidden");
+            }
+
+            Instituto casaPlanejamento = ResolverCasaPlanejamentoIndicadores(casa);
+            List<string> chaves = ObterDefinicoesPlanejamentoIndicadores().Select(definicao => definicao.Chave).ToList();
+            int[] colunas = ObterColunasPlanejamentoIndicadores();
+
+            var existentes = await _context.IndicadoresPlanejamentoMensal
+                .Where(indicador => indicador.Casa == casaPlanejamento
+                    && indicador.Ano == ano
+                    && chaves.Contains(indicador.Indicador))
+                .ToListAsync();
+
+            foreach (string chave in chaves)
+            {
+                foreach (int coluna in colunas)
+                {
+                    string campo = $"valor_{chave}_{coluna}";
+                    string valorTexto = Request.Form[campo].FirstOrDefault();
+                    IndicadoresPlanejamentoMensal existente = existentes.FirstOrDefault(indicador => indicador.Indicador == chave && indicador.Coluna == coluna);
+
+                    if (IndicadorPlanejamentoCalculado(chave, coluna))
+                    {
+                        if (existente != null)
+                        {
+                            _context.IndicadoresPlanejamentoMensal.Remove(existente);
+                        }
+
+                        continue;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(valorTexto))
+                    {
+                        if (existente != null)
+                        {
+                            _context.IndicadoresPlanejamentoMensal.Remove(existente);
+                        }
+
+                        continue;
+                    }
+
+                    if (!TentarConverterDecimal(valorTexto, out decimal valor))
+                    {
+                        continue;
+                    }
+
+                    if (existente == null)
+                    {
+                        await _context.IndicadoresPlanejamentoMensal.AddAsync(new IndicadoresPlanejamentoMensal
+                        {
+                            Casa = casaPlanejamento,
+                            Ano = ano,
+                            Indicador = chave,
+                            Coluna = coluna,
+                            Valor = valor
+                        });
+                    }
+                    else
+                    {
+                        existente.Valor = valor;
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index), new { casa = casaPlanejamento.ToString(), aba = "planejamento", ano });
+        }
+
+        private async Task<IndicadoresPlanejamentoViewModel> MontarPlanejamentoIndicadores(Instituto casa, int ano)
+        {
+            int[] colunas = ObterColunasPlanejamentoIndicadores();
+            int totalEmpresas = await _context.Empresa.CountAsync();
+            int totalEmpresasForaEstado = await _context.Empresa
+                .CountAsync(empresa => empresa.Estado != Estado.RioDeJaneiro
+                    && empresa.Estado != Estado.SemCadastro);
+            var contatosIniciaisAno = await _context.FollowUp
+                .AsNoTracking()
+                .Where(followUp => followUp.Origem != null
+                    && followUp.Origem.Casa == casa
+                    && followUp.Data.Year == ano
+                    && followUp.Status == StatusProspeccao.ContatoInicial)
+                .Select(followUp => new
+                {
+                    followUp.OrigemID,
+                    followUp.Data,
+                    followUp.Origem.ValorProposta
+                })
+                .ToListAsync();
+            int totalContatosRegistradosReal = contatosIniciaisAno
+                .Select(contato => contato.OrigemID)
+                .Distinct()
+                .Count();
+            Dictionary<int, int> contatosRealizadosAcumulados = Enumerable.Range(1, 12)
+                .ToDictionary(
+                    mes => mes,
+                    mes => contatosIniciaisAno
+                        .Where(contato => contato.Data.Month <= mes)
+                        .Select(contato => contato.OrigemID)
+                        .Distinct()
+                        .Count());
+            var ndasAssinadosAno = await _context.FollowUp
+                .AsNoTracking()
+                .Where(followUp => followUp.Origem != null
+                    && followUp.Origem.Casa == casa
+                    && followUp.Data.Year == ano
+                    && followUp.Status == StatusProspeccao.NDAAssinado)
+                .Select(followUp => new
+                {
+                    followUp.OrigemID,
+                    followUp.Data,
+                    followUp.Origem.ValorProposta
+                })
+                .ToListAsync();
+            int totalNdasAssinados = ndasAssinadosAno
+                .Select(nda => nda.OrigemID)
+                .Distinct()
+                .Count();
+            Dictionary<int, int> ndasAssinadosAcumulados = Enumerable.Range(1, 12)
+                .ToDictionary(
+                    mes => mes,
+                    mes => ndasAssinadosAno
+                        .Where(nda => nda.Data.Month <= mes)
+                        .Select(nda => nda.OrigemID)
+                        .Distinct()
+                        .Count());
+            var propostasEnviadasAno = await _context.FollowUp
+                .AsNoTracking()
+                .Where(followUp => followUp.Origem != null
+                    && followUp.Origem.Casa == casa
+                    && followUp.Data.Year == ano
+                    && followUp.Status == StatusProspeccao.ComProposta)
+                .Select(followUp => new
+                {
+                    followUp.OrigemID,
+                    followUp.Data,
+                    followUp.Origem.ValorEstimado
+                })
+                .ToListAsync();
+            int totalPropostasEnviadas = propostasEnviadasAno
+                .Select(proposta => proposta.OrigemID)
+                .Distinct()
+                .Count();
+            Dictionary<int, int> propostasEnviadasAcumuladas = Enumerable.Range(1, 12)
+                .ToDictionary(
+                    mes => mes,
+                    mes => propostasEnviadasAno
+                        .Where(proposta => proposta.Data.Month <= mes)
+                        .Select(proposta => proposta.OrigemID)
+                        .Distinct()
+                        .Count());
+            decimal totalValorPropostasEnviadas = propostasEnviadasAno
+                .GroupBy(proposta => proposta.OrigemID)
+                .Select(grupo => grupo.First().ValorEstimado)
+                .Sum();
+            Dictionary<int, decimal> valorPropostasEnviadasAcumulado = Enumerable.Range(1, 12)
+                .ToDictionary(
+                    mes => mes,
+                    mes => propostasEnviadasAno
+                        .Where(proposta => proposta.Data.Month <= mes)
+                        .GroupBy(proposta => proposta.OrigemID)
+                        .Select(grupo => grupo.First().ValorEstimado)
+                        .Sum());
+            var projetosConvertidosAno = await _context.FollowUp
+                .AsNoTracking()
+                .Where(followUp => followUp.Origem != null
+                    && followUp.Origem.Casa == casa
+                    && followUp.Data.Year == ano
+                    && followUp.Status == StatusProspeccao.Convertida)
+                .Select(followUp => new
+                {
+                    followUp.OrigemID,
+                    followUp.Data,
+                    followUp.Origem.ValorProposta
+                })
+                .ToListAsync();
+            int totalProjetosConvertidos = projetosConvertidosAno
+                .Select(projeto => projeto.OrigemID)
+                .Distinct()
+                .Count();
+            Dictionary<int, int> projetosConvertidosAcumulados = Enumerable.Range(1, 12)
+                .ToDictionary(
+                    mes => mes,
+                    mes => projetosConvertidosAno
+                        .Where(projeto => projeto.Data.Month <= mes)
+                        .Select(projeto => projeto.OrigemID)
+                        .Distinct()
+                        .Count());
+            decimal totalValorProjetosConvertidos = projetosConvertidosAno
+                .GroupBy(projeto => projeto.OrigemID)
+                .Select(grupo => grupo.First().ValorProposta)
+                .Sum();
+            Dictionary<int, decimal> valorProjetosConvertidosAcumulado = Enumerable.Range(1, 12)
+                .ToDictionary(
+                    mes => mes,
+                    mes => projetosConvertidosAno
+                        .Where(projeto => projeto.Data.Month <= mes)
+                        .GroupBy(projeto => projeto.OrigemID)
+                        .Select(grupo => grupo.First().ValorProposta)
+                        .Sum());
+            var registros = await _context.IndicadoresPlanejamentoMensal
+                .AsNoTracking()
+                .Where(indicador => indicador.Casa == casa && indicador.Ano == ano)
+                .ToListAsync();
+
+            var model = new IndicadoresPlanejamentoViewModel
+            {
+                Casa = casa,
+                Ano = ano,
+                PodeEditar = UsuarioPodeEditarPlanejamentoIndicadores(),
+                CasasDisponiveis = FunilHelpers.ObterCasasPermitidas(UsuarioAtivo)
+            };
+
+            foreach (IndicadorPlanejamentoDefinicao definicao in ObterDefinicoesPlanejamentoIndicadores())
+            {
+                var linha = new IndicadoresPlanejamentoLinhaViewModel
+                {
+                    Grupo = definicao.Grupo,
+                    Chave = definicao.Chave,
+                    Nome = definicao.Nome
+                };
+
+                foreach (int coluna in colunas)
+                {
+                    if (definicao.Chave == "TOTAL_EMPRESAS" && coluna == -2)
+                    {
+                        linha.Valores[coluna] = totalEmpresas;
+                    }
+                    else if (definicao.Chave == "CONTATOS_REGISTRADOS_REAL" && coluna == -2)
+                    {
+                        linha.Valores[coluna] = totalContatosRegistradosReal;
+                    }
+                    else if (definicao.Chave == "CONTATOS_REALIZADOS")
+                    {
+                        if (coluna == -2)
+                        {
+                            linha.Valores[coluna] = totalContatosRegistradosReal;
+                        }
+                        else if (coluna >= 1 && coluna <= 12)
+                        {
+                            linha.Valores[coluna] = contatosRealizadosAcumulados[coluna];
+                        }
+                        else
+                        {
+                            linha.Valores[coluna] = null;
+                        }
+                    }
+                    else if (definicao.Chave == "NDA_ASSINADOS")
+                    {
+                        if (coluna == -2)
+                        {
+                            linha.Valores[coluna] = totalNdasAssinados;
+                        }
+                        else if (coluna == -1)
+                        {
+                            linha.Valores[coluna] = totalContatosRegistradosReal != 0
+                                ? Math.Round((decimal)totalNdasAssinados / totalContatosRegistradosReal * 100, 2)
+                                : (decimal?)null;
+                        }
+                        else if (coluna >= 1 && coluna <= 12)
+                        {
+                            linha.Valores[coluna] = ndasAssinadosAcumulados[coluna];
+                        }
+                        else
+                        {
+                            linha.Valores[coluna] = null;
+                        }
+                    }
+                    else if (definicao.Chave == "PROPOSTAS_ENVIADAS")
+                    {
+                        if (coluna == -2)
+                        {
+                            linha.Valores[coluna] = totalPropostasEnviadas;
+                        }
+                        else if (coluna == -1)
+                        {
+                            linha.Valores[coluna] = totalContatosRegistradosReal != 0
+                                ? Math.Round((decimal)totalPropostasEnviadas / totalContatosRegistradosReal * 100, 2)
+                                : (decimal?)null;
+                        }
+                        else if (coluna >= 1 && coluna <= 12)
+                        {
+                            linha.Valores[coluna] = propostasEnviadasAcumuladas[coluna];
+                        }
+                        else
+                        {
+                            linha.Valores[coluna] = null;
+                        }
+                    }
+                    else if (definicao.Chave == "VALOR_PROPOSTA")
+                    {
+                        if (coluna == -2)
+                        {
+                            linha.Valores[coluna] = totalValorPropostasEnviadas;
+                        }
+                        else if (coluna >= 1 && coluna <= 12)
+                        {
+                            linha.Valores[coluna] = valorPropostasEnviadasAcumulado[coluna];
+                        }
+                        else
+                        {
+                            linha.Valores[coluna] = null;
+                        }
+                    }
+                    else if (definicao.Chave == "VALOR_MEDIO_PROPOSTA" && coluna == -2)
+                    {
+                        linha.Valores[coluna] = totalPropostasEnviadas != 0
+                            ? Math.Round(totalValorPropostasEnviadas / totalPropostasEnviadas, 2)
+                            : 0;
+                    }
+                    else if (definicao.Chave == "PROJETOS_CONVERTIDOS")
+                    {
+                        if (coluna == -2)
+                        {
+                            linha.Valores[coluna] = totalProjetosConvertidos;
+                        }
+                        else if (coluna == -1)
+                        {
+                            linha.Valores[coluna] = totalPropostasEnviadas != 0
+                                ? Math.Round((decimal)totalProjetosConvertidos / totalPropostasEnviadas * 100, 2)
+                                : (decimal?)null;
+                        }
+                        else if (coluna >= 1 && coluna <= 12)
+                        {
+                            linha.Valores[coluna] = projetosConvertidosAcumulados[coluna];
+                        }
+                        else
+                        {
+                            linha.Valores[coluna] = null;
+                        }
+                    }
+                    else if (definicao.Chave == "VALOR_TOTAL_PROJETOS_CONVERTIDOS")
+                    {
+                        if (coluna == -2)
+                        {
+                            linha.Valores[coluna] = totalValorProjetosConvertidos;
+                        }
+                        else if (coluna >= 1 && coluna <= 12)
+                        {
+                            linha.Valores[coluna] = valorProjetosConvertidosAcumulado[coluna];
+                        }
+                        else
+                        {
+                            linha.Valores[coluna] = null;
+                        }
+                    }
+                    else if (definicao.Chave == "VALOR_MEDIO_PROJETOS_CONVERTIDOS" && coluna == -2)
+                    {
+                        linha.Valores[coluna] = totalProjetosConvertidos != 0
+                            ? Math.Round(totalValorProjetosConvertidos / totalProjetosConvertidos, 2)
+                            : 0;
+                    }
+                    else if (definicao.Chave == "EMPRESAS_FORA_ESTADO_PLANEJAMENTO" && coluna == -2)
+                    {
+                        linha.Valores[coluna] = totalEmpresasForaEstado;
+                    }
+                    else
+                    {
+                        linha.Valores[coluna] = registros
+                            .FirstOrDefault(indicador => indicador.Indicador == definicao.Chave && indicador.Coluna == coluna)
+                            ?.Valor;
+                    }
+                }
+
+                model.Linhas.Add(linha);
+            }
+
+            AplicarFormulasPlanejamentoIndicadores(model);
+
+            return model;
+        }
+
+        private Instituto ResolverCasaPlanejamentoIndicadores(string casa)
+        {
+            List<Instituto> casasPermitidas = FunilHelpers.ObterCasasPermitidas(UsuarioAtivo);
+
+            if (FunilHelpers.TentarParseInstituto(casa, out Instituto casaSelecionada) && casasPermitidas.Contains(casaSelecionada))
+            {
+                return casaSelecionada;
+            }
+
+            if (casasPermitidas.Contains(UsuarioAtivo.Casa))
+            {
+                return UsuarioAtivo.Casa;
+            }
+
+            return casasPermitidas.First();
+        }
+
+        private bool UsuarioPodeEditarPlanejamentoIndicadores()
+        {
+            return UsuarioAtivo != null
+                && (UsuarioAtivo.Nivel == Nivel.Supervisor || UsuarioAtivo.Nivel == Nivel.Dev);
+        }
+
+        private static bool IndicadorPlanejamentoCalculado(string chave, int coluna)
+        {
+            return (chave == "TOTAL_EMPRESAS" && coluna == -2)
+                || (chave == "CONTATOS_REGISTRADOS_REAL" && coluna == -2)
+                || (chave == "CONTATOS_REGISTRADOS_REAL" && coluna == -1)
+                || (chave == "EMPRESAS_FORA_ESTADO_PLANEJAMENTO" && coluna == -1)
+                || (chave == "EMPRESAS_FORA_ESTADO_PLANEJAMENTO" && coluna == -2)
+                || (chave == "CONTATOS_REALIZADOS_META" && coluna >= -2 && coluna <= 12)
+                || (chave == "CONTATOS_REALIZADOS" && coluna >= -2 && coluna <= 12)
+                || (chave == "NDA_ASSINADOS" && coluna >= -2 && coluna <= 12)
+                || (chave == "TAXA_ASSINATURA" && coluna >= -2 && coluna <= 12)
+                || (chave == "PROPOSTAS_ENVIADAS" && coluna >= -2 && coluna <= 12)
+                || (chave == "TAXA_PROPOSTA_ENVIADA" && coluna >= -2 && coluna <= 12)
+                || (chave == "VALOR_PROPOSTA" && coluna >= -2 && coluna <= 12)
+                || (chave == "VALOR_MEDIO_PROPOSTA" && coluna == -2)
+                || (chave == "VALOR_MEDIO_PROPOSTA_ATIVA" && coluna == -2)
+                || (chave == "PROJETOS_CONVERTIDOS" && coluna >= -2 && coluna <= 12)
+                || (chave == "VALOR_TOTAL_PROJETOS_CONVERTIDOS" && coluna >= -2 && coluna <= 12)
+                || (chave == "VALOR_MEDIO_PROJETOS_CONVERTIDOS" && coluna == -2)
+                || (chave == "PERCENTUAL_PROJETOS_CONVERTIDOS_META" && (coluna == -1 || (coluna >= 0 && coluna <= 12)))
+                || (chave == "DIVERGENCIA_MENSAL" && coluna >= 1 && coluna <= 12)
+                || (chave == "CURVA_CONTATOS_PLANEJADA" && coluna >= 1 && coluna <= 12)
+                || ((chave == "CURVA_PLANEJADA" || chave == "CURVA_REAL" || chave == "CURVA_PROPOSTAS" || chave == "CURVA_PLANEJADA_PROJETOS") && coluna >= -2 && coluna <= 12);
+        }
+
+        private static void AplicarFormulasPlanejamentoIndicadores(IndicadoresPlanejamentoViewModel model)
+        {
+            IndicadoresPlanejamentoLinhaViewModel contatosRegistradosMeta = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "CONTATOS_REGISTRADOS_META");
+            IndicadoresPlanejamentoLinhaViewModel totalEmpresas = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "TOTAL_EMPRESAS");
+            IndicadoresPlanejamentoLinhaViewModel contatosRegistradosReal = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "CONTATOS_REGISTRADOS_REAL");
+            IndicadoresPlanejamentoLinhaViewModel empresasForaEstadoPlanejamento = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "EMPRESAS_FORA_ESTADO_PLANEJAMENTO");
+            IndicadoresPlanejamentoLinhaViewModel curvaContatosPlanejada = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "CURVA_CONTATOS_PLANEJADA");
+            IndicadoresPlanejamentoLinhaViewModel contatosRealizadosMeta = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "CONTATOS_REALIZADOS_META");
+            IndicadoresPlanejamentoLinhaViewModel totalEmpresasPlanejadas = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "TOTAL_EMPRESAS_PLANEJADAS");
+            IndicadoresPlanejamentoLinhaViewModel contatosRealizados = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "CONTATOS_REALIZADOS");
+            IndicadoresPlanejamentoLinhaViewModel ndasAssinados = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "NDA_ASSINADOS");
+            IndicadoresPlanejamentoLinhaViewModel taxaAssinatura = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "TAXA_ASSINATURA");
+            IndicadoresPlanejamentoLinhaViewModel propostasEnviadas = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "PROPOSTAS_ENVIADAS");
+            IndicadoresPlanejamentoLinhaViewModel propostasAindaValidas = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "PROPOSTAS_AINDA_VALIDAS");
+            IndicadoresPlanejamentoLinhaViewModel valorPropostaAtiva = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "VALOR_PROPOSTA_ATIVA");
+            IndicadoresPlanejamentoLinhaViewModel valorMedioPropostaAtiva = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "VALOR_MEDIO_PROPOSTA_ATIVA");
+            IndicadoresPlanejamentoLinhaViewModel taxaPropostaEnviada = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "TAXA_PROPOSTA_ENVIADA");
+            IndicadoresPlanejamentoLinhaViewModel projetosConvertidosMeta = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "PROJETOS_CONVERTIDOS_META");
+            IndicadoresPlanejamentoLinhaViewModel projetosConvertidos = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "PROJETOS_CONVERTIDOS");
+            IndicadoresPlanejamentoLinhaViewModel percentualProjetosConvertidosMeta = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "PERCENTUAL_PROJETOS_CONVERTIDOS_META");
+            IndicadoresPlanejamentoLinhaViewModel divergenciaMensal = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "DIVERGENCIA_MENSAL");
+            IndicadoresPlanejamentoLinhaViewModel curvaPlanejada = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "CURVA_PLANEJADA");
+            IndicadoresPlanejamentoLinhaViewModel curvaReal = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "CURVA_REAL");
+            IndicadoresPlanejamentoLinhaViewModel propostasEnviadasMeta = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "PROPOSTAS_ENVIADAS_META");
+            IndicadoresPlanejamentoLinhaViewModel curvaPropostas = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "CURVA_PROPOSTAS");
+            IndicadoresPlanejamentoLinhaViewModel curvaPlanejadaProjetos = model.Linhas
+                .FirstOrDefault(linha => linha.Chave == "CURVA_PLANEJADA_PROJETOS");
+
+            if (contatosRegistradosMeta == null || curvaContatosPlanejada == null)
+            {
+                return;
+            }
+
+            if (contatosRegistradosReal != null)
+            {
+                decimal? totalReal = ObterValorPlanejamento(contatosRegistradosReal, -2);
+                decimal? totalMetaContatos = ObterValorPlanejamento(contatosRegistradosMeta, -2);
+                contatosRegistradosReal.Valores[-1] = totalMetaContatos.HasValue && totalMetaContatos.Value != 0 && totalReal.HasValue
+                    ? Math.Round(totalReal.Value / totalMetaContatos.Value * 100, 2)
+                    : (decimal?)null;
+            }
+
+            if (empresasForaEstadoPlanejamento != null && totalEmpresas != null)
+            {
+                decimal? empresasForaEstado = ObterValorPlanejamento(empresasForaEstadoPlanejamento, -2);
+                decimal? totalEmpresasCadastradas = ObterValorPlanejamento(totalEmpresas, -2);
+                empresasForaEstadoPlanejamento.Valores[-1] = totalEmpresasCadastradas.HasValue && totalEmpresasCadastradas.Value != 0 && empresasForaEstado.HasValue
+                    ? Math.Round(empresasForaEstado.Value / totalEmpresasCadastradas.Value * 100, 2)
+                    : (decimal?)null;
+            }
+
+            if (contatosRealizadosMeta != null)
+            {
+                foreach (int coluna in ObterColunasPlanejamentoIndicadores())
+                {
+                    contatosRealizadosMeta.Valores[coluna] = ObterValorPlanejamento(contatosRegistradosMeta, coluna);
+                }
+            }
+
+            if (divergenciaMensal != null && contatosRealizadosMeta != null)
+            {
+                for (int mes = 1; mes <= 12; mes++)
+                {
+                    decimal? metaMes = ObterValorPlanejamento(contatosRealizadosMeta, mes);
+                    decimal? metaMesAnterior = ObterValorPlanejamento(contatosRealizadosMeta, mes - 1);
+                    divergenciaMensal.Valores[mes] = metaMes.HasValue && metaMesAnterior.HasValue
+                        ? metaMes.Value - metaMesAnterior.Value
+                        : (decimal?)null;
+                }
+            }
+
+            AplicarCurvaPercentualMensal(curvaPlanejada, contatosRealizadosMeta);
+            AplicarCurvaPercentualMensal(curvaReal, contatosRealizados, contatosRealizadosMeta);
+            AplicarCurvaPercentualMensal(curvaPropostas, propostasEnviadasMeta);
+            AplicarCurvaPercentualMensal(curvaPlanejadaProjetos, projetosConvertidosMeta);
+
+            if (contatosRealizados != null && totalEmpresasPlanejadas != null)
+            {
+                decimal? totalContatosRealizados = ObterValorPlanejamento(contatosRealizados, -2);
+                decimal? totalPlanejado = ObterValorPlanejamento(totalEmpresasPlanejadas, -2);
+                contatosRealizados.Valores[-1] = totalPlanejado.HasValue && totalPlanejado.Value != 0 && totalContatosRealizados.HasValue
+                    ? Math.Round(totalContatosRealizados.Value / totalPlanejado.Value * 100, 2)
+                    : (decimal?)null;
+            }
+
+            if (taxaAssinatura != null)
+            {
+                foreach (int coluna in ObterColunasPlanejamentoIndicadores())
+                {
+                    taxaAssinatura.Valores[coluna] = null;
+                }
+
+                if (ndasAssinados != null && contatosRealizados != null)
+                {
+                    for (int mes = 1; mes <= 12; mes++)
+                    {
+                        decimal? ndaMes = ObterValorPlanejamento(ndasAssinados, mes);
+                        decimal? contatosMes = ObterValorPlanejamento(contatosRealizados, mes);
+                        taxaAssinatura.Valores[mes] = contatosMes.HasValue && contatosMes.Value != 0 && ndaMes.HasValue
+                            ? Math.Round(ndaMes.Value / contatosMes.Value * 100, 2)
+                            : (decimal?)null;
+                    }
+                }
+            }
+
+            if (taxaPropostaEnviada != null)
+            {
+                foreach (int coluna in ObterColunasPlanejamentoIndicadores())
+                {
+                    taxaPropostaEnviada.Valores[coluna] = null;
+                }
+
+                if (propostasEnviadas != null && contatosRealizados != null)
+                {
+                    for (int mes = 1; mes <= 12; mes++)
+                    {
+                        decimal? propostasMes = ObterValorPlanejamento(propostasEnviadas, mes);
+                        decimal? contatosMes = ObterValorPlanejamento(contatosRealizados, mes);
+                        taxaPropostaEnviada.Valores[mes] = contatosMes.HasValue && contatosMes.Value != 0 && propostasMes.HasValue
+                            ? Math.Round(propostasMes.Value / contatosMes.Value * 100, 2)
+                            : (decimal?)null;
+                    }
+                }
+            }
+
+            if (valorMedioPropostaAtiva != null)
+            {
+                decimal? totalValorPropostaAtiva = ObterValorPlanejamento(valorPropostaAtiva, -2);
+                decimal? totalPropostasAindaValidas = ObterValorPlanejamento(propostasAindaValidas, -2);
+                valorMedioPropostaAtiva.Valores[-2] = totalPropostasAindaValidas.HasValue && totalPropostasAindaValidas.Value != 0 && totalValorPropostaAtiva.HasValue
+                    ? Math.Round(totalValorPropostaAtiva.Value / totalPropostasAindaValidas.Value, 2)
+                    : 0;
+            }
+
+            if (percentualProjetosConvertidosMeta != null)
+            {
+                foreach (int coluna in ObterColunasPlanejamentoIndicadores().Where(coluna => coluna != -2))
+                {
+                    percentualProjetosConvertidosMeta.Valores[coluna] = null;
+                }
+
+                if (projetosConvertidos != null && projetosConvertidosMeta != null)
+                {
+                    decimal? totalConvertidos = ObterValorPlanejamento(projetosConvertidos, -2);
+                    decimal? totalMetaConvertidos = ObterValorPlanejamento(projetosConvertidosMeta, -2);
+                    percentualProjetosConvertidosMeta.Valores[-1] = totalMetaConvertidos.HasValue && totalMetaConvertidos.Value != 0 && totalConvertidos.HasValue
+                        ? Math.Round(totalConvertidos.Value / totalMetaConvertidos.Value * 100, 2)
+                        : 0;
+
+                    for (int mes = 1; mes <= 12; mes++)
+                    {
+                        decimal? convertidosMes = ObterValorPlanejamento(projetosConvertidos, mes);
+                        percentualProjetosConvertidosMeta.Valores[mes] = totalMetaConvertidos.HasValue && totalMetaConvertidos.Value != 0 && convertidosMes.HasValue
+                            ? Math.Round(convertidosMes.Value / totalMetaConvertidos.Value * 100, 2)
+                            : 0;
+                    }
+                }
+            }
+
+            decimal? totalMeta = ObterValorPlanejamento(contatosRegistradosMeta, -2)
+                ?? ObterValorPlanejamento(contatosRegistradosMeta, 12);
+
+            for (int mes = 1; mes <= 12; mes++)
+            {
+                decimal? contatosMes = ObterValorPlanejamento(contatosRegistradosMeta, mes);
+                curvaContatosPlanejada.Valores[mes] = totalMeta.HasValue && totalMeta.Value != 0 && contatosMes.HasValue
+                    ? Math.Round(contatosMes.Value / totalMeta.Value * 100, 2)
+                    : (decimal?)null;
+            }
+        }
+
+        private static void AplicarCurvaPercentualMensal(
+            IndicadoresPlanejamentoLinhaViewModel curva,
+            IndicadoresPlanejamentoLinhaViewModel meta)
+        {
+            if (curva == null || meta == null)
+            {
+                return;
+            }
+
+            foreach (int coluna in ObterColunasPlanejamentoIndicadores())
+            {
+                curva.Valores[coluna] = null;
+            }
+
+            decimal? totalMeta = ObterValorPlanejamento(meta, -2);
+
+            for (int mes = 1; mes <= 12; mes++)
+            {
+                decimal? metaMes = ObterValorPlanejamento(meta, mes);
+                curva.Valores[mes] = totalMeta.HasValue && totalMeta.Value != 0 && metaMes.HasValue
+                    ? Math.Round(metaMes.Value / totalMeta.Value * 100, 2)
+                    : 0;
+            }
+        }
+
+        private static void AplicarCurvaPercentualMensal(
+            IndicadoresPlanejamentoLinhaViewModel curva,
+            IndicadoresPlanejamentoLinhaViewModel numerador,
+            IndicadoresPlanejamentoLinhaViewModel denominador)
+        {
+            if (curva == null || numerador == null || denominador == null)
+            {
+                return;
+            }
+
+            foreach (int coluna in ObterColunasPlanejamentoIndicadores())
+            {
+                curva.Valores[coluna] = null;
+            }
+
+            for (int mes = 1; mes <= 12; mes++)
+            {
+                decimal? valorNumerador = ObterValorPlanejamento(numerador, mes);
+                decimal? valorDenominador = ObterValorPlanejamento(denominador, mes);
+                curva.Valores[mes] = valorDenominador.HasValue && valorDenominador.Value != 0 && valorNumerador.HasValue
+                    ? Math.Round(valorNumerador.Value / valorDenominador.Value * 100, 2)
+                    : 0;
+            }
+        }
+
+        private static decimal? ObterValorPlanejamento(IndicadoresPlanejamentoLinhaViewModel linha, int coluna)
+        {
+            return linha.Valores.ContainsKey(coluna) ? linha.Valores[coluna] : null;
+        }
+
+        private static bool TentarConverterDecimal(string valorTexto, out decimal valor)
+        {
+            valorTexto = valorTexto?
+                .Trim()
+                .Replace("R$", "")
+                .Replace("%", "")
+                .Replace(" ", "");
+
+            if (string.IsNullOrWhiteSpace(valorTexto))
+            {
+                valor = 0;
+                return false;
+            }
+
+            CultureInfo culturaBrasileira = new CultureInfo("pt-BR");
+
+            if (valorTexto.Contains(","))
+            {
+                return decimal.TryParse(valorTexto, NumberStyles.Number, culturaBrasileira, out valor)
+                    || decimal.TryParse(valorTexto, NumberStyles.Float, CultureInfo.InvariantCulture, out valor);
+            }
+
+            return decimal.TryParse(valorTexto, NumberStyles.Float, CultureInfo.InvariantCulture, out valor)
+                || decimal.TryParse(valorTexto, NumberStyles.Number, culturaBrasileira, out valor);
+        }
+
+        private static int[] ObterColunasPlanejamentoIndicadores()
+        {
+            return new[] { -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+        }
+
+        private static List<IndicadorPlanejamentoDefinicao> ObterDefinicoesPlanejamentoIndicadores()
+        {
+            return new List<IndicadorPlanejamentoDefinicao>
+            {
+                new IndicadorPlanejamentoDefinicao("Planejamento", "TOTAL_EMPRESAS_PLANEJADAS", "Total de Empresas Planejadas"),
+                new IndicadorPlanejamentoDefinicao("Planejamento", "TOTAL_EMPRESAS", "Total de Empresas"),
+                new IndicadorPlanejamentoDefinicao("Planejamento", "CONTATOS_REGISTRADOS_META", "Contatos Registrados (Meta)"),
+                new IndicadorPlanejamentoDefinicao("Planejamento", "CURVA_CONTATOS_PLANEJADA", "Curva de contatos planejada"),
+                new IndicadorPlanejamentoDefinicao("Planejamento", "CONTATOS_REGISTRADOS_REAL", "Contatos Registrados (Real)"),
+                new IndicadorPlanejamentoDefinicao("Planejamento", "EMPRESAS_FORA_ESTADO_PLANEJAMENTO", "Empresas Fora do Estado"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "CONTATOS_REALIZADOS_META", "Contatos Realizados (Meta)"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "DIVERGENCIA_MENSAL", "Divergencia Mensal"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "CURVA_PLANEJADA", "Curva planejada"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "CURVA_REAL", "Curva real"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "CONTATOS_REALIZADOS", "Contatos Realizados"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "NDA_ASSINADOS", "NDA assinados"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "TAXA_ASSINATURA", "Taxa de Assinatura"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "PROPOSTAS_ENVIADAS_META", "Propostas Enviadas (Meta)"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "CURVA_PROPOSTAS", "Curva de Propostas"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "PROPOSTAS_ENVIADAS", "Propostas Enviadas"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "PROPOSTAS_AINDA_VALIDAS", "Propostas ainda validas"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "TAXA_PROPOSTA_ENVIADA", "Taxa de Proposta Enviada"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "VALOR_PROPOSTA", "Valor de Proposta"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "VALOR_MEDIO_PROPOSTA", "Valor Medio de Proposta"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "VALOR_PROPOSTA_ATIVA", "Valor de Proposta Ativa"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "VALOR_MEDIO_PROPOSTA_ATIVA", "Valor Medio de Proposta Ativa"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "PROJETOS_CONVERTIDOS_META", "Projetos Convertidos (Meta)"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "CURVA_PLANEJADA_PROJETOS", "Curva planejada"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "PROJETOS_CONVERTIDOS", "Projetos Convertidos"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "PERCENTUAL_PROJETOS_CONVERTIDOS_META", "Percentual de Projetos Convertidos em Relacao a Meta"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "VALOR_TOTAL_PROJETOS_CONVERTIDOS", "Valor total de Projetos Convertidos"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "VALOR_MEDIO_PROJETOS_CONVERTIDOS", "Valor Medio de Projetos Convertidos"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "EMPRESAS_FORA_ESTADO_EXECUCAO", "Empresas Fora do Estado"),
+                new IndicadorPlanejamentoDefinicao("Execucao", "PARCERIAS_SENAI_EXTERNAS", "Parcerias SENAI Externas")
+            };
+        }
+
+        private class IndicadorPlanejamentoDefinicao
+        {
+            public IndicadorPlanejamentoDefinicao(string grupo, string chave, string nome)
+            {
+                Grupo = grupo;
+                Chave = chave;
+                Nome = nome;
+            }
+
+            public string Grupo { get; }
+            public string Chave { get; }
+            public string Nome { get; }
         }
         private void SetarParametrosFunilSession(ParametrosFunil parametrosFunil)
         {
@@ -1527,7 +2351,7 @@ namespace BaseDeProjetos.Controllers
             }
             else if (prospeccao.Ancora == true && string.IsNullOrEmpty(prospeccao.Agregadas))
             { // verifica se o campo agg está vazio
-                throw new InvalidOperationException("Não é possível adicionar uma Âncora sem nenhuma agregada.");
+                throw new InvalidOperationException("Nao e possivel adicionar uma Ancora sem nenhuma agregada.");
             }
             else if (prospAntiga.Agregadas != prospeccao.Agregadas)
             { // verifica se alguma agregada foi alterada
@@ -1655,7 +2479,7 @@ namespace BaseDeProjetos.Controllers
         [HttpGet]
         public async Task<IActionResult> ExportarExcel(string casa)
         {
-            if (!Enum.TryParse(casa, out Instituto enumCasa))
+            if (!FunilHelpers.TentarParseInstituto(casa, out Instituto enumCasa))
                 return BadRequest("Casa inválida");
 
             var prospeccoes = await _context.Prospeccao
