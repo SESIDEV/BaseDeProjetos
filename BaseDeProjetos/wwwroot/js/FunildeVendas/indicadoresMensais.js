@@ -138,6 +138,13 @@ function formatarMoeda(valor) {
     });
 }
 
+function formatarPercentual(valor) {
+    return `${Number(valor ?? 0).toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    })}%`;
+}
+
 function obterCorEquipe(indice) {
     const cores = ['#f45b93', '#00a7d8', '#55a630', '#ffc000', '#c65bd3', '#2bd9d1', '#ff1f1f', '#f1a6cf', '#d9d9d9', '#92d050'];
     return cores[indice % cores.length];
@@ -209,6 +216,74 @@ function renderizarTabelaEquipe(dados) {
             </tbody>
         </table>`;
 }
+
+function renderizarTabelaTaxas(dados) {
+    const container = document.getElementById('tabela-taxas-indicadores');
+    if (!container) return;
+
+    const taxas = obterCampo(dados, 'Taxas') ?? {};
+    const linhas = obterCampo(taxas, 'Linhas') ?? [];
+    const totais = obterCampo(taxas, 'Totais') ?? {};
+
+    if (!linhas.length) {
+        container.innerHTML = `
+            <table class="indicadores-equipe-table">
+                <thead>
+                    <tr>
+                        <th>Taxas</th>
+                        <th>Proposi&ccedil;&atilde;o</th>
+                        <th>Convers&atilde;o</th>
+                        <th>Sucesso</th>
+                        <th>Contribui&ccedil;&atilde;o de Receita Gerada</th>
+                        <th>Assertividade de Propostas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="empty-row"><td colspan="6">Nao ha dados de taxas para o ano selecionado.</td></tr>
+                </tbody>
+            </table>`;
+        return;
+    }
+
+    const linhasHtml = linhas.map((linha, indice) => {
+        const equipeNome = obterCampo(linha, 'Equipe');
+        return `
+            <tr>
+                <td class="equipe-cell" style="background:${obterCorEquipe(indice)}">${escaparHtml(equipeNome)}</td>
+                <td>${formatarPercentual(obterCampo(linha, 'Proposicao'))}</td>
+                <td>${formatarPercentual(obterCampo(linha, 'Conversao'))}</td>
+                <td>${formatarPercentual(obterCampo(linha, 'Sucesso'))}</td>
+                <td>${formatarPercentual(obterCampo(linha, 'ContribuicaoReceitaGerada'))}</td>
+                <td>${formatarPercentual(obterCampo(linha, 'AssertividadePropostas'))}</td>
+            </tr>`;
+    }).join('');
+
+    container.innerHTML = `
+        <table class="indicadores-equipe-table">
+            <thead>
+                <tr>
+                    <th>Taxas</th>
+                    <th>Proposi&ccedil;&atilde;o</th>
+                    <th>Convers&atilde;o</th>
+                    <th>Sucesso</th>
+                    <th>Contribui&ccedil;&atilde;o de Receita Gerada</th>
+                    <th>Assertividade de Propostas</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${linhasHtml}
+                <tr class="total-row">
+                    <td></td>
+                    <td>${formatarPercentual(obterCampo(totais, 'Proposicao'))}</td>
+                    <td>${formatarPercentual(obterCampo(totais, 'Conversao'))}</td>
+                    <td>${formatarPercentual(obterCampo(totais, 'Sucesso'))}</td>
+                    <td>${formatarPercentual(obterCampo(totais, 'ContribuicaoReceitaGerada'))}</td>
+                    <td>${formatarPercentual(obterCampo(totais, 'AssertividadePropostas'))}</td>
+                </tr>
+            </tbody>
+        </table>`;
+}
+
 function renderizarIndicadoresMensais(dados) {
     const contatosRealizados = obterCampo(obterCampo(dados, 'ContatosRealizados'), 'Executado') ?? [];
     const serieContatosRealizados = {
@@ -224,6 +299,7 @@ function renderizarIndicadoresMensais(dados) {
     criarGraficoExecutado('grafico-propostas', 'Propostas Enviadas', 'QUANTIDADE TOTAL', dados, 'PropostasEnviadas', '#70ad47', [serieContatosRealizados]);
     criarGraficoExecutado('grafico-convertidas', 'Propostas Convertidas', 'QUANTIDADE TOTAL', dados, 'PropostasConvertidas', '#ffc000');
     renderizarTabelaEquipe(dados);
+    renderizarTabelaTaxas(dados);
 }
 
 function navegarParaFiltrosIndicadores() {
@@ -283,7 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(renderizarIndicadoresMensais)
         .catch(erro => {
             console.error(erro);
-            ['grafico-contatos', 'grafico-propostas', 'grafico-convertidas'].forEach(id => {
+            ['grafico-contatos', 'grafico-propostas', 'grafico-convertidas', 'tabela-equipe-indicadores', 'tabela-taxas-indicadores'].forEach(id => {
                 const elemento = document.getElementById(id);
                 if (elemento) elemento.innerHTML = '<div class="p-4 text-danger">Nao foi possivel carregar os indicadores.</div>';
             });
