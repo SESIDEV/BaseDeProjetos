@@ -49,6 +49,16 @@ namespace BaseDeProjetos.Controllers
             if (ModelState.IsValid)
             {
                 Prospeccao prospeccao_origem = await _context.Prospeccao.FirstOrDefaultAsync(p => p.Id == followup.OrigemID);
+                if (prospeccao_origem == null)
+                {
+                    return NotFound();
+                }
+
+                if (!FunilHelpers.UsuarioPodeAcessarCasa(UsuarioAtivo, prospeccao_origem.Casa))
+                {
+                    return View("Forbidden");
+                }
+
                 followup.Origem = prospeccao_origem;
 
                 await CriarFollowUp(followup);
@@ -87,6 +97,11 @@ namespace BaseDeProjetos.Controllers
 
             if (ModelState.IsValid)
             {
+                if (!FunilHelpers.UsuarioPodeAcessarCasa(UsuarioAtivo, prospeccao.Casa))
+                {
+                    return View("Forbidden");
+                }
+
                 try
                 {
                     prospeccao = await ValidarEmpresa(prospeccao);
@@ -228,6 +243,10 @@ namespace BaseDeProjetos.Controllers
                     await _context.SaveChangesAsync();
                     await CacheHelper.CleanupProspeccoesCache(_cache);
                 }
+                catch (UnauthorizedAccessException)
+                {
+                    return View("Forbidden");
+                }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!FunilHelpers.ProspeccaoExists(prospeccao.Id, _context))
@@ -292,6 +311,11 @@ namespace BaseDeProjetos.Controllers
                 if (existente == null)
                 {
                     return NotFound();
+                }
+
+                if (existente.Origem == null || !FunilHelpers.UsuarioPodeAcessarCasa(UsuarioAtivo, existente.Origem.Casa))
+                {
+                    return View("Forbidden");
                 }
 
                 // Atualiza campos permitidos
@@ -611,14 +635,14 @@ namespace BaseDeProjetos.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
+                ViewbagizarUsuario(_context, _cache);
+
                 List<Instituto> casasSelecionadas;
+                List<Instituto> casasPermitidas = FunilHelpers.ObterCasasPermitidas(UsuarioAtivo);
 
                 if (string.IsNullOrWhiteSpace(casa) || casa.Equals("Todas", StringComparison.OrdinalIgnoreCase))
                 {
-                    casasSelecionadas = Enum.GetValues(typeof(Instituto))
-                        .Cast<Instituto>()
-                        .Where(instituto => instituto != Instituto.Super && instituto != Instituto.ISIII && instituto != Instituto.ISISVP)
-                        .ToList();
+                    casasSelecionadas = casasPermitidas;
                 }
                 else
                 {
@@ -635,6 +659,16 @@ namespace BaseDeProjetos.Controllers
                         })
                         .Distinct()
                         .ToList();
+
+                    if (casasSelecionadas.Any(casaSelecionada => !casasPermitidas.Contains(casaSelecionada)))
+                    {
+                        return View("Forbidden");
+                    }
+                }
+
+                if (!casasSelecionadas.Any())
+                {
+                    return View("Forbidden");
                 }
 
                 var followUps = await _context.FollowUp
@@ -915,6 +949,11 @@ namespace BaseDeProjetos.Controllers
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 ViewbagizarUsuario(_context, _cache);
+
+                if (!FunilHelpers.UsuarioPodeAcessarCasa(UsuarioAtivo, casa))
+                {
+                    return View("Forbidden");
+                }
 
                 Empresa empresa = await _context.Empresa.FindAsync(id);
                 if (empresa == null)
@@ -1473,6 +1512,11 @@ namespace BaseDeProjetos.Controllers
             }
 
             Prospeccao prospAntiga = await _context.Prospeccao.AsNoTracking().FirstAsync(p => p.Id == prospeccao.Id);
+            if (!FunilHelpers.UsuarioPodeAcessarCasa(UsuarioAtivo, prospAntiga.Casa))
+            {
+                throw new UnauthorizedAccessException();
+            }
+
             prospeccao.Casa = prospAntiga.Casa;
 
             // tudo abaixo compara a versão antiga com a nova que irá para o Update()

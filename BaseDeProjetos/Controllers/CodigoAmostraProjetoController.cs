@@ -1,6 +1,7 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Controllers
 {
+    [Authorize]
     public class CodigoAmostraProjetoController : Controller
     {
         private readonly ApplicationDbContext _context;

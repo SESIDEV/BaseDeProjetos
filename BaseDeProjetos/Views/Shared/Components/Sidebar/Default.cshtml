@@ -5,12 +5,20 @@
 
 @{
 	var usuarioNivel = ViewBag.usuarioNivel;
+	var usuarioCasaTexto = (ViewBag.usuarioCasa ?? "").ToString();
+	Enum.TryParse(usuarioCasaTexto, out Instituto usuarioCasaMenu);
+	bool usuarioPodeVerTodasCasasMenu = usuarioNivel != null
+		&& (usuarioNivel.ToString() == "PMO" || usuarioNivel.ToString() == "Dev" || usuarioNivel.ToString() == "Supervisor");
 	// Excluir casas específicas do menu
 	var excluded = new[] { Instituto.ISIII, Instituto.Super, Instituto.ISISVP };
 	List<Instituto> institutos = Enum.GetValues(typeof(Instituto))
 		.Cast<Instituto>()
 		.Where(i => !excluded.Contains(i))
 		.ToList();
+	if (!usuarioPodeVerTodasCasasMenu)
+	{
+		institutos = institutos.Where(i => i == usuarioCasaMenu).ToList();
+	}
 	Dictionary<Instituto, string> nomesCasasMenu = new Dictionary<Instituto, string>
 	{
 		{ Instituto.ISIQV, "ISI Química Verde" },

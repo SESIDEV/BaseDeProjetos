@@ -2,6 +2,7 @@
 @model EmpresasViewModel
 @using System.Globalization
 @using BaseDeProjetos.Models.Enums
+@using BaseDeProjetos.Helpers
 @{
     ViewData["Title"] = "Empresas";
     List<Pessoa> contatos = ViewBag.Contatos as List<Pessoa>;
@@ -11,9 +12,18 @@
     List<ProspeccaoEmpresasDTO> outrasProspeccoes = ViewBag.OutrasProspeccoes as List<ProspeccaoEmpresasDTO>;
     List<Projeto> projetos = ViewBag.Projetos as List<Projeto>;
     string searchString = ViewBag.searchString as string;
+    var usuarioNivelEmpresas = ViewBag.usuarioNivel;
+    var usuarioCasaEmpresasTexto = (ViewBag.usuarioCasa ?? "").ToString();
+    Enum.TryParse(usuarioCasaEmpresasTexto, out Instituto usuarioCasaEmpresas);
+    bool usuarioPodeVerTodasCasasEmpresas = usuarioNivelEmpresas != null
+        && (usuarioNivelEmpresas.ToString() == "PMO" || usuarioNivelEmpresas.ToString() == "Dev" || usuarioNivelEmpresas.ToString() == "Supervisor");
     var casasPlanejamento = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto)))
         .Where(i => i != Instituto.Super && i != Instituto.ISIII && i != Instituto.ISISVP)
         .ToList();
+    if (!usuarioPodeVerTodasCasasEmpresas)
+    {
+        casasPlanejamento = casasPlanejamento.Where(i => i == usuarioCasaEmpresas).ToList();
+    }
     var nomesCasasPlanejamento = new Dictionary<Instituto, string>
     {
         { Instituto.ISIQV, "ISI Química Verde" },

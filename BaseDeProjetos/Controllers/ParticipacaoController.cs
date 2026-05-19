@@ -5,6 +5,7 @@ using BaseDeProjetos.Models.DTOs;
 using BaseDeProjetos.Models.Enums;
 using BaseDeProjetos.Models.Helpers;
 using BaseDeProjetos.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -20,6 +21,7 @@ using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Controllers
 {
+    [Authorize]
     public class ParticipacaoController : SGIController
     {
         private const string nomeCargoBolsista = "Pesquisador Bolsista";

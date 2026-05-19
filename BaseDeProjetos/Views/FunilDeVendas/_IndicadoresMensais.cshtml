@@ -8,6 +8,17 @@
         casaIndicadores = ViewBag.UsuarioCasa as string;
     }
 
+    var usuarioNivelIndicadores = ViewBag.usuarioNivel;
+    var usuarioCasaIndicadoresTexto = (ViewBag.usuarioCasa ?? "").ToString();
+    Enum.TryParse(usuarioCasaIndicadoresTexto, out Instituto usuarioCasaIndicadores);
+    bool usuarioPodeVerTodasCasasIndicadores = usuarioNivelIndicadores != null
+        && (usuarioNivelIndicadores.ToString() == "PMO" || usuarioNivelIndicadores.ToString() == "Dev" || usuarioNivelIndicadores.ToString() == "Supervisor");
+
+    if (!usuarioPodeVerTodasCasasIndicadores)
+    {
+        casaIndicadores = usuarioCasaIndicadores.ToString();
+    }
+
     bool todasAsCasasSelecionadas = string.Equals(casaIndicadores, "Todas", StringComparison.OrdinalIgnoreCase);
     List<string> casasSelecionadasIndicadores = (casaIndicadores ?? "")
         .Split(',', StringSplitOptions.RemoveEmptyEntries)
@@ -15,6 +26,11 @@
         .ToList();
 
     List<Instituto> institutosIndicadores = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto))).Where(i => i != Instituto.Super && i != Instituto.ISIII && i != Instituto.ISISVP).ToList();
+    if (!usuarioPodeVerTodasCasasIndicadores)
+    {
+        institutosIndicadores = institutosIndicadores.Where(i => i == usuarioCasaIndicadores).ToList();
+        todasAsCasasSelecionadas = false;
+    }
     Dictionary<Instituto, string> nomesCasasIndicadores = new Dictionary<Instituto, string>
     {
         { Instituto.ISIQV, "ISI Química Verde" },
@@ -192,10 +208,13 @@
         <div class="indicadores-casas-menu" id="casaIndicadores">
             <span class="indicadores-casas-title">Casas</span>
             <div class="indicadores-casas-list">
-                <label class="indicadores-casa-option" for="casaIndicadoresTodas">
-                    <input type="checkbox" name="casasIndicadores" id="casaIndicadoresTodas" value="Todas" checked="@todasAsCasasSelecionadas" />
-                    Todas
-                </label>
+                @if (usuarioPodeVerTodasCasasIndicadores)
+                {
+                    <label class="indicadores-casa-option" for="casaIndicadoresTodas">
+                        <input type="checkbox" name="casasIndicadores" id="casaIndicadoresTodas" value="Todas" checked="@todasAsCasasSelecionadas" />
+                        Todas
+                    </label>
+                }
                 @foreach (Instituto instituto in institutosIndicadores)
                 {
                     if (!todasAsCasasSelecionadas && casasSelecionadasIndicadores.Contains(instituto.ToString()))

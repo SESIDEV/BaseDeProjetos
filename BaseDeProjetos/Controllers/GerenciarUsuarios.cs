@@ -2,6 +2,7 @@
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace BaseDeProjetos.Controllers
 {
+    [Authorize]
     public class GerenciarUsuarios : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -59,6 +61,8 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         public bool VerificarNivelUsuario(Usuario usuario)
         {
+            if (usuario == null) return false;
+
             if (usuario.Nivel == Nivel.PMO || usuario.Nivel == Nivel.Dev || usuario.Nivel == Nivel.Supervisor)
             {
                 return true;
@@ -76,21 +80,23 @@ namespace BaseDeProjetos.Controllers
         {
             ViewData["CurrentFilter"] = statusEmailUsuario;
 
-            var usuarios = await _cache.GetCachedAsync("AllUsuarios", () => _context.Users.ToListAsync());
-
-            Usuario usuario = await UsuarioExiste(HttpContext.User.Identity.Name);
-
-            if (usuario != null && VerificarNivelUsuario(usuario))
+            if (!await UsuarioPodeGerenciarUsuarios())
             {
-                usuarios = await VerificarStatusEmailUsuario(statusEmailUsuario);
+                return View("Forbidden");
             }
 
+            var usuarios = await VerificarStatusEmailUsuario(statusEmailUsuario);
             return View(usuarios);
         }
 
         // GET: GerenciarUsuarios/Details/5
         public async Task<IActionResult> Details(string id)
         {
+            if (!await UsuarioPodeGerenciarUsuarios())
+            {
+                return View("Forbidden");
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -107,8 +113,13 @@ namespace BaseDeProjetos.Controllers
         }
 
         // GET: GerenciarUsuarios/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            if (!await UsuarioPodeGerenciarUsuarios())
+            {
+                return View("Forbidden");
+            }
+
             return View();
         }
 
@@ -119,6 +130,11 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,UserName,Email,EmailConfirmado,PasswordHash,Casa,Nivel")] Usuario usuario)
         {
+            if (!await UsuarioPodeGerenciarUsuarios())
+            {
+                return View("Forbidden");
+            }
+
             if (ModelState.IsValid)
             {
                 usuario.PasswordHash = "AQAAAAEAACcQAAAAEEJOLHMoQRfLBTu8K2wwcFq91QZqkhyVQyP1TpvtsZ5/6jd5CP6jpEEL0bcpUjKvpg==";
@@ -135,6 +151,11 @@ namespace BaseDeProjetos.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
+            if (!await UsuarioPodeGerenciarUsuarios())
+            {
+                return View("Forbidden");
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -155,6 +176,11 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id,UserName,Email, EmailConfirmed,Casa,Nivel,PasswordHash")] Usuario usuario)
         {
+            if (!await UsuarioPodeGerenciarUsuarios())
+            {
+                return View("Forbidden");
+            }
+
             Usuario usuarioEditado = usuario;
 
             if (id.ToString() != usuario.Id)
@@ -191,6 +217,11 @@ namespace BaseDeProjetos.Controllers
         // GET: GerenciarUsuarios/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
+            if (!await UsuarioPodeGerenciarUsuarios())
+            {
+                return View("Forbidden");
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -211,6 +242,11 @@ namespace BaseDeProjetos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
+            if (!await UsuarioPodeGerenciarUsuarios())
+            {
+                return View("Forbidden");
+            }
+
             var usuario = await _context.Users.FindAsync(id);
             _context.Users.Remove(usuario);
             await _context.SaveChangesAsync();
@@ -221,6 +257,12 @@ namespace BaseDeProjetos.Controllers
         private bool UsuarioExists(string id)
         {
             return _context.Users.AsNoTracking().Any(e => e.Id == id.ToString());
+        }
+
+        private async Task<bool> UsuarioPodeGerenciarUsuarios()
+        {
+            Usuario usuario = await UsuarioExiste(HttpContext.User.Identity.Name);
+            return VerificarNivelUsuario(usuario);
         }
     }
 }
