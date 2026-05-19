@@ -199,7 +199,7 @@ namespace BaseDeProjetos.Helpers
 
             if ((string.IsNullOrWhiteSpace(casa) || casa.Equals("Todas", StringComparison.OrdinalIgnoreCase)) && usuarioPodeVerTodas)
             {
-                return await cache.GetCachedAsync("Prospeccoes:Funil:TodasPermitidas", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).Where(prospeccao => casasPermitidas.Contains(prospeccao.Casa)).ToListAsync());
+                return await cache.GetCachedAsync("Prospeccoes:Funil:TodasPermitidas", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Contato).Include(p => p.Usuario).Where(prospeccao => casasPermitidas.Contains(prospeccao.Casa)).ToListAsync());
             }
 
             if (!TentarParseInstituto(casa, out Instituto enum_casa) || !casasPermitidas.Contains(enum_casa))
@@ -210,7 +210,7 @@ namespace BaseDeProjetos.Helpers
             HttpContext.Session.SetString("_Casa", enum_casa.ToString());
             ViewData["Area"] = enum_casa.ToString();
 
-            return await cache.GetCachedAsync($"Prospeccoes:Funil:Filtradas:{enum_casa}", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Usuario).Where(prospeccao => prospeccao.Casa.Equals(enum_casa)).ToListAsync());
+            return await cache.GetCachedAsync($"Prospeccoes:Funil:Filtradas:{enum_casa}", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Contato).Include(p => p.Usuario).Where(prospeccao => prospeccao.Casa.Equals(enum_casa)).ToListAsync());
         }
 
         public static IQueryable<Prospeccao> DefinirCasaParaVisualizarQuery(
@@ -224,6 +224,7 @@ namespace BaseDeProjetos.Helpers
                 .AsNoTracking()
                 .Include(p => p.Status)
                 .Include(p => p.Empresa)
+                .Include(p => p.Contato)
                 .Include(p => p.Usuario);
 
             List<Instituto> casasPermitidas = ObterCasasPermitidas(usuario);
