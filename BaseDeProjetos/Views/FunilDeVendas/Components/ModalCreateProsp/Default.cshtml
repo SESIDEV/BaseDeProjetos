@@ -14,7 +14,7 @@
     var unique_id = $"prosp_{DateTime.Now.Ticks}";
 }
 
-<script src="~/js/FunildeVendas/modalCreateProsp.js"></script>
+<script src="~/js/FunildeVendas/modalCreateProsp.js" asp-append-version="true"></script>
 
 <form asp-action="Create" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
