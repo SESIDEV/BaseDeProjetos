@@ -25,7 +25,11 @@ function aplicarDadosAPI(idElemento) {
             });
 
             document.getElementById(`RazaoSocialEmpresaCadastro${idElemento}`).value = dados.nome;
-            document.getElementById(`NomeEmpresa${idElemento}`).value = dados.fantasia;
+            document.getElementById(`NomeEmpresa${idElemento}`).value = dados.fantasia || dados.nome;
+            const porteEmpresaCadastro = document.getElementById(`PorteEmpresaCadastro${idElemento}`);
+            if (porteEmpresaCadastro) {
+                porteEmpresaCadastro.value = dados.porte || "";
+            }
             document.getElementById(`TipoEmpresaStatus${idElemento}`).innerHTML = "Tipo: " + dados.tipo;
             document.getElementById(`SituacaoEmpresaStatus${idElemento}`).innerHTML = "Situação: " + dados.situacao;
 
@@ -104,7 +108,7 @@ function aplicarDadosAPI(idElemento) {
             // Essa linha busca o nome a partir da sigla devolvida pela api --------\/
             let nomeEstado = indices.find(dados.uf);
 
-            if (nomeEstado) {
+            if (nomeEstado !== undefined && nomeEstado !== null) {
                 estadoEmpresaCadastroINT.value = nomeEstado;
             } else {
                 estadoEmpresaCadastroINT.value = "SemCadastro";

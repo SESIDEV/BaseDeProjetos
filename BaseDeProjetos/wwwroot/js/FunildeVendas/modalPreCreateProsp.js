@@ -39,6 +39,10 @@ async function trocarModalNovaProsp() {
         toggleButton.dataset.bsTarget = "#criarProspModalToggle";
         toggleButton.disabled = false;
 
+        if (window.atualizarModoCadastroEmpresaProsp) {
+            window.atualizarModoCadastroEmpresaProsp();
+        }
+
         if (valorSelect === "-2") {
             const nomeProspeccao = document.getElementById("NomeProspeccao");
             const statusData = document.getElementById("Status_0__Data");
@@ -47,13 +51,40 @@ async function trocarModalNovaProsp() {
 
             let data = new Intl.DateTimeFormat('pt-BR', formatoData).format(new Date());
 
-            statusData.value = data;
-            statusData.placeholder = data;
-            statusAnotacoes.value = "Incluído no plano de prospecções como prospecção planejada";
+            if (statusData) {
+                statusData.value = data;
+                statusData.placeholder = data;
+            }
 
-            valorStatus.value = "Planejada";
-            nomeProspeccao.value = "Prospecção Planejada";
-            nomeProspeccao.placeholder = "Prospecção Planejada";
+            if (statusAnotacoes) {
+                statusAnotacoes.value = "Incluído no plano de prospecções como prospecção planejada";
+            }
+
+            if (valorStatus) {
+                valorStatus.value = "Planejada";
+            }
+
+            if (nomeProspeccao) {
+                nomeProspeccao.value = "Prospecção Planejada";
+                nomeProspeccao.placeholder = "Prospecção Planejada";
+            }
+        } else {
+            const nomeProspeccao = document.getElementById("NomeProspeccao");
+            const statusAnotacoes = document.getElementById("Status_0__Anotacoes");
+            const valorStatus = document.getElementById("Status_0__Status");
+
+            if (valorStatus) {
+                valorStatus.value = "ContatoInicial";
+            }
+
+            if (statusAnotacoes?.value === "Incluído no plano de prospecções como prospecção planejada") {
+                statusAnotacoes.value = "";
+            }
+
+            if (nomeProspeccao?.value === "Prospecção Planejada") {
+                nomeProspeccao.value = "";
+                nomeProspeccao.placeholder = "Ex.: Proposta de biossurfactantes";
+            }
         }
     }
 }
