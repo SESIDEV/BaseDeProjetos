@@ -163,8 +163,37 @@
                     <div class="card mb-3">
                         <div class="card-header fw-semibold">EMPRESA</div>
                         <div class="card-body">
+                            <input type="hidden" id="CadastrarNovaEmpresa" name="CadastrarNovaEmpresa" value="false" />
+
+                            <div id="opcoesEmpresaNaoPlanejada" class="mb-3">
+                                <label class="form-label fw-semibold">Como deseja informar a empresa?</label>
+                                <div class="d-flex flex-column flex-md-row gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="radio"
+                                               name="TipoCadastroEmpresa"
+                                               id="tipoEmpresaCadastrada"
+                                               value="cadastrada"
+                                               checked />
+                                        <label class="form-check-label" for="tipoEmpresaCadastrada">
+                                            Selecionar empresa cadastrada
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="radio"
+                                               name="TipoCadastroEmpresa"
+                                               id="tipoEmpresaNova"
+                                               value="nova" />
+                                        <label class="form-check-label" for="tipoEmpresaNova">
+                                            Cadastrar nova empresa
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="row g-3">
-                                <div class="col-md-6">
+                                <div class="col-md-6" id="empresaCadastradaFields">
                                     <label class="form-label fw-semibold" for="EmpresaInput">Empresa <span class="text-danger">*</span></label>
                                     <input id="EmpresaInput" class="form-control" list="empresas" placeholder="Digite o nome da empresa ou selecione" autocomplete="off" />
                                     <datalist id="empresas">
@@ -184,6 +213,101 @@
                                     <input asp-for="EmpresaId" type="hidden" id="EmpresaId" />
 
                                     <span asp-validation-for="EmpresaId" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-12 d-none" id="novaEmpresaFields">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-semibold" for="NovaEmpresa_Nome">
+                                                Nome fantasia <span class="text-danger">*</span>
+                                            </label>
+                                            <input id="NomeEmpresa-prosp"
+                                                   name="NovaEmpresa.Nome"
+                                                   class="form-control nova-empresa-field"
+                                                   disabled />
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-semibold" for="NovaEmpresa_RazaoSocial">
+                                                Razão social
+                                            </label>
+                                            <input id="RazaoSocialEmpresaCadastro-prosp"
+                                                   name="NovaEmpresa.RazaoSocial"
+                                                   class="form-control nova-empresa-field"
+                                                   readonly
+                                                   disabled />
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-semibold" for="valor_cnpj-prosp">
+                                                CNPJ <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="input-group">
+                                                <input id="valor_cnpj-prosp"
+                                                       name="NovaEmpresa.CNPJ"
+                                                       class="form-control nova-empresa-field"
+                                                       maxlength="18"
+                                                       placeholder="00.000.000/0000-00"
+                                                       onkeypress="$(this).mask('00.000.000/0000-00')"
+                                                       disabled />
+                                                <button class="btn app-btn-primary"
+                                                        onclick="checarCNPJProspeccao()"
+                                                        type="button">
+                                                    Buscar
+                                                </button>
+                                            </div>
+                                            <p id="StatusCNPJ-prosp" class="mb-1"></p>
+                                            <small id="TipoEmpresaStatus-prosp" class="d-block text-muted">Tipo:</small>
+                                            <small id="SituacaoEmpresaStatus-prosp" class="d-block text-muted">Situação:</small>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-semibold" for="NovaEmpresa_Porte">Porte</label>
+                                            <input id="PorteEmpresaCadastro-prosp"
+                                                   name="NovaEmpresa.Porte"
+                                                   class="form-control nova-empresa-field"
+                                                   disabled />
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-semibold" for="NovaEmpresa_Segmento">Segmento</label>
+                                            <select id="NovaEmpresa_Segmento"
+                                                    name="NovaEmpresa.Segmento"
+                                                    class="form-select nova-empresa-field"
+                                                    asp-items="Html.GetEnumSelectList<SegmentoEmpresa>()"
+                                                    disabled>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-semibold" for="EstadoEmpresaCadastro-prosp">Estado</label>
+                                            <input id="EstadoEmpresaCadastro-prosp"
+                                                   class="form-control nova-empresa-field"
+                                                   readonly
+                                                   disabled />
+                                            <input id="EstadoEmpresaCadastroINT-prosp"
+                                                   name="NovaEmpresa.Estado"
+                                                   value="0"
+                                                   type="hidden"
+                                                   class="nova-empresa-field"
+                                                   disabled />
+                                        </div>
+
+                                        <div class="col-md-4 d-flex align-items-end">
+                                            <div class="mb-2">
+                                                <span class="fw-semibold">CNAE Industrial:</span>
+                                                <i id="checkCNAE-prosp"
+                                                   class="fa"
+                                                   style="display:none; margin-left: 6px;"></i>
+                                                <input id="BoolCnaeIndustrial-prosp"
+                                                       name="NovaEmpresa.Industrial"
+                                                       value="false"
+                                                       type="hidden"
+                                                       class="nova-empresa-field"
+                                                       disabled />
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                     
                                 <div class="col-md-6">
@@ -306,6 +430,8 @@
                         <div class="card-header fw-semibold">STATUS<br> INICIAL</div>
                         <div class="card-body">
                             <div class="row g-3">
+                                <input asp-for="Status[0].Data" type="hidden" />
+                                <input asp-for="Status[0].Status" type="hidden" value="@StatusProspeccao.ContatoInicial" />
 
                                 <div class="col-md-6">
                                     <label asp-for="Status[0].Anotacoes" class="form-label fw-semibold">Observações e anotações</label>
@@ -316,9 +442,12 @@
 
                                 <div class="col-md-6">
                                     <label asp-for="Status[0].Status" class="form-label fw-semibold">Status</label>
-                                    <select asp-for="Status[0].Status" class="form-select" disabled>
+                                    <select class="form-select" disabled>
                                         <option value="@StatusProspeccao.ContatoInicial">
                                             Contato Inicial
+                                        </option>
+                                        <option value="@StatusProspeccao.Planejada">
+                                            Planejada
                                         </option>
                                     </select>
                                 </div>

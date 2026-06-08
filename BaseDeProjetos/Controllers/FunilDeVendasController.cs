@@ -94,7 +94,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id, Tipologia, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas, TipoDeInteracao, TipoDeProjeto, TipoContratacao, ParceiroInterno, Usuario")] Prospeccao prospeccao)
+        public async Task<IActionResult> Create([Bind("Id, Tipologia, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas, TipoDeInteracao, TipoDeProjeto, TipoContratacao, ParceiroInterno, Usuario")] Prospeccao prospeccao, [Bind(Prefix = "NovaEmpresa")] Empresa novaEmpresa, bool cadastrarNovaEmpresa)
         {
             ViewbagizarUsuario(_context, _cache);
 
@@ -107,6 +107,11 @@ namespace BaseDeProjetos.Controllers
 
                 try
                 {
+                    if (cadastrarNovaEmpresa)
+                    {
+                        prospeccao.EmpresaId = await CriarEmpresaDaProspeccao(novaEmpresa);
+                    }
+
                     prospeccao = await ValidarEmpresa(prospeccao);
                 }
                 catch (Exception e)
@@ -2537,6 +2542,37 @@ namespace BaseDeProjetos.Controllers
         /// <param name="prospeccao">Prospecção a ter uma empresa cadastrada</param>
         /// <returns></returns>
         /// <exception cref="Exception">Erro a ser lançado caso não seja possível cadastrar a empresa/seja uma empresa inválida</exception>
+        private async Task<int> CriarEmpresaDaProspeccao(Empresa novaEmpresa)
+        {
+            if (novaEmpresa == null)
+            {
+                throw new ArgumentException("Informe os dados da nova empresa.");
+            }
+
+            novaEmpresa.Nome = novaEmpresa.Nome?.Trim();
+            novaEmpresa.RazaoSocial = novaEmpresa.RazaoSocial?.Trim();
+            novaEmpresa.CNPJ = novaEmpresa.CNPJ?.Trim();
+            novaEmpresa.Porte = novaEmpresa.Porte?.Trim();
+
+            if (string.IsNullOrWhiteSpace(novaEmpresa.Nome) || string.IsNullOrWhiteSpace(novaEmpresa.CNPJ))
+            {
+                throw new ArgumentException("Informe o nome fantasia e o CNPJ para cadastrar a nova empresa.");
+            }
+
+            if (string.IsNullOrWhiteSpace(novaEmpresa.RazaoSocial))
+            {
+                novaEmpresa.RazaoSocial = novaEmpresa.Nome;
+            }
+
+            novaEmpresa.Logo = "";
+
+            _context.Empresa.Add(novaEmpresa);
+            await _context.SaveChangesAsync();
+            CacheHelper.CleanupEmpresasCache(_cache);
+
+            return novaEmpresa.Id;
+        }
+
         public async Task<Prospeccao> ValidarEmpresa(Prospeccao prospeccao)
         {
             var empresas = await _cache.GetCachedAsync("AllEmpresas", () => _context.Empresa.ToListAsync());
