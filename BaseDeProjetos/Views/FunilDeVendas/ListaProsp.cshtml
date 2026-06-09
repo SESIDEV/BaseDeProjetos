@@ -32,11 +32,350 @@
     }
 </div>
 
-<div class="tab-pane fade show active" id="prospeccao-@aba" role="tabpanel" aria-labelledby="prospeccao-@aba-tab">
-    <div class="app-card app-card-orders-table shadow-sm mb-5">
+<div class="funil-view-toolbar d-none">
+    <div class="btn-group" role="group" aria-label="Tipo de visualização">
+        <button type="button" class="btn btn-outline-primary funil-view-toggle" data-view="kanban">
+            <i class="bi bi-kanban"></i>
+            Kanban
+        </button>
+        <button type="button" class="btn btn-outline-primary funil-view-toggle" data-view="cards">
+            <i class="bi bi-grid"></i>
+            Cards
+        </button>
+        <button type="button" class="btn btn-outline-primary funil-view-toggle" data-view="tabela">
+            <i class="bi bi-table"></i>
+            Tabela
+        </button>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.funil-table-team').forEach((team) => {
+            if (team.dataset.compacted === 'true') {
+                return;
+            }
+
+            const badges = Array.from(team.querySelectorAll('.badge'));
+            const leader = badges[0];
+            const supporters = badges.slice(1);
+
+            if (leader) {
+                leader.classList.add('funil-team-leader');
+            }
+
+            if (supporters.length > 0) {
+                const supporterNames = supporters
+                    .map((supporter) => supporter.textContent.trim())
+                    .filter(Boolean);
+
+                supporters.forEach((supporter) => {
+                    supporter.classList.add('d-none');
+                });
+
+                const more = document.createElement('span');
+                more.className = 'funil-team-more';
+                more.textContent = `+${supporters.length}`;
+                more.title = supporterNames.join(', ');
+                team.appendChild(more);
+            }
+
+            team.dataset.compacted = 'true';
+        });
+
+        (function () {
+            const storageKey = 'funil-view-mode';
+            const toggles = document.querySelectorAll('.funil-view-toggle');
+            const panels = document.querySelectorAll('.funil-view-panel');
+
+            function setView(view) {
+                const allowedViews = ['kanban', 'cards', 'tabela'];
+                const resolvedView = allowedViews.includes(view) ? view : 'tabela';
+
+                panels.forEach((panel) => {
+                    panel.classList.toggle('d-none', panel.dataset.funilView !== resolvedView);
+                });
+
+                toggles.forEach((toggle) => {
+                    const active = toggle.dataset.view === resolvedView;
+                    toggle.classList.toggle('active', active);
+                    toggle.classList.toggle('btn-primary', active);
+                    toggle.classList.toggle('btn-outline-primary', !active);
+                    toggle.setAttribute('aria-pressed', active ? 'true' : 'false');
+                });
+
+                localStorage.setItem(storageKey, resolvedView);
+            }
+
+            toggles.forEach((toggle) => {
+                toggle.addEventListener('click', function () {
+                    setView(this.dataset.view);
+                });
+            });
+
+            setView(localStorage.getItem(storageKey) || 'tabela');
+        })();
+    });
+</script>
+
+<div class="funil-view-panel funil-kanban-board" data-funil-view="kanban">
+    @{
+        var colunasKanban = new[]
+        {
+            new { Chave = "quente", Nome = "Quente", Classe = "bg-quente", Icone = "bi-fire" },
+            new { Chave = "morno", Nome = "Morno", Classe = "bg-morno", Icone = "bi-thermometer-half" },
+            new { Chave = "esfriando", Nome = "Esfriando", Classe = "bg-esfriando", Icone = "bi-thermometer-low" },
+            new { Chave = "frio", Nome = "Frio", Classe = "bg-frio", Icone = "bi-snow2" },
+            new { Chave = "congelado", Nome = "Congelado", Classe = "bg-congelado", Icone = "bi-snow3" }
+        };
+    }
+
+    @foreach (var coluna in colunasKanban)
+    {
+        var prospeccoesColuna = Model.Prospeccoes
+            .Where(prospeccao =>
+            {
+                var ultimoStatus = prospeccao.Status.OrderBy(followup => followup.Data).ThenBy(followup => followup.Id).LastOrDefault();
+                if (ultimoStatus == null || ultimoStatus.Status == StatusProspeccao.Planejada)
+                {
+                    return false;
+                }
+
+                var dias = DateTime.Now.Subtract(ultimoStatus.Data).Days;
+
+                switch (coluna.Chave)
+                {
+                    case "quente":
+                        return dias < 7;
+                    case "morno":
+                        return dias >= 7 && dias <= 15;
+                    case "esfriando":
+                        return dias >= 16 && dias <= 30;
+                    case "frio":
+                        return dias > 30 && dias <= 365;
+                    case "congelado":
+                        return dias > 365;
+                    default:
+                        return false;
+                }
+            })
+            .ToList();
+
+        decimal valorTotalColuna = prospeccoesColuna.Sum(prospeccao =>
+            prospeccao.ValorProposta != 0
+                ? (decimal)prospeccao.ValorProposta
+                : prospeccao.ValorEstimado != 0
+                    ? (decimal)prospeccao.ValorEstimado
+                    : 0);
+
+        <section class="funil-kanban-column">
+            <header class="funil-kanban-column-header">
+                <div class="funil-kanban-title">
+                    <span class="funil-kanban-icon @coluna.Classe"><i class="bi @coluna.Icone"></i></span>
+                    <div>
+                        <h3>@coluna.Nome</h3>
+                        <p>
+                            @prospeccoesColuna.Count @(prospeccoesColuna.Count == 1 ? "prospecção" : "prospecções")
+                            @if (valorTotalColuna > 0)
+                            {
+                                <span> - R$ @Helpers.FormatarValoresDashboards(valorTotalColuna)</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+            </header>
+
+            <div class="funil-kanban-list">
+                @if (!prospeccoesColuna.Any())
+                {
+                    <div class="funil-kanban-empty">Sem prospecções</div>
+                }
+
+                @foreach (var prospeccao in prospeccoesColuna)
+                {
+                    var ultimoStatusKanban = prospeccao.Status.OrderBy(followup => followup.Data).ThenBy(followup => followup.Id).Last();
+                    var valorKanban = prospeccao.ValorProposta != 0
+                        ? $"R$ {Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorProposta)}"
+                        : prospeccao.ValorEstimado != 0
+                            ? $"R$ {Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorEstimado)}"
+                            : "Valor n&atilde;o informado";
+                    var equipeKanban = new List<string>();
+                    if (prospeccao.Usuario != null)
+                    {
+                        equipeKanban.Add(prospeccao.Usuario.UserName);
+                    }
+                    if (!string.IsNullOrWhiteSpace(prospeccao.MembrosEquipe))
+                    {
+                        equipeKanban.AddRange(prospeccao.MembrosEquipe.Split(";").Where(membro => !string.IsNullOrWhiteSpace(membro)).Select(membro => membro.Trim()));
+                    }
+                    var liderKanban = equipeKanban.FirstOrDefault();
+                    var apoiadoresKanban = equipeKanban.Skip(1).ToList();
+
+                    <article class="funil-prosp-card funil-kanban-card">
+                        <div class="funil-card-topline"></div>
+                        <div class="funil-card-header">
+                            <div>
+                                <h3>@(prospeccao?.Empresa?.Nome ?? "Sem empresa")</h3>
+                                <p>@(!string.IsNullOrWhiteSpace(prospeccao.NomeProspeccao) ? prospeccao.NomeProspeccao : "A definir")</p>
+                            </div>
+                        </div>
+
+                        <div class="funil-card-meta">
+                            <div class="funil-card-team">
+                                @if (equipeKanban.Any())
+                                {
+                                    <span class="funil-team-leader" title="@liderKanban">@liderKanban</span>
+                                    if (apoiadoresKanban.Any())
+                                    {
+                                        <span class="funil-team-more" title="@string.Join(", ", apoiadoresKanban)">+@apoiadoresKanban.Count</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="funil-team-leader" title="Sem equipe">Sem equipe</span>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="funil-card-footer">
+                            <strong>@Html.Raw(valorKanban)</strong>
+                            <button type="button"
+                                    class="btn btn-link btn-sm"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#kanban-detalhes-@prospeccao.Id"
+                                    aria-expanded="false">
+                                Ver detalhes
+                            </button>
+                        </div>
+
+                        <div class="collapse funil-card-details" id="kanban-detalhes-@prospeccao.Id">
+                            <dl>
+                                <div>
+                                    <dt>Status</dt>
+                                    <dd>@ultimoStatusKanban.Status.GetDisplayName()</dd>
+                                </div>
+                                <div>
+                                    <dt>Última atualização</dt>
+                                    <dd>@ultimoStatusKanban.Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))</dd>
+                                </div>
+                                <div>
+                                    <dt>Contato</dt>
+                                    <dd>@(prospeccao.Contato != null && !string.IsNullOrWhiteSpace(prospeccao.Contato.Nome) ? prospeccao.Contato.Nome : "Sem contato informado")</dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </article>
+                }
+            </div>
+        </section>
+    }
+</div>
+
+<div class="funil-view-panel funil-cards-grid" data-funil-view="cards">
+    @foreach (var prospeccao in Model.Prospeccoes)
+    {
+        var ultimoStatusCard = prospeccao.Status.OrderBy(followup => followup.Data).ThenBy(followup => followup.Id).Last();
+        var subtracaoUltimoStatusCard = DateTime.Now.Subtract(ultimoStatusCard.Data).Days;
+        var valorCard = prospeccao.ValorProposta != 0
+            ? $"R$ {Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorProposta)}"
+            : prospeccao.ValorEstimado != 0
+                ? $"R$ {Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorEstimado)}"
+                : "Valor n&atilde;o informado";
+        var equipeCard = new List<string>();
+        if (prospeccao.Usuario != null)
+        {
+            equipeCard.Add(prospeccao.Usuario.UserName);
+        }
+        if (!string.IsNullOrWhiteSpace(prospeccao.MembrosEquipe))
+        {
+            equipeCard.AddRange(prospeccao.MembrosEquipe.Split(";").Where(membro => !string.IsNullOrWhiteSpace(membro)).Select(membro => membro.Trim()));
+        }
+        var liderCard = equipeCard.FirstOrDefault();
+        var apoiadoresCard = equipeCard.Skip(1).ToList();
+
+        <article class="funil-prosp-card">
+            <div class="funil-card-topline"></div>
+            <div class="funil-card-header">
+                <div>
+                    <h3>@(prospeccao?.Empresa?.Nome ?? "Sem empresa")</h3>
+                    <p>@(!string.IsNullOrWhiteSpace(prospeccao.NomeProspeccao) ? prospeccao.NomeProspeccao : "A definir")</p>
+                </div>
+                @if (ultimoStatusCard.Status != StatusProspeccao.Planejada)
+                {
+                    <div class="funil-card-temperature">
+                        @FunilHelpers.VerificarTemperatura(subtracaoUltimoStatusCard)
+                    </div>
+                }
+            </div>
+
+            <div class="funil-card-meta">
+                <div class="funil-card-team">
+                    @if (equipeCard.Any())
+                    {
+                        <span class="funil-team-leader" title="@liderCard">@liderCard</span>
+                        if (apoiadoresCard.Any())
+                        {
+                            <span class="funil-team-more" title="@string.Join(", ", apoiadoresCard)">+@apoiadoresCard.Count</span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="funil-team-leader" title="Sem equipe">Sem equipe</span>
+                    }
+                </div>
+                <span class="funil-card-contract">@prospeccao.TipoContratacao.GetDisplayName()</span>
+            </div>
+
+            <div class="funil-card-footer">
+                <strong>@Html.Raw(valorCard)</strong>
+                <button type="button"
+                        class="btn btn-link btn-sm"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#card-detalhes-@prospeccao.Id"
+                        aria-expanded="false">
+                    Ver detalhes
+                </button>
+            </div>
+
+            <div class="collapse funil-card-details" id="card-detalhes-@prospeccao.Id">
+                <dl>
+                    <div>
+                        <dt>Status</dt>
+                        <dd>@ultimoStatusCard.Status.GetDisplayName()</dd>
+                    </div>
+                    <div>
+                        <dt>Última atualização</dt>
+                        <dd>@ultimoStatusCard.Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))</dd>
+                    </div>
+                    <div>
+                        <dt>Contato</dt>
+                        <dd>@(prospeccao.Contato != null && !string.IsNullOrWhiteSpace(prospeccao.Contato.Nome) ? prospeccao.Contato.Nome : "Sem contato informado")</dd>
+                    </div>
+                </dl>
+                <div class="funil-card-actions">
+                    <a class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" href="#editarProspModal-@prospeccao.Id" role="button" onclick="loadAncora('flexSwitchCheckDefault-@prospeccao.Id', 'iconAncora-@prospeccao.Id', 'campoAgg-@prospeccao.Id')">
+                        <i class="bi bi-pencil-square"></i>
+                        Editar
+                    </a>
+                    <a class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" href="#historyProspModal-@prospeccao.Id" role="button">
+                        <i class="bi bi-clock-history"></i>
+                        Histórico
+                    </a>
+                    <a class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" href="#CreateFollowupProspModal-@prospeccao.Id" role="button">
+                        <i class="bi bi-plus-circle"></i>
+                        Status
+                    </a>
+                </div>
+            </div>
+        </article>
+    }
+</div>
+
+<div class="tab-pane fade show active funil-view-panel" data-funil-view="tabela" id="prospeccao-@aba" role="tabpanel" aria-labelledby="prospeccao-@aba-tab">
+    <div class="app-card app-card-orders-table shadow-sm mb-5 funil-table-card">
         <div class="app-card-body">
             <div class="table-responsive">
-                <table class="table table-borderless mb-0 text-center">
+                <table class="table table-borderless mb-0 funil-minimal-table">
                     <thead>
                         <tr class="border-bottom">
                             <th class="cell">Empresa</th>
@@ -47,16 +386,16 @@
                             {
                                 <th class="cell">Temperatura</th>
                             }
-                            <th class="cell">Valor</th>
-                            <th class="cell">Detalhes</th>
+                            <th class="cell text-end">Valor</th>
+                            <th class="cell text-center"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var prospeccao in Model.Prospeccoes)
                         {
-                            <tr id="table-row-@prospeccao.Id">
+                            <tr id="table-row-@prospeccao.Id" class="funil-table-row">
                                 <td class="cell">
-                                    <div class="d-flex gap-2 flex-column align-items-center">
+                                    <div class="funil-table-company">
                                        <!--div
                                             @*LOGO*@
                                             @if (false)//(prospeccao.Empresa.Logo != null)
@@ -82,13 +421,13 @@
                                                 <nobr id="logo_alt">Sem Logo</nobr>
                                             }
                                         -->
-                                        <div style="text-align:center;width:90px;text-transform:capitalize">
+                                        <div class="funil-table-company-name">
                                             @*NOME EMPRESA*@
                                         <strong>
                                                 @(prospeccao?.Empresa?.Nome?.ToLower() ?? "sem empresa")
                                         </strong>
                                         </div>
-                                         <div>
+                                         <div class="funil-table-alerts">
                                             @*ICONES*@
                                             @if (prospeccao.Empresa.Industrial == false)
                                             {
@@ -113,6 +452,7 @@
                                     }
                                 </td>
                                 <td class="cell">
+                                    <div class="funil-table-team">
                                     @if (prospeccao.Usuario != null)
                                     {
                                         <span class="badge bg-success">@prospeccao.Usuario.UserName</span> @*Líder*@
@@ -131,6 +471,7 @@
                                             }
                                         }
                                     }
+                                    </div>
 
                                 </td>
                                 @{
@@ -145,7 +486,7 @@
                                         @FunilHelpers.VerificarTemperatura(subtracaoUltimoStatus)
                                     </td>
                                 }
-                                <td class="cell">
+                                <td class="cell funil-table-value">
                                     @if (prospeccao.ValorProposta != 0)
                                     {
                                         <span>R$ @Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorProposta)</span>
@@ -175,15 +516,15 @@
                                         }
                                     </div>
                                 </td> *@
-                                <td class="cell">
+                                <td class="cell text-center">
                                     <button type="button" id="button-@prospeccao.Id" data-bs-target="#detalhes-@prospeccao.Id"
-                                            data-bs-toggle="collapse" class="btn text-primary">
-                                        <i class="bi fs-4 bi-chevron-down"></i>
+                                            data-bs-toggle="collapse" class="btn funil-details-toggle">
+                                        <i class="bi bi-chevron-down"></i>
                                     </button>
                                 </td>
                             </tr>
 
-                            <tr class="border-bottom text-start">
+                            <tr class="funil-details-row text-start">
                                 <td colSpan="9">
                                     <div class="collapse prospeccao-details" id="detalhes-@prospeccao.Id">
                                         @{
