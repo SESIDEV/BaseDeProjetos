@@ -119,7 +119,7 @@ namespace BaseDeProjetos.Controllers
                     return CapturarErro(e);
                 }
 
-                if (prospeccao.EmpresaId != -1 && !string.IsNullOrEmpty(prospeccao.Contato.Nome))
+                if (prospeccao.EmpresaId != -1 && prospeccao.Contato != null && !string.IsNullOrEmpty(prospeccao.Contato.Nome))
                 {
                     var empresa = await _cache.GetCachedAsync($"Empresa:{prospeccao.EmpresaId}", () => _context.Empresa.FindAsync(prospeccao.EmpresaId).AsTask());
                     if (empresa != null)
@@ -127,6 +127,8 @@ namespace BaseDeProjetos.Controllers
                         prospeccao.Contato.EmpresaId = empresa.Id;
                     }
                 }
+
+                prospeccao.Contato = await ReutilizarContatoExistenteDaEmpresa(prospeccao.Contato, prospeccao.EmpresaId);
 
                 await VincularUsuario(prospeccao, HttpContext, _context);
 
@@ -247,7 +249,10 @@ namespace BaseDeProjetos.Controllers
                         }
                     }
 
+                    prospeccao.Contato = await ReutilizarContatoExistenteDaEmpresa(prospeccao.Contato, prospeccao.EmpresaId);
+
                     prospeccao = await EditarDadosDaProspecção(id, prospeccao);
+
                     await _context.SaveChangesAsync();
                     await CacheHelper.CleanupProspeccoesCache(_cache);
                 }
@@ -2542,6 +2547,52 @@ namespace BaseDeProjetos.Controllers
         /// <param name="prospeccao">Prospecção a ter uma empresa cadastrada</param>
         /// <returns></returns>
         /// <exception cref="Exception">Erro a ser lançado caso não seja possível cadastrar a empresa/seja uma empresa inválida</exception>
+        private async Task<Pessoa> ReutilizarContatoExistenteDaEmpresa(Pessoa contato, int empresaId)
+        {
+            if (contato == null || empresaId <= 0)
+            {
+                return contato;
+            }
+
+            contato.Email = contato.Email?.Trim();
+            contato.Telefone = contato.Telefone?.Trim();
+            contato.Nome = contato.Nome?.Trim();
+            contato.Cargo = contato.Cargo?.Trim();
+            contato.EmpresaId = empresaId;
+
+            string email = NormalizarEmail(contato.Email);
+            string telefone = NormalizarTelefone(contato.Telefone);
+
+            if (string.IsNullOrEmpty(email) && string.IsNullOrEmpty(telefone))
+            {
+                return contato;
+            }
+
+            var contatosDaEmpresa = await _context.Pessoa
+                .Where(p => p.EmpresaId == empresaId)
+                .ToListAsync();
+
+            var contatoExistente = contatosDaEmpresa.FirstOrDefault(p =>
+                (!string.IsNullOrEmpty(email) && NormalizarEmail(p.Email) == email) ||
+                (!string.IsNullOrEmpty(telefone) && NormalizarTelefone(p.Telefone) == telefone));
+
+            return contatoExistente ?? contato;
+        }
+
+        private static string NormalizarEmail(string email)
+        {
+            return string.IsNullOrWhiteSpace(email)
+                ? string.Empty
+                : email.Trim().ToLowerInvariant();
+        }
+
+        private static string NormalizarTelefone(string telefone)
+        {
+            return string.IsNullOrWhiteSpace(telefone)
+                ? string.Empty
+                : new string(telefone.Where(char.IsDigit).ToArray());
+        }
+
         private async Task<int> CriarEmpresaDaProspeccao(Empresa novaEmpresa)
         {
             if (novaEmpresa == null)
