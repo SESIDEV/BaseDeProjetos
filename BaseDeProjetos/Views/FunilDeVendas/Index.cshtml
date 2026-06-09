@@ -249,6 +249,11 @@
                             : abaFunil.RouteAba == "comproposta"
                                 ? qtdProspeccoesComProposta
                                 : qtdProspeccoesConcluidas;
+                        string nomeExibicaoAba = abaFunil.RouteAba == "ativas"
+                            ? "Prospecção"
+                            : abaFunil.RouteAba == "comproposta"
+                                ? "Em Negociação"
+                                : "Contratação";
 
                         <a class="@classes"
                            asp-action="@abaFunil.Action"
@@ -260,7 +265,7 @@
                            asp-route-temperatura="@temperatura"
                            asp-route-fomento="@fomento"
                            aria-selected="@(condicaoAria)">
-                            <span class="funil-tab-label">@abaFunil.Nome</span>
+                            <span class="funil-tab-label">@nomeExibicaoAba</span>
                             <span class="funil-tab-count">@quantidadeAba</span>
                         </a>
                     }
