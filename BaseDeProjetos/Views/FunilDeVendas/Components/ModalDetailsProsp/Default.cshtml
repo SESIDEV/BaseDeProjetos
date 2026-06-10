@@ -46,6 +46,15 @@
                 {
                     <span>Não informada</span>
                 }
+                <h1 class="app-card-title">Previsão de tempo:</h1>
+                @if (Model.PrevisaoTempoProjetoMeses.HasValue)
+                {
+                    <span>@Model.PrevisaoTempoProjetoMeses.Value meses</span>
+                }
+                else
+                {
+                    <span>Não informada</span>
+                }
                 <h1 class="app-card-title">Status:</h1>
                 <span>@Model.Status.OrderBy(followup => followup.Data).ThenBy(followup => followup.Id).Last().Status.GetDisplayName()</span>
                 <h1 class="app-card-title">Valor Estimado:</h1>

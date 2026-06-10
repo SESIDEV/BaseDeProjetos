@@ -115,6 +115,21 @@
                                 </div>
 
                                 <div class="col-md-4">
+                                    <label asp-for="PrevisaoTempoProjetoMeses" class="form-label fw-semibold">
+                                        Previsão de tempo (meses)
+                                    </label>
+
+                                    <input asp-for="PrevisaoTempoProjetoMeses"
+                                           class="form-control"
+                                           type="number"
+                                           min="0"
+                                           step="1"
+                                           placeholder="Ex.: 12" />
+
+                                    <span asp-validation-for="PrevisaoTempoProjetoMeses" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-4">
                                     <label asp-for="Origem" class="form-label fw-semibold">
                                         Iniciativa da prospecção <span class="text-danger">*</span>
                                     </label>

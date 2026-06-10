@@ -545,6 +545,7 @@
                                             var ultimoStatusDetalhe = prospeccao.Status.OrderBy(p => p.Data).ThenBy(p => p.Id).Last();
                                             string liderDetalhe = !string.IsNullOrWhiteSpace(prospeccao.LiderNome) ? prospeccao.LiderNome : prospeccao.Usuario != null ? prospeccao.Usuario.UserName : "Sem l&iacute;der";
                                             string tipologiaDetalhe = !string.IsNullOrWhiteSpace(prospeccao.Tipologia) ? prospeccao.Tipologia : "Valor n&atilde;o informado";
+                                            string previsaoTempoDetalhe = prospeccao.PrevisaoTempoProjetoMeses.HasValue ? $"{prospeccao.PrevisaoTempoProjetoMeses.Value} meses" : "N&atilde;o informada";
                                             string contatoDetalhe = prospeccao.Contato != null && !string.IsNullOrWhiteSpace(prospeccao.Contato.Nome) ? prospeccao.Contato.Nome : "Sem contato informado";
                                         }
                                         <div class="prospeccao-details-shell">
@@ -564,6 +565,7 @@
                                                     <div class="prospeccao-detail-block"><span>Tipo de contrata&ccedil;&atilde;o</span><strong>@prospeccao.TipoContratacao.GetDisplayName()</strong></div>
                                                     <div class="prospeccao-detail-block"><span>Tipo de intera&ccedil;&atilde;o</span><strong>@prospeccao.TipoDeInteracao.GetDisplayName()</strong></div>
                                                     <div class="prospeccao-detail-block"><span>Tipo de projeto</span><strong>@prospeccao.TipoDeProjeto.GetDisplayName()</strong></div>
+                                                    <div class="prospeccao-detail-block"><span>Previs&atilde;o de tempo</span><strong>@Html.Raw(previsaoTempoDetalhe)</strong></div>
                                                     <div class="prospeccao-detail-block"><span>Parceiro interno</span><strong>@prospeccao.ParceiroInterno.GetDisplayName()</strong></div>
                                                     <div class="prospeccao-detail-block"><span>Contato</span><strong>@contatoDetalhe</strong></div>
                                                 </div>
