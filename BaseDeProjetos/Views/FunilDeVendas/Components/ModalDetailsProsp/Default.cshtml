@@ -19,7 +19,11 @@
                 <h1 class="app-card-title">Empresa:</h1>
                 <span>@Model.Empresa.Nome</span>
                 <h1 class="app-card-title">Líder</h1>
-                @if (Model.Usuario != null)
+                @if (!string.IsNullOrWhiteSpace(Model.LiderNome))
+                {
+                    <span>@Model.LiderNome</span>
+                }
+                else if (Model.Usuario != null)
                 {
                     <span>@Model.Usuario.UserName</span>
                 }
@@ -101,3 +105,4 @@
 await Html.RenderPartialAsync("_ValidationScriptsPartial");
 }
 }
+

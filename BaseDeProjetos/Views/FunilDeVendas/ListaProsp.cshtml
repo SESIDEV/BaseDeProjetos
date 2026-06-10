@@ -200,9 +200,10 @@
                             ? $"R$ {Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorEstimado)}"
                             : "Valor n&atilde;o informado";
                     var equipeKanban = new List<string>();
-                    if (prospeccao.Usuario != null)
+                    var nomeLiderKanban = !string.IsNullOrWhiteSpace(prospeccao.LiderNome) ? prospeccao.LiderNome : prospeccao.Usuario?.UserName;
+                    if (!string.IsNullOrWhiteSpace(nomeLiderKanban))
                     {
-                        equipeKanban.Add(prospeccao.Usuario.UserName);
+                        equipeKanban.Add(nomeLiderKanban);
                     }
                     if (!string.IsNullOrWhiteSpace(prospeccao.MembrosEquipe))
                     {
@@ -282,9 +283,10 @@
                 ? $"R$ {Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorEstimado)}"
                 : "Valor n&atilde;o informado";
         var equipeCard = new List<string>();
-        if (prospeccao.Usuario != null)
+        var nomeLiderCard = !string.IsNullOrWhiteSpace(prospeccao.LiderNome) ? prospeccao.LiderNome : prospeccao.Usuario?.UserName;
+        if (!string.IsNullOrWhiteSpace(nomeLiderCard))
         {
-            equipeCard.Add(prospeccao.Usuario.UserName);
+            equipeCard.Add(nomeLiderCard);
         }
         if (!string.IsNullOrWhiteSpace(prospeccao.MembrosEquipe))
         {
@@ -453,23 +455,35 @@
                                 </td>
                                 <td class="cell">
                                     <div class="funil-table-team">
-                                    @if (prospeccao.Usuario != null)
+                                    @{
+                                        var nomeLiderTabela = !string.IsNullOrWhiteSpace(prospeccao.LiderNome) ? prospeccao.LiderNome : prospeccao.Usuario?.UserName;
+                                        var apoiadoresTabela = !string.IsNullOrWhiteSpace(prospeccao.MembrosEquipe)
+                                            ? prospeccao.MembrosEquipe.Split(";").Where(membro => !string.IsNullOrWhiteSpace(membro)).Select(membro => membro.Trim()).ToList()
+                                            : new List<string>();
+
+                                        if (string.IsNullOrWhiteSpace(nomeLiderTabela) && apoiadoresTabela.Any())
+                                        {
+                                            nomeLiderTabela = apoiadoresTabela.First();
+                                            apoiadoresTabela = apoiadoresTabela.Skip(1).ToList();
+                                        }
+                                        else if (!string.IsNullOrWhiteSpace(nomeLiderTabela))
+                                        {
+                                            apoiadoresTabela = apoiadoresTabela
+                                                .Where(membro => !string.Equals(membro, nomeLiderTabela, StringComparison.OrdinalIgnoreCase))
+                                                .ToList();
+                                        }
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(nomeLiderTabela))
                                     {
-                                        <span class="badge bg-success">@prospeccao.Usuario.UserName</span> @*Líder*@
+                                        <span class="funil-team-leader" title="@nomeLiderTabela">@nomeLiderTabela</span> @*Líder*@
                                     }
                                     else
                                     {
-                                        <span class="badge bg-danger">Sem Líder</span>
+                                        <span class="funil-team-leader" title="Sem Líder">Sem Líder</span>
                                     }
-                                    @if (!string.IsNullOrWhiteSpace(prospeccao.MembrosEquipe))
+                                    @if (apoiadoresTabela.Any())
                                     {
-                                        foreach (var membro in prospeccao.MembrosEquipe.Split(";"))
-                                        {
-                                            if (!string.IsNullOrWhiteSpace(membro))
-                                            {
-                                                <span class="badge bg-info">@membro.Trim()</span>
-                                            }
-                                        }
+                                        <span class="funil-team-more" title="@string.Join(", ", apoiadoresTabela)">+@apoiadoresTabela.Count</span>
                                     }
                                     </div>
 
@@ -529,7 +543,7 @@
                                     <div class="collapse prospeccao-details" id="detalhes-@prospeccao.Id">
                                         @{
                                             var ultimoStatusDetalhe = prospeccao.Status.OrderBy(p => p.Data).ThenBy(p => p.Id).Last();
-                                            string liderDetalhe = prospeccao.Usuario != null ? prospeccao.Usuario.UserName : "Sem l&iacute;der";
+                                            string liderDetalhe = !string.IsNullOrWhiteSpace(prospeccao.LiderNome) ? prospeccao.LiderNome : prospeccao.Usuario != null ? prospeccao.Usuario.UserName : "Sem l&iacute;der";
                                             string tipologiaDetalhe = !string.IsNullOrWhiteSpace(prospeccao.Tipologia) ? prospeccao.Tipologia : "Valor n&atilde;o informado";
                                             string contatoDetalhe = prospeccao.Contato != null && !string.IsNullOrWhiteSpace(prospeccao.Contato.Nome) ? prospeccao.Contato.Nome : "Sem contato informado";
                                         }
@@ -611,7 +625,11 @@
                                         <h1 class="app-card-title">Empresa:</h1>
                                         <span>@prospeccao.Empresa.Nome</span>
                                         <h1 class="app-card-title">Líder</h1>
-                                        @if (prospeccao.Usuario != null)
+                                        @if (!string.IsNullOrWhiteSpace(prospeccao.LiderNome))
+                                        {
+                                            <span>@prospeccao.LiderNome</span>
+                                        }
+                                        else if (prospeccao.Usuario != null)
                                         {
                                             <span>@prospeccao.Usuario.UserName</span>
                                         }

@@ -1,4 +1,4 @@
-using BaseDeProjetos.Data;
+﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.Enums;
@@ -94,7 +94,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id, Tipologia, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas, TipoDeInteracao, TipoDeProjeto, TipoContratacao, ParceiroInterno, Usuario")] Prospeccao prospeccao, [Bind(Prefix = "NovaEmpresa")] Empresa novaEmpresa, bool cadastrarNovaEmpresa)
+        public async Task<IActionResult> Create([Bind("Id, Tipologia, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, LiderNome, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas, TipoDeInteracao, TipoDeProjeto, TipoContratacao, ParceiroInterno, Usuario")] Prospeccao prospeccao, [Bind(Prefix = "NovaEmpresa")] Empresa novaEmpresa, bool cadastrarNovaEmpresa, string liderProjeto)
         {
             ViewbagizarUsuario(_context, _cache);
 
@@ -130,7 +130,8 @@ namespace BaseDeProjetos.Controllers
 
                 prospeccao.Contato = await ReutilizarContatoExistenteDaEmpresa(prospeccao.Contato, prospeccao.EmpresaId);
 
-                await VincularUsuario(prospeccao, HttpContext, _context);
+                DefinirLiderNome(prospeccao, liderProjeto);
+                await VincularUsuario(prospeccao, HttpContext, _context, liderProjeto);
 
                 prospeccao.Status[0].Origem = prospeccao;
 
@@ -225,7 +226,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id, Tipologia, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas, ParceiroInterno, Usuario, TipoDeInteracao, TipoDeProjeto, ValorEstimado, ValorProposta")] Prospeccao prospeccao)
+        public async Task<IActionResult> Edit(string id, [Bind("Id, Tipologia, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, LiderNome, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas, ParceiroInterno, Usuario, TipoDeInteracao, TipoDeProjeto, ValorEstimado, ValorProposta")] Prospeccao prospeccao, string liderProjeto)
         {
             ViewbagizarUsuario(_context, _cache);
 
@@ -251,7 +252,7 @@ namespace BaseDeProjetos.Controllers
 
                     prospeccao.Contato = await ReutilizarContatoExistenteDaEmpresa(prospeccao.Contato, prospeccao.EmpresaId);
 
-                    prospeccao = await EditarDadosDaProspecção(id, prospeccao);
+                    prospeccao = await EditarDadosDaProspecao(id, prospeccao, liderProjeto);
 
                     await _context.SaveChangesAsync();
                     await CacheHelper.CleanupProspeccoesCache(_cache);
@@ -700,9 +701,9 @@ namespace BaseDeProjetos.Controllers
                         f.OrigemID,
                         f.Status,
                         f.Data,
-                        LiderId = f.Origem.Usuario != null ? f.Origem.Usuario.Id : null,
-                        LiderNome = f.Origem.Usuario != null ? f.Origem.Usuario.UserName : null,
-                        Criador = f.Origem.Usuario != null ? f.Origem.Usuario.UserName : null,
+                        LiderId = f.Origem.Usuario != null ? f.Origem.Usuario.Id : f.Origem.LiderNome,
+                        LiderNome = !string.IsNullOrWhiteSpace(f.Origem.LiderNome) ? f.Origem.LiderNome : f.Origem.Usuario != null ? f.Origem.Usuario.UserName : null,
+                        Criador = !string.IsNullOrWhiteSpace(f.Origem.LiderNome) ? f.Origem.LiderNome : f.Origem.Usuario != null ? f.Origem.Usuario.UserName : null,
                         f.Origem.ValorEstimado,
                         f.Origem.ValorProposta
                     })
@@ -2461,7 +2462,7 @@ namespace BaseDeProjetos.Controllers
                 Dictionary<string, object> dict = new Dictionary<string, object>
                 {
                     ["idProsp"] = p.Id,
-                    ["Líder"] = p.Usuario.UserName,
+                    ["Líder"] = !string.IsNullOrWhiteSpace(p.LiderNome) ? p.LiderNome : p.Usuario?.UserName,
                     // Converter e depois pegar o UserName
                     ["Membros"] = string.Join(" ", p.TratarMembrosEquipeString(_context).Select(u => u.UserName).ToList()),
                     ["Status"] = p.Status.OrderBy(k => k.Data).LastOrDefault().Status.GetDisplayName(),
@@ -2762,11 +2763,83 @@ namespace BaseDeProjetos.Controllers
         /// </summary>
         /// <param name="prospeccao">Prospecção que se deseja vincular ao usuário logado</param>
         /// <returns></returns>
-        internal static async Task VincularUsuario(Prospeccao prospeccao, HttpContext httpContext, ApplicationDbContext context)
+        internal static async Task VincularUsuario(Prospeccao prospeccao, HttpContext httpContext, ApplicationDbContext context, string liderProjeto = null)
         {
-            string userId = httpContext.User.Identity.Name;
-            Usuario user = await context.Users.FirstAsync(u => u.UserName == userId);
+            DefinirLiderNome(prospeccao, liderProjeto);
+            if (!string.IsNullOrWhiteSpace(prospeccao.LiderNome))
+            {
+                prospeccao.Usuario = null;
+                return;
+            }
+
+            Usuario user = null;
+            if (prospeccao.Usuario != null && !string.IsNullOrWhiteSpace(prospeccao.Usuario.Id))
+            {
+                user = await context.Users.FirstOrDefaultAsync(u => u.Id == prospeccao.Usuario.Id);
+            }
+
+            user ??= ResolverUsuarioLider(context, liderProjeto);
+            if (user == null && string.IsNullOrWhiteSpace(liderProjeto))
+            {
+                string userId = httpContext.User.Identity.Name;
+                user = await context.Users.FirstAsync(u => u.UserName == userId);
+            }
+
             prospeccao.Usuario = user;
+        }
+
+        private static void DefinirLiderNome(Prospeccao prospeccao, string liderProjeto = null)
+        {
+            string liderNome = !string.IsNullOrWhiteSpace(prospeccao.LiderNome)
+                ? prospeccao.LiderNome
+                : liderProjeto;
+
+            prospeccao.LiderNome = LimparNomeLider(liderNome);
+        }
+
+        private static string LimparNomeLider(string valor)
+        {
+            if (string.IsNullOrWhiteSpace(valor))
+            {
+                return null;
+            }
+
+            return valor.Split(new char[] { ',', ';' })[0].Trim();
+        }
+
+        private static Usuario ResolverUsuarioLider(ApplicationDbContext context, string valorLider)
+        {
+            if (string.IsNullOrWhiteSpace(valorLider))
+            {
+                return null;
+            }
+
+            string valor = NormalizarTextoUsuario(valorLider);
+            return context.Users
+                .AsEnumerable()
+                .FirstOrDefault(u => NormalizarTextoUsuario(u.UserName) == valor);
+        }
+
+        private static string NormalizarTextoUsuario(string valor)
+        {
+            if (string.IsNullOrWhiteSpace(valor))
+            {
+                return string.Empty;
+            }
+
+            string texto = valor.Split(new char[] { ',', ';' })[0].Trim().ToUpperInvariant();
+            string normalizado = texto.Normalize(NormalizationForm.FormD);
+            var builder = new StringBuilder();
+
+            foreach (char c in normalizado)
+            {
+                if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                {
+                    builder.Append(c);
+                }
+            }
+
+            return builder.ToString().Normalize(NormalizationForm.FormC);
         }
 
         /// <summary>
@@ -2814,10 +2887,17 @@ namespace BaseDeProjetos.Controllers
         /// <param name="id">Inutilizado</param>
         /// <param name="prospeccao">Prospecção a ter seus dados editados</param>
         /// <returns></returns>
-        private async Task<Prospeccao> EditarDadosDaProspecção(string id, Prospeccao prospeccao)
+        private async Task<Prospeccao> EditarDadosDaProspecao(string id, Prospeccao prospeccao, string liderProjeto = null)
         {
+            DefinirLiderNome(prospeccao, liderProjeto);
+            if (!string.IsNullOrWhiteSpace(prospeccao.LiderNome))
+            {
+                prospeccao.Usuario = null;
+            }
+            else
+            {
             // Obter usuário líder a partir do DbContext (instância corretamente rastreada)
-            Usuario lider = null;
+            Usuario lider = ResolverUsuarioLider(_context, liderProjeto);
             if (prospeccao.Usuario != null && !string.IsNullOrEmpty(prospeccao.Usuario.Id))
             {
                 lider = await _context.Users.FirstOrDefaultAsync(p => p.Id == prospeccao.Usuario.Id);
@@ -3007,6 +3087,7 @@ namespace BaseDeProjetos.Controllers
             {
                 // Em caso de usuário não encontrado, evitar atribuir um objeto estranho
                 prospeccao.Usuario = null;
+            }
             }
 
             Prospeccao prospAntiga = await _context.Prospeccao.AsNoTracking().FirstAsync(p => p.Id == prospeccao.Id);
@@ -3273,7 +3354,7 @@ namespace BaseDeProjetos.Controllers
                     ? $"{p.Contato.Nome} | {p.Contato.Cargo} | {p.Contato.Telefone} | {p.Contato.Email}"
                     : "Não informado",
 
-                AlocadoPara = p.Usuario?.UserName ?? "",
+                AlocadoPara = !string.IsNullOrWhiteSpace(p.LiderNome) ? p.LiderNome : p.Usuario?.UserName ?? "",
 
                 Apoio = string.Join(", ",
                     (p.MembrosEquipe ?? "")
@@ -3458,3 +3539,6 @@ namespace BaseDeProjetos.Controllers
         }
     }
 }
+
+
+

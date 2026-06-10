@@ -26,3 +26,99 @@ for details on configuring this project to bundle and minify static web assets. 
 .bg-quente {
     background-color: #ff5c50;
 }
+
+@media (min-width: 1200px) {
+    .app-sidepanel,
+    .app-sidepanel .sidepanel-inner,
+    .app-wrapper {
+        transition: all .25s ease-in-out;
+    }
+
+    .app-sidepanel .sidepanel-inner {
+        width: 250px;
+    }
+
+    .app-branding {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        height: 60px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .sidepanel-desktop-toggle {
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        min-width: 36px;
+        height: 36px;
+        border: 0;
+        border-radius: 10px;
+        background: transparent;
+        color: #5d6778;
+        padding: 0;
+    }
+
+    .sidepanel-desktop-toggle i {
+        font-size: 1.35rem;
+        line-height: 1;
+    }
+
+    .sidepanel-desktop-toggle:hover,
+    .sidepanel-desktop-toggle:focus {
+        background: #edfdf6;
+        color: #15a362;
+        box-shadow: none;
+    }
+
+    body.sidebar-collapsed .app-sidepanel .sidepanel-inner {
+        width: 72px;
+    }
+
+    body.sidebar-collapsed .app-wrapper {
+        margin-left: 72px;
+    }
+
+    body.sidebar-collapsed .app-branding {
+        justify-content: center;
+        padding-right: .5rem;
+        padding-left: .5rem;
+    }
+
+    body.sidebar-collapsed .app-branding .logo-text,
+    body.sidebar-collapsed .app-nav .nav-link-text,
+    body.sidebar-collapsed .app-nav .submenu-arrow,
+    body.sidebar-collapsed .app-sidepanel-footer {
+        display: none !important;
+    }
+
+    body.sidebar-collapsed .app-nav .nav-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 48px;
+        border-left-width: 0;
+        padding: 0;
+    }
+
+    body.sidebar-collapsed .app-nav .nav-link.active {
+        border-left-width: 0;
+        background: #edfdf6;
+    }
+
+    body.sidebar-collapsed .app-nav .nav-icon {
+        position: static;
+        left: auto;
+        top: auto;
+    }
+
+    body.sidebar-collapsed .app-nav .submenu {
+        display: none !important;
+    }
+
+    body.sidebar-collapsed .app-nav .nav-link {
+        cursor: pointer;
+    }
+}

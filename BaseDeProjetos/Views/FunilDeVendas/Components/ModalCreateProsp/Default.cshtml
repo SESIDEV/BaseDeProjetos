@@ -2,6 +2,7 @@
 @using BaseDeProjetos.Models.Enums
 @using Microsoft.AspNetCore.Http
 @using BaseDeProjetos.Models
+@using BaseDeProjetos.Models.DTOs
 
 @{
     ViewData["Title"] = "Adicionar Prospecção";
@@ -355,6 +356,39 @@
                     <div class="card mb-3">
                         <div class="card-header fw-semibold">EQUIPE</div>
                         <div class="card-body">
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold" for="liderProjeto">
+                                    Líder <span class="text-danger">*</span>
+                                </label>
+                                <input id="liderProjeto"
+                                       name="LiderNome"
+                                       class="form-control"
+                                       list="lideresProjeto"
+                                       placeholder="Digite o nome do líder"
+                                       autocomplete="off"
+                                       required />
+                                <datalist id="lideresProjeto">
+                                    @{
+                                        var pessoasApoioLider = ViewData["PessoasApoio"] as List<PessoaModel>;
+                                        if (pessoasApoioLider != null && pessoasApoioLider.Any())
+                                        {
+                                            foreach (var p in pessoasApoioLider
+                                                .Where(p => p.Cargo == "Pesquisador" || p.Cargo == "Coordenador")
+                                                .OrderBy(p => p.Nome))
+                                            {
+                                                var value = (p.Nome ?? "")
+                                                    .Split(new char[] { ',', ';' })[0]
+                                                    .Trim();
+
+                                                <option value="@value">
+                                                    @p.Nome (@p.Cargo) - @p.Casa [@p.Situacao]
+                                                </option>
+                                            }
+                                        }
+                                    }
+                                </datalist>
+                            </div>
 
                             <div class="mb-6">
                                 <label class="col-form-label" style="font-weight: 600" for="inputTextPessoas">Membros</label>

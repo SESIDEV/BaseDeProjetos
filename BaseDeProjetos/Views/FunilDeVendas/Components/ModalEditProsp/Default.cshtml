@@ -1,5 +1,6 @@
 @model BaseDeProjetos.Models.Prospeccao
 @using BaseDeProjetos.Models
+@using BaseDeProjetos.Models.DTOs
 @using BaseDeProjetos.Models.Enums;
 @using Microsoft.AspNetCore.Http
 @using System.Globalization
@@ -24,7 +25,6 @@
 
                 @Html.AntiForgeryToken()
                 <input type="hidden" asp-for="Id" />
-                <input type="hidden" asp-for="Usuario.Id" />
 
                 <!-- HEADER -->
                 <div class="modal-header">
@@ -248,6 +248,71 @@
                         <!-- EQUIPE -->
                         <div class="tab-pane fade" id="tab-equipe-@Model.Id">
                             <div class="row g-3">
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold" for="UsuarioId-@Model.Id">
+                                        Líder <span class="text-danger">*</span>
+                                    </label>
+                                    <input id="liderProjeto-@Model.Id"
+                                           name="LiderNome"
+                                           class="form-control"
+                                           list="lideresProjeto-@Model.Id"
+                                           placeholder="Digite o nome do lÃ­der"
+                                           autocomplete="off"
+                                           value="@(Model.LiderNome ?? Model.Usuario?.UserName ?? "")"
+                                           required />
+                                    <datalist id="lideresProjeto-@Model.Id">
+                                        @{
+                                            var pessoasApoioLiderInputEdit = ViewData["PessoasApoio"] as List<PessoaModel>;
+                                            if (pessoasApoioLiderInputEdit != null && pessoasApoioLiderInputEdit.Any())
+                                            {
+                                                foreach (var p in pessoasApoioLiderInputEdit
+                                                    .Where(p => p.Cargo == "Pesquisador" || p.Cargo == "Coordenador")
+                                                    .OrderBy(p => p.Nome))
+                                                {
+                                                    var value = (p.Nome ?? "")
+                                                        .Split(new char[] { ',', ';' })[0]
+                                                        .Trim();
+
+                                                    <option value="@value">
+                                                        @p.Nome (@p.Cargo) - @p.Casa [@p.Situacao]
+                                                    </option>
+                                                }
+                                            }
+                                        }
+                                    </datalist>
+                                    <select class="form-select d-none" id="UsuarioId-@Model.Id" disabled>
+                                        <option value="">Selecione</option>
+                                        @{
+                                            var pessoasApoioLiderEdit = ViewData["PessoasApoio"] as List<PessoaModel>;
+                                            var usuariosFunilLiderEdit = ViewData["Usuarios"] as List<UsuariosFunilDTO>;
+                                            var lideresAdicionadosEdit = new HashSet<string>();
+
+                                            if (pessoasApoioLiderEdit != null && usuariosFunilLiderEdit != null)
+                                            {
+                                                foreach (var p in pessoasApoioLiderEdit
+                                                    .Where(p => p.Cargo == "Pesquisador" || p.Cargo == "Coordenador")
+                                                    .OrderBy(p => p.Nome))
+                                                {
+                                                    var nomeLider = (p.Nome ?? "")
+                                                        .Split(new char[] { ',', ';' })[0]
+                                                        .Trim();
+
+                                                    var usuarioLider = usuariosFunilLiderEdit.FirstOrDefault(u =>
+                                                        string.Equals((u.UserName ?? "").Trim(), nomeLider, StringComparison.OrdinalIgnoreCase) ||
+                                                        string.Equals((u.Email ?? "").Trim(), nomeLider, StringComparison.OrdinalIgnoreCase));
+
+                                                    if (usuarioLider != null && lideresAdicionadosEdit.Add(usuarioLider.Id))
+                                                    {
+                                                        <option value="@usuarioLider.Id" selected="@(Model.Usuario?.Id == usuarioLider.Id)">
+                                                            @p.Nome (@p.Cargo) - @p.Casa [@p.Situacao]
+                                                        </option>
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    </select>
+                                </div>
 
                                 <div class="mb-6">
                                     <label class="col-form-label" style="font-weight: 600" for="inputTextPessoas-@Model.Id">Membros</label>
