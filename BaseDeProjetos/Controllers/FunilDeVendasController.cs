@@ -94,7 +94,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id, Tipologia, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, LiderNome, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas, TipoDeInteracao, TipoDeProjeto, PrevisaoTempoProjetoMeses, TipoContratacao, ParceiroInterno, Usuario")] Prospeccao prospeccao, [Bind(Prefix = "NovaEmpresa")] Empresa novaEmpresa, bool cadastrarNovaEmpresa, string liderProjeto)
+        public async Task<IActionResult> Create([Bind("Id, Tipologia, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, LiderNome, EmpresaId, Contato, Casa, CaminhoPasta, LinkArquivo, Tags, Origem, Ancora, Agregadas, TipoDeInteracao, TipoDeProjeto, PrevisaoTempoProjetoMeses, TipoContratacao, ParceiroInterno, Usuario")] Prospeccao prospeccao, [Bind(Prefix = "NovaEmpresa")] Empresa novaEmpresa, bool cadastrarNovaEmpresa, string liderProjeto)
         {
             ViewbagizarUsuario(_context, _cache);
 
@@ -226,7 +226,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id, Tipologia, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, LiderNome, EmpresaId, Contato, Casa, CaminhoPasta, Tags, Origem, Ancora, Agregadas, ParceiroInterno, Usuario, TipoDeInteracao, TipoDeProjeto, PrevisaoTempoProjetoMeses, ValorEstimado, ValorProposta")] Prospeccao prospeccao, string liderProjeto)
+        public async Task<IActionResult> Edit(string id, [Bind("Id, Tipologia, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, LiderNome, EmpresaId, Contato, Casa, CaminhoPasta, LinkArquivo, Tags, Origem, Ancora, Agregadas, ParceiroInterno, Usuario, TipoDeInteracao, TipoDeProjeto, PrevisaoTempoProjetoMeses, ValorEstimado, ValorProposta")] Prospeccao prospeccao, string liderProjeto)
         {
             ViewbagizarUsuario(_context, _cache);
 
@@ -2478,6 +2478,7 @@ namespace BaseDeProjetos.Controllers
                     ["TipoContratacao"] = p.TipoContratacao.GetDisplayName(),
                     ["LinhaPesquisa"] = p.LinhaPequisa.GetDisplayName(),
                     ["PrevisaoTempoProjetoMeses"] = p.PrevisaoTempoProjetoMeses,
+                    ["LinkArquivo"] = p.LinkArquivo,
                     ["ValorEstimado"] = p.ValorEstimado,
                     ["ValorProposta"] = p.ValorProposta,
                     ["ValorFinal"] = p.ValorProposta,
@@ -3323,6 +3324,8 @@ namespace BaseDeProjetos.Controllers
 
                 PrevisaoTempoProjetoMeses = p.PrevisaoTempoProjetoMeses,
 
+                LinkArquivo = p.LinkArquivo,
+
                 Iniciativa = p.Origem switch
                 {   Origem.Unidade => "Unidade",
                     Origem.ICTParceira => "ICT parceira",
@@ -3462,6 +3465,7 @@ namespace BaseDeProjetos.Controllers
             table.Field("TipoContratacao").Name = "Tipo de contratação";
             table.Field("TipoProjeto").Name = "Tipo de Projeto";
             table.Field("PrevisaoTempoProjetoMeses").Name = "Previsão de tempo do projeto (meses)";
+            table.Field("LinkArquivo").Name = "Link para pasta ou documento do projeto";
             table.Field("ParceiroInterno").Name = "Parceiro Interno";
             table.Field("ParceiroExterno").Name = "Parceiro Externo";
             table.Field("ContatoRealizado").Name = "Contato Realizado";

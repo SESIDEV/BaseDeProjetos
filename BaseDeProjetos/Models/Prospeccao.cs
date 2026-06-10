@@ -45,6 +45,9 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Previsão de tempo do projeto (meses)")]
         public int? PrevisaoTempoProjetoMeses { get; set; }
 
+        [Display(Name = "Link para pasta ou documento do projeto")]
+        public virtual string LinkArquivo { get; set; }
+
         [ForeignKey("EmpresaId")]
         public virtual Empresa Empresa { get; set; }
 

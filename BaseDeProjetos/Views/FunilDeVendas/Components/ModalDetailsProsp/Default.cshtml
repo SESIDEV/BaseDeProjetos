@@ -55,6 +55,15 @@
                 {
                     <span>Não informada</span>
                 }
+                <h1 class="app-card-title">Link para pasta ou documento do projeto:</h1>
+                @if (!string.IsNullOrWhiteSpace(Model.LinkArquivo))
+                {
+                    <a href="@Model.LinkArquivo" target="_blank" rel="noopener">Abrir arquivo</a>
+                }
+                else
+                {
+                    <span>Não informado</span>
+                }
                 <h1 class="app-card-title">Status:</h1>
                 <span>@Model.Status.OrderBy(followup => followup.Data).ThenBy(followup => followup.Id).Last().Status.GetDisplayName()</span>
                 <h1 class="app-card-title">Valor Estimado:</h1>

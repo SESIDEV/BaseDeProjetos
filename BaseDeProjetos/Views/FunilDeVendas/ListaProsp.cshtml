@@ -567,6 +567,17 @@
                                                     <div class="prospeccao-detail-block"><span>Tipo de projeto</span><strong>@prospeccao.TipoDeProjeto.GetDisplayName()</strong></div>
                                                     <div class="prospeccao-detail-block"><span>Previs&atilde;o de tempo</span><strong>@Html.Raw(previsaoTempoDetalhe)</strong></div>
                                                     <div class="prospeccao-detail-block"><span>Parceiro interno</span><strong>@prospeccao.ParceiroInterno.GetDisplayName()</strong></div>
+                                                    <div class="prospeccao-detail-block detail-span-2">
+                                                        <span>Link para pasta ou documento do projeto</span>
+                                                        @if (!string.IsNullOrWhiteSpace(prospeccao.LinkArquivo))
+                                                        {
+                                                            <strong><a href="@prospeccao.LinkArquivo" target="_blank" rel="noopener">Abrir arquivo</a></strong>
+                                                        }
+                                                        else
+                                                        {
+                                                            <strong>N&atilde;o informado</strong>
+                                                        }
+                                                    </div>
                                                     <div class="prospeccao-detail-block"><span>Contato</span><strong>@contatoDetalhe</strong></div>
                                                 </div>
                                             </section>
