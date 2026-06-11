@@ -204,7 +204,15 @@
                                             }
                                         </li>
                                         <li class="list-inline-item">|</li>
-                                        <li class="list-inline-item">Setor: @empresa.Segmento.GetDisplayName()</li>
+                                        <li class="list-inline-item">
+                                            Setor:
+                                            <span class="segmento-chip">
+                                                <span class="segmento-chip__icon" title="@empresa.Segmento.GetDisplayName()">
+                                                    <i class="@empresa.Segmento.GetIconClass()"></i>
+                                                </span>
+                                                <span>@empresa.Segmento.GetDisplayName()</span>
+                                            </span>
+                                        </li>
                                         <li class="list-inline-item">|</li>
                                         <li class="list-inline-item">Id: @empresa.Id</li>
                                     </ul>

@@ -122,3 +122,27 @@ for details on configuring this project to bundle and minify static web assets. 
         cursor: pointer;
     }
 }
+.segmento-chip {
+    align-items: center;
+    display: inline-flex;
+    gap: 0.45rem;
+    line-height: 1.1;
+    vertical-align: middle;
+}
+
+.segmento-chip__icon {
+    align-items: center;
+    background: #eef6ff;
+    border: 1px solid #cfe2ff;
+    border-radius: 999px;
+    color: #0b5ed7;
+    display: inline-flex;
+    height: 1.75rem;
+    justify-content: center;
+    min-width: 1.75rem;
+}
+
+.segmento-preview {
+    color: #334155;
+    margin-top: 0.45rem;
+}

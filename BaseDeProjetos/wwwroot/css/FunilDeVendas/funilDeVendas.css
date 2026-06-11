@@ -397,7 +397,61 @@ label.required::after {
 }
 
 .funil-table-company-name strong {
+    align-items: center;
+    display: inline-flex;
+    gap: .4rem;
     font-weight: 700;
+}
+
+.funil-table-company-name .funil-company-title {
+    line-height: 1.2;
+}
+
+.funil-table-company-name .funil-segment-icon {
+    font-size: .68rem;
+    height: 1.25rem;
+    width: 1.25rem;
+}
+
+.funil-company-title {
+    align-items: center;
+    display: inline-flex;
+    gap: .4rem;
+    max-width: 100%;
+}
+
+.funil-company-title > span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.funil-segment-icon {
+    align-items: center;
+    background: #f8fafc;
+    border: 1px solid #dbe5ef;
+    border-radius: 999px;
+    color: #45617d;
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-size: .72rem;
+    height: 1.45rem;
+    justify-content: center;
+    width: 1.45rem;
+}
+
+.funil-segment-icon i {
+    align-items: center;
+    display: inline-flex;
+    height: 100%;
+    justify-content: center;
+    line-height: 1;
+    width: 100%;
+}
+
+.funil-segment-icon i::before {
+    line-height: 1;
+    margin: 0;
+    vertical-align: middle;
 }
 
 .funil-table-alerts {
@@ -407,6 +461,29 @@ label.required::after {
 .funil-table-alerts .badge {
     font-size: .6rem;
     line-height: 1;
+}
+
+.cnae-soft-alert {
+    align-items: center;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: 999px;
+    color: #9a5b13;
+    display: inline-flex;
+    font-size: .65rem;
+    height: 1.05rem;
+    justify-content: center;
+    line-height: 1;
+    width: 1.05rem;
+}
+
+.cnae-soft-alert i {
+    align-items: center;
+    display: inline-flex;
+    height: 100%;
+    justify-content: center;
+    line-height: 1;
+    width: 100%;
 }
 
 .funil-table-team {
