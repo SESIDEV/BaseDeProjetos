@@ -34,6 +34,10 @@
 
 <div class="funil-view-toolbar d-none">
     <div class="btn-group" role="group" aria-label="Tipo de visualização">
+        <button type="button" class="btn btn-outline-primary funil-view-toggle" data-view="funil">
+            <i class="bi bi-filter"></i>
+            Funil
+        </button>
         <button type="button" class="btn btn-outline-primary funil-view-toggle" data-view="kanban">
             <i class="bi bi-kanban"></i>
             Kanban
@@ -87,9 +91,10 @@
             const storageKey = 'funil-view-mode';
             const toggles = document.querySelectorAll('.funil-view-toggle');
             const panels = document.querySelectorAll('.funil-view-panel');
+            const pagination = document.querySelector('[data-funil-pagination]');
 
             function setView(view) {
-                const allowedViews = ['kanban', 'cards', 'tabela'];
+                const allowedViews = ['kanban', 'funil', 'cards', 'tabela'];
                 const resolvedView = allowedViews.includes(view) ? view : 'tabela';
 
                 panels.forEach((panel) => {
@@ -104,6 +109,10 @@
                     toggle.setAttribute('aria-pressed', active ? 'true' : 'false');
                 });
 
+                if (pagination) {
+                    pagination.classList.toggle('d-none', resolvedView === 'funil');
+                }
+
                 localStorage.setItem(storageKey, resolvedView);
             }
 
@@ -117,6 +126,10 @@
         })();
     });
 </script>
+
+<div class="funil-view-panel d-none" data-funil-view="funil">
+    @await Html.PartialAsync("_SegmentosFunil", Model)
+</div>
 
 <div class="funil-view-panel funil-kanban-board" data-funil-view="kanban">
     @{

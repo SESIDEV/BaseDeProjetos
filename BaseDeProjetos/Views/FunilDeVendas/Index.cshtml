@@ -19,12 +19,16 @@
         || (!string.IsNullOrWhiteSpace(anoFiltro) && anoFiltro != "Todos")
         || (!string.IsNullOrWhiteSpace(temperatura) && temperatura != "Todos")
         || (!string.IsNullOrWhiteSpace(fomento) && fomento != "Todos");
+    int qtdProspeccoesPlanejadas = Convert.ToInt32(ViewBag.ProspeccoesPlanejadasCount);
     int qtdProspeccoesAtivas = Convert.ToInt32(ViewBag.ProspeccoesAtivasCount);
     int qtdProspeccoesComProposta = Convert.ToInt32(ViewBag.ProspeccoesComProposta);
+    int qtdProspeccoesContratacao = Convert.ToInt32(ViewBag.ProspeccoesContratacao);
+    int qtdProspeccoesEncerradas = Convert.ToInt32(ViewBag.ProspeccoesEncerradas);
     int qtdProspeccoesConcluidas = Convert.ToInt32(ViewBag.ProspeccoesConcluidas);
     bool abaIndicadores = !string.IsNullOrEmpty(aba) && aba.ToLowerInvariant() == "indicadores";
     bool abaPlanejamentoIndicadores = !string.IsNullOrEmpty(aba) && aba.ToLowerInvariant() == "planejamento";
     bool abaReceitasIndicadores = !string.IsNullOrEmpty(aba) && aba.ToLowerInvariant() == "receitas";
+    bool abaSegmentos = !string.IsNullOrEmpty(aba) && aba.ToLowerInvariant() == "segmentos";
     bool abaEspecialIndicadores = abaIndicadores || abaPlanejamentoIndicadores || abaReceitasIndicadores;
     var usuarioNivelFunil = ViewBag.usuarioNivel;
     bool usuarioPodeEditarPlanejamentoIndicadores = usuarioNivelFunil != null
@@ -202,10 +206,14 @@
                     </form>
                 }
                 </div>
-                @if (!string.IsNullOrEmpty(aba) && !abaEspecialIndicadores)
+                @if (!string.IsNullOrEmpty(aba) && !abaEspecialIndicadores && !abaSegmentos)
                 {
                     <div class="funil-view-toolbar">
                         <div class="btn-group" role="group" aria-label="Tipo de visualizaÃ§Ã£o">
+                            <button type="button" class="btn btn-outline-primary funil-view-toggle" data-view="funil">
+                                <i class="bi bi-filter"></i>
+                                Funil
+                            </button>
                             <button type="button" class="btn btn-outline-primary funil-view-toggle" data-view="kanban">
                                 <i class="bi bi-kanban"></i>
                                 Kanban
@@ -225,13 +233,14 @@
 
             }
 
-            @if (Model.Prospeccoes.Count() != 0 || qtdProspeccoesAtivas > 0 || qtdProspeccoesComProposta > 0 || qtdProspeccoesConcluidas > 0 || abaEspecialIndicadores)
+            @if (Model.Prospeccoes.Count() != 0 || qtdProspeccoesPlanejadas > 0 || qtdProspeccoesAtivas > 0 || qtdProspeccoesComProposta > 0 || qtdProspeccoesContratacao > 0 || qtdProspeccoesEncerradas > 0 || abaEspecialIndicadores)
             {
                 // abasFunil.Add(new AbaFunil("Dashboard", string.IsNullOrEmpty(aba)));
+                abasFunil.Add(new AbaFunil("Planejadas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "planejadas" : false));
                 abasFunil.Add(new AbaFunil("Ativas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "ativas" : false));
                 abasFunil.Add(new AbaFunil("Com Proposta", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "comproposta" : false));
-                abasFunil.Add(new AbaFunil("Concluidas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "concluidas" : false));
-                //abasFunil.Add(new AbaFunil("Planejadas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "planejadas" : false));
+                abasFunil.Add(new AbaFunil("Contratacao", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "contratacao" : false));
+                abasFunil.Add(new AbaFunil("Encerradas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "encerradas" : false));
                 //abasFunil.Add(new AbaFunil("Erradas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "erradas" : false));
 
                 @if (!abaEspecialIndicadores)
@@ -245,17 +254,25 @@
                             classes += " active";
                         }
 
-                        bool condicaoAria = aba.ToLowerInvariant() == @abaFunil.Nome.ToLowerInvariant().ToString().ToLowerInvariant();
-                        int quantidadeAba = abaFunil.RouteAba == "ativas"
-                            ? qtdProspeccoesAtivas
-                            : abaFunil.RouteAba == "comproposta"
-                                ? qtdProspeccoesComProposta
-                                : qtdProspeccoesConcluidas;
-                        string nomeExibicaoAba = abaFunil.RouteAba == "ativas"
-                            ? "Prospecção"
-                            : abaFunil.RouteAba == "comproposta"
-                                ? "Em Negociação"
-                                : "Contratação";
+                        bool condicaoAria = aba.ToLowerInvariant() == abaFunil.RouteAba;
+                        int quantidadeAba = abaFunil.RouteAba == "planejadas"
+                            ? qtdProspeccoesPlanejadas
+                            : abaFunil.RouteAba == "ativas"
+                                ? qtdProspeccoesAtivas
+                                : abaFunil.RouteAba == "comproposta"
+                                    ? qtdProspeccoesComProposta
+                                    : abaFunil.RouteAba == "contratacao"
+                                        ? qtdProspeccoesContratacao
+                                        : qtdProspeccoesEncerradas;
+                        string nomeExibicaoAba = abaFunil.RouteAba == "planejadas"
+                            ? "Planejadas"
+                            : abaFunil.RouteAba == "ativas"
+                                ? "Prospecção"
+                                : abaFunil.RouteAba == "comproposta"
+                                    ? "Em Negociação"
+                                    : abaFunil.RouteAba == "contratacao"
+                                        ? "Contratação"
+                                        : "Encerradas";
 
                         <a class="@classes"
                            asp-action="@abaFunil.Action"
@@ -334,6 +351,10 @@
                             </div>
                         </div>
                     }
+                    else if (abaSegmentos)
+                    {
+                        @await Html.PartialAsync("_SegmentosFunil", Model)
+                    }
                     else
                     {
                         @await Html.PartialAsync("ListaProsp", Model)
@@ -360,7 +381,7 @@
                 </div>
             }
 
-            @if (!string.IsNullOrEmpty(aba) && !abaEspecialIndicadores && Model.Pager.TotalPaginas > 1)
+            @if (!string.IsNullOrEmpty(aba) && !abaEspecialIndicadores && !abaSegmentos && Model.Pager.TotalPaginas > 1)
             {
                 int paginaAtual = Model.Pager.PaginaAtual;
                 int totalPaginas = Model.Pager.TotalPaginas;
@@ -369,7 +390,7 @@
                 int inicio = Math.Max(1, paginaAtual - range);
                 int fim = Math.Min(totalPaginas, paginaAtual + range);
 
-                <nav class="app-pagination">
+                <nav class="app-pagination" data-funil-pagination>
                     <ul class="pagination justify-content-center flex-wrap">
 
                         <!-- Anterior -->
