@@ -235,6 +235,8 @@ namespace BaseDeProjetos.Controllers
                 return NotFound();
             }
 
+            AplicarValoresMonetariosDoFormulario(prospeccao);
+
             if (ModelState.IsValid)
             {
                 try
@@ -293,6 +295,43 @@ namespace BaseDeProjetos.Controllers
                 tamanhoPagina = HttpContext.Session.GetInt32("tamanhoPagina"),
                 sortOrder = HttpContext.Session.GetString("sortOrder")
             });
+        }
+
+        private void AplicarValoresMonetariosDoFormulario(Prospeccao prospeccao)
+        {
+            ModelState.Remove(nameof(Prospeccao.ValorEstimado));
+            ModelState.Remove(nameof(Prospeccao.ValorProposta));
+            ModelState.Remove(nameof(Prospeccao.ValorFinal));
+
+            string valorEstimadoTexto = Request.Form[nameof(Prospeccao.ValorEstimado)].FirstOrDefault();
+            if (TentarConverterDecimal(valorEstimadoTexto, out decimal valorEstimado))
+            {
+                prospeccao.ValorEstimado = valorEstimado;
+            }
+            else
+            {
+                prospeccao.ValorEstimado = 0;
+            }
+
+            string valorPropostaTexto = Request.Form[nameof(Prospeccao.ValorProposta)].FirstOrDefault();
+            if (TentarConverterDecimal(valorPropostaTexto, out decimal valorProposta))
+            {
+                prospeccao.ValorProposta = valorProposta;
+            }
+            else
+            {
+                prospeccao.ValorProposta = 0;
+            }
+
+            string valorFinalTexto = Request.Form[nameof(Prospeccao.ValorFinal)].FirstOrDefault();
+            if (TentarConverterDecimal(valorFinalTexto, out decimal valorFinal))
+            {
+                prospeccao.ValorFinal = valorFinal;
+            }
+            else
+            {
+                prospeccao.ValorFinal = null;
+            }
         }
 
         public async Task<IActionResult> EditarFollowUp(int? id) // Retornar view

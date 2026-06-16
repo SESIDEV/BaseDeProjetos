@@ -55,6 +55,30 @@
             ? $"R$ {Helpers.FormatarValoresDashboards(valorPrincipal.Value)}"
             : "&mdash;";
     }
+
+    decimal? ObterTicketMedioMensal(Prospeccao prospeccao)
+    {
+        if (!prospeccao.PrevisaoTempoProjetoMeses.HasValue || prospeccao.PrevisaoTempoProjetoMeses.Value <= 0)
+        {
+            return null;
+        }
+
+        var valorPrincipal = ObterValorPrincipal(prospeccao);
+        if (!valorPrincipal.HasValue || valorPrincipal.Value <= 0)
+        {
+            return null;
+        }
+
+        return valorPrincipal.Value / prospeccao.PrevisaoTempoProjetoMeses.Value;
+    }
+
+    string FormatarTicketMedioMensal(Prospeccao prospeccao)
+    {
+        var ticketMedioMensal = ObterTicketMedioMensal(prospeccao);
+        return ticketMedioMensal.HasValue
+            ? $"R$ {Helpers.FormatarValoresDashboards(ticketMedioMensal.Value)}/mês"
+            : "&mdash;";
+    }
 }
 <style>
     * {
@@ -731,6 +755,10 @@
                                                         {
                                           <strong>&mdash;</strong>
                                                         }
+                                                    </div>
+                                                    <div class="prospeccao-value-block">
+                                                        <span>Ticket médio por mês</span>
+                                                        <strong>@Html.Raw(FormatarTicketMedioMensal(prospeccao))</strong>
                                                     </div>
                                                 </div>
                                                 @if (prospeccao.ComposicaoValores != null && prospeccao.ComposicaoValores.Any())
