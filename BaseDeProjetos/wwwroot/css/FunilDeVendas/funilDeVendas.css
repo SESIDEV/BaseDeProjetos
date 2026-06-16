@@ -1257,7 +1257,7 @@ label.required::after {
 
 .prospeccao-details-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(12, minmax(0, 1fr));
     gap: .75rem;
 }
 
@@ -1270,6 +1270,12 @@ label.required::after {
     padding: .7rem .75rem;
 }
 
+.prospeccao-detail-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
 .prospeccao-detail-block strong,
 .prospeccao-value-block strong {
     display: block;
@@ -1280,11 +1286,35 @@ label.required::after {
     overflow-wrap: anywhere;
 }
 
-.detail-span-2 {
-    grid-column: span 2;
+.prospeccao-detail-block-emphasis {
+    background: linear-gradient(180deg, #f8fbff 0%, #f3f7fc 100%);
+    border-color: #dbe7f3;
+}
+
+.prospeccao-detail-inline {
+    display: inline-flex !important;
+    align-items: center;
+    gap: .45rem;
+    flex-wrap: wrap;
 }
 
 .detail-span-3 {
+    grid-column: span 3;
+}
+
+.detail-span-4 {
+    grid-column: span 4;
+}
+
+.detail-span-5 {
+    grid-column: span 5;
+}
+
+.detail-span-6 {
+    grid-column: span 6;
+}
+
+.detail-span-12 {
     grid-column: 1 / -1;
 }
 
@@ -1355,11 +1385,18 @@ label.required::after {
 
 @media (max-width: 760px) {
     .prospeccao-details-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(1, minmax(0, 1fr));
     }
 
     .detail-span-2,
     .detail-span-3 {
+        grid-column: auto;
+    }
+
+    .detail-span-4,
+    .detail-span-5,
+    .detail-span-6,
+    .detail-span-12 {
         grid-column: auto;
     }
 
@@ -1648,5 +1685,78 @@ label.required::after {
 
     .funil-segmentos-funnel .funil-segmentos-stage::before {
         clip-path: none;
+    }
+}
+
+.valores-composicao-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    margin: .75rem 0 .5rem;
+}
+
+.valores-composicao-header strong {
+    color: #1e3a5f;
+    font-size: .9rem;
+}
+
+.valores-composicao-list {
+    display: grid;
+    gap: .55rem;
+}
+
+.valores-composicao-row {
+    display: grid;
+    grid-template-columns: minmax(160px, 1.4fr) minmax(130px, .9fr) minmax(130px, .9fr) minmax(110px, .8fr) minmax(160px, 1.2fr);
+    gap: .45rem;
+    align-items: center;
+}
+
+.prospeccao-value-composition {
+    margin-top: .85rem;
+    padding-top: .75rem;
+    border-top: 1px solid #e5edf5;
+}
+
+.prospeccao-value-composition > span {
+    display: block;
+    margin-bottom: .45rem;
+    color: #5d6f85;
+    font-size: .72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.prospeccao-value-composition-row {
+    display: grid;
+    grid-template-columns: minmax(100px, 1fr) minmax(100px, 1fr) auto;
+    gap: .5rem;
+    align-items: center;
+    padding: .42rem 0;
+    border-bottom: 1px solid #edf2f7;
+    font-size: .82rem;
+}
+
+.prospeccao-value-composition-row:last-child {
+    border-bottom: 0;
+}
+
+.prospeccao-value-composition-row small {
+    color: #64748b;
+}
+
+.prospeccao-value-composition-row span {
+    font-weight: 700;
+    color: #0f172a;
+}
+
+@media (max-width: 900px) {
+    .valores-composicao-row {
+        grid-template-columns: 1fr;
+    }
+
+    .prospeccao-value-composition-row {
+        grid-template-columns: 1fr;
     }
 }

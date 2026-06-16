@@ -404,32 +404,125 @@
                         </div>
                         <!-- VALORES -->
                         <div class="tab-pane fade" id="tab-valores-@Model.Id">
-                            @if (Model.Status.Any(p => p.Status == StatusProspeccao.ComProposta || p.Status == StatusProspeccao.Convertida))
-                            {
-                                <div class="form-group">
-                                    <label asp-for="ValorProposta" class="col-form-label" style="font-weight: 600"></label>
-                                    <input name="ValorProposta"
-                                           id="ValorProposta"
-                                           step="0.01"
-                                           class="form-control"
-                                           lang="en"
-                                           value="@Model.ValorProposta.ToString("0.00")" />
-                                    <span asp-validation-for="ValorProposta" class="text-danger"></span>
-                                </div>
+                            @{
+                                var composicaoValores = Model.ComposicaoValores?.OrderBy(valor => valor.Id).ToList()
+                                    ?? new List<BaseDeProjetos.Models.ProspeccaoValorComposicao>();
+
+                                if (!composicaoValores.Any())
+                                {
+                                    composicaoValores.Add(new BaseDeProjetos.Models.ProspeccaoValorComposicao());
+                                }
+
+                                var valorFinalTexto = Model.ValorFinal.HasValue ? Model.ValorFinal.Value.ToString("0.00") : string.Empty;
                             }
-                            else
-                            {
-                                <div class="mb-2">
+
+                            <div class="row g-3">
+                                <div class="col-md-4">
                                     <label asp-for="ValorEstimado" class="col-form-label" style="font-weight: 600"></label>
                                     <input name="ValorEstimado"
-                                           id="ValorEstimado"
+                                           id="ValorEstimado-@Model.Id"
                                            step="0.01"
                                            class="form-control"
-                                           lang="en"
+                                           data-moeda="true"
+                                           lang="pt-BR"
                                            value="@Model.ValorEstimado.ToString("0.00")" />
                                     <span asp-validation-for="ValorEstimado" class="text-danger"></span>
                                 </div>
-                            }
+
+                                <div class="col-md-4">
+                                    <label asp-for="ValorProposta" class="col-form-label" style="font-weight: 600"></label>
+                                    <input name="ValorProposta"
+                                           id="ValorProposta-@Model.Id"
+                                           step="0.01"
+                                           class="form-control"
+                                           data-moeda="true"
+                                           lang="pt-BR"
+                                           value="@Model.ValorProposta.ToString("0.00")" />
+                                    <span asp-validation-for="ValorProposta" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label asp-for="ValorFinal" class="col-form-label" style="font-weight: 600"></label>
+                                    <input name="ValorFinal"
+                                           id="ValorFinal-@Model.Id"
+                                           step="0.01"
+                                           class="form-control"
+                                           data-moeda="true"
+                                           lang="pt-BR"
+                                           value="@valorFinalTexto" />
+                                    <span asp-validation-for="ValorFinal" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="valores-composicao-header">
+                                        <strong>Composi&ccedil;&atilde;o de valores</strong>
+                                        <button type="button"
+                                                class="btn btn-outline-primary btn-sm"
+                                                data-add-composicao
+                                                data-list="#composicao-valores-list-@Model.Id"
+                                                data-template="#composicao-valores-template-@Model.Id">
+                                            Adicionar linha
+                                        </button>
+                                    </div>
+
+                                    <div id="composicao-valores-list-@Model.Id"
+                                         class="valores-composicao-list"
+                                         data-next-index="@composicaoValores.Count">
+                                        @for (int i = 0; i < composicaoValores.Count; i++)
+                                        {
+                                            <div class="valores-composicao-row">
+                                                <input name="ComposicaoValores[@i].Origem"
+                                                       class="form-control"
+                                                       placeholder="Origem. Ex.: LS, parceiro, empresa"
+                                                       value="@composicaoValores[i].Origem" />
+                                                <select name="ComposicaoValores[@i].Tipo" class="form-select">
+                                                    <option value="">Tipo</option>
+                                                    <option value="Coordenacao" selected="@(composicaoValores[i].Tipo == "Coordenacao")">Coordena&ccedil;&atilde;o</option>
+                                                    <option value="Parceiro" selected="@(composicaoValores[i].Tipo == "Parceiro")">Parceiro</option>
+                                                    <option value="Empresa" selected="@(composicaoValores[i].Tipo == "Empresa")">Empresa</option>
+                                                    <option value="Outro" selected="@(composicaoValores[i].Tipo == "Outro")">Outro</option>
+                                                </select>
+                                                <select name="ComposicaoValores[@i].Natureza" class="form-select">
+                                                    <option value="">Natureza</option>
+                                                    <option value="Financeiro" selected="@(composicaoValores[i].Natureza == "Financeiro")">Financeiro</option>
+                                                    <option value="Economico" selected="@(composicaoValores[i].Natureza == "Economico")">Econ&ocirc;mico</option>
+                                                </select>
+                                                <input name="ComposicaoValores[@i].Valor"
+                                                       step="0.01"
+                                                       class="form-control"
+                                                       data-moeda="true"
+                                                       lang="pt-BR"
+                                                       placeholder="Valor"
+                                                       value="@(composicaoValores[i].Valor.HasValue ? composicaoValores[i].Valor.Value.ToString("0.00") : string.Empty)" />
+                                                <input name="ComposicaoValores[@i].Observacao"
+                                                       class="form-control"
+                                                       placeholder="Observa&ccedil;&atilde;o"
+                                                       value="@composicaoValores[i].Observacao" />
+                                            </div>
+                                        }
+                                    </div>
+
+                                    <template id="composicao-valores-template-@Model.Id">
+                                        <div class="valores-composicao-row">
+                                            <input name="ComposicaoValores[__index__].Origem" class="form-control" placeholder="Origem. Ex.: LS, parceiro, empresa" />
+                                            <select name="ComposicaoValores[__index__].Tipo" class="form-select">
+                                                <option value="">Tipo</option>
+                                                <option value="Coordenacao">Coordena&ccedil;&atilde;o</option>
+                                                <option value="Parceiro">Parceiro</option>
+                                                <option value="Empresa">Empresa</option>
+                                                <option value="Outro">Outro</option>
+                                            </select>
+                                            <select name="ComposicaoValores[__index__].Natureza" class="form-select">
+                                                <option value="">Natureza</option>
+                                                <option value="Financeiro">Financeiro</option>
+                                                <option value="Economico">Econ&ocirc;mico</option>
+                                            </select>
+                                            <input name="ComposicaoValores[__index__].Valor" step="0.01" class="form-control" data-moeda="true" lang="pt-BR" placeholder="Valor" />
+                                            <input name="ComposicaoValores[__index__].Observacao" class="form-control" placeholder="Observa&ccedil;&atilde;o" />
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -449,6 +542,36 @@
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        if (window.__composicaoValoresInit) {
+            return;
+        }
+
+        window.__composicaoValoresInit = true;
+
+        document.addEventListener('click', function (event) {
+            var button = event.target.closest('[data-add-composicao]');
+            if (!button) {
+                return;
+            }
+
+            var list = document.querySelector(button.getAttribute('data-list'));
+            var template = document.querySelector(button.getAttribute('data-template'));
+
+            if (!list || !template) {
+                return;
+            }
+
+            var index = parseInt(list.getAttribute('data-next-index') || '0', 10);
+            var wrapper = document.createElement('div');
+            wrapper.innerHTML = template.innerHTML.replace(/__index__/g, index);
+            list.appendChild(wrapper.firstElementChild);
+            list.setAttribute('data-next-index', index + 1);
+        });
+    })();
+</script>
 
 @section Scripts {
     @{

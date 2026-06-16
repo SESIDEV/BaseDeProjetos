@@ -226,7 +226,7 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id, Tipologia, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, LiderNome, EmpresaId, Contato, Casa, CaminhoPasta, LinkArquivo, Tags, Origem, Ancora, Agregadas, ParceiroInterno, Usuario, TipoDeInteracao, TipoDeProjeto, PrevisaoTempoProjetoMeses, ValorEstimado, ValorProposta")] Prospeccao prospeccao, string liderProjeto)
+        public async Task<IActionResult> Edit(string id, [Bind("Id, Tipologia, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, LiderNome, EmpresaId, Contato, Casa, CaminhoPasta, LinkArquivo, Tags, Origem, Ancora, Agregadas, ParceiroInterno, Usuario, TipoDeInteracao, TipoDeProjeto, PrevisaoTempoProjetoMeses, ValorEstimado, ValorProposta, ValorFinal")] Prospeccao prospeccao, string liderProjeto)
         {
             ViewbagizarUsuario(_context, _cache);
 
@@ -253,6 +253,7 @@ namespace BaseDeProjetos.Controllers
                     prospeccao.Contato = await ReutilizarContatoExistenteDaEmpresa(prospeccao.Contato, prospeccao.EmpresaId);
 
                     prospeccao = await EditarDadosDaProspecao(id, prospeccao, liderProjeto);
+                    await AtualizarComposicaoValoresProspeccao(id);
 
                     await _context.SaveChangesAsync();
                     await CacheHelper.CleanupProspeccoesCache(_cache);
@@ -283,7 +284,15 @@ namespace BaseDeProjetos.Controllers
                 });
             }
 
-            return View(prospeccao);
+            TempData["FunilErroEdicao"] = "Nao foi possivel salvar a prospeccao. Revise os campos informados e tente novamente.";
+            return RedirectToAction("Index", "FunilDeVendas", new {
+                casa = prospeccao.Casa,
+                aba = HttpContext.Session.GetString("aba"),
+                searchString = HttpContext.Session.GetString("searchString"),
+                numeroPagina = HttpContext.Session.GetInt32("numeroPagina"),
+                tamanhoPagina = HttpContext.Session.GetInt32("tamanhoPagina"),
+                sortOrder = HttpContext.Session.GetString("sortOrder")
+            });
         }
 
         public async Task<IActionResult> EditarFollowUp(int? id) // Retornar view
@@ -1092,7 +1101,9 @@ namespace BaseDeProjetos.Controllers
                     ViewData
                 );
 
-            query = query.Where(p => p.Empresa != null);
+            query = query
+                .Include(p => p.ComposicaoValores)
+                .Where(p => p.Empresa != null);
 
             if (!string.IsNullOrEmpty(ano) && !ano.Equals("Todos", StringComparison.OrdinalIgnoreCase))
             {
@@ -2285,6 +2296,81 @@ namespace BaseDeProjetos.Controllers
                 || decimal.TryParse(valorTexto, NumberStyles.Number, culturaBrasileira, out valor);
         }
 
+        private async Task AtualizarComposicaoValoresProspeccao(string prospeccaoId)
+        {
+            var valores = ObterComposicaoValoresFormulario(prospeccaoId);
+            var valoresExistentes = await _context.ProspeccaoValorComposicao
+                .Where(valor => valor.ProspeccaoId == prospeccaoId)
+                .ToListAsync();
+
+            _context.ProspeccaoValorComposicao.RemoveRange(valoresExistentes);
+
+            if (valores.Any())
+            {
+                await _context.ProspeccaoValorComposicao.AddRangeAsync(valores);
+            }
+        }
+
+        private List<ProspeccaoValorComposicao> ObterComposicaoValoresFormulario(string prospeccaoId)
+        {
+            const string prefixo = "ComposicaoValores[";
+            var indices = Request.Form.Keys
+                .Where(chave => chave.StartsWith(prefixo) && chave.Contains("]."))
+                .Select(chave =>
+                {
+                    int inicio = prefixo.Length;
+                    int fim = chave.IndexOf("].", StringComparison.Ordinal);
+                    return fim > inicio && int.TryParse(chave.Substring(inicio, fim - inicio), out int indice)
+                        ? indice
+                        : -1;
+                })
+                .Where(indice => indice >= 0)
+                .Distinct()
+                .OrderBy(indice => indice)
+                .ToList();
+
+            var valores = new List<ProspeccaoValorComposicao>();
+
+            foreach (int indice in indices)
+            {
+                string prefixoCampo = $"ComposicaoValores[{indice}].";
+                string origem = Request.Form[prefixoCampo + "Origem"].FirstOrDefault()?.Trim();
+                string tipo = Request.Form[prefixoCampo + "Tipo"].FirstOrDefault()?.Trim();
+                string natureza = Request.Form[prefixoCampo + "Natureza"].FirstOrDefault()?.Trim();
+                string observacao = Request.Form[prefixoCampo + "Observacao"].FirstOrDefault()?.Trim();
+                string valorTexto = Request.Form[prefixoCampo + "Valor"].FirstOrDefault();
+
+                decimal? valor = null;
+                if (TentarConverterDecimal(valorTexto, out decimal valorConvertido))
+                {
+                    valor = valorConvertido;
+                }
+
+                bool linhaVazia = string.IsNullOrWhiteSpace(origem)
+                    && string.IsNullOrWhiteSpace(tipo)
+                    && string.IsNullOrWhiteSpace(natureza)
+                    && string.IsNullOrWhiteSpace(observacao)
+                    && !valor.HasValue;
+
+                if (linhaVazia)
+                {
+                    continue;
+                }
+
+                valores.Add(new ProspeccaoValorComposicao
+                {
+                    ProspeccaoId = prospeccaoId,
+                    Origem = origem,
+                    Tipo = tipo,
+                    Natureza = natureza,
+                    Valor = valor,
+                    Observacao = observacao
+                });
+            }
+
+            return valores;
+        }
+
         private static int[] ObterColunasPlanejamentoIndicadores()
         {
             return new[] { -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
@@ -2515,7 +2601,7 @@ namespace BaseDeProjetos.Controllers
                     ["LinkArquivo"] = p.LinkArquivo,
                     ["ValorEstimado"] = p.ValorEstimado,
                     ["ValorProposta"] = p.ValorProposta,
-                    ["ValorFinal"] = p.ValorProposta,
+                    ["ValorFinal"] = p.ValorFinal ?? (p.ValorProposta != 0 ? p.ValorProposta : p.ValorEstimado),
                 };
 
                 if (string.IsNullOrEmpty(p.NomeProspeccao))
@@ -2525,11 +2611,6 @@ namespace BaseDeProjetos.Controllers
                 else
                 {
                     dict["Titulo"] = p.NomeProspeccao;
-                }
-
-                if (p.ValorProposta == 0)
-                {
-                    dict["ValorFinal"] = p.ValorEstimado;
                 }
 
                 listaFull.Add(dict);

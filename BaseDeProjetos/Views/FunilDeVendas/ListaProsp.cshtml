@@ -12,6 +12,49 @@
     string casa = dadosDaRota.Values["casa"] as string;
     aba = String.IsNullOrEmpty(aba) ? "ativas": aba;
     var usuarios = ViewData["Usuarios"] as List<UsuariosFunilDTO>;
+
+    StatusProspeccao ObterStatusAtual(Prospeccao prospeccao)
+    {
+        return prospeccao.Status
+            .OrderBy(followup => followup.Data)
+            .ThenBy(followup => followup.Id)
+            .Last()
+            .Status;
+    }
+
+    decimal? ObterValorPrincipal(Prospeccao prospeccao)
+    {
+        var statusAtual = ObterStatusAtual(prospeccao);
+        var valorFinal = prospeccao.ValorFinal.HasValue && prospeccao.ValorFinal.Value != 0
+            ? prospeccao.ValorFinal.Value
+            : (decimal?)null;
+        var valorProposta = prospeccao.ValorProposta != 0
+            ? prospeccao.ValorProposta
+            : (decimal?)null;
+        var valorEstimado = prospeccao.ValorEstimado != 0
+            ? prospeccao.ValorEstimado
+            : (decimal?)null;
+
+        if (statusAtual == StatusProspeccao.Convertida)
+        {
+            return valorFinal ?? valorProposta ?? valorEstimado;
+        }
+
+        if (statusAtual == StatusProspeccao.ComProposta)
+        {
+            return valorProposta ?? valorEstimado;
+        }
+
+        return valorEstimado ?? valorProposta ?? valorFinal;
+    }
+
+    string FormatarValorPrincipal(Prospeccao prospeccao)
+    {
+        var valorPrincipal = ObterValorPrincipal(prospeccao);
+        return valorPrincipal.HasValue
+            ? $"R$ {Helpers.FormatarValoresDashboards(valorPrincipal.Value)}"
+            : "&mdash;";
+    }
 }
 <style>
     * {
@@ -174,12 +217,7 @@
             })
             .ToList();
 
-        decimal valorTotalColuna = prospeccoesColuna.Sum(prospeccao =>
-            prospeccao.ValorProposta != 0
-                ? (decimal)prospeccao.ValorProposta
-                : prospeccao.ValorEstimado != 0
-                    ? (decimal)prospeccao.ValorEstimado
-                    : 0);
+        decimal valorTotalColuna = prospeccoesColuna.Sum(prospeccao => ObterValorPrincipal(prospeccao) ?? 0);
 
         <section class="funil-kanban-column">
             <header class="funil-kanban-column-header">
@@ -207,11 +245,7 @@
                 @foreach (var prospeccao in prospeccoesColuna)
                 {
                     var ultimoStatusKanban = prospeccao.Status.OrderBy(followup => followup.Data).ThenBy(followup => followup.Id).Last();
-                    var valorKanban = prospeccao.ValorProposta != 0
-                        ? $"R$ {Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorProposta)}"
-                        : prospeccao.ValorEstimado != 0
-                            ? $"R$ {Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorEstimado)}"
-                            : "&mdash;";
+                    var valorKanban = FormatarValorPrincipal(prospeccao);
                     var equipeKanban = new List<string>();
                     var nomeLiderKanban = !string.IsNullOrWhiteSpace(prospeccao.LiderNome) ? prospeccao.LiderNome : prospeccao.Usuario?.UserName;
                     if (!string.IsNullOrWhiteSpace(nomeLiderKanban))
@@ -298,11 +332,7 @@
     {
         var ultimoStatusCard = prospeccao.Status.OrderBy(followup => followup.Data).ThenBy(followup => followup.Id).Last();
         var subtracaoUltimoStatusCard = DateTime.Now.Subtract(ultimoStatusCard.Data).Days;
-        var valorCard = prospeccao.ValorProposta != 0
-            ? $"R$ {Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorProposta)}"
-            : prospeccao.ValorEstimado != 0
-                ? $"R$ {Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorEstimado)}"
-                : "&mdash;";
+        var valorCard = FormatarValorPrincipal(prospeccao);
         var equipeCard = new List<string>();
         var nomeLiderCard = !string.IsNullOrWhiteSpace(prospeccao.LiderNome) ? prospeccao.LiderNome : prospeccao.Usuario?.UserName;
         if (!string.IsNullOrWhiteSpace(nomeLiderCard))
@@ -538,18 +568,7 @@
                                     </td>
                                 }
                                 <td class="cell funil-table-value">
-                                    @if (prospeccao.ValorProposta != 0)
-                                    {
-                                        <span>R$ @Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorProposta)</span>
-                                    }
-                                    else if (prospeccao.ValorEstimado != 0)
-                                    {
-                                        <span>R$ @Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorEstimado)</span>
-                                    }
-                                    else
-                                    {
-                      <span>&mdash;</span>
-                                    }
+                                    <span>@Html.Raw(FormatarValorPrincipal(prospeccao))</span>
                                 </td>
                                 @* <td class="cell">
                                     <div style="width: 40px; height: 40px;" class="position-relative">
@@ -600,43 +619,79 @@
                                                         <span>@prospeccao.Empresa.Nome</span>
                                                     </p>
                                                 </div>
-                                                <div class="prospeccao-details-grid">
-                                                    <div class="prospeccao-detail-block"><span>ID</span><strong>@prospeccao.Id</strong></div>
-                                                    <div class="prospeccao-detail-block"><span>Empresa</span><strong>@prospeccao.Empresa.Nome</strong></div>
-                                                    <div class="prospeccao-detail-block">
-                                                        <span>Segmento</span>
-                                                        <strong class="funil-company-title">
-                                                            @if (prospeccao.Empresa != null)
-                                                            {
-                                                                <span class="funil-segment-icon" title="@prospeccao.Empresa.Segmento.GetDisplayName()">
-                                                                    <i class="@prospeccao.Empresa.Segmento.GetIconClass()"></i>
-                                                                </span>
-                                                                <span>@prospeccao.Empresa.Segmento.GetDisplayName()</span>
-                                                            }
-                                                        </strong>
-                                                    </div>
-                                                    <div class="prospeccao-detail-block"><span>L&iacute;der</span><strong>@Html.Raw(liderDetalhe)</strong></div>
-                                                    <div class="prospeccao-detail-block"><span>Origem</span><strong>@prospeccao.Origem.GetDisplayName()</strong></div>
-                                                    <div class="prospeccao-detail-block detail-span-2"><span>Linha de pesquisa</span><strong>@prospeccao.LinhaPequisa.GetDisplayName()</strong></div>
-                                                    <div class="prospeccao-detail-block"><span>Tipologia</span><strong>@Html.Raw(tipologiaDetalhe)</strong></div>
-                                                    <div class="prospeccao-detail-block"><span>Tipo de contrata&ccedil;&atilde;o</span><strong>@prospeccao.TipoContratacao.GetDisplayName()</strong></div>
-                                                    <div class="prospeccao-detail-block"><span>Tipo de intera&ccedil;&atilde;o</span><strong>@prospeccao.TipoDeInteracao.GetDisplayName()</strong></div>
-                                                    <div class="prospeccao-detail-block"><span>Tipo de projeto</span><strong>@prospeccao.TipoDeProjeto.GetDisplayName()</strong></div>
-                                                    <div class="prospeccao-detail-block"><span>Previs&atilde;o de tempo</span><strong>@Html.Raw(previsaoTempoDetalhe)</strong></div>
-                                                    <div class="prospeccao-detail-block"><span>Parceiro interno</span><strong>@prospeccao.ParceiroInterno.GetDisplayName()</strong></div>
-                                                    <div class="prospeccao-detail-block detail-span-2">
-                                                        <span>Link para pasta ou documento do projeto</span>
-                                                        @if (!string.IsNullOrWhiteSpace(prospeccao.LinkArquivo))
-                                                        {
-                                                            <strong><a href="@prospeccao.LinkArquivo" target="_blank" rel="noopener">Abrir arquivo</a></strong>
-                                                        }
+                                <div class="prospeccao-details-grid">
+                                    <div class="prospeccao-detail-block detail-span-3">
+                                        <span>ID</span>
+                                        <strong>@prospeccao.Id</strong>
+                                    </div>
+                                    <div class="prospeccao-detail-block prospeccao-detail-block-emphasis detail-span-5">
+                                        <span>Empresa</span>
+                                        <strong>@prospeccao.Empresa.Nome</strong>
+                                    </div>
+                                    <div class="prospeccao-detail-block detail-span-4">
+                                        <span>Segmento</span>
+                                        <strong class="prospeccao-detail-inline">
+                                            @if (prospeccao.Empresa != null)
+                                            {
+                                                <span class="funil-segment-icon" title="@prospeccao.Empresa.Segmento.GetDisplayName()">
+                                                    <i class="@prospeccao.Empresa.Segmento.GetIconClass()"></i>
+                                                </span>
+                                                <span>@prospeccao.Empresa.Segmento.GetDisplayName()</span>
+                                            }
+                                        </strong>
+                                    </div>
+                                    <div class="prospeccao-detail-block detail-span-6">
+                                        <span>Linha de pesquisa</span>
+                                        <strong>@prospeccao.LinhaPequisa.GetDisplayName()</strong>
+                                    </div>
+                                    <div class="prospeccao-detail-block detail-span-3">
+                                        <span>L&iacute;der</span>
+                                        <strong>@Html.Raw(liderDetalhe)</strong>
+                                    </div>
+                                    <div class="prospeccao-detail-block detail-span-3">
+                                        <span>Origem</span>
+                                        <strong>@prospeccao.Origem.GetDisplayName()</strong>
+                                    </div>
+                                    <div class="prospeccao-detail-block detail-span-4">
+                                        <span>Tipo de contrata&ccedil;&atilde;o</span>
+                                        <strong>@prospeccao.TipoContratacao.GetDisplayName()</strong>
+                                    </div>
+                                    <div class="prospeccao-detail-block detail-span-4">
+                                        <span>Tipo de intera&ccedil;&atilde;o</span>
+                                        <strong>@prospeccao.TipoDeInteracao.GetDisplayName()</strong>
+                                    </div>
+                                    <div class="prospeccao-detail-block detail-span-4">
+                                        <span>Tipo de projeto</span>
+                                        <strong>@prospeccao.TipoDeProjeto.GetDisplayName()</strong>
+                                    </div>
+                                    <div class="prospeccao-detail-block detail-span-3">
+                                        <span>Tipologia</span>
+                                        <strong>@Html.Raw(tipologiaDetalhe)</strong>
+                                    </div>
+                                    <div class="prospeccao-detail-block detail-span-3">
+                                        <span>Previs&atilde;o de tempo</span>
+                                        <strong>@Html.Raw(previsaoTempoDetalhe)</strong>
+                                    </div>
+                                    <div class="prospeccao-detail-block detail-span-3">
+                                        <span>Parceiro interno</span>
+                                        <strong>@prospeccao.ParceiroInterno.GetDisplayName()</strong>
+                                    </div>
+                                    <div class="prospeccao-detail-block detail-span-3">
+                                        <span>Contato</span>
+                                        <strong>@contatoDetalhe</strong>
+                                    </div>
+                                    <div class="prospeccao-detail-block detail-span-12">
+                                        <span>Link para pasta ou documento do projeto</span>
+                                        @if (!string.IsNullOrWhiteSpace(prospeccao.LinkArquivo))
+                                        {
+                                            <strong><a href="@prospeccao.LinkArquivo" target="_blank" rel="noopener">Abrir arquivo</a></strong>
+                                        }
                                                         else
                                                         {
-                                                            <strong>N&atilde;o informado</strong>
-                                                        }
-                                                    </div>
-                                                    <div class="prospeccao-detail-block"><span>Contato</span><strong>@contatoDetalhe</strong></div>
-                                                </div>
+                                            <strong>N&atilde;o informado</strong>
+                                        }
+                                    </div>
+                                </div>
                                             </section>
                                             <section class="prospeccao-details-panel">
                                                 <div class="prospeccao-details-heading compact">
@@ -666,7 +721,49 @@
                                           <strong>&mdash;</strong>
                                                         }
                                                     </div>
+                                                    <div class="prospeccao-value-block">
+                                                        <span>Valor final</span>
+                                                        @if (prospeccao.ValorFinal.HasValue && prospeccao.ValorFinal.Value != 0)
+                                                        {
+                                                            <strong>R$ @Helpers.FormatarValoresDashboards(prospeccao.ValorFinal.Value)</strong>
+                                                        }
+                                                        else
+                                                        {
+                                          <strong>&mdash;</strong>
+                                                        }
+                                                    </div>
                                                 </div>
+                                                @if (prospeccao.ComposicaoValores != null && prospeccao.ComposicaoValores.Any())
+                                                {
+                                                    <div class="prospeccao-value-composition">
+                                                        <span>Composi&ccedil;&atilde;o</span>
+                                                        @foreach (var valorComposicao in prospeccao.ComposicaoValores.OrderBy(valor => valor.Tipo).ThenBy(valor => valor.Origem))
+                                                        {
+                                                            <div class="prospeccao-value-composition-row">
+                                                                <strong>
+                                                                    @(!string.IsNullOrWhiteSpace(valorComposicao.Origem) ? valorComposicao.Origem : "Origem nao informada")
+                                                                </strong>
+                                                                <small>
+                                                                    @(!string.IsNullOrWhiteSpace(valorComposicao.Tipo) ? valorComposicao.Tipo : "Tipo nao informado")
+                                                                    @if (!string.IsNullOrWhiteSpace(valorComposicao.Natureza))
+                                                                    {
+                                                                        <text> · @valorComposicao.Natureza</text>
+                                                                    }
+                                                                </small>
+                                                                <span>
+                                                                    @if (valorComposicao.Valor.HasValue && valorComposicao.Valor.Value != 0)
+                                                                    {
+                                                                        <text>R$ @Helpers.FormatarValoresDashboards(valorComposicao.Valor.Value)</text>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <text>&mdash;</text>
+                                                                    }
+                                                                </span>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                }
                                             </section>
                                             <aside class="prospeccao-details-panel prospeccao-details-panel-status">
                                                 <div class="prospeccao-status-header">
