@@ -89,6 +89,15 @@ namespace BaseDeProjetos.Controllers
             });
         }
 
+        // GET: FunilDeVendas/Create
+        [HttpGet]
+        public IActionResult Create()
+        {
+            ViewbagizarUsuario(_context, _cache);
+            var casa = HttpContext.Session.GetString("_Casa") ?? UsuarioAtivo?.Casa.ToString();
+            return RedirectToAction(nameof(Index), new { casa });
+        }
+
         // POST: FunilDeVendas/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -3007,6 +3016,7 @@ namespace BaseDeProjetos.Controllers
         {
             ErrorViewModel erro = new ErrorViewModel
             {
+                RequestId = HttpContext.TraceIdentifier,
                 Mensagem = e.Message
             };
             return View("Error", erro);
