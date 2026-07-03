@@ -194,7 +194,8 @@ namespace BaseDeProjetos.Helpers
                 .Include(p => p.Status)
                 .Include(p => p.Empresa)
                 .Include(p => p.Contato)
-                .Include(p => p.ComposicaoValores)
+                .Include(p => p.ProspeccaoPrincipal)
+                .ThenInclude(p => p.Empresa)
                 .Include(p => p.Usuario);
 
             List<Instituto> casasPermitidas = ObterCasasPermitidas(usuario);
@@ -802,3 +803,7 @@ namespace BaseDeProjetos.Helpers
         public List<Usuario> Usuarios { get; set; }
     }
 }
+
+
+
+

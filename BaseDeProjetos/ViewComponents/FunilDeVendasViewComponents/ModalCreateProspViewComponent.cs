@@ -41,6 +41,14 @@ namespace BaseDeProjetos.ViewComponents.FunilDeVendasViewComponents
                 })
                 .ToListAsync();
 
+            ViewData["ProspeccoesRelacionadas"] = await _context.Prospeccao
+                .AsNoTracking()
+                .Include(p => p.Empresa)
+                .OrderBy(p => p.Casa)
+                .ThenBy(p => p.Empresa.Nome)
+                .ThenBy(p => p.NomeProspeccao)
+                .ToListAsync();
+
             // Procurar apoio.csv em caminhos comuns
             var possiblePaths = new[]
             {

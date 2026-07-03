@@ -1,17 +1,16 @@
-﻿@model BaseDeProjetos.Models.Prospeccao
+@model BaseDeProjetos.Models.Prospeccao
 @using BaseDeProjetos.Models.Enums;
 @using Microsoft.AspNetCore.Http
 @{
-    ViewData["Title"] = "Adicionar Prospecção";
+    ViewData["Title"] = "Adicionar Prospeccao";
     if (!(Context.Session.GetString("_Casa") is null))
     {
         ViewData["Area"] = Context.Session.GetString("_Casa");
     }
     List<Prospeccao> listaProsp = ViewData["prospPlan"] as List<Prospeccao>;
     List<Prospeccao> listaPlanejados = listaProsp.Where(prospeccao => prospeccao.Status.All(followup => followup.Status == StatusProspeccao.Planejada)).Where(prosp => prosp.Usuario != null && prosp.Usuario.UserName.ToString() == Context.User.Identity.Name).ToList();
-    List<SelectListItem> listaSelect = listaPlanejados.Select(p => new SelectListItem {Text = p.Empresa.Nome, Value = p.Id.ToString()}).ToList();
+    List<SelectListItem> listaSelect = listaPlanejados.Select(p => new SelectListItem { Text = p.Empresa.Nome, Value = p.Id.ToString() }).ToList();
     SelectList plan = new SelectList(listaSelect, "Value", "Text");
-    
 }
 
 <div class="modal fade" id="preCriarProspModalToggle" aria-hidden="true" aria-labelledby="preCriarProspModalToggleLabel" tabindex="-1">
@@ -24,9 +23,9 @@
 
             <div class="modal-body">
                 <div class="mb-2">
-                    <label class="col-form-label" style="font-weight: 600">Escolha uma opção</label>
+                    <label class="col-form-label" style="font-weight: 600">Escolha uma op&ccedil;&atilde;o</label>
                     <select id="selectCreateProsp" class="form-control" onchange="trocarModalNovaProsp()">
-                        <option value="-1">Não Planejada</option>
+                        <option value="-1">N&atilde;o planejada</option>
                         <option value="-2">Planejada</option>
                     </select>
                 </div>
@@ -34,7 +33,7 @@
 
             <div class="modal-footer">
                 <button id="botaoToggleProspFollowUp" type="button" class="btn app-btn-primary" data-bs-target="#criarProspModalToggle"
-                    data-bs-toggle="modal">
+                        data-bs-toggle="modal">
                     Continuar
                 </button>
             </div>
@@ -42,7 +41,3 @@
         </div>
     </div>
 </div>
-
-<script>
-
-</script>

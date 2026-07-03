@@ -1,4 +1,4 @@
-.card-container {
+﻿.card-container {
     background-color: #fff;
     border-radius: 10px;
     overflow: hidden;
@@ -1298,6 +1298,56 @@ label.required::after {
     flex-wrap: wrap;
 }
 
+.prospeccao-relacoes-block {
+    background: linear-gradient(180deg, #fbfdff 0%, #f6f9fc 100%);
+    border-color: #dbe7f3;
+}
+
+.prospeccao-relacoes {
+    display: grid;
+    gap: .7rem;
+    margin-top: .35rem;
+}
+
+.prospeccao-relacao-grupo {
+    display: grid;
+    gap: .45rem;
+}
+
+.prospeccao-relacao-label {
+    color: #344054 !important;
+    font-size: .76rem !important;
+    font-weight: 700 !important;
+    text-transform: none !important;
+}
+
+.prospeccao-relacao-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+.prospeccao-relacao-pill {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    border: 1px solid #dbe7f3;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #344054;
+    font-size: .84rem;
+    font-weight: 600;
+    line-height: 1.3;
+    padding: .42rem .72rem;
+}
+.prospeccao-relacoes-block-empty {
+    background: #f8fafc;
+}
+
+.prospeccao-relacoes-block-empty strong {
+    color: #98a2b3;
+}
+
 .detail-span-3 {
     grid-column: span 3;
 }
@@ -1760,3 +1810,6 @@ label.required::after {
         grid-template-columns: 1fr;
     }
 }
+
+
+
