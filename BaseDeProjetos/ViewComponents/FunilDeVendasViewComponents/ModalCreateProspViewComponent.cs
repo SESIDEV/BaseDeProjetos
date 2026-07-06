@@ -1,6 +1,7 @@
 ﻿using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
+using BaseDeProjetos.Models.DTOs;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -30,6 +31,15 @@ namespace BaseDeProjetos.ViewComponents.FunilDeVendasViewComponents
                 .ToListAsync();
 
             ViewData["Empresas"] = new SelectList(empresas, "Id", "Nome");
+
+            ViewData["Usuarios"] = await _context.Users
+                .Select(u => new UsuariosFunilDTO
+                {
+                    Id = u.Id,
+                    UserName = u.UserName,
+                    Email = u.Email
+                })
+                .ToListAsync();
 
             // Procurar apoio.csv em caminhos comuns
             var possiblePaths = new[]

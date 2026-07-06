@@ -3,6 +3,10 @@
 
 @{
     ViewData["Title"] = "deletar";
+    var ultimoStatus = Model?.Status?
+        .OrderBy(p => p.Data)
+        .ThenBy(p => p.Id)
+        .LastOrDefault();
 }
 
 <div class="modal fade" id="deletarProspModal-@Model.Id" aria-hidden="true"
@@ -28,13 +32,14 @@
                 </div>
                 <div class="mb-2">
                     <label class="col-form-label" style="font-weight: 600">Líder da Prospecção</label>
-                    <div class="form-control" readonly>@Model.Usuario.UserName</div>
+                    <div class="form-control" readonly>@(!string.IsNullOrWhiteSpace(Model.LiderNome) ? Model.LiderNome : Model.Usuario?.UserName ?? "Líder não informado")</div>
                 </div>
                 <div class="mb-2">
                     <label class="col-form-label" style="font-weight: 600">Último Status:</label>
                     <div style="font-size: inherit" readonly>
-                        @Model.Status.OrderBy(p=>p.Data).ThenBy(p=>p.Id).Last().Status.GetDisplayName()</div>
-                    <div class="form-control" readonly>@Model.Status.OrderBy(p=>p.Data).ThenBy(p=>p.Id).Last().Anotacoes</div>
+                        @(ultimoStatus != null ? ultimoStatus.Status.GetDisplayName() : "Sem status")
+                    </div>
+                    <div class="form-control" readonly>@(ultimoStatus?.Anotacoes ?? "")</div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -56,3 +61,5 @@
 await Html.RenderPartialAsync("_ValidationScriptsPartial");
 }
 }
+
+

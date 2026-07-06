@@ -91,20 +91,30 @@ label.required::after {
 }
 
 .funil-page-header {
-    align-items: stretch;
-    margin-right: 0;
-    margin-left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
     border: 1px solid #dfe7f1;
-    border-radius: 8px;
+    border-radius: 10px;
     background: #fff;
-    box-shadow: 0 4px 16px rgba(15, 23, 42, .06);
-    padding: .9rem;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, .05);
+    padding: .8rem .95rem;
 }
 
 .funil-page-header .app-page-title {
     color: #111827;
-    font-size: 1.35rem;
+    font-size: 1.28rem;
     font-weight: 800;
+}
+
+.funil-title-block {
+    flex: 0 0 auto;
+}
+
+.funil-header-tools {
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
 .funil-page-header .page-utilities {
@@ -113,27 +123,31 @@ label.required::after {
 
 .funil-header-actions {
     flex-wrap: wrap;
+    width: 100%;
 }
 
 .funil-search-form {
-    min-width: 340px;
+    flex: 1 1 320px;
+    max-width: 420px;
+    min-width: 260px;
 }
 
 .funil-search-form .form-control {
     min-height: 38px;
     border-color: #d9e2ec;
-    border-radius: 7px;
+    border-radius: 8px;
     box-shadow: inset 0 1px 2px rgba(15, 23, 42, .04);
 }
 
 .funil-search-button {
     width: 42px;
     min-height: 38px;
-    border-radius: 7px;
+    border-radius: 8px;
 }
 
 .funil-action-buttons {
     flex-wrap: wrap;
+    margin-left: auto;
 }
 
 .funil-action-buttons .btn {
@@ -141,47 +155,55 @@ label.required::after {
     align-items: center;
     gap: .4rem;
     min-height: 38px;
-    border-radius: 7px;
+    border-radius: 8px;
     font-weight: 700;
     white-space: nowrap;
 }
 
 .funil-filter-row {
     flex-wrap: wrap;
-    min-height: 44px;
     border: 1px solid #dfe7f1;
-    border-radius: 8px;
+    border-radius: 10px;
     background: #fff;
-    box-shadow: 0 3px 12px rgba(15, 23, 42, .05);
-    padding: .55rem .7rem;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, .045);
+    padding: .65rem .75rem;
 }
 
-.funil-filter-row > span,
-.funil-filter-row > div:not(.funil-view-toolbar) {
-    color: #42526e;
-    font-size: .84rem;
+.funil-filter-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .45rem .55rem;
+    min-width: 0;
+}
+
+.funil-filter-group label {
+    margin: 0;
+    color: #475467;
+    font-size: .78rem;
     font-weight: 700;
 }
 
 .funil-filter-row .form-select {
-    min-height: 34px;
+    min-height: 36px;
     border-color: #d9e2ec;
-    border-radius: 7px;
+    border-radius: 8px;
     color: #111827;
-    font-size: .86rem;
+    font-size: .84rem;
+    box-shadow: none;
 }
 
 .funil-filter-select {
-    min-width: 140px;
+    min-width: 150px;
 }
 
 .funil-clear-filters {
     display: inline-flex;
     align-items: center;
     gap: .35rem;
-    min-height: 34px;
+    min-height: 36px;
     border-color: #d7e0ea;
-    border-radius: 7px;
+    border-radius: 8px;
     color: #42526e;
     font-size: .82rem;
     font-weight: 800;
@@ -198,7 +220,15 @@ label.required::after {
 .funil-view-toolbar {
     display: flex;
     justify-content: flex-end;
+    flex: 0 0 auto;
     margin: 0 0 0 auto;
+}
+
+.funil-view-toolbar .btn-group {
+    overflow: hidden;
+    border: 1px solid #d7e0ea;
+    border-radius: 8px;
+    background: #f8fafc;
 }
 
 .funil-view-toolbar .btn {
@@ -206,13 +236,30 @@ label.required::after {
     align-items: center;
     gap: .4rem;
     min-height: 36px;
-    border-color: #d7e0ea;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #344054;
+    font-size: .82rem;
     font-weight: 700;
+    box-shadow: none;
 }
 
 .funil-view-toolbar .btn.active {
-    border-color: #0f9f63;
     background: #0f9f63;
+    color: #fff;
+}
+
+.funil-view-toolbar .btn:hover,
+.funil-view-toolbar .btn:focus {
+    background: #edfdf6;
+    color: #087443;
+}
+
+.funil-view-toolbar .btn.active:hover,
+.funil-view-toolbar .btn.active:focus {
+    background: #0f9f63;
+    color: #fff;
 }
 
 #orders-table-tab {
@@ -297,6 +344,13 @@ label.required::after {
     padding: .55rem .85rem;
 }
 
+.funil-minimal-table th:nth-child(3),
+.funil-minimal-table td:nth-child(3) {
+    width: 168px;
+    min-width: 168px;
+    max-width: 168px;
+}
+
 .funil-minimal-table tbody tr.funil-table-row:last-of-type td {
     border-bottom-color: transparent;
 }
@@ -358,9 +412,10 @@ label.required::after {
 .funil-table-team {
     display: inline-flex;
     align-items: center;
-    width: 150px;
-    min-width: 150px;
-    gap: .35rem;
+    width: 142px;
+    max-width: 142px;
+    gap: .25rem;
+    overflow: hidden;
 }
 
 .funil-table-team .badge {
@@ -383,16 +438,19 @@ label.required::after {
 
 .funil-table-team .badge:first-child,
 .funil-table-team .funil-team-leader {
-    width: 112px;
-    max-width: 112px;
-    min-width: 112px;
+    width: 104px;
+    max-width: 104px;
+    min-width: 104px;
     height: 26px;
     justify-content: flex-start;
     border-color: #bfdbfe;
     background: #dbeafe !important;
     color: #1d4ed8 !important;
     box-shadow: 0 0 0 2px rgba(37, 99, 235, .10);
+    overflow: hidden;
+    padding: 0 .45rem;
     text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .funil-table-team .badge:first-child::before {
@@ -403,8 +461,8 @@ label.required::after {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 34px;
-    min-width: 34px;
+    width: 32px;
+    min-width: 32px;
     height: 24px;
     border: 1px solid #cbd5e1;
     border-radius: 999px;
@@ -875,10 +933,13 @@ label.required::after {
 
 @media (max-width: 760px) {
     .funil-page-header {
+        flex-direction: column;
+        align-items: stretch;
         padding: .75rem;
     }
 
-    .funil-page-header > .col-auto,
+    .funil-title-block,
+    .funil-header-tools,
     .funil-header-actions,
     .funil-action-buttons,
     .funil-search-form {
@@ -903,7 +964,12 @@ label.required::after {
     }
 
     .funil-filter-row {
+        align-items: stretch !important;
         justify-content: flex-start !important;
+    }
+
+    .funil-filter-group {
+        width: 100%;
     }
 
     .funil-view-toolbar {
