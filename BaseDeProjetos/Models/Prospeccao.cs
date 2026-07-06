@@ -42,6 +42,9 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Tipo de projeto")]
         public TipoDeProjeto? TipoDeProjeto { get; set; }
 
+        [Display(Name = "Previsão de tempo do projeto (meses)")]
+        public int? PrevisaoTempoProjetoMeses { get; set; }
+
         [ForeignKey("EmpresaId")]
         public virtual Empresa Empresa { get; set; }
 
