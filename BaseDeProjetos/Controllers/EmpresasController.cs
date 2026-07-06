@@ -195,7 +195,7 @@ namespace BaseDeProjetos.Controllers
 
                 ViewBag.Projetos = await _context.Projeto.ToListAsync();
 
-                ViewBag.Contatos = await _context.Pessoa.ToListAsync();
+                ViewBag.Contatos = RemoverContatosDuplicadosPorEmpresa(await _context.Pessoa.ToListAsync());
                 //Filtros e ordenadores
                 if (string.IsNullOrEmpty(searchString) && HttpContext.Session.Keys.Contains("_CurrentFilter"))
                 {
@@ -263,6 +263,66 @@ namespace BaseDeProjetos.Controllers
         private List<Empresa> ObterEmpresasPorPagina(List<Empresa> empresas, int numeroPagina, int tamanhoPagina)
         {
             return empresas.Skip((numeroPagina - 1) * tamanhoPagina).Take(tamanhoPagina).ToList();
+        }
+
+        private static List<Pessoa> RemoverContatosDuplicadosPorEmpresa(List<Pessoa> contatos)
+        {
+            var chaves = new HashSet<string>();
+            var contatosUnicos = new List<Pessoa>();
+
+            foreach (var contato in contatos)
+            {
+                var chavesContato = ObterChavesContato(contato);
+
+                if (!chavesContato.Any() || chavesContato.All(chave => !chaves.Contains(chave)))
+                {
+                    contatosUnicos.Add(contato);
+                    foreach (string chave in chavesContato)
+                    {
+                        chaves.Add(chave);
+                    }
+                }
+            }
+
+            return contatosUnicos;
+        }
+
+        private static List<string> ObterChavesContato(Pessoa contato)
+        {
+            var chaves = new List<string>();
+
+            if (contato?.EmpresaId == null)
+            {
+                return chaves;
+            }
+
+            string email = NormalizarEmailContato(contato.Email);
+            if (!string.IsNullOrEmpty(email))
+            {
+                chaves.Add($"{contato.EmpresaId}:email:{email}");
+            }
+
+            string telefone = NormalizarTelefoneContato(contato.Telefone);
+            if (!string.IsNullOrEmpty(telefone))
+            {
+                chaves.Add($"{contato.EmpresaId}:telefone:{telefone}");
+            }
+
+            return chaves;
+        }
+
+        private static string NormalizarEmailContato(string email)
+        {
+            return string.IsNullOrWhiteSpace(email)
+                ? string.Empty
+                : email.Trim().ToLowerInvariant();
+        }
+
+        private static string NormalizarTelefoneContato(string telefone)
+        {
+            return string.IsNullOrWhiteSpace(telefone)
+                ? string.Empty
+                : Regex.Replace(telefone, "[^0-9]", "");
         }
 
         /// <summary>
