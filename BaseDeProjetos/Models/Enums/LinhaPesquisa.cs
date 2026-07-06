@@ -67,31 +67,31 @@ namespace BaseDeProjetos.Models.Enums
         [Display(Name = "A definir")]
         Indefinida,
 
-        [Display(Name = "BF - Biologia molecular", GroupName = "Biossintéticos e Fibras")]
+        [Display(Name = "ISI BIO - Biologia molecular", GroupName = "ISI BIO")]
         BiologiaMolecular,
 
-        [Display(Name = "BF - Biologia sintética", GroupName = "Biossintéticos e Fibras")]
+        [Display(Name = "ISI BIO - Biologia sintética", GroupName = "ISI BIO")]
         BiologiaSintetica,
 
-        [Display(Name = "BF - Fermentação", GroupName = "Biossintéticos e Fibras")]
+        [Display(Name = "ISI BIO - Fermentação", GroupName = "ISI BIO")]
         Fermentacao,
 
-        [Display(Name = "BF - Escalonamento", GroupName = "Biossintéticos e Fibras")]
+        [Display(Name = "ISI BIO - Escalonamento", GroupName = "ISI BIO")]
         Escalonamento,
 
-        [Display(Name = "BF - Sequenciamento de nova geração", GroupName = "Biossintéticos e Fibras")]
+        [Display(Name = "ISI BIO - Sequenciamento de nova geração", GroupName = "ISI BIO")]
         SequenciamentoNovaGeracao,
 
-        [Display(Name = "BF - Bioinformática", GroupName = "Biossintéticos e Fibras")]
+        [Display(Name = "ISI BIO - Bioinformática", GroupName = "ISI BIO")]
         Bioinformatica,
 
-        [Display(Name = "BF - Bioprocessos", GroupName = "Biossintéticos e Fibras")]
+        [Display(Name = "ISI BIO - Bioprocessos", GroupName = "ISI BIO")]
         Bioprocessos,
 
-        [Display(Name = "BF - Automação", GroupName = "Biossintéticos e Fibras")]
+        [Display(Name = "ISI BIO - Automação", GroupName = "ISI BIO")]
         Automacao,
 
-        [Display(Name = "BF - Screening da Biodiversidade", GroupName = "Biossintéticos e Fibras")]
+        [Display(Name = "ISI BIO - Screening da Biodiversidade", GroupName = "ISI BIO")]
         ScreeningBiodiversidade,
     }
 }
