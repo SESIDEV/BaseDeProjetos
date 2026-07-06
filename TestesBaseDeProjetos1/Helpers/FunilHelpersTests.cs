@@ -38,7 +38,7 @@ namespace BaseDeProjetos.Helpers.Tests
         public void Test_VerificarTemperatura_Quente()
         {
             int dias = 6;
-            var resultadoEsperado = new HtmlString($"<span class='badge bg-quente'>Quente: ({dias} Dias)</span>").ToString();
+            var resultadoEsperado = new HtmlString($"<span class='badge bg-quente'>Quente - {dias}d</span>").ToString();
 
             var resultadoObtido = FunilHelpers.VerificarTemperatura(6).ToString();
 
@@ -49,7 +49,7 @@ namespace BaseDeProjetos.Helpers.Tests
         public void Test_VerificarTemperatura_Morno()
         {
             int dias = 7;
-            var resultadoEsperado = new HtmlString($"<span class='badge bg-morno'>Morno: ({dias} Dias)</span>").ToString();
+            var resultadoEsperado = new HtmlString($"<span class='badge bg-morno'>Morno - {dias}d</span>").ToString();
 
             var resultadoObtido = FunilHelpers.VerificarTemperatura(7).ToString();
 
@@ -60,7 +60,7 @@ namespace BaseDeProjetos.Helpers.Tests
         public void Test_VerificarTemperatura_Esfriando()
         {
             int dias = 16;
-            var resultadoEsperado = new HtmlString($"<span class='badge bg-esfriando text-dark'>Esfriando: ({dias} Dias)</span>").ToString();
+            var resultadoEsperado = new HtmlString($"<span class='badge bg-esfriando text-dark'>Esfriando - {dias}d</span>").ToString();
 
             var resultadoObtido = FunilHelpers.VerificarTemperatura(dias).ToString();
 
@@ -71,7 +71,7 @@ namespace BaseDeProjetos.Helpers.Tests
         public void Test_VerificarTemperatura_Frio()
         {
             int dias = 31;
-            var resultadoEsperado = new HtmlString($"<span class='badge bg-frio text-dark'>Frio: ({dias} Dias)</span>").ToString();
+            var resultadoEsperado = new HtmlString($"<span class='badge bg-frio text-dark'>Frio - {dias}d</span>").ToString();
 
             var resultadoObtido = FunilHelpers.VerificarTemperatura(dias).ToString();
 
@@ -82,7 +82,7 @@ namespace BaseDeProjetos.Helpers.Tests
         public void Test_VerificarTemperatura_Congelado()
         {
             int dias = 366;
-            var resultadoEsperado = new HtmlString($"<span class='badge bg-frio text-dark'>Congelado: ({dias} Dias)</span>").ToString();
+            var resultadoEsperado = new HtmlString($"<span class='badge bg-congelado'>Congelado - {dias}d</span>").ToString();
 
             var resultadoObtido = FunilHelpers.VerificarTemperatura(dias).ToString();
 
