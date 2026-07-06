@@ -12,6 +12,16 @@
     string aba = dadosDaRota.Values["aba"] as string;
     string casa = dadosDaRota.Values["casa"] as string;
     string searchString = ViewBag.searchString as string;
+    string anoFiltro = ViewContext.HttpContext.Request.Query["ano"].ToString();
+    string temperatura = ViewBag.Temperatura as string;
+    string fomento = ViewBag.Fomento as string;
+    bool filtrosFunilAtivos = !string.IsNullOrWhiteSpace(searchString)
+        || (!string.IsNullOrWhiteSpace(anoFiltro) && anoFiltro != "Todos")
+        || (!string.IsNullOrWhiteSpace(temperatura) && temperatura != "Todos")
+        || (!string.IsNullOrWhiteSpace(fomento) && fomento != "Todos");
+    int qtdProspeccoesAtivas = Convert.ToInt32(ViewBag.ProspeccoesAtivasCount);
+    int qtdProspeccoesComProposta = Convert.ToInt32(ViewBag.ProspeccoesComProposta);
+    int qtdProspeccoesConcluidas = Convert.ToInt32(ViewBag.ProspeccoesConcluidas);
     bool abaIndicadores = !string.IsNullOrEmpty(aba) && aba.ToLowerInvariant() == "indicadores";
     bool abaPlanejamentoIndicadores = !string.IsNullOrEmpty(aba) && aba.ToLowerInvariant() == "planejamento";
     bool abaReceitasIndicadores = !string.IsNullOrEmpty(aba) && aba.ToLowerInvariant() == "receitas";
@@ -55,26 +65,26 @@
         <div class="container-xl">
             @if (!abaEspecialIndicadores)
             {
-            <div class="row g-3 mb-2 align-items-center justify-content-between">
+            <div class="row g-3 mb-3 align-items-center justify-content-between funil-page-header">
                 <div class="col-auto">
                     <h1 class="app-page-title mb-0">Prospecções</h1>
                 </div>
                 <div class="col-auto">
                     <div class="page-utilities">
-                        <div class="d-flex gap-2 justify-content-start justify-content-md-end align-items-center">
+                        <div class="d-flex gap-2 justify-content-start justify-content-md-end align-items-center funil-header-actions">
                             <!--se a rota não for Index-->
                             @if (!string.IsNullOrEmpty(aba) && !abaEspecialIndicadores)
                             {
-                                <form class="table-search-form row gx-1 align-items-center">
+                                <form class="table-search-form row gx-1 align-items-center funil-search-form">
                                     <div class="d-flex gap-2 flex-row align-items-center">
-                                        <input type="text" id="search-orders" name="SearchString" value='@ViewData["CurrentFilter"]' class="form-control search-orders" placeholder="Buscar..." autocomplete="off">
-                                        <button type="submit" class="btn app-btn-primary"><i class="bi bi-search"></i></button>
+                                        <input type="text" id="search-orders" name="SearchString" value="@searchString" class="form-control search-orders" placeholder="Buscar empresa ou projeto..." autocomplete="off">
+                                        <button type="submit" class="btn app-btn-primary funil-search-button"><i class="bi bi-search"></i></button>
                                     </div>
                                 </form>
                                 <button type="submit" class="d-none btn app-btn-primary">Lista Completa</button>
                             }
 
-                            <div class="col-auto d-flex gap-2">
+                            <div class="col-auto d-flex gap-2 funil-action-buttons">
                                 <a class="btn app-btn-primary" data-bs-toggle="modal" href="#preCriarProspModalToggle" role="button">
                                     <i class="bi bi-plus-circle-fill"></i> Nova Prospecção
                                 </a>
@@ -107,16 +117,16 @@
 
             @if (!abaEspecialIndicadores)
             {
-            <div class="d-flex align-items-center justify-content-end mb-2 gap-2">
+            <div class="d-flex align-items-center justify-content-end mb-3 gap-2 funil-filter-row">
                 <span>Ano:</span>
-                <select class="form-select w-auto" id="ano" name="ano" onchange="updateLink()">
-                    <option value="Todos">Todos</option>
+                <select class="form-select w-auto" id="ano" name="ano" onchange="aplicarFiltrosFunil()">
+                    <option value="Todos" selected="@(string.IsNullOrWhiteSpace(anoFiltro) || anoFiltro == "Todos")">Todos</option>
                     @{
                         int anoFinal = 2019;
                         int anoAtual = DateTime.Now.Year;
                         while (anoAtual >= anoFinal)
                         {
-                            <option value="@anoAtual">@anoAtual</option>
+                            <option value="@anoAtual" selected="@(anoFiltro == anoAtual.ToString())">@anoAtual</option>
                             anoAtual--;
                         }
                     }
@@ -124,16 +134,41 @@
 
                 @if (!string.IsNullOrEmpty(aba) && !abaEspecialIndicadores)
                 {
-                    <div>Quantidade de Prospecções:</div>
-                    <form method="get" asp-action="Index" asp-controller="FunildeVendas" asp-route-casa="@casa" asp-route-aba="@aba">
+                    <span>Temperatura:</span>
+                    <select class="form-select w-auto funil-filter-select" id="temperatura" name="temperatura" onchange="aplicarFiltrosFunil()">
+                        <option value="Todos" selected="@(string.IsNullOrWhiteSpace(temperatura) || temperatura == "Todos")">Todas</option>
+                        <option value="quente" selected="@(temperatura == "quente")">Quente</option>
+                        <option value="morno" selected="@(temperatura == "morno")">Morno</option>
+                        <option value="esfriando" selected="@(temperatura == "esfriando")">Esfriando</option>
+                        <option value="frio" selected="@(temperatura == "frio")">Frio</option>
+                        <option value="congelado" selected="@(temperatura == "congelado")">Congelado</option>
+                    </select>
+
+                    <span>Fomento:</span>
+                    <select class="form-select w-auto funil-filter-select" id="fomento" name="fomento" onchange="aplicarFiltrosFunil()">
+                        <option value="Todos" selected="@(string.IsNullOrWhiteSpace(fomento) || fomento == "Todos")">Todos</option>
+                        @foreach (TipoContratacao tipoContratacao in Enum.GetValues(typeof(TipoContratacao)))
+                        {
+                            <option value="@tipoContratacao" selected="@(fomento == tipoContratacao.ToString())">@tipoContratacao.GetDisplayName()</option>
+                        }
+                    </select>
+                    @if (filtrosFunilAtivos)
+                    {
+                        <button type="button" class="btn btn-outline-secondary funil-clear-filters" onclick="limparFiltrosFunil()">
+                            <i class="bi bi-x-circle"></i>
+                            Limpar filtros
+                        </button>
+                    }
+                    <div class="d-none">Quantidade de Prospecções:</div>
+                    <form class="d-none" method="get" asp-action="Index" asp-controller="FunildeVendas" asp-route-casa="@casa" asp-route-aba="@aba">
                         <select class="form-select" id="tamanhoPagina" onchange="changePageSize()">
-                            @if (ViewBag.TamanhoPagina == 20 || ViewBag.TamanhoPagina == null)
+                            @if (ViewBag.TamanhoPagina == 21 || ViewBag.TamanhoPagina == null)
                             {
-                                <option value="20" selected>20</option>
+                                <option value="21" selected>21</option>
                             }
                             else
                             {
-                                <option value="20">20</option>
+                                <option value="21">21</option>
                             }
 
                             @if (ViewBag.TamanhoPagina == 40)
@@ -165,11 +200,30 @@
                         </select>
                     </form>
                 }
+                @if (!string.IsNullOrEmpty(aba) && !abaEspecialIndicadores)
+                {
+                    <div class="funil-view-toolbar">
+                        <div class="btn-group" role="group" aria-label="Tipo de visualizaÃ§Ã£o">
+                            <button type="button" class="btn btn-outline-primary funil-view-toggle" data-view="kanban">
+                                <i class="bi bi-kanban"></i>
+                                Kanban
+                            </button>
+                            <button type="button" class="btn btn-outline-primary funil-view-toggle" data-view="cards">
+                                <i class="bi bi-grid"></i>
+                                Cards
+                            </button>
+                            <button type="button" class="btn btn-outline-primary funil-view-toggle" data-view="tabela">
+                                <i class="bi bi-table"></i>
+                                Tabela
+                            </button>
+                        </div>
+                    </div>
+                }
             </div>
 
             }
 
-            @if (Model.Prospeccoes.Count() != 0 || abaEspecialIndicadores)
+            @if (Model.Prospeccoes.Count() != 0 || qtdProspeccoesAtivas > 0 || qtdProspeccoesComProposta > 0 || qtdProspeccoesConcluidas > 0 || abaEspecialIndicadores)
             {
                 // abasFunil.Add(new AbaFunil("Dashboard", string.IsNullOrEmpty(aba)));
                 abasFunil.Add(new AbaFunil("Ativas", !string.IsNullOrEmpty(aba) ? aba.ToLowerInvariant() == "ativas" : false));
@@ -190,14 +244,24 @@
                         }
 
                         bool condicaoAria = aba.ToLowerInvariant() == @abaFunil.Nome.ToLowerInvariant().ToString().ToLowerInvariant();
+                        int quantidadeAba = abaFunil.RouteAba == "ativas"
+                            ? qtdProspeccoesAtivas
+                            : abaFunil.RouteAba == "comproposta"
+                                ? qtdProspeccoesComProposta
+                                : qtdProspeccoesConcluidas;
 
                         <a class="@classes"
                            asp-action="@abaFunil.Action"
                            asp-controller="@abaFunil.Controller"
                            asp-route-casa="@casa"
                            asp-route-aba="@abaFunil.RouteAba"
+                           asp-route-searchString="@searchString"
+                           asp-route-ano="@anoFiltro"
+                           asp-route-temperatura="@temperatura"
+                           asp-route-fomento="@fomento"
                            aria-selected="@(condicaoAria)">
-                            @abaFunil.Nome
+                            <span class="funil-tab-label">@abaFunil.Nome</span>
+                            <span class="funil-tab-count">@quantidadeAba</span>
                         </a>
                     }
                 </nav>
@@ -285,7 +349,7 @@
                             Não foram encontradas prospecções com o termo "@searchString".
                         </h2>
                     }
-                    <div>Clique <a asp-controller="FunilDeVendas" asp-action="Index" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" asp-route-casa="@casa" asp-route-aba="@aba" asp-route-numeroPagina="1">aqui</a> para voltar para a primeira página.</div>
+                    <div>Clique <a asp-controller="FunilDeVendas" asp-action="Index" asp-route-tamanhoPagina="@ViewBag.TamanhoPagina" asp-route-casa="@casa" asp-route-aba="@aba" asp-route-ano="@anoFiltro" asp-route-temperatura="@temperatura" asp-route-fomento="@fomento" asp-route-numeroPagina="1">aqui</a> para voltar para a primeira página.</div>
                 </div>
             }
 
@@ -308,9 +372,12 @@
                                asp-action="Index"
                                asp-route-casa="@casa"
                                asp-route-aba="@aba"
-                               asp-route-tamanhoPagina="@ViewBag.TamanhoPagina"
-                               asp-route-SearchString="@searchString"
-                               asp-route-numeroPagina="@(paginaAtual - 1)">
+                        asp-route-tamanhoPagina="@ViewBag.TamanhoPagina"
+                        asp-route-SearchString="@searchString"
+                        asp-route-ano="@anoFiltro"
+                        asp-route-temperatura="@temperatura"
+                        asp-route-fomento="@fomento"
+                        asp-route-numeroPagina="@(paginaAtual - 1)">
                                 Anterior
                             </a>
                         </li>
@@ -324,9 +391,12 @@
                                    asp-action="Index"
                                    asp-route-casa="@casa"
                                    asp-route-aba="@aba"
-                                   asp-route-tamanhoPagina="@ViewBag.TamanhoPagina"
-                                   asp-route-SearchString="@searchString"
-                                   asp-route-numeroPagina="1">
+                            asp-route-tamanhoPagina="@ViewBag.TamanhoPagina"
+                            asp-route-SearchString="@searchString"
+                            asp-route-ano="@anoFiltro"
+                            asp-route-temperatura="@temperatura"
+                            asp-route-fomento="@fomento"
+                            asp-route-numeroPagina="1">
                                     1
                                 </a>
                             </li>
@@ -344,9 +414,12 @@
                                    asp-action="Index"
                                    asp-route-casa="@casa"
                                    asp-route-aba="@aba"
-                                   asp-route-tamanhoPagina="@ViewBag.TamanhoPagina"
-                                   asp-route-SearchString="@searchString"
-                                   asp-route-numeroPagina="@i">
+                            asp-route-tamanhoPagina="@ViewBag.TamanhoPagina"
+                            asp-route-SearchString="@searchString"
+                            asp-route-ano="@anoFiltro"
+                            asp-route-temperatura="@temperatura"
+                            asp-route-fomento="@fomento"
+                            asp-route-numeroPagina="@i">
                                     @i
                                 </a>
                             </li>
@@ -364,9 +437,12 @@
                                    asp-action="Index"
                                    asp-route-casa="@casa"
                                    asp-route-aba="@aba"
-                                   asp-route-tamanhoPagina="@ViewBag.TamanhoPagina"
-                                   asp-route-SearchString="@searchString"
-                                   asp-route-numeroPagina="@totalPaginas">
+                            asp-route-tamanhoPagina="@ViewBag.TamanhoPagina"
+                            asp-route-SearchString="@searchString"
+                            asp-route-ano="@anoFiltro"
+                            asp-route-temperatura="@temperatura"
+                            asp-route-fomento="@fomento"
+                            asp-route-numeroPagina="@totalPaginas">
                                     @totalPaginas
                                 </a>
                             </li>
@@ -379,9 +455,12 @@
                                asp-action="Index"
                                asp-route-casa="@casa"
                                asp-route-aba="@aba"
-                               asp-route-tamanhoPagina="@ViewBag.TamanhoPagina"
-                               asp-route-SearchString="@searchString"
-                               asp-route-numeroPagina="@(paginaAtual + 1)">
+                        asp-route-tamanhoPagina="@ViewBag.TamanhoPagina"
+                        asp-route-SearchString="@searchString"
+                        asp-route-ano="@anoFiltro"
+                        asp-route-temperatura="@temperatura"
+                        asp-route-fomento="@fomento"
+                        asp-route-numeroPagina="@(paginaAtual + 1)">
                                 Próximo
                             </a>
                         </li>
@@ -394,6 +473,53 @@
     </div>
     <partial name="Footer" />
 </div>
+<script>
+    function aplicarFiltrosFunil() {
+        const url = new URL(window.location.href);
+        const ano = document.getElementById('ano')?.value;
+        const temperatura = document.getElementById('temperatura')?.value;
+        const fomento = document.getElementById('fomento')?.value;
+
+        if (ano && ano !== 'Todos') {
+            url.searchParams.set('ano', ano);
+        } else {
+            url.searchParams.delete('ano');
+        }
+
+        if (temperatura && temperatura !== 'Todos') {
+            url.searchParams.set('temperatura', temperatura);
+        } else {
+            url.searchParams.delete('temperatura');
+        }
+
+        if (fomento && fomento !== 'Todos') {
+            url.searchParams.set('fomento', fomento);
+        } else {
+            url.searchParams.delete('fomento');
+        }
+
+        url.searchParams.delete('tamanhoPagina');
+        url.searchParams.set('numeroPagina', '1');
+        window.location.href = url.toString();
+    }
+
+    function limparFiltrosFunil() {
+        const url = new URL(window.location.href);
+
+        [
+            'SearchString',
+            'searchString',
+            'ano',
+            'temperatura',
+            'fomento',
+            'numeroPagina',
+            'tamanhoPagina',
+            'sortOrder'
+        ].forEach((parametro) => url.searchParams.delete(parametro));
+
+        window.location.href = url.toString();
+    }
+</script>
 @*<div id="modalTut">
   <div class="modal fade" id="modalTutorialFdv" aria-hidden="true" aria-labelledby="modalTutorialFdvLabel"
     tabindex="-1">

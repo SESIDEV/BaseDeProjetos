@@ -23,23 +23,23 @@ namespace BaseDeProjetos.Helpers
         {
             if (qtdDias < 7)
             {
-                return new HtmlString($"<span class='badge bg-quente'>Quente: ({qtdDias} Dias)</span>");
+                return new HtmlString($"<span class='badge bg-quente'>Quente - {qtdDias}d</span>");
             }
             else if (qtdDias >= 7 && qtdDias <= 15)
             {
-                return new HtmlString($"<span class='badge bg-morno'>Morno: ({qtdDias} Dias)</span>");
+                return new HtmlString($"<span class='badge bg-morno'>Morno - {qtdDias}d</span>");
             }
             else if (qtdDias >= 16 && qtdDias <= 30)
             {
-                return new HtmlString($"<span class='badge bg-esfriando text-dark'>Esfriando: ({qtdDias} Dias)</span>");
+                return new HtmlString($"<span class='badge bg-esfriando text-dark'>Esfriando - {qtdDias}d</span>");
             }
             else if (qtdDias > 30 && qtdDias <= 365)
             {
-                return new HtmlString($"<span class='badge bg-frio text-dark'>Frio: ({qtdDias} Dias)</span>");
+                return new HtmlString($"<span class='badge bg-frio text-dark'>Frio - {qtdDias}d</span>");
             }
             else
             {
-                return new HtmlString($"<span class='badge bg-frio text-dark'>Congelado: ({qtdDias} Dias)</span>");
+                return new HtmlString($"<span class='badge bg-congelado'>Congelado - {qtdDias}d</span>");
             }
         }
 
@@ -96,27 +96,9 @@ namespace BaseDeProjetos.Helpers
 
         public static void SetarFiltrosNaView(HttpContext HttpContext, ViewDataDictionary ViewData, string sortOrder = "", string searchString = "")
         {
-            //Filtros e ordenadores
-            if (string.IsNullOrEmpty(searchString) && HttpContext.Session.Keys.Contains("_CurrentFilter"))
-            {
-                ViewData["CurrentFilter"] = HttpContext.Session.GetString("_CurrentFilter");
-            }
-            else
-            {
-                ViewData["CurrentFilter"] = searchString;
-                HttpContext.Session.SetString("_CurrentFilter", searchString);
-            }
-
-            if (string.IsNullOrEmpty(sortOrder) && HttpContext.Session.Keys.Contains("_CurrentFilter"))
-            {
-                ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-                ViewData["DateSortParm"] = sortOrder == "TipoContratacao" ? "tipo_desc" : "TipoContratacao";
-            }
-            else
-            {
-                ViewData["CurrentFilter"] = sortOrder;
-                HttpContext.Session.SetString("____", sortOrder);
-            }
+            ViewData["CurrentFilter"] = searchString ?? string.Empty;
+            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "TipoContratacao" ? "tipo_desc" : "TipoContratacao";
         }
 
         public static List<Prospeccao> RetornarProspeccoesPorStatus(List<Prospeccao> prospeccoes, ParametrosFiltroFunil parametros, bool pesquisa)

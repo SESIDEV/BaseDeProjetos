@@ -941,7 +941,7 @@ namespace BaseDeProjetos.Controllers
         }
         // GET: FunilDeVendas
         [Route("FunilDeVendas/Index/{casa?}/{aba?}/{ano?}")]
-        public async Task<IActionResult> Index(string casa, string aba, string sortOrder = "", string searchString = "", string ano = "", int numeroPagina = 1, int tamanhoPagina = 20)
+        public async Task<IActionResult> Index(string casa, string aba, string sortOrder = "", string searchString = "", string ano = "", string temperatura = "", string fomento = "", int numeroPagina = 1, int tamanhoPagina = 21)
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
@@ -950,6 +950,11 @@ namespace BaseDeProjetos.Controllers
                 if (string.IsNullOrEmpty(aba))
                 {
                     aba = "ativas";
+                }
+
+                if (tamanhoPagina <= 0 || tamanhoPagina == 20)
+                {
+                    tamanhoPagina = 21;
                 }
 
                 SetarAbaNaSession(aba);
@@ -962,12 +967,14 @@ namespace BaseDeProjetos.Controllers
                     TamanhoPagina = tamanhoPagina,
                     SortOrder = sortOrder
                 };
+                SetarParametrosFunilSession(parametrosFunil);
 
                 if (string.IsNullOrEmpty(casa))
                 {
                     casa = ObterCasaPadraoAbertura().ToString();
                 }
 
+                bool abaIndicadores = aba.Equals("indicadores", StringComparison.OrdinalIgnoreCase);
                 bool abaPlanejamentoIndicadores = aba.Equals("planejamento", StringComparison.OrdinalIgnoreCase);
                 bool abaReceitasIndicadores = aba.Equals("receitas", StringComparison.OrdinalIgnoreCase);
                 int anoSelecionado = !string.IsNullOrEmpty(ano) && int.TryParse(ano, out int anoIndicadores) ? anoIndicadores : DateTime.Now.Year;
@@ -999,8 +1006,16 @@ namespace BaseDeProjetos.Controllers
                 ViewBag.TamanhoPagina = tamanhoPagina;
                 ViewBag.Casa = casa;
                 ViewBag.Ano = anoSelecionado;
+                ViewBag.Temperatura = temperatura;
+                ViewBag.Fomento = fomento;
                 
-                List<Prospeccao> prospeccoes = await ObterProspeccoesFunilFiltradas(casa, ano, UsuarioAtivo, aba, sortOrder, searchString);
+                List<Prospeccao> prospeccoes = await ObterProspeccoesFunilFiltradas(casa, ano, UsuarioAtivo, aba, sortOrder, searchString, temperatura, fomento);
+                var quantidadesAbas = abaIndicadores || abaPlanejamentoIndicadores || abaReceitasIndicadores
+                    ? (Ativas: 0, ComProposta: 0, Concluidas: 0)
+                    : await ObterQuantidadesAbasFunil(casa, ano, UsuarioAtivo, sortOrder, searchString, temperatura, fomento);
+                ViewBag.ProspeccoesAtivasCount = quantidadesAbas.Ativas;
+                ViewBag.ProspeccoesComProposta = quantidadesAbas.ComProposta;
+                ViewBag.ProspeccoesConcluidas = quantidadesAbas.Concluidas;
 
                 int qtdProspeccoes = prospeccoes.Count();
                 int qtdPaginasTodo = (int)Math.Ceiling((double)qtdProspeccoes / tamanhoPagina);
@@ -1038,6 +1053,70 @@ namespace BaseDeProjetos.Controllers
             {
                 return View("Forbidden");
             }
+        }
+
+        private async Task<(int Ativas, int ComProposta, int Concluidas)> ObterQuantidadesAbasFunil(string casa, string ano, Usuario usuario, string sortOrder, string searchString, string temperatura, string fomento)
+        {
+            IQueryable<Prospeccao> query =
+                FunilHelpers.DefinirCasaParaVisualizarQuery(
+                    casa,
+                    usuario,
+                    _context,
+                    HttpContext,
+                    ViewData
+                );
+
+            query = query.Where(p => p.Empresa != null);
+
+            if (!string.IsNullOrEmpty(ano) && !ano.Equals("Todos", StringComparison.OrdinalIgnoreCase))
+            {
+                query = FunilHelpers.PeriodizarProspecçõesQuery(query, ano);
+            }
+
+            query = FunilHelpers.FiltrarProspecçõesQuery(query, searchString);
+
+            if (!string.IsNullOrWhiteSpace(fomento) && Enum.TryParse(fomento, out TipoContratacao tipoContratacao))
+            {
+                query = query.Where(p => p.TipoContratacao == tipoContratacao);
+            }
+
+            List<Prospeccao> prospeccoes = await query.ToListAsync();
+
+            if (!string.IsNullOrWhiteSpace(temperatura) && !temperatura.Equals("Todos", StringComparison.OrdinalIgnoreCase))
+            {
+                prospeccoes = prospeccoes
+                    .Where(prospeccao => ProspeccaoTemTemperatura(prospeccao, temperatura))
+                    .ToList();
+            }
+
+            int ativas = prospeccoes.Count(prospeccao =>
+            {
+                FollowUp ultimoStatus = ObterUltimoStatusProspeccao(prospeccao);
+                return ultimoStatus != null && ultimoStatus.Status < StatusProspeccao.ComProposta;
+            });
+
+            int comProposta = prospeccoes.Count(prospeccao =>
+                prospeccao.Status.Any(s => s.Status == StatusProspeccao.ComProposta) &&
+                !prospeccao.Status.Any(s => s.Status == StatusProspeccao.Convertida || s.Status == StatusProspeccao.NaoConvertida || s.Status == StatusProspeccao.Suspensa)
+            );
+
+            int concluidas = prospeccoes.Count(prospeccao =>
+                prospeccao.Status.Any(s =>
+                    s.Status == StatusProspeccao.Convertida ||
+                    s.Status == StatusProspeccao.Suspensa ||
+                    s.Status == StatusProspeccao.NaoConvertida
+                )
+            );
+
+            return (ativas, comProposta, concluidas);
+        }
+
+        private static FollowUp ObterUltimoStatusProspeccao(Prospeccao prospeccao)
+        {
+            return prospeccao.Status?
+                .OrderBy(followup => followup.Data)
+                .ThenBy(followup => followup.Id)
+                .LastOrDefault();
         }
 
         private static int[] GerarSerieExecutadoMensal(IEnumerable<DateTime> datas)
@@ -2237,6 +2316,12 @@ namespace BaseDeProjetos.Controllers
 
         private void SetarSortOrder(string sortOrder)
         {
+            if (string.IsNullOrWhiteSpace(sortOrder))
+            {
+                HttpContext.Session.Remove("sortOrder");
+                return;
+            }
+
             HttpContext.Session.SetString("sortOrder", sortOrder);
         }
 
@@ -2252,9 +2337,15 @@ namespace BaseDeProjetos.Controllers
 
         private void SetarSearchStringNaSession(string searchString)
         {
-            if (searchString != null)
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                HttpContext.Session.Remove("searchString");
+                HttpContext.Session.Remove("_CurrentFilter");
+            }
+            else
             {
                 HttpContext.Session.SetString("searchString", searchString);
+                HttpContext.Session.SetString("_CurrentFilter", searchString);
             }
         }
 
@@ -2976,7 +3067,7 @@ namespace BaseDeProjetos.Controllers
         /// <param name="ano">Ano das prospecções</param>
         /// <param name="usuario">Usuário das prospecções</param>
         /// <returns></returns>
-        private async Task<List<Prospeccao>> ObterProspeccoesFunilFiltradas(string casa, string ano, Usuario usuario, string aba, string sortOrder, string searchString)
+        private async Task<List<Prospeccao>> ObterProspeccoesFunilFiltradas(string casa, string ano, Usuario usuario, string aba, string sortOrder, string searchString, string temperatura, string fomento)
         {
             int? tamanhoPagina = HttpContext.Session.GetInt32("tamanhoPagina");
 
@@ -2991,13 +3082,18 @@ namespace BaseDeProjetos.Controllers
 
             query = query.Where(p => p.Empresa != null);
 
-            if (!string.IsNullOrEmpty(ano))
+            if (!string.IsNullOrEmpty(ano) && !ano.Equals("Todos", StringComparison.OrdinalIgnoreCase))
             {
                 query = FunilHelpers.PeriodizarProspecçõesQuery(query, ano);
             }
 
             query = FunilHelpers.FiltrarProspecçõesQuery(query, searchString);
             query = FunilHelpers.OrdenarProspecçõesQuery(query, sortOrder);
+
+            if (!string.IsNullOrWhiteSpace(fomento) && Enum.TryParse(fomento, out TipoContratacao tipoContratacao))
+            {
+                query = query.Where(p => p.TipoContratacao == tipoContratacao);
+            }
 
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -3014,8 +3110,47 @@ namespace BaseDeProjetos.Controllers
                 );
             }
 
-            return await query.ToListAsync();
+            List<Prospeccao> prospeccoes = await query.ToListAsync();
 
+            if (!string.IsNullOrWhiteSpace(temperatura) && !temperatura.Equals("Todos", StringComparison.OrdinalIgnoreCase))
+            {
+                prospeccoes = prospeccoes
+                    .Where(prospeccao => ProspeccaoTemTemperatura(prospeccao, temperatura))
+                    .ToList();
+            }
+
+            return prospeccoes;
+
+        }
+
+        private static bool ProspeccaoTemTemperatura(Prospeccao prospeccao, string temperatura)
+        {
+            FollowUp ultimoStatus = prospeccao.Status?
+                .OrderBy(followup => followup.Data)
+                .ThenBy(followup => followup.Id)
+                .LastOrDefault();
+
+            if (ultimoStatus == null || ultimoStatus.Status == StatusProspeccao.Planejada)
+            {
+                return false;
+            }
+
+            int qtdDias = DateTime.Now.Subtract(ultimoStatus.Data).Days;
+            switch (temperatura.ToLowerInvariant())
+            {
+                case "quente":
+                    return qtdDias < 7;
+                case "morno":
+                    return qtdDias >= 7 && qtdDias <= 15;
+                case "esfriando":
+                    return qtdDias >= 16 && qtdDias <= 30;
+                case "frio":
+                    return qtdDias > 30 && qtdDias <= 365;
+                case "congelado":
+                    return qtdDias > 365;
+                default:
+                    return true;
+            }
         }
 
         /// <summary>

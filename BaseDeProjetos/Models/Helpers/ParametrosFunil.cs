@@ -15,7 +15,7 @@ namespace BaseDeProjetos.Models.Helpers
             Aba = session.GetString("aba");
             SearchString = session.GetString("searchString");
             NumeroPagina = session.GetInt32("numeroPagina") ?? 1;
-            TamanhoPagina = session.GetInt32("tamanhoPagina") ?? 20;
+            TamanhoPagina = session.GetInt32("tamanhoPagina") ?? 21;
             SortOrder = session.GetString("sortOrder");
         }
     }
