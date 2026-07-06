@@ -115,21 +115,6 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label asp-for="PrevisaoTempoProjetoMeses" class="form-label fw-semibold">
-                                        Previsão de tempo (meses)
-                                    </label>
-
-                                    <input asp-for="PrevisaoTempoProjetoMeses"
-                                           class="form-control"
-                                           type="number"
-                                           min="0"
-                                           step="1"
-                                           placeholder="Ex.: 12" />
-
-                                    <span asp-validation-for="PrevisaoTempoProjetoMeses" class="text-danger"></span>
-                                </div>
-
-                                <div class="col-md-4">
                                     <label asp-for="Origem" class="form-label fw-semibold">
                                         Iniciativa da prospecção <span class="text-danger">*</span>
                                     </label>
@@ -170,6 +155,34 @@
                                     </select>
 
                                     <span asp-validation-for="LinhaPequisa" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label asp-for="PrevisaoTempoProjetoMeses" class="form-label fw-semibold">
+                                        Previsão de tempo (meses)
+                                    </label>
+
+                                    <input asp-for="PrevisaoTempoProjetoMeses"
+                                           class="form-control"
+                                           type="number"
+                                           min="0"
+                                           step="1"
+                                           placeholder="Ex.: 12" />
+
+                                    <span asp-validation-for="PrevisaoTempoProjetoMeses" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-8">
+                                    <label asp-for="LinkArquivo" class="form-label fw-semibold">
+                                        Link para pasta ou documento do projeto
+                                    </label>
+
+                                    <input asp-for="LinkArquivo"
+                                           class="form-control"
+                                           type="text"
+                                           placeholder="Cole o link da pasta ou documento do projeto" />
+
+                                    <span asp-validation-for="LinkArquivo" class="text-danger"></span>
                                 </div>
 
                             </div>
