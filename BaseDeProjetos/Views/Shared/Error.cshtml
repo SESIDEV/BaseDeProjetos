@@ -2,6 +2,8 @@
 @model ErrorViewModel
 @{
     ViewData["Title"] = "Error";
+    var requestId = Model?.RequestId ?? Context?.TraceIdentifier;
+    var mensagem = Model?.Mensagem ?? "Nenhuma mensagem adicional foi informada.";
 }
 
 <div class="card">
@@ -20,16 +22,16 @@
 
             <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
                 <div class="card-body ">
-                    @if (Model.ShowRequestId)
+                    @if (!string.IsNullOrEmpty(requestId))
                     {
                         <p>
-                            <strong>Request ID:</strong> <code>@Model.RequestId</code>
+                            <strong>Request ID:</strong> <code>@requestId</code>
                         </p>
                     }
 
                     <h3>Para depuração</h3>
                     <p>
-                        @Model.Mensagem
+                        @mensagem
                     </p>
                 </div>
             </div>

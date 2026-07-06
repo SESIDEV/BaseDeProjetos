@@ -79,6 +79,12 @@ namespace BaseDeProjetos.Models
         [Display(Name = "Valor Estimado da Prospecção (R$)")]
         public virtual decimal ValorEstimado { get; set; } = 0;
 
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "R{0:C2}")]
+        [Display(Name = "Valor Final (R$)")]
+        public virtual decimal? ValorFinal { get; set; }
+
+        public virtual List<ProspeccaoValorComposicao> ComposicaoValores { get; set; } = new List<ProspeccaoValorComposicao>();
+
         public bool Equals([AllowNull] Prospeccao other)
         {
             if (other is null) return false;
@@ -136,6 +142,33 @@ namespace BaseDeProjetos.Models
 			return membrosEquipe;
 		}
 	}
+
+    [Table("prospeccao_valor_composicao")]
+    public class ProspeccaoValorComposicao
+    {
+        [Key]
+        public virtual int Id { get; set; }
+
+        [ForeignKey("ProspeccaoId")]
+        public virtual Prospeccao Prospeccao { get; set; }
+
+        public virtual string ProspeccaoId { get; set; }
+
+        [Display(Name = "Origem do valor")]
+        public virtual string Origem { get; set; }
+
+        [Display(Name = "Tipo")]
+        public virtual string Tipo { get; set; }
+
+        [Display(Name = "Natureza")]
+        public virtual string Natureza { get; set; }
+
+        [Display(Name = "Valor (R$)")]
+        public virtual decimal? Valor { get; set; }
+
+        [Display(Name = "Observação")]
+        public virtual string Observacao { get; set; }
+    }
 
     public class FollowUp
     {

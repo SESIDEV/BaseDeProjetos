@@ -14,6 +14,7 @@ namespace BaseDeProjetos.Data
         public DbSet<CurvaFisicoFinanceira> CurvaFisicoFinanceira { get; set; }
         public DbSet<Projeto> Projeto { get; set; }
         public DbSet<Prospeccao> Prospeccao { get; set; }
+        public DbSet<ProspeccaoValorComposicao> ProspeccaoValorComposicao { get; set; }
         public DbSet<FollowUp> FollowUp { get; set; }
         public DbSet<Empresa> Empresa { get; set; }
         public DbSet<Pessoa> Pessoa { get; set; }
@@ -42,6 +43,12 @@ namespace BaseDeProjetos.Data
 
             builder.Entity<IndicadoresReceitaGestor>()
                 .HasIndex(i => new { i.Casa, i.AnoBase, i.Ordem });
+
+            builder.Entity<ProspeccaoValorComposicao>()
+                .HasOne(v => v.Prospeccao)
+                .WithMany(p => p.ComposicaoValores)
+                .HasForeignKey(v => v.ProspeccaoId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
