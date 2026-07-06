@@ -1010,13 +1010,35 @@ namespace BaseDeProjetos.Controllers
                 ViewBag.Temperatura = temperatura;
                 ViewBag.Fomento = fomento;
                 
-                List<Prospeccao> prospeccoes = await ObterProspeccoesFunilFiltradas(casa, ano, UsuarioAtivo, aba, sortOrder, searchString, temperatura, fomento);
+                bool abaSegmentos = aba.Equals("segmentos", StringComparison.OrdinalIgnoreCase);
+                string abaConsulta = abaSegmentos ? string.Empty : aba;
+                List<Prospeccao> prospeccoes = await ObterProspeccoesFunilFiltradas(casa, ano, UsuarioAtivo, abaConsulta, sortOrder, searchString, temperatura, fomento);
+                if (abaSegmentos)
+                {
+                    prospeccoes = prospeccoes
+                        .Where(prospeccao => prospeccao.Status != null
+                            && prospeccao.Status.Any()
+                            && prospeccao.Status.OrderBy(followup => followup.Data).ThenBy(followup => followup.Id).Last().Status != StatusProspeccao.Planejada)
+                        .ToList();
+                }
+                List<Prospeccao> prospeccoesFunilCompleto = prospeccoes;
+                if (!abaIndicadores && !abaPlanejamentoIndicadores && !abaReceitasIndicadores && !abaSegmentos)
+                {
+                    prospeccoesFunilCompleto = await ObterProspeccoesFunilFiltradas(casa, ano, UsuarioAtivo, string.Empty, sortOrder, searchString, temperatura, fomento);
+                    prospeccoesFunilCompleto = prospeccoesFunilCompleto
+                        .Where(prospeccao => prospeccao.Status != null
+                            && prospeccao.Status.Any())
+                        .ToList();
+                }
                 var quantidadesAbas = abaIndicadores || abaPlanejamentoIndicadores || abaReceitasIndicadores
-                    ? (Ativas: 0, ComProposta: 0, Concluidas: 0)
+                    ? (Planejadas: 0, Ativas: 0, ComProposta: 0, Contratacao: 0, Encerradas: 0)
                     : await ObterQuantidadesAbasFunil(casa, ano, UsuarioAtivo, sortOrder, searchString, temperatura, fomento);
+                ViewBag.ProspeccoesPlanejadasCount = quantidadesAbas.Planejadas;
                 ViewBag.ProspeccoesAtivasCount = quantidadesAbas.Ativas;
                 ViewBag.ProspeccoesComProposta = quantidadesAbas.ComProposta;
-                ViewBag.ProspeccoesConcluidas = quantidadesAbas.Concluidas;
+                ViewBag.ProspeccoesContratacao = quantidadesAbas.Contratacao;
+                ViewBag.ProspeccoesEncerradas = quantidadesAbas.Encerradas;
+                ViewBag.ProspeccoesConcluidas = quantidadesAbas.Contratacao + quantidadesAbas.Encerradas;
 
                 int qtdProspeccoes = prospeccoes.Count();
                 int qtdPaginasTodo = (int)Math.Ceiling((double)qtdProspeccoes / tamanhoPagina);
@@ -1035,12 +1057,15 @@ namespace BaseDeProjetos.Controllers
                     }
 
                 await InserirDadosEmpresasUsuariosViewData();
-                List<Prospeccao> prospeccoesPagina = ObterProspeccoesPorPagina(prospeccoes, numeroPagina, tamanhoPagina);
+                List<Prospeccao> prospeccoesPagina = abaSegmentos
+                    ? prospeccoes
+                    : ObterProspeccoesPorPagina(prospeccoes, numeroPagina, tamanhoPagina);
 
 
                 var model = new ProspeccoesViewModel
                 {
                     Prospeccoes = prospeccoesPagina,
+                    ProspeccoesGrafico = prospeccoesFunilCompleto,
                     Pager = pager,
                 };
 
@@ -1056,7 +1081,7 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
-        private async Task<(int Ativas, int ComProposta, int Concluidas)> ObterQuantidadesAbasFunil(string casa, string ano, Usuario usuario, string sortOrder, string searchString, string temperatura, string fomento)
+        private async Task<(int Planejadas, int Ativas, int ComProposta, int Contratacao, int Encerradas)> ObterQuantidadesAbasFunil(string casa, string ano, Usuario usuario, string sortOrder, string searchString, string temperatura, string fomento)
         {
             IQueryable<Prospeccao> query =
                 FunilHelpers.DefinirCasaParaVisualizarQuery(
@@ -1090,6 +1115,12 @@ namespace BaseDeProjetos.Controllers
                     .ToList();
             }
 
+            int planejadas = prospeccoes.Count(prospeccao =>
+            {
+                FollowUp ultimoStatus = ObterUltimoStatusProspeccao(prospeccao);
+                return ultimoStatus != null && ultimoStatus.Status == StatusProspeccao.Planejada;
+            });
+
             int ativas = prospeccoes.Count(prospeccao =>
             {
                 FollowUp ultimoStatus = ObterUltimoStatusProspeccao(prospeccao);
@@ -1101,15 +1132,18 @@ namespace BaseDeProjetos.Controllers
                 !prospeccao.Status.Any(s => s.Status == StatusProspeccao.Convertida || s.Status == StatusProspeccao.NaoConvertida || s.Status == StatusProspeccao.Suspensa)
             );
 
-            int concluidas = prospeccoes.Count(prospeccao =>
+            int contratacao = prospeccoes.Count(prospeccao =>
+                prospeccao.Status.Any(s => s.Status == StatusProspeccao.Convertida)
+            );
+
+            int encerradas = prospeccoes.Count(prospeccao =>
                 prospeccao.Status.Any(s =>
-                    s.Status == StatusProspeccao.Convertida ||
                     s.Status == StatusProspeccao.Suspensa ||
                     s.Status == StatusProspeccao.NaoConvertida
                 )
             );
 
-            return (ativas, comProposta, concluidas);
+            return (planejadas, ativas, comProposta, contratacao, encerradas);
         }
 
         private static FollowUp ObterUltimoStatusProspeccao(Prospeccao prospeccao)

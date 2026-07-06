@@ -1,0 +1,113 @@
+@model BaseDeProjetos.Models.ViewModels.ProspeccoesViewModel
+@using BaseDeProjetos.Helpers
+@using BaseDeProjetos.Models
+@using BaseDeProjetos.Models.Enums
+@using System.Linq
+
+@{
+    List<Prospeccao> prospeccoes = (Model.ProspeccoesGrafico ?? Model.Prospeccoes ?? new List<Prospeccao>())
+        .Where(prospeccao => prospeccao.Empresa != null && prospeccao.Status != null && prospeccao.Status.Any())
+        .ToList();
+
+    Func<Prospeccao, StatusProspeccao?> obterUltimoStatus = prospeccao =>
+    {
+        FollowUp ultimoStatus = prospeccao.Status
+            .OrderBy(followup => followup.Data)
+            .ThenBy(followup => followup.Id)
+            .LastOrDefault();
+
+        return ultimoStatus?.Status;
+    };
+
+    Func<Prospeccao, bool> passouPorProspecao = prospeccao =>
+    {
+        StatusProspeccao? ultimoStatus = obterUltimoStatus(prospeccao);
+        return ultimoStatus.HasValue && ultimoStatus.Value != StatusProspeccao.Planejada;
+    };
+
+    Func<Prospeccao, bool> passouPorNegociacao = prospeccao =>
+        prospeccao.Status.Any(status => status.Status == StatusProspeccao.ComProposta)
+        || prospeccao.Status.Any(status => status.Status == StatusProspeccao.Convertida);
+
+    Func<Prospeccao, bool> passouPorContratacao = prospeccao =>
+        prospeccao.Status.Any(status => status.Status == StatusProspeccao.Convertida);
+
+    var etapaProspeccao = prospeccoes.Where(passouPorProspecao).ToList();
+    var etapaNegociacao = prospeccoes.Where(passouPorNegociacao).ToList();
+    var etapaContratacao = prospeccoes.Where(passouPorContratacao).ToList();
+    var prospeccoesFunil = etapaProspeccao
+        .Concat(etapaNegociacao)
+        .Concat(etapaContratacao)
+        .GroupBy(prospeccao => prospeccao.Id)
+        .Select(grupo => grupo.First())
+        .ToList();
+
+    var etapas = new[]
+    {
+        new { Nome = "Prospec&ccedil;&atilde;o", Descricao = "J&aacute; entrou no funil ativo", Icone = "bi bi-bullseye", Classe = "prospeccao", Largura = "100%", Lista = etapaProspeccao },
+        new { Nome = "Em Negocia&ccedil;&atilde;o", Descricao = "J&aacute; teve proposta", Icone = "bi bi-chat-square-text", Classe = "negociacao", Largura = "78%", Lista = etapaNegociacao },
+        new { Nome = "Contrata&ccedil;&atilde;o", Descricao = "J&aacute; converteu", Icone = "bi bi-file-earmark-check", Classe = "contratacao", Largura = "56%", Lista = etapaContratacao }
+    };
+
+    int totalSegmentos = prospeccoesFunil.Select(prospeccao => prospeccao.Empresa.Segmento).Distinct().Count();
+}
+
+<div class="funil-segmentos-view">
+    <div class="funil-segmentos-summary">
+        <div>
+            <span>Vis&atilde;o por segmento</span>
+            <strong>@totalSegmentos segmentos no funil</strong>
+        </div>
+        <div>
+            <span>Total filtrado</span>
+            <strong>@prospeccoesFunil.Count prospec&ccedil;&otilde;es</strong>
+        </div>
+    </div>
+
+    <div class="funil-segmentos-funnel">
+        @foreach (var etapa in etapas)
+        {
+            var segmentos = etapa.Lista
+                .GroupBy(prospeccao => prospeccao.Empresa.Segmento)
+                .Select(grupo => new { Segmento = grupo.Key, Total = grupo.Count() })
+                .OrderByDescending(grupo => grupo.Total)
+                .ThenBy(grupo => grupo.Segmento.GetDisplayName())
+                .ToList();
+
+            <section class="funil-segmentos-stage funil-segmentos-stage-@etapa.Classe" style="--stage-width: @etapa.Largura;">
+                <header class="funil-segmentos-stage-header">
+                    <span class="funil-segmentos-stage-icon">
+                        <i class="@etapa.Icone"></i>
+                    </span>
+                    <div>
+                        <h3>@Html.Raw(etapa.Nome)</h3>
+                        <p>@Html.Raw(etapa.Descricao) &middot; @etapa.Lista.Count prospec&ccedil;&otilde;es &middot; @segmentos.Count segmentos</p>
+                    </div>
+                </header>
+
+                @if (segmentos.Count == 0)
+                {
+                    <div class="funil-segmentos-empty">
+                        Nenhum segmento nesta etapa.
+                    </div>
+                }
+                else
+                {
+                    <div class="funil-segmentos-list">
+                        @foreach (var segmento in segmentos)
+                        {
+                            string segmentoNome = segmento.Segmento.GetDisplayName();
+                            <div class="funil-segmentos-pill" title="@segmentoNome">
+                                <span class="funil-segmentos-pill-icon">
+                                    <i class="@segmento.Segmento.GetIconClass()"></i>
+                                </span>
+                                <span class="funil-segmentos-pill-name">@segmentoNome</span>
+                                <strong>@segmento.Total</strong>
+                            </div>
+                        }
+                    </div>
+                }
+            </section>
+        }
+    </div>
+</div>

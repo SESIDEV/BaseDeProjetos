@@ -138,36 +138,23 @@ namespace BaseDeProjetos.Helpers
                     ).ToList();
 
                 case "concluidas":
+                case "contratacao":
                     return prospeccoes.Where(prospeccao => prospeccao.Status.Any(followup =>
-                            followup.Status == StatusProspeccao.Convertida ||
+                            followup.Status == StatusProspeccao.Convertida
+                        )).ToList();
+
+                case "encerradas":
+                    return prospeccoes.Where(prospeccao => prospeccao.Status.Any(followup =>
                             followup.Status == StatusProspeccao.Suspensa ||
                             followup.Status == StatusProspeccao.NaoConvertida
                         )).ToList();
 
                 case "planejadas":
-                    if (parametros.Usuario.Nivel == Nivel.Dev)
-                    {
-                        List<Prospeccao> prospeccoesDoUsuario = new List<Prospeccao>();
-                        foreach (var prospeccao in prospeccoes)
-                        {
-                            try
-                            {
-                                if (prospeccao.Usuario.UserName == parametros.HttpContext.User.Identity.Name)
-                                {
-                                    prospeccoesDoUsuario.Add(prospeccao);
-                                }
-                            }
-                            catch (NullReferenceException)
-                            {
-                                continue;
-                            }
-                        }
-                        return prospeccoesDoUsuario;
-                    }
-                    else
-                    {
-                        return prospeccoes.Where(p => p.Usuario.UserName == parametros.HttpContext.User.Identity.Name).ToList();
-                    }
+                    return prospeccoes.Where(prospeccao => prospeccao.Status
+                        .OrderBy(followup => followup.Data).ThenBy(followup => followup.Id)
+                        .LastOrDefault()
+                        .Status == StatusProspeccao.Planejada)
+                        .ToList();
 
                 default:
                     return new List<Prospeccao>(); // In case no case matches
@@ -311,17 +298,27 @@ namespace BaseDeProjetos.Helpers
                     );
 
                 case "concluidas":
+                case "contratacao":
                     return query.Where(p =>
                         p.Status.Any(s =>
-                            s.Status == StatusProspeccao.Convertida ||
+                            s.Status == StatusProspeccao.Convertida
+                        )
+                    );
+
+                case "encerradas":
+                    return query.Where(p =>
+                        p.Status.Any(s =>
                             s.Status == StatusProspeccao.Suspensa ||
                             s.Status == StatusProspeccao.NaoConvertida
                         )
                     );
 
                 case "planejadas":
-                    string user = parametros.HttpContext.User.Identity.Name;
-                    return query.Where(p => p.Usuario.UserName == user);
+                    return query.Where(p =>
+                        p.Status
+                            .OrderBy(s => s.Data).ThenBy(s => s.Id)
+                            .LastOrDefault().Status == StatusProspeccao.Planejada
+                    );
 
                 default:
                     return query;

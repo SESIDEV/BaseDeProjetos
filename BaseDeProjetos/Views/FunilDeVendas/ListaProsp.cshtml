@@ -34,6 +34,10 @@
 
 <div class="funil-view-toolbar d-none">
     <div class="btn-group" role="group" aria-label="Tipo de visualização">
+        <button type="button" class="btn btn-outline-primary funil-view-toggle" data-view="funil">
+            <i class="bi bi-filter"></i>
+            Funil
+        </button>
         <button type="button" class="btn btn-outline-primary funil-view-toggle" data-view="kanban">
             <i class="bi bi-kanban"></i>
             Kanban
@@ -87,9 +91,10 @@
             const storageKey = 'funil-view-mode';
             const toggles = document.querySelectorAll('.funil-view-toggle');
             const panels = document.querySelectorAll('.funil-view-panel');
+            const pagination = document.querySelector('[data-funil-pagination]');
 
             function setView(view) {
-                const allowedViews = ['kanban', 'cards', 'tabela'];
+                const allowedViews = ['kanban', 'funil', 'cards', 'tabela'];
                 const resolvedView = allowedViews.includes(view) ? view : 'tabela';
 
                 panels.forEach((panel) => {
@@ -104,6 +109,10 @@
                     toggle.setAttribute('aria-pressed', active ? 'true' : 'false');
                 });
 
+                if (pagination) {
+                    pagination.classList.toggle('d-none', resolvedView === 'funil');
+                }
+
                 localStorage.setItem(storageKey, resolvedView);
             }
 
@@ -117,6 +126,10 @@
         })();
     });
 </script>
+
+<div class="funil-view-panel d-none" data-funil-view="funil">
+    @await Html.PartialAsync("_SegmentosFunil", Model)
+</div>
 
 <div class="funil-view-panel funil-kanban-board" data-funil-view="kanban">
     @{
@@ -198,7 +211,7 @@
                         ? $"R$ {Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorProposta)}"
                         : prospeccao.ValorEstimado != 0
                             ? $"R$ {Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorEstimado)}"
-                            : "Valor n&atilde;o informado";
+                            : "&mdash;";
                     var equipeKanban = new List<string>();
                     var nomeLiderKanban = !string.IsNullOrWhiteSpace(prospeccao.LiderNome) ? prospeccao.LiderNome : prospeccao.Usuario?.UserName;
                     if (!string.IsNullOrWhiteSpace(nomeLiderKanban))
@@ -216,7 +229,15 @@
                         <div class="funil-card-topline"></div>
                         <div class="funil-card-header">
                             <div>
-                                <h3>@(prospeccao?.Empresa?.Nome ?? "Sem empresa")</h3>
+                                <h3 class="funil-company-title">
+                                    @if (prospeccao.Empresa != null)
+                                    {
+                                        <span class="funil-segment-icon" title="@prospeccao.Empresa.Segmento.GetDisplayName()">
+                                            <i class="@prospeccao.Empresa.Segmento.GetIconClass()"></i>
+                                        </span>
+                                    }
+                                    <span>@(prospeccao?.Empresa?.Nome ?? "Sem empresa")</span>
+                                </h3>
                                 <p>@(!string.IsNullOrWhiteSpace(prospeccao.NomeProspeccao) ? prospeccao.NomeProspeccao : "A definir")</p>
                             </div>
                         </div>
@@ -281,7 +302,7 @@
             ? $"R$ {Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorProposta)}"
             : prospeccao.ValorEstimado != 0
                 ? $"R$ {Helpers.FormatarValoresDashboards((decimal)prospeccao.ValorEstimado)}"
-                : "Valor n&atilde;o informado";
+                : "&mdash;";
         var equipeCard = new List<string>();
         var nomeLiderCard = !string.IsNullOrWhiteSpace(prospeccao.LiderNome) ? prospeccao.LiderNome : prospeccao.Usuario?.UserName;
         if (!string.IsNullOrWhiteSpace(nomeLiderCard))
@@ -299,7 +320,15 @@
             <div class="funil-card-topline"></div>
             <div class="funil-card-header">
                 <div>
-                    <h3>@(prospeccao?.Empresa?.Nome ?? "Sem empresa")</h3>
+                    <h3 class="funil-company-title">
+                        @if (prospeccao.Empresa != null)
+                        {
+                            <span class="funil-segment-icon" title="@prospeccao.Empresa.Segmento.GetDisplayName()">
+                                <i class="@prospeccao.Empresa.Segmento.GetIconClass()"></i>
+                            </span>
+                        }
+                        <span>@(prospeccao?.Empresa?.Nome ?? "Sem empresa")</span>
+                    </h3>
                     <p>@(!string.IsNullOrWhiteSpace(prospeccao.NomeProspeccao) ? prospeccao.NomeProspeccao : "A definir")</p>
                 </div>
                 @if (ultimoStatusCard.Status != StatusProspeccao.Planejada)
@@ -425,15 +454,23 @@
                                         -->
                                         <div class="funil-table-company-name">
                                             @*NOME EMPRESA*@
-                                        <strong>
-                                                @(prospeccao?.Empresa?.Nome?.ToLower() ?? "sem empresa")
-                                        </strong>
+                                            <strong class="funil-company-title">
+                                                @if (prospeccao.Empresa != null)
+                                                {
+                                                    <span class="funil-segment-icon" title="@prospeccao.Empresa.Segmento.GetDisplayName()">
+                                                        <i class="@prospeccao.Empresa.Segmento.GetIconClass()"></i>
+                                                    </span>
+                                                }
+                                                <span>@(prospeccao?.Empresa?.Nome?.ToLower() ?? "sem empresa")</span>
+                                            </strong>
                                         </div>
                                          <div class="funil-table-alerts">
                                             @*ICONES*@
                                             @if (prospeccao.Empresa.Industrial == false)
                                             {
-                                                <span id="tip_ind" class="translate-top-left badge rounded-circle bg-danger" data-tippy-content="<center>Esta empresa não possui<br>CNAE Industrial</center>">!</span>
+                                                <span id="tip_ind" class="cnae-soft-alert" data-tippy-content="<center>Esta empresa não possui<br>CNAE Industrial</center>">
+                                                    <i class="bi bi-info"></i>
+                                                </span>
                                             }
                                             @if (prospeccao.Ancora == true)
                                             {
@@ -511,7 +548,7 @@
                                     }
                                     else
                                     {
-                                        <span>Valor não informado</span>
+                      <span>&mdash;</span>
                                     }
                                 </td>
                                 @* <td class="cell">
@@ -553,11 +590,31 @@
                                                 <div class="prospeccao-details-heading">
                                                     <span>Prospec&ccedil;&atilde;o</span>
                                                     <h3>@prospeccao.NomeProspeccao</h3>
-                                                    <p>@prospeccao.Empresa.Nome</p>
+                                                    <p class="funil-company-title">
+                                                        @if (prospeccao.Empresa != null)
+                                                        {
+                                                            <span class="funil-segment-icon" title="@prospeccao.Empresa.Segmento.GetDisplayName()">
+                                                                <i class="@prospeccao.Empresa.Segmento.GetIconClass()"></i>
+                                                            </span>
+                                                        }
+                                                        <span>@prospeccao.Empresa.Nome</span>
+                                                    </p>
                                                 </div>
                                                 <div class="prospeccao-details-grid">
                                                     <div class="prospeccao-detail-block"><span>ID</span><strong>@prospeccao.Id</strong></div>
                                                     <div class="prospeccao-detail-block"><span>Empresa</span><strong>@prospeccao.Empresa.Nome</strong></div>
+                                                    <div class="prospeccao-detail-block">
+                                                        <span>Segmento</span>
+                                                        <strong class="funil-company-title">
+                                                            @if (prospeccao.Empresa != null)
+                                                            {
+                                                                <span class="funil-segment-icon" title="@prospeccao.Empresa.Segmento.GetDisplayName()">
+                                                                    <i class="@prospeccao.Empresa.Segmento.GetIconClass()"></i>
+                                                                </span>
+                                                                <span>@prospeccao.Empresa.Segmento.GetDisplayName()</span>
+                                                            }
+                                                        </strong>
+                                                    </div>
                                                     <div class="prospeccao-detail-block"><span>L&iacute;der</span><strong>@Html.Raw(liderDetalhe)</strong></div>
                                                     <div class="prospeccao-detail-block"><span>Origem</span><strong>@prospeccao.Origem.GetDisplayName()</strong></div>
                                                     <div class="prospeccao-detail-block detail-span-2"><span>Linha de pesquisa</span><strong>@prospeccao.LinhaPequisa.GetDisplayName()</strong></div>
@@ -595,7 +652,7 @@
                                                         }
                                                         else
                                                         {
-                                                            <strong>Valor n&atilde;o informado</strong>
+                                          <strong>&mdash;</strong>
                                                         }
                                                     </div>
                                                     <div class="prospeccao-value-block">
@@ -606,7 +663,7 @@
                                                         }
                                                         else
                                                         {
-                                                            <strong>Valor n&atilde;o informado</strong>
+                                          <strong>&mdash;</strong>
                                                         }
                                                     </div>
                                                 </div>
@@ -663,7 +720,7 @@
                                         }
                                         else
                                         {
-                                            <span>Valor não informado</span>
+                          <span>&mdash;</span>
                                         }
                                         <h1 class="app-card-title">Valor Estimado:</h1>
                                         <nobr>
@@ -673,7 +730,7 @@
                                             }
                                             else
                                             {
-                                                <span>Valor não informado</span>
+                              <span>&mdash;</span>
                                             }
                                         </nobr>
                                         <h1 class="app-card-title">Valor Proposta:</h1>
@@ -684,7 +741,7 @@
                                             }
                                             else
                                             {
-                                                <span>Valor não informado</span>
+                              <span>&mdash;</span>
                                             }
                                         </nobr>
                                         <div class="prospeccao-status-box">

@@ -53,8 +53,16 @@
                     <hr />
                     <div class="form-group">
                         <label asp-for="Segmento" class="control-label text-danger fw-bold"></label>
-                        <select asp-for="Segmento" class="form-control" onclick="adicionarListenerVerificacao(this, validarSegmento)" asp-items="Html.GetEnumSelectList<SegmentoEmpresa>().OrderBy(p=>p.Text)" required>
+                        <select asp-for="Segmento" class="form-control segmento-select" onclick="adicionarListenerVerificacao(this, validarSegmento)" asp-items="Html.GetEnumSelectList<SegmentoEmpresa>().OrderBy(p=>p.Text)" required>
                         </select>
+                        <div class="segmento-preview" data-segmento-preview>
+                            <span class="segmento-chip">
+                                <span class="segmento-chip__icon">
+                                    <i class="@BaseDeProjetos.Helpers.SegmentoEmpresaIconHelper.GetIconClass(Model.Segmento)"></i>
+                                </span>
+                                <span>@Model.Segmento.GetDisplayName()</span>
+                            </span>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -74,6 +82,38 @@
     function validarSegmento(segmento) {
         return segmento.value && segmento.value != "-1";
     }
+
+    window.segmentosEmpresaIcones = window.segmentosEmpresaIcones || {
+        @foreach (SegmentoEmpresa segmento in Enum.GetValues(typeof(SegmentoEmpresa)))
+        {
+            <text>"@((int)segmento)": { icon: "@BaseDeProjetos.Helpers.SegmentoEmpresaIconHelper.GetIconClass(segmento)", name: "@segmento.GetDisplayName()" },</text>
+        }
+    };
+
+    window.atualizarPreviewSegmentoEmpresa = window.atualizarPreviewSegmentoEmpresa || function (select) {
+        const preview = select.closest('.form-group')?.querySelector('[data-segmento-preview]');
+        const segmento = window.segmentosEmpresaIcones?.[select.value];
+
+        if (!preview || !segmento) {
+            return;
+        }
+
+        preview.innerHTML = `
+            <span class="segmento-chip">
+                <span class="segmento-chip__icon">
+                    <i class="${segmento.icon}"></i>
+                </span>
+                <span>${segmento.name}</span>
+            </span>`;
+    };
+
+    document.addEventListener('change', function (event) {
+        if (event.target.classList.contains('segmento-select')) {
+            window.atualizarPreviewSegmentoEmpresa(event.target);
+        }
+    });
+
+    document.querySelectorAll('.segmento-select').forEach(window.atualizarPreviewSegmentoEmpresa);
 </script>
 
 @section Scripts {

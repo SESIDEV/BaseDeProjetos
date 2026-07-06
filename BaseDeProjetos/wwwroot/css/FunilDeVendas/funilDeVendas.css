@@ -397,7 +397,61 @@ label.required::after {
 }
 
 .funil-table-company-name strong {
+    align-items: center;
+    display: inline-flex;
+    gap: .4rem;
     font-weight: 700;
+}
+
+.funil-table-company-name .funil-company-title {
+    line-height: 1.2;
+}
+
+.funil-table-company-name .funil-segment-icon {
+    font-size: .68rem;
+    height: 1.25rem;
+    width: 1.25rem;
+}
+
+.funil-company-title {
+    align-items: center;
+    display: inline-flex;
+    gap: .4rem;
+    max-width: 100%;
+}
+
+.funil-company-title > span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.funil-segment-icon {
+    align-items: center;
+    background: #f8fafc;
+    border: 1px solid #dbe5ef;
+    border-radius: 999px;
+    color: #45617d;
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-size: .72rem;
+    height: 1.45rem;
+    justify-content: center;
+    width: 1.45rem;
+}
+
+.funil-segment-icon i {
+    align-items: center;
+    display: inline-flex;
+    height: 100%;
+    justify-content: center;
+    line-height: 1;
+    width: 100%;
+}
+
+.funil-segment-icon i::before {
+    line-height: 1;
+    margin: 0;
+    vertical-align: middle;
 }
 
 .funil-table-alerts {
@@ -407,6 +461,29 @@ label.required::after {
 .funil-table-alerts .badge {
     font-size: .6rem;
     line-height: 1;
+}
+
+.cnae-soft-alert {
+    align-items: center;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: 999px;
+    color: #9a5b13;
+    display: inline-flex;
+    font-size: .65rem;
+    height: 1.05rem;
+    justify-content: center;
+    line-height: 1;
+    width: 1.05rem;
+}
+
+.cnae-soft-alert i {
+    align-items: center;
+    display: inline-flex;
+    height: 100%;
+    justify-content: center;
+    line-height: 1;
+    width: 100%;
 }
 
 .funil-table-team {
@@ -1288,5 +1365,288 @@ label.required::after {
 
     .prospeccao-details-actions-panel {
         grid-template-columns: 1fr;
+    }
+}
+
+.funil-segmentos-view {
+    display: grid;
+    gap: 1rem;
+}
+
+.funil-segmentos-summary {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .9rem 1rem;
+    border: 1px solid #dce6f2;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, .05);
+}
+
+.funil-segmentos-summary div {
+    display: grid;
+    gap: .15rem;
+}
+
+.funil-segmentos-summary span,
+.funil-segmentos-stage-header p {
+    color: #64748b;
+    font-size: .78rem;
+    font-weight: 700;
+}
+
+.funil-segmentos-summary strong {
+    color: #0f172a;
+    font-size: 1rem;
+}
+
+.funil-segmentos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.funil-segmentos-stage {
+    min-height: 360px;
+    padding: 1rem;
+    border: 1px solid #dce6f2;
+    border-top: 4px solid #0d6efd;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, .05);
+}
+
+.funil-segmentos-stage-prospeccao {
+    border-top-color: #22c55e;
+}
+
+.funil-segmentos-stage-negociacao {
+    border-top-color: #f59e0b;
+}
+
+.funil-segmentos-stage-contratacao {
+    border-top-color: #2563eb;
+}
+
+.funil-segmentos-stage-header {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin-bottom: 1rem;
+    padding-bottom: .85rem;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.funil-segmentos-stage-icon {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 34px;
+    border-radius: 50%;
+    background: #eef6ff;
+    color: #1d4ed8;
+    font-size: 1rem;
+}
+
+.funil-segmentos-stage-header h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.funil-segmentos-stage-header p {
+    margin: .15rem 0 0;
+}
+
+.funil-segmentos-list {
+    display: grid;
+    gap: .55rem;
+}
+
+.funil-segmentos-pill {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: .6rem;
+    padding: .55rem .65rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.funil-segmentos-pill-icon {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dbeafe;
+    border-radius: 50%;
+    background: #fff;
+    color: #2563eb;
+    font-size: .95rem;
+}
+
+.funil-segmentos-pill-name {
+    min-width: 0;
+    color: #1f2937;
+    font-size: .86rem;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.funil-segmentos-pill strong {
+    min-width: 28px;
+    padding: .18rem .45rem;
+    border-radius: 999px;
+    background: #e8f1ff;
+    color: #1d4ed8;
+    font-size: .78rem;
+    font-weight: 800;
+    text-align: center;
+}
+
+.funil-segmentos-empty {
+    padding: 1rem;
+    border: 1px dashed #dbe4ef;
+    border-radius: 8px;
+    color: #64748b;
+    font-size: .88rem;
+    text-align: center;
+}
+
+@media (max-width: 1100px) {
+    .funil-segmentos-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 680px) {
+    .funil-segmentos-summary {
+        flex-direction: column;
+    }
+}
+
+.funil-segmentos-funnel {
+    display: grid;
+    gap: .75rem;
+    justify-items: center;
+    margin-bottom: 2rem;
+}
+
+.funil-segmentos-funnel .funil-segmentos-stage {
+    position: relative;
+    width: var(--stage-width);
+    max-width: 100%;
+    min-width: 520px;
+    min-height: 132px;
+    margin: 0 auto;
+    padding: 1rem 2.4rem;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    overflow: visible;
+}
+
+.funil-segmentos-funnel .funil-segmentos-stage::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border: 1px solid #dbe5ef;
+    border-radius: 12px;
+    background: #f8fafc;
+    clip-path: polygon(4% 0, 96% 0, 88% 100%, 12% 100%);
+    box-shadow: 0 5px 16px rgba(15, 23, 42, .06);
+}
+
+.funil-segmentos-funnel .funil-segmentos-stage-prospeccao::before {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+.funil-segmentos-funnel .funil-segmentos-stage-planejadas::before {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    border-style: dashed;
+}
+
+.funil-segmentos-funnel .funil-segmentos-stage-negociacao::before {
+    background: #fffbeb;
+    border-color: #fde68a;
+}
+
+.funil-segmentos-funnel .funil-segmentos-stage-contratacao::before {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.funil-segmentos-funnel .funil-segmentos-stage-encerradas::before {
+    background: #fff7ed;
+    border-color: #fed7aa;
+    border-style: dashed;
+}
+
+.funil-segmentos-funnel .funil-segmentos-stage-header,
+.funil-segmentos-funnel .funil-segmentos-list,
+.funil-segmentos-funnel .funil-segmentos-empty {
+    position: relative;
+    z-index: 1;
+}
+
+.funil-segmentos-funnel .funil-segmentos-stage-header {
+    margin-bottom: .75rem;
+    padding-bottom: .6rem;
+    border-bottom-color: rgba(100, 116, 139, .18);
+}
+
+.funil-segmentos-funnel .funil-segmentos-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: .45rem;
+}
+
+.funil-segmentos-funnel .funil-segmentos-pill {
+    width: auto;
+    max-width: 230px;
+    grid-template-columns: 26px minmax(80px, 1fr) auto;
+    padding: .42rem .55rem;
+    border-color: rgba(148, 163, 184, .35);
+    background: rgba(255, 255, 255, .78);
+    backdrop-filter: blur(2px);
+}
+
+.funil-segmentos-funnel .funil-segmentos-pill-icon {
+    width: 24px;
+    height: 24px;
+    font-size: .82rem;
+}
+
+.funil-segmentos-funnel .funil-segmentos-pill-name {
+    font-size: .78rem;
+}
+
+.funil-segmentos-funnel .funil-segmentos-pill strong {
+    min-width: 24px;
+    font-size: .72rem;
+}
+
+@media (max-width: 900px) {
+    .funil-segmentos-funnel .funil-segmentos-stage {
+        width: 100%;
+        min-width: 0;
+        padding: 1rem 1.1rem;
+    }
+
+    .funil-segmentos-funnel .funil-segmentos-stage::before {
+        clip-path: none;
     }
 }
