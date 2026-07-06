@@ -1,11 +1,11 @@
-﻿@model BaseDeProjetos.Models.Prospeccao
+@model BaseDeProjetos.Models.Prospeccao
 @using BaseDeProjetos.Models.Enums
 @using Microsoft.AspNetCore.Http
 @using BaseDeProjetos.Models
 @using BaseDeProjetos.Models.DTOs
 
 @{
-    ViewData["Title"] = "Adicionar Prospecção";
+    ViewData["Title"] = "Adicionar Prospeccao";
 
     if (Context.Session.GetString("_Casa") != null)
     {
@@ -13,6 +13,7 @@
     }
 
     var unique_id = $"prosp_{DateTime.Now.Ticks}";
+    var prospeccoesRelacionadas = ViewData["ProspeccoesRelacionadas"] as List<Prospeccao> ?? new List<Prospeccao>();
 }
 
 <script src="~/js/FunildeVendas/modalCreateProsp.js" asp-append-version="true"></script>
@@ -25,13 +26,104 @@
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h5 class="modal-title fw-semibold">NOVA PROSPECÇÃO</h5>
+                    <h5 class="modal-title fw-semibold">NOVA PROSPEC&Ccedil;&Atilde;O</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
                 <div class="modal-body">
 
                     <input asp-for="Id" type="hidden" value="@unique_id" />
+                    <input asp-for="ProspeccaoPrincipalId" type="hidden" id="ProspeccaoPrincipalId" />
+
+                    <div class="card mb-3">
+                        <div class="card-header fw-semibold">RELA&Ccedil;&Atilde;O COM OUTRA PROSPEC&Ccedil;&Atilde;O</div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Como essa prospec&ccedil;&atilde;o se relaciona?</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="radio"
+                                               name="tipoAssociacaoProspecao"
+                                               id="tipoAssociacaoNova"
+                                               value="nova"
+                                               checked />
+                                        <label class="form-check-label" for="tipoAssociacaoNova">
+                                            Essa &eacute; uma nova prospec&ccedil;&atilde;o
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="radio"
+                                               name="tipoAssociacaoProspecao"
+                                               id="tipoAssociacaoMesmaCasa"
+                                               value="mesma-casa" />
+                                        <label class="form-check-label" for="tipoAssociacaoMesmaCasa">
+                                            Essa prospec&ccedil;&atilde;o faz parte de outra prospec&ccedil;&atilde;o da mesma casa
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="radio"
+                                               name="tipoAssociacaoProspecao"
+                                               id="tipoAssociacaoOutraCasa"
+                                               value="outra-casa" />
+                                        <label class="form-check-label" for="tipoAssociacaoOutraCasa">
+                                            Essa prospec&ccedil;&atilde;o faz parte de outra prospec&ccedil;&atilde;o de uma casa diferente
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 d-none" id="associacaoMesmaCasaFields">
+                                    <label class="form-label fw-semibold" for="inputProspecaoPrincipalMesmaCasa">
+                                        Prospec&ccedil;&atilde;o principal da mesma casa <span class="text-danger">*</span>
+                                    </label>
+                                    <input id="inputProspecaoPrincipalMesmaCasa"
+                                           class="form-control"
+                                           list="listaProspecaoPrincipalMesmaCasa"
+                                           placeholder="Digite a empresa ou o projeto"
+                                           autocomplete="off" />
+                                    <datalist id="listaProspecaoPrincipalMesmaCasa"></datalist>
+                                    <small class="text-muted">Digite para pesquisar entre as prospec&ccedil;&otilde;es da mesma casa.</small>
+                                </div>
+
+                                <div class="col-12 d-none" id="associacaoOutraCasaFields">
+                                    <label class="form-label fw-semibold" for="inputProspecaoPrincipalOutraCasa">
+                                        Prospec&ccedil;&atilde;o principal de outra casa <span class="text-danger">*</span>
+                                    </label>
+                                    <input id="inputProspecaoPrincipalOutraCasa"
+                                           class="form-control"
+                                           list="listaProspecaoPrincipalOutraCasa"
+                                           placeholder="Digite a empresa ou o projeto"
+                                           autocomplete="off" />
+                                    <datalist id="listaProspecaoPrincipalOutraCasa"></datalist>
+                                    <small class="text-muted">Digite para pesquisar entre as prospec&ccedil;&otilde;es de outras casas.</small>
+                                </div>
+
+                                <div class="col-12">
+                                    <span asp-validation-for="ProspeccaoPrincipalId" class="text-danger" id="validacaoProspecaoPrincipal"></span>
+                                </div>
+                            </div>
+
+                            <select id="prospeccoesRelacionadasBase" class="d-none" aria-hidden="true" tabindex="-1">
+                                @foreach (var prospeccaoRelacionada in prospeccoesRelacionadas)
+                                {
+                                    var nomeProjetoRelacionada = !string.IsNullOrWhiteSpace(prospeccaoRelacionada.NomeProspeccao)
+                                        ? prospeccaoRelacionada.NomeProspeccao
+                                        : "A definir";
+                                    var nomeEmpresaRelacionada = prospeccaoRelacionada.Empresa?.Nome ?? "Sem empresa";
+                                    var labelRelacionada = $"{nomeEmpresaRelacionada} - {nomeProjetoRelacionada}";
+
+                                    <option value="@prospeccaoRelacionada.Id"
+                                            data-casa="@((int)prospeccaoRelacionada.Casa)"
+                                            data-casa-nome="@prospeccaoRelacionada.Casa"
+                                            data-label="@labelRelacionada">
+                                        @labelRelacionada
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                    </div>
 
                     <div class="card mb-3">
                         <div class="card-header fw-semibold">PROJETO</div>
@@ -40,7 +132,7 @@
 
                                 <div class="col-md-8">
                                     <label asp-for="NomeProspeccao" class="form-label fw-semibold">
-                                        Nome da prospecção <span class="text-danger">*</span>
+                                        Nome da prospec&ccedil;&atilde;o <span class="text-danger">*</span>
                                     </label>
 
                                     <input asp-for="NomeProspeccao"
@@ -88,7 +180,7 @@
 
                                 <div class="col-md-4">
                                     <label asp-for="TipoDeInteracao" class="form-label fw-semibold">
-                                        Tipo de interação <span class="text-danger">*</span>
+                                        Tipo de intera&ccedil;&atilde;o <span class="text-danger">*</span>
                                     </label>
 
                                     <select asp-for="TipoDeInteracao"
@@ -116,7 +208,7 @@
 
                                 <div class="col-md-4">
                                     <label asp-for="Origem" class="form-label fw-semibold">
-                                        Iniciativa da prospecção <span class="text-danger">*</span>
+                                        Iniciativa da prospec&ccedil;&atilde;o <span class="text-danger">*</span>
                                     </label>
 
                                     <select asp-for="Origem"
@@ -130,7 +222,7 @@
 
                                 <div class="col-md-4">
                                     <label asp-for="TipoContratacao" class="form-label fw-semibold">
-                                        Tipo de contratação <span class="text-danger">*</span>
+                                        Tipo de contrata&ccedil;&atilde;o <span class="text-danger">*</span>
                                     </label>
 
                                     <select asp-for="TipoContratacao"
@@ -159,7 +251,7 @@
 
                                 <div class="col-md-4">
                                     <label asp-for="PrevisaoTempoProjetoMeses" class="form-label fw-semibold">
-                                        Previsão de tempo (meses)
+                                        Previs&atilde;o de tempo (meses)
                                     </label>
 
                                     <input asp-for="PrevisaoTempoProjetoMeses"
@@ -238,7 +330,7 @@
                                         }
                                     </datalist>
 
-                                    <!-- Campo ligado ao modelo: obrigatório para o binder enviar o id -->
+                                    <!-- Campo ligado ao modelo: obrigat�rio para o binder enviar o id -->
                                     <input asp-for="EmpresaId" type="hidden" id="EmpresaId" />
 
                                     <span asp-validation-for="EmpresaId" class="text-danger"></span>
@@ -258,7 +350,7 @@
 
                                         <div class="col-md-6">
                                             <label class="form-label fw-semibold" for="NovaEmpresa_RazaoSocial">
-                                                Razão social
+                                                Raz&atilde;o social
                                             </label>
                                             <input id="RazaoSocialEmpresaCadastro-prosp"
                                                    name="NovaEmpresa.RazaoSocial"
@@ -287,7 +379,7 @@
                                             </div>
                                             <p id="StatusCNPJ-prosp" class="mb-1"></p>
                                             <small id="TipoEmpresaStatus-prosp" class="d-block text-muted">Tipo:</small>
-                                            <small id="SituacaoEmpresaStatus-prosp" class="d-block text-muted">Situação:</small>
+                                            <small id="SituacaoEmpresaStatus-prosp" class="d-block text-muted">Situa&ccedil;&atilde;o:</small>
                                         </div>
 
                                         <div class="col-md-4">
@@ -386,14 +478,12 @@
                         <div class="card-body">
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold" for="liderProjeto">
-                                    Líder <span class="text-danger">*</span>
-                                </label>
+                                <label class="form-label fw-semibold" for="liderProjeto">L&iacute;der <span class="text-danger">*</span></label>
                                 <input id="liderProjeto"
                                        name="LiderNome"
                                        class="form-control"
                                        list="lideresProjeto"
-                                       placeholder="Digite o nome do líder"
+                                       placeholder="Digite o nome do l&iacute;der"
                                        autocomplete="off"
                                        required />
                                 <datalist id="lideresProjeto">
@@ -448,7 +538,7 @@
                                             }
                                             else
                                             {
-                                                <option disabled>Arquivo apoio.csv não encontrado ou vazio</option>
+                                                <option disabled>Arquivo apoio.csv n�o encontrado ou vazio</option>
                                             }
 
                                         }
@@ -496,7 +586,7 @@
                                 <input asp-for="Status[0].Status" type="hidden" value="@StatusProspeccao.ContatoInicial" />
 
                                 <div class="col-md-6">
-                                    <label asp-for="Status[0].Anotacoes" class="form-label fw-semibold">Observações e anotações</label>
+                                    <label asp-for="Status[0].Anotacoes" class="form-label fw-semibold">Observa&ccedil;&otilde;es e anota&ccedil;&otilde;es</label>
                                     <textarea asp-for="Status[0].Anotacoes"
                                               class="form-control"
                                               rows="3"></textarea>
@@ -545,13 +635,13 @@
         (function () {
             var select = document.getElementById('campoSelectPessoas');
             var hidden = document.getElementById('inputTextPessoas');
-            var form = document.querySelector('form[asp-action="Create"]') || document.querySelector('form');
+            var form = document.querySelector('#criarProspModalToggle form') || document.querySelector('form[action*="/FunilDeVendas/Create"]');
 
             if (form) {
                 form.addEventListener('submit', function () {
                     if (select && hidden) {
                         var values = Array.from(select.selectedOptions).map(function (o) { return o.value; });
-                        // armazena em formato ponto-e-vírgula; ajustável conforme necessidade
+                        // armazena em formato ponto-e-v�rgula; ajust�vel conforme necessidade
                         hidden.value = values.join(';');
                     }
                 });
@@ -559,3 +649,4 @@
         })();
     </script>
 }
+

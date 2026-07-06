@@ -662,6 +662,9 @@ namespace BaseDeProjetos.Migrations
                     b.Property<string>("PotenciaisParceiros")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<string>("ProspeccaoPrincipalId")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
                     b.Property<int?>("PrevisaoTempoProjetoMeses")
                         .HasColumnType("int");
 
@@ -697,6 +700,8 @@ namespace BaseDeProjetos.Migrations
                     b.HasIndex("Contatoid");
 
                     b.HasIndex("EmpresaId");
+
+                    b.HasIndex("ProspeccaoPrincipalId");
 
                     b.HasIndex("UsuarioId");
 
@@ -1110,6 +1115,11 @@ namespace BaseDeProjetos.Migrations
                         .HasForeignKey("EmpresaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("BaseDeProjetos.Models.Prospeccao", "ProspeccaoPrincipal")
+                        .WithMany("ProspeccoesRelacionadas")
+                        .HasForeignKey("ProspeccaoPrincipalId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("BaseDeProjetos.Models.Usuario", "Usuario")
                         .WithMany()

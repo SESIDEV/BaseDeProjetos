@@ -279,13 +279,13 @@
 
                                 <div class="col-md-6">
                                     <label class="form-label fw-semibold" for="UsuarioId-@Model.Id">
-                                        Líder <span class="text-danger">*</span>
+                                        L&iacute;der <span class="text-danger">*</span>
                                     </label>
                                     <input id="liderProjeto-@Model.Id"
                                            name="LiderNome"
                                            class="form-control"
                                            list="lideresProjeto-@Model.Id"
-                                           placeholder="Digite o nome do lÃ­der"
+                                           placeholder="Digite o nome do l&iacute;der"
                                            autocomplete="off"
                                            value="@(Model.LiderNome ?? Model.Usuario?.UserName ?? "")"
                                            required />

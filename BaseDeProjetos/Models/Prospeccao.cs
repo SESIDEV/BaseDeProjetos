@@ -85,6 +85,14 @@ namespace BaseDeProjetos.Models
 
         public virtual List<ProspeccaoValorComposicao> ComposicaoValores { get; set; } = new List<ProspeccaoValorComposicao>();
 
+        [ForeignKey("ProspeccaoPrincipalId")]
+        public virtual Prospeccao ProspeccaoPrincipal { get; set; }
+
+        [Display(Name = "Prospecção principal")]
+        public virtual string ProspeccaoPrincipalId { get; set; }
+
+        public virtual List<Prospeccao> ProspeccoesRelacionadas { get; set; } = new List<Prospeccao>();
+
         public bool Equals([AllowNull] Prospeccao other)
         {
             if (other is null) return false;

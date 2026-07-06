@@ -66,5 +66,33 @@ namespace BaseDeProjetos.Models.Enums
 
         [Display(Name = "A definir")]
         Indefinida,
+
+        [Display(Name = "BF - Biologia molecular", GroupName = "Biossintéticos e Fibras")]
+        BiologiaMolecular,
+
+        [Display(Name = "BF - Biologia sintética", GroupName = "Biossintéticos e Fibras")]
+        BiologiaSintetica,
+
+        [Display(Name = "BF - Fermentação", GroupName = "Biossintéticos e Fibras")]
+        Fermentacao,
+
+        [Display(Name = "BF - Escalonamento", GroupName = "Biossintéticos e Fibras")]
+        Escalonamento,
+
+        [Display(Name = "BF - Sequenciamento de nova geração", GroupName = "Biossintéticos e Fibras")]
+        SequenciamentoNovaGeracao,
+
+        [Display(Name = "BF - Bioinformática", GroupName = "Biossintéticos e Fibras")]
+        Bioinformatica,
+
+        [Display(Name = "BF - Bioprocessos", GroupName = "Biossintéticos e Fibras")]
+        Bioprocessos,
+
+        [Display(Name = "BF - Automação", GroupName = "Biossintéticos e Fibras")]
+        Automacao,
+
+        [Display(Name = "BF - Screening da Biodiversidade", GroupName = "Biossintéticos e Fibras")]
+        ScreeningBiodiversidade,
     }
 }
+

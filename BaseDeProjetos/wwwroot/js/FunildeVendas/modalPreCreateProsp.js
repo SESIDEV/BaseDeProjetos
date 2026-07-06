@@ -1,4 +1,4 @@
-﻿var prospeccoesDetalhes = [];
+var prospeccoesDetalhes = [];
 
 function changePageSize() {
     var pageSize = document.getElementById('tamanhoPagina').value;
@@ -22,12 +22,13 @@ async function trocarModalNovaProsp() {
     toggleButton.disabled = true;
 
     const valorSelect = document.getElementById("selectCreateProsp").value;
+    window.tipoAssociacaoPreselecionada = "nova";
 
     if (valorSelect !== "-1" && valorSelect !== "-2") {
-        toggleButton.dataset.bsTarget = `#CreateFollowupProspModal-${valorSelect}`;
+        toggleButton.dataset.bsTarget = #CreateFollowupProspModal-;
 
         try {
-            const response = await fetch(`/FunildeVendas/RetornarModal?idProsp=${valorSelect}&tipo=CreateFollowup`);
+            const response = await fetch(/FunildeVendas/RetornarModal?idProsp=&tipo=CreateFollowup);
             const result = await response.text();
             document.querySelector("#modalCreateFollowUpProspContainer").innerHTML = result;
         } catch (error) {
@@ -41,6 +42,10 @@ async function trocarModalNovaProsp() {
 
         if (window.atualizarModoCadastroEmpresaProsp) {
             window.atualizarModoCadastroEmpresaProsp();
+        }
+
+        if (window.sincronizarAssociacaoProspecaoCreate) {
+            window.sincronizarAssociacaoProspecaoCreate();
         }
 
         if (valorSelect === "-2") {
@@ -57,7 +62,7 @@ async function trocarModalNovaProsp() {
             }
 
             if (statusAnotacoes) {
-                statusAnotacoes.value = "Incluído no plano de prospecções como prospecção planejada";
+                statusAnotacoes.value = "Inclu\u00eddo no plano de prospec\u00e7\u00f5es como prospec\u00e7\u00e3o planejada";
             }
 
             if (valorStatus) {
@@ -65,8 +70,8 @@ async function trocarModalNovaProsp() {
             }
 
             if (nomeProspeccao) {
-                nomeProspeccao.value = "Prospecção Planejada";
-                nomeProspeccao.placeholder = "Prospecção Planejada";
+                nomeProspeccao.value = "Prospec\u00e7\u00e3o planejada";
+                nomeProspeccao.placeholder = "Prospec\u00e7\u00e3o planejada";
             }
         } else {
             const nomeProspeccao = document.getElementById("NomeProspeccao");
@@ -77,11 +82,11 @@ async function trocarModalNovaProsp() {
                 valorStatus.value = "ContatoInicial";
             }
 
-            if (statusAnotacoes?.value === "Incluído no plano de prospecções como prospecção planejada") {
+            if (statusAnotacoes?.value === "Inclu\u00eddo no plano de prospec\u00e7\u00f5es como prospec\u00e7\u00e3o planejada") {
                 statusAnotacoes.value = "";
             }
 
-            if (nomeProspeccao?.value === "Prospecção Planejada") {
+            if (nomeProspeccao?.value === "Prospec\u00e7\u00e3o planejada") {
                 nomeProspeccao.value = "";
                 nomeProspeccao.placeholder = "Ex.: Proposta de biossurfactantes";
             }

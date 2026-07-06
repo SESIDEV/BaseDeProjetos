@@ -103,9 +103,11 @@ namespace BaseDeProjetos.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id, Tipologia, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, LiderNome, EmpresaId, Contato, Casa, CaminhoPasta, LinkArquivo, Tags, Origem, Ancora, Agregadas, TipoDeInteracao, TipoDeProjeto, PrevisaoTempoProjetoMeses, TipoContratacao, ParceiroInterno, Usuario")] Prospeccao prospeccao, [Bind(Prefix = "NovaEmpresa")] Empresa novaEmpresa, bool cadastrarNovaEmpresa, string liderProjeto)
+        public async Task<IActionResult> Create([Bind("Id, Tipologia, TipoContratacao, NomeProspeccao, PotenciaisParceiros, LinhaPequisa, Status, MembrosEquipe, LiderNome, EmpresaId, Contato, Casa, CaminhoPasta, LinkArquivo, Tags, Origem, Ancora, Agregadas, TipoDeInteracao, TipoDeProjeto, PrevisaoTempoProjetoMeses, TipoContratacao, ParceiroInterno, Usuario, ProspeccaoPrincipalId")] Prospeccao prospeccao, [Bind(Prefix = "NovaEmpresa")] Empresa novaEmpresa, bool cadastrarNovaEmpresa, string liderProjeto, string tipoAssociacaoProspecao)
         {
             ViewbagizarUsuario(_context, _cache);
+
+            await ValidarAssociacaoProspeccao(prospeccao, tipoAssociacaoProspecao);
 
             if (ModelState.IsValid)
             {
@@ -1118,6 +1120,8 @@ namespace BaseDeProjetos.Controllers
                     ? prospeccoes
                     : ObterProspeccoesPorPagina(prospeccoes, numeroPagina, tamanhoPagina);
 
+
+                prospeccoesPagina = await EnriquecerProspeccoesFunilAsync(prospeccoesPagina);
 
                 var model = new ProspeccoesViewModel
                 {
@@ -3263,6 +3267,7 @@ namespace BaseDeProjetos.Controllers
             }
 
             prospeccao.Casa = prospAntiga.Casa;
+            prospeccao.ProspeccaoPrincipalId = prospAntiga.ProspeccaoPrincipalId;
 
             // tudo abaixo compara a versão antiga com a nova que irá para o Update()
 
@@ -3282,6 +3287,47 @@ namespace BaseDeProjetos.Controllers
 
             _context.Update(prospeccao);
             return prospeccao;
+        }
+
+        private async Task ValidarAssociacaoProspeccao(Prospeccao prospeccao, string tipoAssociacaoProspecao)
+        {
+            string tipoAssociacaoNormalizado = string.IsNullOrWhiteSpace(tipoAssociacaoProspecao)
+                ? "nova"
+                : tipoAssociacaoProspecao.Trim().ToLowerInvariant();
+
+            if (tipoAssociacaoNormalizado == "nova")
+            {
+                prospeccao.ProspeccaoPrincipalId = null;
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(prospeccao.ProspeccaoPrincipalId))
+            {
+                ModelState.AddModelError(nameof(Prospeccao.ProspeccaoPrincipalId), "Selecione a prospecção principal.");
+                return;
+            }
+
+            var prospeccaoPrincipal = await _context.Prospeccao
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == prospeccao.ProspeccaoPrincipalId);
+
+            if (prospeccaoPrincipal == null)
+            {
+                ModelState.AddModelError(nameof(Prospeccao.ProspeccaoPrincipalId), "A prospecção principal selecionada não foi encontrada.");
+                return;
+            }
+
+            bool mesmaCasa = prospeccaoPrincipal.Casa == prospeccao.Casa;
+            if (tipoAssociacaoNormalizado == "mesma-casa" && !mesmaCasa)
+            {
+                ModelState.AddModelError(nameof(Prospeccao.ProspeccaoPrincipalId), "Selecione uma prospecção principal da mesma casa.");
+                return;
+            }
+
+            if (tipoAssociacaoNormalizado == "outra-casa" && mesmaCasa)
+            {
+                ModelState.AddModelError(nameof(Prospeccao.ProspeccaoPrincipalId), "Selecione uma prospecção principal de outra casa.");
+            }
         }
 
         private async Task InserirDadosEmpresasUsuariosViewData()
@@ -3368,6 +3414,108 @@ namespace BaseDeProjetos.Controllers
 
             return prospeccoes;
 
+        }
+        private async Task<List<Prospeccao>> EnriquecerProspeccoesFunilAsync(List<Prospeccao> prospeccoes)
+        {
+            if (prospeccoes == null || !prospeccoes.Any())
+            {
+                return prospeccoes ?? new List<Prospeccao>();
+            }
+
+            List<string> ids = prospeccoes
+                .Where(prospeccao => prospeccao != null && !string.IsNullOrWhiteSpace(prospeccao.Id))
+                .Select(prospeccao => prospeccao.Id)
+                .Distinct()
+                .ToList();
+
+            if (!ids.Any())
+            {
+                return prospeccoes;
+            }
+
+            List<ProspeccaoValorComposicao> composicoes = await _context.Set<ProspeccaoValorComposicao>()
+                .AsNoTracking()
+                .Where(valor => ids.Contains(valor.ProspeccaoId))
+                .ToListAsync();
+
+            List<Prospeccao> dependentes = await _context.Prospeccao
+                .AsNoTracking()
+                .Include(prospeccao => prospeccao.Empresa)
+                .Where(prospeccao => prospeccao.ProspeccaoPrincipalId != null && ids.Contains(prospeccao.ProspeccaoPrincipalId))
+                .ToListAsync();
+
+            var composicoesPorProspeccao = composicoes
+                .GroupBy(valor => valor.ProspeccaoId)
+                .ToDictionary(grupo => grupo.Key, grupo => grupo.ToList());
+
+            var dependentesPorProspeccao = dependentes
+                .GroupBy(prospeccao => prospeccao.ProspeccaoPrincipalId)
+                .ToDictionary(grupo => grupo.Key, grupo => grupo.Select(MaterializarProspeccaoFunil).ToList());
+
+            return prospeccoes
+                .Where(prospeccao => prospeccao != null)
+                .Select(prospeccao =>
+                {
+                    var prospeccaoMaterializada = MaterializarProspeccaoFunil(prospeccao);
+                    prospeccaoMaterializada.ComposicaoValores = composicoesPorProspeccao.ContainsKey(prospeccao.Id)
+                        ? composicoesPorProspeccao[prospeccao.Id]
+                        : new List<ProspeccaoValorComposicao>();
+                    prospeccaoMaterializada.ProspeccoesRelacionadas = dependentesPorProspeccao.ContainsKey(prospeccao.Id)
+                        ? dependentesPorProspeccao[prospeccao.Id]
+                        : new List<Prospeccao>();
+                    return prospeccaoMaterializada;
+                })
+                .ToList();
+        }
+
+        private static Prospeccao MaterializarProspeccaoFunil(Prospeccao prospeccao)
+        {
+            if (prospeccao == null)
+            {
+                return null;
+            }
+
+            return new Prospeccao
+            {
+                Id = prospeccao.Id,
+                NomeProspeccao = prospeccao.NomeProspeccao,
+                Tipologia = prospeccao.Tipologia,
+                TipoDeInteracao = prospeccao.TipoDeInteracao,
+                ParceiroInterno = prospeccao.ParceiroInterno,
+                PotenciaisParceiros = prospeccao.PotenciaisParceiros,
+                TipoDeProjeto = prospeccao.TipoDeProjeto,
+                PrevisaoTempoProjetoMeses = prospeccao.PrevisaoTempoProjetoMeses,
+                LinkArquivo = prospeccao.LinkArquivo,
+                Empresa = prospeccao.Empresa,
+                EmpresaId = prospeccao.EmpresaId,
+                Contato = prospeccao.Contato,
+                Usuario = prospeccao.Usuario,
+                LiderNome = prospeccao.LiderNome,
+                MembrosEquipe = prospeccao.MembrosEquipe,
+                TipoContratacao = prospeccao.TipoContratacao,
+                LinhaPequisa = prospeccao.LinhaPequisa,
+                Status = prospeccao.Status != null ? prospeccao.Status.ToList() : new List<FollowUp>(),
+                Casa = prospeccao.Casa,
+                ValorProposta = prospeccao.ValorProposta,
+                ValorEstimado = prospeccao.ValorEstimado,
+                ValorFinal = prospeccao.ValorFinal,
+                ProspeccaoPrincipal = prospeccao.ProspeccaoPrincipal != null ? new Prospeccao
+                {
+                    Id = prospeccao.ProspeccaoPrincipal.Id,
+                    NomeProspeccao = prospeccao.ProspeccaoPrincipal.NomeProspeccao,
+                    Casa = prospeccao.ProspeccaoPrincipal.Casa,
+                    Empresa = prospeccao.ProspeccaoPrincipal.Empresa,
+                    EmpresaId = prospeccao.ProspeccaoPrincipal.EmpresaId
+                } : null,
+                ProspeccaoPrincipalId = prospeccao.ProspeccaoPrincipalId,
+                CaminhoPasta = prospeccao.CaminhoPasta,
+                Tags = prospeccao.Tags,
+                Origem = prospeccao.Origem,
+                Ancora = prospeccao.Ancora,
+                Agregadas = prospeccao.Agregadas,
+                ComposicaoValores = new List<ProspeccaoValorComposicao>(),
+                ProspeccoesRelacionadas = new List<Prospeccao>()
+            };
         }
 
         private static bool ProspeccaoTemTemperatura(Prospeccao prospeccao, string temperatura)
@@ -3711,6 +3859,9 @@ namespace BaseDeProjetos.Controllers
         }
     }
 }
+
+
+
 
 
 

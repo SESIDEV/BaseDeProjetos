@@ -49,6 +49,12 @@ namespace BaseDeProjetos.Data
                 .WithMany(p => p.ComposicaoValores)
                 .HasForeignKey(v => v.ProspeccaoId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Prospeccao>()
+                .HasOne(p => p.ProspeccaoPrincipal)
+                .WithMany(p => p.ProspeccoesRelacionadas)
+                .HasForeignKey(p => p.ProspeccaoPrincipalId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
