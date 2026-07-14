@@ -923,9 +923,10 @@ namespace BaseDeProjetos.Controllers
                         Percentual = CalcularPercentual(linha.Total, totalGeralContatosPesquisador)
                     })
                     .ToList();
+                decimal totalArrasteContatosPesquisador = contatosPesquisadorBase.Sum(linha => linha.Arraste);
                 var contatosPesquisadorTotais = new
                 {
-                    Arraste = contatosPesquisadorBase.Sum(linha => linha.Arraste),
+                    Arraste = totalArrasteContatosPesquisador,
                     Meses = Enumerable.Range(0, 12)
                         .Select(indiceMes => contatosPesquisadorBase.Sum(linha => linha.Meses[indiceMes]))
                         .ToArray(),
@@ -978,7 +979,7 @@ namespace BaseDeProjetos.Controllers
                         Planejado = GerarSeriePlanejadoMensal(planejamentoGraficos, "CONTATOS_REGISTRADOS_META"),
                         Executado = GerarSerieExecutadoMensal(followUps
                             .Where(f => f.Status == StatusProspeccao.ContatoInicial && f.Data.Year == ano)
-                            .Select(f => f.Data)),
+                            .Select(f => f.Data), totalArrasteContatosPesquisador),
                         ExecutadoAnoAnterior = GerarSerieExecutadoMensal(followUps
                             .Where(f => f.Status == StatusProspeccao.ContatoInicial && f.Data.Year == ano - 1)
                             .Select(f => f.Data))
@@ -1245,7 +1246,7 @@ namespace BaseDeProjetos.Controllers
                 .LastOrDefault();
         }
 
-        private static int[] GerarSerieExecutadoMensal(IEnumerable<DateTime> datas)
+        private static decimal[] GerarSerieExecutadoMensal(IEnumerable<DateTime> datas, decimal valorInicial = 0)
         {
             int[] contagemMensal = new int[12];
 
@@ -1257,8 +1258,9 @@ namespace BaseDeProjetos.Controllers
                 }
             }
 
-            int[] serieAcumulada = new int[13];
-            int acumulado = 0;
+            decimal[] serieAcumulada = new decimal[13];
+            decimal acumulado = valorInicial;
+            serieAcumulada[0] = valorInicial;
 
             for (int indiceMes = 0; indiceMes < contagemMensal.Length; indiceMes++)
             {
@@ -1791,6 +1793,18 @@ namespace BaseDeProjetos.Controllers
                 .Select(contato => contato.OrigemID)
                 .Distinct()
                 .Count();
+            string chaveArrasteContatosPlanejamento = ObterChaveFiltroCasasIndicadores(
+                new List<Instituto> { casa },
+                FunilHelpers.ObterCasasPermitidas(UsuarioAtivo));
+            string prefixoArrasteContatosPlanejamento = ObterPrefixoArrasteContatosPesquisador(chaveArrasteContatosPlanejamento);
+            decimal totalArrasteContatosRealizados = await _context.IndicadoresPlanejamentoMensal
+                .AsNoTracking()
+                .Where(indicador => indicador.Casa == Instituto.Super
+                    && indicador.Ano == ano
+                    && indicador.Indicador.StartsWith(prefixoArrasteContatosPlanejamento)
+                    && indicador.Coluna == 0)
+                .SumAsync(indicador => indicador.Valor);
+            decimal totalContatosRealizadosComArraste = totalArrasteContatosRealizados + totalContatosRegistradosReal;
             Dictionary<int, int> contatosRealizadosAcumulados = Enumerable.Range(1, 12)
                 .ToDictionary(
                     mes => mes,
@@ -1934,11 +1948,15 @@ namespace BaseDeProjetos.Controllers
                     {
                         if (coluna == -2)
                         {
-                            linha.Valores[coluna] = totalContatosRegistradosReal;
+                            linha.Valores[coluna] = totalContatosRealizadosComArraste;
+                        }
+                        else if (coluna == 0)
+                        {
+                            linha.Valores[coluna] = totalArrasteContatosRealizados;
                         }
                         else if (coluna >= 1 && coluna <= 12)
                         {
-                            linha.Valores[coluna] = contatosRealizadosAcumulados[coluna];
+                            linha.Valores[coluna] = totalArrasteContatosRealizados + contatosRealizadosAcumulados[coluna];
                         }
                         else
                         {
