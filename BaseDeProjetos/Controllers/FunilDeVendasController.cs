@@ -1384,6 +1384,13 @@ namespace BaseDeProjetos.Controllers
             List<Instituto> casasPermitidas = FunilHelpers.ObterCasasPermitidas(UsuarioAtivo);
             List<Instituto> casasVisiveis = FiltrarCasasIndicadoresVisiveis(casasPermitidas);
 
+            if (!FunilHelpers.UsuarioPodeVisualizarTodasCasas(UsuarioAtivo)
+                && UsuarioAtivo != null
+                && casasVisiveis.Contains(UsuarioAtivo.Casa))
+            {
+                return UsuarioAtivo.Casa;
+            }
+
             if (casasVisiveis.Contains(Instituto.ISIQV))
             {
                 return Instituto.ISIQV;
