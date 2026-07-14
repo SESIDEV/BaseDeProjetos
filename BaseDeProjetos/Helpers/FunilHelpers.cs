@@ -272,6 +272,7 @@ namespace BaseDeProjetos.Helpers
                 ) ||
                 p.Id.ToLower().Contains(searchString) ||
                 p.Usuario.UserName.ToLower().Contains(searchString) ||
+                p.LiderNome.ToLower().Contains(searchString) ||
                 p.NomeProspeccao.ToLower().Contains(searchString) ||
                 p.MembrosEquipe.ToLower().Contains(searchString)
             );
@@ -668,6 +669,7 @@ namespace BaseDeProjetos.Helpers
                 ChecarSubstring(searchString, p.Empresa.Nome) ||
                 ChecarSubstring(searchString, p.Id) ||
                 ChecarSubstring(searchString, p.Usuario.UserName) ||
+                ChecarSubstring(searchString, p.LiderNome) ||
                 ChecarSubstring(searchString, p.NomeProspeccao) ||
                 ChecarSubstring(searchString, p.MembrosEquipe)
 
