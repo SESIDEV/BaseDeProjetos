@@ -956,7 +956,9 @@ namespace BaseDeProjetos.Controllers
                     "CONTATOS_REGISTRADOS_META",
                     "CONTATOS_REALIZADOS",
                     "PROPOSTAS_ENVIADAS_META",
-                    "PROJETOS_CONVERTIDOS_META"
+                    "PROPOSTAS_ENVIADAS",
+                    "PROJETOS_CONVERTIDOS_META",
+                    "PROJETOS_CONVERTIDOS"
                 };
 
                 var planejamentoGraficos = await _context.IndicadoresPlanejamentoMensal
@@ -968,6 +970,12 @@ namespace BaseDeProjetos.Controllers
                     .ToListAsync();
                 decimal totalArrasteContatosRealizadosGrafico = planejamentoGraficos
                     .Where(indicador => indicador.Indicador == "CONTATOS_REALIZADOS" && indicador.Coluna == 0)
+                    .Sum(indicador => indicador.Valor);
+                decimal totalArrastePropostasEnviadasGrafico = planejamentoGraficos
+                    .Where(indicador => indicador.Indicador == "PROPOSTAS_ENVIADAS" && indicador.Coluna == 0)
+                    .Sum(indicador => indicador.Valor);
+                decimal totalArrasteProjetosConvertidosGrafico = planejamentoGraficos
+                    .Where(indicador => indicador.Indicador == "PROJETOS_CONVERTIDOS" && indicador.Coluna == 0)
                     .Sum(indicador => indicador.Valor);
 
                 var dados = new
@@ -993,7 +1001,7 @@ namespace BaseDeProjetos.Controllers
                         Planejado = GerarSeriePlanejadoMensal(planejamentoGraficos, "PROPOSTAS_ENVIADAS_META"),
                         Executado = GerarSerieExecutadoMensal(followUps
                             .Where(f => f.Status == StatusProspeccao.ComProposta && f.Data.Year == ano)
-                            .Select(f => f.Data)),
+                            .Select(f => f.Data), totalArrastePropostasEnviadasGrafico),
                         ExecutadoAnoAnterior = GerarSerieExecutadoMensal(followUps
                             .Where(f => f.Status == StatusProspeccao.ComProposta && f.Data.Year == ano - 1)
                             .Select(f => f.Data))
@@ -1003,7 +1011,7 @@ namespace BaseDeProjetos.Controllers
                         Planejado = GerarSeriePlanejadoMensal(planejamentoGraficos, "PROJETOS_CONVERTIDOS_META"),
                         Executado = GerarSerieExecutadoMensal(followUps
                             .Where(f => f.Status == StatusProspeccao.Convertida && f.Data.Year == ano)
-                            .Select(f => f.Data)),
+                            .Select(f => f.Data), totalArrasteProjetosConvertidosGrafico),
                         ExecutadoAnoAnterior = GerarSerieExecutadoMensal(followUps
                             .Where(f => f.Status == StatusProspeccao.Convertida && f.Data.Year == ano - 1)
                             .Select(f => f.Data))
@@ -1838,6 +1846,15 @@ namespace BaseDeProjetos.Controllers
                 .Select(nda => nda.OrigemID)
                 .Distinct()
                 .Count();
+            decimal totalArrasteNdasAssinados = await _context.IndicadoresPlanejamentoMensal
+                .AsNoTracking()
+                .Where(indicador => indicador.Casa == casa
+                    && indicador.Ano == ano
+                    && indicador.Indicador == "NDA_ASSINADOS"
+                    && indicador.Coluna == 0)
+                .Select(indicador => (decimal?)indicador.Valor)
+                .FirstOrDefaultAsync() ?? 0;
+            decimal totalNdasAssinadosComArraste = totalArrasteNdasAssinados + totalNdasAssinados;
             Dictionary<int, int> ndasAssinadosAcumulados = Enumerable.Range(1, 12)
                 .ToDictionary(
                     mes => mes,
@@ -1863,6 +1880,15 @@ namespace BaseDeProjetos.Controllers
                 .Select(proposta => proposta.OrigemID)
                 .Distinct()
                 .Count();
+            decimal totalArrastePropostasEnviadas = await _context.IndicadoresPlanejamentoMensal
+                .AsNoTracking()
+                .Where(indicador => indicador.Casa == casa
+                    && indicador.Ano == ano
+                    && indicador.Indicador == "PROPOSTAS_ENVIADAS"
+                    && indicador.Coluna == 0)
+                .Select(indicador => (decimal?)indicador.Valor)
+                .FirstOrDefaultAsync() ?? 0;
+            decimal totalPropostasEnviadasComArraste = totalArrastePropostasEnviadas + totalPropostasEnviadas;
             Dictionary<int, int> propostasEnviadasAcumuladas = Enumerable.Range(1, 12)
                 .ToDictionary(
                     mes => mes,
@@ -1900,6 +1926,15 @@ namespace BaseDeProjetos.Controllers
                 .Select(projeto => projeto.OrigemID)
                 .Distinct()
                 .Count();
+            decimal totalArrasteProjetosConvertidos = await _context.IndicadoresPlanejamentoMensal
+                .AsNoTracking()
+                .Where(indicador => indicador.Casa == casa
+                    && indicador.Ano == ano
+                    && indicador.Indicador == "PROJETOS_CONVERTIDOS"
+                    && indicador.Coluna == 0)
+                .Select(indicador => (decimal?)indicador.Valor)
+                .FirstOrDefaultAsync() ?? 0;
+            decimal totalProjetosConvertidosComArraste = totalArrasteProjetosConvertidos + totalProjetosConvertidos;
             Dictionary<int, int> projetosConvertidosAcumulados = Enumerable.Range(1, 12)
                 .ToDictionary(
                     mes => mes,
@@ -1975,17 +2010,21 @@ namespace BaseDeProjetos.Controllers
                     {
                         if (coluna == -2)
                         {
-                            linha.Valores[coluna] = totalNdasAssinados;
+                            linha.Valores[coluna] = totalNdasAssinadosComArraste;
                         }
                         else if (coluna == -1)
                         {
-                            linha.Valores[coluna] = totalContatosRegistradosReal != 0
-                                ? Math.Round((decimal)totalNdasAssinados / totalContatosRegistradosReal * 100, 2)
+                            linha.Valores[coluna] = totalContatosRealizadosComArraste != 0
+                                ? Math.Round(totalNdasAssinadosComArraste / totalContatosRealizadosComArraste * 100, 2)
                                 : (decimal?)null;
+                        }
+                        else if (coluna == 0)
+                        {
+                            linha.Valores[coluna] = totalArrasteNdasAssinados;
                         }
                         else if (coluna >= 1 && coluna <= 12)
                         {
-                            linha.Valores[coluna] = ndasAssinadosAcumulados[coluna];
+                            linha.Valores[coluna] = totalArrasteNdasAssinados + ndasAssinadosAcumulados[coluna];
                         }
                         else
                         {
@@ -1996,17 +2035,21 @@ namespace BaseDeProjetos.Controllers
                     {
                         if (coluna == -2)
                         {
-                            linha.Valores[coluna] = totalPropostasEnviadas;
+                            linha.Valores[coluna] = totalPropostasEnviadasComArraste;
                         }
                         else if (coluna == -1)
                         {
-                            linha.Valores[coluna] = totalContatosRegistradosReal != 0
-                                ? Math.Round((decimal)totalPropostasEnviadas / totalContatosRegistradosReal * 100, 2)
+                            linha.Valores[coluna] = totalContatosRealizadosComArraste != 0
+                                ? Math.Round(totalPropostasEnviadasComArraste / totalContatosRealizadosComArraste * 100, 2)
                                 : (decimal?)null;
+                        }
+                        else if (coluna == 0)
+                        {
+                            linha.Valores[coluna] = totalArrastePropostasEnviadas;
                         }
                         else if (coluna >= 1 && coluna <= 12)
                         {
-                            linha.Valores[coluna] = propostasEnviadasAcumuladas[coluna];
+                            linha.Valores[coluna] = totalArrastePropostasEnviadas + propostasEnviadasAcumuladas[coluna];
                         }
                         else
                         {
@@ -2038,17 +2081,21 @@ namespace BaseDeProjetos.Controllers
                     {
                         if (coluna == -2)
                         {
-                            linha.Valores[coluna] = totalProjetosConvertidos;
+                            linha.Valores[coluna] = totalProjetosConvertidosComArraste;
                         }
                         else if (coluna == -1)
                         {
-                            linha.Valores[coluna] = totalPropostasEnviadas != 0
-                                ? Math.Round((decimal)totalProjetosConvertidos / totalPropostasEnviadas * 100, 2)
+                            linha.Valores[coluna] = totalPropostasEnviadasComArraste != 0
+                                ? Math.Round(totalProjetosConvertidosComArraste / totalPropostasEnviadasComArraste * 100, 2)
                                 : (decimal?)null;
+                        }
+                        else if (coluna == 0)
+                        {
+                            linha.Valores[coluna] = totalArrasteProjetosConvertidos;
                         }
                         else if (coluna >= 1 && coluna <= 12)
                         {
-                            linha.Valores[coluna] = projetosConvertidosAcumulados[coluna];
+                            linha.Valores[coluna] = totalArrasteProjetosConvertidos + projetosConvertidosAcumulados[coluna];
                         }
                         else
                         {
@@ -2123,14 +2170,14 @@ namespace BaseDeProjetos.Controllers
                 || (chave == "EMPRESAS_FORA_ESTADO_PLANEJAMENTO" && coluna == -2)
                 || (chave == "CONTATOS_REALIZADOS_META" && coluna >= -2 && coluna <= 12)
                 || (chave == "CONTATOS_REALIZADOS" && (coluna == -2 || coluna == -1 || (coluna >= 1 && coluna <= 12)))
-                || (chave == "NDA_ASSINADOS" && coluna >= -2 && coluna <= 12)
+                || (chave == "NDA_ASSINADOS" && (coluna == -2 || coluna == -1 || (coluna >= 1 && coluna <= 12)))
                 || (chave == "TAXA_ASSINATURA" && coluna >= -2 && coluna <= 12)
-                || (chave == "PROPOSTAS_ENVIADAS" && coluna >= -2 && coluna <= 12)
+                || (chave == "PROPOSTAS_ENVIADAS" && (coluna == -2 || coluna == -1 || (coluna >= 1 && coluna <= 12)))
                 || (chave == "TAXA_PROPOSTA_ENVIADA" && coluna >= -2 && coluna <= 12)
                 || (chave == "VALOR_PROPOSTA" && coluna >= -2 && coluna <= 12)
                 || (chave == "VALOR_MEDIO_PROPOSTA" && coluna == -2)
                 || (chave == "VALOR_MEDIO_PROPOSTA_ATIVA" && coluna == -2)
-                || (chave == "PROJETOS_CONVERTIDOS" && coluna >= -2 && coluna <= 12)
+                || (chave == "PROJETOS_CONVERTIDOS" && (coluna == -2 || coluna == -1 || (coluna >= 1 && coluna <= 12)))
                 || (chave == "VALOR_TOTAL_PROJETOS_CONVERTIDOS" && coluna >= -2 && coluna <= 12)
                 || (chave == "VALOR_MEDIO_PROJETOS_CONVERTIDOS" && coluna == -2)
                 || (chave == "PERCENTUAL_PROJETOS_CONVERTIDOS_META" && (coluna == -1 || (coluna >= 0 && coluna <= 12)))
