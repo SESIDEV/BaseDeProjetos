@@ -1,15 +1,23 @@
-document.addEventListener('DOMContentLoaded', () => {
+(function () {
+    function inicializarModalCreateProsp() {
+        if (window.modalCreateProspInicializado) {
+            return;
+        }
+
+        window.modalCreateProspInicializado = true;
+
     function normalizarTexto(valor) {
         return (valor || '').trim().toLowerCase();
     }
 
     function obterCasaAtualProspecao() {
         const selectCasa = document.getElementById('Casa');
-        return selectCasa ? String(selectCasa.value ?? '') : '';
+        return selectCasa ? String(selectCasa.value != null ? selectCasa.value : '') : '';
     }
 
     function obterTipoAssociacaoSelecionado() {
-        return document.querySelector('input[name="tipoAssociacaoProspecao"]:checked')?.value || 'nova';
+        const tipoAssociacaoSelecionado = document.querySelector('input[name="tipoAssociacaoProspecao"]:checked');
+        return tipoAssociacaoSelecionado ? tipoAssociacaoSelecionado.value : 'nova';
     }
 
     function obterBaseProspecoesRelacionadas() {
@@ -64,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const options = Array.from(datalist.options);
         const option = options.find((item) => normalizarTexto(item.value) === valor);
 
-        return option?.dataset.id || '';
+        return option && option.dataset ? option.dataset.id || '' : '';
     }
 
     function atualizarAssociacaoProspecaoCreate() {
@@ -137,13 +145,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function novaEmpresaSelecionada(form) {
-        const cadastrarNovaEmpresa = form?.querySelector('#CadastrarNovaEmpresa');
-        return cadastrarNovaEmpresa?.value === 'true';
+        const cadastrarNovaEmpresa = form ? form.querySelector('#CadastrarNovaEmpresa') : null;
+        return cadastrarNovaEmpresa && cadastrarNovaEmpresa.value === 'true';
     }
 
     function atualizarModoCadastroEmpresa() {
         const selectCreateProsp = document.getElementById('selectCreateProsp');
-        const prospeccaoPlanejada = selectCreateProsp?.value === '-2';
+        const prospeccaoPlanejada = selectCreateProsp && selectCreateProsp.value === '-2';
         const opcoesEmpresaNaoPlanejada = document.getElementById('opcoesEmpresaNaoPlanejada');
         const tipoEmpresaCadastrada = document.getElementById('tipoEmpresaCadastrada');
         const tipoEmpresaNova = document.getElementById('tipoEmpresaNova');
@@ -162,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
             opcoesEmpresaNaoPlanejada.classList.remove('d-none');
         }
 
-        const usarNovaEmpresa = !prospeccaoPlanejada && tipoEmpresaNova?.checked;
+        const usarNovaEmpresa = !prospeccaoPlanejada && tipoEmpresaNova && tipoEmpresaNova.checked;
 
         if (cadastrarNovaEmpresa) cadastrarNovaEmpresa.value = usarNovaEmpresa ? 'true' : 'false';
 
@@ -215,8 +223,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    document.getElementById('tipoEmpresaCadastrada')?.addEventListener('change', atualizarModoCadastroEmpresa);
-    document.getElementById('tipoEmpresaNova')?.addEventListener('change', atualizarModoCadastroEmpresa);
+    const tipoEmpresaCadastradaEl = document.getElementById('tipoEmpresaCadastrada');
+    const tipoEmpresaNovaEl = document.getElementById('tipoEmpresaNova');
+
+    if (tipoEmpresaCadastradaEl) {
+        tipoEmpresaCadastradaEl.addEventListener('change', atualizarModoCadastroEmpresa);
+    }
+
+    if (tipoEmpresaNovaEl) {
+        tipoEmpresaNovaEl.addEventListener('change', atualizarModoCadastroEmpresa);
+    }
     atualizarModoCadastroEmpresa();
 
     document.querySelectorAll('input[name="tipoAssociacaoProspecao"]').forEach((radio) => {
@@ -224,12 +240,28 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     ['input', 'change', 'blur'].forEach((eventName) => {
-        document.getElementById('inputProspecaoPrincipalMesmaCasa')?.addEventListener(eventName, atualizarAssociacaoProspecaoCreate);
-        document.getElementById('inputProspecaoPrincipalOutraCasa')?.addEventListener(eventName, atualizarAssociacaoProspecaoCreate);
+        const inputMesmaCasa = document.getElementById('inputProspecaoPrincipalMesmaCasa');
+        const inputOutraCasa = document.getElementById('inputProspecaoPrincipalOutraCasa');
+
+        if (inputMesmaCasa) {
+            inputMesmaCasa.addEventListener(eventName, atualizarAssociacaoProspecaoCreate);
+        }
+
+        if (inputOutraCasa) {
+            inputOutraCasa.addEventListener(eventName, atualizarAssociacaoProspecaoCreate);
+        }
     });
 
-    document.getElementById('Casa')?.addEventListener('change', atualizarAssociacaoProspecaoCreate);
-    document.getElementById('criarProspModalToggle')?.addEventListener('show.bs.modal', window.sincronizarAssociacaoProspecaoCreate);
+    const casaEl = document.getElementById('Casa');
+    const modalCreateEl = document.getElementById('criarProspModalToggle');
+
+    if (casaEl) {
+        casaEl.addEventListener('change', atualizarAssociacaoProspecaoCreate);
+    }
+
+    if (modalCreateEl) {
+        modalCreateEl.addEventListener('show.bs.modal', window.sincronizarAssociacaoProspecaoCreate);
+    }
 
     atualizarAssociacaoProspecaoCreate();
 
@@ -243,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function mapEmpresa() {
             const value = (empresaInput.value || '').trim();
-            const options = [...(datalist?.options || [])];
+            const options = Array.from(datalist ? datalist.options : []);
             let option = options.find(o => (o.value || '').trim().toLowerCase() === value.toLowerCase());
             if (!option && value) {
                 option = options.find(o => (o.value || '').toLowerCase().includes(value.toLowerCase()));
@@ -292,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const hiddenPrincipalId = document.getElementById('ProspeccaoPrincipalId');
             const validacao = document.getElementById('validacaoProspecaoPrincipal');
 
-            if ((tipoAssociacao === 'mesma-casa' || tipoAssociacao === 'outra-casa') && !hiddenPrincipalId?.value) {
+            if ((tipoAssociacao === 'mesma-casa' || tipoAssociacao === 'outra-casa') && !(hiddenPrincipalId && hiddenPrincipalId.value)) {
                 event.preventDefault();
                 if (validacao) {
                     validacao.textContent = 'Selecione a prospecção principal para continuar.';
@@ -307,4 +339,11 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
         console.debug('[modalCreateProsp] validações auxiliares não anexadas:', err);
     }
-});
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', inicializarModalCreateProsp);
+    } else {
+        inicializarModalCreateProsp();
+    }
+})();

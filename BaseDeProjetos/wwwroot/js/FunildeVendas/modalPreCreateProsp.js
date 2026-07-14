@@ -25,10 +25,10 @@ async function trocarModalNovaProsp() {
     window.tipoAssociacaoPreselecionada = "nova";
 
     if (valorSelect !== "-1" && valorSelect !== "-2") {
-        toggleButton.dataset.bsTarget = #CreateFollowupProspModal-;
+        toggleButton.dataset.bsTarget = "#CreateFollowupProspModal-" + valorSelect;
 
         try {
-            const response = await fetch(/FunildeVendas/RetornarModal?idProsp=&tipo=CreateFollowup);
+            const response = await fetch("/FunildeVendas/RetornarModal?idProsp=" + encodeURIComponent(valorSelect) + "&tipo=CreateFollowup");
             const result = await response.text();
             document.querySelector("#modalCreateFollowUpProspContainer").innerHTML = result;
         } catch (error) {
@@ -82,11 +82,11 @@ async function trocarModalNovaProsp() {
                 valorStatus.value = "ContatoInicial";
             }
 
-            if (statusAnotacoes?.value === "Inclu\u00eddo no plano de prospec\u00e7\u00f5es como prospec\u00e7\u00e3o planejada") {
+            if (statusAnotacoes && statusAnotacoes.value === "Inclu\u00eddo no plano de prospec\u00e7\u00f5es como prospec\u00e7\u00e3o planejada") {
                 statusAnotacoes.value = "";
             }
 
-            if (nomeProspeccao?.value === "Prospec\u00e7\u00e3o planejada") {
+            if (nomeProspeccao && nomeProspeccao.value === "Prospec\u00e7\u00e3o planejada") {
                 nomeProspeccao.value = "";
                 nomeProspeccao.placeholder = "Ex.: Proposta de biossurfactantes";
             }
