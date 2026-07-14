@@ -839,27 +839,55 @@ namespace BaseDeProjetos.Controllers
                     .Where(f => f.Data.Year == ano
                         && f.Status == StatusProspeccao.ContatoInicial
                         && !string.IsNullOrWhiteSpace(f.LiderId))
-                    .GroupBy(f => new { f.LiderId, f.LiderNome })
+                    .GroupBy(f => NormalizarChavePesquisador(f.LiderNome ?? f.LiderId))
                     .Select(g =>
                     {
+                        List<string> chavesAgrupadas = g
+                            .Select(f => f.LiderId)
+                            .Where(liderId => !string.IsNullOrWhiteSpace(liderId))
+                            .Distinct(StringComparer.OrdinalIgnoreCase)
+                            .ToList();
+
+                        string pesquisador = g
+                            .Select(f => f.LiderNome)
+                            .FirstOrDefault(liderNome => !string.IsNullOrWhiteSpace(liderNome));
+
+                        if (string.IsNullOrWhiteSpace(pesquisador))
+                        {
+                            pesquisador = chavesAgrupadas.FirstOrDefault();
+                        }
+
+                        string pesquisadorId = chavesAgrupadas
+                            .FirstOrDefault(liderId => arrastesPorPesquisador.ContainsKey(liderId));
+
+                        pesquisadorId ??= chavesAgrupadas
+                            .FirstOrDefault(liderId => !string.Equals(liderId, pesquisador, StringComparison.OrdinalIgnoreCase));
+
+                        pesquisadorId ??= chavesAgrupadas.FirstOrDefault() ?? pesquisador;
+
                         int[] mesesPesquisador = Enumerable.Range(1, 12)
                             .Select(mes => g.Where(f => f.Data.Month == mes).Select(f => f.OrigemID).Distinct().Count())
                             .ToArray();
 
-                        decimal arraste = arrastesPorPesquisador.ContainsKey(g.Key.LiderId) ? arrastesPorPesquisador[g.Key.LiderId] : 0;
+                        decimal arraste = !string.IsNullOrWhiteSpace(pesquisadorId) && arrastesPorPesquisador.ContainsKey(pesquisadorId)
+                            ? arrastesPorPesquisador[pesquisadorId]
+                            : 0;
 
                         return new ContatosPesquisadorIndicadorLinha
                         {
-                            PesquisadorId = g.Key.LiderId,
-                            Pesquisador = string.IsNullOrWhiteSpace(g.Key.LiderNome) ? "Sem lider" : g.Key.LiderNome,
+                            PesquisadorId = pesquisadorId,
+                            Pesquisador = string.IsNullOrWhiteSpace(pesquisador) ? "Sem lider" : pesquisador,
                             Arraste = arraste,
-                            Meses = mesesPesquisador
+                            Meses = mesesPesquisador,
+                            ChavesAgrupadas = chavesAgrupadas
                         };
                     })
                     .ToList();
 
                 List<string> pesquisadoresComLinha = contatosPesquisadorBase
-                    .Select(linha => linha.PesquisadorId)
+                    .SelectMany(linha => linha.ChavesAgrupadas.Concat(new[] { linha.PesquisadorId }))
+                    .Where(pesquisadorId => !string.IsNullOrWhiteSpace(pesquisadorId))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
                     .ToList();
                 List<string> pesquisadoresSomenteArraste = arrastesPorPesquisador.Keys
                     .Where(pesquisadorId => !pesquisadoresComLinha.Contains(pesquisadorId))
@@ -1451,12 +1479,24 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
+        private static string NormalizarChavePesquisador(string valor)
+        {
+            if (string.IsNullOrWhiteSpace(valor))
+            {
+                return string.Empty;
+            }
+
+            return string.Join(" ", valor.Trim().Split(new[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+                .ToUpperInvariant();
+        }
+
         private class ContatosPesquisadorIndicadorLinha
         {
             public string PesquisadorId { get; set; }
             public string Pesquisador { get; set; }
             public decimal Arraste { get; set; }
             public int[] Meses { get; set; } = new int[12];
+            public List<string> ChavesAgrupadas { get; set; } = new List<string>();
             public decimal Total => Arraste + Meses.Sum();
         }
 
