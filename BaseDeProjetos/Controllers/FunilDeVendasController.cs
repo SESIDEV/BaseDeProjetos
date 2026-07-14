@@ -954,6 +954,7 @@ namespace BaseDeProjetos.Controllers
                 string[] indicadoresPlanejamentoGraficos = new[]
                 {
                     "CONTATOS_REGISTRADOS_META",
+                    "CONTATOS_REALIZADOS",
                     "PROPOSTAS_ENVIADAS_META",
                     "PROJETOS_CONVERTIDOS_META"
                 };
@@ -965,6 +966,9 @@ namespace BaseDeProjetos.Controllers
                         && indicador.Coluna >= 0
                         && indicador.Coluna <= 12)
                     .ToListAsync();
+                decimal totalArrasteContatosRealizadosGrafico = planejamentoGraficos
+                    .Where(indicador => indicador.Indicador == "CONTATOS_REALIZADOS" && indicador.Coluna == 0)
+                    .Sum(indicador => indicador.Valor);
 
                 var dados = new
                 {
@@ -979,7 +983,7 @@ namespace BaseDeProjetos.Controllers
                         Planejado = GerarSeriePlanejadoMensal(planejamentoGraficos, "CONTATOS_REGISTRADOS_META"),
                         Executado = GerarSerieExecutadoMensal(followUps
                             .Where(f => f.Status == StatusProspeccao.ContatoInicial && f.Data.Year == ano)
-                            .Select(f => f.Data), totalArrasteContatosPesquisador),
+                            .Select(f => f.Data), totalArrasteContatosRealizadosGrafico),
                         ExecutadoAnoAnterior = GerarSerieExecutadoMensal(followUps
                             .Where(f => f.Status == StatusProspeccao.ContatoInicial && f.Data.Year == ano - 1)
                             .Select(f => f.Data))
@@ -1800,17 +1804,14 @@ namespace BaseDeProjetos.Controllers
                 .Select(contato => contato.OrigemID)
                 .Distinct()
                 .Count();
-            string chaveArrasteContatosPlanejamento = ObterChaveFiltroCasasIndicadores(
-                new List<Instituto> { casa },
-                FunilHelpers.ObterCasasPermitidas(UsuarioAtivo));
-            string prefixoArrasteContatosPlanejamento = ObterPrefixoArrasteContatosPesquisador(chaveArrasteContatosPlanejamento);
             decimal totalArrasteContatosRealizados = await _context.IndicadoresPlanejamentoMensal
                 .AsNoTracking()
-                .Where(indicador => indicador.Casa == Instituto.Super
+                .Where(indicador => indicador.Casa == casa
                     && indicador.Ano == ano
-                    && indicador.Indicador.StartsWith(prefixoArrasteContatosPlanejamento)
+                    && indicador.Indicador == "CONTATOS_REALIZADOS"
                     && indicador.Coluna == 0)
-                .SumAsync(indicador => indicador.Valor);
+                .Select(indicador => (decimal?)indicador.Valor)
+                .FirstOrDefaultAsync() ?? 0;
             decimal totalContatosRealizadosComArraste = totalArrasteContatosRealizados + totalContatosRegistradosReal;
             Dictionary<int, int> contatosRealizadosAcumulados = Enumerable.Range(1, 12)
                 .ToDictionary(
@@ -2121,7 +2122,7 @@ namespace BaseDeProjetos.Controllers
                 || (chave == "EMPRESAS_FORA_ESTADO_PLANEJAMENTO" && coluna == -1)
                 || (chave == "EMPRESAS_FORA_ESTADO_PLANEJAMENTO" && coluna == -2)
                 || (chave == "CONTATOS_REALIZADOS_META" && coluna >= -2 && coluna <= 12)
-                || (chave == "CONTATOS_REALIZADOS" && coluna >= -2 && coluna <= 12)
+                || (chave == "CONTATOS_REALIZADOS" && (coluna == -2 || coluna == -1 || (coluna >= 1 && coluna <= 12)))
                 || (chave == "NDA_ASSINADOS" && coluna >= -2 && coluna <= 12)
                 || (chave == "TAXA_ASSINATURA" && coluna >= -2 && coluna <= 12)
                 || (chave == "PROPOSTAS_ENVIADAS" && coluna >= -2 && coluna <= 12)
