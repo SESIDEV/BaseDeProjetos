@@ -11,6 +11,14 @@
     {
         ViewData["Area"] = Context.Session.GetString("_Casa");
     }
+
+    bool PessoaPodeSerApoioOuLider(PessoaModel pessoa)
+    {
+        var cargo = pessoa?.Cargo ?? string.Empty;
+
+        return cargo.IndexOf("Bolsista", StringComparison.OrdinalIgnoreCase) < 0
+            && cargo.IndexOf("Estagi", StringComparison.OrdinalIgnoreCase) < 0;
+    }
 }
 
 <div class="modal fade"
@@ -295,7 +303,7 @@
                                             if (pessoasApoioLiderInputEdit != null && pessoasApoioLiderInputEdit.Any())
                                             {
                                                 foreach (var p in pessoasApoioLiderInputEdit
-                                                    .Where(p => p.Cargo == "Pesquisador" || p.Cargo == "Coordenador")
+                                                    .Where(PessoaPodeSerApoioOuLider)
                                                     .OrderBy(p => p.Nome))
                                                 {
                                                     var value = (p.Nome ?? "")
@@ -319,7 +327,7 @@
                                             if (pessoasApoioLiderEdit != null && usuariosFunilLiderEdit != null)
                                             {
                                                 foreach (var p in pessoasApoioLiderEdit
-                                                    .Where(p => p.Cargo == "Pesquisador" || p.Cargo == "Coordenador")
+                                                    .Where(PessoaPodeSerApoioOuLider)
                                                     .OrderBy(p => p.Nome))
                                                 {
                                                     var nomeLider = (p.Nome ?? "")
@@ -357,7 +365,7 @@
                                                 if (pessoas != null && pessoas.Any())
                                                 {
                                                     foreach (var p in pessoas
-                                                    .Where(p => p.Cargo == "Pesquisador" || p.Cargo == "Coordenador"))
+                                                    .Where(PessoaPodeSerApoioOuLider))
                                                     {
                                                         var value = (p.Nome ?? "")
                                                         .Split(new char[] { ',', ';' })[0]
