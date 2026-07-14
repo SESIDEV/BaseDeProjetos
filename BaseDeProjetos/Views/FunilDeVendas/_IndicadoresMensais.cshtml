@@ -1,3 +1,5 @@
+@using BaseDeProjetos.Helpers
+@using BaseDeProjetos.Models
 @using BaseDeProjetos.Models.Enums
 @{
     string casaIndicadores = ViewBag.Casa as string;
@@ -6,17 +8,42 @@
     var usuarioNivelIndicadores = ViewBag.usuarioNivel;
     var usuarioCasaIndicadoresTexto = (ViewBag.usuarioCasa ?? "").ToString();
     Enum.TryParse(usuarioCasaIndicadoresTexto, out Instituto usuarioCasaIndicadores);
-    bool usuarioPodeVerTodasCasasIndicadores = usuarioNivelIndicadores != null
-        && (usuarioNivelIndicadores.ToString() == "PMO" || usuarioNivelIndicadores.ToString() == "Dev" || usuarioNivelIndicadores.ToString() == "Supervisor");
+    Enum.TryParse((usuarioNivelIndicadores ?? "").ToString(), out Nivel usuarioNivelIndicadoresEnum);
+    var usuarioIndicadores = new Usuario { Casa = usuarioCasaIndicadores, Nivel = usuarioNivelIndicadoresEnum };
+    bool usuarioPodeVerTodasCasasIndicadores = FunilHelpers.UsuarioPodeVisualizarTodasCasas(usuarioIndicadores);
+    List<Instituto> institutosIndicadores = FunilHelpers.ObterCasasPermitidas(usuarioIndicadores)
+        .Where(i => i != Instituto.Super && i != Instituto.ISIII && i != Instituto.ISISVP)
+        .ToList();
+    bool usuarioPodeSelecionarTodasCasasIndicadores = usuarioPodeVerTodasCasasIndicadores || institutosIndicadores.Count > 1;
 
     if (string.IsNullOrEmpty(casaIndicadores))
     {
-        casaIndicadores = usuarioPodeVerTodasCasasIndicadores ? Instituto.ISIQV.ToString() : usuarioCasaIndicadores.ToString();
+        casaIndicadores = usuarioPodeSelecionarTodasCasasIndicadores && !usuarioPodeVerTodasCasasIndicadores
+            ? "Todas"
+            : (usuarioPodeVerTodasCasasIndicadores ? Instituto.ISIQV.ToString() : usuarioCasaIndicadores.ToString());
     }
 
-    if (!usuarioPodeVerTodasCasasIndicadores)
+    List<string> casasPermitidasIndicadores = institutosIndicadores
+        .Select(instituto => instituto.ToString())
+        .ToList();
+
+    if (!usuarioPodeSelecionarTodasCasasIndicadores)
     {
-        casaIndicadores = usuarioCasaIndicadores.ToString();
+        casaIndicadores = casasPermitidasIndicadores.FirstOrDefault() ?? usuarioCasaIndicadores.ToString();
+    }
+    else if (!string.Equals(casaIndicadores, "Todas", StringComparison.OrdinalIgnoreCase))
+    {
+        bool contemCasaNaoPermitida = (casaIndicadores ?? "")
+            .Split(',', StringSplitOptions.RemoveEmptyEntries)
+            .Select(c => c.Trim())
+            .Any(casaSelecionada => !casasPermitidasIndicadores.Contains(casaSelecionada));
+
+        if (contemCasaNaoPermitida)
+        {
+            casaIndicadores = usuarioPodeVerTodasCasasIndicadores
+                ? Instituto.ISIQV.ToString()
+                : "Todas";
+        }
     }
 
     bool todasAsCasasSelecionadas = string.Equals(casaIndicadores, "Todas", StringComparison.OrdinalIgnoreCase);
@@ -24,13 +51,7 @@
         .Split(',', StringSplitOptions.RemoveEmptyEntries)
         .Select(c => c.Trim())
         .ToList();
-
-    List<Instituto> institutosIndicadores = new List<Instituto>((Instituto[])Enum.GetValues(typeof(Instituto))).Where(i => i != Instituto.Super && i != Instituto.ISIII && i != Instituto.ISISVP).ToList();
-    if (!usuarioPodeVerTodasCasasIndicadores)
-    {
-        institutosIndicadores = institutosIndicadores.Where(i => i == usuarioCasaIndicadores).ToList();
-        todasAsCasasSelecionadas = false;
-    }
+    todasAsCasasSelecionadas = todasAsCasasSelecionadas && usuarioPodeSelecionarTodasCasasIndicadores;
     Dictionary<Instituto, string> nomesCasasIndicadores = new Dictionary<Instituto, string>
     {
         { Instituto.ISIQV, "ISI Química Verde" },
@@ -246,7 +267,7 @@
         <div class="indicadores-casas-menu" id="casaIndicadores">
             <span class="indicadores-casas-title">Casas</span>
             <div class="indicadores-casas-list">
-                @if (usuarioPodeVerTodasCasasIndicadores)
+                @if (usuarioPodeSelecionarTodasCasasIndicadores)
                 {
                     <label class="indicadores-casa-option" for="casaIndicadoresTodas">
                         <input type="checkbox" name="casasIndicadores" id="casaIndicadoresTodas" value="Todas" checked="@todasAsCasasSelecionadas" />

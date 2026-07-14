@@ -164,11 +164,12 @@ namespace BaseDeProjetos.Helpers
         public static async Task<List<Prospeccao>> DefinirCasaParaVisualizar(string casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, DbCache cache, ViewDataDictionary ViewData)
         {
             List<Instituto> casasPermitidas = ObterCasasPermitidas(usuario);
-            bool usuarioPodeVerTodas = UsuarioPodeVisualizarTodasCasas(usuario);
+            bool usuarioPodeVerMultiplasCasas = UsuarioPodeVisualizarTodasCasas(usuario) || casasPermitidas.Count > 1;
 
-            if ((string.IsNullOrWhiteSpace(casa) || casa.Equals("Todas", StringComparison.OrdinalIgnoreCase)) && usuarioPodeVerTodas)
+            if ((string.IsNullOrWhiteSpace(casa) || casa.Equals("Todas", StringComparison.OrdinalIgnoreCase)) && usuarioPodeVerMultiplasCasas)
             {
-                return await cache.GetCachedAsync("Prospeccoes:Funil:TodasPermitidas", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Contato).Include(p => p.Usuario).Where(prospeccao => casasPermitidas.Contains(prospeccao.Casa)).ToListAsync());
+                string chaveCasasPermitidas = string.Join(",", casasPermitidas.OrderBy(instituto => instituto.ToString()));
+                return await cache.GetCachedAsync($"Prospeccoes:Funil:TodasPermitidas:{chaveCasasPermitidas}", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Contato).Include(p => p.Usuario).Where(prospeccao => casasPermitidas.Contains(prospeccao.Casa)).ToListAsync());
             }
 
             if (!TentarParseInstituto(casa, out Instituto enum_casa) || !casasPermitidas.Contains(enum_casa))
@@ -178,6 +179,11 @@ namespace BaseDeProjetos.Helpers
 
             HttpContext.Session.SetString("_Casa", enum_casa.ToString());
             ViewData["Area"] = enum_casa.ToString();
+
+            if (!UsuarioPodeVisualizarTodasCasas(usuario) && CasasCompartilhamVisibilidade(usuario.Casa, enum_casa))
+            {
+                return await cache.GetCachedAsync($"Prospeccoes:Funil:Filtradas:GrupoQuimicaSaude", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Contato).Include(p => p.Usuario).Where(prospeccao => prospeccao.Casa == Instituto.ISIQV || prospeccao.Casa == Instituto.CISHO).ToListAsync());
+            }
 
             return await cache.GetCachedAsync($"Prospeccoes:Funil:Filtradas:{enum_casa}", () => _context.Prospeccao.Include(p => p.Status).Include(p => p.Empresa).Include(p => p.Contato).Include(p => p.Usuario).Where(prospeccao => prospeccao.Casa.Equals(enum_casa)).ToListAsync());
         }
@@ -199,9 +205,9 @@ namespace BaseDeProjetos.Helpers
                 .Include(p => p.Usuario);
 
             List<Instituto> casasPermitidas = ObterCasasPermitidas(usuario);
-            bool usuarioPodeVerTodas = UsuarioPodeVisualizarTodasCasas(usuario);
+            bool usuarioPodeVerMultiplasCasas = UsuarioPodeVisualizarTodasCasas(usuario) || casasPermitidas.Count > 1;
 
-            if ((string.IsNullOrWhiteSpace(casa) || casa.Equals("Todas", StringComparison.OrdinalIgnoreCase)) && usuarioPodeVerTodas)
+            if ((string.IsNullOrWhiteSpace(casa) || casa.Equals("Todas", StringComparison.OrdinalIgnoreCase)) && usuarioPodeVerMultiplasCasas)
             {
                 return query.Where(p => casasPermitidas.Contains(p.Casa));
             }
@@ -213,6 +219,11 @@ namespace BaseDeProjetos.Helpers
 
             httpContext.Session.SetString("_Casa", enumCasa.ToString());
             viewData["Area"] = enumCasa.ToString();
+
+            if (!UsuarioPodeVisualizarTodasCasas(usuario) && CasasCompartilhamVisibilidade(usuario.Casa, enumCasa))
+            {
+                return query.Where(p => p.Casa == Instituto.ISIQV || p.Casa == Instituto.CISHO);
+            }
 
             return query.Where(p => p.Casa == enumCasa);
         }
@@ -331,9 +342,9 @@ namespace BaseDeProjetos.Helpers
         public static async Task<List<Producao>> DefinirCasaParaVisualizarEmProducao(string casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, ViewDataDictionary ViewData)
         {
             List<Instituto> casasPermitidas = ObterCasasPermitidas(usuario);
-            bool usuarioPodeVerTodas = UsuarioPodeVisualizarTodasCasas(usuario);
+            bool usuarioPodeVerMultiplasCasas = UsuarioPodeVisualizarTodasCasas(usuario) || casasPermitidas.Count > 1;
 
-            if ((string.IsNullOrWhiteSpace(casa) || casa.Equals("Todas", StringComparison.OrdinalIgnoreCase)) && usuarioPodeVerTodas)
+            if ((string.IsNullOrWhiteSpace(casa) || casa.Equals("Todas", StringComparison.OrdinalIgnoreCase)) && usuarioPodeVerMultiplasCasas)
             {
                 return await _context.Producao.Where(producao => casasPermitidas.Contains(producao.Casa)).ToListAsync();
             }
@@ -345,6 +356,11 @@ namespace BaseDeProjetos.Helpers
 
             HttpContext.Session.SetString("_Casa", enum_casa.ToString());
             ViewData["Area"] = enum_casa.ToString();
+
+            if (!UsuarioPodeVisualizarTodasCasas(usuario) && CasasCompartilhamVisibilidade(usuario.Casa, enum_casa))
+            {
+                return await _context.Producao.Where(producao => producao.Casa == Instituto.ISIQV || producao.Casa == Instituto.CISHO).ToListAsync();
+            }
 
             return await _context.Producao.Where(producao => producao.Casa.Equals(enum_casa)).ToListAsync();
         }
@@ -537,7 +553,9 @@ namespace BaseDeProjetos.Helpers
         public static bool UsuarioPodeAcessarCasa(Usuario usuario, Instituto casa)
         {
             if (usuario == null) return false;
-            return UsuarioPodeVisualizarTodasCasas(usuario) || usuario.Casa == casa;
+            return UsuarioPodeVisualizarTodasCasas(usuario)
+                || usuario.Casa == casa
+                || CasasCompartilhamVisibilidade(usuario.Casa, casa);
         }
 
         public static List<Instituto> ObterCasasPermitidas(Usuario usuario)
@@ -552,12 +570,30 @@ namespace BaseDeProjetos.Helpers
                 return casasVisiveis;
             }
 
+            if (usuario != null && CasaPertenceAoGrupoQuimicaSaude(usuario.Casa))
+            {
+                return casasVisiveis
+                    .Where(CasaPertenceAoGrupoQuimicaSaude)
+                    .ToList();
+            }
+
             if (usuario != null && casasVisiveis.Contains(usuario.Casa))
             {
                 return new List<Instituto> { usuario.Casa };
             }
 
             return new List<Instituto>();
+        }
+
+        public static bool CasasCompartilhamVisibilidade(Instituto casaOrigem, Instituto casaDestino)
+        {
+            return CasaPertenceAoGrupoQuimicaSaude(casaOrigem)
+                && CasaPertenceAoGrupoQuimicaSaude(casaDestino);
+        }
+
+        private static bool CasaPertenceAoGrupoQuimicaSaude(Instituto casa)
+        {
+            return casa == Instituto.ISIQV || casa == Instituto.CISHO;
         }
 
         public static bool TentarParseInstituto(string casa, out Instituto instituto)

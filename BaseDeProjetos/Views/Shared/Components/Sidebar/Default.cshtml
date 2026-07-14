@@ -7,21 +7,21 @@
 	var usuarioNivel = ViewBag.usuarioNivel;
 	var usuarioCasaTexto = (ViewBag.usuarioCasa ?? "").ToString();
 	Enum.TryParse(usuarioCasaTexto, out Instituto usuarioCasaMenu);
-	bool usuarioPodeVerTodasCasasMenu = usuarioNivel != null
-		&& (usuarioNivel.ToString() == "PMO" || usuarioNivel.ToString() == "Dev" || usuarioNivel.ToString() == "Supervisor");
+	Enum.TryParse((usuarioNivel ?? "").ToString(), out Nivel usuarioNivelMenu);
+	var usuarioMenu = new Usuario { Casa = usuarioCasaMenu, Nivel = usuarioNivelMenu };
+	bool usuarioPodeVerTodasCasasMenu = FunilHelpers.UsuarioPodeVisualizarTodasCasas(usuarioMenu);
 	// Excluir casas específicas do menu
 	var excluded = new[] { Instituto.ISIII, Instituto.Super, Instituto.ISISVP };
-	List<Instituto> institutos = Enum.GetValues(typeof(Instituto))
-		.Cast<Instituto>()
+	List<Instituto> institutos = FunilHelpers.ObterCasasPermitidas(usuarioMenu)
 		.Where(i => !excluded.Contains(i))
 		.ToList();
-	if (!usuarioPodeVerTodasCasasMenu)
-	{
-		institutos = institutos.Where(i => i == usuarioCasaMenu).ToList();
-	}
 	string casaPadraoIndicadoresMenu = (usuarioPodeVerTodasCasasMenu && institutos.Contains(Instituto.ISIQV))
 		? Instituto.ISIQV.ToString()
 		: usuarioCasaMenu.ToString();
+	if (!usuarioPodeVerTodasCasasMenu && institutos.Count > 1)
+	{
+		casaPadraoIndicadoresMenu = "Todas";
+	}
 	Dictionary<Instituto, string> nomesCasasMenu = new Dictionary<Instituto, string>
 	{
 		{ Instituto.ISIQV, "ISI Química Verde" },
