@@ -130,7 +130,11 @@ namespace BaseDeProjetos.Helpers
 
                 case "comproposta":
                     return prospeccoes.Where(prospeccao =>
-                        prospeccao.Status.Any(s => s.Status == StatusProspeccao.ComProposta)
+                        prospeccao.Status.Any(s =>
+                            s.Status == StatusProspeccao.ComProposta ||
+                            s.Status == StatusProspeccao.Convertida ||
+                            ((s.Status == StatusProspeccao.NaoConvertida || s.Status == StatusProspeccao.Suspensa) && prospeccao.ValorProposta != 0)
+                        )
                     ).ToList();
 
                 case "concluidas":
@@ -301,7 +305,11 @@ namespace BaseDeProjetos.Helpers
 
                 case "comproposta":
                     return query.Where(p =>
-                        p.Status.Any(s => s.Status == StatusProspeccao.ComProposta)
+                        p.Status.Any(s =>
+                            s.Status == StatusProspeccao.ComProposta ||
+                            s.Status == StatusProspeccao.Convertida ||
+                            ((s.Status == StatusProspeccao.NaoConvertida || s.Status == StatusProspeccao.Suspensa) && p.ValorProposta != 0)
+                        )
                     );
 
                 case "concluidas":
