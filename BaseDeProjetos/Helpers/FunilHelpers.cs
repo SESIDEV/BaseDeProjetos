@@ -129,12 +129,12 @@ namespace BaseDeProjetos.Helpers
                         .ToList();
 
                 case "comproposta":
-                    // Incluir prospecções que tenham o status ComProposta em qualquer ponto do histórico
-                    // Incluir prospecções que tenham o status ComProposta em qualquer ponto do histórico
-                    // mas excluir aquelas que já possuem um status conclusivo (Convertida, NaoConvertida, Suspensa)
                     return prospeccoes.Where(prospeccao =>
-                        prospeccao.Status.Any(s => s.Status == StatusProspeccao.ComProposta) &&
-                        !prospeccao.Status.Any(s => s.Status == StatusProspeccao.Convertida || s.Status == StatusProspeccao.NaoConvertida || s.Status == StatusProspeccao.Suspensa)
+                        prospeccao.Status.Any(s =>
+                            s.Status == StatusProspeccao.ComProposta ||
+                            s.Status == StatusProspeccao.Convertida ||
+                            ((s.Status == StatusProspeccao.NaoConvertida || s.Status == StatusProspeccao.Suspensa) && prospeccao.ValorProposta != 0)
+                        )
                     ).ToList();
 
                 case "concluidas":
@@ -304,11 +304,12 @@ namespace BaseDeProjetos.Helpers
                     );
 
                 case "comproposta":
-                    // Incluir prospecções que tenham o status ComProposta em qualquer ponto do histórico
-                    // mas excluir aquelas que já possuem um status conclusivo (Convertida, NaoConvertida, Suspensa)
                     return query.Where(p =>
-                        p.Status.Any(s => s.Status == StatusProspeccao.ComProposta) &&
-                        !p.Status.Any(s => s.Status == StatusProspeccao.Convertida || s.Status == StatusProspeccao.NaoConvertida || s.Status == StatusProspeccao.Suspensa)
+                        p.Status.Any(s =>
+                            s.Status == StatusProspeccao.ComProposta ||
+                            s.Status == StatusProspeccao.Convertida ||
+                            ((s.Status == StatusProspeccao.NaoConvertida || s.Status == StatusProspeccao.Suspensa) && p.ValorProposta != 0)
+                        )
                     );
 
                 case "concluidas":

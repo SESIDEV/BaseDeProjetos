@@ -754,7 +754,9 @@ namespace BaseDeProjetos.Controllers
                         && (f.Data.Year == ano || f.Data.Year == ano - 1)
                         && (f.Status == StatusProspeccao.ContatoInicial
                             || f.Status == StatusProspeccao.ComProposta
-                            || f.Status == StatusProspeccao.Convertida))
+                            || f.Status == StatusProspeccao.Convertida
+                            || f.Status == StatusProspeccao.NaoConvertida
+                            || f.Status == StatusProspeccao.Suspensa))
                     .Select(f => new
                     {
                         f.OrigemID,
@@ -777,11 +779,18 @@ namespace BaseDeProjetos.Controllers
                     {
                         Equipe = g.Key,
                         ContatosRealizados = g.Where(f => f.Status == StatusProspeccao.ContatoInicial).Select(f => f.OrigemID).Distinct().Count(),
-                        PropostasEnviadas = g.Where(f => f.Status == StatusProspeccao.ComProposta).Select(f => f.OrigemID).Distinct().Count(),
+                        PropostasEnviadas = g.Where(f => StatusIndicaPropostaEnviada(f.Status, f.ValorProposta))
+                            .Select(f => f.OrigemID)
+                            .Distinct()
+                            .Count(),
                         PropostasConvertidas = g.Where(f => f.Status == StatusProspeccao.Convertida).Select(f => f.OrigemID).Distinct().Count(),
-                        ValorPropostasEnviadas = g.Where(f => f.Status == StatusProspeccao.ComProposta)
+                        ValorPropostasEnviadas = g.Where(f => StatusIndicaPropostaEnviada(f.Status, f.ValorProposta))
                             .GroupBy(f => f.OrigemID)
-                            .Select(grupo => grupo.First().ValorEstimado)
+                            .Select(grupo =>
+                            {
+                                var proposta = grupo.OrderBy(f => f.Data).First();
+                                return proposta.ValorProposta != 0 ? proposta.ValorProposta : proposta.ValorEstimado;
+                            })
                             .Sum(),
                         ValorPropostasConvertidas = g.Where(f => f.Status == StatusProspeccao.Convertida)
                             .GroupBy(f => f.OrigemID)
@@ -1014,10 +1023,10 @@ namespace BaseDeProjetos.Controllers
                     {
                         Planejado = GerarSeriePlanejadoMensal(planejamentoGraficos, "PROPOSTAS_ENVIADAS_META"),
                         Executado = GerarSerieExecutadoMensal(followUps
-                            .Where(f => f.Status == StatusProspeccao.ComProposta && f.Data.Year == ano)
+                            .Where(f => StatusIndicaPropostaEnviada(f.Status, f.ValorProposta) && f.Data.Year == ano)
                             .Select(f => f.Data), totalArrastePropostasEnviadasGrafico),
                         ExecutadoAnoAnterior = GerarSerieHistoricoManualOuExecutado(historicoManualComparacao, ano, "HISTORICO_PROPOSTAS_ENVIADAS", followUps
-                            .Where(f => f.Status == StatusProspeccao.ComProposta && f.Data.Year == ano - 1)
+                            .Where(f => StatusIndicaPropostaEnviada(f.Status, f.ValorProposta) && f.Data.Year == ano - 1)
                             .Select(f => f.Data))
                     },
                     PropostasConvertidas = new
@@ -1246,8 +1255,7 @@ namespace BaseDeProjetos.Controllers
             });
 
             int comProposta = prospeccoes.Count(prospeccao =>
-                prospeccao.Status.Any(s => s.Status == StatusProspeccao.ComProposta) &&
-                !prospeccao.Status.Any(s => s.Status == StatusProspeccao.Convertida || s.Status == StatusProspeccao.NaoConvertida || s.Status == StatusProspeccao.Suspensa)
+                prospeccao.Status.Any(s => StatusIndicaPropostaEnviada(s.Status, prospeccao.ValorProposta))
             );
 
             int contratacao = prospeccoes.Count(prospeccao =>
@@ -1270,6 +1278,14 @@ namespace BaseDeProjetos.Controllers
                 .OrderBy(followup => followup.Data)
                 .ThenBy(followup => followup.Id)
                 .LastOrDefault();
+        }
+
+        private static bool StatusIndicaPropostaEnviada(StatusProspeccao status, decimal valorProposta)
+        {
+            return status == StatusProspeccao.ComProposta
+                || status == StatusProspeccao.Convertida
+                || ((status == StatusProspeccao.NaoConvertida || status == StatusProspeccao.Suspensa)
+                    && valorProposta != 0);
         }
 
         private static decimal[] GerarSerieExecutadoMensal(IEnumerable<DateTime> datas, decimal valorInicial = 0)
@@ -1943,15 +1959,22 @@ namespace BaseDeProjetos.Controllers
                 .Where(followUp => followUp.Origem != null
                     && followUp.Origem.Casa == casa
                     && followUp.Data.Year == ano
-                    && followUp.Status == StatusProspeccao.ComProposta)
+                    && (followUp.Status == StatusProspeccao.ComProposta
+                        || followUp.Status == StatusProspeccao.Convertida
+                        || followUp.Status == StatusProspeccao.NaoConvertida
+                        || followUp.Status == StatusProspeccao.Suspensa))
                 .Select(followUp => new
                 {
                     followUp.OrigemID,
+                    followUp.Status,
                     followUp.Data,
                     followUp.Origem.ValorEstimado,
                     followUp.Origem.ValorProposta
                 })
                 .ToListAsync();
+            propostasEnviadasAno = propostasEnviadasAno
+                .Where(proposta => StatusIndicaPropostaEnviada(proposta.Status, proposta.ValorProposta))
+                .ToList();
             int totalPropostasEnviadas = propostasEnviadasAno
                 .Select(proposta => proposta.OrigemID)
                 .Distinct()
@@ -1975,7 +1998,9 @@ namespace BaseDeProjetos.Controllers
                         .Count());
             decimal totalValorPropostasEnviadas = propostasEnviadasAno
                 .GroupBy(proposta => proposta.OrigemID)
-                .Select(grupo => grupo.First().ValorEstimado)
+                .Select(grupo => grupo.OrderBy(proposta => proposta.Data).First().ValorProposta != 0
+                    ? grupo.OrderBy(proposta => proposta.Data).First().ValorProposta
+                    : grupo.OrderBy(proposta => proposta.Data).First().ValorEstimado)
                 .Sum();
             Dictionary<int, decimal> valorPropostasEnviadasAcumulado = Enumerable.Range(1, 12)
                 .ToDictionary(
@@ -1983,7 +2008,9 @@ namespace BaseDeProjetos.Controllers
                     mes => propostasEnviadasAno
                         .Where(proposta => proposta.Data.Month <= mes)
                         .GroupBy(proposta => proposta.OrigemID)
-                        .Select(grupo => grupo.First().ValorEstimado)
+                        .Select(grupo => grupo.OrderBy(proposta => proposta.Data).First().ValorProposta != 0
+                            ? grupo.OrderBy(proposta => proposta.Data).First().ValorProposta
+                            : grupo.OrderBy(proposta => proposta.Data).First().ValorEstimado)
                         .Sum());
             List<string> propostasEnviadasIds = propostasEnviadasAno
                 .Select(proposta => proposta.OrigemID)
