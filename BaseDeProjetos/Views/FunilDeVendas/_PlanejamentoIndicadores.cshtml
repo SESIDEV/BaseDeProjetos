@@ -298,6 +298,7 @@ else
                                     || (linha.Chave == "PROJETOS_CONVERTIDOS" && coluna.Key == -1)
                                     || (linha.Chave == "PERCENTUAL_PROJETOS_CONVERTIDOS_META" && (coluna.Key == -1 || (coluna.Key >= 1 && coluna.Key <= 12)));
                                 bool celulaCalculada = (linha.Chave == "TOTAL_EMPRESAS" && coluna.Key == -2)
+                                    || (linha.Chave.StartsWith("HISTORICO_") && (coluna.Key == -2 || coluna.Key == -1))
                                     || (linha.Chave == "CONTATOS_REGISTRADOS_REAL" && coluna.Key == -2)
                                     || (linha.Chave == "CONTATOS_REGISTRADOS_REAL" && coluna.Key == -1)
                                     || (linha.Chave == "EMPRESAS_FORA_ESTADO_PLANEJAMENTO" && coluna.Key == -2)
