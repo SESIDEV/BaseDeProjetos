@@ -1847,10 +1847,29 @@ namespace BaseDeProjetos.Controllers
         private async Task<IndicadoresPlanejamentoViewModel> MontarPlanejamentoIndicadores(Instituto casa, int ano)
         {
             int[] colunas = ObterColunasPlanejamentoIndicadores();
-            int totalEmpresas = await _context.Empresa.CountAsync();
-            int totalEmpresasForaEstado = await _context.Empresa
-                .CountAsync(empresa => empresa.Estado != Estado.RioDeJaneiro
-                    && empresa.Estado != Estado.SemCadastro);
+            var empresasComInteracaoAno = await _context.FollowUp
+                .AsNoTracking()
+                .Where(followUp => followUp.Origem != null
+                    && followUp.Origem.Casa == casa
+                    && followUp.Data.Year == ano
+                    && followUp.Origem.EmpresaId > 0
+                    && followUp.Origem.Empresa != null)
+                .Select(followUp => new
+                {
+                    followUp.Origem.EmpresaId,
+                    followUp.Origem.Empresa.Estado
+                })
+                .Distinct()
+                .ToListAsync();
+            int totalEmpresas = empresasComInteracaoAno
+                .Select(empresa => empresa.EmpresaId)
+                .Distinct()
+                .Count();
+            int totalEmpresasForaEstado = empresasComInteracaoAno
+                .GroupBy(empresa => empresa.EmpresaId)
+                .Select(grupo => grupo.First().Estado)
+                .Count(estado => estado != Estado.RioDeJaneiro
+                    && estado != Estado.SemCadastro);
             var contatosIniciaisAno = await _context.FollowUp
                 .AsNoTracking()
                 .Where(followUp => followUp.Origem != null
@@ -1929,7 +1948,8 @@ namespace BaseDeProjetos.Controllers
                 {
                     followUp.OrigemID,
                     followUp.Data,
-                    followUp.Origem.ValorEstimado
+                    followUp.Origem.ValorEstimado,
+                    followUp.Origem.ValorProposta
                 })
                 .ToListAsync();
             int totalPropostasEnviadas = propostasEnviadasAno
@@ -1964,6 +1984,58 @@ namespace BaseDeProjetos.Controllers
                         .Where(proposta => proposta.Data.Month <= mes)
                         .GroupBy(proposta => proposta.OrigemID)
                         .Select(grupo => grupo.First().ValorEstimado)
+                        .Sum());
+            List<string> propostasEnviadasIds = propostasEnviadasAno
+                .Select(proposta => proposta.OrigemID)
+                .Distinct()
+                .ToList();
+            var statusPropostasEnviadas = await _context.FollowUp
+                .AsNoTracking()
+                .Where(followUp => followUp.OrigemID != null
+                    && propostasEnviadasIds.Contains(followUp.OrigemID))
+                .Select(followUp => new
+                {
+                    followUp.OrigemID,
+                    followUp.Status
+                })
+                .ToListAsync();
+            HashSet<string> propostasConcluidasIds = statusPropostasEnviadas
+                .Where(followUp => followUp.Status == StatusProspeccao.Convertida
+                    || followUp.Status == StatusProspeccao.NaoConvertida
+                    || followUp.Status == StatusProspeccao.Suspensa)
+                .Select(followUp => followUp.OrigemID)
+                .ToHashSet();
+            int totalPropostasAindaValidas = propostasEnviadasAno
+                .Where(proposta => !propostasConcluidasIds.Contains(proposta.OrigemID))
+                .Select(proposta => proposta.OrigemID)
+                .Distinct()
+                .Count();
+            Dictionary<int, int> propostasAindaValidasAcumuladas = Enumerable.Range(1, 12)
+                .ToDictionary(
+                    mes => mes,
+                    mes => propostasEnviadasAno
+                        .Where(proposta => proposta.Data.Month <= mes
+                            && !propostasConcluidasIds.Contains(proposta.OrigemID))
+                        .Select(proposta => proposta.OrigemID)
+                        .Distinct()
+                        .Count());
+            decimal totalValorPropostaAtiva = propostasEnviadasAno
+                .Where(proposta => !propostasConcluidasIds.Contains(proposta.OrigemID))
+                .GroupBy(proposta => proposta.OrigemID)
+                .Select(grupo => grupo.First().ValorProposta != 0
+                    ? grupo.First().ValorProposta
+                    : grupo.First().ValorEstimado)
+                .Sum();
+            Dictionary<int, decimal> valorPropostaAtivaAcumulado = Enumerable.Range(1, 12)
+                .ToDictionary(
+                    mes => mes,
+                    mes => propostasEnviadasAno
+                        .Where(proposta => proposta.Data.Month <= mes
+                            && !propostasConcluidasIds.Contains(proposta.OrigemID))
+                        .GroupBy(proposta => proposta.OrigemID)
+                        .Select(grupo => grupo.First().ValorProposta != 0
+                            ? grupo.First().ValorProposta
+                            : grupo.First().ValorEstimado)
                         .Sum());
             var projetosConvertidosAno = await _context.FollowUp
                 .AsNoTracking()
@@ -2112,6 +2184,21 @@ namespace BaseDeProjetos.Controllers
                             linha.Valores[coluna] = null;
                         }
                     }
+                    else if (definicao.Chave == "PROPOSTAS_AINDA_VALIDAS")
+                    {
+                        if (coluna == -2)
+                        {
+                            linha.Valores[coluna] = totalPropostasAindaValidas;
+                        }
+                        else if (coluna >= 1 && coluna <= 12)
+                        {
+                            linha.Valores[coluna] = propostasAindaValidasAcumuladas[coluna];
+                        }
+                        else
+                        {
+                            linha.Valores[coluna] = null;
+                        }
+                    }
                     else if (definicao.Chave == "VALOR_PROPOSTA")
                     {
                         if (coluna == -2)
@@ -2132,6 +2219,21 @@ namespace BaseDeProjetos.Controllers
                         linha.Valores[coluna] = totalPropostasEnviadas != 0
                             ? Math.Round(totalValorPropostasEnviadas / totalPropostasEnviadas, 2)
                             : 0;
+                    }
+                    else if (definicao.Chave == "VALOR_PROPOSTA_ATIVA")
+                    {
+                        if (coluna == -2)
+                        {
+                            linha.Valores[coluna] = totalValorPropostaAtiva;
+                        }
+                        else if (coluna >= 1 && coluna <= 12)
+                        {
+                            linha.Valores[coluna] = valorPropostaAtivaAcumulado[coluna];
+                        }
+                        else
+                        {
+                            linha.Valores[coluna] = null;
+                        }
                     }
                     else if (definicao.Chave == "PROJETOS_CONVERTIDOS")
                     {
@@ -2233,6 +2335,8 @@ namespace BaseDeProjetos.Controllers
                 || (chave == "TAXA_PROPOSTA_ENVIADA" && coluna >= -2 && coluna <= 12)
                 || (chave == "VALOR_PROPOSTA" && coluna >= -2 && coluna <= 12)
                 || (chave == "VALOR_MEDIO_PROPOSTA" && coluna == -2)
+                || (chave == "PROPOSTAS_AINDA_VALIDAS" && (coluna == -2 || coluna == -1 || (coluna >= 1 && coluna <= 12)))
+                || (chave == "VALOR_PROPOSTA_ATIVA" && (coluna == -2 || coluna == -1 || (coluna >= 1 && coluna <= 12)))
                 || (chave == "VALOR_MEDIO_PROPOSTA_ATIVA" && coluna == -2)
                 || (chave == "PROJETOS_CONVERTIDOS" && (coluna == -2 || coluna == -1 || (coluna >= 1 && coluna <= 12)))
                 || (chave == "VALOR_TOTAL_PROJETOS_CONVERTIDOS" && coluna >= -2 && coluna <= 12)

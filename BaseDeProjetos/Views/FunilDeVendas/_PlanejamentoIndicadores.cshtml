@@ -296,6 +296,8 @@ else
                                     || (linha.Chave == "PROPOSTAS_ENVIADAS" && coluna.Key == -1)
                                     || (linha.Chave == "TAXA_PROPOSTA_ENVIADA" && coluna.Key >= 1 && coluna.Key <= 12)
                                     || (linha.Chave == "PROJETOS_CONVERTIDOS" && coluna.Key == -1)
+                                    || (linha.Chave == "PROPOSTAS_AINDA_VALIDAS" && coluna.Key == -1)
+                                    || (linha.Chave == "VALOR_PROPOSTA_ATIVA" && coluna.Key == -1)
                                     || (linha.Chave == "PERCENTUAL_PROJETOS_CONVERTIDOS_META" && (coluna.Key == -1 || (coluna.Key >= 1 && coluna.Key <= 12)));
                                 bool celulaCalculada = (linha.Chave == "TOTAL_EMPRESAS" && coluna.Key == -2)
                                     || (linha.Chave.StartsWith("HISTORICO_") && (coluna.Key == -2 || coluna.Key == -1))
@@ -311,6 +313,8 @@ else
                                     || (linha.Chave == "TAXA_PROPOSTA_ENVIADA" && coluna.Key >= -2 && coluna.Key <= 12)
                                     || (linha.Chave == "VALOR_PROPOSTA" && coluna.Key >= -2 && coluna.Key <= 12)
                                     || (linha.Chave == "VALOR_MEDIO_PROPOSTA" && coluna.Key == -2)
+                                    || (linha.Chave == "PROPOSTAS_AINDA_VALIDAS" && (coluna.Key == -2 || coluna.Key == -1 || (coluna.Key >= 1 && coluna.Key <= 12)))
+                                    || (linha.Chave == "VALOR_PROPOSTA_ATIVA" && (coluna.Key == -2 || coluna.Key == -1 || (coluna.Key >= 1 && coluna.Key <= 12)))
                                     || (linha.Chave == "VALOR_MEDIO_PROPOSTA_ATIVA" && coluna.Key == -2)
                                     || (linha.Chave == "PROJETOS_CONVERTIDOS" && (coluna.Key == -2 || coluna.Key == -1 || (coluna.Key >= 1 && coluna.Key <= 12)))
                                     || (linha.Chave == "VALOR_TOTAL_PROJETOS_CONVERTIDOS" && coluna.Key >= -2 && coluna.Key <= 12)
