@@ -463,18 +463,8 @@ async function salvarArrasteContatosPesquisadorValor(pesquisadorId, valor) {
 }
 
 function renderizarIndicadoresMensais(dados) {
-    const contatosRealizados = obterCampo(obterCampo(dados, 'ContatosRealizados'), 'Executado') ?? [];
-    const serieContatosRealizados = {
-        name: 'Contatos Realizados',
-        color: '#ed7d31',
-        data: contatosRealizados,
-        marker: {
-            symbol: 'diamond'
-        }
-    };
-
     criarGraficoExecutado('grafico-contatos', 'Contatos Realizados', 'TOTAL DE CONTATOS REALIZADOS', dados, 'ContatosRealizados', '#ed7d31');
-    criarGraficoExecutado('grafico-propostas', 'Propostas Enviadas', 'QUANTIDADE TOTAL', dados, 'PropostasEnviadas', '#70ad47', [serieContatosRealizados]);
+    criarGraficoExecutado('grafico-propostas', 'Propostas Enviadas', 'QUANTIDADE TOTAL', dados, 'PropostasEnviadas', '#70ad47');
     criarGraficoExecutado('grafico-convertidas', 'Propostas Convertidas', 'QUANTIDADE TOTAL', dados, 'PropostasConvertidas', '#ffc000');
     renderizarTabelaEquipe(dados);
     renderizarTabelaTaxas(dados);
