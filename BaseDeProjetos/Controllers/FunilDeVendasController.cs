@@ -968,6 +968,20 @@ namespace BaseDeProjetos.Controllers
                         && indicador.Coluna >= 0
                         && indicador.Coluna <= 12)
                     .ToListAsync();
+                string[] indicadoresHistoricoManualGraficos = new[]
+                {
+                    "HISTORICO_CONTATOS_REALIZADOS",
+                    "HISTORICO_PROPOSTAS_ENVIADAS",
+                    "HISTORICO_PROJETOS_CONVERTIDOS"
+                };
+                var historicoManualComparacao = await _context.IndicadoresPlanejamentoMensal
+                    .AsNoTracking()
+                    .Where(indicador => (indicador.Ano == ano || indicador.Ano == ano - 1)
+                        && casasSelecionadas.Contains(indicador.Casa)
+                        && indicadoresHistoricoManualGraficos.Contains(indicador.Indicador)
+                        && indicador.Coluna >= 0
+                        && indicador.Coluna <= 12)
+                    .ToListAsync();
                 decimal totalArrasteContatosRealizadosGrafico = planejamentoGraficos
                     .Where(indicador => indicador.Indicador == "CONTATOS_REALIZADOS" && indicador.Coluna == 0)
                     .Sum(indicador => indicador.Valor);
@@ -992,7 +1006,7 @@ namespace BaseDeProjetos.Controllers
                         Executado = GerarSerieExecutadoMensal(followUps
                             .Where(f => f.Status == StatusProspeccao.ContatoInicial && f.Data.Year == ano)
                             .Select(f => f.Data), totalArrasteContatosRealizadosGrafico),
-                        ExecutadoAnoAnterior = GerarSerieExecutadoMensal(followUps
+                        ExecutadoAnoAnterior = GerarSerieHistoricoManualOuExecutado(historicoManualComparacao, ano, "HISTORICO_CONTATOS_REALIZADOS", followUps
                             .Where(f => f.Status == StatusProspeccao.ContatoInicial && f.Data.Year == ano - 1)
                             .Select(f => f.Data))
                     },
@@ -1002,7 +1016,7 @@ namespace BaseDeProjetos.Controllers
                         Executado = GerarSerieExecutadoMensal(followUps
                             .Where(f => f.Status == StatusProspeccao.ComProposta && f.Data.Year == ano)
                             .Select(f => f.Data), totalArrastePropostasEnviadasGrafico),
-                        ExecutadoAnoAnterior = GerarSerieExecutadoMensal(followUps
+                        ExecutadoAnoAnterior = GerarSerieHistoricoManualOuExecutado(historicoManualComparacao, ano, "HISTORICO_PROPOSTAS_ENVIADAS", followUps
                             .Where(f => f.Status == StatusProspeccao.ComProposta && f.Data.Year == ano - 1)
                             .Select(f => f.Data))
                     },
@@ -1012,7 +1026,7 @@ namespace BaseDeProjetos.Controllers
                         Executado = GerarSerieExecutadoMensal(followUps
                             .Where(f => f.Status == StatusProspeccao.Convertida && f.Data.Year == ano)
                             .Select(f => f.Data), totalArrasteProjetosConvertidosGrafico),
-                        ExecutadoAnoAnterior = GerarSerieExecutadoMensal(followUps
+                        ExecutadoAnoAnterior = GerarSerieHistoricoManualOuExecutado(historicoManualComparacao, ano, "HISTORICO_PROJETOS_CONVERTIDOS", followUps
                             .Where(f => f.Status == StatusProspeccao.Convertida && f.Data.Year == ano - 1)
                             .Select(f => f.Data))
                     },
@@ -1281,6 +1295,48 @@ namespace BaseDeProjetos.Controllers
             }
 
             return serieAcumulada;
+        }
+
+        private static decimal[] GerarSerieHistoricoManualOuExecutado(
+            List<IndicadoresPlanejamentoMensal> registros,
+            int ano,
+            string indicador,
+            IEnumerable<DateTime> datas)
+        {
+            var registrosIndicador = registros
+                .Where(registro => registro.Indicador == indicador && registro.Ano == ano)
+                .ToList();
+
+            if (!registrosIndicador.Any())
+            {
+                registrosIndicador = registros
+                    .Where(registro => registro.Indicador == indicador && registro.Ano == ano - 1)
+                    .ToList();
+            }
+
+            if (!registrosIndicador.Any())
+            {
+                return GerarSerieExecutadoMensal(datas);
+            }
+
+            var valoresPorColuna = registrosIndicador
+                .GroupBy(registro => registro.Coluna)
+                .ToDictionary(grupo => grupo.Key, grupo => grupo.Sum(registro => registro.Valor));
+
+            decimal[] serieManual = new decimal[13];
+            decimal acumulado = 0;
+
+            for (int coluna = 0; coluna <= 12; coluna++)
+            {
+                if (valoresPorColuna.TryGetValue(coluna, out decimal valor))
+                {
+                    acumulado = valor;
+                }
+
+                serieManual[coluna] = Math.Round(acumulado, 2);
+            }
+
+            return serieManual;
         }
 
         private static decimal?[] GerarSeriePlanejadoMensal(List<IndicadoresPlanejamentoMensal> registros, string indicador)
@@ -2164,6 +2220,7 @@ namespace BaseDeProjetos.Controllers
         private static bool IndicadorPlanejamentoCalculado(string chave, int coluna)
         {
             return (chave == "TOTAL_EMPRESAS" && coluna == -2)
+                || (chave.StartsWith("HISTORICO_") && (coluna == -2 || coluna == -1))
                 || (chave == "CONTATOS_REGISTRADOS_REAL" && coluna == -2)
                 || (chave == "CONTATOS_REGISTRADOS_REAL" && coluna == -1)
                 || (chave == "EMPRESAS_FORA_ESTADO_PLANEJAMENTO" && coluna == -1)
@@ -2574,7 +2631,10 @@ namespace BaseDeProjetos.Controllers
                 new IndicadorPlanejamentoDefinicao("Execucao", "VALOR_TOTAL_PROJETOS_CONVERTIDOS", "Valor total de Projetos Convertidos"),
                 new IndicadorPlanejamentoDefinicao("Execucao", "VALOR_MEDIO_PROJETOS_CONVERTIDOS", "Valor Medio de Projetos Convertidos"),
                 new IndicadorPlanejamentoDefinicao("Execucao", "EMPRESAS_FORA_ESTADO_EXECUCAO", "Empresas Fora do Estado"),
-                new IndicadorPlanejamentoDefinicao("Execucao", "PARCERIAS_SENAI_EXTERNAS", "Parcerias SENAI Externas")
+                new IndicadorPlanejamentoDefinicao("Execucao", "PARCERIAS_SENAI_EXTERNAS", "Parcerias SENAI Externas"),
+                new IndicadorPlanejamentoDefinicao("Historico manual", "HISTORICO_CONTATOS_REALIZADOS", "Historico manual de Contatos Realizados"),
+                new IndicadorPlanejamentoDefinicao("Historico manual", "HISTORICO_PROPOSTAS_ENVIADAS", "Historico manual de Propostas Enviadas"),
+                new IndicadorPlanejamentoDefinicao("Historico manual", "HISTORICO_PROJETOS_CONVERTIDOS", "Historico manual de Projetos Convertidos")
             };
         }
 
