@@ -771,6 +771,36 @@ namespace BaseDeProjetos.Controllers
                     .ToListAsync();
 
                 int mesReferencia = ObterMesReferenciaIndicadores(ano);
+                var contatosRealizadosAno = followUps
+                    .Where(f => f.Status == StatusProspeccao.ContatoInicial && f.Data.Year == ano)
+                    .GroupBy(f => f.OrigemID)
+                    .Select(g => g.OrderBy(f => f.Data).First())
+                    .ToList();
+                var contatosRealizadosAnoAnterior = followUps
+                    .Where(f => f.Status == StatusProspeccao.ContatoInicial && f.Data.Year == ano - 1)
+                    .GroupBy(f => f.OrigemID)
+                    .Select(g => g.OrderBy(f => f.Data).First())
+                    .ToList();
+                var propostasEnviadasAno = followUps
+                    .Where(f => f.Status == StatusProspeccao.ComProposta && f.Data.Year == ano)
+                    .GroupBy(f => f.OrigemID)
+                    .Select(g => g.OrderBy(f => f.Data).First())
+                    .ToList();
+                var propostasEnviadasAnoAnterior = followUps
+                    .Where(f => f.Status == StatusProspeccao.ComProposta && f.Data.Year == ano - 1)
+                    .GroupBy(f => f.OrigemID)
+                    .Select(g => g.OrderBy(f => f.Data).First())
+                    .ToList();
+                var propostasConvertidasAno = followUps
+                    .Where(f => f.Status == StatusProspeccao.Convertida && f.Data.Year == ano)
+                    .GroupBy(f => f.OrigemID)
+                    .Select(g => g.OrderBy(f => f.Data).First())
+                    .ToList();
+                var propostasConvertidasAnoAnterior = followUps
+                    .Where(f => f.Status == StatusProspeccao.Convertida && f.Data.Year == ano - 1)
+                    .GroupBy(f => f.OrigemID)
+                    .Select(g => g.OrderBy(f => f.Data).First())
+                    .ToList();
 
                 var indicadoresEquipe = followUps
                     .Where(f => f.Data.Year == ano)
@@ -779,12 +809,12 @@ namespace BaseDeProjetos.Controllers
                     {
                         Equipe = g.Key,
                         ContatosRealizados = g.Where(f => f.Status == StatusProspeccao.ContatoInicial).Select(f => f.OrigemID).Distinct().Count(),
-                        PropostasEnviadas = g.Where(f => StatusIndicaPropostaEnviada(f.Status, f.ValorProposta))
+                        PropostasEnviadas = g.Where(f => f.Status == StatusProspeccao.ComProposta)
                             .Select(f => f.OrigemID)
                             .Distinct()
                             .Count(),
                         PropostasConvertidas = g.Where(f => f.Status == StatusProspeccao.Convertida).Select(f => f.OrigemID).Distinct().Count(),
-                        ValorPropostasEnviadas = g.Where(f => StatusIndicaPropostaEnviada(f.Status, f.ValorProposta))
+                        ValorPropostasEnviadas = g.Where(f => f.Status == StatusProspeccao.ComProposta)
                             .GroupBy(f => f.OrigemID)
                             .Select(grupo =>
                             {
@@ -1012,31 +1042,25 @@ namespace BaseDeProjetos.Controllers
                     ContatosRealizados = new
                     {
                         Planejado = GerarSeriePlanejadoMensal(planejamentoGraficos, "CONTATOS_REGISTRADOS_META"),
-                        Executado = GerarSerieExecutadoMensal(followUps
-                            .Where(f => f.Status == StatusProspeccao.ContatoInicial && f.Data.Year == ano)
+                        Executado = GerarSerieExecutadoMensal(contatosRealizadosAno
                             .Select(f => f.Data), totalArrasteContatosRealizadosGrafico),
-                        ExecutadoAnoAnterior = GerarSerieHistoricoManualOuExecutado(historicoManualComparacao, ano, "HISTORICO_CONTATOS_REALIZADOS", followUps
-                            .Where(f => f.Status == StatusProspeccao.ContatoInicial && f.Data.Year == ano - 1)
+                        ExecutadoAnoAnterior = GerarSerieHistoricoManualOuExecutado(historicoManualComparacao, ano, "HISTORICO_CONTATOS_REALIZADOS", contatosRealizadosAnoAnterior
                             .Select(f => f.Data))
                     },
                     PropostasEnviadas = new
                     {
                         Planejado = GerarSeriePlanejadoMensal(planejamentoGraficos, "PROPOSTAS_ENVIADAS_META"),
-                        Executado = GerarSerieExecutadoMensal(followUps
-                            .Where(f => StatusIndicaPropostaEnviada(f.Status, f.ValorProposta) && f.Data.Year == ano)
+                        Executado = GerarSerieExecutadoMensal(propostasEnviadasAno
                             .Select(f => f.Data), totalArrastePropostasEnviadasGrafico),
-                        ExecutadoAnoAnterior = GerarSerieHistoricoManualOuExecutado(historicoManualComparacao, ano, "HISTORICO_PROPOSTAS_ENVIADAS", followUps
-                            .Where(f => StatusIndicaPropostaEnviada(f.Status, f.ValorProposta) && f.Data.Year == ano - 1)
+                        ExecutadoAnoAnterior = GerarSerieHistoricoManualOuExecutado(historicoManualComparacao, ano, "HISTORICO_PROPOSTAS_ENVIADAS", propostasEnviadasAnoAnterior
                             .Select(f => f.Data))
                     },
                     PropostasConvertidas = new
                     {
                         Planejado = GerarSeriePlanejadoMensal(planejamentoGraficos, "PROJETOS_CONVERTIDOS_META"),
-                        Executado = GerarSerieExecutadoMensal(followUps
-                            .Where(f => f.Status == StatusProspeccao.Convertida && f.Data.Year == ano)
+                        Executado = GerarSerieExecutadoMensal(propostasConvertidasAno
                             .Select(f => f.Data), totalArrasteProjetosConvertidosGrafico),
-                        ExecutadoAnoAnterior = GerarSerieHistoricoManualOuExecutado(historicoManualComparacao, ano, "HISTORICO_PROJETOS_CONVERTIDOS", followUps
-                            .Where(f => f.Status == StatusProspeccao.Convertida && f.Data.Year == ano - 1)
+                        ExecutadoAnoAnterior = GerarSerieHistoricoManualOuExecutado(historicoManualComparacao, ano, "HISTORICO_PROJETOS_CONVERTIDOS", propostasConvertidasAnoAnterior
                             .Select(f => f.Data))
                     },
                     Equipe = new
@@ -1282,10 +1306,7 @@ namespace BaseDeProjetos.Controllers
 
         private static bool StatusIndicaPropostaEnviada(StatusProspeccao status, decimal valorProposta)
         {
-            return status == StatusProspeccao.ComProposta
-                || status == StatusProspeccao.Convertida
-                || ((status == StatusProspeccao.NaoConvertida || status == StatusProspeccao.Suspensa)
-                    && valorProposta != 0);
+            return status == StatusProspeccao.ComProposta;
         }
 
         private static decimal[] GerarSerieExecutadoMensal(IEnumerable<DateTime> datas, decimal valorInicial = 0)
@@ -1959,10 +1980,7 @@ namespace BaseDeProjetos.Controllers
                 .Where(followUp => followUp.Origem != null
                     && followUp.Origem.Casa == casa
                     && followUp.Data.Year == ano
-                    && (followUp.Status == StatusProspeccao.ComProposta
-                        || followUp.Status == StatusProspeccao.Convertida
-                        || followUp.Status == StatusProspeccao.NaoConvertida
-                        || followUp.Status == StatusProspeccao.Suspensa))
+                    && followUp.Status == StatusProspeccao.ComProposta)
                 .Select(followUp => new
                 {
                     followUp.OrigemID,
@@ -1972,9 +1990,6 @@ namespace BaseDeProjetos.Controllers
                     followUp.Origem.ValorProposta
                 })
                 .ToListAsync();
-            propostasEnviadasAno = propostasEnviadasAno
-                .Where(proposta => StatusIndicaPropostaEnviada(proposta.Status, proposta.ValorProposta))
-                .ToList();
             int totalPropostasEnviadas = propostasEnviadasAno
                 .Select(proposta => proposta.OrigemID)
                 .Distinct()
