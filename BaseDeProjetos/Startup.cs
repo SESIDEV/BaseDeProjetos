@@ -62,7 +62,9 @@ namespace BaseDeProjetos
             services.Configure<IdentityOptions>(options =>
             {
                 options.User.AllowedUserNameCharacters =
-                    "âaáãbçcdeéfghiíjklmnoõópqrstuvwxyzAÂÃBCDEÉFGHIÍJKLMNOÓPQRSTUVWXYZ0123456789-._@+ ";
+                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ " +
+                    "\u00e1\u00e0\u00e2\u00e3\u00e7\u00e9\u00ea\u00ed\u00f3\u00f4\u00f5\u00fa\u00fc" +
+                    "\u00c1\u00c0\u00c2\u00c3\u00c7\u00c9\u00ca\u00cd\u00d3\u00d4\u00d5\u00da\u00dc";
             });
 
             services.Configure<RequestLocalizationOptions>(
@@ -110,7 +112,30 @@ namespace BaseDeProjetos
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
+
+            app.Use(async (context, next) =>
+            {
+                context.Response.OnStarting(() =>
+                {
+                    var contentType = context.Response.ContentType;
+                    if (!string.IsNullOrWhiteSpace(contentType)
+                        && !contentType.Contains("charset=", StringComparison.OrdinalIgnoreCase)
+                        && (contentType.StartsWith("text/", StringComparison.OrdinalIgnoreCase)
+                            || contentType.StartsWith("application/javascript", StringComparison.OrdinalIgnoreCase)
+                            || contentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        context.Response.ContentType = $"{contentType}; charset=utf-8";
+                    }
+
+                    return System.Threading.Tasks.Task.CompletedTask;
+                });
+
+                await next();
+            });
+
             app.UseStaticFiles();
+
+            app.UseRequestLocalization();
 
             app.UseRouting();
             app.UseSession();

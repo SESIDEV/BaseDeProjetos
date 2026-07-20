@@ -76,7 +76,7 @@
     {
         var ticketMedioMensal = ObterTicketMedioMensal(prospeccao);
         return ticketMedioMensal.HasValue
-            ? $"R$ {Helpers.FormatarValoresDashboards(ticketMedioMensal.Value)}/mÃªs"
+            ? $"R$ {Helpers.FormatarValoresDashboards(ticketMedioMensal.Value)}/m\u00eas"
             : "&mdash;";
     }
 }
@@ -100,7 +100,7 @@
 </div>
 
 <div class="funil-view-toolbar d-none">
-    <div class="btn-group" role="group" aria-label="Tipo de visualizaÃ§Ã£o">
+    <div class="btn-group" role="group" aria-label="Tipo de visualiza&ccedil;&atilde;o">
         <button type="button" class="btn btn-outline-primary funil-view-toggle" data-view="funil">
             <i class="bi bi-filter"></i>
             Funil
@@ -250,7 +250,7 @@
                     <div>
                         <h3>@coluna.Nome</h3>
                         <p>
-                            @prospeccoesColuna.Count @(prospeccoesColuna.Count == 1 ? "prospecÃ§Ã£o" : "prospecÃ§Ãµes")
+                            @prospeccoesColuna.Count @(prospeccoesColuna.Count == 1 ? "prospec\u00e7\u00e3o" : "prospec\u00e7\u00f5es")
                             @if (valorTotalColuna > 0)
                             {
                                 <span> - R$ @Helpers.FormatarValoresDashboards(valorTotalColuna)</span>
@@ -263,7 +263,7 @@
             <div class="funil-kanban-list">
                 @if (!prospeccoesColuna.Any())
                 {
-                    <div class="funil-kanban-empty">Sem prospecÃ§Ãµes</div>
+                    <div class="funil-kanban-empty">Sem prospec&ccedil;&otilde;es</div>
                 }
 
                 @foreach (var prospeccao in prospeccoesColuna)
@@ -335,7 +335,7 @@
                                     <dd>@ultimoStatusKanban.Status.GetDisplayName()</dd>
                                 </div>
                                 <div>
-                                    <dt>Ãšltima atualizaÃ§Ã£o</dt>
+                                    <dt>&Uacute;ltima atualiza&ccedil;&atilde;o</dt>
                                     <dd>@ultimoStatusKanban.Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))</dd>
                                 </div>
                                 <div>
@@ -429,7 +429,7 @@
                         <dd>@ultimoStatusCard.Status.GetDisplayName()</dd>
                     </div>
                     <div>
-                        <dt>Ãšltima atualizaÃ§Ã£o</dt>
+                        <dt>&Uacute;ltima atualiza&ccedil;&atilde;o</dt>
                         <dd>@ultimoStatusCard.Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))</dd>
                     </div>
                     <div>
@@ -444,7 +444,7 @@
                     </a>
                     <a class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" href="#historyProspModal-@prospeccao.Id" role="button">
                         <i class="bi bi-clock-history"></i>
-                        HistÃ³rico
+                        Hist&oacute;rico
                     </a>
                     <a class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" href="#CreateFollowupProspModal-@prospeccao.Id" role="button">
                         <i class="bi bi-plus-circle"></i>
@@ -466,7 +466,7 @@
                             <th class="cell">Empresa</th>
                             <th class="cell">Projeto</th>
                             <th class="cell">Equipe</th>
-                            <th class="cell">Tipo ContrataÃ§Ã£o</th>
+                            <th class="cell">Tipo Contrata&ccedil;&atilde;o</th>
                             @if (@aba != "planejadas")
                             {
                                 <th class="cell">Temperatura</th>
@@ -522,7 +522,7 @@
                                             @*ICONES*@
                                             @if (prospeccao.Empresa.Industrial == false)
                                             {
-                                                <span id="tip_ind" class="cnae-soft-alert" data-tippy-content="<center>Esta empresa nÃ£o possui<br>CNAE Industrial</center>">
+                                                <span id="tip_ind" class="cnae-soft-alert" data-tippy-content="<center>Esta empresa n&atilde;o possui<br>CNAE Industrial</center>">
                                                     <i class="bi bi-info"></i>
                                                 </span>
                                             }
@@ -566,11 +566,11 @@
                                     }
                                     @if (!string.IsNullOrWhiteSpace(nomeLiderTabela))
                                     {
-                                        <span class="funil-team-leader" title="@nomeLiderTabela">@nomeLiderTabela</span> @*LÃ­der*@
+                                        <span class="funil-team-leader" title="@nomeLiderTabela">@nomeLiderTabela</span> @*Lider*@
                                     }
                                     else
                                     {
-                                        <span class="funil-team-leader" title="Sem LÃ­der">Sem LÃ­der</span>
+                                        <span class="funil-team-leader" title="Sem L&iacute;der">Sem L&iacute;der</span>
                                     }
                                     @if (apoiadoresTabela.Any())
                                     {
@@ -583,7 +583,7 @@
                                     var subtracaoUltimoStatus = DateTime.Now.Subtract(prospeccao.Status.OrderBy(followup => followup.Data).ThenBy(followup => followup.Id).Last().Data).Days;
                                 }
                                 <td class="cell">
-                                    <span>@prospeccao.TipoContratacao.GetDisplayName()</span> @*Tipo ContrataÃ§Ã£o*@
+                                    <span>@prospeccao.TipoContratacao.GetDisplayName()</span> @*Tipo Contratacao*@
                                 </td>
                                 @if (prospeccao.Status.OrderBy(followup => followup.Data).ThenBy(followup => followup.Id).Last().Status != StatusProspeccao.Planejada)
                                 {
@@ -805,7 +805,7 @@
                                                         }
                                                     </div>
                                                     <div class="prospeccao-value-block">
-                                                        <span>Ticket mÃ©dio por mÃªs</span>
+                                                        <span>Ticket m&eacute;dio por m&ecirc;s</span>
                                                         <strong>@Html.Raw(FormatarTicketMedioMensal(prospeccao))</strong>
                                                     </div>
                                                 </div>
@@ -823,7 +823,7 @@
                                                                     @(!string.IsNullOrWhiteSpace(valorComposicao.Tipo) ? valorComposicao.Tipo : "Tipo nao informado")
                                                                     @if (!string.IsNullOrWhiteSpace(valorComposicao.Natureza))
                                                                     {
-                                                                        <text> Â· @valorComposicao.Natureza</text>
+                                                                        <text> &middot; @valorComposicao.Natureza</text>
                                                                     }
                                                                 </small>
                                                                 <span>
@@ -863,11 +863,11 @@
                                                 </div>
                                             </aside>
                                         </div>
-                                        <h1 class="app-card-title">ID da ProspecÃ§Ã£o:</h1>
+                                        <h1 class="app-card-title">ID da Prospec&ccedil;&atilde;o:</h1>
                                         <span>@prospeccao.Id</span>
                                         <h1 class="app-card-title">Empresa:</h1>
                                         <span>@prospeccao.Empresa.Nome</span>
-                                        <h1 class="app-card-title">LÃ­der</h1>
+                                        <h1 class="app-card-title">L&iacute;der</h1>
                                         @if (!string.IsNullOrWhiteSpace(prospeccao.LiderNome))
                                         {
                                             <span>@prospeccao.LiderNome</span>
@@ -878,7 +878,7 @@
                                         }
                                         else
                                         {
-                                            <span>Sem LÃ­der</span>
+                                            <span>Sem L&iacute;der</span>
                                         }
                                         <h1 class="app-card-title">Nome:</h1>
                                         <span>@prospeccao.NomeProspeccao</span>
@@ -942,7 +942,7 @@
                                             </a>
                                             <a class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" href="#historyProspModal-@prospeccao.Id"
                                                role="button">
-                                                HistÃ³rico
+                                                Hist&oacute;rico
                                             </a>
                                             <a class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
                                                href="#CreateFollowupProspModal-@prospeccao.Id" role="button">

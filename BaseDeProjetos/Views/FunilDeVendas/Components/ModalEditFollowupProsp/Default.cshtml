@@ -34,8 +34,13 @@
         return lista.Where(status =>
         {
             int v = Int32.Parse(status.Value);
-            // nunca permitir Planejada como escolha direta
-            if (v == (int)StatusProspeccao.Planejada) return false;
+            if (atual.Status == StatusProspeccao.ContatoInicial)
+            {
+                return v == (int)StatusProspeccao.ContatoInicial;
+            }
+
+            // nunca permitir Planejada ou Agregada como escolha direta
+            if (v == (int)StatusProspeccao.Planejada || v == (int)StatusProspeccao.Agregada) return false;
             return v >= minVal && v <= maxVal;
         });
     }

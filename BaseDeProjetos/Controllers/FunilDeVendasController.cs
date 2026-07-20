@@ -51,7 +51,9 @@ namespace BaseDeProjetos.Controllers
 
             if (ModelState.IsValid)
             {
-                Prospeccao prospeccao_origem = await _context.Prospeccao.FirstOrDefaultAsync(p => p.Id == followup.OrigemID);
+                Prospeccao prospeccao_origem = await _context.Prospeccao
+                    .Include(p => p.Status)
+                    .FirstOrDefaultAsync(p => p.Id == followup.OrigemID);
                 if (prospeccao_origem == null)
                 {
                     return NotFound();
@@ -392,6 +394,20 @@ namespace BaseDeProjetos.Controllers
                 }
 
                 // Atualiza campos permitidos
+                if (existente.Status == StatusProspeccao.ContatoInicial && followup.Status != StatusProspeccao.ContatoInicial)
+                {
+                    TempData["FunilErroStatus"] = "Contato inicial nao pode ser alterado para outro status.";
+                    return RedirectToAction("Index", "FunilDeVendas", new
+                    {
+                        casa = existente.Origem.Casa,
+                        aba = HttpContext.Session.GetString("aba"),
+                        searchString = HttpContext.Session.GetString("searchString"),
+                        numeroPagina = HttpContext.Session.GetInt32("numeroPagina"),
+                        tamanhoPagina = HttpContext.Session.GetInt32("tamanhoPagina"),
+                        sortOrder = HttpContext.Session.GetString("sortOrder")
+                    });
+                }
+
                 existente.Data = followup.Data;
                 existente.Status = followup.Status;
                 existente.Anotacoes = followup.Anotacoes;
@@ -3265,10 +3281,13 @@ namespace BaseDeProjetos.Controllers
         /// <param name="dono">Usuario líder da prospecção</param>
         /// <param name="ativo">Usuário ativo (HttpContext)</param>
         /// <returns></returns>
-        internal static bool VerificarCondicoesRemocao(Prospeccao prospeccao, Usuario ativoNaSessao, Usuario donoProsp)
+        internal static bool VerificarCondicoesRemocao(Prospeccao prospeccao, Usuario ativoNaSessao, Usuario donoProsp, FollowUp followup = null)
         {
             // Valida nulidades
             if (prospeccao == null || ativoNaSessao == null || donoProsp == null)
+                return false;
+
+            if (followup != null && followup.Status == StatusProspeccao.ContatoInicial)
                 return false;
 
             // Deve haver mais de um status para permitir remoção
@@ -4177,14 +4196,36 @@ namespace BaseDeProjetos.Controllers
                 ParametrosFunil parametrosFunil = new ParametrosFunil();
                 parametrosFunil.ObterParametrosSession(HttpContext.Session);
 
-                var prospeccoes = await _cache.GetCachedAsync("AllProspeccoes", () => _context.Prospeccao.ToListAsync());
-                Prospeccao prospeccao = prospeccoes.Find(p => p.Id == followup.OrigemID);
+                Prospeccao prospeccao = await _context.Prospeccao
+                    .Include(p => p.Status)
+                    .Include(p => p.Usuario)
+                    .FirstOrDefaultAsync(p => p.Id == followup.OrigemID);
+
+                if (prospeccao == null)
+                {
+                    return NotFound();
+                }
 
                 // Obter o usuário dono a partir da prospecção (evita depender de followup.Origem que pode não estar carregado)
                 Usuario donoProsp = prospeccao?.Usuario;
 
+                if (followup.Status == StatusProspeccao.ContatoInicial)
+                {
+                    TempData["FunilErroStatus"] = "Contato inicial nao pode ser apagado.";
+                    return RedirectToAction("Index",
+                                            "FunilDeVendas",
+                                            new
+                                            {
+                                                casa = prospeccao.Casa,
+                                                aba = parametrosFunil.Aba,
+                                                tamanhoPagina = parametrosFunil.TamanhoPagina,
+                                                sortOrder = parametrosFunil.SortOrder,
+                                                searchString = parametrosFunil.SearchString
+                                            });
+                }
+
                 //Verifica se o usuário está apto para remover o followup
-                if (VerificarCondicoesRemocao(prospeccao, UsuarioAtivo, donoProsp) || UsuarioAtivo?.Nivel == Nivel.Dev)
+                if (VerificarCondicoesRemocao(prospeccao, UsuarioAtivo, donoProsp, followup) || UsuarioAtivo?.Nivel == Nivel.Dev)
                 {
                     _context.FollowUp.Remove(followup);
                     await _context.SaveChangesAsync();
