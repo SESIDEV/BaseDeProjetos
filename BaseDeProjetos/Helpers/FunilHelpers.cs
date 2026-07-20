@@ -808,15 +808,90 @@ namespace BaseDeProjetos.Helpers
             }
         }
 
+        public static FollowUp ObterUltimoFollowUp(Prospeccao prospeccao)
+        {
+            if (prospeccao?.Status == null || prospeccao.Status.Count == 0)
+            {
+                return null;
+            }
+
+            return prospeccao.Status
+                .OrderBy(followup => followup.Data)
+                .ThenBy(followup => followup.Id)
+                .LastOrDefault();
+        }
+
+        public static StatusProspeccao? ObterUltimoStatus(Prospeccao prospeccao)
+        {
+            return ObterUltimoFollowUp(prospeccao)?.Status;
+        }
+
+        public static DateTime? ObterDataCriacaoProspeccao(Prospeccao prospeccao)
+        {
+            return prospeccao?.Status?
+                .OrderBy(followup => followup.Data)
+                .ThenBy(followup => followup.Id)
+                .FirstOrDefault()
+                ?.Data;
+        }
+
+        public static bool ProspeccaoCriadaNoAno(Prospeccao prospeccao, int? ano)
+        {
+            if (!ano.HasValue)
+            {
+                return prospeccao?.Status != null && prospeccao.Status.Any();
+            }
+
+            DateTime? dataCriacao = ObterDataCriacaoProspeccao(prospeccao);
+            return dataCriacao.HasValue && dataCriacao.Value.Year == ano.Value;
+        }
+
+        public static bool ProspeccaoTeveStatusNoAno(Prospeccao prospeccao, StatusProspeccao status, int? ano)
+        {
+            if (prospeccao?.Status == null || !prospeccao.Status.Any())
+            {
+                return false;
+            }
+
+            return prospeccao.Status.Any(followup =>
+                followup.Status == status
+                && (!ano.HasValue || followup.Data.Year == ano.Value));
+        }
+
+        public static bool ProspeccaoTeveDiscussaoNoAno(Prospeccao prospeccao, int? ano)
+        {
+            if (prospeccao?.Status == null || !prospeccao.Status.Any())
+            {
+                return false;
+            }
+
+            return prospeccao.Status.Any(followup =>
+                followup.Status > StatusProspeccao.ContatoInicial
+                && followup.Status < StatusProspeccao.ComProposta
+                && (!ano.HasValue || followup.Data.Year == ano.Value));
+        }
+
+        public static bool ProspeccaoTeveInteracaoNoAno(Prospeccao prospeccao, int? ano)
+        {
+            if (prospeccao?.Status == null || !prospeccao.Status.Any())
+            {
+                return false;
+            }
+
+            return !ano.HasValue || prospeccao.Status.Any(followup => followup.Data.Year == ano.Value);
+        }
+
         /// <summary>
-        /// Verifica se uma prospecção possui um determinado status
+        /// Verifica se o status atual da prospeccao corresponde ao status informado.
         /// </summary>
         /// <param name="prospeccao">Prospecção a se verificar</param>
         /// <param name="status">Status específico</param>
         /// <returns></returns>
         public static bool VerificarStatus(Prospeccao prospeccao, StatusProspeccao status)
         {
-            if (prospeccao.Status.Count == 0)
+            StatusProspeccao? ultimoStatus = ObterUltimoStatus(prospeccao);
+
+            if (!ultimoStatus.HasValue)
             {
                 return false;
             }
@@ -824,19 +899,20 @@ namespace BaseDeProjetos.Helpers
             switch (status)
             {
                 case StatusProspeccao.ContatoInicial:
-                    return prospeccao.Status.Any(s => s.Status == status);
+                    return ultimoStatus == StatusProspeccao.ContatoInicial;
 
-                case StatusProspeccao.Discussao_EsbocoProjeto: // Status seria < 5 e > 0 1-4 INCLUSO, se precisar inclua um case acima sem execução de nenhuma instrução ou break
-                    return prospeccao.Status.Any(followup => followup.Status < StatusProspeccao.ComProposta && followup.Status > StatusProspeccao.ContatoInicial);
+                case StatusProspeccao.Discussao_EsbocoProjeto:
+                    return ultimoStatus > StatusProspeccao.ContatoInicial
+                        && ultimoStatus < StatusProspeccao.ComProposta;
 
                 case StatusProspeccao.ComProposta:
-                    return prospeccao.Status.Any(followup => followup.Status == status);
+                    return ultimoStatus == StatusProspeccao.ComProposta;
 
                 case StatusProspeccao.Convertida:
-                    return prospeccao.Status.Any(followup => followup.Status == status);
+                    return ultimoStatus == StatusProspeccao.Convertida;
 
                 default:
-                    return false;
+                    return ultimoStatus == status;
             }
         }
     }

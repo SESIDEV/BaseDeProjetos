@@ -220,6 +220,70 @@ namespace BaseDeProjetos.Helpers.Tests
         }
 
         [Test]
+        public void Test_VerificarStatus_UsaUltimoStatus()
+        {
+            var prospeccao = CriarProspeccaoComStatus(
+                "statusAtual",
+                StatusProspeccao.ContatoInicial,
+                StatusProspeccao.ComProposta,
+                StatusProspeccao.Convertida);
+
+            Assert.IsFalse(FunilHelpers.VerificarStatus(prospeccao, StatusProspeccao.ContatoInicial));
+            Assert.IsFalse(FunilHelpers.VerificarStatus(prospeccao, StatusProspeccao.ComProposta));
+            Assert.IsTrue(FunilHelpers.VerificarStatus(prospeccao, StatusProspeccao.Convertida));
+        }
+
+        [Test]
+        public void Test_VerificarStatus_StatusDuplicadoContaComoEstadoAtualUnico()
+        {
+            var prospeccao = CriarProspeccaoComStatus(
+                "statusDuplicado",
+                StatusProspeccao.ContatoInicial,
+                StatusProspeccao.ComProposta,
+                StatusProspeccao.ComProposta);
+
+            Assert.IsFalse(FunilHelpers.VerificarStatus(prospeccao, StatusProspeccao.ContatoInicial));
+            Assert.IsTrue(FunilHelpers.VerificarStatus(prospeccao, StatusProspeccao.ComProposta));
+            Assert.IsFalse(FunilHelpers.VerificarStatus(prospeccao, StatusProspeccao.Convertida));
+        }
+
+        [Test]
+        public void Test_ProspeccaoCriadaNoAno_UsaPrimeiroFollowup()
+        {
+            var prospeccao = new Prospeccao
+            {
+                Id = "criada2025",
+                Status = new List<FollowUp>
+                {
+                    new FollowUp { Id = 1, OrigemID = "criada2025", Status = StatusProspeccao.ContatoInicial, Data = new DateTime(2025, 12, 20) },
+                    new FollowUp { Id = 2, OrigemID = "criada2025", Status = StatusProspeccao.ComProposta, Data = new DateTime(2026, 1, 10) }
+                }
+            };
+
+            Assert.IsTrue(FunilHelpers.ProspeccaoCriadaNoAno(prospeccao, 2025));
+            Assert.IsFalse(FunilHelpers.ProspeccaoCriadaNoAno(prospeccao, 2026));
+        }
+
+        [Test]
+        public void Test_ProspeccaoTeveStatusNoAno_ContaHistoricoMesmoQuandoUltimoStatusMudou()
+        {
+            var prospeccao = new Prospeccao
+            {
+                Id = "passouPorProposta",
+                Status = new List<FollowUp>
+                {
+                    new FollowUp { Id = 1, OrigemID = "passouPorProposta", Status = StatusProspeccao.ContatoInicial, Data = new DateTime(2026, 1, 5) },
+                    new FollowUp { Id = 2, OrigemID = "passouPorProposta", Status = StatusProspeccao.ComProposta, Data = new DateTime(2026, 2, 5) },
+                    new FollowUp { Id = 3, OrigemID = "passouPorProposta", Status = StatusProspeccao.Convertida, Data = new DateTime(2026, 3, 5) }
+                }
+            };
+
+            Assert.IsTrue(FunilHelpers.ProspeccaoTeveStatusNoAno(prospeccao, StatusProspeccao.ComProposta, 2026));
+            Assert.IsTrue(FunilHelpers.ProspeccaoTeveStatusNoAno(prospeccao, StatusProspeccao.Convertida, 2026));
+            Assert.IsFalse(FunilHelpers.VerificarStatus(prospeccao, StatusProspeccao.ComProposta));
+        }
+
+        [Test]
         public void Test_LogicaFiltroProspeccoes_AbasUsamUltimoStatus()
         {
             var prospeccaoAtiva = CriarProspeccaoComStatus("ativa", StatusProspeccao.ContatoInicial);
