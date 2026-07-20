@@ -1210,15 +1210,10 @@ namespace BaseDeProjetos.Controllers
                             && prospeccao.Status.OrderBy(followup => followup.Data).ThenBy(followup => followup.Id).Last().Status != StatusProspeccao.Planejada)
                         .ToList();
                 }
-                List<Prospeccao> prospeccoesFunilCompleto = prospeccoes;
-                if (!abaIndicadores && !abaPlanejamentoIndicadores && !abaReceitasIndicadores && !abaSegmentos)
-                {
-                    prospeccoesFunilCompleto = await ObterProspeccoesFunilFiltradas(casa, ano, UsuarioAtivo, string.Empty, sortOrder, searchString, temperatura, fomento);
-                    prospeccoesFunilCompleto = prospeccoesFunilCompleto
-                        .Where(prospeccao => prospeccao.Status != null
-                            && prospeccao.Status.Any())
-                        .ToList();
-                }
+                List<Prospeccao> prospeccoesFunilCompleto = prospeccoes
+                    .Where(prospeccao => prospeccao.Status != null
+                        && prospeccao.Status.Any())
+                    .ToList();
                 var quantidadesAbas = abaIndicadores || abaPlanejamentoIndicadores || abaReceitasIndicadores
                     ? (Planejadas: 0, Ativas: 0, ComProposta: 0, Contratacao: 0, Encerradas: 0)
                     : await ObterQuantidadesAbasFunil(casa, ano, UsuarioAtivo, sortOrder, searchString, temperatura, fomento);
@@ -1283,9 +1278,7 @@ namespace BaseDeProjetos.Controllers
                     ViewData
                 );
 
-            query = query
-                .Include(p => p.ComposicaoValores)
-                .Where(p => p.Empresa != null);
+            query = query.Where(p => p.Empresa != null);
 
             if (!string.IsNullOrEmpty(ano) && !ano.Equals("Todos", StringComparison.OrdinalIgnoreCase))
             {
@@ -1299,7 +1292,10 @@ namespace BaseDeProjetos.Controllers
                 query = query.Where(p => p.TipoContratacao == tipoContratacao);
             }
 
-            List<Prospeccao> prospeccoes = await query.ToListAsync();
+            List<Prospeccao> prospeccoes = (await query.ToListAsync())
+                .Select(MaterializarProspeccaoFunilSemStatus)
+                .ToList();
+            await CarregarStatusProspeccoesAsync(prospeccoes);
 
             if (!string.IsNullOrWhiteSpace(temperatura) && !temperatura.Equals("Todos", StringComparison.OrdinalIgnoreCase))
             {
@@ -1321,19 +1317,24 @@ namespace BaseDeProjetos.Controllers
             });
 
             int comProposta = prospeccoes.Count(prospeccao =>
-                prospeccao.Status.Any(s => StatusIndicaPropostaEnviada(s.Status, prospeccao.ValorProposta))
-            );
+            {
+                FollowUp ultimoStatus = ObterUltimoStatusProspeccao(prospeccao);
+                return ultimoStatus != null && ultimoStatus.Status == StatusProspeccao.ComProposta;
+            });
 
             int contratacao = prospeccoes.Count(prospeccao =>
-                prospeccao.Status.Any(s => s.Status == StatusProspeccao.Convertida)
-            );
+            {
+                FollowUp ultimoStatus = ObterUltimoStatusProspeccao(prospeccao);
+                return ultimoStatus != null && ultimoStatus.Status == StatusProspeccao.Convertida;
+            });
 
             int encerradas = prospeccoes.Count(prospeccao =>
-                prospeccao.Status.Any(s =>
-                    s.Status == StatusProspeccao.Suspensa ||
-                    s.Status == StatusProspeccao.NaoConvertida
-                )
-            );
+            {
+                FollowUp ultimoStatus = ObterUltimoStatusProspeccao(prospeccao);
+                return ultimoStatus != null
+                    && (ultimoStatus.Status == StatusProspeccao.Suspensa
+                        || ultimoStatus.Status == StatusProspeccao.NaoConvertida);
+            });
 
             return (planejadas, ativas, comProposta, contratacao, encerradas);
         }
@@ -3755,7 +3756,12 @@ namespace BaseDeProjetos.Controllers
             }
 
             query = FunilHelpers.FiltrarProspecçõesQuery(query, searchString);
-            query = FunilHelpers.OrdenarProspecçõesQuery(query, sortOrder);
+
+            bool ordenarPorUltimoStatus = string.IsNullOrWhiteSpace(sortOrder);
+            if (!ordenarPorUltimoStatus)
+            {
+                query = FunilHelpers.OrdenarProspecçõesQuery(query, sortOrder);
+            }
 
             if (!string.IsNullOrWhiteSpace(fomento) && Enum.TryParse(fomento, out TipoContratacao tipoContratacao))
             {
@@ -3767,17 +3773,16 @@ namespace BaseDeProjetos.Controllers
                 FunilHelpers.SetarFiltrosNaView(HttpContext, ViewData, sortOrder, searchString);
             }
 
+            List<Prospeccao> prospeccoes = (await query.ToListAsync())
+                .Select(MaterializarProspeccaoFunilSemStatus)
+                .ToList();
+            await CarregarStatusProspeccoesAsync(prospeccoes);
+
             if (!string.IsNullOrEmpty(aba))
             {
                 var parametros = new ParametrosFiltroFunil(casa, usuario, _cache, aba, HttpContext);
-                query = FunilHelpers.FiltrarPorStatusQuery(
-                    query,
-                    parametros,
-                    !string.IsNullOrEmpty(searchString)
-                );
+                prospeccoes = FunilHelpers.LogicaFiltroProspeccoes(prospeccoes, parametros);
             }
-
-            List<Prospeccao> prospeccoes = await query.ToListAsync();
 
             if (!string.IsNullOrWhiteSpace(temperatura) && !temperatura.Equals("Todos", StringComparison.OrdinalIgnoreCase))
             {
@@ -3786,9 +3791,55 @@ namespace BaseDeProjetos.Controllers
                     .ToList();
             }
 
+            if (ordenarPorUltimoStatus)
+            {
+                prospeccoes = prospeccoes
+                    .OrderByDescending(prospeccao => prospeccao.Status?
+                        .OrderBy(followup => followup.Data)
+                        .ThenBy(followup => followup.Id)
+                        .LastOrDefault()?.Data ?? DateTime.MinValue)
+                    .ToList();
+            }
+
             return prospeccoes;
 
         }
+
+        private async Task CarregarStatusProspeccoesAsync(List<Prospeccao> prospeccoes)
+        {
+            if (prospeccoes == null || !prospeccoes.Any())
+            {
+                return;
+            }
+
+            List<string> ids = prospeccoes
+                .Where(prospeccao => prospeccao != null && !string.IsNullOrWhiteSpace(prospeccao.Id))
+                .Select(prospeccao => prospeccao.Id)
+                .Distinct()
+                .ToList();
+
+            if (!ids.Any())
+            {
+                return;
+            }
+
+            List<FollowUp> status = await _context.FollowUp
+                .AsNoTracking()
+                .Where(followup => ids.Contains(followup.OrigemID))
+                .ToListAsync();
+
+            var statusPorProspeccao = status
+                .GroupBy(followup => followup.OrigemID)
+                .ToDictionary(grupo => grupo.Key, grupo => grupo.ToList());
+
+            foreach (Prospeccao prospeccao in prospeccoes)
+            {
+                prospeccao.Status = statusPorProspeccao.ContainsKey(prospeccao.Id)
+                    ? statusPorProspeccao[prospeccao.Id]
+                    : new List<FollowUp>();
+            }
+        }
+
         private async Task<List<Prospeccao>> EnriquecerProspeccoesFunilAsync(List<Prospeccao> prospeccoes)
         {
             if (prospeccoes == null || !prospeccoes.Any())
@@ -3824,7 +3875,7 @@ namespace BaseDeProjetos.Controllers
 
             var dependentesPorProspeccao = dependentes
                 .GroupBy(prospeccao => prospeccao.ProspeccaoPrincipalId)
-                .ToDictionary(grupo => grupo.Key, grupo => grupo.Select(MaterializarProspeccaoFunil).ToList());
+                .ToDictionary(grupo => grupo.Key, grupo => grupo.Select(prospeccao => MaterializarProspeccaoFunil(prospeccao)).ToList());
 
             return prospeccoes
                 .Where(prospeccao => prospeccao != null)
@@ -3842,7 +3893,7 @@ namespace BaseDeProjetos.Controllers
                 .ToList();
         }
 
-        private static Prospeccao MaterializarProspeccaoFunil(Prospeccao prospeccao)
+        private static Prospeccao MaterializarProspeccaoFunil(Prospeccao prospeccao, bool incluirStatus = true)
         {
             if (prospeccao == null)
             {
@@ -3868,7 +3919,7 @@ namespace BaseDeProjetos.Controllers
                 MembrosEquipe = prospeccao.MembrosEquipe,
                 TipoContratacao = prospeccao.TipoContratacao,
                 LinhaPequisa = prospeccao.LinhaPequisa,
-                Status = prospeccao.Status != null ? prospeccao.Status.ToList() : new List<FollowUp>(),
+                Status = incluirStatus && prospeccao.Status != null ? prospeccao.Status.ToList() : new List<FollowUp>(),
                 Casa = prospeccao.Casa,
                 ValorProposta = prospeccao.ValorProposta,
                 ValorEstimado = prospeccao.ValorEstimado,
@@ -3890,6 +3941,11 @@ namespace BaseDeProjetos.Controllers
                 ComposicaoValores = new List<ProspeccaoValorComposicao>(),
                 ProspeccoesRelacionadas = new List<Prospeccao>()
             };
+        }
+
+        private static Prospeccao MaterializarProspeccaoFunilSemStatus(Prospeccao prospeccao)
+        {
+            return MaterializarProspeccaoFunil(prospeccao, incluirStatus: false);
         }
 
         private static bool ProspeccaoTemTemperatura(Prospeccao prospeccao, string temperatura)

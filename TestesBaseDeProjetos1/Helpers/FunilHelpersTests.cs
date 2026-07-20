@@ -2,7 +2,9 @@ using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.Enums;
 using Microsoft.AspNetCore.Html;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BaseDeProjetos.Helpers.Tests
 {
@@ -215,6 +217,59 @@ namespace BaseDeProjetos.Helpers.Tests
             Assert.AreEqual(false, resultadoObtido2);
             Assert.AreEqual(false, resultadoObtido3);
             Assert.AreEqual(true, resultadoObtido4);
+        }
+
+        [Test]
+        public void Test_LogicaFiltroProspeccoes_AbasUsamUltimoStatus()
+        {
+            var prospeccaoAtiva = CriarProspeccaoComStatus("ativa", StatusProspeccao.ContatoInicial);
+            var prospeccaoEmNegociacao = CriarProspeccaoComStatus("negociacao", StatusProspeccao.ComProposta);
+            var prospeccaoConvertida = CriarProspeccaoComStatus("convertida", StatusProspeccao.ComProposta, StatusProspeccao.Convertida);
+            var prospeccaoEncerrada = CriarProspeccaoComStatus("encerrada", StatusProspeccao.ComProposta, StatusProspeccao.NaoConvertida);
+            var prospeccoes = new List<Prospeccao>
+            {
+                prospeccaoAtiva,
+                prospeccaoEmNegociacao,
+                prospeccaoConvertida,
+                prospeccaoEncerrada
+            };
+
+            var ativas = FiltrarIds(prospeccoes, "ativas");
+            var emNegociacao = FiltrarIds(prospeccoes, "comproposta");
+            var contratacao = FiltrarIds(prospeccoes, "contratacao");
+            var encerradas = FiltrarIds(prospeccoes, "encerradas");
+
+            CollectionAssert.AreEquivalent(new[] { "ativa" }, ativas);
+            CollectionAssert.AreEquivalent(new[] { "negociacao" }, emNegociacao);
+            CollectionAssert.AreEquivalent(new[] { "convertida" }, contratacao);
+            CollectionAssert.AreEquivalent(new[] { "encerrada" }, encerradas);
+        }
+
+        private static List<string> FiltrarIds(List<Prospeccao> prospeccoes, string aba)
+        {
+            return FunilHelpers
+                .LogicaFiltroProspeccoes(prospeccoes, new ParametrosFiltroFunil(null, null, null, aba, null))
+                .Select(prospeccao => prospeccao.Id)
+                .ToList();
+        }
+
+        private static Prospeccao CriarProspeccaoComStatus(string id, params StatusProspeccao[] status)
+        {
+            var prospeccao = new Prospeccao
+            {
+                Id = id,
+                Status = status
+                    .Select((statusProspeccao, index) => new FollowUp
+                    {
+                        Id = index + 1,
+                        OrigemID = id,
+                        Status = statusProspeccao,
+                        Data = new DateTime(2026, 1, 1).AddDays(index)
+                    })
+                    .ToList()
+            };
+
+            return prospeccao;
         }
     }
 }

@@ -129,25 +129,31 @@ namespace BaseDeProjetos.Helpers
                         .ToList();
 
                 case "comproposta":
-                    return prospeccoes.Where(prospeccao =>
-                        prospeccao.Status.Any(s =>
-                            s.Status == StatusProspeccao.ComProposta ||
-                            s.Status == StatusProspeccao.Convertida ||
-                            ((s.Status == StatusProspeccao.NaoConvertida || s.Status == StatusProspeccao.Suspensa) && prospeccao.ValorProposta != 0)
-                        )
-                    ).ToList();
+                    return prospeccoes.Where(prospeccao => prospeccao.Status
+                        .OrderBy(followup => followup.Data).ThenBy(followup => followup.Id)
+                        .LastOrDefault()
+                        .Status == StatusProspeccao.ComProposta)
+                        .ToList();
 
                 case "concluidas":
                 case "contratacao":
-                    return prospeccoes.Where(prospeccao => prospeccao.Status.Any(followup =>
-                            followup.Status == StatusProspeccao.Convertida
-                        )).ToList();
+                    return prospeccoes.Where(prospeccao => prospeccao.Status
+                        .OrderBy(followup => followup.Data).ThenBy(followup => followup.Id)
+                        .LastOrDefault()
+                        .Status == StatusProspeccao.Convertida)
+                        .ToList();
 
                 case "encerradas":
-                    return prospeccoes.Where(prospeccao => prospeccao.Status.Any(followup =>
-                            followup.Status == StatusProspeccao.Suspensa ||
-                            followup.Status == StatusProspeccao.NaoConvertida
-                        )).ToList();
+                    return prospeccoes.Where(prospeccao =>
+                    {
+                        StatusProspeccao ultimoStatus = prospeccao.Status
+                            .OrderBy(followup => followup.Data).ThenBy(followup => followup.Id)
+                            .LastOrDefault()
+                            .Status;
+
+                        return ultimoStatus == StatusProspeccao.Suspensa
+                            || ultimoStatus == StatusProspeccao.NaoConvertida;
+                    }).ToList();
 
                 case "planejadas":
                     return prospeccoes.Where(prospeccao => prospeccao.Status
@@ -197,7 +203,6 @@ namespace BaseDeProjetos.Helpers
         {
             IQueryable<Prospeccao> query = context.Prospeccao
                 .AsNoTracking()
-                .Include(p => p.Status)
                 .Include(p => p.Empresa)
                 .Include(p => p.Contato)
                 .Include(p => p.ProspeccaoPrincipal)
@@ -305,27 +310,27 @@ namespace BaseDeProjetos.Helpers
 
                 case "comproposta":
                     return query.Where(p =>
-                        p.Status.Any(s =>
-                            s.Status == StatusProspeccao.ComProposta ||
-                            s.Status == StatusProspeccao.Convertida ||
-                            ((s.Status == StatusProspeccao.NaoConvertida || s.Status == StatusProspeccao.Suspensa) && p.ValorProposta != 0)
-                        )
+                        p.Status
+                            .OrderBy(s => s.Data).ThenBy(s => s.Id)
+                            .LastOrDefault().Status == StatusProspeccao.ComProposta
                     );
 
                 case "concluidas":
                 case "contratacao":
                     return query.Where(p =>
-                        p.Status.Any(s =>
-                            s.Status == StatusProspeccao.Convertida
-                        )
+                        p.Status
+                            .OrderBy(s => s.Data).ThenBy(s => s.Id)
+                            .LastOrDefault().Status == StatusProspeccao.Convertida
                     );
 
                 case "encerradas":
                     return query.Where(p =>
-                        p.Status.Any(s =>
-                            s.Status == StatusProspeccao.Suspensa ||
-                            s.Status == StatusProspeccao.NaoConvertida
-                        )
+                        p.Status
+                            .OrderBy(s => s.Data).ThenBy(s => s.Id)
+                            .LastOrDefault().Status == StatusProspeccao.Suspensa
+                        || p.Status
+                            .OrderBy(s => s.Data).ThenBy(s => s.Id)
+                            .LastOrDefault().Status == StatusProspeccao.NaoConvertida
                     );
 
                 case "planejadas":
