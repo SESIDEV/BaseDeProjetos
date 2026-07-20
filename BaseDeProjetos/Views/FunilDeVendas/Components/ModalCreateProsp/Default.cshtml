@@ -338,7 +338,7 @@
                                         }
                                     </datalist>
 
-                                    <!-- Campo ligado ao modelo: obrigat�rio para o binder enviar o id -->
+                                    <!-- Campo ligado ao modelo: obrigatorio para o binder enviar o id -->
                                     <input asp-for="EmpresaId" type="hidden" id="EmpresaId" />
 
                                     <span asp-validation-for="EmpresaId" class="text-danger"></span>
@@ -546,7 +546,7 @@
                                             }
                                             else
                                             {
-                                                <option disabled>Arquivo apoio.csv n�o encontrado ou vazio</option>
+                                                <option disabled>Arquivo apoio.csv n&atilde;o encontrado ou vazio</option>
                                             }
 
                                         }
@@ -649,7 +649,7 @@
                 form.addEventListener('submit', function () {
                     if (select && hidden) {
                         var values = Array.from(select.selectedOptions).map(function (o) { return o.value; });
-                        // armazena em formato ponto-e-v�rgula; ajust�vel conforme necessidade
+                        // armazena em formato ponto-e-virgula; ajustavel conforme necessidade
                         hidden.value = values.join(';');
                     }
                 });

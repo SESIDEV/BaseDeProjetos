@@ -9,8 +9,22 @@
     {
         ViewData["Area"] = Context.Session.GetString("_Casa");
     }
+
+    var gruposStatus = Model.Status
+        .OrderBy(s => s.Data)
+        .ThenBy(s => s.Id)
+        .GroupBy(s => s.Status)
+        .Select(grupo => new
+        {
+            Status = grupo.Key,
+            Followups = grupo.OrderBy(s => s.Data).ThenBy(s => s.Id).ToList(),
+            Primeiro = grupo.OrderBy(s => s.Data).ThenBy(s => s.Id).First()
+        })
+        .OrderBy(grupo => grupo.Primeiro.Data)
+        .ThenBy(grupo => grupo.Primeiro.Id)
+        .ToList();
 }
-@foreach (var followup in Model.Status.OrderBy(s => s.Data).ToList())
+@foreach (var followup in Model.Status.OrderBy(s => s.Data).ThenBy(s => s.Id).ToList())
 {
     @await Component.InvokeAsync("ModalEditFollowupProsp", new { id = Model.Id, id2 = followup.Id })
 }
@@ -21,42 +35,67 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="historyProspModal-@Model.Id">Histórico de Atualizações</h1>
+                <h1 class="modal-title fs-5" id="historyProspModal-@Model.Id">Hist&oacute;rico de Atualiza&ccedil;&otilde;es</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="accordion" id="accordionPanelsFollowups">
-                    @foreach (var followup in Model.Status.OrderBy(s => s.Data).ToList())
+                    @foreach (var grupoStatus in gruposStatus)
                     {
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="panelsFollowups-heading-@followup.Id">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsFollowups-collapse-@followup.Id" aria-expanded="true"
-                                        aria-controls="panelsFollowups-collapse-@followup.Id">
-                                    <div style="font-weight: 600">
-                                        @followup.Data.ToString("dd/MM/yyyy",
-                                    CultureInfo.CreateSpecificCulture("pt-BR")) - @(followup.Status.GetDisplayName())
+                        var idGrupo = $"{Model.Id}-{grupoStatus.Primeiro.Id}-{(int)grupoStatus.Status}";
+                        <div class="accordion-item funil-history-status-group">
+                            <h2 class="accordion-header" id="panelsFollowups-heading-@idGrupo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsFollowups-collapse-@idGrupo" aria-expanded="true"
+                                        aria-controls="panelsFollowups-collapse-@idGrupo">
+                                    <div class="funil-history-status-title">
+                                        <strong>
+                                            @grupoStatus.Primeiro.Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR")) - @grupoStatus.Status.GetDisplayName()
+                                        </strong>
+                                        @if (grupoStatus.Followups.Count > 1)
+                                        {
+                                            <span>@grupoStatus.Followups.Count anota&ccedil;&otilde;es</span>
+                                        }
                                     </div>
                                 </button>
                             </h2>
-                            <div id="panelsFollowups-collapse-@followup.Id" class="accordion-collapse collapse"
-                                 aria-labelledby="panelsFollowups-heading-@followup.Id">
+                            <div id="panelsFollowups-collapse-@idGrupo" class="accordion-collapse collapse"
+                                 aria-labelledby="panelsFollowups-heading-@idGrupo">
                                 <div class="accordion-body">
-                                    @if (string.IsNullOrEmpty(followup.Anotacoes))
+                                    <div class="funil-history-notes">
+                                        @foreach (var followup in grupoStatus.Followups)
+                                        {
+                                            <div class="funil-history-note">
+                                                <div class="funil-history-note-header">
+                                                    <strong>@followup.Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))</strong>
+                                                    <span>Vence em: @followup.Vencimento.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))</span>
+                                                </div>
+
+                                                @if (string.IsNullOrEmpty(followup.Anotacoes))
+                                                {
+                                                    <p>N&atilde;o h&aacute; nada preenchido.</p>
+                                                }
+                                                else
+                                                {
+                                                    <p>@followup.Anotacoes</p>
+                                                }
+
+                                                <div class="funil-history-note-actions">
+                                                    @if (followup.Status != StatusProspeccao.ContatoInicial)
+                                                    {
+                                                        <a class="btn btn-outline-danger btn-sm" asp-controller="FunilDeVendas" asp-action="RemoverFollowUp" asp-route-id="@followup.Id">Remover</a>
+                                                    }
+                                                    <button type="button" class="btn app-btn-secondary btn-sm" data-bs-toggle="modal"
+                                                            data-bs-target="#EditFollowupProspModal-@followup.Id">
+                                                        Editar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                    @if (grupoStatus.Followups.Count > 1)
                                     {
-                                        <span>Não há nada preenchido.</span>
+                                        <small class="funil-history-group-help">Este status aparece uma &uacute;nica vez no hist&oacute;rico; as entradas antigas foram agrupadas como anota&ccedil;&otilde;es.</small>
                                     }
-                                    else
-                                    {
-                                        @followup.Anotacoes
-                                    }
-                                    <hr />
-                                    Vence em: @followup.Vencimento.ToString("dd/MM/yyyy",
-                                CultureInfo.CreateSpecificCulture("pt-BR"))
-                                    <a class="btn btn-outline-danger" asp-controller="FunilDeVendas" asp-action="RemoverFollowUp" asp-route-id="@followup.Id">Remover</a> |
-                                    <button type="button" class="btn app-btn-secondary" data-bs-toggle="modal"
-                                            data-bs-target="#EditFollowupProspModal-@followup.Id">
-                                        Editar
-                                    </button>
                                     <!-- O Model ID aqui se refere a prospeccao, é extremamente importante que esses IDs batam assim como no ViewComponent, caso o bootstrap alegue undefined para o backdrop, tente verificar esses dois IDs -->
                                 </div>
                             </div>

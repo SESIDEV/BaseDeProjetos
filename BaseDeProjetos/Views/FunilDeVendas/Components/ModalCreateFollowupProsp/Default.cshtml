@@ -8,8 +8,6 @@
     {
         ViewData["Area"] = Context.Session.GetString("_Casa");
     }
-    string valor_contato;
-
     IEnumerable<SelectListItem> FiltrarExcecao(IEnumerable<SelectListItem> selectList, Prospeccao prospeccao)
     {
         /* 
@@ -31,7 +29,13 @@
         {
             int statusAtualValue = (int)statusAtual;
 
-            return selectList.Where(status => int.Parse(status.Value) >= statusAtualValue && int.Parse(status.Value) != (int)StatusProspeccao.Planejada);
+            return selectList.Where(status =>
+            {
+                int valorStatus = int.Parse(status.Value);
+                return valorStatus >= statusAtualValue
+                    && valorStatus != (int)StatusProspeccao.Planejada
+                    && valorStatus != (int)StatusProspeccao.Agregada;
+            });
         }
     }
 
@@ -54,110 +58,64 @@
 
 <div class="modal fade" id="CreateFollowupProspModal-@prosp.Id" aria-hidden="true"
      aria-labelledby="#CreateFollowupProspModal-@prosp.Id-Label" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="CreateFollowupProspModal-@prosp.Id-Label2">
-                    Adicionar Novo Status
-                </h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+    <div class="modal-dialog modal-dialog-centered funil-status-modal-dialog">
+        <div class="modal-content funil-status-modal">
             <form class="form-submit" asp-controller="FunilDeVendas" asp-action="Atualizar" method="POST">
-                <div class="modal-body">
-                    <div class="accordion" id="accordionFlushExample">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="flush-headingOne">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                                    Dados da Prospecção
-                                </button>
-                            </h2>
-                            <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                                <div class="accordion-body">
-                                    <div class="form-group">
-                                        <label asp-for="Id" class="control-label"></label>
-                                        <input type="text" class="form-control" value="@prosp.Id" readonly />
-                                        <span asp-validation-for="Id" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label> Empresa </label>
-                                        <input type="text" class="form-control" value="@prosp.Empresa.Nome" readonly />
-                                    </div>
-                                    <div class="form-group">
-                                        <label> Casa </label>
-                                        <input type="text" class="form-control" value="@prosp.Casa.GetDisplayName()" readonly />
-                                    </div>
-                                    <div class="form-group">
-                                        <label> Tipo de Contratação </label>
-                                        <input type="text" class="form-control" value="@prosp.TipoContratacao.GetDisplayName()" readonly />
-                                    </div>
-                                    <div class="form-group">
-                                        <label> Status </label>
-                                        <input type="text" class="form-control"
-                                               value="@prosp.Status.OrderBy(p=> p.Data).Last().Status.GetDisplayName()" readonly />
-                                    </div>
-                                    <div class="form-group">
-                                        <label> Contato da prospecção</label>
-                                        @if (prosp.Contato == null)
-                                        {
-                                            valor_contato = "SemNome";
-                                        }
-                                        else
-                                        {
-                                            valor_contato = prosp.Contato.Nome;
-                                        }
-                                        <input type="text" class="form-control" value="@valor_contato" readonly />
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Informações da prospecção (primeiro contato)</label>
-                                        <input type="text" class="form-control" value="@prosp.Status.OrderBy(p=>p.Data).First().Anotacoes" readonly />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="funil-status-modal-header">
+                    <div>
+                        <h1 class="funil-status-modal-title" id="CreateFollowupProspModal-@prosp.Id-Label2">
+                            Adicionar novo status
+                        </h1>
+                        <p>Atualize o est&aacute;gio da prospec&ccedil;&atilde;o para acompanhar a evolu&ccedil;&atilde;o.</p>
                     </div>
-                    <br>
+                    <button type="button" class="btn-close funil-status-modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
 
-                    <input asp-for="OrigemID" type="hidden" value='@prosp.Id' />
+                <div class="funil-status-modal-body">
+                    <input asp-for="OrigemID" type="hidden" value="@prosp.Id" />
 
-                    <div class="form-group">
-                        <label asp-for="Data" class="control-label"></label>
-                        <input asp-for="Data" type="date" class="form-control" min="@LimitarData(@prosp)" required />
-                        <small class="form-text text-muted">Data mínima: @LimitarDataFormat(@prosp)</small>
+                    <div class="funil-status-field">
+                        <label asp-for="Data" class="form-label">Data da atualiza&ccedil;&atilde;o</label>
+                        <div class="funil-status-input-icon">
+                            <i class="bi bi-calendar3" aria-hidden="true"></i>
+                            <input asp-for="Data" type="date" class="form-control" min="@LimitarData(@prosp)" required />
+                        </div>
+                        <small class="form-text text-muted">Data m&iacute;nima: @LimitarDataFormat(@prosp)</small>
                         <span asp-validation-for="Data" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="Status" class="control-label"></label>
 
+                    <div class="funil-status-field">
+                        <label asp-for="Status" class="form-label">Novo status</label>
                         <select asp-for="Status"
-                                class="form-control"
-                                asp-items="Html.GetEnumSelectList<StatusProspeccao>()
-                                                .Where(x => x.Value != ((int)StatusProspeccao.Agregada).ToString())">
+                                class="form-select"
+                                asp-items="FiltrarExcecao(Html.GetEnumSelectList<StatusProspeccao>(), @prosp)"
+                                required>
+                            <option value="">Escolha um est&aacute;gio</option>
                         </select>
-
                         <span asp-validation-for="Status" class="text-danger"></span>
                     </div>
 
-                    <div class="form-group">
-                        <label asp-for="Anotacoes" class="control-label"></label>
-                        <textarea class="form-control" asp-for=" Anotacoes" rows="3"></textarea>
+                    <div class="funil-status-field">
+                        <label asp-for="Anotacoes" class="form-label">Observa&ccedil;&otilde;es</label>
+                        <textarea class="form-control" asp-for="Anotacoes" rows="4" placeholder="Adicione detalhes sobre a mudan&ccedil;a de status..."></textarea>
                         <span asp-validation-for="Anotacoes" class="text-danger"></span>
                     </div>
-                    <div id="naoconversao" style="display:none">
-                        <div class="form-group">
-                            <label class="control-label"> Motivo de não conversão:</label>
-                            <select asp-for="Status" class="form-control"
-                                    asp-items="Html.GetEnumSelectList<MotivosNaoConversao>()"></select>
-                        </div>
-                    </div>
                 </div>
-                <div class="modal-footer">
-                    <input type="submit" value="Incluir" class="btn-submit btn app-btn-primary">
+
+                <div class="funil-status-modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar status</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 <script>
-    var dateControl = document.querySelector('input[type="date"]');
-    dateControl.max = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+    (function () {
+        var modal = document.getElementById('CreateFollowupProspModal-@prosp.Id');
+        var dateControl = modal ? modal.querySelector('input[type="date"]') : null;
+        if (dateControl) {
+            dateControl.max = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+        }
+    })();
 </script>
