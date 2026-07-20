@@ -440,8 +440,8 @@ namespace BaseDeProjetos.Controllers
                 });
         }
 
-        [Route("FunilDeVendas/GerarGraficoBarraTipoContratacao/{casa}")]
-        public async Task<IActionResult> GerarGraficoBarraTipoContratacao(string casa)
+        [Route("FunilDeVendas/GerarGraficoBarraTipoContratacao/{casa}/{ano?}")]
+        public async Task<IActionResult> GerarGraficoBarraTipoContratacao(string casa, string ano = "")
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
@@ -450,17 +450,18 @@ namespace BaseDeProjetos.Controllers
                     throw new ArgumentException("A casa selecionada é inválida");
                 }
 
+                int? anoFiltro = ObterAnoFiltroDashboard(ano);
                 Dictionary<string, int> statusprospeccao = new Dictionary<string, int>();
 
-                List<Prospeccao> prospeccoes = await _cache.GetCachedAsync($"Prospeccoes:{enumCasa}", () => _context.Prospeccao.Where(p => p.Casa == enumCasa).ToListAsync());
+                List<Prospeccao> prospeccoes = await ObterProspeccoesTotais(enumCasa);
 
                 foreach (int tipo in Enum.GetValues(typeof(TipoContratacao)))
                 {
-                    int prospContatoInicial = GerarQuantidadeTipoContratacao(prospeccoes, StatusProspeccao.ContatoInicial, (TipoContratacao)tipo);
+                    int prospContatoInicial = GerarQuantidadeTipoContratacao(prospeccoes, StatusProspeccao.ContatoInicial, (TipoContratacao)tipo, anoFiltro);
 
-                    int prospEmDiscussao = GerarQuantidadeTipoContratacao(prospeccoes, StatusProspeccao.Discussao_EsbocoProjeto, (TipoContratacao)tipo);
+                    int prospEmDiscussao = GerarQuantidadeTipoContratacao(prospeccoes, StatusProspeccao.Discussao_EsbocoProjeto, (TipoContratacao)tipo, anoFiltro);
 
-                    int prospComProposta = GerarQuantidadeTipoContratacao(prospeccoes, StatusProspeccao.ComProposta, (TipoContratacao)tipo);
+                    int prospComProposta = GerarQuantidadeTipoContratacao(prospeccoes, StatusProspeccao.ComProposta, (TipoContratacao)tipo, anoFiltro);
 
                     statusprospeccao[$"ContatoInicial_{tipo}"] = prospContatoInicial;
 
@@ -512,8 +513,8 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
-        [Route("FunilDeVendas/GerarIndicadoresProsp/{casa}")]
-        public async Task<IActionResult> GerarIndicadoresProsp(string casa)
+        [Route("FunilDeVendas/GerarIndicadoresProsp/{casa}/{ano?}")]
+        public async Task<IActionResult> GerarIndicadoresProsp(string casa, string ano = "")
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
@@ -522,19 +523,36 @@ namespace BaseDeProjetos.Controllers
                     throw new ArgumentException("A casa selecionada é inválida");
                 }
 
+                int? anoFiltro = ObterAnoFiltroDashboard(ano);
                 // TODO: Pensar em otimizações
                 List<Prospeccao> prospeccoesDaCasa = await ObterProspeccoesTotais(enumCasa);
-                var prospeccoesComPropostaEContatoInicial = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta) && p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial)).ToList();
-                int prospContatoInicial = prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ContatoInicial)).Count();
-                int empresasProspectadas = prospeccoesDaCasa.Select(p => new { p.Empresa }).Distinct().Count();
+                var prospeccoesCriadas = prospeccoesDaCasa
+                    .Where(p => FunilHelpers.ProspeccaoCriadaNoAno(p, anoFiltro))
+                    .ToList();
+                var prospeccoesComPropostaEContatoInicial = prospeccoesDaCasa
+                    .Where(p => FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.ComProposta, anoFiltro)
+                        && FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.ContatoInicial, null))
+                    .ToList();
+                int prospContatoInicial = prospeccoesCriadas.Count;
+                int empresasProspectadas = prospeccoesCriadas.Select(p => p.Empresa).Distinct().Count();
 
                 //todas prospepccoes que possui status em proposta e status inicial, duracao de dias 
                 List<TimeSpan> intervaloDatas = new List<TimeSpan>();
 
                 foreach (var prospeccao in prospeccoesComPropostaEContatoInicial)
                 {
-                    var dataContatoInicial = prospeccao.Status.Where(p => p.Status == StatusProspeccao.ContatoInicial).First().Data;
-                    var dataComProposta = prospeccao.Status.Where(p => p.Status == StatusProspeccao.ComProposta).First().Data;
+                    var dataContatoInicial = prospeccao.Status
+                        .Where(p => p.Status == StatusProspeccao.ContatoInicial)
+                        .OrderBy(p => p.Data)
+                        .ThenBy(p => p.Id)
+                        .First()
+                        .Data;
+                    var dataComProposta = prospeccao.Status
+                        .Where(p => p.Status == StatusProspeccao.ComProposta)
+                        .OrderBy(p => p.Data)
+                        .ThenBy(p => p.Id)
+                        .First()
+                        .Data;
                     intervaloDatas.Add(dataComProposta - dataContatoInicial);
                 }
 
@@ -542,14 +560,12 @@ namespace BaseDeProjetos.Controllers
                     ? new TimeSpan(Convert.ToInt64(intervaloDatas.Average(t => t.Ticks))).TotalDays
                     : 0;
 
-                int prospeccoesInfrutiferas = prospeccoesDaCasa
-                    .Select(p => new { p.Status })
-                    .Where(p => p.Status.Any() &&
-                        (p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.NaoConvertida
-                        || p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa)).Count();
+                int prospeccoesInfrutiferas = prospeccoesCriadas.Count(p =>
+                    FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.NaoConvertida, null)
+                    || FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Suspensa, null));
 
-                double percentInfrutiferas = prospeccoesDaCasa.Any()
-                    ? (double)prospeccoesInfrutiferas / prospeccoesDaCasa.Count() * 100
+                double percentInfrutiferas = prospeccoesCriadas.Any()
+                    ? (double)prospeccoesInfrutiferas / prospeccoesCriadas.Count() * 100
                     : 0;
 
                 IndicadoresProspeccao indicadoresProspeccao = new IndicadoresProspeccao
@@ -573,13 +589,28 @@ namespace BaseDeProjetos.Controllers
             return prospeccoes.Count(filtro);
         }
 
-        public int GerarQuantidadeTipoContratacao(List<Prospeccao> prospeccoes, StatusProspeccao status, TipoContratacao tipo)
+        public int GerarQuantidadeTipoContratacao(List<Prospeccao> prospeccoes, StatusProspeccao status, TipoContratacao tipo, int? ano = null)
         {
-            return GerarQuantidadeProsp(prospeccoes, p => p.Status.Any(p => p.Status == status) && p.TipoContratacao == tipo);
+            return GerarQuantidadeProsp(prospeccoes, p => ProspecaoContaNoGraficoStatus(p, status, ano) && p.TipoContratacao == tipo);
         }
 
-        [Route("FunilDeVendas/GerarStatusGeralProspPizza/{casa}")]
-        public async Task<IActionResult> GerarStatusGeralProspPizza(string casa)
+        private static bool ProspecaoContaNoGraficoStatus(Prospeccao prospeccao, StatusProspeccao status, int? ano)
+        {
+            switch (status)
+            {
+                case StatusProspeccao.ContatoInicial:
+                    return FunilHelpers.ProspeccaoCriadaNoAno(prospeccao, ano);
+
+                case StatusProspeccao.Discussao_EsbocoProjeto:
+                    return FunilHelpers.ProspeccaoTeveDiscussaoNoAno(prospeccao, ano);
+
+                default:
+                    return FunilHelpers.ProspeccaoTeveStatusNoAno(prospeccao, status, ano);
+            }
+        }
+
+        [Route("FunilDeVendas/GerarStatusGeralProspPizza/{casa}/{ano?}")]
+        public async Task<IActionResult> GerarStatusGeralProspPizza(string casa, string ano = "")
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
@@ -588,26 +619,25 @@ namespace BaseDeProjetos.Controllers
                     throw new ArgumentException("A casa selecionada é inválida");
                 }
 
-                var prospeccoesDaCasa = await ObterProspeccoesTotais(enumCasa);
-                var prospeccoesDaCasaConvertida = _cache.GetCached($"Prospeccoes:{enumCasa}:Convertidas:Count", () => prospeccoesDaCasa.Select(p => new { p.Status })
-                                                                                                                                       .Where(p => p.Status.Any(p => p.Status == StatusProspeccao.Convertida))
-                                                                                                                                       .ToList());
+                int? anoFiltro = ObterAnoFiltroDashboard(ano);
+                var prospeccoesDaCasa = (await ObterProspeccoesTotais(enumCasa))
+                    .Where(p => FunilHelpers.ProspeccaoCriadaNoAno(p, anoFiltro))
+                    .ToList();
+                int totalProspeccoes = prospeccoesDaCasa.Count();
+                int prospConvertidas = prospeccoesDaCasa.Count(p => FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Convertida, null));
+                int prospNaoConvertidas = prospeccoesDaCasa.Count(p =>
+                    !FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Convertida, null)
+                    && FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.NaoConvertida, null));
+                int prospSuspensas = prospeccoesDaCasa.Count(p =>
+                    !FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Convertida, null)
+                    && !FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.NaoConvertida, null)
+                    && FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Suspensa, null));
+                int prospEmAndamento = totalProspeccoes - prospConvertidas - prospNaoConvertidas - prospSuspensas;
 
-                var prospeccoesDaCasaNaoConvertidas = _cache.GetCached($"Prospeccoes:{enumCasa}:NaoConvertidas:Count", () => prospeccoesDaCasa.Select(p => new { p.Status })
-                                                                                                                                              .Where(p => p.Status.Any(p => p.Status == StatusProspeccao.NaoConvertida))
-                                                                                                                                              .ToList());
-
-                int prospSuspensas = _cache.GetCached($"Prospeccoes:{enumCasa}:Suspensas:Count", () => prospeccoesDaCasa.Select(p => new { p.Status }).Where(p => p.Status.OrderBy(f => f.Data).Last().Status == StatusProspeccao.Suspensa).Count());
-                double percentCanceladas = (double)prospSuspensas / prospeccoesDaCasa.Count() * 100;
-
-                int prospConvertidas = prospeccoesDaCasaConvertida.Count();
-                double percentConvertidas = (double)prospConvertidas / prospeccoesDaCasa.Count() * 100;
-
-                int prospNaoConvertidas = prospeccoesDaCasaNaoConvertidas.Count();
-                double percentNaoConvertidas = (double)prospNaoConvertidas / prospeccoesDaCasa.Count() * 100;
-
-                int prospEmAndamento = prospeccoesDaCasa.Count() - prospConvertidas - prospNaoConvertidas - prospSuspensas;
-                double percentEmAndamento = (double)prospEmAndamento / prospeccoesDaCasa.Count() * 100;
+                double percentCanceladas = totalProspeccoes == 0 ? 0 : (double)prospSuspensas / totalProspeccoes * 100;
+                double percentConvertidas = totalProspeccoes == 0 ? 0 : (double)prospConvertidas / totalProspeccoes * 100;
+                double percentNaoConvertidas = totalProspeccoes == 0 ? 0 : (double)prospNaoConvertidas / totalProspeccoes * 100;
+                double percentEmAndamento = totalProspeccoes == 0 ? 0 : (double)prospEmAndamento / totalProspeccoes * 100;
 
                 StatusGeralProspeccaoPizza statusGeralProspeccaoPizza = new StatusGeralProspeccaoPizza
                 {
@@ -625,8 +655,8 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
-        [Route("FunilDeVendas/GerarStatusProspComProposta/{casa}")]
-        public async Task<IActionResult> GerarStatusProspComProposta(string casa)
+        [Route("FunilDeVendas/GerarStatusProspComProposta/{casa}/{ano?}")]
+        public async Task<IActionResult> GerarStatusProspComProposta(string casa, string ano = "")
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
@@ -635,16 +665,13 @@ namespace BaseDeProjetos.Controllers
                     throw new ArgumentException("A casa selecionada é inválida");
                 }
 
+                int? anoFiltro = ObterAnoFiltroDashboard(ano);
                 var prospeccoesDaCasa = await ObterProspeccoesTotais(enumCasa);
-                var prospeccoesDaCasaComProposta = _cache.GetCached($"Prospeccoes:{enumCasa}:ComProposta", () => prospeccoesDaCasa.Select(p => new { p.Status })
-                                                                                                                                        .Where(p => p.Status.Any(p => p.Status == StatusProspeccao.ComProposta))
-                                                                                                                                        .ToList());
+                var prospeccoesDaCasaComProposta = prospeccoesDaCasa
+                    .Where(p => FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.ComProposta, anoFiltro))
+                    .ToList();
 
-                var prospeccoesDaCasaConvertida = _cache.GetCached($"Prospeccoes:{enumCasa}:Convertidas", () => prospeccoesDaCasa.Select(p => new { p.Status })
-                                                                   .Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida))
-                                                                   .ToList());
-
-                int prospConvertidas = prospeccoesDaCasaConvertida.Count();
+                int prospConvertidas = prospeccoesDaCasaComProposta.Count(p => FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Convertida, null));
                 int totalComProposta = prospeccoesDaCasaComProposta.Count();
 
                 double taxaConversaoProsp = totalComProposta == 0
@@ -652,13 +679,13 @@ namespace BaseDeProjetos.Controllers
                     : (double)prospConvertidas / totalComProposta * 100;
 
 
-                decimal ticketMedioProsp = prospeccoesDaCasa.Any()
-                    ? prospeccoesDaCasa.Average(p => p.ValorProposta)
+                decimal ticketMedioProsp = prospeccoesDaCasaComProposta.Any()
+                    ? prospeccoesDaCasaComProposta.Average(p => p.ValorProposta)
                     : 0;
 
-                int propostasComerciais = prospeccoesDaCasaComProposta.Count();
+                int propostasComerciais = totalComProposta;
 
-                int projetosContratados = prospeccoesDaCasaConvertida.Count();
+                int projetosContratados = prospConvertidas;
 
                 StatusProspPropostaIndicadores statusProspPropostaIndicadores = new StatusProspPropostaIndicadores
                 {
@@ -676,8 +703,8 @@ namespace BaseDeProjetos.Controllers
             }
         }
 
-        [Route("FunilDeVendas/GerarStatusProspPropostaPizza/{casa}")]
-        public async Task<IActionResult> GerarStatusProspPropostaPizza(string casa)
+        [Route("FunilDeVendas/GerarStatusProspPropostaPizza/{casa}/{ano?}")]
+        public async Task<IActionResult> GerarStatusProspPropostaPizza(string casa, string ano = "")
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
@@ -686,23 +713,18 @@ namespace BaseDeProjetos.Controllers
                     throw new ArgumentException("A casa selecionada é inválida");
                 }
 
+                int? anoFiltro = ObterAnoFiltroDashboard(ano);
                 var prospeccoesDaCasa = await ObterProspeccoesTotais(enumCasa);
-                var prospeccoesDaCasaConvertida = _cache.GetCached($"Prospeccoes:{enumCasa}:Convertidas", () => prospeccoesDaCasa.Select(p => new { p.Status })
-                                                                   .Where(p => p.Status.Any(f => f.Status == StatusProspeccao.Convertida))
-                                                                   .ToList());
+                var prospeccoesComProposta = prospeccoesDaCasa
+                    .Where(p => FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.ComProposta, anoFiltro))
+                    .ToList();
 
-                var prospeccoesEmAndamento = _cache.GetCached($"Prospeccoes:{enumCasa}:EmAndamento", () => prospeccoesDaCasa.Select(p => new { p.Status })
-                                                                                                                          .Where(p => !p.Status.Any(s => s.Status == StatusProspeccao.Convertida)
-                                                                                                                                      && !p.Status.Any(s => s.Status == StatusProspeccao.NaoConvertida)
-                                                                                                                                      && !p.Status.Any(s => s.Status == StatusProspeccao.Suspensa)));
-
-                var prospeccoesDaCasaNaoConvertidas = _cache.GetCached($"Prospeccoes:{enumCasa}:NaoConvertidas", () => prospeccoesDaCasa.Select(p => new { p.Status })
-                                                                   .Where(p => p.Status.Any(f => f.Status == StatusProspeccao.NaoConvertida))
-                                                                   .ToList());
-
-                int prospConvertidas = prospeccoesDaCasaConvertida.Count();
-                int prospEmAndamento = prospeccoesEmAndamento.Count();
-                int prospNaoConvertidas = prospeccoesDaCasaNaoConvertidas.Count();
+                int prospConvertidas = prospeccoesComProposta.Count(p => FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Convertida, null));
+                int prospNaoConvertidas = prospeccoesComProposta.Count(p =>
+                    !FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Convertida, null)
+                    && (FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.NaoConvertida, null)
+                        || FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Suspensa, null)));
+                int prospEmAndamento = prospeccoesComProposta.Count - prospConvertidas - prospNaoConvertidas;
 
                 StatusProspeccoesPropostaPizza statusProspeccoesPropostaPizza = new StatusProspeccoesPropostaPizza
                 {
@@ -1353,6 +1375,21 @@ namespace BaseDeProjetos.Controllers
                 || status == StatusProspeccao.Convertida
                 || ((status == StatusProspeccao.NaoConvertida || status == StatusProspeccao.Suspensa)
                     && valorProposta != 0);
+        }
+
+        private static int? ObterAnoFiltroDashboard(string ano)
+        {
+            if (string.IsNullOrWhiteSpace(ano) || ano.Equals("Todos", StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+
+            if (int.TryParse(ano, out int anoFiltro))
+            {
+                return anoFiltro;
+            }
+
+            throw new ArgumentException("O ano selecionado e invalido");
         }
 
         private static decimal[] GerarSerieExecutadoMensal(IEnumerable<DateTime> datas, decimal valorInicial = 0)
@@ -3285,7 +3322,7 @@ namespace BaseDeProjetos.Controllers
         internal static bool VerificarCondicoesRemocao(Prospeccao prospeccao, Usuario ativoNaSessao, Usuario donoProsp, FollowUp followup = null)
         {
             // Valida nulidades
-            if (prospeccao == null || ativoNaSessao == null || donoProsp == null)
+            if (prospeccao == null || ativoNaSessao == null)
                 return false;
 
             if (followup != null && followup.Status == StatusProspeccao.ContatoInicial)
@@ -3296,10 +3333,16 @@ namespace BaseDeProjetos.Controllers
                 return false;
 
             // Comparar por Id do usuário (evita comparação de instâncias diferentes)
-            if (string.IsNullOrEmpty(ativoNaSessao.Id) || string.IsNullOrEmpty(donoProsp.Id))
-                return false;
+            bool usuarioEhDonoPorId = donoProsp != null
+                && !string.IsNullOrEmpty(ativoNaSessao.Id)
+                && !string.IsNullOrEmpty(donoProsp.Id)
+                && ativoNaSessao.Id == donoProsp.Id;
 
-            return ativoNaSessao.Id == donoProsp.Id;
+            bool usuarioEhLiderNome = !string.IsNullOrWhiteSpace(prospeccao.LiderNome)
+                && !string.IsNullOrWhiteSpace(ativoNaSessao.UserName)
+                && NormalizarTextoUsuario(prospeccao.LiderNome) == NormalizarTextoUsuario(ativoNaSessao.UserName);
+
+            return usuarioEhDonoPorId || usuarioEhLiderNome;
         }
 
         /// <summary>
@@ -3996,13 +4039,15 @@ namespace BaseDeProjetos.Controllers
         /// <returns></returns>
         private async Task<List<Prospeccao>> ObterProspeccoesTotais(Instituto casa)
         {
-            return await _cache.GetCachedAsync($"Prospeccoes:{casa}", () => _context.Prospeccao
+            var prospeccoes = await _cache.GetCachedAsync($"Prospeccoes:{casa}:TotaisComStatus", () => _context.Prospeccao
                 .Include(p => p.Status)
                 .Include(p => p.Empresa)
-                .Where(p => p.Status.Any() &&
-                    p.Status.OrderBy(f => f.Data).Last().Status != StatusProspeccao.Planejada
-                    && p.Casa == casa)
+                .Where(p => p.Status.Any() && p.Casa == casa)
                 .ToListAsync());
+
+            return prospeccoes
+                .Where(p => FunilHelpers.ObterUltimoStatus(p) != StatusProspeccao.Planejada)
+                .ToList();
         }
 
         /// <summary>
@@ -4300,8 +4345,17 @@ namespace BaseDeProjetos.Controllers
                 }
                 else
                 {
-                    // TODO: Colocar isso no frontend em vez de jogar uma exceção na cara do usuário
-                    throw new InvalidOperationException("Provável erro na função verificarCondicoesRemocao() no Controller");
+                    TempData["FunilErroStatus"] = "Voce nao tem permissao para remover este status.";
+                    return RedirectToAction("Index",
+                                            "FunilDeVendas",
+                                            new
+                                            {
+                                                casa = prospeccao.Casa,
+                                                aba = parametrosFunil.Aba,
+                                                tamanhoPagina = parametrosFunil.TamanhoPagina,
+                                                sortOrder = parametrosFunil.SortOrder,
+                                                searchString = parametrosFunil.SearchString
+                                            });
                 }
             }
             else

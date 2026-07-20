@@ -21,6 +21,26 @@
     }
 </style>
 @{
+    string anoGraficoTexto = ViewContext.HttpContext.Request.Query["ano"].ToString();
+    if (string.IsNullOrWhiteSpace(anoGraficoTexto))
+    {
+        anoGraficoTexto = ViewContext.RouteData.Values["ano"] as string;
+    }
+
+    int anoGraficoValor;
+    int? anoGrafico = int.TryParse(anoGraficoTexto, out anoGraficoValor) ? anoGraficoValor : (int?)null;
+    Func<Prospeccao, StatusProspeccao, bool> contaStatusGrafico = (prospeccao, status) =>
+    {
+        switch (status)
+        {
+            case StatusProspeccao.ContatoInicial:
+                return FunilHelpers.ProspeccaoCriadaNoAno(prospeccao, anoGrafico);
+            case StatusProspeccao.Discussao_EsbocoProjeto:
+                return FunilHelpers.ProspeccaoTeveDiscussaoNoAno(prospeccao, anoGrafico);
+            default:
+                return FunilHelpers.ProspeccaoTeveStatusNoAno(prospeccao, status, anoGrafico);
+        }
+    };
     Dictionary<string, int> contagem = new Dictionary<string, int>();
 
     foreach (TipoContratacao contratacao in Enum.GetValues(typeof(TipoContratacao)))
@@ -29,7 +49,7 @@
         {
             var key = contratacao.ToString() + "_" + status.ToString();
             contagem[key] = Model.ProspeccoesGrafico.Where(p => FunilHelpers.VerificarContratacao(p, contratacao) &&
-            FunilHelpers.VerificarStatus(p, status)).ToList().Count();
+            contaStatusGrafico(p, status)).ToList().Count();
         }
     }
 
@@ -40,21 +60,21 @@
         {
             var key = contratacao.ToString() + "_" + status.ToString() + "_Ativas";
             contagem[key] = Model.ProspeccoesAtivas.Where(p => FunilHelpers.VerificarContratacao(p, contratacao) &&
-            FunilHelpers.VerificarStatus(p, status)).ToList().Count();
+            contaStatusGrafico(p, status)).ToList().Count();
         }
     }
 
     float numProspeccoesTotais = Model.ProspeccoesGrafico.Count();
-    float numPropostas = Model.ProspeccoesGrafico.Count(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.ComProposta));
-    float numPropostasAtivas = Model.ProspeccoesGrafico.Count(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.ComProposta) && p.Status.All(s => s.Status < StatusProspeccao.Convertida));
-    float numConvertidas = Model.ProspeccoesGrafico.Count(p => p.Status.Any(s => s.Status == StatusProspeccao.Convertida));
-    float numNaoConvertidas = Model.ProspeccoesGrafico.Count(p => p.Status.Any(s => s.Status == StatusProspeccao.NaoConvertida));
-    float numCanceladas = Model.ProspeccoesGrafico.Count(p => p.Status.Any(s => s.Status == StatusProspeccao.Suspensa));
+    float numPropostas = Model.ProspeccoesGrafico.Count(p => FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.ComProposta, anoGrafico));
+    float numPropostasAtivas = numPropostas;
+    float numConvertidas = Model.ProspeccoesGrafico.Count(p => FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Convertida, anoGrafico));
+    float numNaoConvertidas = Model.ProspeccoesGrafico.Count(p => FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.NaoConvertida, anoGrafico));
+    float numCanceladas = Model.ProspeccoesGrafico.Count(p => FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Suspensa, anoGrafico));
     float numProspeccoesEmAndamento = numProspeccoesTotais - numConvertidas - numNaoConvertidas - numCanceladas;
-    float numProspeccoesEmAndamentoComProposta = numPropostas - numConvertidas - numNaoConvertidas;
+    float numProspeccoesEmAndamentoComProposta = numPropostas;
     float numEmpresas = Model.ProspeccoesNaoPlanejadas.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();
     float numEmpresasAtivas = Model.ProspeccoesAtivas.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();
-    float numPlanejadas = Model.ProspeccoesGrafico.Count(p => p.Status.Any(s => s.Status == StatusProspeccao.Planejada));
+    float numPlanejadas = Model.ProspeccoesGrafico.Count(p => FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Planejada, anoGrafico));
     float numAvancadas = Model.ProspeccoesAvancadas.Count();
     float numConvertidasENaoConvertidas = numConvertidas + numNaoConvertidas;
     float numInfrutiferas = numCanceladas + numNaoConvertidas;

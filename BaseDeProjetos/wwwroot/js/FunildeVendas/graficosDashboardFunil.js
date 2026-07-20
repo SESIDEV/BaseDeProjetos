@@ -1,6 +1,6 @@
 ﻿async function fetchDadosIndicadoresProspeccao() {
     let fetchedData;
-    await fetch(`/FunildeVendas/GerarIndicadoresProsp/${casa}`)
+    await fetch(montarUrlDashboardFunil('GerarIndicadoresProsp'))
         .then(res => res.json())
         .then(data => fetchedData = data)
         .catch(err => console.error(`Houve um erro ao obter os dados dos indicadores: ${err}`))
@@ -35,7 +35,7 @@ function preencherDadosIndicadoresProsp(dadosProsp) {
 
 async function fetchDadosStatusProspComProposta() {
     let fetchedData;
-    await fetch(`/FunildeVendas/GerarStatusProspComProposta/${casa}`)
+    await fetch(montarUrlDashboardFunil('GerarStatusProspComProposta'))
         .then(res => res.json())
         .then(data => fetchedData = data)
         .catch(err => console.error(`Houve um erro ao obter os dados dos indicadores: ${err}`))
@@ -71,7 +71,7 @@ function preencherDadosStatusProspComProposta(dadosProsp) {
 
 async function fetchDadosStatusGeralProspPizza() {
     let fetchedData;
-    await fetch(`/FunildeVendas/GerarStatusGeralProspPizza/${casa}`)
+    await fetch(montarUrlDashboardFunil('GerarStatusGeralProspPizza'))
         .then(res => res.json())
         .then(data => fetchedData = data)
         .catch(err => console.error(`Houve um erro ao obter os dados dos indicadores: ${err}`))
@@ -137,7 +137,7 @@ function preencherDadosStatusGeralProspPizza(dadosProsp) {
 
 async function fetchDadosGraficoBarraTipoContratacao() {
     let fetchedData;
-    await fetch(`/FunildeVendas/GerarGraficoBarraTipoContratacao/${casa}`)
+    await fetch(montarUrlDashboardFunil('GerarGraficoBarraTipoContratacao'))
         .then(res => res.json())
         .then(data => fetchedData = data)
         .catch(err => console.error(`Houve um erro ao obter os dados dos indicadores: ${err}`))
@@ -154,7 +154,7 @@ function preencherDadosGraficoBarraTipoContratacao(dadosProsp) {
         { name: 'Agências de Fomento', data: [dadosProsp[contatoInicial]["AgenciaFomento"], dadosProsp[emDiscussao]["AgenciaFomento"], dadosProsp[comProposta]["AgenciaFomento"]] },
         { name: 'Embrapii', data: [dadosProsp[contatoInicial]["Embrapii"], dadosProsp[emDiscussao]["Embrapii"], dadosProsp[comProposta]["Embrapii"]] },
         { name: 'A definir', data: [dadosProsp[contatoInicial]["Definir"], dadosProsp[emDiscussao]["Definir"], dadosProsp[comProposta]["Definir"]] },
-        { name: 'Parceiros de Edital', data: [dadosProsp[contatoInicial]["ParceiroEdital"], dadosProsp[emDiscussao]["ParceiroEdital"], dadosProsp[comProposta]["ParceiroEdital"]["Parceiro_ComProposta"]] },
+        { name: 'Parceiros de Edital', data: [dadosProsp[contatoInicial]["ParceiroEdital"], dadosProsp[emDiscussao]["ParceiroEdital"], dadosProsp[comProposta]["ParceiroEdital"]] },
         { name: 'ANP/ANEEL', data: [dadosProsp[contatoInicial]["ANP_ANEEL"], dadosProsp[emDiscussao]["ANP_ANEEL"], dadosProsp[comProposta]["ANP_ANEEL"]] }
     ];
     
@@ -178,7 +178,7 @@ function preencherDadosGraficoBarraTipoContratacao(dadosProsp) {
 
 async function fetchDadosStatusProspeccoesPropostaPizza() {
     let fetchedData;
-    await fetch(`/FunildeVendas/GerarStatusProspPropostaPizza/${casa}`)
+    await fetch(montarUrlDashboardFunil('GerarStatusProspPropostaPizza'))
         .then(res => res.json())
         .then(data => fetchedData = data)
         .catch(err => console.error(`Houve um erro ao obter os dados dos indicadores: ${err}`))
@@ -280,3 +280,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+function obterAnoDashboardFunil() {
+    if (typeof anoFunilDashboard !== 'undefined' && anoFunilDashboard) {
+        return anoFunilDashboard;
+    }
+
+    const anoSelecionado = document.getElementById('ano')?.value;
+    if (anoSelecionado) {
+        return anoSelecionado;
+    }
+
+    return new URLSearchParams(window.location.search).get('ano') || 'Todos';
+}
+
+function montarUrlDashboardFunil(endpoint) {
+    return `/FunildeVendas/${endpoint}/${casa}/${encodeURIComponent(obterAnoDashboardFunil())}`;
+}

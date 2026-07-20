@@ -13,6 +13,10 @@
     string casa = dadosDaRota.Values["casa"] as string;
     string searchString = ViewBag.searchString as string;
     string anoFiltro = ViewContext.HttpContext.Request.Query["ano"].ToString();
+    if (string.IsNullOrWhiteSpace(anoFiltro))
+    {
+        anoFiltro = dadosDaRota.Values["ano"] as string;
+    }
     string temperatura = ViewBag.Temperatura as string;
     string fomento = ViewBag.Fomento as string;
     bool filtrosFunilAtivos = !string.IsNullOrWhiteSpace(searchString)
@@ -49,6 +53,7 @@
 
 <script>
     var casa = "@casa"
+    var anoFunilDashboard = "@(string.IsNullOrWhiteSpace(anoFiltro) ? "Todos" : anoFiltro)"
 </script>
 
 <script src="~/js/utils/Dicionario.js" asp-append-version="true"></script>

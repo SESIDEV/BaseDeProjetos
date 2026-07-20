@@ -111,5 +111,29 @@ namespace BaseDeProjetos.Controllers.Tests
 
             Assert.IsTrue(result);
         }
+
+        [Test]
+        public void Test_VerificarCondicoesRemocao_RemoveQuandoUsuarioEhLiderNome()
+        {
+            var statusPosterior = new FollowUp { Status = StatusProspeccao.NDAAssinado };
+            var prospeccao = new Prospeccao
+            {
+                LiderNome = "Usuario Teste",
+                Status = new List<FollowUp>
+                {
+                    new FollowUp { Status = StatusProspeccao.ContatoInicial },
+                    statusPosterior
+                }
+            };
+            var usuarioAtivoNaSessao = new Usuario { Id = "meuId1", UserName = "Usuario Teste" };
+
+            var result = FunilDeVendasController.VerificarCondicoesRemocao(
+                prospeccao,
+                usuarioAtivoNaSessao,
+                null,
+                statusPosterior);
+
+            Assert.IsTrue(result);
+        }
     }
 }
