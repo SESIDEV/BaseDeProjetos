@@ -284,6 +284,27 @@ namespace BaseDeProjetos.Helpers.Tests
         }
 
         [Test]
+        public void Test_ClassificacaoFinal_NaoContaConvertidaQuandoUltimoStatusMudou()
+        {
+            var prospeccao = new Prospeccao
+            {
+                Id = "convertidaDepoisNao",
+                Status = new List<FollowUp>
+                {
+                    new FollowUp { Id = 1, OrigemID = "convertidaDepoisNao", Status = StatusProspeccao.ContatoInicial, Data = new DateTime(2026, 1, 5) },
+                    new FollowUp { Id = 2, OrigemID = "convertidaDepoisNao", Status = StatusProspeccao.ComProposta, Data = new DateTime(2026, 2, 5) },
+                    new FollowUp { Id = 3, OrigemID = "convertidaDepoisNao", Status = StatusProspeccao.Convertida, Data = new DateTime(2026, 3, 5) },
+                    new FollowUp { Id = 4, OrigemID = "convertidaDepoisNao", Status = StatusProspeccao.NaoConvertida, Data = new DateTime(2026, 4, 5) }
+                }
+            };
+
+            Assert.IsTrue(FunilHelpers.ProspeccaoTeveStatusNoAno(prospeccao, StatusProspeccao.ComProposta, 2026));
+            Assert.IsTrue(FunilHelpers.ProspeccaoTeveStatusNoAno(prospeccao, StatusProspeccao.Convertida, 2026));
+            Assert.IsFalse(FunilHelpers.VerificarStatus(prospeccao, StatusProspeccao.Convertida));
+            Assert.IsTrue(FunilHelpers.VerificarStatus(prospeccao, StatusProspeccao.NaoConvertida));
+        }
+
+        [Test]
         public void Test_LogicaFiltroProspeccoes_AbasUsamUltimoStatus()
         {
             var prospeccaoAtiva = CriarProspeccaoComStatus("ativa", StatusProspeccao.ContatoInicial);

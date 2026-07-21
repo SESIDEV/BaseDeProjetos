@@ -67,9 +67,9 @@
     float numProspeccoesTotais = Model.ProspeccoesGrafico.Count();
     float numPropostas = Model.ProspeccoesGrafico.Count(p => FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.ComProposta, anoGrafico));
     float numPropostasAtivas = numPropostas;
-    float numConvertidas = Model.ProspeccoesGrafico.Count(p => FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Convertida, anoGrafico));
-    float numNaoConvertidas = Model.ProspeccoesGrafico.Count(p => FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.NaoConvertida, anoGrafico));
-    float numCanceladas = Model.ProspeccoesGrafico.Count(p => FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Suspensa, anoGrafico));
+    float numConvertidas = Model.ProspeccoesGrafico.Count(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.Convertida));
+    float numNaoConvertidas = Model.ProspeccoesGrafico.Count(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.NaoConvertida));
+    float numCanceladas = Model.ProspeccoesGrafico.Count(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.Suspensa));
     float numProspeccoesEmAndamento = numProspeccoesTotais - numConvertidas - numNaoConvertidas - numCanceladas;
     float numProspeccoesEmAndamentoComProposta = numPropostas;
     float numEmpresas = Model.ProspeccoesNaoPlanejadas.Select(p => p.Empresa.EmpresaUnique).Distinct().Count();

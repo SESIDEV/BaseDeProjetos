@@ -561,8 +561,8 @@ namespace BaseDeProjetos.Controllers
                     : 0;
 
                 int prospeccoesInfrutiferas = prospeccoesCriadas.Count(p =>
-                    FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.NaoConvertida, null)
-                    || FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Suspensa, null));
+                    FunilHelpers.VerificarStatus(p, StatusProspeccao.NaoConvertida)
+                    || FunilHelpers.VerificarStatus(p, StatusProspeccao.Suspensa));
 
                 double percentInfrutiferas = prospeccoesCriadas.Any()
                     ? (double)prospeccoesInfrutiferas / prospeccoesCriadas.Count() * 100
@@ -624,14 +624,9 @@ namespace BaseDeProjetos.Controllers
                     .Where(p => FunilHelpers.ProspeccaoCriadaNoAno(p, anoFiltro))
                     .ToList();
                 int totalProspeccoes = prospeccoesDaCasa.Count();
-                int prospConvertidas = prospeccoesDaCasa.Count(p => FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Convertida, null));
-                int prospNaoConvertidas = prospeccoesDaCasa.Count(p =>
-                    !FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Convertida, null)
-                    && FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.NaoConvertida, null));
-                int prospSuspensas = prospeccoesDaCasa.Count(p =>
-                    !FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Convertida, null)
-                    && !FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.NaoConvertida, null)
-                    && FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Suspensa, null));
+                int prospConvertidas = prospeccoesDaCasa.Count(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.Convertida));
+                int prospNaoConvertidas = prospeccoesDaCasa.Count(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.NaoConvertida));
+                int prospSuspensas = prospeccoesDaCasa.Count(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.Suspensa));
                 int prospEmAndamento = totalProspeccoes - prospConvertidas - prospNaoConvertidas - prospSuspensas;
 
                 double percentCanceladas = totalProspeccoes == 0 ? 0 : (double)prospSuspensas / totalProspeccoes * 100;
@@ -671,7 +666,7 @@ namespace BaseDeProjetos.Controllers
                     .Where(p => FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.ComProposta, anoFiltro))
                     .ToList();
 
-                int prospConvertidas = prospeccoesDaCasaComProposta.Count(p => FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Convertida, null));
+                int prospConvertidas = prospeccoesDaCasaComProposta.Count(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.Convertida));
                 int totalComProposta = prospeccoesDaCasaComProposta.Count();
 
                 double taxaConversaoProsp = totalComProposta == 0
@@ -719,11 +714,10 @@ namespace BaseDeProjetos.Controllers
                     .Where(p => FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.ComProposta, anoFiltro))
                     .ToList();
 
-                int prospConvertidas = prospeccoesComProposta.Count(p => FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Convertida, null));
+                int prospConvertidas = prospeccoesComProposta.Count(p => FunilHelpers.VerificarStatus(p, StatusProspeccao.Convertida));
                 int prospNaoConvertidas = prospeccoesComProposta.Count(p =>
-                    !FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Convertida, null)
-                    && (FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.NaoConvertida, null)
-                        || FunilHelpers.ProspeccaoTeveStatusNoAno(p, StatusProspeccao.Suspensa, null)));
+                    FunilHelpers.VerificarStatus(p, StatusProspeccao.NaoConvertida)
+                    || FunilHelpers.VerificarStatus(p, StatusProspeccao.Suspensa));
                 int prospEmAndamento = prospeccoesComProposta.Count - prospConvertidas - prospNaoConvertidas;
 
                 StatusProspeccoesPropostaPizza statusProspeccoesPropostaPizza = new StatusProspeccoesPropostaPizza
