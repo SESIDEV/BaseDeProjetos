@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Helpers;
 using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.Enums;
@@ -920,19 +920,12 @@ namespace BaseDeProjetos.Controllers
                     AssertividadePropostas = CalcularPercentual(totaisEquipe.ValorPropostasConvertidas, totaisEquipe.ValorPropostasEnviadas)
                 };
 
-                string chaveFiltroCasas = ObterChaveFiltroCasasIndicadores(casasSelecionadas, casasPermitidas);
-                string prefixoArrasteContatos = ObterPrefixoArrasteContatosPesquisador(chaveFiltroCasas);
-                var registrosArrasteContatos = await _context.IndicadoresPlanejamentoMensal
-                    .AsNoTracking()
-                    .Where(indicador => indicador.Casa == Instituto.Super
-                        && indicador.Ano == ano
-                        && indicador.Indicador.StartsWith(prefixoArrasteContatos)
-                        && indicador.Coluna == 0)
-                    .ToListAsync();
-                Dictionary<string, decimal> arrastesPorPesquisador = registrosArrasteContatos
-                    .ToDictionary(
-                        registro => registro.Indicador.Substring(prefixoArrasteContatos.Length),
-                        registro => registro.Valor);
+                string chaveFiltroCasas = ObterChaveArrasteContatosPesquisador(casasSelecionadas, casasPermitidas);
+                Dictionary<string, decimal> arrastesPorPesquisador = await ObterArrastesContatosPesquisadorPorFiltro(
+                    ano,
+                    casasSelecionadas,
+                    casasPermitidas,
+                    chaveFiltroCasas);
 
                 List<ContatosPesquisadorIndicadorLinha> contatosPesquisadorBase = contatosRealizadosAno
                     .Where(f => !string.IsNullOrWhiteSpace(f.LiderId))
@@ -1502,7 +1495,8 @@ namespace BaseDeProjetos.Controllers
             }
 
             List<Instituto> casasPermitidas = FunilHelpers.ObterCasasPermitidas(UsuarioAtivo);
-            string chaveFiltroCasas = ObterChaveFiltroCasasIndicadores(casasSelecionadas, casasPermitidas);
+            List<Instituto> casasArraste = await ResolverCasasArrasteContatosPesquisador(casasSelecionadas, pesquisadorId);
+            string chaveFiltroCasas = ObterChaveArrasteContatosPesquisador(casasArraste, casasPermitidas);
             string indicador = ObterIndicadorArrasteContatosPesquisador(chaveFiltroCasas, pesquisadorId);
 
             IndicadoresPlanejamentoMensal registro = await _context.IndicadoresPlanejamentoMensal
@@ -1531,6 +1525,91 @@ namespace BaseDeProjetos.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(new { sucesso = true });
+        }
+
+        private async Task<Dictionary<string, decimal>> ObterArrastesContatosPesquisadorPorFiltro(
+            int ano,
+            List<Instituto> casasSelecionadas,
+            List<Instituto> casasPermitidas,
+            string chaveFiltroCasas)
+        {
+            var arrastesPorPesquisador = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase);
+            List<string> chavesCasasIndividuais = casasSelecionadas
+                .Select(casaSelecionada => casaSelecionada.ToString())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+            List<string> prefixosCasasIndividuais = chavesCasasIndividuais
+                .Select(ObterPrefixoArrasteContatosPesquisador)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+            string prefixoFiltroAtual = ObterPrefixoArrasteContatosPesquisador(chaveFiltroCasas);
+
+            var registrosArrasteContatos = await _context.IndicadoresPlanejamentoMensal
+                .AsNoTracking()
+                .Where(indicador => indicador.Casa == Instituto.Super
+                    && indicador.Ano == ano
+                    && indicador.Indicador.StartsWith("ARR_CONT_")
+                    && indicador.Coluna == 0)
+                .ToListAsync();
+
+            foreach (IndicadoresPlanejamentoMensal registro in registrosArrasteContatos)
+            {
+                string prefixoIndividual = prefixosCasasIndividuais
+                    .FirstOrDefault(prefixo => registro.Indicador.StartsWith(prefixo, StringComparison.OrdinalIgnoreCase));
+
+                if (string.IsNullOrWhiteSpace(prefixoIndividual))
+                {
+                    continue;
+                }
+
+                string pesquisadorId = registro.Indicador.Substring(prefixoIndividual.Length);
+                if (arrastesPorPesquisador.ContainsKey(pesquisadorId))
+                {
+                    arrastesPorPesquisador[pesquisadorId] += registro.Valor;
+                }
+                else
+                {
+                    arrastesPorPesquisador[pesquisadorId] = registro.Valor;
+                }
+            }
+
+            if (string.Equals(prefixoFiltroAtual, prefixosCasasIndividuais.FirstOrDefault(), StringComparison.OrdinalIgnoreCase))
+            {
+                return arrastesPorPesquisador;
+            }
+
+            foreach (IndicadoresPlanejamentoMensal registro in registrosArrasteContatos
+                .Where(registro => registro.Indicador.StartsWith(prefixoFiltroAtual, StringComparison.OrdinalIgnoreCase)))
+            {
+                string pesquisadorId = registro.Indicador.Substring(prefixoFiltroAtual.Length);
+                if (!arrastesPorPesquisador.ContainsKey(pesquisadorId))
+                {
+                    arrastesPorPesquisador[pesquisadorId] = registro.Valor;
+                }
+            }
+
+            return arrastesPorPesquisador;
+        }
+
+        private async Task<List<Instituto>> ResolverCasasArrasteContatosPesquisador(List<Instituto> casasSelecionadas, string pesquisadorId)
+        {
+            if (casasSelecionadas == null || casasSelecionadas.Count <= 1)
+            {
+                return casasSelecionadas ?? new List<Instituto>();
+            }
+
+            var usuarioPesquisador = await _context.Users
+                .AsNoTracking()
+                .Where(usuario => usuario.Id == pesquisadorId)
+                .Select(usuario => new { usuario.Casa })
+                .FirstOrDefaultAsync();
+
+            if (usuarioPesquisador != null && casasSelecionadas.Contains(usuarioPesquisador.Casa))
+            {
+                return new List<Instituto> { usuarioPesquisador.Casa };
+            }
+
+            return casasSelecionadas;
         }
 
         private bool UsuarioPodeEditarArrasteContatosPesquisador()
@@ -1629,6 +1708,19 @@ namespace BaseDeProjetos.Controllers
             return string.Join(",", casasSelecionadasOrdenadas.Select(instituto => instituto.ToString()));
         }
 
+        private static string ObterChaveArrasteContatosPesquisador(List<Instituto> casasSelecionadas, List<Instituto> casasPermitidas)
+        {
+            List<Instituto> casasSelecionadasOrdenadas = FiltrarCasasIndicadoresVisiveis(casasSelecionadas)
+                .OrderBy(instituto => instituto.ToString())
+                .ToList();
+
+            if (casasSelecionadasOrdenadas.Count == 1)
+            {
+                return casasSelecionadasOrdenadas[0].ToString();
+            }
+
+            return ObterChaveFiltroCasasIndicadores(casasSelecionadasOrdenadas, casasPermitidas);
+        }
         private static string ObterPrefixoArrasteContatosPesquisador(string chaveFiltroCasas)
         {
             return $"ARR_CONT_{ObterHashCurto(chaveFiltroCasas)}_";
