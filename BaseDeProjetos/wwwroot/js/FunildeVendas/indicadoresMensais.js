@@ -14,6 +14,21 @@ async function fetchIndicadoresMensais(casaSelecionada, anoSelecionado) {
     return resposta.json();
 }
 
+let filtroIndicadoresRenderizado = {
+    casa: typeof casa !== 'undefined' ? casa : 'ISIQV',
+    ano: typeof anoIndicadores !== 'undefined' ? anoIndicadores : new Date().getFullYear()
+};
+
+function atualizarFiltroIndicadoresRenderizado(dados) {
+    const casaDados = obterCampo(dados, 'Casa');
+    const anoDados = obterCampo(dados, 'Ano');
+
+    filtroIndicadoresRenderizado = {
+        casa: casaDados || obterCasasSelecionadasIndicadores(),
+        ano: anoDados || document.getElementById('anoIndicadoresSelect')?.value || anoIndicadores
+    };
+}
+
 function obterPlotLineMesAtual(dados) {
     const mesAtual = obterCampo(dados, 'MesAtual');
 
@@ -438,10 +453,12 @@ async function salvarArrasteContatosPesquisador(input) {
 
 async function salvarArrasteContatosPesquisadorValor(pesquisadorId, valor) {
     const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+    const casaFiltro = filtroIndicadoresRenderizado.casa || obterCasasSelecionadasIndicadores();
+    const anoFiltro = filtroIndicadoresRenderizado.ano || document.getElementById('anoIndicadoresSelect')?.value || anoIndicadores;
     const corpo = new URLSearchParams();
     corpo.append('__RequestVerificationToken', token || '');
-    corpo.append('casa', obterCasasSelecionadasIndicadores());
-    corpo.append('ano', document.getElementById('anoIndicadoresSelect')?.value || anoIndicadores);
+    corpo.append('casa', casaFiltro);
+    corpo.append('ano', anoFiltro);
     corpo.append('pesquisadorId', pesquisadorId || '');
     corpo.append('valor', valor || '0');
 
@@ -458,11 +475,12 @@ async function salvarArrasteContatosPesquisadorValor(pesquisadorId, valor) {
         throw new Error(`Erro ao salvar arraste: ${resposta.status}`);
     }
 
-    const dadosAtualizados = await fetchIndicadoresMensais(obterCasasSelecionadasIndicadores(), document.getElementById('anoIndicadoresSelect')?.value || anoIndicadores);
+    const dadosAtualizados = await fetchIndicadoresMensais(casaFiltro, anoFiltro);
     renderizarIndicadoresMensais(dadosAtualizados);
 }
 
 function renderizarIndicadoresMensais(dados) {
+    atualizarFiltroIndicadoresRenderizado(dados);
     criarGraficoExecutado('grafico-contatos', 'Contatos Realizados', 'TOTAL DE CONTATOS REALIZADOS', dados, 'ContatosRealizados', '#ed7d31');
     criarGraficoExecutado('grafico-propostas', 'Propostas Enviadas', 'QUANTIDADE TOTAL', dados, 'PropostasEnviadas', '#70ad47');
     criarGraficoExecutado('grafico-convertidas', 'Propostas Convertidas', 'QUANTIDADE TOTAL', dados, 'PropostasConvertidas', '#ffc000');
