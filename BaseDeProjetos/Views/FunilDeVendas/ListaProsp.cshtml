@@ -1,4 +1,4 @@
-﻿@model ProspeccoesViewModel
+@model ProspeccoesViewModel
 @using System.Globalization
 @using BaseDeProjetos.Helpers
 @using System.Linq
@@ -765,6 +765,27 @@
                                     </div>
                                 </div>
                                             </section>
+                                            <aside class="prospeccao-details-panel prospeccao-details-panel-status">
+                                                <div class="prospeccao-status-header">
+                                                    <span>Status atual</span>
+                                                    <strong>@ultimoStatusDetalhe.Status.GetDisplayName()</strong>
+                                                    <small>@ultimoStatusDetalhe.Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))</small>
+                                                </div>
+                                                @if (string.IsNullOrWhiteSpace(ultimoStatusDetalhe.Anotacoes))
+                                                {
+                                                    <p>Sem anota&ccedil;&otilde;es.</p>
+                                                }
+                                                else
+                                                {
+                                                    <p>@ultimoStatusDetalhe.Anotacoes</p>
+                                                }
+                                                <div class="prospeccao-details-actions-panel">
+                                                    <a class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" href="#editarProspModal-@prospeccao.Id" role="button" onclick="loadAncora('flexSwitchCheckDefault-@prospeccao.Id', 'iconAncora-@prospeccao.Id', 'campoAgg-@prospeccao.Id')"><i class="bi bi-pencil-square"></i>Editar</a>
+                                                    <a class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" href="#historyProspModal-@prospeccao.Id" role="button"><i class="bi bi-clock-history"></i>Hist&oacute;rico</a>
+                                                    <a class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" href="#CreateFollowupProspModal-@prospeccao.Id" role="button"><i class="bi bi-plus-circle"></i>Incluir Status</a>
+                                                    <a class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" href="#deletarProspModal-@prospeccao.Id" role="button"><i class="bi bi-trash"></i>Deletar</a>
+                                                </div>
+                                            </aside>
                                             <section class="prospeccao-details-panel">
                                                 <div class="prospeccao-details-heading compact">
                                                     <span>Valores</span>
@@ -841,27 +862,7 @@
                                                     </div>
                                                 }
                                             </section>
-                                            <aside class="prospeccao-details-panel prospeccao-details-panel-status">
-                                                <div class="prospeccao-status-header">
-                                                    <span>Status atual</span>
-                                                    <strong>@ultimoStatusDetalhe.Status.GetDisplayName()</strong>
-                                                    <small>@ultimoStatusDetalhe.Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))</small>
-                                                </div>
-                                                @if (string.IsNullOrWhiteSpace(ultimoStatusDetalhe.Anotacoes))
-                                                {
-                                                    <p>Sem anota&ccedil;&otilde;es.</p>
-                                                }
-                                                else
-                                                {
-                                                    <p>@ultimoStatusDetalhe.Anotacoes</p>
-                                                }
-                                                <div class="prospeccao-details-actions-panel">
-                                                    <a class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" href="#editarProspModal-@prospeccao.Id" role="button" onclick="loadAncora('flexSwitchCheckDefault-@prospeccao.Id', 'iconAncora-@prospeccao.Id', 'campoAgg-@prospeccao.Id')"><i class="bi bi-pencil-square"></i>Editar</a>
-                                                    <a class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" href="#historyProspModal-@prospeccao.Id" role="button"><i class="bi bi-clock-history"></i>Hist&oacute;rico</a>
-                                                    <a class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" href="#CreateFollowupProspModal-@prospeccao.Id" role="button"><i class="bi bi-plus-circle"></i>Incluir Status</a>
-                                                    <a class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" href="#deletarProspModal-@prospeccao.Id" role="button"><i class="bi bi-trash"></i>Deletar</a>
-                                                </div>
-                                            </aside>
+
                                         </div>
                                         <h1 class="app-card-title">ID da Prospec&ccedil;&atilde;o:</h1>
                                         <span>@prospeccao.Id</span>
