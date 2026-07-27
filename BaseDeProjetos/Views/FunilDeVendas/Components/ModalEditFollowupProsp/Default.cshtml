@@ -50,17 +50,20 @@
 
 <div class="modal fade" id="EditFollowupProspModal-@Model.Id" tabindex="-1"
      aria-labelledby="EditFollowupProspModal-@Model.Id-Label" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="EditFollowupProspModal-@Model.Id">
-                    Editar Status da Prospecção
-                </h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
+    <div class="modal-dialog modal-dialog-centered funil-status-modal-dialog">
+        <div class="modal-content funil-status-modal">
             <form asp-controller="FunilDeVendas" asp-action="EditarFollowUp" asp-route-id="@Model.Id" method="POST">
-                <div class="modal-body">
+                <div class="funil-status-modal-header">
+                    <div>
+                        <h1 class="funil-status-modal-title" id="EditFollowupProspModal-@Model.Id-Label">
+                            Editar status da prospec&ccedil;&atilde;o
+                        </h1>
+                        <p>Ajuste a data, o est&aacute;gio ou as observa&ccedil;&otilde;es deste status.</p>
+                    </div>
+                    <button type="button" class="btn-close funil-status-modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="funil-status-modal-body">
                     <div class="accordion" id="accordionFlushExample">
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="flush-headingOne">
@@ -120,20 +123,23 @@
                     <input asp-for="OrigemID" type="hidden" value="@Model.OrigemID" />
                     <input asp-for="Id" type="hidden" value="@Model.Id" />
 
-                    <div class="form-group">
-                        <label asp-for="Data" class="control-label"></label>
-                        <input asp-for="Data" type="date" class="form-control" />
+                    <div class="funil-status-field">
+                        <label asp-for="Data" class="form-label"></label>
+                        <div class="funil-status-input-icon">
+                            <i class="bi bi-calendar3" aria-hidden="true"></i>
+                            <input asp-for="Data" type="date" class="form-control" />
+                        </div>
                         <small class="form-text text-muted">Data atual: @Model.Data.ToString("dd/MM/yyyy", CultureInfo.CreateSpecificCulture("pt-BR"))</small>
                         <span asp-validation-for="Data" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="Status" class="control-label"></label>
-                        <select asp-for="Status" value="@Model.Status" class="form-control"
+                    <div class="funil-status-field">
+                        <label asp-for="Status" class="form-label"></label>
+                        <select asp-for="Status" value="@Model.Status" class="form-select"
                                 asp-items="FiltrarExcecao(Html.GetEnumSelectList<StatusProspeccao>(), @prosp)"></select>
                         <span asp-validation-for="Status" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="Anotacoes" class="control-label"></label>
+                    <div class="funil-status-field">
+                        <label asp-for="Anotacoes" class="form-label"></label>
                         <textarea class="form-control" asp-for="Anotacoes" rows="3" required> @Model.Anotacoes</textarea>
                         <span asp-validation-for="Anotacoes" class="text-danger"></span>
                     </div>
@@ -143,15 +149,21 @@
                             <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<MotivosNaoConversao>()"></select>
                         </div>
                         </div>
-                        <div class="modal-footer">
-                            <input type="submit" value="Editar" class="btn-submit btn app-btn-primary">
-                        </div>
                     </div>
+                <div class="funil-status-modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar altera&ccedil;&otilde;es</button>
+                </div>
             </form>
         </div>
     </div>
 </div>
 <script>
-    var dateControl = document.querySelector('input[type="date"]');
-    dateControl.max = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+    (function () {
+        var modal = document.getElementById('EditFollowupProspModal-@Model.Id');
+        var dateControl = modal ? modal.querySelector('input[type="date"]') : null;
+        if (dateControl) {
+            dateControl.max = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+        }
+    })();
 </script>
