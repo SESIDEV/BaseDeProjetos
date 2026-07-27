@@ -1321,37 +1321,15 @@ namespace BaseDeProjetos.Controllers
             }
 
             int planejadas = prospeccoes.Count(prospeccao =>
-            {
-                FollowUp ultimoStatus = ObterUltimoStatusProspeccao(prospeccao);
-                return ultimoStatus != null && ultimoStatus.Status == StatusProspeccao.Planejada;
-            });
+                FunilHelpers.ObterUltimoStatus(prospeccao) == StatusProspeccao.Planejada
+                && !FunilHelpers.ProspeccaoRecebeuStatus(prospeccao, StatusProspeccao.ComProposta)
+                && !FunilHelpers.ProspeccaoRecebeuStatus(prospeccao, StatusProspeccao.Convertida)
+                && !FunilHelpers.ProspeccaoEstaEncerrada(prospeccao));
 
-            int ativas = prospeccoes.Count(prospeccao =>
-            {
-                FollowUp ultimoStatus = ObterUltimoStatusProspeccao(prospeccao);
-                return ultimoStatus != null && ultimoStatus.Status < StatusProspeccao.ComProposta;
-            });
-
-            int comProposta = prospeccoes.Count(prospeccao =>
-            {
-                FollowUp ultimoStatus = ObterUltimoStatusProspeccao(prospeccao);
-                return ultimoStatus != null && ultimoStatus.Status == StatusProspeccao.ComProposta;
-            });
-
-            int contratacao = prospeccoes.Count(prospeccao =>
-            {
-                FollowUp ultimoStatus = ObterUltimoStatusProspeccao(prospeccao);
-                return ultimoStatus != null && ultimoStatus.Status == StatusProspeccao.Convertida;
-            });
-
-            int encerradas = prospeccoes.Count(prospeccao =>
-            {
-                FollowUp ultimoStatus = ObterUltimoStatusProspeccao(prospeccao);
-                return ultimoStatus != null
-                    && (ultimoStatus.Status == StatusProspeccao.Suspensa
-                        || ultimoStatus.Status == StatusProspeccao.NaoConvertida);
-            });
-
+            int ativas = prospeccoes.Count(FunilHelpers.ProspeccaoEstaAtiva);
+            int comProposta = prospeccoes.Count(FunilHelpers.ProspeccaoEstaEmNegociacao);
+            int contratacao = prospeccoes.Count(FunilHelpers.ProspeccaoEstaEmContratacao);
+            int encerradas = prospeccoes.Count(FunilHelpers.ProspeccaoEstaEncerrada);
             return (planejadas, ativas, comProposta, contratacao, encerradas);
         }
 
@@ -3903,6 +3881,11 @@ namespace BaseDeProjetos.Controllers
             List<Prospeccao> dependentes = await _context.Prospeccao
                 .AsNoTracking()
                 .Include(prospeccao => prospeccao.Empresa)
+                .Include(prospeccao => prospeccao.Contato)
+                .Include(prospeccao => prospeccao.Usuario)
+                .Include(prospeccao => prospeccao.Status)
+                .Include(prospeccao => prospeccao.ProspeccaoPrincipal)
+                    .ThenInclude(prospeccaoPrincipal => prospeccaoPrincipal.Empresa)
                 .Where(prospeccao => prospeccao.ProspeccaoPrincipalId != null && ids.Contains(prospeccao.ProspeccaoPrincipalId))
                 .ToListAsync();
 
@@ -4359,6 +4342,7 @@ namespace BaseDeProjetos.Controllers
         }
     }
 }
+
 
 
 

@@ -121,52 +121,65 @@ namespace BaseDeProjetos.Helpers
             switch (parametros.Aba.ToLowerInvariant())
             {
                 case "ativas":
-                    // Determinar o último status ordenando por Data e por Id para desempatar datas iguais
-                    return prospeccoes.Where(prospeccao => prospeccao.Status
-                        .OrderBy(followup => followup.Data).ThenBy(followup => followup.Id)
-                        .LastOrDefault()
-                        .Status < StatusProspeccao.ComProposta)
-                        .ToList();
+                    return prospeccoes.Where(ProspeccaoEstaAtiva).ToList();
 
                 case "comproposta":
-                    return prospeccoes.Where(prospeccao => prospeccao.Status
-                        .OrderBy(followup => followup.Data).ThenBy(followup => followup.Id)
-                        .LastOrDefault()
-                        .Status == StatusProspeccao.ComProposta)
-                        .ToList();
+                    return prospeccoes.Where(ProspeccaoEstaEmNegociacao).ToList();
 
                 case "concluidas":
                 case "contratacao":
-                    return prospeccoes.Where(prospeccao => prospeccao.Status
-                        .OrderBy(followup => followup.Data).ThenBy(followup => followup.Id)
-                        .LastOrDefault()
-                        .Status == StatusProspeccao.Convertida)
-                        .ToList();
+                    return prospeccoes.Where(ProspeccaoEstaEmContratacao).ToList();
 
                 case "encerradas":
-                    return prospeccoes.Where(prospeccao =>
-                    {
-                        StatusProspeccao ultimoStatus = prospeccao.Status
-                            .OrderBy(followup => followup.Data).ThenBy(followup => followup.Id)
-                            .LastOrDefault()
-                            .Status;
-
-                        return ultimoStatus == StatusProspeccao.Suspensa
-                            || ultimoStatus == StatusProspeccao.NaoConvertida;
-                    }).ToList();
+                    return prospeccoes.Where(ProspeccaoEstaEncerrada).ToList();
 
                 case "planejadas":
-                    return prospeccoes.Where(prospeccao => prospeccao.Status
-                        .OrderBy(followup => followup.Data).ThenBy(followup => followup.Id)
-                        .LastOrDefault()
-                        .Status == StatusProspeccao.Planejada)
+                    return prospeccoes.Where(prospeccao => ObterUltimoStatus(prospeccao) == StatusProspeccao.Planejada
+                            && !ProspeccaoRecebeuStatus(prospeccao, StatusProspeccao.ComProposta)
+                            && !ProspeccaoRecebeuStatus(prospeccao, StatusProspeccao.Convertida)
+                            && !ProspeccaoEstaEncerrada(prospeccao))
                         .ToList();
 
                 default:
-                    return new List<Prospeccao>(); // In case no case matches
+                    return new List<Prospeccao>();
             }
         }
 
+        public static bool ProspeccaoEstaAtiva(Prospeccao prospeccao)
+        {
+            StatusProspeccao? ultimoStatus = ObterUltimoStatus(prospeccao);
+
+            return ultimoStatus.HasValue
+                && ultimoStatus.Value < StatusProspeccao.ComProposta
+                && !ProspeccaoRecebeuStatus(prospeccao, StatusProspeccao.ComProposta)
+                && !ProspeccaoRecebeuStatus(prospeccao, StatusProspeccao.Convertida)
+                && !ProspeccaoEstaEncerrada(prospeccao);
+        }
+
+        public static bool ProspeccaoEstaEmNegociacao(Prospeccao prospeccao)
+        {
+            return ProspeccaoRecebeuStatus(prospeccao, StatusProspeccao.ComProposta)
+                && !ProspeccaoRecebeuStatus(prospeccao, StatusProspeccao.Convertida)
+                && !ProspeccaoEstaEncerrada(prospeccao);
+        }
+
+        public static bool ProspeccaoEstaEmContratacao(Prospeccao prospeccao)
+        {
+            return ProspeccaoRecebeuStatus(prospeccao, StatusProspeccao.Convertida)
+                && !ProspeccaoEstaEncerrada(prospeccao);
+        }
+
+        public static bool ProspeccaoEstaEncerrada(Prospeccao prospeccao)
+        {
+            return ProspeccaoRecebeuStatus(prospeccao, StatusProspeccao.NaoConvertida)
+                || ProspeccaoRecebeuStatus(prospeccao, StatusProspeccao.Suspensa);
+        }
+
+        public static bool ProspeccaoRecebeuStatus(Prospeccao prospeccao, StatusProspeccao status)
+        {
+            return prospeccao?.Status != null
+                && prospeccao.Status.Any(followup => followup.Status == status);
+        }
         public static async Task<List<Prospeccao>> DefinirCasaParaVisualizar(string casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, DbCache cache, ViewDataDictionary ViewData)
         {
             List<Instituto> casasPermitidas = ObterCasasPermitidas(usuario);
@@ -301,50 +314,44 @@ namespace BaseDeProjetos.Helpers
             switch (parametros.Aba.ToLowerInvariant())
             {
                 case "ativas":
-                    // Determinar o último status ordenando por Data e por Id para desempatar datas iguais
                     return query.Where(p =>
-                        p.Status
-                            .OrderBy(s => s.Data).ThenBy(s => s.Id)
-                            .LastOrDefault().Status < StatusProspeccao.ComProposta
+                        !p.Status.Any(s => s.Status == StatusProspeccao.ComProposta)
+                        && !p.Status.Any(s => s.Status == StatusProspeccao.Convertida)
+                        && !p.Status.Any(s => s.Status == StatusProspeccao.NaoConvertida || s.Status == StatusProspeccao.Suspensa)
+                        && p.Status.OrderBy(s => s.Data).ThenBy(s => s.Id).LastOrDefault().Status < StatusProspeccao.ComProposta
                     );
 
                 case "comproposta":
                     return query.Where(p =>
-                        p.Status
-                            .OrderBy(s => s.Data).ThenBy(s => s.Id)
-                            .LastOrDefault().Status == StatusProspeccao.ComProposta
+                        p.Status.Any(s => s.Status == StatusProspeccao.ComProposta)
+                        && !p.Status.Any(s => s.Status == StatusProspeccao.Convertida)
+                        && !p.Status.Any(s => s.Status == StatusProspeccao.NaoConvertida || s.Status == StatusProspeccao.Suspensa)
                     );
 
                 case "concluidas":
                 case "contratacao":
                     return query.Where(p =>
-                        p.Status
-                            .OrderBy(s => s.Data).ThenBy(s => s.Id)
-                            .LastOrDefault().Status == StatusProspeccao.Convertida
+                        p.Status.Any(s => s.Status == StatusProspeccao.Convertida)
+                        && !p.Status.Any(s => s.Status == StatusProspeccao.NaoConvertida || s.Status == StatusProspeccao.Suspensa)
                     );
 
                 case "encerradas":
                     return query.Where(p =>
-                        p.Status
-                            .OrderBy(s => s.Data).ThenBy(s => s.Id)
-                            .LastOrDefault().Status == StatusProspeccao.Suspensa
-                        || p.Status
-                            .OrderBy(s => s.Data).ThenBy(s => s.Id)
-                            .LastOrDefault().Status == StatusProspeccao.NaoConvertida
+                        p.Status.Any(s => s.Status == StatusProspeccao.NaoConvertida || s.Status == StatusProspeccao.Suspensa)
                     );
 
                 case "planejadas":
                     return query.Where(p =>
-                        p.Status
-                            .OrderBy(s => s.Data).ThenBy(s => s.Id)
-                            .LastOrDefault().Status == StatusProspeccao.Planejada
+                        !p.Status.Any(s => s.Status == StatusProspeccao.ComProposta)
+                        && !p.Status.Any(s => s.Status == StatusProspeccao.Convertida)
+                        && !p.Status.Any(s => s.Status == StatusProspeccao.NaoConvertida || s.Status == StatusProspeccao.Suspensa)
+                        && p.Status.OrderBy(s => s.Data).ThenBy(s => s.Id).LastOrDefault().Status == StatusProspeccao.Planejada
                     );
 
                 default:
                     return query;
             }
         }
-
         public static async Task<List<Producao>> DefinirCasaParaVisualizarEmProducao(string casa, Usuario usuario, ApplicationDbContext _context, HttpContext HttpContext, ViewDataDictionary ViewData)
         {
             List<Instituto> casasPermitidas = ObterCasasPermitidas(usuario);
@@ -923,6 +930,7 @@ namespace BaseDeProjetos.Helpers
         public List<Usuario> Usuarios { get; set; }
     }
 }
+
 
 
 
