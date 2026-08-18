@@ -1,4 +1,4 @@
-﻿using BaseDeProjetos.Data;
+using BaseDeProjetos.Data;
 using BaseDeProjetos.Models;
 using BaseDeProjetos.Models.Enums;
 using Microsoft.AspNetCore.Html;
@@ -560,7 +560,8 @@ namespace BaseDeProjetos.Helpers
             return usuario != null
                 && (usuario.Nivel == Nivel.Dev
                     || usuario.Nivel == Nivel.PMO
-                    || usuario.Nivel == Nivel.Supervisor);
+                    || usuario.Nivel == Nivel.Supervisor
+                    || usuario.Casa == Instituto.Servicos_GPD);
         }
 
         public static bool UsuarioPodeAcessarCasa(Usuario usuario, Instituto casa)
@@ -930,6 +931,7 @@ namespace BaseDeProjetos.Helpers
         public List<Usuario> Usuarios { get; set; }
     }
 }
+
 
 
 
